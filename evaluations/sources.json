@@ -1,0 +1,92 @@
+[
+  {
+    "id": "word_osaka_guideline",
+    "path": "evaluations/realpdf/corpus/word_osaka_guideline.pdf",
+    "source_url": "https://www.pref.osaka.lg.jp/documents/63648/guideline_tsuuchi.pdf",
+    "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe"
+  },
+  {
+    "id": "word_osaka_fire_notice",
+    "path": "evaluations/realpdf/corpus/word_osaka_fire_notice.pdf",
+    "source_url": "https://www.pref.osaka.lg.jp/documents/63648/20250327jimurennraku.pdf",
+    "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa"
+  },
+  {
+    "id": "word_wakayama_guidelines",
+    "path": "evaluations/realpdf/corpus/word_wakayama_guidelines.pdf",
+    "source_url": "https://www.pref.wakayama.lg.jp/prefg/020400/d00220063_d/fil/jissiyouryou.pdf",
+    "sha256": "ccd4d63d09331ff6c6636ba6f2cc4c3398a8ff714abefe727cbd0051a6d5aa7c"
+  },
+  {
+    "id": "word_takeo_notice",
+    "path": "evaluations/realpdf/corpus/word_takeo_notice.pdf",
+    "source_url": "https://www.city.takeo.lg.jp/uploads/20240116press01.pdf",
+    "sha256": "245011456ebb025d852fa0dae0ca60d96162a25acb7b850894e663da5660637d"
+  },
+  {
+    "id": "word_okinawa_procurement",
+    "path": "evaluations/realpdf/corpus/word_okinawa_procurement.pdf",
+    "source_url": "https://www.pref.okinawa.lg.jp/_res/projects/default_project/_page_/001/035/156/01_koukoku.pdf",
+    "sha256": "bbaa2b12eeaf1c7eac2dc91aca03c00da4ed948e7c14d99d879ff4c3083fd0b3"
+  },
+  {
+    "id": "word_niigata_hearing",
+    "path": "evaluations/realpdf/corpus/word_niigata_hearing.pdf",
+    "source_url": "https://kenpo.pref.niigata.lg.jp/bn/R06_10/1008_t78/t78_20241008i30673.pdf",
+    "sha256": "9b8498becfda63c3cca8ac4a747cd17e5436c7e3e7372c192a771ae0114046e7"
+  },
+  {
+    "id": "word_kyoto_questions",
+    "path": "evaluations/realpdf/corpus/word_kyoto_questions.pdf",
+    "source_url": "https://www.city.kyoto.lg.jp/kankyo/cmsfiles/contents/0000311/311254/kaitou_hp.pdf",
+    "sha256": "61ef6bb9aaf0e6c6099fc7b4b67de804d311855ec0265d4648d197fb75dfad46"
+  },
+  {
+    "id": "word_osaka_symposium",
+    "path": "evaluations/realpdf/corpus/word_osaka_symposium.pdf",
+    "source_url": "https://www.pref.osaka.lg.jp/documents/63648/jimurennraku_1.pdf",
+    "sha256": "cf9510c66d1a333e9e0936da8a10428f65ad29955f85b55628b5528ae2d3b586"
+  },
+  {
+    "id": "lo_migration_ja",
+    "path": "evaluations/realpdf/corpus/lo_migration_ja.pdf",
+    "source_url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf",
+    "sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3"
+  },
+  {
+    "id": "lo_newfeatures_ja",
+    "path": "evaluations/realpdf/corpus/lo_newfeatures_ja.pdf",
+    "source_url": "https://wiki.documentfoundation.org/images/b/b7/LO4.1_NewFeatures.pdf",
+    "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47"
+  },
+  {
+    "id": "lo_enterprise_en",
+    "path": "evaluations/realpdf/corpus/lo_enterprise_en.pdf",
+    "source_url": "https://wiki.documentfoundation.org/images/3/36/EN_Enterprise.pdf",
+    "sha256": "f96228ca032b60584e5f2e5fd5689290ba7b93b4f39bb8f86c5af5221eec85d4"
+  },
+  {
+    "id": "print_fcc_ms",
+    "path": "evaluations/realpdf/corpus/print_fcc_ms.pdf",
+    "source_url": "https://fccid.io/OVNAC4/Label/Label-Sample-2-3606396.pdf",
+    "sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd"
+  },
+  {
+    "id": "print_fcc_chrome",
+    "path": "evaluations/realpdf/corpus/print_fcc_chrome.pdf",
+    "source_url": "https://fccid.io/PY319200443/Users-Manual/Users-Manual-4365158.pdf",
+    "sha256": "5e9f2587e4ebba83b07c5127181f1afe9707eca74f12eee89faf4189f2d47d11"
+  },
+  {
+    "id": "print_ubiquiti",
+    "path": "evaluations/realpdf/corpus/print_ubiquiti.pdf",
+    "source_url": "https://fccid.io/SWXU6MESHP/User-Manual/Quick-Installation-Guide-7315317.pdf",
+    "sha256": "0a547f5879df8b2eb1eeb22b5a01c7c4187c49edcee7fd11f957c06d3a9bccff"
+  },
+  {
+    "id": "print_canvia",
+    "path": "evaluations/realpdf/corpus/print_canvia.pdf",
+    "source_url": "https://fccid.io/2AUDT-CANVIAART/User-Manual/User-manual-4452118.pdf",
+    "sha256": "71afeab7584d5638698f1cb491680b30ddacf10ec6dd9243680c97bd37a410fb"
+  }
+]

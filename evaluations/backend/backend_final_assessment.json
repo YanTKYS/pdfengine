@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "scope": "manual source-bound selections from 15 externally generated PDFs",
+  "stage1": {
+    "passed": 13,
+    "safe_rejected": 2,
+    "poppler_dpi": 144,
+    "mupdf_all_pages_equal": true,
+    "independent_renderer": "Poppler",
+    "independent_text_extractor": "pypdf",
+    "old_selected_unicode_absent_from_removal_checkpoint_for_passed": true,
+    "font_resource_reuse_for_passed": true
+  },
+  "stage2": {
+    "passed": 6,
+    "safe_rejected": 7,
+    "gate_skipped": 2,
+    "rejection_categories": {
+      "subset_or_unicode_coverage": 4,
+      "slot_advance_requires_explicit_width": 3
+    }
+  },
+  "stage3": {
+    "passed": 13,
+    "gate_skipped": 2,
+    "outside_selected_region_poppler_gt8_pixels": 0
+  },
+  "stage4": {
+    "explicit_width_cases_attempted": 3,
+    "passed": 2,
+    "width_unknown_or_safe_rejection": 12,
+    "safe_layout_rejection": 1,
+    "widths_pt": {
+      "word_kyoto_questions": 425,
+      "word_niigata_hearing": 230,
+      "word_okinawa_procurement": 468
+    }
+  },
+  "common_causes": [
+    "TextWriter can emit the same glyph IDs with a different CID /W advance; the current backend therefore reuses original code/resource bytes.",
+    "A subset font name does not prove coverage for a new Unicode character; missing code maps are rejected.",
+    "A clip on the page is not itself a rejection; only an unprovable clip/state at the selected paint event is rejected.",
+    "MuPDF full-save resource serialization caused external renderer differences in no-edit controls; pypdf full clone preserves the tested resource values and encryption.",
+    "Observed content width remains distinct from inferred or explicitly supplied available width."
+  ],
+  "artifacts": {
+    "case_matrix": "evaluations/backend/backend_matrix.csv",
+    "stage1_results": "evaluations/backend/runs/stage1_final_v2/results.json",
+    "followup_results": "evaluations/backend/runs/stages_final_v4/results.json",
+    "backend_report": "docs/backend-evaluation.md",
+    "writer_report": "docs/backend-options.md"
+  },
+  "test_command": ".venv\\Scripts\\python -m pytest -q",
+  "tests": {"passed": 179, "skipped": 2}
+}

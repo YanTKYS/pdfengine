@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+tmp/
+
+# Keep third-party documents and derived binary/raw extraction evidence local.
+/output/
+/evaluations/**
+!/evaluations/**/
+!/evaluations/**/*.py
+!/evaluations/**/*.md
+!/evaluations/sources.json
+!/evaluations/backend/backend_matrix.csv
+!/evaluations/backend/backend_final_assessment.json

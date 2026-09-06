@@ -1,0 +1,4 @@
+# Recorded SHA-256 evidence requires exact bytes on every checkout.
+* -text
+*.pdf binary
+*.png binary

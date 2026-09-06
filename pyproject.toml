@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pdf-region-editor"
+version = "0.1.0"
+description = "Independent prototype for reconstructing and reflowing existing PDF text regions"
+requires-python = ">=3.11"
+dependencies = ["PyMuPDF>=1.26,<1.28", "uniseg>=0.10,<0.11", "fonttools>=4.59,<5", "pypdf==6.10.0"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10", "reportlab>=4.4,<5", "Pillow>=11,<13"]
+
+[project.scripts]
+pdfeditor = "pdfeditor.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["pdfeditor*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
