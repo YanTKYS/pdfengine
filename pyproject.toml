@@ -1,11 +1,13 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "pdf-region-editor"
 version = "0.1.0"
 description = "Independent prototype for reconstructing and reflowing existing PDF text regions"
+license = "AGPL-3.0-only"
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 dependencies = ["PyMuPDF>=1.26,<1.28", "uniseg>=0.10,<0.11", "fonttools>=4.59,<5", "pypdf==6.10.0"]
 

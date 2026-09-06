@@ -1,16 +1,16 @@
-case,generator,manual_scope,stage1_noop,old_text_extraction_removed,font_resource,stage2_same_count,stage3_shorter,stage4_explicit_width,classification
-word_osaka_fire_notice,Microsoft Word,2-line body paragraph,passed,yes,reused,passed,passed,not_run_width_unknown,success
-word_osaka_guideline,Microsoft Word,2-line body paragraph,passed,yes,reused,passed,passed,not_run_width_unknown,success
-word_wakayama_guidelines,Microsoft Word,4-line eligibility paragraph,passed,yes,reused,passed,passed,not_run_width_unknown,success
-word_takeo_notice,Microsoft Word,2-line body paragraph,passed,yes,reused,rejected_U+8B70_not_in_subset,passed,not_run_width_unknown,font_coverage_rejection
-lo_migration_ja,LibreOffice,1-line body paragraph,passed,yes,reused,rejected_U+65BD_U+8A2D_not_in_subset,passed,not_run_width_unknown,font_coverage_rejection
-lo_newfeatures_ja,LibreOffice,2-line introductory paragraph,passed,yes,reused,passed,passed,not_run_width_unknown,success
-lo_enterprise_en,LibreOffice,English standards sentence,passed,yes,reused,rejected_advance_changed,passed,not_run_width_unknown,slot_width_rejection
-print_canvia,Browser print,Login/password line,passed,yes,reused,rejected_U+0041_U+006D_not_in_subset,passed,not_run_width_unknown,font_coverage_rejection
-print_ubiquiti,Virtual/browser print,Chinese date header,rejected_mixed_styles_or_paint,not_run,reused,stage_gate_skip,stage_gate_skip,stage_gate_skip,safe_rejection
-print_fcc_ms,Microsoft Print to PDF,3-line French text,passed,yes,reused,rejected_advance_changed,passed,not_run_width_unknown,slot_width_rejection
-print_fcc_chrome,Browser print,2-line English text,passed,yes,reused,rejected_advance_changed,passed,not_run_width_unknown,slot_width_rejection
-word_kyoto_questions,Microsoft Word,4-line question with explicit 425pt width,passed,yes,reused,passed,passed,passed,success
-word_niigata_hearing,Microsoft Word,heading with explicit 230pt width,passed,yes,reused,rejected_U+7D04_not_in_subset,passed,rejected_collision,safe_layout_rejection
-word_okinawa_procurement,Microsoft Word,2-line intro with explicit 468pt width,passed,yes,reused,passed,passed,passed,success
-word_osaka_symposium,Microsoft Word,unmapped replacement glyph,rejected_unicode_unavailable,not_run,not_reused,stage_gate_skip,stage_gate_skip,stage_gate_skip,unicode_restoration_rejection
+case,generator,manual_scope,stage1_noop,old_text_extraction_removed,font_resource,stage2_same_count,stage3_shorter,stage4_explicit_width,classification,stage2_changed_characters,stage3_deleted_characters,stage4_original_characters,stage4_replacement_characters,stage4_operation
+word_osaka_fire_notice,Microsoft Word,2-line body paragraph,passed,yes,reused,passed,passed,not_run_width_unknown,success,1,2,,,
+word_osaka_guideline,Microsoft Word,2-line body paragraph,passed,yes,reused,passed,passed,not_run_width_unknown,success,1,2,,,
+word_wakayama_guidelines,Microsoft Word,4-line eligibility paragraph,passed,yes,reused,passed,passed,not_run_width_unknown,success,2,2,,,
+word_takeo_notice,Microsoft Word,2-line body paragraph,passed,yes,reused,rejected_U+8B70_code_unavailable_outline_unknown,passed,not_run_width_unknown,font_coverage_rejection,,2,,,
+lo_migration_ja,LibreOffice,1-line body paragraph,passed,yes,reused,rejected_U+65BD_U+8A2D_not_in_subset,passed,not_run_width_unknown,font_coverage_rejection,,2,,,
+lo_newfeatures_ja,LibreOffice,2-line introductory paragraph,passed,yes,reused,passed,passed,not_run_width_unknown,success,2,2,,,
+lo_enterprise_en,LibreOffice,English standards sentence,passed,yes,reused,rejected_advance_changed,passed,not_run_width_unknown,slot_width_rejection,,2,,,
+print_canvia,Browser print,Login/password line,passed,yes,reused,rejected_U+0041_U+006D_code_unavailable_outlines_empty,passed,not_run_width_unknown,font_coverage_rejection,,2,,,
+print_ubiquiti,Virtual/browser print,Chinese date header,rejected_mixed_styles_or_paint,not_run,reused,stage_gate_skip,stage_gate_skip,stage_gate_skip,safe_rejection,,,,,
+print_fcc_ms,Microsoft Print to PDF,3-line French text,passed,yes,reused,rejected_advance_changed,passed,not_run_width_unknown,slot_width_rejection,,2,,,
+print_fcc_chrome,Browser print,2-line English text,passed,yes,reused,rejected_advance_changed,passed,not_run_width_unknown,slot_width_rejection,,2,,,
+word_kyoto_questions,Microsoft Word,4-line question with explicit 425pt width,passed,yes,reused,passed,passed,passed,success,2,2,147,33,shorter_multiple_lines_to_one
+word_niigata_hearing,Microsoft Word,heading with explicit 230pt width,passed,yes,reused,rejected_U+7D04_not_in_subset,passed,rejected_collision,safe_layout_rejection,,2,,,
+word_okinawa_procurement,Microsoft Word,2-line intro with explicit 468pt width,passed,yes,reused,passed,passed,passed,success,2,2,49,43,shorter_multiple_lines_to_one
+word_osaka_symposium,Microsoft Word,unmapped replacement glyph,rejected_unicode_unavailable,not_run,not_reused,stage_gate_skip,stage_gate_skip,stage_gate_skip,unicode_restoration_rejection,,,,,

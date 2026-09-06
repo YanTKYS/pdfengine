@@ -2,15 +2,19 @@
 
 公開版はコード・テスト・評価スクリプト・報告と集計を含みます。外部 PDF と派生 PDF/PNG・生ログはローカル保持です。入力の取得元と、報告内のローカル証跡リンクについては [PUBLICATION.md](PUBLICATION.md) を参照してください。
 
+pdfengine独自コードは [GNU AGPL v3](LICENSE)（`AGPL-3.0-only`）で公開します。現在のPyMuPDF/MuPDF依存と、将来backendを置換した際の方針は [ライセンス](docs/licensing.md) に記載しています。
+
 既存PDFから文字・グリフの配置を取得し、行・段落・テキスト領域を推定する独立したプロトタイプです。実PDFの忠実性評価では、推定範囲と再描画backendを分離し、元の文字コード・font resource・`/W`を保持した局所編集を優先します。既存の `idontlovepdf` / `idontlovepdf-engine` のコード・設計は使用していません。
 
 Python + PyMuPDF + pypdf + uniseg + fontToolsを採用しました。対象領域の旧文字だけをtext operator単位で除去し、Stage 1では同じoperator位置へ元コードを戻します。明示幅があるStage 4だけ局所reflowを許可します。画像化や白塗りの重ね書きではありません。PDF解析とレイアウト処理は別モジュールです。
 
-**検証結果: 自動テスト179件成功、AES暗号化2件は依存provider未導入のためskip。** 外部生成PDF 15件・58ページを評価し、手動範囲13件でStage 1 no-opが合格しました。任意のPDFをAcrobatと同等に編集できる段階ではありません。
+**検証結果: 自動テスト207件成功、AES暗号化2件は依存provider未導入のためskip。** 外部生成PDF 15件・58ページを評価し、手動範囲13件でStage 1 no-opが合格しました。任意のPDFをAcrobatと同等に編集できる段階ではありません。
 
 ## 外部生成PDFの評価
 
-[初期の実PDF評価報告](docs/realpdf-evaluation.md)に加え、現行backendの[Track A/B結果](docs/backend-evaluation.md)を作成しました。Word、LibreOffice、Chrome/Skia、仮想プリンタ等の15原本について、[症例別backend一覧](evaluations/backend/backend_matrix.csv)、[Stage 1証跡](evaluations/backend/runs/stage1_final_v2/results.json)、[Stage 2--4証跡](evaluations/backend/runs/stages_final_v4/results.json)を参照できます。
+[初期の実PDF評価報告](docs/realpdf-evaluation.md)に加え、現行backendの[Track A/B結果](docs/backend-evaluation.md)を作成しました。Word、LibreOffice、Chrome/Skia、仮想プリンタ等の15原本について、[症例別backend一覧](evaluations/backend/backend_matrix.csv)、[Stage 1証跡](evaluations/backend/runs/stage1_audit_v3/results.json)、[Stage 2--4証跡](evaluations/backend/runs/stages_audit_v5/results.json)を参照できます。
+
+Stage 2の成功6件は各1～2字の同幅置換、Stage 3の成功13件は末尾2字削除です。Stage 4の成功2件も複数行を1行へ短文化した結果で、実PDFの長文化・1行から複数行への成功はまだ確認していません。初回評価コードのPoppler画像参照と削除抽出判定を修正し、評価範囲と訂正内容を報告に明記しました。
 
 修正前の固定53試行では5件保存しましたが、元subset fontを再利用した2件で文字が重なり、別の1件で暗号化・権限設定が失われました。実描画の文字位置を保存前に検査し、暗号化を保持する小修正後は、同じ53試行が3件保存・50件拒否となりました。修正前の破損出力は比較証跡として凍結保存しています。
 
@@ -146,4 +150,4 @@ tests/             PDF非依存テスト、実フォントテスト、実PDF統�
 
 ## 依存ライブラリの条件
 
-PyMuPDF / MuPDFはAGPL v3または商用ライセンスです。製品への組込み・配布・サービス提供はその条件を前提に判断する必要があります。許諾型ライセンスの構成が必要ならPDFium/PDFBoxへの差替えを比較候補として整理済みです。fontTools/unisegのコードの条件と、入力PDFに含まれるフォントの条件は別です。公式根拠は [比較資料のライセンス節](docs/architecture.md#ライセンス上の選定条件) にあります。
+pdfengineはAGPL-3.0-onlyで公開し、現在の実装が依存するPyMuPDF / MuPDFはAGPL v3または商用ライセンスで提供されています。将来、許諾型ライセンスのbackendへ置換した場合は、プロジェクトのライセンス方針を再検討する可能性があります。依存ライブラリ・外部PDF・フォントの条件はそれぞれ別です。確認版と公式根拠は [ライセンス方針](docs/licensing.md) にあります。

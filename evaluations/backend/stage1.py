@@ -18,6 +18,41 @@ BASE=Path(__file__).resolve().parent
 PROJECT=BASE.parent.parent
 
 
+def independent_text_audit(original, replayed, removed, selected_unicode):
+    """Require extraction evidence, including a positive control for deletion.
+
+    Whitespace is normalized only for the deletion search because extractors
+    may insert line breaks. Replay equality still compares complete page text.
+    This search supplements, rather than replaces, the backend's glyph audit.
+    """
+    def extracted(result):
+        pages = result.get("pages")
+        return (not result.get("error") and isinstance(pages, list)
+                and bool(pages) and all(isinstance(page, str) for page in pages))
+
+    def normalize(text):
+        return "".join(text.split())
+
+    original_ok, replayed_ok, removed_ok = map(extracted, (original, replayed, removed))
+    needle = normalize(selected_unicode)
+    source_contains = (original_ok and bool(needle)
+                       and any(needle in normalize(page) for page in original["pages"]))
+    removed_absent = (removed_ok and bool(needle)
+                      and all(needle not in normalize(page) for page in removed["pages"]))
+    same_page_count = (original_ok and removed_ok
+                       and len(original["pages"]) == len(removed["pages"]))
+    text_equal = (original_ok and replayed_ok
+                  and original["pages"] == replayed["pages"])
+    return {
+        "independent_text_equal": text_equal,
+        "independent_removed_extracted": removed_ok,
+        "independent_removed_page_count_equal": same_page_count,
+        "selected_unicode_present_before_removal": source_contains,
+        "removed_selected_unicode_absent": removed_absent,
+        "independent_removal_check_passed": bool(source_contains and removed_absent and same_page_count),
+    }
+
+
 def state_by_glyph(content):
     def clean(v):
         if isinstance(v,dict):return {k:clean(a) for k,a in v.items() if k!="at"}
@@ -51,7 +86,8 @@ def main():
     selections=json.loads((BASE/"selections.json").read_text(encoding="utf-8"))
     results=[]
     write_json(root/"environment.json",{"pymupdf":pymupdf.VersionBind,
-        "engine_sha256":{p.name:source_sha(p) for p in (PROJECT/"pdfeditor").glob("*.py")}})
+        "engine_sha256":{p.name:source_sha(p) for p in (PROJECT/"pdfeditor").glob("*.py")},
+        "evaluation_sha256":{p.name:source_sha(p) for p in (BASE/"stage1.py", PROJECT/"evaluations/realpdf/evaluate.py")}})
     for case in selections:
         source=PROJECT/case["source"];selection=case["selection"];page=selection["page"]
         directory=root/case["id"];directory.mkdir()
@@ -74,14 +110,15 @@ def main():
             original_text=independent_text(DEFAULT_PYPDF,source,directory/"pypdf_before.json")
             replay_text=independent_text(DEFAULT_PYPDF,directory/"replayed.pdf",directory/"pypdf_after.json")
             removed_text=independent_text(DEFAULT_PYPDF,directory/"removed.pdf",directory/"pypdf_removed.json")
-            result["independent_text_equal"]=not original_text.get("error") and original_text.get("pages")==replay_text.get("pages")
-            result["independent_removed_extracted"]=not removed_text.get("error")
             selected_unicode="".join(item["unicode"] for item in report.get("selected_before", []))
-            removed_unicode="".join("".join(page.split()) for page in removed_text.get("pages", []))
-            result["removed_selected_unicode_absent"]=(not selected_unicode or selected_unicode not in removed_unicode)
-            report["removed_selected_unicode_absent"]=result["removed_selected_unicode_absent"]
-            poppler_ok=result["poppler"].get("diff",{}).get("all_changed_pixels",-1)==0
-            result["status"]="passed" if poppler_ok and not differences and result["independent_text_equal"] and result["removed_selected_unicode_absent"] else "failed_fidelity"
+            text_audit=independent_text_audit(original_text,replay_text,removed_text,selected_unicode)
+            result.update(text_audit)
+            report.update(text_audit)
+            poppler_ok=(all(result["poppler"][label].get("rendered") for label in ("before","after","removed"))
+                        and result["poppler"].get("diff",{}).get("all_changed_pixels",-1)==0)
+            source_unchanged=source_sha(source)==selection["source_sha256"]
+            result["status"]="passed" if (poppler_ok and not differences and source_unchanged
+                and result["independent_text_equal"] and result["independent_removal_check_passed"]) else "failed_fidelity"
             result["later_stages_allowed"]=result["status"]=="passed"
             report["poppler_stage1_passed"]=poppler_ok
             report["paint_state_compare_passed"]=not differences

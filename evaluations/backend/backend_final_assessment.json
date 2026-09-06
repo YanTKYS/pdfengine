@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "scope": "manual source-bound selections from 15 externally generated PDFs",
   "stage1": {
     "passed": 13,
@@ -9,7 +9,8 @@
     "independent_renderer": "Poppler",
     "independent_text_extractor": "pypdf",
     "old_selected_unicode_absent_from_removal_checkpoint_for_passed": true,
-    "font_resource_reuse_for_passed": true
+    "font_resource_reuse_for_passed": true,
+    "deletion_positive_control_required": true
   },
   "stage2": {
     "passed": 6,
@@ -18,12 +19,22 @@
     "rejection_categories": {
       "subset_or_unicode_coverage": 4,
       "slot_advance_requires_explicit_width": 3
-    }
+    },
+    "changed_characters_in_each_passed_case": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "changed_characters_total": 10
   },
   "stage3": {
     "passed": 13,
     "gate_skipped": 2,
-    "outside_selected_region_poppler_gt8_pixels": 0
+    "outside_selected_region_poppler_gt8_pixels": 0,
+    "replacement_policy": "remove the final two observed characters in each passed case; retain slots"
   },
   "stage4": {
     "explicit_width_cases_attempted": 3,
@@ -34,6 +45,22 @@
       "word_kyoto_questions": 425,
       "word_niigata_hearing": 230,
       "word_okinawa_procurement": 468
+    },
+    "successful_lengthening_cases": 0,
+    "successful_one_line_to_multiple_lines_cases": 0,
+    "passed_cases": {
+      "word_kyoto_questions": {
+        "original_characters": 147,
+        "replacement_characters": 33,
+        "original_lines": 4,
+        "output_lines": 1
+      },
+      "word_okinawa_procurement": {
+        "original_characters": 49,
+        "replacement_characters": 43,
+        "original_lines": 2,
+        "output_lines": 1
+      }
     }
   },
   "common_causes": [
@@ -41,15 +68,31 @@
     "A subset font name does not prove coverage for a new Unicode character; missing code maps are rejected.",
     "A clip on the page is not itself a rejection; only an unprovable clip/state at the selected paint event is rejected.",
     "MuPDF full-save resource serialization caused external renderer differences in no-edit controls; pypdf full clone preserves the tested resource values and encryption.",
-    "Observed content width remains distinct from inferred or explicitly supplied available width."
+    "Observed content width remains distinct from inferred or explicitly supplied available width.",
+    "A nonzero glyph ID and Unicode cmap entry can still point to an empty outline in a subset font (Canvia A/m); mapping presence alone is insufficient."
   ],
   "artifacts": {
     "case_matrix": "evaluations/backend/backend_matrix.csv",
-    "stage1_results": "evaluations/backend/runs/stage1_final_v2/results.json",
-    "followup_results": "evaluations/backend/runs/stages_final_v4/results.json",
+    "stage1_results": "evaluations/backend/runs/stage1_audit_v3/results.json",
+    "followup_results": "evaluations/backend/runs/stages_audit_v5/results.json",
     "backend_report": "docs/backend-evaluation.md",
-    "writer_report": "docs/backend-options.md"
+    "writer_report": "docs/backend-options.md",
+    "subset_font_report": "docs/subset-font-boundary.md"
   },
   "test_command": ".venv\\Scripts\\python -m pytest -q",
-  "tests": {"passed": 179, "skipped": 2}
+  "tests": {
+    "passed": 207,
+    "skipped": 2
+  },
+  "followup_audit": {
+    "passed_outputs": 21,
+    "actual_poppler_pngs_compared": true,
+    "dpi": 144,
+    "poppler_scope": "target page only",
+    "outside_region_margin_pt": 1,
+    "outside_region_pixels_over_8_intensity_levels": 0,
+    "unedited_pages_mupdf_pixels_equal": true,
+    "independent_extraction_expected_replacement_matches": true,
+    "failed_evaluation": 0
+  }
 }
