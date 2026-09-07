@@ -12,4 +12,6 @@
 生成できる A--E のサンプルは `python -m examples.demo --output-dir output/demo-next` で作成できる。
 外部 corpus のない環境では、対応する実 PDF 回帰テストは skip する。報告にある全件結果は元のローカル評価環境で実施した結果である。
 
-現在の範囲と制限は [backend 評価](docs/backend-evaluation.md)、技術選定は [backend 比較](docs/backend-options.md) を参照。
+新規font組版の現行評価は [composition.md](docs/composition.md) と [公開集計](evaluations/composition/summary.json) を参照。完全なfontは別途用意し、評価スクリプトの `--font-dir` へ指定する。フォント名・face index・variation軸・明示領域は評価入力であり、エンジン内にPDF別の分岐はない。新規組版のPDF、削除checkpoint、PNG、glyph計画、原文は公開集計へ含めない。
+
+元resource経路の範囲と制限は [backend 評価](docs/backend-evaluation.md)、技術選定は [backend 比較](docs/backend-options.md) を参照。

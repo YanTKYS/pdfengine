@@ -45,7 +45,7 @@ def source(tmp_path):
     return path
 
 
-@pytest.mark.parametrize("command", ["observe", "select", "replay", "edit-selected"])
+@pytest.mark.parametrize("command", ["observe", "select", "replay", "edit-selected", "compose-selected"])
 def test_new_commands_offer_help(command):
     result = invoke(command, "--help")
     assert result.returncode == 0
@@ -139,3 +139,28 @@ def test_select_rejects_invalid_existing_manifest_and_cross_page_correction(sour
     assert result.returncode == 2
     assert "retain its original page" in result.stderr
     assert not correction.exists()
+
+
+def test_compose_cli_embeds_font_and_protects_inputs(source, tmp_path):
+    font = tmp_path / 'provided.ttf'
+    font.write_bytes(pymupdf.Font('cjk').buffer)
+    manifest = tmp_path / 'selection.json'
+    successful('select', source, manifest, '--line', 'p1-l3', '--width', '180')
+    output, report_path, removed = (tmp_path / name for name in ('composed.pdf', 'compose.json', 'removed.pdf'))
+    text_file = tmp_path / 'replacement.txt'
+    text_file.write_text('申請書類2026※', encoding='utf-8')
+    report = successful('compose-selected', source, output, '--selection', manifest, '--font', font,
+                        '--text-file', text_file, '--report', report_path, '--removal-output', removed)
+    assert report['font_substituted'] is True
+    assert report['independent_renderer_verified'] is False
+    assert report == json.loads(report_path.read_text(encoding='utf-8'))
+    with pymupdf.open(output) as doc:
+        assert '申請書類2026※' in doc[0].get_text()
+        assert 'IJKL' not in doc[0].get_text()
+    before = output.read_bytes()
+    result = invoke('compose-selected', source, output, '--selection', manifest, '--font', font, '--text', '受付')
+    assert result.returncode == 2 and output.read_bytes() == before
+    rejected = tmp_path / 'rejected.pdf'
+    result = invoke('compose-selected', source, rejected, '--selection', manifest, '--font', font,
+                    '--text', '受付', '--report', font)
+    assert result.returncode == 2 and not rejected.exists()

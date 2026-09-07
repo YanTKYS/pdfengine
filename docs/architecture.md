@@ -2,7 +2,7 @@
 
 調査日: 2026-09-05。既存の `idontlovepdf` 系実装とは独立した検証である。評価対象は、既存PDFの文字配置から編集可能な文章領域を推定し、編集後の文字列を実際のフォント幅で折り返して出力することにある。
 
-> **現在のbackend評価（2026-09-06）**: 上記の初期試作で使ったTextWriter中心の再描画は、実PDFの同文再描画を満たす既定経路ではない。現行PoCは、選択を人手で補正した上で、元PDFの文字コード・font resource・`/W`を元のtext operator位置へ戻し、対象operatorだけを局所変更する。保存はpypdf full clone adapter、検証はMuPDFとPopplerの双方で行う。Stage 1の13/15範囲が合格し、幅不明の長文化は拒否する。詳細は [`docs/backend-evaluation.md`](backend-evaluation.md) と [`docs/backend-options.md`](backend-options.md) を参照。
+> **現在の構成（2026-09-08）**: 元resourceの忠実な再利用に加え、HarfBuzz + fontTools + 新規CIDFontType2 writerによる局所再組版を実装した。新しいUnicodeを元subsetの符号集合から独立して描ける。現行の契約・採用理由・実PDFでの長文化結果は [composition.md](composition.md) を参照。本書の以下は初期モデルと元resource経路の設計資料であり、現行機能一覧はREADMEにまとめる。
 
 ## 採用アーキテクチャ
 

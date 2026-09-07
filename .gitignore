@@ -13,3 +13,4 @@ tmp/
 !/evaluations/sources.json
 !/evaluations/backend/backend_matrix.csv
 !/evaluations/backend/backend_final_assessment.json
+!/evaluations/composition/summary.json

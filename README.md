@@ -1,67 +1,22 @@
-# PDF本文の再編集・再レイアウトエンジン PoC
+# pdfengine — 既存PDF本文の局所再組版
 
-公開版はコード・テスト・評価スクリプト・報告と集計を含みます。外部 PDF と派生 PDF/PNG・生ログはローカル保持です。入力の取得元と、報告内のローカル証跡リンクについては [PUBLICATION.md](PUBLICATION.md) を参照してください。
+既存PDFの文字を人が選び、確認した領域内で文章を置き換える研究エンジンです。旧文字はContent Streamの対象コードを除去して消し、編集可能なテキストとして再描画します。画像化や白塗りは使いません。
 
-pdfengine独自コードは [GNU AGPL v3](LICENSE)（`AGPL-3.0-only`）で公開します。現在のPyMuPDF/MuPDF依存と、将来backendを置換した際の方針は [ライセンス](docs/licensing.md) に記載しています。
+現在は、元フォントを忠実に保持する経路と、指定した完全なフォントから新しい文字を描く経路を持っています。自動推定は選択候補を作り、編集範囲・利用可能幅は人が確定できます。
 
-既存PDFから文字・グリフの配置を取得し、行・段落・テキスト領域を推定する独立したプロトタイプです。実PDFの忠実性評価では、推定範囲と再描画backendを分離し、元の文字コード・font resource・`/W`を保持した局所編集を優先します。既存の `idontlovepdf` / `idontlovepdf-engine` のコード・設計は使用していません。
+## 現在できること
 
-Python + PyMuPDF + pypdf + uniseg + fontToolsを採用しました。対象領域の旧文字だけをtext operator単位で除去し、Stage 1では同じoperator位置へ元コードを戻します。明示幅があるStage 4だけ局所reflowを許可します。画像化や白塗りの重ね書きではありません。PDF解析とレイアウト処理は別モジュールです。
+| 経路 | 用途 | フォントと配置 |
+|---|---|---|
+| `replay` | 選択範囲の同文再描画と旧文字除去の検証 | 元コード・resource・graphics stateを保持 |
+| `edit-selected` | 元resourceで表現できる文字の置換・短文化・明示幅での再組版 | 元fontを維持。符号化可能性・幅などを検査 |
+| `compose-selected` | 元subsetにない漢字・英数字・記号を含む置換、長文化・短文化 | 利用者指定fontを埋め込み、HarfBuzzの実glyph配置で再組版 |
 
-**検証結果: 自動テスト207件成功、AES暗号化2件は依存provider未導入のためskip。** 外部生成PDF 15件・58ページを評価し、手動範囲13件でStage 1 no-opが合格しました。任意のPDFをAcrobatと同等に編集できる段階ではありません。
+新しい組版経路では、Word由来の新漢字への変更、LibreOffice由来の2行→3行、Chrome/Skia由来の2行→4行、Word由来の4行→1行を実PDFで確認しました。**指定fontへの代替としての成功**であり、元の書体と同一という意味ではありません。[実PDFごとの結果と技術境界](docs/composition.md)を参照してください。
 
-## 外部生成PDFの評価
+## インストール
 
-[初期の実PDF評価報告](docs/realpdf-evaluation.md)に加え、現行backendの[Track A/B結果](docs/backend-evaluation.md)を作成しました。Word、LibreOffice、Chrome/Skia、仮想プリンタ等の15原本について、[症例別backend一覧](evaluations/backend/backend_matrix.csv)、[Stage 1証跡](evaluations/backend/runs/stage1_audit_v3/results.json)、[Stage 2--4証跡](evaluations/backend/runs/stages_audit_v5/results.json)を参照できます。
-
-Stage 2の成功6件は各1～2字の同幅置換、Stage 3の成功13件は末尾2字削除です。Stage 4の成功2件も複数行を1行へ短文化した結果で、実PDFの長文化・1行から複数行への成功はまだ確認していません。初回評価コードのPoppler画像参照と削除抽出判定を修正し、評価範囲と訂正内容を報告に明記しました。
-
-修正前の固定53試行では5件保存しましたが、元subset fontを再利用した2件で文字が重なり、別の1件で暗号化・権限設定が失われました。実描画の文字位置を保存前に検査し、暗号化を保持する小修正後は、同じ53試行が3件保存・50件拒否となりました。修正前の破損出力は比較証跡として凍結保存しています。
-
-保存できても推定段落が正しいとは限りません。質問文の途中でBoxが分かれる、本文と日付が結合されるなどの誤認識が残ります。今回確認できた範囲は、**意味上の編集範囲を人が確認し、元fontが必要glyphを持つ局所編集**です。短い1行の自動幅推定、表・箇条書き、未知のCMap、元subsetにない文字の同font出力は安全に拒否します。
-
-再現方法と原本のURL・SHA-256、修正前後の結果、MuPDF/Popplerの画像比較、pypdfによる再抽出、除去単独の診断は評価報告から参照できます。追加8試行は新漢字・英数字・記号の実描画と誤結合を調べた診断で、固定53試行とは別に集計しています。
-
-## すぐ実行する
-
-この作業フォルダーには依存導入済みの `.venv` があります。PowerShellでプロジェクト直下から実行できます。
-
-```powershell
-# 認識した領域を一覧表示する（ページは1始まり）
-.\.venv\Scripts\pdfeditor.exe inspect output/pdf/original.pdf --page 2
-
-# 対象を含む領域全体を再レイアウトして、新しいPDFへ出力する
-.\.venv\Scripts\pdfeditor.exe edit output/pdf/original.pdf output/pdf/my-edit.pdf --page 2 --find "申請期限は9月10日です。" --text "申請書類の提出期限は10月15日までです。必要事項を記入して提出してください。" --report output/pdf/my-edit.json
-
-# 単体・統合テスト
-.\.venv\Scripts\python.exe -m pytest -q
-```
-
-`python -m pdfeditor` でも同じCLIを利用できます。既存出力を上書きしないため、再実行時は別の出力名を指定してください。元PDFは変更しません。
-
-## 手動選択を使うbackend PoC
-
-推定Boxをそのまま編集対象にせず、観測したLine/Run/glyphを確認してsource-bound manifestを作成できます。
-
-```powershell
-# Line/Run/glyph候補を観測
-.\.venv\Scripts\pdfeditor.exe observe input.pdf --page 1 --json catalog.json
-
-# Line/Run/glyphを選び、利用可能幅は確認できたときだけ入力
-.\.venv\Scripts\pdfeditor.exe select input.pdf selection.json --line p1-l5 --run p1-l6-r1 --width 425
-
-# MuPDFによるStage 1再描画。後続段階には独立Poppler証跡が必要
-.\.venv\Scripts\pdfeditor.exe replay input.pdf replayed.pdf --selection selection.json --removal-output removed.pdf --report replay.json
-
-# 独立検証済みのStage 1 gateを使ったStage 2/3/4
-.\.venv\Scripts\pdfeditor.exe edit-selected input.pdf edited.pdf --selection selection.json --stage 2 --stage1-report stage1-gate.json --text "変更後の文章" --report edit.json
-```
-
-`inferred_available_width`が不明なまま長文化することはありません。Stage 1 gateは同一source SHA、ページ観測、glyph/state、Poppler画像、pypdf抽出の全条件を満たす必要があります。
-
-## 別環境へのインストール
-
-Python 3.11以上が必要です。検証環境はWindows x64 / Python 3.12 / PyMuPDF 1.27.2.3です。
+Python 3.11以上。検証環境はWindows x64 / Python 3.12です。
 
 ```powershell
 python -m venv .venv
@@ -69,85 +24,60 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[test]"
 ```
 
-macOS / Linuxでは `.venv/bin/python`、`.venv/bin/pdfeditor` を使います。今回その環境での実行は未検証です。出力確定には同じディレクトリ内でのhard linkを用いるため、対応するファイルシステムが必要です。生成用フォントはMuPDF同梱のDroid Sans Fallbackを使用でき、OSの日本語フォントを別途用意しなくてもサンプルを動かせます。
+macOS/Linuxでは `.venv/bin/python` を使います。この版の実PDF評価はWindowsで行っています。
 
-## サンプルと確認結果
-
-入力は [original.pdf](output/pdf/original.pdf) の5ページです。各出力PDFは元の5ページを保持し、表の対象ページだけを編集しています。比較時には同じページを開いてください。
-
-| ケース | 対象ページ | 確認内容 | 結果 | 出力 |
-| --- | ---: | --- | --- | --- |
-| A | 1 | 「申請」→「申請書類」 | 2文字から4文字、1行を維持 | [case-A.pdf](output/pdf/case-A.pdf) |
-| B | 2 | 短い申請期限文を長文化 | 1行→3行 | [case-B.pdf](output/pdf/case-B.pdf) |
-| C | 3 | 複数行の文章を短文化 | 3行→1行、旧行を除去 | [case-C.pdf](output/pdf/case-C.pdf) |
-| D | 4 | 日本語・Wi・WWW・iii・数字の混在 | 比例幅で1行→2行 | [case-D.pdf](output/pdf/case-D.pdf) |
-| E | 5 | 新たな漢字を含む文章へ変更 | 同じ埋め込みフォントと12 ptを維持 | [case-E.pdf](output/pdf/case-E.pdf) |
-
-各PDFと同名のJSONに、変更前後の文章、行数、各行の幅・baseline、領域bbox、行間、字間、フォント保持・代替理由を保存しています。集計は [evaluation.json](output/pdf/evaluation.json)、評価方法と数値は [docs/evaluation.md](docs/evaluation.md) にあります。
-
-主サンプルの260 ptは初期A--Eで明示した評価値です。短い一行の印字範囲だけから、本来の編集枠幅は決められません。現行の手動selectionでは、枠のないPDFの幅は `unknown` として保持し、長文化やStage 4には `--width` による確認値を要求します。既存の囲み罫線や背景は別要素として衝突検査の対象です。
-
-再生成は新しいフォルダーへ行います。
+## 範囲を確認して編集する
 
 ```powershell
-.\.venv\Scripts\python.exe -m examples.demo --output-dir output/demo-next
+# Line / Run / glyphの候補と座標を観測する（ページは1始まり）
+.\.venv\Scripts\python.exe -m pdfeditor observe input.pdf --page 1 --json catalog.json
+
+# 観測したIDを指定する。数値はPDF point。幅は利用可能領域を確認して入力する
+.\.venv\Scripts\python.exe -m pdfeditor select input.pdf selection.json --line p1-l3 --line p1-l4 --width 420
+
+# 前後Lineを追加・除外した選択を別ファイルへ保存できる
+.\.venv\Scripts\python.exe -m pdfeditor select input.pdf corrected.json --from-selection selection.json --add-line p1-l5 --exclude-line p1-l3
+
+# 完全なTrueType fontを指定し、UTF-8の文章を折り返して新規PDFへ出力する
+.\.venv\Scripts\python.exe -m pdfeditor compose-selected input.pdf edited.pdf --selection selection.json --font path/to/font.ttf --text-file replacement.txt --max-height 120 --report edit.json --removal-output removed.pdf
 ```
 
-## 領域と文章を指定する
+`--run p1-l3-r1` や `--glyph 42` でも選択できます。selectionは原本SHA-256・ページ観測・glyph IDに結び付き、別原本への流用を拒否します。編集後に続けて編集するときは、出力PDFを再観測して新しいselectionを作成します。
+
+`--font` は選択範囲全体へ適用する明示的なフォント指定です。TrueType collectionは `--font-index`、可変fontは `--font-variation wght=400` などを指定できます。指定しない軸はfontの既定値です。名前から同一書体やweightを推測しません。必要なglyph・輪郭がなければ暗黙fallbackせず拒否します。fontは利用者が用意し、リポジトリには同梱しません。
+
+`--max-height` は新fontのascenderから求める文章上端からの高さです。省略時もページ端・周辺要素・clipを検査します。`--line-height` はbaseline間隔で、元の行間と新fontの上下metricsを基準にした既定値を上書きできます。サイズを自動縮小して収めることはありません。
+
+出力PDF・診断PDF・JSONは新規パスのみ受け付けます。原本と既存出力は上書きしません。保存にはhard linkを作成できるファイルシステムが必要です。
+
+## 忠実性と幅の契約
+
+`observed_content_width`、`inferred_available_width`、`explicitly_supplied_width`を分離しています。推定できない幅はunknownです。`compose-selected`には既知の利用可能幅が必要で、観測文字幅を暗黙の編集幅にしません。
+
+新規font経路は、変更前の元resourceによる同文再描画と除去を毎回検査してから組版します。保存後にはUnicode、GID、origin、サイズ・色・opacity、既存font、対象外glyph、対象外ページ・領域外画素、暗号化・権限を照合します。fontToolsが作ったsubsetの輪郭・幅も、HarfBuzzで使ったfontと比較します。
+
+CLIの自動検証はMuPDFによるものです。**CLIで保存できたことだけで別レンダラーでの成功とはしません。** 実PDF評価では変更前のno-opをPopplerで先に検証し、編集後もPopplerの画素比較、独立pypdf抽出、削除中間PDF、CIDToGIDMapと`/W`、図形・画像を検査します。[評価手順](docs/composition.md#再現方法)を参照してください。
+
+元fontを保持する旧経路は `replay` → 独立検証済みの証跡 → `edit-selected --stage 2|3|4 --stage1-report ...` です。CLIの `replay` 報告だけでは後続gateを開きません。[元resource経路の評価](docs/backend-evaluation.md)に契約を記載しています。
+
+## 現在の設計が扱う範囲
+
+選択範囲内の横書き・共通サイズと字間・不透明fillを中心に扱います。元fontが途中で変わる範囲でも、ほかの描画条件が共通なら、明示した一つのfontへ組み直せます。太字・色・サイズなどを区間ごとに保持するrich text再組版は、次に必要なモデル拡張です。
+
+新しいglyphを置く範囲はactive clipと周囲の文字・画像・図形で制限されます。後続段落や表を移動して場所を作る処理はまだありません。複雑なpathやForm内文字などは、描画単位の意味を安全に扱えるまで拒否する範囲が残ります。複雑な多glyph cluster・双方向組版も現在のUnicode復元契約を拡張する必要があります。
+
+## 実装と検証資料
+
+- `content_stream.py` / `selection.py`: 元operatorと人が確定するglyph範囲
+- `shaped_font.py` / `composition.py`: HarfBuzz、fontTools、新規CID fontと局所再組版
+- `layout.py`: PDF非依存の改行・配置。候補文字列全体の実測幅を受け取る
+- `pdf_save.py`: resource追加、共有辞書の分離、暗号化を保持する保存adapter
+- [現在の技術選定・実PDF評価](docs/composition.md)、[内部モデルと初期設計](docs/architecture.md)、[従来writer比較](docs/backend-options.md)
 
 ```powershell
-# Glyph / Run / Word / Line / Paragraph / TextBoxと座標を新規JSONへ保存
-.\.venv\Scripts\pdfeditor.exe inspect input.pdf --page 1 --json model.json
-
-# inspectで確認したIDの領域全体を置換
-.\.venv\Scripts\pdfeditor.exe edit input.pdf output.pdf --page 1 --box p1-b2 --text "新しい文章" --width 240
-
-# UTF-8ファイルの明示改行・空行を維持し、高さを制限
-.\.venv\Scripts\pdfeditor.exe edit input.pdf output.pdf --find "対象の文章" --text-file replacement.txt --width 240 --max-height 120
-
-# 元フォントが利用できないときの代替フォントを指定
-.\.venv\Scripts\pdfeditor.exe edit input.pdf output.pdf --find "対象の文章" --text "変更後の文章" --font path/to/font.ttf
+.\.venv\Scripts\python.exe -m pytest -q
 ```
 
-`--find` は一つの推定領域内で一意な部分文字列です。指定部分の変更後、周囲の文章も含む領域全体を組み直します。複数候補がある場合は `--box` と組み合わせます。`--box` だけなら領域全体を置換します。IDはその入力・ページを解析した結果で、編集後も同じIDが維持される契約ではありません。
+公開対象はコード・テスト・評価スクリプト・集計です。外部PDF、font、派生PDF/PNG、生の抽出ログはローカル保持です。取得元・SHA-256と再現方法は [PUBLICATION.md](PUBLICATION.md) にあります。
 
-寸法はPDF pointです（72 pt = 1 inch）。`--max-height` は新しい文章の上端からの最大高さです。指定しなくてもページ外・周辺要素との衝突を検査します。折返しのためにフォントサイズを勝手に縮小しません。入力した単一改行は強制改行、空行は段落間隔です。元PDFの同一段落の物理的な折返しは結合し直します。
-
-`--font` は元フォントの欠字・未埋込等がある場合の代替指定です。元フォントを維持できる場合は元を優先します。フォントの暗黙fallbackは事前のglyph coverage確認で防ぎ、代替した場合は理由をJSONに残します。
-
-## 構成
-
-```text
-pdfeditor/
-  model.py       PDF非依存の観測・編集モデル
-  inference.py   描画順に依存しない行・単語・段落・領域推定
-  layout.py      実測幅 + UAX #14 + 禁則処理による再組版
-  fonts.py       フォント選択、coverage、metrics、一定字間の推定
-  backend.py     既存の推定編集経路（legacy）
-  content_stream.py  text operator、font code、graphics stateの限定解釈
-  replay.py      Stage 1 no-opと除去中間証跡
-  slot_edit.py   Stage 2/3の元slot編集
-  explicit_reflow.py Stage 4の明示幅reflow
-  pdf_save.py    resource/暗号化を保持する保存adapter
-  engine.py      legacy推定編集を接続する処理
-  cli.py         inspect / edit / observe / select / replay / edit-selected
-examples/demo.py  レイアウトエンジンを使わず原文PDFを作る評価例
-tests/             PDF非依存テスト、実フォントテスト、実PDF統合テスト
-```
-
-`layout_text()` はPDFオブジェクトを受け取らず、文字列・領域寸法・幅計測関数から行と座標を返します。バックエンド差替え時にも段落モデルと組版ロジックを再利用できます。[方式比較・採用理由・内部モデル・発展設計](docs/architecture.md) を参照してください。
-
-## 評価上重要な制約
-
-- 段落と枠幅はgeometryからの推定です。日本語のWordはUnicode境界で、形態素解析ではありません。短い行、表、複雑な段組では `inspect` で推定結果を確認する必要があります。
-- 現在の再描画は同一書式・横書き・左揃えです。字下げ・右揃え・両端揃えは保持しません。複雑なshapingを要する文字や混在書式は拒否する範囲を設けています。
-- 領域が伸びて別の文章・図形・画像へ衝突すると保存を止めます。ページ全体の移動・改ページは設計までで、実装していません。
-- 回転、特殊な字幅、text clip、透明グループ、未知CMap、Form内の対象等は保守的に拒否します。クリップは対象text eventへ作用するscopeを追跡し、安全に矩形として検証できる場合だけ許可します。元PDFのあらゆる描画状態を検出・再現する保証はありません。
-- 元subsetに必要glyphがない場合は同じfont名のまま受け入れません。Stage 2は元font code mapに存在する文字だけ、Stage 4は元fontのcode/widthを使える文字だけを許可します。font代替や新規font埋込みは別backend評価が必要です。
-- 必要Glyphがあっても、書出し後のUnicode列や文字原点が計画と一致しなければ保存を拒否します。この検査は字形の完全同一性や推定段落の意味上の正しさを保証しません。
-
-これらは機能の羅列ではなく、今回の局所再描画方式が成立する範囲を決める条件です。ページ全体のリフロー、表、縦書き、図形回避、HarfBuzzによるshaping、編集UIへ進むためのモデルと書込backendの拡張方針を [architecture.md](docs/architecture.md) に記録しています。
-
-## 依存ライブラリの条件
-
-pdfengineはAGPL-3.0-onlyで公開し、現在の実装が依存するPyMuPDF / MuPDFはAGPL v3または商用ライセンスで提供されています。将来、許諾型ライセンスのbackendへ置換した場合は、プロジェクトのライセンス方針を再検討する可能性があります。依存ライブラリ・外部PDF・フォントの条件はそれぞれ別です。確認版と公式根拠は [ライセンス方針](docs/licensing.md) にあります。
+独自コードのライセンスは [AGPL-3.0-only](LICENSE) です。PyMuPDF/MuPDF、HarfBuzz等の依存条件は [ライセンス方針](docs/licensing.md)を参照してください。

@@ -6,10 +6,10 @@ import pytest
 from pypdf import PdfReader, PdfWriter
 from pypdf._crypt_providers import crypt_provider
 from pypdf.constants import UserAccessPermissions
-from pypdf.generic import FloatObject, IndirectObject
+from pypdf.generic import ArrayObject, DecodedStreamObject, DictionaryObject, FloatObject, IndirectObject, NameObject, NumberObject
 
 from pdfeditor.backend import PdfError
-from pdfeditor.pdf_save import program_pdf_bytes, publish_program
+from pdfeditor.pdf_save import font_fingerprints, program_pdf_bytes, publish_program
 
 
 def _raw_pdf(tmp_path, *, array_contents=False, shared=False):
@@ -210,3 +210,134 @@ def test_publish_verifies_serialized_pdf_before_creating_destination(tmp_path):
     assert seen == [True]
     assert destination.is_file()
     assert not list(tmp_path.glob('.program-*'))
+
+
+def _new_font(writer):
+    unicode_map = DecodedStreamObject()
+    unicode_map.set_data(
+        b'% new-font-cmap-reachability\n/CIDInit /ProcSet findresource begin\n'
+        b'12 dict begin begincmap /CIDSystemInfo << /Registry (Adobe) /Ordering (UCS) /Supplement 0 >> def\n'
+        b'/CMapName /PEUnicode def /CMapType 2 def\n'
+        b'1 begincodespacerange <00> <FF> endcodespacerange\n'
+        b'1 beginbfrange <00> <FF> <0000> endbfrange\n'
+        b'endcmap CMapName currentdict /CMap defineresource pop end end')
+    return writer._add_object(DictionaryObject({
+        NameObject('/Type'): NameObject('/Font'), NameObject('/Subtype'): NameObject('/Type1'),
+        NameObject('/BaseFont'): NameObject('/Courier'), NameObject('/Encoding'): NameObject('/WinAnsiEncoding'),
+        NameObject('/FirstChar'): NumberObject(32), NameObject('/LastChar'): NumberObject(126),
+        NameObject('/Widths'): ArrayObject([NumberObject(600) for _ in range(95)]),
+        NameObject('/ToUnicode'): writer._add_object(unicode_map),
+    }))
+
+
+def _shared_resources_pdf(tmp_path, kind):
+    plain = _raw_pdf(tmp_path, shared=True)
+    writer = PdfWriter(clone_from=plain)
+    resources = DictionaryObject(writer.pages[0]['/Resources'].get_object())
+    resources[NameObject('/Font')] = writer._add_object(DictionaryObject(resources['/Font'].get_object()))
+    if kind in {'resources', 'inherited'}:
+        resource_ref = writer._add_object(resources)
+        if kind == 'inherited':
+            writer.root_object['/Pages'][NameObject('/Resources')] = resource_ref
+        for page in writer.pages:
+            if kind == 'inherited':
+                page.pop('/Resources', None)
+            else:
+                page[NameObject('/Resources')] = resource_ref
+    else:
+        for page in writer.pages:
+            page[NameObject('/Resources')] = writer._add_object(DictionaryObject(resources))
+    source = tmp_path / 'shared-resources.pdf'
+    with source.open('wb') as stream:
+        writer.write(stream)
+    return source
+
+
+@pytest.mark.parametrize('kind', ['resources', 'fonts', 'inherited'])
+def test_new_font_uses_page_local_resource_containers_and_keeps_original_fonts(tmp_path, kind):
+    source = _shared_resources_pdf(tmp_path, kind)
+    original_bytes = source.read_bytes()
+    encoded = program_pdf_bytes(source, 0, b'BT /PEF1 12 Tf 20 150 Td (NEW_FONT) Tj ET',
+                                font_builders={'/PEF1': _new_font})
+    assert source.read_bytes() == original_bytes
+    reader = PdfReader(BytesIO(encoded))
+    first = reader.pages[0]['/Resources']['/Font']
+    other = reader.pages[1]['/Resources']['/Font']
+    assert '/PEF1' in first and '/PEF1' not in other
+    # The original font graph remains shared, rather than cloned or replaced.
+    assert first.raw_get('/F1') == other.raw_get('/F1')
+    assert any(b'new-font-cmap-reachability' in s for s in _all_decoded_streams(encoded))
+    with pymupdf.open(source) as original, pymupdf.open(stream=encoded) as saved:
+        retained = [f for f in font_fingerprints(saved, 0) if f[0][3] != 'PEF1']
+        assert retained == font_fingerprints(original, 0)
+        assert font_fingerprints(saved, 1) == font_fingerprints(original, 1)
+        assert 'NEW_FONT' in saved[0].get_text()
+        assert original[1].get_pixmap(dpi=144).samples == saved[1].get_pixmap(dpi=144).samples
+
+
+@pytest.mark.parametrize('alias', ['/F1', 'PEF1', '/', '/F#31', '/Bad Name', '/日本語'])
+def test_font_alias_collision_or_invalid_name_fails_before_builder_and_publication(tmp_path, alias):
+    source = _raw_pdf(tmp_path)
+    original_bytes = source.read_bytes()
+    output = tmp_path / 'must-not-exist.pdf'
+    calls = []
+
+    def builder(writer):
+        calls.append(True)
+        return _new_font(writer)
+
+    with pytest.raises(PdfError, match='alias'):
+        publish_program(source, 0, b'q Q', output, font_builders={alias: builder})
+    assert not calls
+    assert not output.exists()
+    assert source.read_bytes() == original_bytes
+    assert not list(tmp_path.glob('.program-*'))
+
+
+@pytest.mark.parametrize('invalid_kind', ['direct', 'foreign_root', 'foreign_child', 'not_font'])
+def test_builder_must_return_an_owned_indirect_font_graph(tmp_path, invalid_kind):
+    source = _raw_pdf(tmp_path)
+    output = tmp_path / 'must-not-exist.pdf'
+    foreign = PdfWriter()
+
+    def builder(writer):
+        if invalid_kind == 'foreign_root':
+            return _new_font(foreign)
+        reference = _new_font(writer)
+        if invalid_kind == 'direct':
+            return reference.get_object()
+        if invalid_kind == 'foreign_child':
+            reference.get_object()[NameObject('/ToUnicode')] = foreign._add_object(DecodedStreamObject())
+        elif invalid_kind == 'not_font':
+            reference.get_object()[NameObject('/Type')] = NameObject('/XObject')
+        return reference
+
+    with pytest.raises(PdfError, match='font'):
+        publish_program(source, 0, b'q Q', output, font_builders={'/PEF1': builder})
+    assert not output.exists()
+
+
+def test_new_font_graph_is_encrypted_with_original_credentials_and_permissions(tmp_path):
+    plain = _shared_resources_pdf(tmp_path, 'resources')
+    writer = PdfWriter(clone_from=plain)
+    writer.encrypt('', 'font-owner-password', algorithm='RC4-128',
+                   permissions_flag=UserAccessPermissions.PRINT | UserAccessPermissions.EXTRACT)
+    source = tmp_path / 'encrypted-font-source.pdf'
+    with source.open('wb') as handle:
+        writer.write(handle)
+    original_bytes = source.read_bytes()
+    output = tmp_path / 'encrypted-font-output.pdf'
+    publish_program(source, 0, b'BT /PEF1 12 Tf 20 150 Td (NEW_FONT) Tj ET', output,
+                    font_builders={'/PEF1': _new_font})
+    assert source.read_bytes() == original_bytes
+    saved = PdfReader(output)
+    assert saved.is_encrypted and saved.decrypt('font-owner-password') == 2
+    assert '/PEF1' in saved.pages[0]['/Resources']['/Font']
+    assert '/PEF1' not in saved.pages[1]['/Resources']['/Font']
+    assert b'new-font-cmap-reachability' not in output.read_bytes()
+    assert any(b'new-font-cmap-reachability' in s for s in _all_decoded_streams(output.read_bytes()))
+    with pymupdf.open(source) as original, pymupdf.open(output) as changed:
+        assert original.permissions == changed.permissions
+        assert original.metadata['encryption'] == changed.metadata['encryption']
+        assert 'NEW_FONT' in changed[0].get_text()
+        assert original[1].get_pixmap().samples == changed[1].get_pixmap().samples

@@ -20,6 +20,10 @@ pdfengineの独自コードは、**GNU Affero General Public License version 3�
 | pypdf 6.10.0 | BSD-3-Clause | [当該版LICENSE](https://github.com/py-pdf/pypdf/blob/6.10.0/LICENSE) |
 | fontTools 4.64.0 | MIT | [公式文書](https://fonttools.readthedocs.io/en/stable/) |
 | uniseg 0.10.1 | MIT | [公式ライセンス](https://uniseg-py.readthedocs.io/en/stable/license.html) |
+| uharfbuzz 0.55.0 | Apache-2.0 | [当該版LICENSE](https://github.com/harfbuzz/uharfbuzz/blob/v0.55.0/LICENSE) |
+| 同梱HarfBuzz 14.2.1 | Old MIT | [当該版COPYING](https://github.com/harfbuzz/harfbuzz/blob/14.2.1/COPYING) |
+
+新規font経路はuharfbuzzのwheelに同梱されたHarfBuzzを使用します。ライブラリのライセンス・著作権表示を保持し、独自コードのAGPL-3.0-onlyは変更しません。font writerの追加でPyMuPDF/MuPDF依存がなくなったわけではありません。
 
 fontToolsの`LICENSE.external`には、テスト用フォント等に対するSIL Open Font Licenseの記載もあります。ライブラリ本体の表示だけで、同梱データの条件を置き換えません。
 
@@ -32,5 +36,7 @@ fontToolsの`LICENSE.external`には、テスト用フォント等に対するSI
 ## 外部PDFとフォント
 
 評価用に取得した外部PDFと、その中のフォントprogramは独自コードではありません。公開URLから取得できることや、技術的に抽出・再埋め込みできることは、再配布や用途変更の許諾を意味しません。リポジトリを公開する際は、コードの公開対象と評価資料の公開対象を分け、取得元の条件を確認します。
+
+提供fontのOS/2 `fsType`は技術上の埋め込み制限として確認します。restricted・bitmap-only・preview/print-onlyを拒否し、no-subsettingを宣言するfontは完全なprogramを保持します。このビット検査を利用許諾そのものの代わりにはしません。今回のWindowsフォントおよびその派生subsetは公開しません。
 
 本書は実装上の選択を整理したものです。実際に配布・サービス提供する際の適用範囲は、その構成をもとに法務または権利者へ確認します。

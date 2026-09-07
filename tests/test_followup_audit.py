@@ -12,6 +12,14 @@ from pdfeditor.model import Rect
 from pdfeditor.selection import make_selection
 
 
+def test_removal_checkpoint_preserves_identical_header_on_other_pages():
+    before = {'pages':['DATE body', 'DATE another page']}
+    removed = {'pages':[' body', 'DATE another page']}
+    assert followup.independent_edit_audit(before, removed, 1, 'DATE', '')['passed']
+    with pytest.raises(followup.EvaluationFailure):
+        followup.independent_edit_audit(before, {'pages':[' body', ' another page']}, 1, 'DATE', '')
+
+
 @pytest.fixture
 def source_pdf(tmp_path):
     source = tmp_path / 'source.pdf'

@@ -67,6 +67,21 @@ def parser() -> argparse.ArgumentParser:
     selected_text.add_argument("--text", help="replacement text")
     selected_text.add_argument("--text-file", type=Path, help="UTF-8 text; preserves explicit line breaks")
     selected.add_argument("--report", type=Path, help="new JSON report of the staged edit")
+    compose = sub.add_parser("compose-selected", help="recompose a confirmed region with an explicitly supplied font")
+    compose.add_argument("input", type=Path)
+    compose.add_argument("output", type=Path)
+    compose.add_argument("--selection", type=Path, required=True)
+    compose.add_argument("--font", type=Path, required=True, dest="font_path", help="explicit replacement font; preserves neither face identity nor the original subset codes")
+    compose.add_argument("--font-index", type=int, default=0, help="face index in a TrueType collection")
+    compose.add_argument("--font-variation", action="append", default=[], metavar="TAG=VALUE", help="explicit variation axis, e.g. wght=400; otherwise use font defaults")
+    compose.add_argument("--width", type=float, help="confirmed available width; overrides the selection width")
+    compose.add_argument("--max-height", type=float, help="confirmed maximum height from the new font's top")
+    compose.add_argument("--line-height", type=float, help="explicit baseline interval; otherwise retain observed spacing when possible")
+    compose_text = compose.add_mutually_exclusive_group(required=True)
+    compose_text.add_argument("--text")
+    compose_text.add_argument("--text-file", type=Path)
+    compose.add_argument("--report", type=Path)
+    compose.add_argument("--removal-output", type=Path)
     return result
 
 
@@ -158,6 +173,24 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 from .slot_edit import edit_slots
                 report = edit_slots(args.input, args.output, manifest, text, stage=args.stage, stage1_report=proof)
+            if args.report:
+                write_json(args.report, report)
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+        elif args.command == "compose-selected":
+            from .composition import compose_selected
+            check_new_outputs([args.output, args.report, args.removal_output], [args.input, args.selection, args.text_file, args.font_path])
+            manifest = read_json(args.selection)
+            if args.width is not None:
+                manifest["explicitly_supplied_width"] = args.width
+            variations = {}
+            for item in args.font_variation:
+                tag, value = item.split("=", 1)
+                if tag in variations:
+                    raise ValueError("font variation axis supplied twice")
+                variations[tag] = float(value)
+            report = compose_selected(args.input, args.output, manifest, replacement_text(args),
+                font_source=args.font_path, font_index=args.font_index, variations=variations,
+                max_height=args.max_height, line_height=args.line_height, removal_output=args.removal_output)
             if args.report:
                 write_json(args.report, report)
             print(json.dumps(report, ensure_ascii=False, indent=2))
