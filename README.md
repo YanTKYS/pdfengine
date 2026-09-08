@@ -2,7 +2,7 @@
 
 既存PDFの文字を人が選び、確認した領域内で文章を置き換える研究エンジンです。旧文字はContent Streamの対象コードを除去して消し、編集可能なテキストとして再描画します。画像化や白塗りは使いません。
 
-現在は、元フォントを忠実に保持する経路と、指定した完全なフォントから新しい文字を描く経路を持っています。自動推定は選択候補を作り、編集範囲・利用可能幅は人が確定できます。
+元フォントを忠実に保持する経路、選択範囲全体を指定fontで組み直す経路、**未変更区間の元font・書式を残し、編集区間だけ指定fontで描く経路**を持っています。自動推定は選択候補を作り、編集範囲・利用可能幅は人が確定できます。
 
 ## 現在できること
 
@@ -11,8 +11,9 @@
 | `replay` | 選択範囲の同文再描画と旧文字除去の検証 | 元コード・resource・graphics stateを保持 |
 | `edit-selected` | 元resourceで表現できる文字の置換・短文化・明示幅での再組版 | 元fontを維持。符号化可能性・幅などを検査 |
 | `compose-selected` | 元subsetにない漢字・英数字・記号を含む置換、長文化・短文化 | 利用者指定fontを埋め込み、HarfBuzzの実glyph配置で再組版 |
+| `inspect-paragraph` → `edit-paragraph` | 書式を持つ文章の一部を変更、追加、削除 | 元Unicode区間とstyleを対応付け、未変更部分の元resource・コード・GIDを保持。変更部分だけ明示fontでshape |
 
-新しい組版経路では、Word由来の新漢字への変更、LibreOffice由来の2行→3行、Chrome/Skia由来の2行→4行、Word由来の4行→1行を実PDFで確認しました。**指定fontへの代替としての成功**であり、元の書体と同一という意味ではありません。[実PDFごとの結果と技術境界](docs/composition.md)を参照してください。
+書式を保持する経路では、LibreOffice本文の英字12pt・日本語10.5ptを残した2行→1行、元の68文字を残して66文字を追加する2行→3行、仮想プリンタPDFの通常体・斜体を残す部分置換を確認しました。[書式付き編集の評価と境界](docs/attributed-editing.md)を参照してください。全文font代替経路でのWord・Chrome等の結果は [composition.md](docs/composition.md) にあります。指定fontで描く部分は、元書体と同一とは限りません。
 
 ## インストール
 
@@ -50,11 +51,31 @@ macOS/Linuxでは `.venv/bin/python` を使います。この版の実PDF評価�
 
 出力PDF・診断PDF・JSONは新規パスのみ受け付けます。原本と既存出力は上書きしません。保存にはhard linkを作成できるファイルシステムが必要です。
 
+## 元の書式を残して一部を編集する
+
+```powershell
+.\.venv\Scripts\python.exe -m pdfeditor inspect-paragraph input.pdf --selection selection.json --json paragraph.json
+.\.venv\Scripts\python.exe -m pdfeditor edit-paragraph input.pdf edited.pdf --paragraph paragraph.json --edits changes.json --max-bottom 500 --report edit.json --removal-output removed.pdf
+```
+
+`paragraph.json` でUnicode列・書式区間・行の結合を確認します。`changes.json` は例えば次の形式です。位置は**変更前のUnicode列の0始まり、終端を含まない区間**であり、PDF glyph IDではありません。下記は確認済みの5〜8番目の文字を変更する例です。
+
+```json
+{
+  "edits": [{"start": 5, "end": 9, "text": "新しい本文", "font_id": "body"}],
+  "fonts": {"body": {"path": "fonts/body.ttf", "font_index": 0}}
+}
+```
+
+書式は元区間から継承します。複数書式にまたがる置換には、snapshot内の `style_id` を明示します。`start == end` は挿入、空文字は削除です。複数編集も変更前の位置で指定します。新fontを使う範囲は編集区間であり、同じfont名やsubset coverageから自動選択しません。相対fontパスは `changes.json` の置かれたディレクトリを基準にします。
+
+利用可能幅はselectionの値か `--width` が必要です。`--x`、`--first-line-indent`、`--min-line-height` で配置を指定できます。`--max-bottom` はページ左上原点の下端y座標で、`compose-selected --max-height` の高さ指定とは異なります。元の物理行の結合は `inspect-paragraph --line-joiner none|space|newline` で選びます。合成する空白にも必要に応じてfont指定が必要です。snapshot自体を変更する場合は、selectionや結合方法を直して作り直します。
+
 ## 忠実性と幅の契約
 
 `observed_content_width`、`inferred_available_width`、`explicitly_supplied_width`を分離しています。推定できない幅はunknownです。`compose-selected`には既知の利用可能幅が必要で、観測文字幅を暗黙の編集幅にしません。
 
-新規font経路は、変更前の元resourceによる同文再描画と除去を毎回検査してから組版します。保存後にはUnicode、GID、origin、サイズ・色・opacity、既存font、対象外glyph、対象外ページ・領域外画素、暗号化・権限を照合します。fontToolsが作ったsubsetの輪郭・幅も、HarfBuzzで使ったfontと比較します。
+新規font経路と書式付き経路は、変更前の元resourceによる同文再描画と除去を毎回検査してから組版します。保存後にはUnicode、GID、origin、サイズ・色・opacity、既存font、対象外glyph、対象外ページ・領域外画素、暗号化・権限を照合します。fontToolsが作ったsubsetの輪郭・幅も、HarfBuzzで使ったfontと比較します。
 
 CLIの自動検証はMuPDFによるものです。**CLIで保存できたことだけで別レンダラーでの成功とはしません。** 実PDF評価では変更前のno-opをPopplerで先に検証し、編集後もPopplerの画素比較、独立pypdf抽出、削除中間PDF、CIDToGIDMapと`/W`、図形・画像を検査します。[評価手順](docs/composition.md#再現方法)を参照してください。
 
@@ -62,7 +83,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 
 ## 現在の設計が扱う範囲
 
-選択範囲内の横書き・共通サイズと字間・不透明fillを中心に扱います。元fontが途中で変わる範囲でも、ほかの描画条件が共通なら、明示した一つのfontへ組み直せます。太字・色・サイズなどを区間ごとに保持するrich text再組版は、次に必要なモデル拡張です。
+書式付き経路は、横書き・不透明fillで、font・サイズ・色・字間・横倍率・baseline shiftを区間ごとに保持します。clipやinline属性以外の描画状態は共通である必要があります。元文字と新fontの境界を越える結合文字は、完全なgraphemeを一つのfontで置換する指定を要求します。保持区間と変更区間をまたぐkerningや合字の再形成は未対応です。
 
 新しいglyphを置く範囲はactive clipと周囲の文字・画像・図形で制限されます。後続段落や表を移動して場所を作る処理はまだありません。複雑なpathやForm内文字などは、描画単位の意味を安全に扱えるまで拒否する範囲が残ります。複雑な多glyph cluster・双方向組版も現在のUnicode復元契約を拡張する必要があります。
 
@@ -70,9 +91,10 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 
 - `content_stream.py` / `selection.py`: 元operatorと人が確定するglyph範囲
 - `shaped_font.py` / `composition.py`: HarfBuzz、fontTools、新規CID fontと局所再組版
+- `attributed.py` / `paragraph.py` / `rich_layout.py`: 元Unicode区間、書式、保持・新規glyph provider、書式ごとのmetricsによる行組み
 - `layout.py`: PDF非依存の改行・配置。候補文字列全体の実測幅を受け取る
 - `pdf_save.py`: resource追加、共有辞書の分離、暗号化を保持する保存adapter
-- [現在の技術選定・実PDF評価](docs/composition.md)、[内部モデルと初期設計](docs/architecture.md)、[従来writer比較](docs/backend-options.md)
+- [書式付き編集](docs/attributed-editing.md)、[全文font代替](docs/composition.md)、[paint観測の技術比較](docs/paint-observation-options.md)、[内部モデルと初期設計](docs/architecture.md)
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q

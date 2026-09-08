@@ -15,3 +15,5 @@
 新規font組版の現行評価は [composition.md](docs/composition.md) と [公開集計](evaluations/composition/summary.json) を参照。完全なfontは別途用意し、評価スクリプトの `--font-dir` へ指定する。フォント名・face index・variation軸・明示領域は評価入力であり、エンジン内にPDF別の分岐はない。新規組版のPDF、削除checkpoint、PNG、glyph計画、原文は公開集計へ含めない。
 
 元resource経路の範囲と制限は [backend 評価](docs/backend-evaluation.md)、技術選定は [backend 比較](docs/backend-options.md) を参照。
+
+書式を残す部分編集は [attributed-editing.md](docs/attributed-editing.md) と [公開集計](evaluations/attributed/summary.json) に記録する。評価入力は `evaluations/attributed/evaluate.py` の既知範囲・Unicode編集・明示領域であり、全文抽出、snapshot、glyph計画、PDF/PNGは公開しない。paint観測の比較も [専用資料](docs/paint-observation-options.md) に整理している。

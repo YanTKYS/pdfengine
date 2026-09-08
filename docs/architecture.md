@@ -2,7 +2,7 @@
 
 調査日: 2026-09-05。既存の `idontlovepdf` 系実装とは独立した検証である。評価対象は、既存PDFの文字配置から編集可能な文章領域を推定し、編集後の文字列を実際のフォント幅で折り返して出力することにある。
 
-> **現在の構成（2026-09-08）**: 元resourceの忠実な再利用に加え、HarfBuzz + fontTools + 新規CIDFontType2 writerによる局所再組版を実装した。新しいUnicodeを元subsetの符号集合から独立して描ける。現行の契約・採用理由・実PDFでの長文化結果は [composition.md](composition.md) を参照。本書の以下は初期モデルと元resource経路の設計資料であり、現行機能一覧はREADMEにまとめる。
+> **現在の構成（2026-09-09）**: 元resource忠実経路、全文font代替の局所再組版、元Unicode区間と書式を保持する部分編集の3経路を持つ。書式付き編集では元コードproviderとHarfBuzz providerを一つの行計画へ接続し、font・サイズ・色・字間等を区間ごとに扱う。[attributed-editing.md](attributed-editing.md) が現行モデル・選定・実PDF評価、[composition.md](composition.md) が全文代替経路、[paint-observation-options.md](paint-observation-options.md) が成熟rendererを利用する次の観測adapterの検証である。本書の以下は初期モデルと元resource経路の設計資料であり、現行機能一覧はREADMEにまとめる。
 
 ## 採用アーキテクチャ
 

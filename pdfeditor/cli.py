@@ -82,6 +82,24 @@ def parser() -> argparse.ArgumentParser:
     compose_text.add_argument("--text-file", type=Path)
     compose.add_argument("--report", type=Path)
     compose.add_argument("--removal-output", type=Path)
+    paragraph = sub.add_parser("inspect-paragraph", help="review source-linked Unicode and style intervals")
+    paragraph.add_argument("input", type=Path)
+    paragraph.add_argument("--selection", type=Path, required=True)
+    paragraph.add_argument("--json", type=Path, required=True, dest="json_path")
+    paragraph.add_argument("--line-joiner", choices=("none", "space", "newline"), default="none",
+                           help="how selected physical lines form logical text; review the exported text")
+    rich = sub.add_parser("edit-paragraph", help="edit Unicode intervals while retaining unedited source fonts/styles")
+    rich.add_argument("input", type=Path)
+    rich.add_argument("output", type=Path)
+    rich.add_argument("--paragraph", type=Path, required=True)
+    rich.add_argument("--edits", type=Path, required=True, help="JSON object with edits list and supplied fonts mapping")
+    rich.add_argument("--width", type=float)
+    rich.add_argument("--x", type=float)
+    rich.add_argument("--first-line-indent", type=float)
+    rich.add_argument("--max-bottom", type=float, help="confirmed bottom coordinate in PDF points, y down")
+    rich.add_argument("--min-line-height", type=float)
+    rich.add_argument("--report", type=Path)
+    rich.add_argument("--removal-output", type=Path)
     return result
 
 
@@ -173,6 +191,32 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 from .slot_edit import edit_slots
                 report = edit_slots(args.input, args.output, manifest, text, stage=args.stage, stage1_report=proof)
+            if args.report:
+                write_json(args.report, report)
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+        elif args.command == "inspect-paragraph":
+            from .attributed import inspect_paragraph
+            check_new_outputs([args.json_path], [args.input, args.selection])
+            report = inspect_paragraph(args.input, read_json(args.selection),
+                line_joiner={"none":"", "space":" ", "newline":"\n"}[args.line_joiner])
+            write_json(args.json_path, report)
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+        elif args.command == "edit-paragraph":
+            from .paragraph import edit_paragraph
+            changes = read_json(args.edits)
+            fonts = changes.get("fonts", {})
+            if not isinstance(fonts, dict) or not isinstance(changes.get("edits"), list):
+                raise ValueError("edits JSON needs an edits list and a fonts object")
+            for spec in fonts.values():
+                if not isinstance(spec, dict) or not isinstance(spec.get("path"), str):
+                    raise ValueError("each supplied font needs a path")
+                path = Path(spec["path"])
+                spec["path"] = str(path if path.is_absolute() else (args.edits.parent/path).resolve())
+            check_new_outputs([args.output, args.report, args.removal_output],
+                [args.input, args.paragraph, args.edits, *(Path(s["path"]) for s in fonts.values())])
+            report = edit_paragraph(args.input, args.output, read_json(args.paragraph), changes["edits"],
+                fonts=fonts, width=args.width, x=args.x, first_line_indent=args.first_line_indent,
+                max_bottom=args.max_bottom, min_line_height=args.min_line_height, removal_output=args.removal_output)
             if args.report:
                 write_json(args.report, report)
             print(json.dumps(report, ensure_ascii=False, indent=2))

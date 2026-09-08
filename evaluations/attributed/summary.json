@@ -1,0 +1,454 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "attributed.py": "9fa5c85d58555763c5df6404397c6c34d2095b6cb53d089585074df36ef6e4ae",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "1ebe7ae0c49a0c04fbd7ba5b301ebd8b1fd345ab9199b5a21f89726a3f740a0f",
+      "composition.py": "5dd3450b6c351b7dde08840757addf4446af23aabc766eea5dd0c7364fe6917e",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paragraph.py": "f636b5bf0225619fec9bfc8a248a6f20fc142e4993e986f2b27389f26f1c59b0",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e",
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+    },
+    "runner_sha256": "2e6495f10d2ce98a59f0e84afd2d493d5252ddcca604da0b6a441007bafdd04c",
+    "pymupdf": "1.27.2.3"
+  },
+  "counts": {
+    "passed": 4,
+    "rejected": 3
+  },
+  "cases": [
+    {
+      "case": "lo_migration_short",
+      "source": "lo_migration_ja",
+      "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+      "output_sha256": "739372c7acba9c023d82db8641689f7446ecedd7a4438be357bd6d7bb6d52ec8",
+      "status": "passed",
+      "classification": "original_font_retention_and_partial_substitution",
+      "error": null,
+      "phase": null,
+      "styles": [
+        {
+          "id": "s0",
+          "font_resource": "/F4",
+          "font_name": "TimesNewRomanPSMT",
+          "font_size": 12.0,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "word_spacing": 0.0,
+          "baseline_shift": 0.0,
+          "fill": [
+            "rg",
+            [
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "font_xref": 49
+        },
+        {
+          "id": "s1",
+          "font_resource": "/F1",
+          "font_name": "MS-PMincho",
+          "font_size": 10.5,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "word_spacing": 0.0,
+          "baseline_shift": 0.0,
+          "fill": [
+            "rg",
+            [
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "font_xref": 64
+        }
+      ],
+      "fonts": {
+        "s1": {
+          "resource": "/PRF1",
+          "name": "MS-PMincho",
+          "source_sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+          "instance_sha256": "53aef9bb33b222c7ded9ca2ab6a7e4680b18c7511546e775bfb1a1f86c99803f",
+          "subset_sha256": "707bfe74e4a15f124805043950b9e1f466c48d6f103734e76e5d50d04272f43d",
+          "font_index": 1,
+          "variations": {}
+        }
+      },
+      "old_characters": 112,
+      "new_characters": 42,
+      "old_lines": 2,
+      "new_lines": 1,
+      "retained_glyph_count": 38,
+      "provided_font_glyph_count": 4,
+      "source_replay_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": 0,
+      "other_pages_mupdf_equal": true,
+      "independent_edit": true,
+      "independent_removal": true,
+      "font_mapping": true,
+      "original_codes": true,
+      "drawings_unchanged": true,
+      "images_unchanged": true
+    },
+    {
+      "case": "lo_migration_long",
+      "source": "lo_migration_ja",
+      "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+      "output_sha256": null,
+      "status": "rejected",
+      "classification": "safe_refusal",
+      "error": "Reflowed text exceeds the available vertical space.",
+      "phase": "edit",
+      "styles": null,
+      "fonts": null,
+      "old_characters": 0,
+      "new_characters": 0,
+      "old_lines": null,
+      "new_lines": null,
+      "retained_glyph_count": null,
+      "provided_font_glyph_count": null,
+      "source_replay_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": null,
+      "other_pages_mupdf_equal": null,
+      "independent_edit": null,
+      "independent_removal": null,
+      "font_mapping": null,
+      "original_codes": null,
+      "drawings_unchanged": null,
+      "images_unchanged": null
+    },
+    {
+      "case": "lo_newfeatures_append",
+      "source": "lo_newfeatures_ja",
+      "source_sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+      "output_sha256": "be8dbc306f7ee87ee2162abb39c6cca0d06e5af3d1ab40feb0c7c42fa52d1c55",
+      "status": "passed",
+      "classification": "original_font_retention_and_partial_substitution",
+      "error": null,
+      "phase": null,
+      "styles": [
+        {
+          "id": "s0",
+          "font_resource": "/F1",
+          "font_name": "IPAPMincho",
+          "font_size": 11.0,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "word_spacing": 0.0,
+          "baseline_shift": 0.0,
+          "fill": [
+            "rg",
+            [
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "font_xref": 114
+        }
+      ],
+      "fonts": {
+        "s0": {
+          "resource": "/PRF1",
+          "name": "MS-PMincho",
+          "source_sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+          "instance_sha256": "53aef9bb33b222c7ded9ca2ab6a7e4680b18c7511546e775bfb1a1f86c99803f",
+          "subset_sha256": "63acf23a407c154361185247a2f70b3c4313612ab124693dd1321d496cdd4f6e",
+          "font_index": 1,
+          "variations": {}
+        }
+      },
+      "old_characters": 68,
+      "new_characters": 134,
+      "old_lines": 2,
+      "new_lines": 3,
+      "retained_glyph_count": 68,
+      "provided_font_glyph_count": 66,
+      "source_replay_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": 0,
+      "other_pages_mupdf_equal": true,
+      "independent_edit": true,
+      "independent_removal": true,
+      "font_mapping": true,
+      "original_codes": true,
+      "drawings_unchanged": true,
+      "images_unchanged": true
+    },
+    {
+      "case": "lo_enterprise_bold",
+      "source": "lo_enterprise_en",
+      "source_sha256": "f96228ca032b60584e5f2e5fd5689290ba7b93b4f39bb8f86c5af5221eec85d4",
+      "output_sha256": null,
+      "status": "rejected",
+      "classification": "safe_refusal",
+      "error": "composed text intersects a filled vector",
+      "phase": "edit",
+      "styles": null,
+      "fonts": null,
+      "old_characters": 0,
+      "new_characters": 0,
+      "old_lines": null,
+      "new_lines": null,
+      "retained_glyph_count": null,
+      "provided_font_glyph_count": null,
+      "source_replay_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": null,
+      "other_pages_mupdf_equal": null,
+      "independent_edit": null,
+      "independent_removal": null,
+      "font_mapping": null,
+      "original_codes": null,
+      "drawings_unchanged": null,
+      "images_unchanged": null
+    },
+    {
+      "case": "word_takeo_mixed",
+      "source": "word_takeo_notice",
+      "source_sha256": "245011456ebb025d852fa0dae0ca60d96162a25acb7b850894e663da5660637d",
+      "output_sha256": null,
+      "status": "rejected",
+      "classification": "safe_refusal",
+      "error": "selected style spans have different non-inline graphics state",
+      "phase": "edit",
+      "styles": null,
+      "fonts": null,
+      "old_characters": 0,
+      "new_characters": 0,
+      "old_lines": null,
+      "new_lines": null,
+      "retained_glyph_count": null,
+      "provided_font_glyph_count": null,
+      "source_replay_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": null,
+      "other_pages_mupdf_equal": null,
+      "independent_edit": null,
+      "independent_removal": null,
+      "font_mapping": null,
+      "original_codes": null,
+      "drawings_unchanged": null,
+      "images_unchanged": null
+    },
+    {
+      "case": "print_ubiquiti_mixed",
+      "source": "print_ubiquiti",
+      "source_sha256": "0a547f5879df8b2eb1eeb22b5a01c7c4187c49edcee7fd11f957c06d3a9bccff",
+      "output_sha256": "d34f07d27c4d913433e6aa46c1c08bb423daf0119db8e6ce675c0f0a3e310b6f",
+      "status": "passed",
+      "classification": "original_font_retention_and_partial_substitution",
+      "error": null,
+      "phase": null,
+      "styles": [
+        {
+          "id": "s0",
+          "font_resource": "/F4",
+          "font_name": "ArialMT",
+          "font_size": 7.994999849999999,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "word_spacing": 0,
+          "baseline_shift": 0.0,
+          "fill": [
+            "rg",
+            [
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "font_xref": 4
+        },
+        {
+          "id": "s1",
+          "font_resource": "/F5",
+          "font_name": "MicrosoftYaHei",
+          "font_size": 7.994999849999999,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "word_spacing": 0,
+          "baseline_shift": 0.0,
+          "fill": [
+            "rg",
+            [
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "font_xref": 5
+        }
+      ],
+      "fonts": {
+        "s0": {
+          "resource": "/PRF1",
+          "name": "ArialMT",
+          "source_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+          "instance_sha256": "4fffde50bcbfd8deec9fa3e52003b8cc30ba7e8f2d84f29ebe0b97f01d770e6e",
+          "subset_sha256": "2dfa7b9f9e6f7b3445cc87aa803762eaf38cf63c18b4157436d184eaf481d18c",
+          "font_index": 0,
+          "variations": {}
+        }
+      },
+      "old_characters": 17,
+      "new_characters": 17,
+      "old_lines": 1,
+      "new_lines": 1,
+      "retained_glyph_count": 8,
+      "provided_font_glyph_count": 9,
+      "source_replay_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": 0,
+      "other_pages_mupdf_equal": true,
+      "independent_edit": true,
+      "independent_removal": true,
+      "font_mapping": true,
+      "original_codes": true,
+      "drawings_unchanged": true,
+      "images_unchanged": true
+    },
+    {
+      "case": "print_canvia_italic",
+      "source": "print_canvia",
+      "source_sha256": "71afeab7584d5638698f1cb491680b30ddacf10ec6dd9243680c97bd37a410fb",
+      "output_sha256": "2c998a29d12c533a8a57a52a6e0058904547fb01b00cf50347968b9e2d281da3",
+      "status": "passed",
+      "classification": "original_font_retention_and_partial_substitution",
+      "error": null,
+      "phase": null,
+      "styles": [
+        {
+          "id": "s0",
+          "font_resource": "/F4",
+          "font_name": "ArialMT",
+          "font_size": 10.99499985,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "word_spacing": 0,
+          "baseline_shift": 0.0,
+          "fill": [
+            "g",
+            [
+              0
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "font_xref": 44
+        },
+        {
+          "id": "s1",
+          "font_resource": "/F16",
+          "font_name": "Gautami",
+          "font_size": 10.99499985,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "word_spacing": 0,
+          "baseline_shift": 0.0,
+          "fill": [
+            "g",
+            [
+              0
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "font_xref": 50
+        },
+        {
+          "id": "s2",
+          "font_resource": "/F12",
+          "font_name": "Arial-ItalicMT",
+          "font_size": 10.99499985,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "word_spacing": 0,
+          "baseline_shift": 0.0,
+          "fill": [
+            "g",
+            [
+              0
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "font_xref": 49
+        }
+      ],
+      "fonts": {
+        "s0": {
+          "resource": "/PRF1",
+          "name": "ArialMT",
+          "source_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+          "instance_sha256": "4fffde50bcbfd8deec9fa3e52003b8cc30ba7e8f2d84f29ebe0b97f01d770e6e",
+          "subset_sha256": "b316e6dc9839a2ce73c0cc0c74fee568d4b0834d203eb3300b6b44c70d73eac3",
+          "font_index": 0,
+          "variations": {}
+        }
+      },
+      "old_characters": 144,
+      "new_characters": 144,
+      "old_lines": 2,
+      "new_lines": 2,
+      "retained_glyph_count": 138,
+      "provided_font_glyph_count": 4,
+      "source_replay_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": 0,
+      "other_pages_mupdf_equal": true,
+      "independent_edit": true,
+      "independent_removal": true,
+      "font_mapping": true,
+      "original_codes": true,
+      "drawings_unchanged": true,
+      "images_unchanged": true
+    }
+  ]
+}
