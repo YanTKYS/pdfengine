@@ -1,0 +1,152 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "attributed.py": "9fa5c85d58555763c5df6404397c6c34d2095b6cb53d089585074df36ef6e4ae",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "7a1e907401e328abb0d312d2c3ce6164e2b96211ec7ca3883fc189ed515f4c96",
+      "composition.py": "5dd3450b6c351b7dde08840757addf4446af23aabc766eea5dd0c7364fe6917e",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "elements.py": "dfdf78ae6bcd9b5a03ce1cb5d621104c203b93d763ac7ccb37daaf2aaf65a80a",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "999a63208ea4f31792947670c7d80a9ff53941165ec9ad0c645e0dfc9a89c716",
+      "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+      "paragraph.py": "f5b0819b25583a9bb8af96319e25ab530c4d9587a13fcc37eb236d16b1b7b86b",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+    },
+    "runner_sha256": "1d57e50a39becd1322a762c05db278c9c741d1f415eddca22330a9936f7ef456",
+    "pymupdf": "1.27.2.3",
+    "mupdf": "1.27.2",
+    "post_evaluation_source_normalization": [
+      {
+        "file": "paint_geometry.py",
+        "change": "Remove an extra blank line at EOF; compiled Python code is identical.",
+        "tested_sha256": "e82325fdde9f1866f551232bba07268839bc5783b925fbe3c4c4600997160310",
+        "published_sha256": "999a63208ea4f31792947670c7d80a9ff53941165ec9ad0c645e0dfc9a89c716",
+        "identical_compiled_code_sha256": "a3c9196fa076633ced0e138e8b774f13f4e162445bf3e5660c3e9d3e94680a6b"
+      }
+    ]
+  },
+  "counts": {
+    "passed": 2,
+    "rejected": 3
+  },
+  "cases": [
+    {
+      "case": "print_fcc_ms_callout_move",
+      "status": "passed",
+      "classification": "source_linked_rigid_element",
+      "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+      "output_sha256": "0dba1595376ec6ccff5b011091423a349b52a7fc42a4977b68fa0678b23c509a",
+      "images_unchanged": true,
+      "source_path_count": 13,
+      "proven_path_count": 13,
+      "source_snapshot_sha256": "2ceac636cf0f94a47727951a117d291187518e64c445dfbc0ded6e4c3de556fa",
+      "moved_glyphs": 252,
+      "moved_text_operators": 7,
+      "moved_path_operators": 5,
+      "original_fonts_preserved": true,
+      "paint_plan_verified": true,
+      "path_writer": "original coordinate tokens under translated source CTM",
+      "noop_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": 0,
+      "translated_crop_changed_pixels": 0,
+      "old_region_matches_removal_pixels": 0,
+      "intervening_gap_changed_pixels": 0,
+      "removal_poppler_outside_changed_pixels": 0,
+      "other_pages_mupdf_equal": true,
+      "independent_edit": true,
+      "independent_removal": true
+    },
+    {
+      "case": "lo_enterprise_fixed_background_edit",
+      "status": "passed",
+      "classification": "explicit_background_with_attributed_edit",
+      "source_sha256": "f96228ca032b60584e5f2e5fd5689290ba7b93b4f39bb8f86c5af5221eec85d4",
+      "output_sha256": "e21c79b5511734296aaee1d5a240fe966098da8a18e0871ad20406ef68a59095",
+      "images_unchanged": true,
+      "source_path_count": 4,
+      "proven_path_count": 4,
+      "source_snapshot_sha256": "3dc226e32bb6f3ffacab7489df27dad5d8f44f7262444313e6f8249c43e15bef",
+      "drawings_unchanged": true,
+      "retained_glyph_count": 9,
+      "provided_font_glyph_count": 16,
+      "old_lines": 1,
+      "new_lines": 1,
+      "font_mapping_verified": true,
+      "original_codes_preserved": true,
+      "noop_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": 0,
+      "removal_poppler_outside_changed_pixels": 0,
+      "other_pages_mupdf_equal": true,
+      "independent_edit": true,
+      "independent_removal": true
+    },
+    {
+      "case": "unresolved_underline",
+      "status": "rejected",
+      "classification": "safe_refusal",
+      "reason": "unresolved background/decoration/overlap relation; review the element snapshot"
+    },
+    {
+      "case": "outside_page",
+      "status": "rejected",
+      "classification": "safe_refusal",
+      "reason": "moved element is outside the page"
+    },
+    {
+      "case": "fixed_footer_collision",
+      "status": "rejected",
+      "classification": "safe_refusal",
+      "reason": "moved element intersects a fixed vector paint"
+    }
+  ],
+  "marked_content": [
+    {
+      "source": "word_takeo_notice",
+      "source_sha256": "245011456ebb025d852fa0dae0ca60d96162a25acb7b850894e663da5660637d",
+      "page": 2,
+      "complete": true,
+      "association_counts": {
+        "orphan_mcid": 169
+      },
+      "ownership": "not inferred from marked-content membership",
+      "editing": "not attempted by this observation"
+    },
+    {
+      "source": "word_osaka_guideline",
+      "source_sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+      "page": 1,
+      "complete": true,
+      "association_counts": {
+        "tree_backed": 97
+      },
+      "ownership": "not inferred from marked-content membership",
+      "editing": "not attempted by this observation"
+    },
+    {
+      "source": "print_ubiquiti",
+      "source_sha256": "0a547f5879df8b2eb1eeb22b5a01c7c4187c49edcee7fd11f957c06d3a9bccff",
+      "page": 1,
+      "complete": true,
+      "association_counts": {
+        "tree_backed": 1
+      },
+      "ownership": "not inferred from marked-content membership",
+      "editing": "not attempted by this observation"
+    }
+  ]
+}

@@ -4,6 +4,8 @@
 
 元フォントを忠実に保持する経路、選択範囲全体を指定fontで組み直す経路、**未変更区間の元font・書式を残し、編集区間だけ指定fontで描く経路**を持っています。自動推定は選択候補を作り、編集範囲・利用可能幅は人が確定できます。
 
+文字に付随する背景・罫線・下線については、元の描画命令とrendererのpaintを対応付け、人が所属と振る舞いを確定するモデルを持ちます。確認した文字と図形を一式で平行移動する処理と、明示的な固定背景の中で文章を編集する処理を分けています。
+
 ## 現在できること
 
 | 経路 | 用途 | フォントと配置 |
@@ -12,6 +14,7 @@
 | `edit-selected` | 元resourceで表現できる文字の置換・短文化・明示幅での再組版 | 元fontを維持。符号化可能性・幅などを検査 |
 | `compose-selected` | 元subsetにない漢字・英数字・記号を含む置換、長文化・短文化 | 利用者指定fontを埋め込み、HarfBuzzの実glyph配置で再組版 |
 | `inspect-paragraph` → `edit-paragraph` | 書式を持つ文章の一部を変更、追加、削除 | 元Unicode区間とstyleを対応付け、未変更部分の元resource・コード・GIDを保持。変更部分だけ明示fontでshape |
+| `inspect-element` → `move-element` | 所属を確認した文字・背景・罫線・下線を一式で移動 | 元のtext/path命令・座標token・fontを保持。描画順、clip、固定物との衝突を検査 |
 
 書式を保持する経路では、LibreOffice本文の英字12pt・日本語10.5ptを残した2行→1行、元の68文字を残して66文字を追加する2行→3行、仮想プリンタPDFの通常体・斜体を残す部分置換を確認しました。[書式付き編集の評価と境界](docs/attributed-editing.md)を参照してください。全文font代替経路でのWord・Chrome等の結果は [composition.md](docs/composition.md) にあります。指定fontで描く部分は、元書体と同一とは限りません。
 
@@ -71,6 +74,28 @@ macOS/Linuxでは `.venv/bin/python` を使います。この版の実PDF評価�
 
 利用可能幅はselectionの値か `--width` が必要です。`--x`、`--first-line-indent`、`--min-line-height` で配置を指定できます。`--max-bottom` はページ左上原点の下端y座標で、`compose-selected --max-height` の高さ指定とは異なります。元の物理行の結合は `inspect-paragraph --line-joiner none|space|newline` で選びます。合成する空白にも必要に応じてfont指定が必要です。snapshot自体を変更する場合は、selectionや結合方法を直して作り直します。
 
+## 背景・罫線との関係を確定する
+
+```powershell
+.\.venv\Scripts\python.exe -m pdfeditor inspect-element input.pdf --selection selection.json --json element.json
+.\.venv\Scripts\python.exe -m pdfeditor move-element input.pdf moved.pdf --element element.json --relations relations.json --dy 180 --report move.json --removal-output removed.pdf
+```
+
+`element.json` はsource位置、実際のpaint、推定された関係、marked contentの観測を分離して記録します。確認したpathの実際の `source_id` を使い、`relations.json` を作ります。以下のIDは形式を示す例です。
+
+```json
+{
+  "relations": [
+    {"source_id": "path-...", "relation": "backgrounds", "behavior": "fixed-to-element"},
+    {"source_id": "path-...", "relation": "decorates", "behavior": "fixed-to-element"}
+  ]
+}
+```
+
+関係は `backgrounds` / `borders` / `decorates` / `unrelated`、振る舞いは `fixed-to-element` / `fixed-to-page` です。候補を自動確定せず、元命令との対応が曖昧な重複paintも拒否します。新しい要素APIは非回転ページに限定し、移動には完全な `Tj` / `TJ` の選択が必要です。移動前に同じ位置での再構築を検査し、移動後も元font・全paint・領域外画素を照合します。
+
+ページ背景を固定した本文編集では、背景を `backgrounds` / `fixed-to-page` として、`edit-paragraph` に `--element element.json --relations relations.json` を追加します。元の描画順と実形状による包含が証明できる背景だけを許可します。装飾を伴う文章のreflow・背景の伸縮・他段落への追従移動は未実装です。[要素モデル・技術選定・実PDF評価](docs/element-ownership.md)を参照してください。
+
 ## 忠実性と幅の契約
 
 `observed_content_width`、`inferred_available_width`、`explicitly_supplied_width`を分離しています。推定できない幅はunknownです。`compose-selected`には既知の利用可能幅が必要で、観測文字幅を暗黙の編集幅にしません。
@@ -94,6 +119,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 - `attributed.py` / `paragraph.py` / `rich_layout.py`: 元Unicode区間、書式、保持・新規glyph provider、書式ごとのmetricsによる行組み
 - `layout.py`: PDF非依存の改行・配置。候補文字列全体の実測幅を受け取る
 - `pdf_save.py`: resource追加、共有辞書の分離、暗号化を保持する保存adapter
+- `paint_provenance.py` / `marked_content.py` / `paint_geometry.py` / `elements.py`: sourceと解釈済みpaintの対応、active scope、実形状の包含、明示的な所属と局所移動
 - [書式付き編集](docs/attributed-editing.md)、[全文font代替](docs/composition.md)、[paint観測の技術比較](docs/paint-observation-options.md)、[内部モデルと初期設計](docs/architecture.md)
 
 ```powershell

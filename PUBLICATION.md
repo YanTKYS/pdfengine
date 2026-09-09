@@ -17,3 +17,5 @@
 元resource経路の範囲と制限は [backend 評価](docs/backend-evaluation.md)、技術選定は [backend 比較](docs/backend-options.md) を参照。
 
 書式を残す部分編集は [attributed-editing.md](docs/attributed-editing.md) と [公開集計](evaluations/attributed/summary.json) に記録する。評価入力は `evaluations/attributed/evaluate.py` の既知範囲・Unicode編集・明示領域であり、全文抽出、snapshot、glyph計画、PDF/PNGは公開しない。paint観測の比較も [専用資料](docs/paint-observation-options.md) に整理している。
+
+sourceとpaintの対応、背景・装飾の所属、要素移動は [element-ownership.md](docs/element-ownership.md) と [公開集計](evaluations/elements/summary.json) に記録する。`evaluations/elements/evaluate.py` が確定した範囲・関係と独立検証を再現する。詳細なelement snapshotには元のpath座標等が含まれるため、原本・派生PDF/PNG・全文・生のsnapshotは引き続き公開しない。

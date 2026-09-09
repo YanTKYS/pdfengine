@@ -143,7 +143,7 @@ class ParagraphShaper:
 
 def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x=None,
                    first_line_indent=None, max_bottom=None, min_line_height=None,
-                   removal_output=None):
+                   removal_output=None, element_snapshot=None, element_relations=None):
     output = ensure_destination(output,source)
     if removal_output:
         removal_output = ensure_destination(removal_output,source)
@@ -253,7 +253,14 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
         ink_bounds = Rect(x,baseline,x,baseline)
         for ink in inks:
             ink_bounds = ink_bounds.union(ink)
-        _check_obstacles(content,selected,resolved,inks,ink_bounds)
+        if element_snapshot is None:
+            if element_relations is not None:
+                raise PdfError("element relations need a source-bound element snapshot")
+            _check_obstacles(content,selected,resolved,inks,ink_bounds)
+        else:
+            from .elements import check_paragraph_obstacles
+            check_paragraph_obstacles(source,content,selected,resolved,inks,ink_bounds,
+                                      element_snapshot,element_relations)
         affected = resolved.bbox.union(ink_bounds)
         old_fonts = font_fingerprints(content.document,pno)
         def verify(document):
@@ -299,6 +306,8 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
         if removal_output:
             publish_program(source,pno,removed,removal_output,lambda doc:_require_removal(untouched,doc[pno]))
         return {"schema_version":1,"backend":"attributed-source-and-shaped-fonts",
+            "element_snapshot_sha256":element_snapshot.get('snapshot_sha256') if element_snapshot else None,
+            "element_relations":element_relations,
             "snapshot_sha256":snapshot['snapshot_sha256'],"selection":paragraph.selection,
             "before":paragraph.text,"after":shaper.text,"composed_text":''.join(line.text for line in layout.lines),
             "styles":snapshot['styles'],"edits":edits,"fonts":font_reports,

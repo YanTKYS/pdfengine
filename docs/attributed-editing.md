@@ -47,7 +47,7 @@ font・サイズ・色・横倍率をglyphごとに設定し、Tc/Tw/Tsによる
 
 異なるclip、opacity、blend/mask、非device色、横書き以外などは対象外である。inline属性以外の追跡stateが区間ごとに異なる場合も拒否する。overprintやtransferを先頭eventの設定へ黙って統一しない。現在のinterpreterはExtGStateとmarked contentを保守的な履歴として記録するため、同等な状態を異なる命令列で表現したPDFも拒否し得る。
 
-MCID等のmarked contentをまたぐ再配置は、表示以外にtagged PDFの文章構造へ影響する。これはfont/色の区間と同一視できない。今回のWord例はこの境界で止めた。タグのownershipや構造木の再構成を実装せずにguardを解除していない。
+MCID等のmarked contentをまたぐ再配置は、font/色の区間と同一視できない。当時のWord例は追跡履歴が異なる境界で止めた。後続の[active scope / Structure Tree調査](element-ownership.md#mcidについて分かったこと)では、武雄資料にMCIDはあるが実Structure Treeがなく、`orphan_mcid` であることが分かった。従来の拒否を、有効なtagged構造の存在が確認できた証拠とは扱わない。履歴差のguardを無条件には解除していない。
 
 ## 実PDFの結果
 
