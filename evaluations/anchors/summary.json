@@ -1,0 +1,293 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "anchors.py": "a7974f943e7c2eae0a9d7e1cf23ed7228841cf44a7dd78ff3c17ad6516b14093",
+      "attributed.py": "9fa5c85d58555763c5df6404397c6c34d2095b6cb53d089585074df36ef6e4ae",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "26fe4b172c60100b365d2c1b0610d80d315b4b42a93181ad5045e95105adcbd6",
+      "composition.py": "5dd3450b6c351b7dde08840757addf4446af23aabc766eea5dd0c7364fe6917e",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "elements.py": "3ff850eca5cda5b24e9942e986e73613a7976f4fb95a30c718f002608cf0f392",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+      "paragraph.py": "8a7e89fe940f3d0860c1b72cdc1e1cffe589b931616a0e852edba34355ab212d",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+    },
+    "runner_sha256": "b5f7c67cff3a1b986ebde1fcccbeae1e96ef34886767e688f520d63812fa3c83",
+    "pymupdf": "1.27.2.3",
+    "mupdf": "1.27.2"
+  },
+  "counts": {
+    "passed": 3,
+    "rejected": 2
+  },
+  "cases": [
+    {
+      "case": "grow",
+      "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+      "status": "passed",
+      "classification": "range_anchored_underline_reflow",
+      "output_sha256": "77186b4576c7d94f4206567a77adda8dcdf2c6b2c97b72d7f32d40680148d103",
+      "old_lines": 7,
+      "new_lines": 8,
+      "old_underline_paths": 3,
+      "new_underline_segments": 4,
+      "retained_glyphs": 245,
+      "provided_glyphs": 22,
+      "fonts": {
+        "s0": {
+          "resource": "/PRF1",
+          "name": "ArialMT",
+          "source_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+          "instance_sha256": "4fffde50bcbfd8deec9fa3e52003b8cc30ba7e8f2d84f29ebe0b97f01d770e6e",
+          "subset_sha256": "2271f9840fa5c021bbb2e424da6499c77ee89da393f971112208df114e88788c",
+          "font_index": 0,
+          "variations": {}
+        }
+      },
+      "noop_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": 0,
+      "removal_outside_changed_pixels": 0,
+      "poppler_underlines": [
+        {
+          "columns_checked": 298,
+          "all_columns_painted": true
+        },
+        {
+          "columns_checked": 380,
+          "all_columns_painted": true
+        },
+        {
+          "columns_checked": 350,
+          "all_columns_painted": true
+        },
+        {
+          "columns_checked": 77,
+          "all_columns_painted": true
+        }
+      ],
+      "independent_edit": true,
+      "independent_removal": true,
+      "font_mapping": true,
+      "nontext_paint_plan": true,
+      "images_unchanged": true,
+      "reviewed_line_joiner": "",
+      "word_boundaries_in_layout": true,
+      "reopened_logical_text_confirmed": false,
+      "other_pages_mupdf_equal": true
+    },
+    {
+      "case": "shorten",
+      "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+      "status": "passed",
+      "classification": "range_anchored_underline_reflow",
+      "output_sha256": "bf8fc2060ceeb60796348ac2c497b565b65c44db6e6de68299b547b53233631d",
+      "old_lines": 7,
+      "new_lines": 5,
+      "old_underline_paths": 3,
+      "new_underline_segments": 1,
+      "retained_glyphs": 131,
+      "provided_glyphs": 37,
+      "fonts": {
+        "s0": {
+          "resource": "/PRF1",
+          "name": "ArialMT",
+          "source_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+          "instance_sha256": "4fffde50bcbfd8deec9fa3e52003b8cc30ba7e8f2d84f29ebe0b97f01d770e6e",
+          "subset_sha256": "068aac25a855c95f1454af395448b2bf58b9d5c82fd3a3c2fb36819aca43ef86",
+          "font_index": 0,
+          "variations": {}
+        }
+      },
+      "noop_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": 0,
+      "removal_outside_changed_pixels": 0,
+      "poppler_underlines": [
+        {
+          "columns_checked": 351,
+          "all_columns_painted": true
+        }
+      ],
+      "independent_edit": true,
+      "independent_removal": true,
+      "font_mapping": true,
+      "nontext_paint_plan": true,
+      "images_unchanged": true,
+      "reviewed_line_joiner": "",
+      "word_boundaries_in_layout": true,
+      "reopened_logical_text_confirmed": false,
+      "other_pages_mupdf_equal": true
+    },
+    {
+      "case": "overflow",
+      "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+      "status": "rejected",
+      "classification": "safe_refusal",
+      "error_type": "LayoutError",
+      "error": "Reflowed text exceeds the available vertical space.",
+      "phase": "edit",
+      "output_created": false
+    },
+    {
+      "case": "cross_anchor_boundary",
+      "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+      "status": "rejected",
+      "classification": "safe_refusal",
+      "error_type": "PdfError",
+      "error": "edit crosses an anchor boundary; explicitly redefine the decorated range",
+      "phase": "edit",
+      "output_created": false
+    },
+    {
+      "case": "reopen_shorten",
+      "source_sha256": "77186b4576c7d94f4206567a77adda8dcdf2c6b2c97b72d7f32d40680148d103",
+      "status": "passed",
+      "classification": "range_anchored_underline_reflow",
+      "output_sha256": "af0ae1a9f419c1337c1c5a88c65179d23a2a171aadf59a5aaf808e43beef3cc4",
+      "old_lines": 8,
+      "new_lines": 7,
+      "old_underline_paths": 4,
+      "new_underline_segments": 3,
+      "retained_glyphs": 244,
+      "provided_glyphs": 2,
+      "fonts": {
+        "s0": {
+          "resource": "/PRF2",
+          "name": "ArialMT",
+          "source_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+          "instance_sha256": "4fffde50bcbfd8deec9fa3e52003b8cc30ba7e8f2d84f29ebe0b97f01d770e6e",
+          "subset_sha256": "37d2a61013f882e9b997645a12efa000d21a3960cecb95a146becfbbc7a2e90d",
+          "font_index": 0,
+          "variations": {}
+        },
+        "s1": {
+          "resource": "/PRF3",
+          "name": "ArialMT",
+          "source_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+          "instance_sha256": "4fffde50bcbfd8deec9fa3e52003b8cc30ba7e8f2d84f29ebe0b97f01d770e6e",
+          "subset_sha256": "37d2a61013f882e9b997645a12efa000d21a3960cecb95a146becfbbc7a2e90d",
+          "font_index": 0,
+          "variations": {}
+        }
+      },
+      "noop_poppler_changed_pixels": 0,
+      "poppler_outside_changed_pixels": 0,
+      "removal_outside_changed_pixels": 0,
+      "poppler_underlines": [
+        {
+          "columns_checked": 298,
+          "all_columns_painted": true
+        },
+        {
+          "columns_checked": 373,
+          "all_columns_painted": true
+        },
+        {
+          "columns_checked": 270,
+          "all_columns_painted": true
+        }
+      ],
+      "independent_edit": true,
+      "independent_removal": true,
+      "font_mapping": true,
+      "nontext_paint_plan": true,
+      "images_unchanged": true,
+      "reviewed_line_joiner": " ",
+      "word_boundaries_in_layout": true,
+      "reopened_logical_text_confirmed": true,
+      "other_pages_mupdf_equal": true
+    }
+  ],
+  "scope": "One external PDF; explicit whole-callout selection, fixed frame and confirmed logical underline range.",
+  "visual_review": {
+    "status": "passed",
+    "cases": [
+      "grow",
+      "shorten",
+      "reopen_shorten"
+    ],
+    "checks": [
+      "word boundaries and paragraph breaks",
+      "underline extent and line relation",
+      "fixed frame, background, diagram and footer"
+    ],
+    "note": "Reviewed rendered Poppler PNGs; one external original, not three independent documents."
+  },
+  "earlier_visual_findings": [
+    {
+      "run": "anchors_candidate",
+      "case": "reopen_shorten",
+      "output_sha256": "003dba78b4a23b2c81d751929b84feda1df278958b59ee729328e7b42520da09",
+      "automated_checks_passed": true,
+      "classification": "layout_unnatural",
+      "accepted": false,
+      "cause": "Unreviewed empty line joiner joined Latin words and lost authored paragraph breaks. Final run requires reviewed spaces, hard breaks and logical-text comparison."
+    }
+  ],
+  "page_coverage": {
+    "new_external_original_pages": 1,
+    "unchanged_other_pages_for_new_external_cases": "not_applicable",
+    "multi_page_coverage": "synthetic tests and pre-existing route regressions"
+  },
+  "regression": {
+    "unit_tests": {
+      "passed": 347,
+      "skipped": 2,
+      "skip_reason": "AES provider unavailable (cryptography or pycryptodome required)"
+    },
+    "elements": {
+      "run": "anchors_regression",
+      "passed": 2,
+      "rejected": 3,
+      "status_and_refusal_reasons_unchanged": true,
+      "successful_output_sha256_unchanged": true
+    },
+    "attributed": {
+      "run": "anchors_regression",
+      "passed": 4,
+      "rejected": 3,
+      "status_and_refusal_reasons_unchanged": true,
+      "successful_output_sha256_unchanged": true
+    },
+    "original_resource_route": {
+      "new_external_run": false,
+      "reason": "Route modules and dependencies are byte-identical to the prior element phase; full unit suite passed. Reused the previously recorded external evidence rather than repeating it.",
+      "unchanged_modules": [
+        "content_stream.py",
+        "pdf_primitives.py",
+        "selection.py",
+        "replay.py",
+        "slot_edit.py",
+        "explicit_reflow.py",
+        "pdf_save.py",
+        "layout.py",
+        "shaped_font.py",
+        "composition.py",
+        "attributed.py",
+        "rich_layout.py"
+      ]
+    },
+    "composition": {
+      "run": "anchors_regression",
+      "passed": 7,
+      "rejected": 6,
+      "status_and_refusal_reasons_unchanged": true,
+      "successful_output_sha256_unchanged": true
+    }
+  }
+}

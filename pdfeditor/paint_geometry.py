@@ -1,9 +1,12 @@
 """Conservative geometry certificates over mature-renderer path commands.
 
-Rectangle unions and holes have a finite exact cell decomposition. Curves and
-non-rectangular polygons stay unknown; their bbox is never treated as a hole.
+Rectangle unions and holes have a finite exact cell decomposition. Other paths
+can certify constant fill only where every boundary and the membership ray
+are resolved; unresolved curves stay unknown, never bbox-derived holes.
 """
 from __future__ import annotations
+
+import math
 
 from .model import Rect
 
@@ -15,6 +18,8 @@ def shifted(rect, dx, dy):
 
 
 def rectangle_subpaths(geometry):
+    if not all(math.isfinite(v) for command in geometry for v in command[1:]):
+        return None
     paths, points = [], []
     for command in geometry:
         if command[0] == 'm':
@@ -70,10 +75,65 @@ def fill_cells(paint):
 
 
 def intersects_fill(paint, rect):
+    if not all(math.isfinite(v) for v in rect.tuple()) or rect.x0>rect.x1 or rect.y0>rect.y1:
+        return None
     cells = fill_cells(paint)
     if cells is None:
-        return None
+        return _constant_fill(paint,rect)
     return any(Rect(c.x0-EPS,c.y0-EPS,c.x1+EPS,c.y1+EPS).intersects(rect) for c in cells)
+
+
+def _constant_fill(paint, rect):
+    """Certify membership when no boundary can cross the query rectangle.
+
+    Cubic curves stay inside their control hull. A hull touching the query
+    makes the answer unknown. A curve crossing the horizontal membership ray
+    is also unknown; we never approximate that crossing with its bounding box.
+    This admits holes bounded by straight edges and distant rounded corners.
+    """
+    if paint['kind'] not in ('fill-path','clip-path'):
+        return None
+    if not all(math.isfinite(v) for command in paint['geometry'] for v in command[1:]):
+        return None
+    segments=[];first=current=None
+    def close():
+        if current is not None and first is not None and current!=first:
+            segments.append(('line',[current,first]))
+    for command in paint['geometry']:
+        op=command[0]
+        if op=='m':
+            close();first=current=tuple(command[1:])
+        elif op=='l' and current is not None:
+            target=tuple(command[1:]);segments.append(('line',[current,target]));current=target
+        elif op=='c' and current is not None:
+            points=[current]+[tuple(command[i:i+2]) for i in (1,3,5)]
+            segments.append(('curve',points));current=points[-1]
+        elif op=='h' and current is not None:
+            close();current=first
+        else:
+            return None
+    close()
+    if not segments:
+        return None
+    x,y=(rect.x0+rect.x1)/2,(rect.y0+rect.y1)/2
+    winding=0
+    for kind,points in segments:
+        xs,ys=zip(*points)
+        hull=Rect(min(xs)-EPS,min(ys)-EPS,max(xs)+EPS,max(ys)+EPS)
+        if hull.intersects(rect):
+            return None
+        if kind=='curve':
+            if min(ys)-EPS<=y<=max(ys)+EPS and max(xs)+EPS>=x:
+                return None
+            continue
+        a,b=points
+        if (a[1]<=y<b[1]) or (b[1]<=y<a[1]):
+            crossing=a[0]+(y-a[1])*(b[0]-a[0])/(b[1]-a[1])
+            if abs(crossing-x)<=EPS:
+                return None
+            if crossing>x:
+                winding+=1 if b[1]>a[1] else -1
+    return bool(winding%2) if paint.get('even_odd') else winding!=0
 
 
 def contains_fill(paint, rect):

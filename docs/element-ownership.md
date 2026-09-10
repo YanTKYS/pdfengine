@@ -1,5 +1,7 @@
 # source・paint・要素の所属を分けた局所編集
 
+> 本書は`1649a98`時点の成立範囲と判断を記録する。次段では[文字範囲に追従する下線](anchored-decoration.md)を実装し、曲線を含むfillにも限定的な局所空領域の証明を加えた。下記の当時の試験結果は保持する。
+
 この段階で埋める穴は、文字と図形を同じページ座標で観測できても、**どのsource命令を変更し、その図形を文章と一緒に動かしてよいかが別問題のまま**だったことである。文字のsubset coverage、原コードの再利用、書式付き部分編集は既存経路へ残し、source provenanceと利用者が確定する所属・振る舞いを接続した。
 
 実装は `paint_provenance.py`、`marked_content.py`、`paint_geometry.py`、`elements.py` と、既存の `paragraph.py` / CLIへの接続からなる。全ページreflowや、下にある物を一律に押す処理は実装していない。

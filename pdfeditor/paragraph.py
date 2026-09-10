@@ -143,7 +143,7 @@ class ParagraphShaper:
 
 def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x=None,
                    first_line_indent=None, max_bottom=None, min_line_height=None,
-                   removal_output=None, element_snapshot=None, element_relations=None):
+                   removal_output=None, element_snapshot=None, element_relations=None, anchor_spec=None):
     output = ensure_destination(output,source)
     if removal_output:
         removal_output = ensure_destination(removal_output,source)
@@ -153,6 +153,12 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
     shaper = None
     try:
         units = apply_edits(paragraph,snapshot,edits)
+        anchored=None
+        if anchor_spec is not None:
+            if element_relations is not None:
+                raise PdfError('anchored editing uses the fixed relations in its anchor specification')
+            from .anchors import AnchoredPaintEdit
+            anchored=AnchoredPaintEdit(source,paragraph,snapshot,element_snapshot,anchor_spec,edits)
         selected = set(paragraph.selection['glyph_ids'])
         resolved, content = paragraph.resolved, paragraph.content
         pno, first = resolved.page-1, paragraph.first
@@ -244,16 +250,20 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
             raise PdfError("cannot restore original text and line matrices")
         commands.extend((b' Q ',matrix_operator(first.line_matrix),
             b'['+number(-delta[4]/(state.size*state.tz/100)*1000)+b'] TJ '))
-        data = content.streams[virtual]
-        for event in sorted(paragraph.events,key=lambda e:e.operator.start,reverse=True):
+        mutations=[]
+        for event in paragraph.events:
             new = serialized_event(event,selected,remove=True)
             if event is first:
                 new += b''.join(commands)
-            data = data[:event.operator.start]+new+data[event.operator.end:]
+            mutations.append((event.operator.start,event.operator.end,new))
         ink_bounds = Rect(x,baseline,x,baseline)
         for ink in inks:
             ink_bounds = ink_bounds.union(ink)
-        if element_snapshot is None:
+        if anchored is not None:
+            anchored.plan(layout,inks,ink_bounds,Rect(x,0,x+width,bottom))
+            mutations.extend(anchored.patches)
+            removed=anchored.removal_program()
+        elif element_snapshot is None:
             if element_relations is not None:
                 raise PdfError("element relations need a source-bound element snapshot")
             _check_obstacles(content,selected,resolved,inks,ink_bounds)
@@ -261,7 +271,10 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
             from .elements import check_paragraph_obstacles
             check_paragraph_obstacles(source,content,selected,resolved,inks,ink_bounds,
                                       element_snapshot,element_relations)
-        affected = resolved.bbox.union(ink_bounds)
+        affected = resolved.bbox.union(anchored.bounds if anchored else ink_bounds)
+        data=content.streams[virtual]
+        for a,b,new in sorted(mutations,reverse=True):
+            data=data[:a]+new+data[b:]
         old_fonts = font_fingerprints(content.document,pno)
         def verify(document):
             if (len(document)!=len(content.document) or document.permissions!=content.document.permissions
@@ -302,12 +315,19 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
                     raise PdfError("new styled font differs from the verified subset")
             if not all(_pixels_equal(content.document[i],document[i],affected if i==pno else None) for i in range(len(document))):
                 raise PdfError("styled edit changed pixels outside the affected region")
+            if anchored:
+                anchored.verify(document)
         publish_program(source,pno,data,output,verify,font_builders={k:v.build for k,v in resources.items()})
         if removal_output:
-            publish_program(source,pno,removed,removal_output,lambda doc:_require_removal(untouched,doc[pno]))
+            def verify_removed(doc):
+                _require_removal(untouched,doc[pno])
+                if anchored:
+                    anchored.verify(doc,removed=True)
+            publish_program(source,pno,removed,removal_output,verify_removed)
         return {"schema_version":1,"backend":"attributed-source-and-shaped-fonts",
             "element_snapshot_sha256":element_snapshot.get('snapshot_sha256') if element_snapshot else None,
             "element_relations":element_relations,
+            "anchors":anchored.report() if anchored else None,
             "snapshot_sha256":snapshot['snapshot_sha256'],"selection":paragraph.selection,
             "before":paragraph.text,"after":shaper.text,"composed_text":''.join(line.text for line in layout.lines),
             "styles":snapshot['styles'],"edits":edits,"fonts":font_reports,

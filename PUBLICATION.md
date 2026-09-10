@@ -19,3 +19,5 @@
 書式を残す部分編集は [attributed-editing.md](docs/attributed-editing.md) と [公開集計](evaluations/attributed/summary.json) に記録する。評価入力は `evaluations/attributed/evaluate.py` の既知範囲・Unicode編集・明示領域であり、全文抽出、snapshot、glyph計画、PDF/PNGは公開しない。paint観測の比較も [専用資料](docs/paint-observation-options.md) に整理している。
 
 sourceとpaintの対応、背景・装飾の所属、要素移動は [element-ownership.md](docs/element-ownership.md) と [公開集計](evaluations/elements/summary.json) に記録する。`evaluations/elements/evaluate.py` が確定した範囲・関係と独立検証を再現する。詳細なelement snapshotには元のpath座標等が含まれるため、原本・派生PDF/PNG・全文・生のsnapshotは引き続き公開しない。
+
+文字範囲に追従する下線の評価は [anchored-decoration.md](docs/anchored-decoration.md) と [公開集計](evaluations/anchors/summary.json) に記録する。`evaluations/anchors/evaluate.py` が外部PDFの確認済み範囲、境界編集、行結合の確認、独立した描画・抽出検査を再現する。公開するのは集計・hash・コードであり、anchor候補に含む元の文字列やpath座標、確認済みsnapshot、派生PDF/PNGは含めない。

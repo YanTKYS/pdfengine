@@ -2,7 +2,7 @@
 
 調査日: 2026-09-05。既存の `idontlovepdf` 系実装とは独立した検証である。評価対象は、既存PDFの文字配置から編集可能な文章領域を推定し、編集後の文字列を実際のフォント幅で折り返して出力することにある。
 
-> **現在の構成（2026-09-10）**: 元resource忠実経路、全文font代替の局所再組版、元Unicode区間と書式を保持する部分編集を持つ。さらにsource operator・成熟rendererのpaint・呼び出し側が確定する所属を分離し、文字と背景・罫線・下線の局所移動、固定背景内の本文編集を接続した。[element-ownership.md](element-ownership.md) が現在の要素モデル・writerの選定・実PDF評価、[attributed-editing.md](attributed-editing.md) が書式付き編集、[composition.md](composition.md) が全文代替経路である。本書の以下は初期モデルと元resource経路の設計資料であり、現行機能一覧はREADMEにまとめる。
+> **現在の構成（2026-09-10）**: 元resource忠実経路、全文font代替の局所再組版、元Unicode区間と書式を保持する部分編集を持つ。さらにsource operator・成熟rendererのpaint・呼び出し側が確定する所属を分離し、文字と背景・罫線・下線の局所移動、固定背景内の本文編集を接続した。確認したUnicode範囲の下線を文章変更・折返しへ追従させるモデルと再編集の評価は[anchored-decoration.md](anchored-decoration.md)に記録する。[element-ownership.md](element-ownership.md) が現在の要素モデル・writerの選定・実PDF評価、[attributed-editing.md](attributed-editing.md) が書式付き編集、[composition.md](composition.md) が全文代替経路である。本書の以下は初期モデルと元resource経路の設計資料であり、現行機能一覧はREADMEにまとめる。
 
 ## 採用アーキテクチャ
 

@@ -102,6 +102,12 @@ def parser() -> argparse.ArgumentParser:
     rich.add_argument("--removal-output", type=Path)
     rich.add_argument("--element", type=Path, help="source-bound paint/element snapshot")
     rich.add_argument("--relations", type=Path, help="JSON object with explicit relations list")
+    rich.add_argument("--anchors", type=Path, help="confirmed Unicode decoration anchors and fixed relations")
+    anchors = sub.add_parser("inspect-anchors", help="propose source-bound decoration ranges for confirmation")
+    anchors.add_argument("input", type=Path)
+    anchors.add_argument("--paragraph", type=Path, required=True)
+    anchors.add_argument("--element", type=Path, required=True)
+    anchors.add_argument("--json", type=Path, required=True, dest="json_path")
     element = sub.add_parser("inspect-element", help="observe source paint provenance and possible ownership")
     element.add_argument("input", type=Path)
     element.add_argument("--selection", type=Path, required=True)
@@ -218,8 +224,8 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(report, ensure_ascii=False, indent=2))
         elif args.command == "edit-paragraph":
             from .paragraph import edit_paragraph
-            if bool(args.element)!=bool(args.relations):
-                raise ValueError("--element and --relations must be supplied together")
+            if bool(args.element)!=(bool(args.relations) or bool(args.anchors)) or (args.relations and args.anchors):
+                raise ValueError("--element requires exactly one of --relations or --anchors")
             changes = read_json(args.edits)
             fonts = changes.get("fonts", {})
             if not isinstance(fonts, dict) or not isinstance(changes.get("edits"), list):
@@ -230,15 +236,22 @@ def main(argv: list[str] | None = None) -> int:
                 path = Path(spec["path"])
                 spec["path"] = str(path if path.is_absolute() else (args.edits.parent/path).resolve())
             check_new_outputs([args.output, args.report, args.removal_output],
-                [args.input, args.paragraph, args.edits, args.element, args.relations, *(Path(s["path"]) for s in fonts.values())])
+                [args.input, args.paragraph, args.edits, args.element, args.relations, args.anchors, *(Path(s["path"]) for s in fonts.values())])
             report = edit_paragraph(args.input, args.output, read_json(args.paragraph), changes["edits"],
                 fonts=fonts, width=args.width, x=args.x, first_line_indent=args.first_line_indent,
                 max_bottom=args.max_bottom, min_line_height=args.min_line_height, removal_output=args.removal_output,
                 element_snapshot=read_json(args.element) if args.element else None,
-                element_relations=read_json(args.relations).get("relations") if args.relations else None)
+                element_relations=read_json(args.relations).get("relations") if args.relations else None,
+                anchor_spec=read_json(args.anchors) if args.anchors else None)
             if args.report:
                 write_json(args.report, report)
             print(json.dumps(report, ensure_ascii=False, indent=2))
+        elif args.command == "inspect-anchors":
+            from .anchors import inspect_anchors
+            check_new_outputs([args.json_path],[args.input,args.paragraph,args.element])
+            report=inspect_anchors(args.input,read_json(args.paragraph),read_json(args.element))
+            write_json(args.json_path,report)
+            print(json.dumps(report,ensure_ascii=False,indent=2))
         elif args.command == "inspect-element":
             from .elements import inspect_element
             check_new_outputs([args.json_path],[args.input,args.selection])

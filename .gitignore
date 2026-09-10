@@ -16,3 +16,4 @@ tmp/
 !/evaluations/composition/summary.json
 !/evaluations/attributed/summary.json
 !/evaluations/elements/summary.json
+!/evaluations/anchors/summary.json

@@ -173,6 +173,12 @@ def check_paragraph_obstacles(source, content, selected, resolved, inks, layout_
     observation=interpreted_paints(source,resolved.page)
     if observation['errors']:
         raise PdfError(observation['errors'][0])
+    _check_region_obstacles(content,selected,resolved,inks,layout_bounds,observation,paths,decisions)
+
+
+def _check_region_obstacles(content, selected, resolved, inks, layout_bounds,
+                            observation, paths, decisions, replaced_path_ids=()):
+    """Check planned ink against fixed paint; replacement IDs are backend plans."""
     path_by_index={i:p for p in paths.values() if p['proof']['status']=='proven' for i in p['proof']['paint_indices']}
     first=min(content.actual[i]['span']['seqno'] for i in selected)
     original=_observations(content.page)
@@ -186,6 +192,9 @@ def check_paragraph_obstacles(source, content, selected, resolved, inks, layout_
                 raise PdfError('composed text intersects an image')
         for i,event in enumerate(observation['events']):
             if event['kind'] not in ('fill-path','stroke-path') or not ink.intersects(Rect(*event['bounds']),.001):
+                continue
+            path=path_by_index.get(i)
+            if path and path['source_id'] in replaced_path_ids:
                 continue
             if event['kind']=='fill-path' and intersects_fill(event,ink) is False:
                 continue
@@ -203,7 +212,6 @@ def check_paragraph_obstacles(source, content, selected, resolved, inks, layout_
                             Rect(rect.x1-margin,rect.y0-margin,rect.x1+margin,rect.y1+margin)))
                     if not any(ink.intersects(edge) for edge in edges):
                         continue
-            path=path_by_index.get(i)
             relation=decisions.get(path['source_id']) if path else None
             if (relation and relation['relation']=='backgrounds' and event['kind']=='fill-path'
                     and event['seqno']<first and contains_fill(event,resolved.bbox) and contains_fill(event,ink)):
