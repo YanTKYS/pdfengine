@@ -1,0 +1,252 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+      "attributed.py": "f44d5e248b9243ecddbee2668d5b5993407a32029f767015ea779df50a3e8507",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "51ecaf1142932a5fb5c17dfbb87433757d6e4d7c5b6d6f9a00627df17a9998dd",
+      "composition.py": "5dd3450b6c351b7dde08840757addf4446af23aabc766eea5dd0c7364fe6917e",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "editable.py": "cb3b7d8d9803a7109f3ff7425fd8eea9ca9e85951576df9da671f369cb5e6cbd",
+      "elements.py": "3ff850eca5cda5b24e9942e986e73613a7976f4fb95a30c718f002608cf0f392",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+      "paragraph.py": "c09a4b4c4a2c5093f31643f5610dab2dbfaa9b66ce4deed038a047a8b93d6a20",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+    },
+    "runner_sha256": "9233e80937909890deed7e826a05ee12ab5073fc85cf84749a39f7a5e30a5e42",
+    "pymupdf": "1.27.2.3"
+  },
+  "counts": {
+    "passed": 3,
+    "rejected": 5
+  },
+  "cases": [
+    {
+      "case": "generation1",
+      "status": "passed",
+      "classification": "persistent_editing_semantics",
+      "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+      "output_sha256": "77186b4576c7d94f4206567a77adda8dcdf2c6b2c97b72d7f32d40680148d103",
+      "model_sha256": "280cde5e551ed9015657be9553a6cd3512325abf862e533a4953f70b3018ec3f",
+      "no_op_poppler_changed_pixels": 0,
+      "old_lines": 7,
+      "new_lines": 8,
+      "underline_segments": 4,
+      "retained_glyphs": 245,
+      "provided_font_glyphs": 22,
+      "reused_source_code_glyphs": 0,
+      "exact_logical_text": true,
+      "authored_breaks": 2,
+      "paragraph_boundaries": 1,
+      "range_and_container_preserved": true,
+      "repeated_semantic_confirmation": true,
+      "poppler_outside_changed_pixels": 0,
+      "removal_outside_changed_pixels": 0,
+      "independent_text_and_removal": true,
+      "font_codes_gids_widths": true,
+      "images_unchanged": true,
+      "nontext_paint_plan": true
+    },
+    {
+      "case": "generation2",
+      "status": "passed",
+      "classification": "persistent_editing_semantics",
+      "source_sha256": "77186b4576c7d94f4206567a77adda8dcdf2c6b2c97b72d7f32d40680148d103",
+      "output_sha256": "ab4385684f68f964e6de9f543b951ba0b7fec649e40892609454f793a876e3eb",
+      "model_sha256": "e152a89ddaa36c44002174794ef592a6e5bd8f9ade60201bbb91b7cf5ee79290",
+      "no_op_poppler_changed_pixels": 0,
+      "old_lines": 8,
+      "new_lines": 7,
+      "underline_segments": 3,
+      "retained_glyphs": 244,
+      "provided_font_glyphs": 0,
+      "reused_source_code_glyphs": 2,
+      "exact_logical_text": true,
+      "authored_breaks": 2,
+      "paragraph_boundaries": 1,
+      "range_and_container_preserved": true,
+      "repeated_semantic_confirmation": false,
+      "poppler_outside_changed_pixels": 0,
+      "removal_outside_changed_pixels": 0,
+      "independent_text_and_removal": true,
+      "font_codes_gids_widths": true,
+      "images_unchanged": true,
+      "nontext_paint_plan": true
+    },
+    {
+      "case": "generation3",
+      "status": "passed",
+      "classification": "persistent_editing_semantics",
+      "source_sha256": "ab4385684f68f964e6de9f543b951ba0b7fec649e40892609454f793a876e3eb",
+      "output_sha256": "bf9abd0f140accd7bde17a33dc3f2f3e5c2eb70ad159dc6c242380e9905806c4",
+      "model_sha256": "72593b2698a7472b7ef8fb11ee8dd47abc2d027b05d355cca82998fbba21a904",
+      "no_op_poppler_changed_pixels": 0,
+      "old_lines": 7,
+      "new_lines": 7,
+      "underline_segments": 3,
+      "retained_glyphs": 245,
+      "provided_font_glyphs": 9,
+      "reused_source_code_glyphs": 1,
+      "exact_logical_text": true,
+      "authored_breaks": 2,
+      "paragraph_boundaries": 1,
+      "range_and_container_preserved": true,
+      "repeated_semantic_confirmation": false,
+      "poppler_outside_changed_pixels": 0,
+      "removal_outside_changed_pixels": 0,
+      "independent_text_and_removal": true,
+      "font_codes_gids_widths": true,
+      "images_unchanged": true,
+      "nontext_paint_plan": true
+    },
+    {
+      "case": "missing_sidecar",
+      "status": "rejected",
+      "classification": "safe_semantic_refusal_with_observation_fallback",
+      "ordinary_pdf_readable": true,
+      "semantics": "unknown",
+      "output_created": false,
+      "resave_poppler_changed_pixels": null,
+      "resave_visual_equivalent": null,
+      "external_rewrite": {},
+      "reason": "editable model is missing"
+    },
+    {
+      "case": "pypdf_resave",
+      "status": "rejected",
+      "classification": "safe_semantic_refusal_with_observation_fallback",
+      "ordinary_pdf_readable": true,
+      "semantics": "unknown",
+      "output_created": false,
+      "resave_poppler_changed_pixels": 0,
+      "resave_visual_equivalent": true,
+      "external_rewrite": {
+        "page_boxes_equal": true,
+        "decoded_contents_equal": true,
+        "resource_values_equal": true
+      },
+      "reason": "PDF revision differs from the editable model"
+    },
+    {
+      "case": "mupdf_resave",
+      "status": "rejected",
+      "classification": "safe_semantic_refusal_with_observation_fallback",
+      "ordinary_pdf_readable": true,
+      "semantics": "unknown",
+      "output_created": false,
+      "resave_poppler_changed_pixels": 1276,
+      "resave_visual_equivalent": false,
+      "external_rewrite": {
+        "page_boxes_equal": false,
+        "decoded_contents_equal": true,
+        "resource_values_equal": false
+      },
+      "reason": "PDF revision differs from the editable model"
+    },
+    {
+      "case": "external_change",
+      "status": "rejected",
+      "classification": "safe_semantic_refusal_with_observation_fallback",
+      "ordinary_pdf_readable": true,
+      "semantics": "unknown",
+      "output_created": false,
+      "resave_poppler_changed_pixels": null,
+      "resave_visual_equivalent": null,
+      "external_rewrite": {},
+      "reason": "PDF revision differs from the editable model"
+    },
+    {
+      "case": "damaged_sidecar",
+      "status": "rejected",
+      "classification": "safe_semantic_refusal_with_observation_fallback",
+      "ordinary_pdf_readable": true,
+      "semantics": "unknown",
+      "output_created": false,
+      "resave_poppler_changed_pixels": null,
+      "resave_visual_equivalent": null,
+      "external_rewrite": {},
+      "reason": "editable model version or checksum is invalid"
+    }
+  ],
+  "scope": "One external original and three editing generations; fixed container, no inter-element or page flow.",
+  "visual_review": {
+    "status": "passed",
+    "generation1": "PDF hash equals the previously reviewed anchored long edit",
+    "generation2_and_3": "Visually reviewed candidate PNGs; final PDF and Poppler PNG bytes are identical",
+    "observations": [
+      "logical word boundaries and authored breaks retained",
+      "underlines follow their logical ranges",
+      "background, border, diagram and footer remain fixed"
+    ]
+  },
+  "unit_validation": {
+    "full_suite": {
+      "passed": 362,
+      "skipped": 2,
+      "scope": "Before the final CRLF-span and persistent-state consistency checks",
+      "skip_reason": "AES provider unavailable"
+    },
+    "final_related_suite": {
+      "passed": 16,
+      "scope": "Final persistent semantics, CRLF, leading blank line, stale/corrupt state, font recipes, rollback, encryption and CLI tests"
+    }
+  },
+  "page_coverage": {
+    "new_external_original_pages": 1,
+    "other_pages_in_new_external_cases": "not_applicable",
+    "multi_page_validation": "synthetic and pre-existing route tests"
+  },
+  "regression": {
+    "attributed": {
+      "passed": 4,
+      "rejected": 3,
+      "statuses_refusals_output_hashes_unchanged": true,
+      "run": "editable_regression"
+    },
+    "unchanged_modules": [
+      "replay.py",
+      "slot_edit.py",
+      "explicit_reflow.py",
+      "content_stream.py",
+      "selection.py",
+      "pdf_save.py",
+      "composition.py",
+      "elements.py",
+      "paint_provenance.py",
+      "paint_geometry.py",
+      "rich_layout.py",
+      "shaped_font.py",
+      "layout.py"
+    ],
+    "reused_evidence": "Original resource, composition and rigid element external results from the preceding phase; full unit suite also covers them. Attributed and anchored routes are re-run because their shared path changed.",
+    "anchors": {
+      "passed": 3,
+      "rejected": 2,
+      "statuses_refusals_output_hashes_unchanged": true,
+      "run": "editable_regression"
+    }
+  },
+  "validation_helpers_sha256_at_publication": {
+    "evaluations/anchors/evaluate.py": "b5f7c67cff3a1b986ebde1fcccbeae1e96ef34886767e688f520d63812fa3c83",
+    "evaluations/attributed/evaluate.py": "6023d19e5b0c57d231a0d8f54d3ea931a52364b91c34cd84150e0269e77ccbb1",
+    "evaluations/elements/evaluate.py": "1d57e50a39becd1322a762c05db278c9c741d1f415eddca22330a9936f7ef456",
+    "evaluations/backend/followup.py": "a9237381ffb45144979f879457bb0d1df1ea323993726021ad5d2b4da4368eba",
+    "evaluations/realpdf/evaluate.py": "7f4754523b1849b4f744ba9a11841a9be1c6bc2d2fdcdee3c7e4706beb908a18"
+  }
+}

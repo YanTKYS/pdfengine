@@ -68,7 +68,7 @@ def _candidates(paragraph, element):
 
 
 def inspect_anchors(source, paragraph_snapshot, element_snapshot):
-    paragraph=SourceParagraph(source,paragraph_snapshot['selection'],line_joiner=paragraph_snapshot['line_joiner'])
+    paragraph=SourceParagraph(source,paragraph_snapshot['selection'],line_joiner=paragraph_snapshot['line_joiner'],logical=paragraph_snapshot.get('logical'))
     try:
         if paragraph.snapshot()!=paragraph_snapshot or inspect_element(source,element_snapshot['selection'])!=element_snapshot:
             raise PdfError('anchor inputs no longer match their source')
@@ -181,7 +181,8 @@ class AnchoredPaintEdit:
                 raise PdfError('underline templates disagree in baseline offset or thickness')
             ids.extend(source_ids)
             self.groups.append(dict(source_ids=source_ids,input_range=[a,b],output_range=projected,
-                                    offset=offset,thickness=thickness,provenance='explicitly_supplied'))
+                                    offset=offset,thickness=thickness,provenance='explicitly_supplied',
+                                    start_affinity=anchor.get('start_affinity','reject'),end_affinity=anchor.get('end_affinity','reject')))
         if len(ids)!=len(set(ids)):
             raise PdfError('a source path cannot belong to multiple underline groups')
         self.paths,self.decisions=_confirmed(element,fixed+[dict(source_id=i,relation='decorates',behavior='fixed-to-element') for i in ids])
@@ -199,7 +200,7 @@ class AnchoredPaintEdit:
         self.patches=[];self.segments=[];self.replacements={}
 
     def plan(self, layout, inks, ink_bounds, available_region):
-        for group in self.groups:
+        for group_index,group in enumerate(self.groups):
             paths=sorted((self.paths[i] for i in group['source_ids']),key=lambda p:p['source']['merged_range'][0])
             template=paths[0]['proof']['paints'][0]
             _check_clip(template,ink_bounds)
@@ -229,7 +230,7 @@ class AnchoredPaintEdit:
                         raise PdfError('underline extends beyond the confirmed paragraph region')
                     _check_clip(template,rect)
                     rectangles.append(rect)
-                    self.segments.append(dict(range=[glyphs[0].start,glyphs[-1].end],baseline=line.baseline,bounds=asdict(rect)))
+                    self.segments.append(dict(group=group_index,range=[glyphs[0].start,glyphs[-1].end],baseline=line.baseline,bounds=asdict(rect)))
             for path in paths:
                 replacement=path['proof']['evidence']['replacement'].encode()
                 if path is paths[0] and rectangles:

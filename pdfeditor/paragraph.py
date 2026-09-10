@@ -90,6 +90,7 @@ class ParagraphShaper:
                 if index+1 < end:
                     following = self.units[index+1].retained
                     if (following is not None and following.char is not None
+                            and original.source_index is not None and following.source_index is not None
                             and following.line == original.line
                             and self.original_offsets[id(following)] == self.original_offsets[id(original)]+1):
                         advance = following.observation['origin'][0] - observation['origin'][0]
@@ -101,6 +102,7 @@ class ParagraphShaper:
                 result.append(InlineGlyph(unit.text,advance,ink,
                     max(0,baseline-y0-style.rise),max(0,y1-baseline+style.rise),
                     {"style_id":style.id,"source_index":original.source_index,
+                     "code_witness":original.code_witness,
                      "provider":"original","resource":style.event.state.font.name,
                      "code":original.char.code,"glyph_id":observation['glyph_id'],
                      "font_name":observation['font'],"offset":(0,style.rise),
@@ -143,13 +145,13 @@ class ParagraphShaper:
 
 def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x=None,
                    first_line_indent=None, max_bottom=None, min_line_height=None,
-                   removal_output=None, element_snapshot=None, element_relations=None, anchor_spec=None):
+                   removal_output=None, element_snapshot=None, element_relations=None, anchor_spec=None, baseline=None):
     output = ensure_destination(output,source)
     if removal_output:
         removal_output = ensure_destination(removal_output,source)
         if output == removal_output:
             raise PdfError("output and removal checkpoint must be distinct")
-    paragraph = SourceParagraph(source,snapshot['selection'],line_joiner=snapshot['line_joiner'])
+    paragraph = SourceParagraph(source,snapshot['selection'],line_joiner=snapshot['line_joiner'],logical=snapshot.get('logical'))
     shaper = None
     try:
         units = apply_edits(paragraph,snapshot,edits)
@@ -168,7 +170,7 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
         suggestion = snapshot['layout_suggestion']
         x = suggestion['x'] if x is None else x
         indent = suggestion['first_line_indent'] if first_line_indent is None else first_line_indent
-        baseline = suggestion['baseline']
+        baseline = suggestion['baseline'] if baseline is None else baseline
         size = paragraph.styles[paragraph.units[0].style_id].size
         observed = min((b-a for a,b in zip(suggestion['base_baselines'],suggestion['base_baselines'][1:]) if b>a),default=size*1.4)
         leading = observed if min_line_height is None else min_line_height
@@ -213,7 +215,7 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
         for placed in layout.glyphs:
             payload = placed.glyph.payload
             style = paragraph.styles[payload['style_id']]
-            if payload['source_index'] is None:
+            if payload['provider']!='original':
                 alias = font_reports[payload['provider']]['resource']
                 resource = resources[alias]
                 code = resource.code(payload['shaped_glyph'])
@@ -235,8 +237,9 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
                     raise PdfError("styled glyph extends beyond the confirmed paragraph region")
                 allow_clip(state,ink,content.page.transformation_matrix)
                 inks.append(ink)
-            plan.append({"unicode":placed.glyph.text,"style_id":style.id,
+            plan.append({"unicode":placed.glyph.text,"style_id":style.id,"start":placed.start,"end":placed.end,
                 "source_index":payload['source_index'],"provider":payload['provider'],
+                "code_witness":payload.get('code_witness'),
                 "font_resource":alias,"code":code.hex(),"cid":cid,"glyph_id":payload['glyph_id'],
                 "origin":[gx,gy],"size":style.size,
                 "trace_size":style.size*style.horizontal_scale,"color":style.color,
@@ -303,7 +306,8 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
                         or actual['paint_type']!=0 or actual['opacity']!=1 or actual['color']!=wanted['color']
                         or max(abs(a-b) for a,b in zip(actual['origin'],wanted['origin']))>.002):
                     raise PdfError("saved styled glyph ID, origin or paint differs from its plan")
-                if wanted['source_index'] is not None and actual['font']!=paragraph.observations[wanted['source_index']]['font']:
+                witness=wanted['source_index'] if wanted['source_index'] is not None else wanted['code_witness']
+                if witness is not None and actual['font']!=paragraph.observations[witness]['font']:
                     raise PdfError("retained text no longer uses its original font")
             aliases = {name[1:] for name in resources}
             current = font_fingerprints(document,pno)
@@ -330,13 +334,16 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
             "anchors":anchored.report() if anchored else None,
             "snapshot_sha256":snapshot['snapshot_sha256'],"selection":paragraph.selection,
             "before":paragraph.text,"after":shaper.text,"composed_text":''.join(line.text for line in layout.lines),
+            "logical_styles":[u.style_id for u in units],
+            "logical_origins":[shaper.original_offsets[id(u.retained)] if u.retained is not None else None for u in units],
             "styles":snapshot['styles'],"edits":edits,"fonts":font_reports,
-            "widths":asdict(available),"x":x,"first_line_indent":indent,"min_line_height":leading,
+            "widths":asdict(available),"x":x,"baseline":baseline,"first_line_indent":indent,"min_line_height":leading,
             "old_line_count":len(resolved.lines),"new_line_count":len(layout.lines),
             "lines":[{k:getattr(line,k) for k in ('text','start','end','x','baseline','width','ascent','descent')} for line in layout.lines],
             "glyph_plan":plan,"audit_bbox":asdict(affected),"source_replay_mupdf_passed":True,
             "retained_glyph_count":sum(g['source_index'] is not None for g in plan),
-            "provided_font_glyph_count":sum(g['source_index'] is None for g in plan),
+            "provided_font_glyph_count":sum(g['provider']!='original' for g in plan),
+            "reused_code_glyph_count":sum(g['code_witness'] is not None for g in plan),
             "font_policy":"Retain original codes for unedited intervals; shape edited intervals using explicitly supplied fonts.",
             "mupdf_outside_pixels_equal":True,"independent_renderer_verified":False}
     finally:

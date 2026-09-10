@@ -58,12 +58,15 @@ def font_mapping_audit(output, report):
     if reader.is_encrypted:
         reader.decrypt("")
     fonts = reader.pages[report['selection']['page']-1]['/Resources']['/Font']
-    checked = retained = 0
+    checked = retained = reused = 0
     for glyph in report['glyph_plan']:
         root = fonts[glyph['font_resource']].get_object()
         if glyph['source_index'] is not None:
             retained += 1
             continue  # Original graph/code/GID verification also runs below.
+        if glyph.get('code_witness') is not None:
+            reused += 1
+            continue  # A known source code, without a retained paint occurrence.
         child = root['/DescendantFonts'][0].get_object()
         mapping, widths, cid = child['/CIDToGIDMap'].get_data(), child['/W'], glyph['cid']
         assert int.from_bytes(mapping[2*cid:2*cid+2],'big') == glyph['glyph_id']
@@ -71,7 +74,7 @@ def font_mapping_audit(output, report):
         assert abs(float(widths[1][cid-1])-glyph['nominal_pdf_width']) < 1e-5
         assert root['/ToUnicode'].get_data()
         checked += 1
-    return {'passed':True,'new_glyph_occurrences':checked,'retained_glyph_occurrences':retained}
+    return {'passed':True,'new_glyph_occurrences':checked,'retained_glyph_occurrences':retained,'reused_code_occurrences':reused}
 
 
 def original_code_audit(source, report):
@@ -80,9 +83,10 @@ def original_code_audit(source, report):
         chars = {i:(event,char) for event in content.selected_events(set(report['selection']['glyph_ids']))
                  for char in event.chars for i in char.source_orders}
         for glyph in report['glyph_plan']:
-            if glyph['source_index'] is None:
+            witness=glyph['source_index'] if glyph['source_index'] is not None else glyph.get('code_witness')
+            if witness is None:
                 continue
-            event,char = chars[glyph['source_index']]
+            event,char = chars[witness]
             assert glyph['code'] == char.code.hex()
             assert glyph['font_resource'] == event.state.font.name
         return {'passed':True,'policy':'original resource alias and encoded bytes retained; saved GIDs verified by backend'}

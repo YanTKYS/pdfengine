@@ -16,6 +16,7 @@
 | `inspect-paragraph` → `edit-paragraph` | 書式を持つ文章の一部を変更、追加、削除 | 元Unicode区間とstyleを対応付け、未変更部分の元resource・コード・GIDを保持。変更部分だけ明示fontでshape |
 | `inspect-element` → `move-element` | 所属を確認した文字・背景・罫線・下線を一式で移動 | 元のtext/path命令・座標token・fontを保持。描画順、clip、固定物との衝突を検査 |
 | `inspect-anchors` → `edit-paragraph --anchors` | 文字範囲に属する下線を長文化・短文化・折返しに追従 | 元の下線paintを除去し、同じpaint状態で各行の実advanceに沿って再生成。背景・外枠は固定 |
+| `edit-paragraph --editable-state` → `edit-document` | 確認した文章・改行・装飾範囲・領域を保存し、同じ意味で再編集 | 通常のPDFとSHA-256で結び付いたsidecar。生成した折返しを論理改行へ変換しない |
 
 書式を保持する経路では、LibreOffice本文の英字12pt・日本語10.5ptを残した2行→1行、元の68文字を残して66文字を追加する2行→3行、仮想プリンタPDFの通常体・斜体を残す部分置換を確認しました。[書式付き編集の評価と境界](docs/attributed-editing.md)を参照してください。全文font代替経路でのWord・Chrome等の結果は [composition.md](docs/composition.md) にあります。指定fontで描く部分は、元書体と同一とは限りません。
 
@@ -125,7 +126,28 @@ macOS/Linuxでは `.venv/bin/python` を使います。この版の実PDF評価�
 
 現在の対象は、source対応が一意な不透明・単色・矩形fillの横下線です。元の色・太さ・baselineからの距離を保持し、行ごとに独立したpaintとして保存します。外部生成PDFで長文化、短文化、保存後の再編集を検証しています。[結果と制約](docs/anchored-decoration.md)を参照してください。背景・外枠の伸縮、他段落の追従移動は行いません。
 
-再編集時は出力PDFからsnapshotを作り直し、**折返し位置の空白と段落境界を確認**してください。PDFから元のsoft wrapとhard breakは自動復元できません。例えば英語の物理行を空白なしで連結すると、単語が連結されたまま再組版されます。`--line-joiner space` と明示的な改行編集を使えますが、単語途中の折返し等は別途確認が必要です。
+PDFだけから再編集する場合はsnapshotを作り直し、**折返し位置の空白と段落境界を確認**してください。PDFから元のsoft wrapとhard breakは自動復元できません。例えば英語の物理行を空白なしで連結すると、単語が連結されたまま再組版されます。`--line-joiner space` と明示的な改行編集を使えますが、単語途中の折返し等は別途確認が必要です。
+
+## 編集の意味を保存して再編集する
+
+```powershell
+# 確認したparagraphと変更を、PDFと編集用sidecarの組として保存する
+.\.venv\Scripts\python.exe -m pdfeditor edit-paragraph input.pdf first.pdf --paragraph paragraph.json --edits changes.json --editable-state first.edit.json --max-bottom 500
+
+# 保存した論理文字列と境界を確認する。physical lineの再結合は不要
+.\.venv\Scripts\python.exe -m pdfeditor open-editable first.pdf --state first.edit.json --json reopened.json
+
+# 次の変更位置は、保存した論理文字列のUnicode位置で指定する
+.\.venv\Scripts\python.exe -m pdfeditor edit-document first.pdf second.pdf --state first.edit.json --state-output second.edit.json --edits next-changes.json --report second-report.json
+```
+
+初回に下線や固定背景を確認した場合は、従来の `--element` と `--anchors` または `--relations` も渡します。その関係、利用可能幅・下端、baseline、論理文字列をsidecarへ保存し、次回に引き継ぎます。PDFとsidecarは一緒に保持してください。通常のPDF viewerはPDFだけで表示できます。
+
+明示した改行はhard breakとして保存します。段落境界を区別する場合、変更JSONの `"boundary_kinds": {"13": "paragraph_boundary"}` のように、**変更後**の文字列の改行開始位置を指定します。保持された境界は次の編集で位置を更新し、CRLFも一つの境界として扱います。自動折返しは別の生成結果です。
+
+sidecarがない、壊れている、PDFが外部ツールで保存し直された場合、`open-editable` は `needs_confirmation` と物理観測を返します。`edit-document` はその状態で編集せず、再確認を要求します。fontの指定はファイルhashとともに引き継ぎ、移動・変更されたfontには次の変更JSONで明示的な指定が必要です。sidecarは確認済みの編集用入力として扱い、checksumは作成者の署名ではありません。
+
+[意味保持の設計・外部再保存・実PDF評価](docs/persistent-editing-semantics.md)に成立範囲を記録しています。現在は一つの選択要素と固定領域を保存するモデルです。
 
 ## 忠実性と幅の契約
 
@@ -152,6 +174,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 - `pdf_save.py`: resource追加、共有辞書の分離、暗号化を保持する保存adapter
 - `paint_provenance.py` / `marked_content.py` / `paint_geometry.py` / `elements.py`: sourceと解釈済みpaintの対応、active scope、実形状の包含、明示的な所属と局所移動
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
+- `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - [書式付き編集](docs/attributed-editing.md)、[全文font代替](docs/composition.md)、[paint観測の技術比較](docs/paint-observation-options.md)、[内部モデルと初期設計](docs/architecture.md)
 
 ```powershell

@@ -53,6 +53,7 @@ class SourceUnit:
     line: int
     char: object = None
     observation: dict | None = None
+    code_witness: int | None = None
 
 
 @dataclass
@@ -64,11 +65,12 @@ class EditUnit:
 
 
 class SourceParagraph:
-    def __init__(self, source, selection, *, line_joiner=""):
+    def __init__(self, source, selection, *, line_joiner="", logical=None):
         if line_joiner not in ("", " ", "\n"):
             raise PdfError("line joiner must be empty, a space, or a newline")
         self.selection = selection
         self.line_joiner = line_joiner
+        self.logical = logical
         self.resolved = resolve_selection(source, selection)
         self.content = ContentPage(source, self.resolved.page)
         try:
@@ -142,12 +144,54 @@ class SourceParagraph:
             self.text = "".join(u.text for u in self.units)
             if any(len(u.text) != 1 for u in self.units):
                 raise PdfError("source clusters need an explicit multi-codepoint selection contract")
+            if logical is not None:
+                self._restore_logical(logical)
         except Exception:
             self.close()
             raise
 
     def close(self):
         self.content.close()
+
+    def _restore_logical(self, logical):
+        """Bind a reviewed logical sequence to exact, current PDF glyph IDs.
+
+        Non-painted characters are explicit whitespace/breaks in the editing
+        model. They are never observations of PDF text operators.
+        """
+        if logical.get('pdf_sha256') != self.selection['source_sha256']:
+            raise PdfError('logical model belongs to a different PDF revision')
+        text, records = logical.get('text'), logical.get('units')
+        if not isinstance(text,str) or not isinstance(records,list) or len(text)!=len(records):
+            raise PdfError('logical text needs one source binding per Unicode codepoint')
+        observed={u.source_index:u for u in self.units if u.source_index is not None}
+        units=[];used=[]
+        for char,record in zip(text,records):
+            index=record.get('glyph_id');witness=record.get('style_glyph_id')
+            if type(witness) is not int or witness not in observed:
+                raise PdfError('logical style needs a selected source glyph witness')
+            style=observed[witness]
+            if index is None:
+                if char not in ' \r\n':
+                    raise PdfError('non-painted logical characters must be spaces or explicit breaks')
+                # A space that previously fell at a soft wrap has no paint
+                # occurrence. Reuse a proven same-style space code when one
+                # exists, without pretending it is another source occurrence.
+                spaces=[u for u in observed.values() if char==' ' and u.text==' ' and u.style_id==style.style_id]
+                if spaces:
+                    space=spaces[0]
+                    units.append(SourceUnit(char,style.style_id,None,style.line,space.char,space.observation,space.source_index))
+                else:
+                    units.append(SourceUnit(char,style.style_id,None,style.line))
+            else:
+                if type(index) is not int or index not in observed or observed[index].text!=char:
+                    raise PdfError('logical character differs from its source glyph')
+                if observed[index].style_id!=style.style_id:
+                    raise PdfError('logical style differs from the source glyph style')
+                units.append(observed[index]);used.append(index)
+        if len(used)!=len(set(used)) or set(used)!=set(observed):
+            raise PdfError('logical source bindings must account for each selected glyph exactly once')
+        self.units,self.text=units,text
 
     def snapshot(self):
         spans = []
@@ -158,7 +202,7 @@ class SourceParagraph:
             spans[-1]["text"] += unit.text
         lefts = [min(g.origin[0] for g in line.glyphs) for line in self.resolved.lines]
         baselines = [median(u.observation['origin'][1]-self.styles[u.style_id].rise
-                            for u in self.units if u.line==i and u.observation is not None)
+                            for u in self.units if u.line==i and u.source_index is not None)
                      for i in range(len(self.resolved.lines))]
         x = min(lefts)
         value = {"schema_version":1,"selection":self.selection,"line_joiner":self.line_joiner,
@@ -169,12 +213,14 @@ class SourceParagraph:
                  "contract":"Review text, style intervals and line joining. Supply available width; edits use Unicode offsets, not PDF glyph IDs."}
         # JSON-normalize tuples so snapshots can be round-tripped directly.
         value = json.loads(json.dumps(value))
+        if self.logical is not None:
+            value['logical']=self.logical
         value["snapshot_sha256"] = digest(value)
         return value
 
 
-def inspect_paragraph(source, selection, *, line_joiner=""):
-    paragraph = SourceParagraph(source,selection,line_joiner=line_joiner)
+def inspect_paragraph(source, selection, *, line_joiner="", logical=None):
+    paragraph = SourceParagraph(source,selection,line_joiner=line_joiner,logical=logical)
     try:
         return paragraph.snapshot()
     finally:

@@ -103,6 +103,22 @@ def parser() -> argparse.ArgumentParser:
     rich.add_argument("--element", type=Path, help="source-bound paint/element snapshot")
     rich.add_argument("--relations", type=Path, help="JSON object with explicit relations list")
     rich.add_argument("--anchors", type=Path, help="confirmed Unicode decoration anchors and fixed relations")
+    rich.add_argument("--editable-state", type=Path, help="save revision-bound logical text, roles and region in a sidecar")
+    reopen = sub.add_parser("open-editable", help="restore bound editing semantics, or return observations for confirmation")
+    reopen.add_argument("input", type=Path)
+    reopen.add_argument("--state", type=Path)
+    reopen.add_argument("--page", type=int, default=1)
+    reopen.add_argument("--json", type=Path, required=True, dest="json_path")
+    document = sub.add_parser("edit-document", help="edit a saved logical document without re-inferring line joins or ownership")
+    document.add_argument("input", type=Path)
+    document.add_argument("output", type=Path)
+    document.add_argument("--state", type=Path, required=True)
+    document.add_argument("--state-output", type=Path, required=True)
+    document.add_argument("--edits", type=Path, required=True)
+    document.add_argument("--width", type=float)
+    document.add_argument("--max-bottom", type=float)
+    document.add_argument("--report", type=Path)
+    document.add_argument("--removal-output", type=Path)
     anchors = sub.add_parser("inspect-anchors", help="propose source-bound decoration ranges for confirmation")
     anchors.add_argument("input", type=Path)
     anchors.add_argument("--paragraph", type=Path, required=True)
@@ -235,17 +251,45 @@ def main(argv: list[str] | None = None) -> int:
                     raise ValueError("each supplied font needs a path")
                 path = Path(spec["path"])
                 spec["path"] = str(path if path.is_absolute() else (args.edits.parent/path).resolve())
-            check_new_outputs([args.output, args.report, args.removal_output],
+            check_new_outputs([args.output, args.report, args.removal_output, args.editable_state],
                 [args.input, args.paragraph, args.edits, args.element, args.relations, args.anchors, *(Path(s["path"]) for s in fonts.values())])
-            report = edit_paragraph(args.input, args.output, read_json(args.paragraph), changes["edits"],
+            extra={}
+            if args.editable_state:
+                from .editable import write_editable
+                extra={'model_output':args.editable_state,'boundary_kinds':changes.get('boundary_kinds')}
+                edit_paragraph=write_editable
+            report = edit_paragraph(args.input, args.output, snapshot=read_json(args.paragraph), edits=changes["edits"],
                 fonts=fonts, width=args.width, x=args.x, first_line_indent=args.first_line_indent,
                 max_bottom=args.max_bottom, min_line_height=args.min_line_height, removal_output=args.removal_output,
                 element_snapshot=read_json(args.element) if args.element else None,
                 element_relations=read_json(args.relations).get("relations") if args.relations else None,
-                anchor_spec=read_json(args.anchors) if args.anchors else None)
+                anchor_spec=read_json(args.anchors) if args.anchors else None,**extra)
             if args.report:
                 write_json(args.report, report)
             print(json.dumps(report, ensure_ascii=False, indent=2))
+        elif args.command == "open-editable":
+            from .editable import open_editable
+            check_new_outputs([args.json_path],[args.input,args.state])
+            report=open_editable(args.input,args.state,page=args.page)
+            write_json(args.json_path,report)
+            print(json.dumps(report,ensure_ascii=False,indent=2))
+        elif args.command == "edit-document":
+            from .editable import edit_document
+            changes=read_json(args.edits);fonts=changes.get('fonts',{})
+            if not isinstance(fonts,dict) or not isinstance(changes.get('edits'),list):
+                raise ValueError('edits JSON needs an edits list and a fonts object')
+            for spec in fonts.values():
+                if not isinstance(spec,dict) or not isinstance(spec.get('path'),str):
+                    raise ValueError('each supplied font needs a path')
+                path=Path(spec['path'])
+                spec['path']=str(path if path.is_absolute() else (args.edits.parent/path).resolve())
+            check_new_outputs([args.output,args.state_output,args.report,args.removal_output],
+                              [args.input,args.state,args.edits,*(Path(s['path']) for s in fonts.values())])
+            overrides={k:getattr(args,k) for k in ('width','max_bottom','removal_output') if getattr(args,k) is not None}
+            report=edit_document(args.input,args.state,args.output,args.state_output,changes['edits'],fonts=fonts,
+                                 boundary_kinds=changes.get('boundary_kinds'),**overrides)
+            if args.report:write_json(args.report,report)
+            print(json.dumps(report,ensure_ascii=False,indent=2))
         elif args.command == "inspect-anchors":
             from .anchors import inspect_anchors
             check_new_outputs([args.json_path],[args.input,args.paragraph,args.element])
