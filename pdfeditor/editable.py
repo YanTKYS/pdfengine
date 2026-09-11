@@ -21,6 +21,7 @@ from .backend import PdfError
 from .content_stream import ContentPage
 from .elements import inspect_element, _close, _paint_value
 from .paragraph import edit_paragraph
+from .logical_element import paragraph_from_snapshot, bind_empty
 from .replay import ensure_destination
 from .selection import inspect_selection_source, make_selection, source_sha
 
@@ -36,7 +37,7 @@ def _read(value):
         value=json.loads(Path(value).read_text(encoding='utf-8'))
     value=deepcopy(value)
     checksum=value.pop('model_sha256',None)
-    if value.get('schema')!='pdfengine-editable-1' or checksum!=digest(value):
+    if value.get('schema') not in ('pdfengine-editable-1','pdfengine-editable-2') or checksum!=digest(value):
         raise PdfError('editable model version or checksum is invalid')
     value['model_sha256']=checksum
     return value
@@ -53,6 +54,12 @@ def open_editable(source, model=None, *, page=1):
         if PdfReader(source).is_encrypted:
             raise PdfError('plaintext editing sidecars are not supported for encrypted PDFs')
         snapshot=state['paragraph']
+        if state['schema']=='pdfengine-editable-2':
+            identity=state['logical_element']
+            if (identity['id']!='paragraph-1' or identity['kind']!='paragraph'
+                    or identity['contained_by']!='region-1'
+                    or identity['alignment']!=dict(value='left',provenance='generated_layout_policy')):
+                raise PdfError('unsupported logical element identity or paragraph formatting')
         declared=state['boundaries']
         spans=[(m.start(),m.end()) for m in re.finditer(r'\r\n|\r|\n',snapshot['text'])]
         if ([(b['offset'],b['end']) for b in declared]!=spans or
@@ -63,13 +70,15 @@ def open_editable(source, model=None, *, page=1):
                 or container['follows'] or container['region']!=dict(x=layout['x'],width=layout['width'],
                     first_baseline=layout['baseline'],bottom=layout['max_bottom'])):
             raise PdfError('unsupported or inconsistent persistent container relations')
-        actual=inspect_paragraph(source,snapshot['selection'],logical=snapshot['logical'])
+        paragraph=paragraph_from_snapshot(source,snapshot)
+        try:actual=paragraph.snapshot()
+        finally:paragraph.close()
         if actual!=snapshot:
             raise PdfError('stored paragraph no longer matches physical PDF evidence')
-        if state.get('element') is not None and inspect_element(source,state['element']['selection'])!=state['element']:
+        if state.get('element') is not None and inspect_element(source,state['element']['selection'],paragraph_snapshot=snapshot)!=state['element']:
             raise PdfError('stored paint bindings no longer match physical PDF evidence')
         return dict(status='restored',state=state,semantics='caller-confirmed; generated layout is not re-inferred')
-    except (OSError,ValueError,TypeError,KeyError,PdfError) as exc:
+    except (OSError,ValueError,TypeError,KeyError,IndexError,AttributeError,PdfError) as exc:
         return dict(status='needs_confirmation',reason=str(exc),semantics='unknown',
                     observation=inspect_selection_source(source,page))
 
@@ -78,7 +87,7 @@ def _bind_paragraph(source, report):
     """Bind writer-known Unicode offsets to verified output codes and glyphs."""
     plan=report['glyph_plan']
     if not plan:
-        raise PdfError('persisting a fully empty element needs a non-glyph style anchor')
+        return bind_empty(source,report)
     content=ContentPage(source,report['selection']['page'])
     ids=[]
     try:
@@ -143,15 +152,29 @@ def _unique_path(snapshot, paint):
 def _bind_relations(source, snapshot, report, previous_element, previous_anchors, previous_relations):
     if previous_element is None:
         return None,None,None
-    element=inspect_element(source,snapshot['selection'])
+    element=inspect_element(source,snapshot['selection'],paragraph_snapshot=snapshot)
     old_paths={p['source_id']:p for p in previous_element['paths']}
     fixed=previous_anchors.get('fixed_relations',[]) if previous_anchors is not None else previous_relations
     relations=[]
+    # With text-only mutations, the ordered path program remains intact.
+    # Validate every path's operator and interpreted paint before using its
+    # ordinal to distinguish identical repeated backgrounds. This is source
+    # continuity, never nearest-bbox ownership or an inferred new relation.
+    fixed_map=None
+    if previous_anchors is None:
+        old,new=previous_element['paths'],element['paths']
+        def path_value(path):
+            return dict(operator=path['source']['operator'],operation_sha256=path['source']['operation_sha256'],
+                        status=path['proof']['status'],paints=[_paint_value(p) for p in path['proof'].get('paints',[])])
+        if len(old)!=len(new) or not _close([path_value(p) for p in old],[path_value(p) for p in new]):
+            raise PdfError('fixed paint source sequence changed during text-only editing')
+        fixed_map={a['source_id']:b['source_id'] for a,b in zip(old,new)}
     for relation in fixed:
         paints=old_paths[relation['source_id']]['proof'].get('paints',[])
         if len(paints)!=1:
             raise PdfError('persistent fixed relation requires a single source-proven paint')
-        relations.append(dict(relation,source_id=_unique_path(element,paints[0])))
+        relations.append(dict(relation,source_id=fixed_map[relation['source_id']] if fixed_map is not None
+                              else _unique_path(element,paints[0])))
     if previous_anchors is None:
         return element,None,relations
     groups=[]
@@ -179,7 +202,7 @@ def _bind_relations(source, snapshot, report, previous_element, previous_anchors
 
 
 def write_editable(source, output, model_output, snapshot, edits, *, fonts=None,
-                   boundary_kinds=None, previous_state=None, **options):
+                   boundary_kinds=None, previous_state=None, empty_style_id=None, **options):
     """Publish an ordinary PDF and its bound editing model after both verify.
 
     Only current semantics are saved, never removed text or an undo history.
@@ -201,7 +224,8 @@ def write_editable(source, output, model_output, snapshot, edits, *, fonts=None,
             raise PdfError('temporary editing workspace is outside the output directory')
         pdf=root/'edited.pdf';removed=root/'removed.pdf'
         report=edit_paragraph(source,pdf,snapshot,edits,fonts=fonts,
-                              removal_output=removed if removal else None,**options)
+                              removal_output=removed if removal else None,preserve_empty=True,
+                              empty_style_id=empty_style_id,**options)
         paragraph,styles=_bind_paragraph(pdf,report)
         element,anchors,relations=_bind_relations(pdf,paragraph,report,options.get('element_snapshot'),
                                                  options.get('anchor_spec'),options.get('element_relations'))
@@ -242,7 +266,9 @@ def write_editable(source, output, model_output, snapshot, edits, *, fonts=None,
             elif key not in provenance:
                 provenance[key]=('explicitly_confirmed' if key=='width' else
                                  'generated-by-pdfengine' if key=='min_line_height' else 'observed_source')
-        state=_seal(dict(schema='pdfengine-editable-1',pdf_sha256=source_sha(pdf),paragraph=paragraph,
+        state=_seal(dict(schema='pdfengine-editable-2',pdf_sha256=source_sha(pdf),paragraph=paragraph,
+            logical_element=dict(id='paragraph-1',kind='paragraph',contained_by='region-1',
+                provenance='caller_confirmed_selection',alignment=dict(value='left',provenance='generated_layout_policy')),
             element=element,anchors=anchors,relations=relations,fonts=supplied,layout=layout,layout_provenance=provenance,
             boundaries=boundaries,physical_layout=dict(provenance='generated-by-pdfengine',lines=report['lines']),
             container=dict(kind='text_region',sizing='fixed',overflow='reject',padding=None,padding_provenance='unknown',

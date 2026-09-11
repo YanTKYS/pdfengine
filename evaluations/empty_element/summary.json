@@ -1,0 +1,669 @@
+{
+  "final_review_engine_sha256": {
+    "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+    "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+    "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+    "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+    "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+    "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+    "editable.py": "cbe51891a2297e96473fd297b49a9df3a03ef6430a1e0b600478f8ecad183d35",
+    "elements.py": "7379e659db0536da441fd8486ca1823e715e8586311070d484af3a613d2d9c79",
+    "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+    "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+    "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+    "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+    "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+    "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+    "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+    "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+    "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+    "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+    "paragraph.py": "91c4181cdb9bd6198fb5276ff2687169047f747d369838406c1c4c43cd679a95",
+    "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+    "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+    "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+    "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+    "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+    "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+    "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+  },
+  "runner_sha256": "a658dd1c2f1f82a9c83fdbf0c8ce13e11abdcb4836a873cd892c6bd216397ccc",
+  "counts": {
+    "passed": 3,
+    "rejected": 3
+  },
+  "external_originals": 5,
+  "reviewed_ranges": 6,
+  "cases": [
+    {
+      "case": "word_okinawa_procurement",
+      "status": "passed",
+      "source_sha256": "bbaa2b12eeaf1c7eac2dc91aca03c00da4ed948e7c14d99d879ff4c3083fd0b3",
+      "output_sha256": "2dcdb2dde4fcf6451300a8ef141400202c048f6f3096e58ba0080ebefeb5ac06",
+      "font_sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+      "font_policy": "explicit_MS_Mincho_full_font",
+      "source_replay_poppler_all_pixels": 0,
+      "source_replay_mupdf": true,
+      "control": {
+        "poppler_outside_pixels": 0,
+        "unedited_pages_equal": true,
+        "independent_full_page_text": true,
+        "nontext_paints_equal": true,
+        "images_equal": true,
+        "font_codes_gids_widths": true
+      },
+      "stages": [
+        {
+          "stage": "empty",
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true
+        },
+        {
+          "stage": "g1",
+          "text_length": 0,
+          "glyph_count": 0,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true,
+          "equivalent_poppler_all_pixels": 0,
+          "equivalent_mupdf_all_pixels": true
+        },
+        {
+          "stage": "g2",
+          "text_length": 49,
+          "glyph_count": 49,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true,
+          "equivalent_poppler_all_pixels": 0,
+          "equivalent_mupdf_all_pixels": true
+        },
+        {
+          "stage": "g3",
+          "text_length": 0,
+          "glyph_count": 0,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true
+        },
+        {
+          "stage": "g4",
+          "text_length": 33,
+          "glyph_count": 32,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true
+        },
+        {
+          "stage": "g5",
+          "text_length": 33,
+          "glyph_count": 32,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true,
+          "equivalent_poppler_all_pixels": 0,
+          "equivalent_mupdf_all_pixels": true
+        }
+      ],
+      "empty_style_preserved": true,
+      "logical_identity_region_preserved": true,
+      "scope": "one confirmed paragraph; no decoration, container resize or follows declared",
+      "evidence_run": "empty_candidate",
+      "evaluation_environment": {
+        "engine_sha256": {
+          "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+          "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+          "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+          "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+          "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+          "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+          "editable.py": "40ef2c8e9504be7bca32ebc05306e1d816679d0fc3899d8361a9a521d92d48ea",
+          "elements.py": "3ff850eca5cda5b24e9942e986e73613a7976f4fb95a30c718f002608cf0f392",
+          "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+          "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+          "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+          "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+          "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+          "logical_element.py": "3fd7b8305911c9ea22ba9d55a02cdc53b4b20203d5f5aac909d5692d90e8ad5b",
+          "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+          "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+          "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+          "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+          "paragraph.py": "6de6b5bc90bf7ca54ad3a7e9f4e04a08b358932b2589ea0b2cb4a0ef7d47c509",
+          "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+          "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+          "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+          "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+          "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+          "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+          "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+        },
+        "runner_sha256": "2fea163af0dc45f3ffeee2389ee6322e5d5b69c647b1d1fa45f815e7121a07ac",
+        "pymupdf": "1.27.2.3"
+      },
+      "final_revalidation": {
+        "modules_changed_since_evaluation": [
+          "editable.py",
+          "elements.py",
+          "logical_element.py",
+          "paragraph.py"
+        ],
+        "empty_reopens": [
+          {
+            "generation": "empty",
+            "pdf_sha256": "8d05f2f4597423c00dedfdd2a4e1f0124481457a085118db95be482181d44554",
+            "exact_context_and_style_restored": true,
+            "confirmed_paint_snapshot_verified": false
+          },
+          {
+            "generation": "g1",
+            "pdf_sha256": "5ab6d174c0d91b13664076657fb7d68304baf41e4870c56f08c13e522fd692e6",
+            "exact_context_and_style_restored": true,
+            "confirmed_paint_snapshot_verified": false
+          },
+          {
+            "generation": "g3",
+            "pdf_sha256": "bbe6905d1f73266727a47b15769a0499182863b0dd07079b71221a8d1608912a",
+            "exact_context_and_style_restored": true,
+            "confirmed_paint_snapshot_verified": false
+          }
+        ],
+        "policy": "Reuse completed render/extraction evidence; verify every empty revision against final guards. Subsequent production changes added empty background relations or rejecting context guards, not glyph placement."
+      }
+    },
+    {
+      "case": "lo_newfeatures_ja",
+      "status": "passed",
+      "source_sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+      "output_sha256": "280521eecc57c8a7a0a62fba9eed3fe09b03233f7f5534e6ecbad8864d380465",
+      "font_sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+      "font_policy": "explicit_MS_PMincho_substitution_for_IPAPMincho",
+      "source_replay_poppler_all_pixels": 0,
+      "source_replay_mupdf": true,
+      "control": {
+        "poppler_outside_pixels": 0,
+        "unedited_pages_equal": true,
+        "independent_full_page_text": true,
+        "nontext_paints_equal": true,
+        "images_equal": true,
+        "font_codes_gids_widths": true
+      },
+      "stages": [
+        {
+          "stage": "empty",
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true
+        },
+        {
+          "stage": "g1",
+          "text_length": 0,
+          "glyph_count": 0,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true,
+          "equivalent_poppler_all_pixels": 0,
+          "equivalent_mupdf_all_pixels": true
+        },
+        {
+          "stage": "g2",
+          "text_length": 68,
+          "glyph_count": 68,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true,
+          "equivalent_poppler_all_pixels": 0,
+          "equivalent_mupdf_all_pixels": true
+        },
+        {
+          "stage": "g3",
+          "text_length": 0,
+          "glyph_count": 0,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true
+        },
+        {
+          "stage": "g4",
+          "text_length": 41,
+          "glyph_count": 40,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true
+        },
+        {
+          "stage": "g5",
+          "text_length": 41,
+          "glyph_count": 40,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true,
+          "equivalent_poppler_all_pixels": 0,
+          "equivalent_mupdf_all_pixels": true
+        }
+      ],
+      "empty_style_preserved": true,
+      "logical_identity_region_preserved": true,
+      "fixed_relations_preserved": false,
+      "scope": "one confirmed paragraph; fixed backgrounds only; no decoration, container resize or follows declared",
+      "evidence_run": "empty_background",
+      "evaluation_environment": {
+        "engine_sha256": {
+          "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+          "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+          "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+          "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+          "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+          "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+          "editable.py": "cbe51891a2297e96473fd297b49a9df3a03ef6430a1e0b600478f8ecad183d35",
+          "elements.py": "7379e659db0536da441fd8486ca1823e715e8586311070d484af3a613d2d9c79",
+          "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+          "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+          "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+          "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+          "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+          "logical_element.py": "3fd7b8305911c9ea22ba9d55a02cdc53b4b20203d5f5aac909d5692d90e8ad5b",
+          "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+          "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+          "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+          "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+          "paragraph.py": "91c4181cdb9bd6198fb5276ff2687169047f747d369838406c1c4c43cd679a95",
+          "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+          "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+          "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+          "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+          "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+          "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+          "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+        },
+        "runner_sha256": "2460f3b3982db1541f0d7fe88eb91a6ae2dafb63637f28cea1503c220d5712d0",
+        "pymupdf": "1.27.2.3"
+      },
+      "final_revalidation": {
+        "modules_changed_since_evaluation": [
+          "logical_element.py"
+        ],
+        "empty_reopens": [
+          {
+            "generation": "empty",
+            "pdf_sha256": "f3ac69d808311549b9244aee3bca10eedfb0959bffde88178fa5d48cb42d8397",
+            "exact_context_and_style_restored": true,
+            "confirmed_paint_snapshot_verified": false
+          },
+          {
+            "generation": "g1",
+            "pdf_sha256": "cdf3e5c0a6a69d42cf4e3432097838b6cc355a600f8e7a2fca7adf8edb55da91",
+            "exact_context_and_style_restored": true,
+            "confirmed_paint_snapshot_verified": false
+          },
+          {
+            "generation": "g3",
+            "pdf_sha256": "274ae8cd0b4af1e2a747c428481ca27d44cf48d9c849f4be12f28145ead11f66",
+            "exact_context_and_style_restored": true,
+            "confirmed_paint_snapshot_verified": false
+          }
+        ],
+        "policy": "Reuse completed render/extraction evidence; verify every empty revision against final guards. Subsequent production changes added empty background relations or rejecting context guards, not glyph placement."
+      }
+    },
+    {
+      "case": "print_fcc_ms_example",
+      "status": "passed",
+      "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+      "output_sha256": "10a18c0d09eb0afc6124523a8dd88de023d0f70c91a75266508604cca6e83235",
+      "font_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+      "font_policy": "explicit_Arial_full_font_for_CIDFont_F3",
+      "source_replay_poppler_all_pixels": 0,
+      "source_replay_mupdf": true,
+      "control": {
+        "poppler_outside_pixels": 0,
+        "unedited_pages_equal": true,
+        "independent_full_page_text": true,
+        "nontext_paints_equal": true,
+        "images_equal": true,
+        "font_codes_gids_widths": true
+      },
+      "stages": [
+        {
+          "stage": "empty",
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true
+        },
+        {
+          "stage": "g1",
+          "text_length": 0,
+          "glyph_count": 0,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true,
+          "equivalent_poppler_all_pixels": 0,
+          "equivalent_mupdf_all_pixels": true
+        },
+        {
+          "stage": "g2",
+          "text_length": 32,
+          "glyph_count": 32,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true,
+          "equivalent_poppler_all_pixels": 0,
+          "equivalent_mupdf_all_pixels": true
+        },
+        {
+          "stage": "g3",
+          "text_length": 0,
+          "glyph_count": 0,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true
+        },
+        {
+          "stage": "g4",
+          "text_length": 18,
+          "glyph_count": 18,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true
+        },
+        {
+          "stage": "g5",
+          "text_length": 18,
+          "glyph_count": 18,
+          "poppler_outside_pixels": 0,
+          "unedited_pages_equal": true,
+          "independent_full_page_text": true,
+          "nontext_paints_equal": true,
+          "images_equal": true,
+          "font_codes_gids_widths": true,
+          "equivalent_poppler_all_pixels": 0,
+          "equivalent_mupdf_all_pixels": true
+        }
+      ],
+      "empty_style_preserved": true,
+      "logical_identity_region_preserved": true,
+      "fixed_relations_preserved": true,
+      "scope": "one confirmed paragraph; fixed backgrounds only; no decoration, container resize or follows declared",
+      "evidence_run": "empty_example",
+      "evaluation_environment": {
+        "engine_sha256": {
+          "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+          "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+          "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+          "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+          "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+          "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+          "editable.py": "cbe51891a2297e96473fd297b49a9df3a03ef6430a1e0b600478f8ecad183d35",
+          "elements.py": "7379e659db0536da441fd8486ca1823e715e8586311070d484af3a613d2d9c79",
+          "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+          "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+          "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+          "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+          "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+          "logical_element.py": "3fd7b8305911c9ea22ba9d55a02cdc53b4b20203d5f5aac909d5692d90e8ad5b",
+          "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+          "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+          "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+          "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+          "paragraph.py": "91c4181cdb9bd6198fb5276ff2687169047f747d369838406c1c4c43cd679a95",
+          "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+          "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+          "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+          "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+          "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+          "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+          "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+        },
+        "runner_sha256": "a658dd1c2f1f82a9c83fdbf0c8ce13e11abdcb4836a873cd892c6bd216397ccc",
+        "pymupdf": "1.27.2.3"
+      },
+      "final_revalidation": {
+        "modules_changed_since_evaluation": [
+          "logical_element.py"
+        ],
+        "empty_reopens": [
+          {
+            "generation": "empty",
+            "pdf_sha256": "eb1f4511754d0cc61e13351c053c83feaeb041ee654251c5f9d3be0bc039dcca",
+            "exact_context_and_style_restored": true,
+            "confirmed_paint_snapshot_verified": true
+          },
+          {
+            "generation": "g1",
+            "pdf_sha256": "32f3971eaede3741abc97eed0f1f2ba9567892c723c15305abed7f01d374198e",
+            "exact_context_and_style_restored": true,
+            "confirmed_paint_snapshot_verified": true
+          },
+          {
+            "generation": "g3",
+            "pdf_sha256": "1549c72f8b1fedfe9f43c44711a953fd062a016cf15cc1922224f35f5744d5f7",
+            "exact_context_and_style_restored": true,
+            "confirmed_paint_snapshot_verified": true
+          }
+        ],
+        "policy": "Reuse completed render/extraction evidence; verify every empty revision against final guards. Subsequent production changes added empty background relations or rejecting context guards, not glyph placement."
+      }
+    },
+    {
+      "case": "print_canvia",
+      "status": "rejected",
+      "classification": "safe_backend_refusal",
+      "output_created": false,
+      "phase": "direct_replacement_control",
+      "error_type": "PdfError",
+      "error": "overlapping vector paint lacks unique source provenance; ownership cannot be confirmed",
+      "evidence_run": "empty_final_refusals",
+      "evaluation_environment": {
+        "engine_sha256": {
+          "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+          "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+          "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+          "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+          "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+          "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+          "editable.py": "cbe51891a2297e96473fd297b49a9df3a03ef6430a1e0b600478f8ecad183d35",
+          "elements.py": "7379e659db0536da441fd8486ca1823e715e8586311070d484af3a613d2d9c79",
+          "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+          "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+          "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+          "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+          "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+          "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+          "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+          "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+          "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+          "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+          "paragraph.py": "91c4181cdb9bd6198fb5276ff2687169047f747d369838406c1c4c43cd679a95",
+          "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+          "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+          "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+          "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+          "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+          "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+          "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+        },
+        "runner_sha256": "a658dd1c2f1f82a9c83fdbf0c8ce13e11abdcb4836a873cd892c6bd216397ccc",
+        "pymupdf": "1.27.2.3"
+      }
+    },
+    {
+      "case": "lo_enterprise_en",
+      "status": "rejected",
+      "classification": "safe_backend_refusal",
+      "output_created": false,
+      "phase": "direct_replacement_control",
+      "error_type": "PdfError",
+      "error": "composed text intersects an image",
+      "evidence_run": "empty_final_refusals",
+      "evaluation_environment": {
+        "engine_sha256": {
+          "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+          "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+          "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+          "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+          "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+          "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+          "editable.py": "cbe51891a2297e96473fd297b49a9df3a03ef6430a1e0b600478f8ecad183d35",
+          "elements.py": "7379e659db0536da441fd8486ca1823e715e8586311070d484af3a613d2d9c79",
+          "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+          "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+          "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+          "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+          "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+          "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+          "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+          "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+          "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+          "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+          "paragraph.py": "91c4181cdb9bd6198fb5276ff2687169047f747d369838406c1c4c43cd679a95",
+          "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+          "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+          "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+          "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+          "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+          "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+          "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+        },
+        "runner_sha256": "a658dd1c2f1f82a9c83fdbf0c8ce13e11abdcb4836a873cd892c6bd216397ccc",
+        "pymupdf": "1.27.2.3"
+      }
+    },
+    {
+      "case": "print_fcc_ms_body",
+      "status": "rejected",
+      "classification": "safe_backend_refusal",
+      "output_created": false,
+      "phase": "direct_replacement_control",
+      "error_type": "PdfError",
+      "error": "composed text collides with an unselected glyph",
+      "evidence_run": "empty_final_refusals",
+      "evaluation_environment": {
+        "engine_sha256": {
+          "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+          "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+          "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+          "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+          "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+          "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+          "editable.py": "cbe51891a2297e96473fd297b49a9df3a03ef6430a1e0b600478f8ecad183d35",
+          "elements.py": "7379e659db0536da441fd8486ca1823e715e8586311070d484af3a613d2d9c79",
+          "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+          "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+          "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+          "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+          "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+          "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+          "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+          "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+          "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+          "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463",
+          "paragraph.py": "91c4181cdb9bd6198fb5276ff2687169047f747d369838406c1c4c43cd679a95",
+          "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+          "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+          "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+          "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+          "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+          "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+          "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+        },
+        "runner_sha256": "a658dd1c2f1f82a9c83fdbf0c8ce13e11abdcb4836a873cd892c6bd216397ccc",
+        "pymupdf": "1.27.2.3"
+      }
+    }
+  ],
+  "comparison_contract": "Source-code replay is compared to the original. Retyping is compared to a separate direct replacement with the same supplied font and layout. Selected page: MuPDF and Poppler 144dpi; other pages: MuPDF and pypdf extraction.",
+  "visual_review": {
+    "reviewed": [
+      "word_okinawa_procurement/empty",
+      "word_okinawa_procurement/g4",
+      "lo_newfeatures_ja/g4",
+      "print_fcc_ms_example/g4"
+    ],
+    "result": "No visual overlap or unintended background, diagram, underline, border or nearby-text changes in reviewed full-page Poppler images."
+  },
+  "scope": "Single logical paragraph and fixed container; source-proven fixed backgrounds persist when glyph count is zero. No dormant underline inheritance, follows, resizing or page flow.",
+  "unit_validation": {
+    "command": "python -m pytest -q",
+    "passed": 380,
+    "skipped": 2,
+    "skip_reason": "Existing AES crypto provider unavailable",
+    "log_sha256": "a9b67a118012f47407840f7864be0a82acdb90bec3bb6a529de89070c647a135"
+  },
+  "regression": {
+    "run": "evaluations/editable/runs/empty_regression",
+    "counts": {
+      "passed": 3,
+      "rejected": 5
+    },
+    "engine_matches_final_review": true,
+    "all_output_pdf_hashes_and_refusal_reasons_unchanged": true,
+    "summary_sha256": "48021cca06d2d47195a75acb3982f05d72f78d00a4763a281f2a5274579a55db",
+    "scope": "Three generations of anchored editing, logical whitespace/boundaries, fonts and fixed paint; five missing/stale/corrupt-state cases. Other high-cost corpora not rerun; full unit regression covers existing routes."
+  }
+}

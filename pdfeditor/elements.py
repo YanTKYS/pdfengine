@@ -26,16 +26,24 @@ from .replay import compare_glyphs, ensure_destination
 from .selection import resolve_selection
 
 
-def inspect_element(source, selection):
-    resolved = resolve_selection(source,selection)
-    content = ContentPage(source,resolved.page)
+def inspect_element(source, selection, *, paragraph_snapshot=None):
+    empty=selection.get('binding_kind')=='nonpainting-text-slot'
+    if empty:
+        from .logical_element import EmptyParagraph
+        if not paragraph_snapshot or paragraph_snapshot['selection']!=selection:
+            raise PdfError('empty paint inspection needs its bound logical paragraph')
+        paragraph=EmptyParagraph(source,paragraph_snapshot)
+        resolved,content=paragraph.resolved,paragraph.content
+    else:
+        resolved = resolve_selection(source,selection)
+        content = ContentPage(source,resolved.page)
     try:
         # Device observations and glyph coordinates are unrotated. Page.rect
         # and rendered masks rotate with /Rotate; mixing the two could admit
         # a destination outside the real crop or mask the wrong pixels.
         if content.page.rotation:
             raise PdfError('element editing requires an unrotated page; rotated bounds and masks are not normalized')
-        events = content.selected_events(set(selection['glyph_ids']))
+        events = paragraph.events if empty else content.selected_events(set(selection['glyph_ids']))
         catalog,_ = _load_catalog(source,resolved.page)
         marks = observe_marked_content(source,resolved.page)
         text_ops = []
@@ -45,7 +53,7 @@ def inspect_element(source, selection):
                 source_ranges=_physical(catalog['contents'],event.operator.start,event.operator.end),
                 glyph_ids=[i for c in event.chars for i in c.source_orders],
                 fully_selected=all(i in selection['glyph_ids'] for c in event.chars for i in c.source_orders)))
-        first = min(content.actual[i]['span']['seqno'] for i in selection['glyph_ids'])
+        first = min((content.actual[i]['span']['seqno'] for i in selection['glyph_ids']),default=-1)
         paths = []
         for path in catalog['paths']:
             proof = prove_path_paint(source,resolved.page,path['id'],catalog=catalog)
@@ -83,7 +91,7 @@ def inspect_element(source, selection):
             unlinked.append(dict(paint_index=i,seqno=paint['seqno'],bounds=paint['bounds'],
                 fingerprint=paint['fingerprint'],near_selected_text=near,source_provenance='unknown'))
         snapshot = dict(schema_version=1,source_sha256=selection['source_sha256'],selection=selection,
-            text_element=dict(glyph_ids=selection['glyph_ids'],observed_bounds=asdict(resolved.bbox),
+            text_element=dict(glyph_ids=selection['glyph_ids'],observed_bounds=None if empty else asdict(resolved.bbox),
                               source_operators=text_ops),
             page_bounds=list(content.page.rect),paths=paths,marked_content=marks,
             unlinked_path_paints=unlinked,renderer_observation_errors=observation['errors'],
@@ -157,7 +165,7 @@ def _check_clip(paint, bounds):
 
 
 def check_paragraph_obstacles(source, content, selected, resolved, inks, layout_bounds,
-                              snapshot, relations):
+                              snapshot, relations, *, paragraph_snapshot=None):
     """Keep declared backgrounds fixed while editing their contained text.
 
     Following/resizing decorations are deliberately not permitted here. Their
@@ -165,7 +173,7 @@ def check_paragraph_obstacles(source, content, selected, resolved, inks, layout_
     """
     if set(snapshot['selection']['glyph_ids'])!=selected or snapshot['selection']['page']!=resolved.page:
         raise PdfError('paragraph and element select different source text')
-    if inspect_element(source,snapshot['selection'])!=snapshot:
+    if inspect_element(source,snapshot['selection'],paragraph_snapshot=paragraph_snapshot)!=snapshot:
         raise PdfError('element snapshot changed or no longer matches its source')
     paths,decisions=_confirmed(snapshot,relations)
     if any(r['behavior']!='fixed-to-page' for r in decisions.values()):
@@ -173,14 +181,16 @@ def check_paragraph_obstacles(source, content, selected, resolved, inks, layout_
     observation=interpreted_paints(source,resolved.page)
     if observation['errors']:
         raise PdfError(observation['errors'][0])
-    _check_region_obstacles(content,selected,resolved,inks,layout_bounds,observation,paths,decisions)
+    slot=(paragraph_snapshot['insertion_binding']['event']['byte_range'][0]
+          if paragraph_snapshot and paragraph_snapshot.get('kind')=='empty-logical-paragraph' else None)
+    _check_region_obstacles(content,selected,resolved,inks,layout_bounds,observation,paths,decisions,insertion_offset=slot)
 
 
 def _check_region_obstacles(content, selected, resolved, inks, layout_bounds,
-                            observation, paths, decisions, replaced_path_ids=()):
+                            observation, paths, decisions, replaced_path_ids=(), *, insertion_offset=None):
     """Check planned ink against fixed paint; replacement IDs are backend plans."""
     path_by_index={i:p for p in paths.values() if p['proof']['status']=='proven' for i in p['proof']['paint_indices']}
-    first=min(content.actual[i]['span']['seqno'] for i in selected)
+    first=min((content.actual[i]['span']['seqno'] for i in selected),default=-1)
     original=_observations(content.page)
     empty=_empty_space_indices(content,original)
     for ink in inks:
@@ -213,8 +223,14 @@ def _check_region_obstacles(content, selected, resolved, inks, layout_bounds,
                     if not any(ink.intersects(edge) for edge in edges):
                         continue
             relation=decisions.get(path['source_id']) if path else None
+            # A glyph-free slot has no text paint seqno. Its verified root
+            # program position establishes order relative to a proven path;
+            # page-space proximity never establishes that order or ownership.
+            precedes=(event['seqno']<first if selected else
+                insertion_offset is not None and path is not None and not path['source']['invocation']
+                and path['source']['merged_range'][1]<=insertion_offset)
             if (relation and relation['relation']=='backgrounds' and event['kind']=='fill-path'
-                    and event['seqno']<first and contains_fill(event,resolved.bbox) and contains_fill(event,ink)):
+                    and precedes and contains_fill(event,resolved.bbox) and contains_fill(event,ink)):
                 continue
             raise PdfError('composed text intersects a fixed vector without a proven background relation')
     affected=resolved.bbox.union(layout_bounds)

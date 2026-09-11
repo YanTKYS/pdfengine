@@ -129,14 +129,11 @@ def test_cli_create_restore_and_edit_logical_document(tmp_path):
     assert result['reused_code_glyph_count']>0 and result['provided_font_glyph_count']==0
 
 
-@pytest.mark.parametrize('mode',['empty','normalized_tracking'])
-def test_unpersistable_semantics_leave_no_partial_result(tmp_path,mode):
-    source=source_pdf(tmp_path,b'BT /Regular 12 Tf '+(b'2 Tc ' if mode=='normalized_tracking' else b'')+
-                      b'20 200 Td (ONE TWO) Tj ET')
+def test_unpersistable_semantics_leave_no_partial_result(tmp_path):
+    source=source_pdf(tmp_path,b'BT /Regular 12 Tf 2 Tc 20 200 Td (ONE TWO) Tj ET')
     p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(7)),explicit_width=130))
-    edits=[dict(start=0,end=7,text='')] if mode=='empty' else []
-    with pytest.raises(PdfError,match='empty element|logical style'):
-        write_editable(source,tmp_path/'bad.pdf',tmp_path/'bad.json',p,edits)
+    with pytest.raises(PdfError,match='logical style'):
+        write_editable(source,tmp_path/'bad.pdf',tmp_path/'bad.json',p,[])
     assert not (tmp_path/'bad.pdf').exists() and not (tmp_path/'bad.json').exists()
 
 

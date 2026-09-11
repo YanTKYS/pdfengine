@@ -145,16 +145,32 @@ class ParagraphShaper:
 
 def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x=None,
                    first_line_indent=None, max_bottom=None, min_line_height=None,
-                   removal_output=None, element_snapshot=None, element_relations=None, anchor_spec=None, baseline=None):
+                   removal_output=None, element_snapshot=None, element_relations=None, anchor_spec=None, baseline=None,
+                   preserve_empty=False, empty_style_id=None):
     output = ensure_destination(output,source)
     if removal_output:
         removal_output = ensure_destination(removal_output,source)
         if output == removal_output:
             raise PdfError("output and removal checkpoint must be distinct")
-    paragraph = SourceParagraph(source,snapshot['selection'],line_joiner=snapshot['line_joiner'],logical=snapshot.get('logical'))
+    from .logical_element import paragraph_from_snapshot, style_recipes
+    paragraph = paragraph_from_snapshot(source,snapshot)
     shaper = None
     try:
         units = apply_edits(paragraph,snapshot,edits)
+        empty_typing_style=None
+        if preserve_empty and not units:
+            if anchor_spec is not None:
+                raise PdfError('empty element paint relations require explicit dormant decoration/ownership semantics')
+            if empty_style_id is not None:
+                empty_typing_style=empty_style_id
+            elif hasattr(paragraph,'default_style_id'):
+                empty_typing_style=paragraph.default_style_id
+            elif len(paragraph.styles)==1:
+                empty_typing_style=next(iter(paragraph.styles))
+            else:
+                raise PdfError('empty multi-style paragraph needs an explicit empty_style_id')
+            if empty_typing_style not in paragraph.styles:
+                raise PdfError('unknown empty paragraph typing style')
         anchored=None
         if anchor_spec is not None:
             if element_relations is not None:
@@ -171,7 +187,7 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
         x = suggestion['x'] if x is None else x
         indent = suggestion['first_line_indent'] if first_line_indent is None else first_line_indent
         baseline = suggestion['baseline'] if baseline is None else baseline
-        size = paragraph.styles[paragraph.units[0].style_id].size
+        size = paragraph.styles[paragraph.units[0].style_id if paragraph.units else paragraph.default_style_id].size
         observed = min((b-a for a,b in zip(suggestion['base_baselines'],suggestion['base_baselines'][1:]) if b>a),default=size*1.4)
         leading = observed if min_line_height is None else min_line_height
         bottom = content.page.rect.height if max_bottom is None else max_bottom
@@ -253,10 +269,13 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
             raise PdfError("cannot restore original text and line matrices")
         commands.extend((b' Q ',matrix_operator(first.line_matrix),
             b'['+number(-delta[4]/(state.size*state.tz/100)*1000)+b'] TJ '))
-        mutations=[]
+        mutations=[];empty_slot_offset=None
         for event in paragraph.events:
             new = serialized_event(event,selected,remove=True)
             if event is first:
+                if preserve_empty and not units:
+                    empty_slot_offset=event.operator.start+len(new)+1
+                    new+=b' [] TJ '
                 new += b''.join(commands)
             mutations.append((event.operator.start,event.operator.end,new))
         ink_bounds = Rect(x,baseline,x,baseline)
@@ -273,11 +292,13 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
         else:
             from .elements import check_paragraph_obstacles
             check_paragraph_obstacles(source,content,selected,resolved,inks,ink_bounds,
-                                      element_snapshot,element_relations)
+                                      element_snapshot,element_relations,paragraph_snapshot=snapshot)
         affected = resolved.bbox.union(anchored.bounds if anchored else ink_bounds)
         data=content.streams[virtual]
         for a,b,new in sorted(mutations,reverse=True):
             data=data[:a]+new+data[b:]
+            if empty_slot_offset is not None and b<=first.operator.start:
+                empty_slot_offset+=len(new)-(b-a)
         old_fonts = font_fingerprints(content.document,pno)
         def verify(document):
             if (len(document)!=len(content.document) or document.permissions!=content.document.permissions
@@ -335,6 +356,8 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
             "snapshot_sha256":snapshot['snapshot_sha256'],"selection":paragraph.selection,
             "before":paragraph.text,"after":shaper.text,"composed_text":''.join(line.text for line in layout.lines),
             "logical_styles":[u.style_id for u in units],
+            "empty_slot_offset":empty_slot_offset,"empty_typing_style_id":empty_typing_style,
+            "empty_style_recipes":style_recipes(paragraph) if empty_typing_style is not None else None,
             "logical_origins":[shaper.original_offsets[id(u.retained)] if u.retained is not None else None for u in units],
             "styles":snapshot['styles'],"edits":edits,"fonts":font_reports,
             "widths":asdict(available),"x":x,"baseline":baseline,"first_line_indent":indent,"min_line_height":leading,

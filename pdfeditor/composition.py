@@ -146,7 +146,9 @@ def _state_contract(events):
 def _check_obstacles(content, selected, resolved, ink, layout_bounds):
     original = glyph_observations(content.page)
     empty_spaces = _empty_space_indices(content, original)
-    first_paint = min(content.actual[i]["span"]["seqno"] for i in selected)
+    # An empty logical element has no observed paint order. Without a
+    # confirmed relation, every overlapping fill remains an obstacle.
+    first_paint = min((content.actual[i]["span"]["seqno"] for i in selected),default=-1)
     for rect in ink:
         for i, old in enumerate(original):
             if i not in selected and i not in empty_spaces and rect.intersects(Rect(*old["bbox"]), .1):

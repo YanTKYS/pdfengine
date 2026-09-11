@@ -18,3 +18,4 @@ tmp/
 !/evaluations/elements/summary.json
 !/evaluations/anchors/summary.json
 !/evaluations/editable/summary.json
+!/evaluations/empty_element/summary.json

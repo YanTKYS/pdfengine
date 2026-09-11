@@ -1,5 +1,7 @@
 # PDF本文編集エンジンの技術評価
 
+> **glyphが0でも残る要素（2026-09-11）**: 空paragraphのstyle recipeとPDF挿入bindingを分離し、再入力と固定背景関係の継承へ接続した。判断・拒否境界・実PDF評価は[glyph-independent-elements.md](glyph-independent-elements.md)を参照。
+
 > **編集意味の保存（2026-09-11）**: 通常のPDFと、厳密なPDF hashに結び付く編集用sidecarを分離した。確定した論理文字列・境界・装飾range・固定領域を再編集へ保持し、失効時は観測へ戻す。[persistent-editing-semantics.md](persistent-editing-semantics.md)に判断・実装・実PDF評価を記録する。
 
 調査日: 2026-09-05。既存の `idontlovepdf` 系実装とは独立した検証である。評価対象は、既存PDFの文字配置から編集可能な文章領域を推定し、編集後の文字列を実際のフォント幅で折り返して出力することにある。

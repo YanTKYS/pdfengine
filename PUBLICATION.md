@@ -23,3 +23,5 @@ sourceとpaintの対応、背景・装飾の所属、要素移動は [element-ow
 文字範囲に追従する下線の評価は [anchored-decoration.md](docs/anchored-decoration.md) と [公開集計](evaluations/anchors/summary.json) に記録する。`evaluations/anchors/evaluate.py` が外部PDFの確認済み範囲、境界編集、行結合の確認、独立した描画・抽出検査を再現する。公開するのは集計・hash・コードであり、anchor候補に含む元の文字列やpath座標、確認済みsnapshot、派生PDF/PNGは含めない。
 
 編集意味の永続化は [persistent-editing-semantics.md](docs/persistent-editing-semantics.md) と [公開集計](evaluations/editable/summary.json) に記録する。sidecarは論理本文・source binding・fontのローカルパス・paint snapshotを含むため、派生PDFとともにローカル保持し、公開集計には含めない。`evaluations/editable/evaluate.py` が3世代の再編集と、外部保存・sidecar喪失時の失効を再現する。
+
+空paragraphの書式・固定背景と再入力の評価は [glyph-independent-elements.md](docs/glyph-independent-elements.md) と [公開集計](evaluations/empty_element/summary.json) に記録する。挿入slotのsource context、style recipe、原文を含むreport、確認済みpaint snapshot、PDF/PNGはローカル保持する。

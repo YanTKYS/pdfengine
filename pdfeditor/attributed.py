@@ -285,7 +285,9 @@ def apply_edits(paragraph, snapshot, edits):
         if style is None:
             if len(styles) > 1:
                 raise PdfError("an edit crossing style boundaries needs an explicit style_id")
-            style = next(iter(styles)) if styles else paragraph.units[min(start,len(paragraph.units)-1)].style_id
+            style = (next(iter(styles)) if styles else
+                     paragraph.units[min(start,len(paragraph.units)-1)].style_id if paragraph.units else
+                     paragraph.default_style_id)
         if style not in paragraph.styles:
             raise PdfError("unknown source style_id")
         provider = edit.get("font_id",style)

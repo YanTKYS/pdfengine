@@ -147,7 +147,9 @@ PDFだけから再編集する場合はsnapshotを作り直し、**折返し位�
 
 sidecarがない、壊れている、PDFが外部ツールで保存し直された場合、`open-editable` は `needs_confirmation` と物理観測を返します。`edit-document` はその状態で編集せず、再確認を要求します。fontの指定はファイルhashとともに引き継ぎ、移動・変更されたfontには次の変更JSONで明示的な指定が必要です。sidecarは確認済みの編集用入力として扱い、checksumは作成者の署名ではありません。
 
-[意味保持の設計・外部再保存・実PDF評価](docs/persistent-editing-semantics.md)に成立範囲を記録しています。現在は一つの選択要素と固定領域を保存するモデルです。
+本文を全文削除しても、空のparagraphと書式・baseline・幅・行間を保存できます。次の変更JSONで `{"edits":[{"start":0,"end":0,"text":"再入力する文章"}]}` を渡せば、保存した書式とfont指定で再入力します。複数書式の全文削除では、編集区間の `style_id` に加え、変更JSONの `empty_style_id` で再入力用の書式を確認してください。元subset fontの名前から新glyphを補うことはなく、必要なfontは明示指定したfile recipeを使用します。
+
+確認済みの固定背景関係も空状態をまたいで保持します。下線付き要素を空にした後の装飾継承には別の意味指定が必要なため、現段階ではその全文削除を拒否します。[空paragraph・書式と背景の保持](docs/glyph-independent-elements.md)、[意味保持と外部再保存](docs/persistent-editing-semantics.md)に検証範囲を記録しています。現在は一つのparagraphと固定領域を保存するモデルです。
 
 ## 忠実性と幅の契約
 
@@ -175,6 +177,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 - `paint_provenance.py` / `marked_content.py` / `paint_geometry.py` / `elements.py`: sourceと解釈済みpaintの対応、active scope、実形状の包含、明示的な所属と局所移動
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
+- `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot
 - [書式付き編集](docs/attributed-editing.md)、[全文font代替](docs/composition.md)、[paint観測の技術比較](docs/paint-observation-options.md)、[内部モデルと初期設計](docs/architecture.md)
 
 ```powershell

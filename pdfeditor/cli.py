@@ -256,7 +256,8 @@ def main(argv: list[str] | None = None) -> int:
             extra={}
             if args.editable_state:
                 from .editable import write_editable
-                extra={'model_output':args.editable_state,'boundary_kinds':changes.get('boundary_kinds')}
+                extra={'model_output':args.editable_state,'boundary_kinds':changes.get('boundary_kinds'),
+                       'empty_style_id':changes.get('empty_style_id')}
                 edit_paragraph=write_editable
             report = edit_paragraph(args.input, args.output, snapshot=read_json(args.paragraph), edits=changes["edits"],
                 fonts=fonts, width=args.width, x=args.x, first_line_indent=args.first_line_indent,
@@ -287,7 +288,7 @@ def main(argv: list[str] | None = None) -> int:
                               [args.input,args.state,args.edits,*(Path(s['path']) for s in fonts.values())])
             overrides={k:getattr(args,k) for k in ('width','max_bottom','removal_output') if getattr(args,k) is not None}
             report=edit_document(args.input,args.state,args.output,args.state_output,changes['edits'],fonts=fonts,
-                                 boundary_kinds=changes.get('boundary_kinds'),**overrides)
+                                 boundary_kinds=changes.get('boundary_kinds'),empty_style_id=changes.get('empty_style_id'),**overrides)
             if args.report:write_json(args.report,report)
             print(json.dumps(report,ensure_ascii=False,indent=2))
         elif args.command == "inspect-anchors":
