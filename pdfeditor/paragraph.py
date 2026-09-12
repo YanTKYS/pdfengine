@@ -143,6 +143,43 @@ class ParagraphShaper:
                 font.close()
 
 
+def _layout_parameters(paragraph, snapshot, *, width=None, x=None, first_line_indent=None,
+                       baseline=None, min_line_height=None, max_bottom=None):
+    available = paragraph.resolved.widths
+    if width is not None:
+        available = available.with_explicit(width)
+    suggestion = snapshot['layout_suggestion']
+    size = paragraph.styles[paragraph.units[0].style_id if paragraph.units else paragraph.default_style_id].size
+    observed = min((b-a for a,b in zip(suggestion['base_baselines'],suggestion['base_baselines'][1:]) if b>a),default=size*1.4)
+    baseline = suggestion['baseline'] if baseline is None else baseline
+    bottom = paragraph.content.page.rect.height if max_bottom is None else max_bottom
+    if not math.isfinite(bottom) or bottom <= baseline:
+        raise PdfError('paragraph bottom must be finite and below the first baseline')
+    return available, dict(x=suggestion['x'] if x is None else x, baseline=baseline,
+        width=available.require_available_width(),
+        first_line_indent=suggestion['first_line_indent'] if first_line_indent is None else first_line_indent,
+        min_line_height=observed if min_line_height is None else min_line_height,
+        max_bottom=min(bottom,paragraph.content.page.rect.height),empty_ascent=size*.8,empty_descent=size*.2)
+
+
+def plan_paragraph(source, snapshot, edits, *, fonts=None, **layout_options):
+    """Measure with the writer's shaper/layout, without authorizing any paint."""
+    from .logical_element import paragraph_from_snapshot
+    paragraph=paragraph_from_snapshot(source,snapshot)
+    shaper=None
+    try:
+        units=apply_edits(paragraph,snapshot,edits)
+        _,options=_layout_parameters(paragraph,snapshot,**layout_options)
+        shaper=ParagraphShaper(paragraph,units,fonts or {})
+        layout=layout_attributed(shaper.text,shape=shaper.shape,**options)
+        return dict(text=shaper.text,baseline=options['baseline'],
+            last_baseline=layout.lines[-1].baseline if layout.lines else options['baseline'],
+            lines=[{k:getattr(line,k) for k in ('start','end','baseline','width','ascent','descent')} for line in layout.lines])
+    finally:
+        if shaper is not None:shaper.close()
+        paragraph.close()
+
+
 def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x=None,
                    first_line_indent=None, max_bottom=None, min_line_height=None,
                    removal_output=None, element_snapshot=None, element_relations=None, anchor_spec=None, baseline=None,
@@ -181,19 +218,10 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
         resolved, content = paragraph.resolved, paragraph.content
         pno, first = resolved.page-1, paragraph.first
         state = first.state
-        available = resolved.widths if width is None else resolved.widths.with_explicit(width)
-        width = available.require_available_width()
-        suggestion = snapshot['layout_suggestion']
-        x = suggestion['x'] if x is None else x
-        indent = suggestion['first_line_indent'] if first_line_indent is None else first_line_indent
-        baseline = suggestion['baseline'] if baseline is None else baseline
-        size = paragraph.styles[paragraph.units[0].style_id if paragraph.units else paragraph.default_style_id].size
-        observed = min((b-a for a,b in zip(suggestion['base_baselines'],suggestion['base_baselines'][1:]) if b>a),default=size*1.4)
-        leading = observed if min_line_height is None else min_line_height
-        bottom = content.page.rect.height if max_bottom is None else max_bottom
-        if not math.isfinite(bottom) or bottom <= baseline:
-            raise PdfError("paragraph bottom must be finite and below the first baseline")
-        bottom = min(bottom,content.page.rect.height)
+        available,layout_options=_layout_parameters(paragraph,snapshot,width=width,x=x,
+            first_line_indent=first_line_indent,baseline=baseline,min_line_height=min_line_height,max_bottom=max_bottom)
+        x,baseline,width,indent,leading,bottom=(layout_options[k] for k in
+            ('x','baseline','width','first_line_indent','min_line_height','max_bottom'))
         untouched = [g for i,g in enumerate(paragraph.observations) if i not in selected]
         virtual = -content.page.xref
         removed = patch_streams(content,paragraph.events,selected,remove=True)[virtual]
@@ -205,9 +233,7 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
         with pymupdf.open(stream=program_pdf_bytes(source,pno,removed),filetype='pdf') as doc:
             _require_removal(untouched,doc[pno])
         shaper = ParagraphShaper(paragraph,units,fonts or {})
-        layout = layout_attributed(shaper.text,shape=shaper.shape,x=x,baseline=baseline,width=width,
-            min_line_height=leading,max_bottom=bottom,empty_ascent=size*.8,empty_descent=size*.2,
-            first_line_indent=indent)
+        layout = layout_attributed(shaper.text,shape=shaper.shape,**layout_options)
         resources, font_reports = {}, {}
         existing = content.pdf_page['/Resources'].get_object().get('/Font',{})
         for provider,font in shaper.fonts.items():
@@ -356,6 +382,7 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
             "snapshot_sha256":snapshot['snapshot_sha256'],"selection":paragraph.selection,
             "before":paragraph.text,"after":shaper.text,"composed_text":''.join(line.text for line in layout.lines),
             "logical_styles":[u.style_id for u in units],
+            "byte_edits":[dict(start=a,end=b,length=len(new)) for a,b,new in sorted(mutations)],
             "empty_slot_offset":empty_slot_offset,"empty_typing_style_id":empty_typing_style,
             "empty_style_recipes":style_recipes(paragraph) if empty_typing_style is not None else None,
             "logical_origins":[shaper.original_offsets[id(u.retained)] if u.retained is not None else None for u in units],

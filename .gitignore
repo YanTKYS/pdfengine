@@ -19,3 +19,4 @@ tmp/
 !/evaluations/anchors/summary.json
 !/evaluations/editable/summary.json
 !/evaluations/empty_element/summary.json
+!/evaluations/document_flow/summary.json

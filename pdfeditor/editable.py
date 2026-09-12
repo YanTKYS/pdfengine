@@ -56,8 +56,8 @@ def open_editable(source, model=None, *, page=1):
         snapshot=state['paragraph']
         if state['schema']=='pdfengine-editable-2':
             identity=state['logical_element']
-            if (identity['id']!='paragraph-1' or identity['kind']!='paragraph'
-                    or identity['contained_by']!='region-1'
+            if (not isinstance(identity['id'],str) or not identity['id'] or identity['kind']!='paragraph'
+                    or not isinstance(identity['contained_by'],str) or not identity['contained_by']
                     or identity['alignment']!=dict(value='left',provenance='generated_layout_policy')):
                 raise PdfError('unsupported logical element identity or paragraph formatting')
         declared=state['boundaries']
@@ -267,7 +267,8 @@ def write_editable(source, output, model_output, snapshot, edits, *, fonts=None,
                 provenance[key]=('explicitly_confirmed' if key=='width' else
                                  'generated-by-pdfengine' if key=='min_line_height' else 'observed_source')
         state=_seal(dict(schema='pdfengine-editable-2',pdf_sha256=source_sha(pdf),paragraph=paragraph,
-            logical_element=dict(id='paragraph-1',kind='paragraph',contained_by='region-1',
+            logical_element=deepcopy((previous_state or {}).get('logical_element')) or dict(
+                id='paragraph-1',kind='paragraph',contained_by='region-1',
                 provenance='caller_confirmed_selection',alignment=dict(value='left',provenance='generated_layout_policy')),
             element=element,anchors=anchors,relations=relations,fonts=supplied,layout=layout,layout_provenance=provenance,
             boundaries=boundaries,physical_layout=dict(provenance='generated-by-pdfengine',lines=report['lines']),

@@ -103,6 +103,15 @@ def test_complete_paint_group_cannot_hide_unselected_text(tmp_path):
         move_element(source,tmp_path/'bad.pdf',element,relations,dx=0,dy=60)
 
 
+def test_text_only_move_preserves_overlapping_source_glyphs(tmp_path):
+    source=source_pdf(tmp_path,b'BT /Regular 12 Tf 20 200 Td (OLD) Tj 0 -10 Td (MOVE) Tj ET')
+    element=inspect_element(source,make_selection(source,glyph_ids=[3,4,5,6]))
+    before=observe(source)
+    assert Rect(*before[0]['bbox']).intersects(Rect(*before[3]['bbox']))
+    move_element(source,tmp_path/'moved.pdf',element,[],dx=0,dy=30)
+    assert observe(tmp_path/'moved.pdf')[:3]==before[:3]
+
+
 def test_cli_element_snapshot_move_and_input_protection(tmp_path):
     from test_paragraph_cli import write
     from test_selection_cli import successful,invoke

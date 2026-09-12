@@ -17,6 +17,7 @@
 | `inspect-element` → `move-element` | 所属を確認した文字・背景・罫線・下線を一式で移動 | 元のtext/path命令・座標token・fontを保持。描画順、clip、固定物との衝突を検査 |
 | `inspect-anchors` → `edit-paragraph --anchors` | 文字範囲に属する下線を長文化・短文化・折返しに追従 | 元の下線paintを除去し、同じpaint状態で各行の実advanceに沿って再生成。背景・外枠は固定 |
 | `edit-paragraph --editable-state` → `edit-document` | 確認した文章・改行・装飾範囲・領域を保存し、同じ意味で再編集 | 通常のPDFとSHA-256で結び付いたsidecar。生成した折返しを論理改行へ変換しない |
+| `confirm_document` → `edit_flow`（Python API） | 複数の段落IDと明示した追従関係を保持して編集 | 固定コンテナ内で、確認した子孫とその所有paintだけを平行移動。空の段落でもIDと関係を保持 |
 
 書式を保持する経路では、LibreOffice本文の英字12pt・日本語10.5ptを残した2行→1行、元の68文字を残して66文字を追加する2行→3行、仮想プリンタPDFの通常体・斜体を残す部分置換を確認しました。[書式付き編集の評価と境界](docs/attributed-editing.md)を参照してください。全文font代替経路でのWord・Chrome等の結果は [composition.md](docs/composition.md) にあります。指定fontで描く部分は、元書体と同一とは限りません。
 
@@ -149,7 +150,25 @@ sidecarがない、壊れている、PDFが外部ツールで保存し直され�
 
 本文を全文削除しても、空のparagraphと書式・baseline・幅・行間を保存できます。次の変更JSONで `{"edits":[{"start":0,"end":0,"text":"再入力する文章"}]}` を渡せば、保存した書式とfont指定で再入力します。複数書式の全文削除では、編集区間の `style_id` に加え、変更JSONの `empty_style_id` で再入力用の書式を確認してください。元subset fontの名前から新glyphを補うことはなく、必要なfontは明示指定したfile recipeを使用します。
 
-確認済みの固定背景関係も空状態をまたいで保持します。下線付き要素を空にした後の装飾継承には別の意味指定が必要なため、現段階ではその全文削除を拒否します。[空paragraph・書式と背景の保持](docs/glyph-independent-elements.md)、[意味保持と外部再保存](docs/persistent-editing-semantics.md)に検証範囲を記録しています。現在は一つのparagraphと固定領域を保存するモデルです。
+確認済みの固定背景関係も空状態をまたいで保持します。下線付き要素を空にした後の装飾継承には別の意味指定が必要なため、現段階ではその全文削除を拒否します。[空paragraph・書式と背景の保持](docs/glyph-independent-elements.md)、[意味保持と外部再保存](docs/persistent-editing-semantics.md)に検証範囲を記録しています。このCLIは一つのparagraphを扱います。
+
+複数段落には`pdfeditor.document_flow`のPython APIを使用できます。確認済みのparagraph snapshot・width・font・paint関係を要素IDごとに指定し、関係は別に宣言します。
+
+```python
+from pdfeditor.document_flow import confirm_document, edit_flow, open_document
+
+# reviewed_elements = {"A": {...}, "B": {...}}。各項目の入力形式は下記設計資料を参照。
+model = confirm_document(
+    "source.pdf", reviewed_elements, container_id="body",
+    bounds=confirmed_usable_bounds, page=1,
+    follows=[{"before": "A", "after": "B", "gap": confirmed_baseline_gap}],
+)
+edit_flow("source.pdf", model, "edited.pdf", "edited.document.json", "A",
+          [{"start": 0, "end": 2, "text": "新しい文章"}])
+restored = open_document("edited.pdf", "edited.document.json")
+```
+
+`gap`はAの最終baselineからBの先頭baselineまでの確認済み間隔です。空の段落も先頭baselineを確保します。関係を宣言していない要素は、下にあっても動かしません。対応範囲は1ページ・固定コンテナ内の明示関係で、領域不足や固定物との衝突は拒否します。[複数論理要素・追従関係の設計と評価](docs/explicit-document-flow.md)に入力形式と検証範囲を記録しています。
 
 ## 忠実性と幅の契約
 

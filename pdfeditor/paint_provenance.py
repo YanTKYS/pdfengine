@@ -20,6 +20,7 @@ from pypdf.generic import ArrayObject
 from .backend import PdfError
 from .content_stream import operators
 from .pdf_save import program_pdf_bytes
+from .proof_session import evidence_cache, revision
 
 m = pymupdf.mupdf
 PATH_PAINT = {"f", "F", "f*", "S", "s", "B", "B*", "b", "b*"}
@@ -74,6 +75,7 @@ def _physical(parts, start, end):
             for p in parts if max(start,p["merged_range"][0]) < min(end,p["merged_range"][1])]
 
 
+@evidence_cache(lambda source,page_number:(revision(source),page_number),limit=4)
 def _load_catalog(source, page_number):
     reader = PdfReader(source)
     if reader.is_encrypted and not reader.decrypt(""):
@@ -366,6 +368,7 @@ class _PaintDevice(m.FzDevice2):
         pass
 
 
+@evidence_cache(lambda source,page=1:(revision(source),page),limit=4)
 def interpreted_paints(source, page=1):
     """Return interpreted page-space geometry and state, without source claims.
 
@@ -397,6 +400,12 @@ def interpreted_paints(source, page=1):
         document.close()
 
 
+@evidence_cache(lambda source,page,data:(revision(source),page,_sha(data)),limit=4)
+def _control_pdf(source,page,data):
+    return program_pdf_bytes(source,page-1,data)
+
+
+@evidence_cache(lambda source,page,path_id,catalog=None:(revision(source),page,path_id,_digest(catalog)),limit=256)
 def prove_path_paint(source, page, path_id, *, catalog=None):
     """Certify a unique path paint bundle by consuming its source without paint."""
     fresh,data = _load_catalog(source,page)
@@ -418,7 +427,7 @@ def prove_path_paint(source, page, path_id, *, catalog=None):
     op = list(operators(data))[path["operator_index"]]
     if op.args:
         return refuse("path paint operator has unexpected operands")
-    control_bytes = program_pdf_bytes(source,page-1,data)
+    control_bytes = _control_pdf(source,page,data)
     replacement = b"h n" if op.name in {"s","b","b*"} else b"n"
     changed_bytes = program_pdf_bytes(source,page-1,data[:op.start]+replacement+data[op.end:])
     original = interpreted_paints(source,page)

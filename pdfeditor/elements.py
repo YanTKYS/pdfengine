@@ -24,8 +24,11 @@ from .paint_provenance import (_load_catalog, _physical, interpreted_paints,
 from .pdf_save import font_fingerprints, program_pdf_bytes, publish_program
 from .replay import compare_glyphs, ensure_destination
 from .selection import resolve_selection
+from .proof_session import evidence_cache, revision
 
 
+@evidence_cache(lambda source,selection,paragraph_snapshot=None:
+    (revision(source),digest(selection),digest(paragraph_snapshot) if selection.get('binding_kind') else None),limit=8)
 def inspect_element(source, selection, *, paragraph_snapshot=None):
     empty=selection.get('binding_kind')=='nonpainting-text-slot'
     if empty:
@@ -242,7 +245,7 @@ def _check_region_obstacles(content, selected, resolved, inks, layout_bounds,
             raise PdfError('composition intersects an annotation or widget')
 
 
-def _check_destination(content, original, moving_indices, bounds, snapshot, decisions):
+def _check_destination(content, original, moving_indices, bounds, snapshot, decisions, insertion_offset=None):
     if not Rect(*content.page.rect).contains(bounds):
         raise PdfError('moved element is outside the page')
     path_by_index = {i:p for p in snapshot['paths'] if p['proof']['status']=='proven'
@@ -259,7 +262,10 @@ def _check_destination(content, original, moving_indices, bounds, snapshot, deci
             decision = decisions.get(path['source_id']) if path else None
             if (decision and decision['relation']=='backgrounds' and decision['behavior']=='fixed-to-page'
                     and event['kind']=='fill-path' and contains_fill(event,bounds)
-                    and event['seqno']<min(original[j]['seqno'] for j in moving_indices)):
+                    and (event['seqno']<min((original[j]['seqno'] for j in moving_indices),default=-1)
+                         or (not moving_indices and insertion_offset is not None
+                             and not path['source']['invocation']
+                             and path['source']['merged_range'][1]<=insertion_offset))):
                 continue
             raise PdfError('moved element intersects a fixed vector paint')
         if event['kind'] in ('fill-image','fill-image-mask'):
@@ -290,7 +296,7 @@ def _local_translation(matrix, dx, dy):
     return (d*dx-c*dy)/determinant,(-b*dx+a*dy)/determinant
 
 
-def _move_program(content, events, moving, dx, dy):
+def _move_program(content, events, moving, dx, dy, *, byte_edits=None):
     virtual = -content.page.xref
     data = content.streams[virtual]
     mutations = []
@@ -299,8 +305,12 @@ def _move_program(content, events, moving, dx, dy):
         matrix = pymupdf.Matrix(*event.state.ctm)*content.page.transformation_matrix
         delta = _local_translation(list(matrix),dx,dy)
         op = data[event.operator.start:event.operator.end]
-        new = b'q 1 0 0 1 '+number(delta[0])+b' '+number(delta[1])+b' cm '+op+b' Q '
+        prefix = b'q 1 0 0 1 '+number(delta[0])+b' '+number(delta[1])+b' cm '
+        new = prefix+op+b' Q '
         mutations.append((event.operator.start,event.operator.end,new))
+        if byte_edits is not None:
+            byte_edits.append(dict(start=event.operator.start,end=event.operator.end,length=len(new),
+                                   preserved_event_offset=len(prefix)))
     for path in moving:
         a,b = path['source']['merged_range']
         paints = path['proof']['paints']
@@ -323,12 +333,14 @@ def _move_program(content, events, moving, dx, dy):
         consume=path['proof']['evidence']['replacement'].encode()
         new=consume+b' q 1 0 0 1 '+number(delta[0])+b' '+number(delta[1])+b' cm '+raw+b' '+operator.encode()+b' Q '
         mutations.append((a,b,new))
+        if byte_edits is not None:
+            byte_edits.append(dict(start=a,end=b,length=len(new)))
     for a,b,new in sorted(mutations,reverse=True):
         data=data[:a]+new+data[b:]
     return data
 
 
-def move_element(source, output, snapshot, relations, *, dx, dy, removal_output=None):
+def move_element(source, output, snapshot, relations, *, dx, dy, removal_output=None, paragraph_snapshot=None):
     output = ensure_destination(output,source)
     if removal_output:
         removal_output = ensure_destination(removal_output,source)
@@ -336,7 +348,7 @@ def move_element(source, output, snapshot, relations, *, dx, dy, removal_output=
             raise PdfError('movement output and removal checkpoint must differ')
     if not all(math.isfinite(v) for v in (dx,dy)):
         raise PdfError('element displacement must be finite')
-    fresh = inspect_element(source,snapshot['selection'])
+    fresh = inspect_element(source,snapshot['selection'],paragraph_snapshot=paragraph_snapshot)
     if fresh != snapshot:
         raise PdfError('element snapshot changed or no longer matches its source')
     paths,decisions = _confirmed(snapshot,relations)
@@ -349,7 +361,14 @@ def move_element(source, output, snapshot, relations, *, dx, dy, removal_output=
     content = ContentPage(source,snapshot['selection']['page'])
     try:
         selected = set(snapshot['selection']['glyph_ids'])
-        events = content.selected_events(selected)
+        insertion_offset=None
+        if snapshot['selection'].get('binding_kind')=='nonpainting-text-slot':
+            from .logical_element import slot_binding
+            insertion_offset=paragraph_snapshot['insertion_binding']['event']['byte_range'][0]
+            _,event=slot_binding(content,insertion_offset)
+            events=[event]
+        else:
+            events = content.selected_events(selected)
         for event in events:
             if event.operator.name not in ('Tj','TJ') or any(i not in selected for c in event.chars for i in c.source_orders):
                 raise PdfError('rigid movement requires complete Tj/TJ source operators')
@@ -382,14 +401,22 @@ def move_element(source, output, snapshot, relations, *, dx, dy, removal_output=
             if len(matches)!=1:
                 raise PdfError('text-to-renderer paint correspondence is ambiguous')
             moved_indices.add(matches[0])
-        before_bounds = Rect(**snapshot['text_element']['observed_bounds'])
+        if snapshot['text_element']['observed_bounds'] is None:
+            suggestion=paragraph_snapshot['layout_suggestion']
+            before_bounds=Rect(suggestion['x'],suggestion['baseline'],suggestion['x'],suggestion['baseline'])
+        else:
+            before_bounds = Rect(**snapshot['text_element']['observed_bounds'])
         for p in moving:
             for paint in p['proof']['paints']:
                 before_bounds = before_bounds.union(Rect(*paint['bounds']))
         after_bounds = shifted(before_bounds,dx,dy)
-        _check_destination(content,original,moved_indices,after_bounds,snapshot,decisions)
+        _check_destination(content,original,moved_indices,after_bounds,snapshot,decisions,insertion_offset)
         for i,g in enumerate(glyphs):
-            if i not in selected and Rect(*g['bbox']).intersects(before_bounds):
+            # This is a paint-ownership guard: moving a background out from
+            # under unselected text needs a larger confirmed group. Text-only
+            # operator movement removes no area and preserves every other
+            # glyph. Overlapping source font bboxes alone imply no ownership.
+            if moving and i not in selected and Rect(*g['bbox']).intersects(before_bounds):
                 raise PdfError('element bounds contain unselected text; confirm the complete group')
         annotation_bounds = before_bounds.union(after_bounds)
         for link in content.page.get_links():
@@ -413,7 +440,8 @@ def move_element(source, output, snapshot, relations, *, dx, dy, removal_output=
         with pymupdf.open(stream=control,filetype='pdf') as document:
             if not all(_pixels_equal(content.document[i],document[i]) for i in range(len(document))):
                 raise PdfError('element no-op reconstruction changed pixels; movement is prohibited')
-        data=_move_program(content,events,moving,dx,dy)
+        byte_edits=[]
+        data=_move_program(content,events,moving,dx,dy,byte_edits=byte_edits)
         area=before_bounds.union(after_bounds)
         wanted_glyphs=deepcopy(glyphs)
         for i in selected:
@@ -460,6 +488,7 @@ def move_element(source, output, snapshot, relations, *, dx, dy, removal_output=
         return dict(schema_version=1,backend='source-linked-rigid-element',source_sha256=snapshot['source_sha256'],
             snapshot_sha256=snapshot['snapshot_sha256'],selection=snapshot['selection'],relations=list(decisions.values()),
             dx=dx,dy=dy,moved_text_operators=len(events),moved_glyphs=len(selected),moved_path_operators=len(moving),
+            byte_edits=sorted(byte_edits,key=lambda e:e['start']),
             moved_paint_indices=sorted(moved_indices),before_bounds=asdict(before_bounds),after_bounds=asdict(after_bounds),
             path_writer='original coordinate tokens under translated source CTM',
             audit_bbox=asdict(area),paint_plan_verified=True,mupdf_outside_pixels_equal=True,

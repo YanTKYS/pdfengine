@@ -1,0 +1,449 @@
+{
+  "schema": "pdfengine-document-flow-evaluation-1",
+  "date": "2026-09-12",
+  "objective": "Preserve explicit logical elements and follows relations through PDF edits, empty states and reopening.",
+  "scope": "Caller-confirmed ranges and widths; one page and fixed container; no inferred relation, page-wide flow or arbitrary path resizing.",
+  "final_environment": {
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+      "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+      "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "document_flow.py": "1b7519f40bad1a27721977c194e25d0a15c2c82c7c20e56fa362ef9bf2045cc9",
+      "editable.py": "529ad5fedcb9e36cec84d17b7073faa3b38c9e6fbf4b37cbd552f2dd2a23149b",
+      "elements.py": "2c2be6d394336cdd2f3296f68fcd15c4ade2a4e0550284730f3b50108e736c0e",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "4e5e52cf924d8ec5a65cd5d500d41db754b822d9124fedad16451d6bba12c38f",
+      "paragraph.py": "a076eb55f6d9999f7c5b835c69fbf4b2a537946875c21bc3e4cf95bb77577f4a",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+    },
+    "runner_sha256": "b60f4152456112eab6263063f889415111afebd60efe55381a192d4db712a53d",
+    "pymupdf": "1.27.2.3"
+  },
+  "aggregation_runtime": {
+    "python": "3.12.14",
+    "pypdf": "6.10.0",
+    "Pillow": "12.3.0",
+    "uharfbuzz": "0.55.0",
+    "fonttools": "4.64.0"
+  },
+  "final_regression": {
+    "passed": 397,
+    "skipped": 2,
+    "duration_seconds": 312.34,
+    "log_sha256": "676361121a5aada894ba88c6a7726cd8378ee3b80a8dc9dc9437800c5ee87986",
+    "skip_reason": "AES-128 and AES-256 save tests require optional cryptography or pycryptodome; local_crypt_fallback active.",
+    "core_changed_after_test": false
+  },
+  "stage_definitions": {
+    "g1": "lengthen A; move explicit B",
+    "g2": "shorten A; move explicit B",
+    "g3": "delete all B text",
+    "g4": "lengthen A with empty B following",
+    "g5": "delete all A text; both empty",
+    "g6": "retype A with B empty",
+    "g7": "retype B",
+    "g8": "no-op on generated A text and layout"
+  },
+  "measurement": {
+    "poppler_dpi": 144,
+    "outside_region_margin_pt": 1,
+    "source_noop": "original selected operators replayed with original resources and graphics state",
+    "final_noop": "generated paragraph under the same explicit composition recipe; not arbitrary original paragraph recomposition",
+    "outside_checks": "MuPDF outside area and other pages; Poppler outside area; independent pypdf extraction; fonts, fixed paints and images",
+    "reopen_checks": "PDF hash, logical IDs, follows, fixed container, authored text and source bindings"
+  },
+  "counts": {
+    "original_pdfs": 3,
+    "full_lifecycle_passed": 1,
+    "partial_success_then_safe_refusal": 1,
+    "safe_import_refusal": 1,
+    "successful_saved_revisions": 9,
+    "interpretation": "boundary probes, not an estimate of general PDF success rate"
+  },
+  "cases": [
+    {
+      "status": "passed",
+      "source_sha256": "bbaa2b12eeaf1c7eac2dc91aca03c00da4ed948e7c14d99d879ff4c3083fd0b3",
+      "source_url": "https://www.pref.okinawa.jp/_res/projects/default_project/_page_/001/035/156/01_koukoku.pdf",
+      "source_replay": {
+        "A": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_pixels_equal": true,
+          "evidence": "existing exact-selection replay reused and verified by evaluator"
+        },
+        "B": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_pixels_equal": true,
+          "evidence": "existing exact-selection replay reused and verified by evaluator"
+        }
+      },
+      "font_policy": "explicit full font for changed text; original B codes retained until deletion",
+      "font_sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+      "stages": [
+        {
+          "stage": "g1",
+          "element": "A",
+          "status": "passed",
+          "baseline_delta": 14.783999999999992,
+          "moved_elements": [
+            "B"
+          ],
+          "empty_elements": [],
+          "output_sha256": "11e6446b926883537b3657e42ab0cbb0f8a3c5c3e4d9f1e89dfde5955badce9f",
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_pixels_equal": true,
+          "other_pages_equal": true,
+          "fixed_nontext_paints_equal": true,
+          "images_equal": true,
+          "independent_full_page_text": true,
+          "font_codes_gids_widths": true,
+          "noop_poppler_all_changed_pixels": null,
+          "noop_mupdf_all_pixels_equal": null,
+          "reopened_identity_relations_container_and_authored_text": true
+        },
+        {
+          "stage": "g2",
+          "element": "A",
+          "status": "passed",
+          "baseline_delta": -14.783999999999992,
+          "moved_elements": [
+            "B"
+          ],
+          "empty_elements": [],
+          "output_sha256": "875df9afc0e3e8b5d94501f2fa4f33d1b0268b1c85fe3aa0eaec41a07dea632e",
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_pixels_equal": true,
+          "other_pages_equal": true,
+          "fixed_nontext_paints_equal": true,
+          "images_equal": true,
+          "independent_full_page_text": true,
+          "font_codes_gids_widths": true,
+          "noop_poppler_all_changed_pixels": null,
+          "noop_mupdf_all_pixels_equal": null,
+          "reopened_identity_relations_container_and_authored_text": true
+        },
+        {
+          "stage": "g3",
+          "element": "B",
+          "status": "passed",
+          "baseline_delta": -19.68023681640625,
+          "moved_elements": [],
+          "empty_elements": [
+            "B"
+          ],
+          "output_sha256": "41c5aaf691518588c69d926cbea3346337062b9cc4ed9d7dbc3e88e671ac7a4c",
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_pixels_equal": true,
+          "other_pages_equal": true,
+          "fixed_nontext_paints_equal": true,
+          "images_equal": true,
+          "independent_full_page_text": true,
+          "font_codes_gids_widths": true,
+          "noop_poppler_all_changed_pixels": null,
+          "noop_mupdf_all_pixels_equal": null,
+          "reopened_identity_relations_container_and_authored_text": true
+        },
+        {
+          "stage": "g4",
+          "element": "A",
+          "status": "passed",
+          "baseline_delta": 14.783999999999992,
+          "moved_elements": [
+            "B"
+          ],
+          "empty_elements": [
+            "B"
+          ],
+          "output_sha256": "434cd1c2ba68ff8095f9456bcc590da6a5e6c77e341776ea5f5a7d42674ca0c3",
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_pixels_equal": true,
+          "other_pages_equal": true,
+          "fixed_nontext_paints_equal": true,
+          "images_equal": true,
+          "independent_full_page_text": true,
+          "font_codes_gids_widths": true,
+          "noop_poppler_all_changed_pixels": null,
+          "noop_mupdf_all_pixels_equal": null,
+          "reopened_identity_relations_container_and_authored_text": true
+        },
+        {
+          "stage": "g5",
+          "element": "A",
+          "status": "passed",
+          "baseline_delta": -14.783999999999992,
+          "moved_elements": [
+            "B"
+          ],
+          "empty_elements": [
+            "A",
+            "B"
+          ],
+          "output_sha256": "00c8c75042ba598c7f1d14464481c637549a0fb89e3bb0e45fa92e606eb4eece",
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_pixels_equal": true,
+          "other_pages_equal": true,
+          "fixed_nontext_paints_equal": true,
+          "images_equal": true,
+          "independent_full_page_text": true,
+          "font_codes_gids_widths": true,
+          "noop_poppler_all_changed_pixels": null,
+          "noop_mupdf_all_pixels_equal": null,
+          "reopened_identity_relations_container_and_authored_text": true
+        },
+        {
+          "stage": "g6",
+          "element": "A",
+          "status": "passed",
+          "baseline_delta": 0.0,
+          "moved_elements": [],
+          "empty_elements": [
+            "B"
+          ],
+          "output_sha256": "0b531581e6a06918a8b25a9ccbd37287239ad81d854faf4c0958a6ae08c26bb4",
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_pixels_equal": true,
+          "other_pages_equal": true,
+          "fixed_nontext_paints_equal": true,
+          "images_equal": true,
+          "independent_full_page_text": true,
+          "font_codes_gids_widths": true,
+          "noop_poppler_all_changed_pixels": null,
+          "noop_mupdf_all_pixels_equal": null,
+          "reopened_identity_relations_container_and_authored_text": true
+        },
+        {
+          "stage": "g7",
+          "element": "B",
+          "status": "passed",
+          "baseline_delta": 0.0,
+          "moved_elements": [],
+          "empty_elements": [],
+          "output_sha256": "b78617ca4465662ca014195558e6a3c12bacf4bd7a4a05ea4106f3ddf12284b1",
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_pixels_equal": true,
+          "other_pages_equal": true,
+          "fixed_nontext_paints_equal": true,
+          "images_equal": true,
+          "independent_full_page_text": true,
+          "font_codes_gids_widths": true,
+          "noop_poppler_all_changed_pixels": null,
+          "noop_mupdf_all_pixels_equal": null,
+          "reopened_identity_relations_container_and_authored_text": true
+        },
+        {
+          "stage": "g8",
+          "element": "A",
+          "status": "passed",
+          "baseline_delta": 0.0,
+          "moved_elements": [],
+          "empty_elements": [],
+          "output_sha256": "a40bfa12e06a54df1ea89fb6566632c2f0df80c4d4ab6e6747d4ce6a12133ac0",
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_pixels_equal": true,
+          "other_pages_equal": true,
+          "fixed_nontext_paints_equal": true,
+          "images_equal": true,
+          "independent_full_page_text": true,
+          "font_codes_gids_widths": true,
+          "noop_poppler_all_changed_pixels": 0,
+          "noop_mupdf_all_pixels_equal": true,
+          "reopened_identity_relations_container_and_authored_text": true
+        }
+      ],
+      "negative_controls": [
+        {
+          "case": "missing_edge",
+          "status": "safely_refused",
+          "reason": "composed text collides with an unselected glyph",
+          "output_created": false
+        },
+        {
+          "case": "container_overflow",
+          "status": "safely_refused",
+          "reason": "logical extent or text region exceeds the confirmed container",
+          "output_created": false
+        },
+        {
+          "case": "external_save",
+          "status": "safely_refused",
+          "reason": "document edit requires confirmation: PDF revision differs from the document model",
+          "output_created": false
+        }
+      ],
+      "scope": "two caller-confirmed paragraphs, fixed nontext paints, explicit follows; no page flow or owned-path movement in this source",
+      "id": "word_okinawa",
+      "classification": "full_lifecycle_passed",
+      "generation_environment": "final_environment",
+      "page": 2,
+      "explicit_width_pt": 468,
+      "confirmed_container_pt": [
+        70,
+        694,
+        540,
+        768
+      ],
+      "confirmed_baseline_gap_pt": 19.67999267578125
+    },
+    {
+      "id": "fcc",
+      "classification": "partial_success_then_safe_refusal",
+      "source_url": "https://fccid.io/OVNAC4/Label/Label-Sample-2-3606396.pdf",
+      "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+      "page": 1,
+      "explicit_width_pt": 196,
+      "confirmed_container_pt": [
+        565,
+        66,
+        772,
+        155
+      ],
+      "confirmed_baseline_gap_pt": 9.837677001953125,
+      "generation_environment": {
+        "reference": "final_environment",
+        "engine_sha256_overrides": {
+          "document_flow.py": "6fed8e1280fe2d948041999924c093ca3d93cb7ec35fabfdd466c161090a285f",
+          "elements.py": "95ddeb5661f8b024fab0f97f76fc146cf95985f226354787f82b5cf522827568",
+          "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463"
+        },
+        "absent_engine_files": [
+          "proof_session.py"
+        ],
+        "runner_sha256": "881f620b318edc30350917101e4eb98a1f0c02e3b5f1a9552f616c0c4b118870",
+        "pymupdf": "1.27.2.3"
+      },
+      "source_replay": {
+        "A": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_pixels_equal": true,
+          "replay_sha256": "02c45b1ebc19b045a9d0251e123005e20f952c8695a1f35b4b647102339dd69d",
+          "selected_operator_program_verified": true,
+          "evidence": "existing replay and images verified without regeneration"
+        },
+        "B": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_pixels_equal": true,
+          "replay_sha256": "4f3a56d413a4b79d631f98b89ac21c05bd5b3285fee4a12c872e1dcc15c78c81",
+          "selected_operator_program_verified": true,
+          "evidence": "existing replay and images verified without regeneration"
+        }
+      },
+      "font_policy": "explicit full Arial for changed text; original B codes retained during movement",
+      "font_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+      "stages": [
+        {
+          "stage": "g1",
+          "element": "A",
+          "status": "passed",
+          "baseline_delta": 14.402026953053621,
+          "moved_elements": [
+            "B"
+          ],
+          "empty_elements": [],
+          "output_sha256": "207b4e68a3e2c25cb493917e4531c23f5385edf4ceb445aed236fe8ee6b0981d",
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_pixels_equal": true,
+          "other_pages_equal": true,
+          "fixed_nontext_paints_equal": true,
+          "images_equal": true,
+          "independent_full_page_text": true,
+          "font_codes_gids_widths": true,
+          "noop_poppler_all_changed_pixels": null,
+          "noop_mupdf_all_pixels_equal": null,
+          "reopened_identity_relations_container_and_authored_text": true
+        }
+      ],
+      "refusal": {
+        "stage": "g2",
+        "reason": "moved element intersects an unselected glyph",
+        "output_created": false,
+        "cause": "conservative destination glyph bbox overlap with the edited preceding element",
+        "projected_bbox_overlap_pt": 0.4429206434833137,
+        "actual_ink_collision_proven": false,
+        "later_stages": "not_attempted"
+      },
+      "final_core_review": {
+        "reopened": true,
+        "status": "safely_refused",
+        "reason": "moved element intersects an unselected glyph",
+        "output_created": false,
+        "pdf_sha256": "207b4e68a3e2c25cb493917e4531c23f5385edf4ceb445aed236fe8ee6b0981d",
+        "model_sha256": "d271bec672436373d54d068a60e77f990cd6724bfe0225e715114838d20138ac"
+      },
+      "final_core_review_environment": "final_environment",
+      "scope": "growth with explicit follower; shared background, border and unrelated underlines fixed; no owned-path movement"
+    },
+    {
+      "id": "word_niigata",
+      "classification": "safe_import_refusal",
+      "source_url": "https://kenpo.pref.niigata.lg.jp/bn/R06_10/1008_t78/t78_20241008i30673.pdf",
+      "source_sha256": "9b8498becfda63c3cca8ac4a747cd17e5436c7e3e7372c192a771ae0114046e7",
+      "page": 1,
+      "generation_environment": {
+        "reference": "final_environment",
+        "engine_sha256_overrides": {
+          "document_flow.py": "6fed8e1280fe2d948041999924c093ca3d93cb7ec35fabfdd466c161090a285f",
+          "elements.py": "95ddeb5661f8b024fab0f97f76fc146cf95985f226354787f82b5cf522827568",
+          "paint_provenance.py": "e06e041b9a1c79fdf987026d80e3a932c3dc85152d24219866a9490ff4950463"
+        },
+        "absent_engine_files": [
+          "proof_session.py"
+        ],
+        "runner_sha256": "53459968dd7f089522417b9251b0df4503f0f39ecfe2e8f06a93999799363019",
+        "pymupdf": "1.27.2.3"
+      },
+      "source_replay": {
+        "A": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_pixels_equal": true,
+          "replay_sha256": "8850b169f88764b553c5a9858836d39628a96c2373480771e625870591f602a6",
+          "selected_operator_program_verified": true,
+          "evidence": "existing replay and images verified without regeneration"
+        },
+        "B": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_pixels_equal": true,
+          "replay_sha256": "b6d616afe04a5cde4cc5d6dd8974fd787abd990fcf86827ef5ff102cbedc7207",
+          "selected_operator_program_verified": true,
+          "evidence": "existing replay and images verified without regeneration"
+        }
+      },
+      "refusal": {
+        "phase": "confirm_document",
+        "reason": "plaintext editing sidecars are not supported for encrypted PDFs",
+        "cause": "plaintext sidecar policy for encrypted PDFs",
+        "output_created": false,
+        "document_model_created": false,
+        "later_stages": "not_attempted"
+      },
+      "font_edit_capability": "not_evaluated_after_import_refusal"
+    }
+  ],
+  "limitations": [
+    "No combined owned-background follower movement on an external PDF in this phase; synthetic coverage and earlier single-group external evidence only.",
+    "Destination bbox guards can reject nonoverlapping actual glyph ink; fixed baseline gaps do not solve dense layout conflicts.",
+    "Explicit full font and replacement style required; unchanged original subset rendering is not claimed for newly authored text.",
+    "Fixed container only; padding unknown; no decoration resizing, page flow or automatic semantic inference.",
+    "Proof reuse is bounded to identical evidence within one operation; all distinct counterfactuals remain required. Interactive latency is not established.",
+    "Two-file PDF/sidecar publication is not atomic across OS crashes. Exact revision binding remains mandatory."
+  ]
+}
