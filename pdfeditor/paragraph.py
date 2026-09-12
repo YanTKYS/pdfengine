@@ -99,8 +99,19 @@ class ParagraphShaper:
                 ink, bounds_source = self.source_ink(original,style)
                 _, y0, _, y1 = observation['bbox']
                 baseline = observation['origin'][1]
+                ascent, descent = max(0,baseline-y0-style.rise),max(0,y1-baseline+style.rise)
+                # MuPDF trace bboxes normalize the font's vertical metrics to
+                # the em size. Once new text becomes retained source text,
+                # using only that observation can shrink generated leading.
+                # Preserve the embedded program's layout metrics as well as
+                # the previous conservative trace bounds; never reduce them.
+                program = self.source_fonts.get(style.event.state.font.xref)
+                if program is not None and 'hhea' in program and 'head' in program:
+                    scale = style.size / program['head'].unitsPerEm
+                    ascent = max(ascent,program['hhea'].ascent*scale-style.rise)
+                    descent = max(descent,-program['hhea'].descent*scale+style.rise)
                 result.append(InlineGlyph(unit.text,advance,ink,
-                    max(0,baseline-y0-style.rise),max(0,y1-baseline+style.rise),
+                    ascent,descent,
                     {"style_id":style.id,"source_index":original.source_index,
                      "code_witness":original.code_witness,
                      "provider":"original","resource":style.event.state.font.name,

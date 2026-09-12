@@ -187,6 +187,25 @@ edit_flow_batch("source.pdf", model, "batch.pdf", "batch.document.json", changes
 
 短くなる段落から空間を空ける順序を計画し、各操作の検証と最終配置の照合が完了してからPDF・sidecarを公開します。段落を空にする指定、保存後の再入力にも対応します。共有背景や枠は固定のままで、paintの伸縮や任意の衝突解決は行いません。途中のwriterが拒否した場合も出力を公開しません。[最終配置計画と複数編集transaction](docs/planned-document-transactions.md)に対応範囲を記録しています。
 
+コンテナの下辺を内容量に追従させる場合は、`pdfeditor.variable_container`のAPIで別の契約を確認します。共有背景・枠のsource ID、伸縮可能な直線帯域、下辺anchor、最大領域、最後のbaselineから下辺までの間隔を指定します。
+
+```python
+from pdfeditor.variable_container import (
+    confirm_variable_container, edit_variable_container, open_variable_container,
+)
+
+variable = confirm_variable_container(
+    "source.pdf", model, paints=reviewed_frame_paints,
+    min_bottom=confirmed_initial_bottom, max_bottom=confirmed_max_bottom,
+    baseline_bottom_gap=confirmed_baseline_gap,
+    available_paint_region=confirmed_paint_region, fixed_children=["heading"],
+)
+edit_variable_container("source.pdf", variable, "resized.pdf", "resized.document.json", changes)
+restored = open_variable_container("resized.pdf", "resized.document.json")
+```
+
+上下の形を維持できる直線帯域を証明したsolid fillだけを扱います。上・左右辺を固定し、下部を移動して垂直辺を延長します。曲線を含む枠でも、この形状条件を満たす場合に限定します。固定見出し、空paragraph、保存後の再編集にも同じ契約を使います。[可変コンテナとpaintの契約](docs/variable-container-paints.md)にpaint入力形式と評価範囲を記録しています。
+
 ## 忠実性と幅の契約
 
 `observed_content_width`、`inferred_available_width`、`explicitly_supplied_width`を分離しています。推定できない幅はunknownです。`compose-selected`には既知の利用可能幅が必要で、観測文字幅を暗黙の編集幅にしません。
@@ -213,6 +232,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 - `paint_provenance.py` / `marked_content.py` / `paint_geometry.py` / `elements.py`: sourceと解釈済みpaintの対応、active scope、実形状の包含、明示的な所属と局所移動
 - `ink_collision.py`: 元font・描画状態・変換後glyph形状に基づく、文字移動の事前非接触証明
 - `document_flow.py` / `flow_transaction.py`: 明示した段落関係、複数編集の最終配置計画、検証済みの逐次操作と一括公開
+- `variable_container.py` / `paint_resize.py`: コンテナ所有・可動辺・最大領域・下辺anchorと、直線帯域を証明したfill pathの伸縮
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot

@@ -1,0 +1,306 @@
+{
+  "schema": "pdfengine-variable-container-evaluation-1",
+  "status": "passed",
+  "source_url": "https://fccid.io/OVNAC4/Label/Label-Sample-2-3606396.pdf",
+  "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+  "reused_source_replay": {
+    "A": {
+      "poppler_all_changed_pixels": 0,
+      "mupdf_all_pixels_equal": true
+    },
+    "B": {
+      "poppler_all_changed_pixels": 0,
+      "mupdf_all_pixels_equal": true
+    }
+  },
+  "new_paint_replay": {
+    "poppler_all_changed_pixels": 0,
+    "mupdf_all_pixels_equal": true,
+    "unicode_equal": true
+  },
+  "font_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+  "confirmed_policy": {
+    "sizing": "bottom-variable",
+    "fixed_edges": [
+      "left",
+      "top",
+      "right"
+    ],
+    "movable_edges": [
+      "bottom"
+    ],
+    "fixed_bounds": [
+      565,
+      66,
+      772
+    ],
+    "min_bottom": 155,
+    "max_bottom": 220,
+    "baseline_bottom_gap": 4,
+    "available_paint_region": [
+      563,
+      64,
+      775,
+      222
+    ],
+    "overflow": "reject",
+    "padding": "unknown",
+    "provenance": "explicitly_confirmed"
+  },
+  "shared_container_children": [
+    "H",
+    "A",
+    "B"
+  ],
+  "fixed_children": [
+    "H"
+  ],
+  "paint_contract": {
+    "model": "vertical-straight-band-v1",
+    "band": [
+      100,
+      150
+    ],
+    "bottom_anchor": "preserve-offset-to-container-bottom",
+    "paint_count": 2,
+    "background": "one rectangular solid fill",
+    "border": "compound solid fill with four cubic corners; certified vertical crossings only"
+  },
+  "stages": [
+    {
+      "stage": "v1",
+      "status": "passed",
+      "delta": 23.52169897449039,
+      "content_bottom": 178.5216989744904,
+      "execution": "resize then edit",
+      "empty_elements": [],
+      "output_sha256": "e8818c3f831ad8a5e35fb740bfba75acdad4966f1117cde6e7bdabb63f407307",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "only_confirmed_paint_geometry_changed": true,
+      "images_equal": true,
+      "fixed_french_content_and_anchor": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "other_pages": "none in this one-page source"
+    },
+    {
+      "stage": "v2",
+      "status": "passed",
+      "delta": -23.52169897449039,
+      "content_bottom": 155,
+      "execution": "edit then resize",
+      "empty_elements": [],
+      "output_sha256": "d5f7e17a9a89381e973fabe3d0464948fc7e50eb4bab370ccc7806fbe9107222",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "only_confirmed_paint_geometry_changed": true,
+      "images_equal": true,
+      "fixed_french_content_and_anchor": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "other_pages": "none in this one-page source"
+    },
+    {
+      "stage": "v3",
+      "status": "passed",
+      "delta": 0,
+      "content_bottom": 155,
+      "execution": "edit only",
+      "empty_elements": [
+        "A",
+        "B"
+      ],
+      "output_sha256": "ff7a9018afb5d65ef137a2c1fa6111c9c4378681ddff251b96267ad1c8cb97e5",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "only_confirmed_paint_geometry_changed": true,
+      "images_equal": true,
+      "fixed_french_content_and_anchor": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "other_pages": "none in this one-page source"
+    },
+    {
+      "stage": "v4",
+      "status": "passed",
+      "delta": 23.52169897449039,
+      "content_bottom": 178.5216989744904,
+      "execution": "resize then edit",
+      "empty_elements": [],
+      "output_sha256": "ac56f3db269f254f62703f301e96ab1f77305eada3f4bf82352b98b19ca7c1dd",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "only_confirmed_paint_geometry_changed": true,
+      "images_equal": true,
+      "fixed_french_content_and_anchor": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "other_pages": "none in this one-page source"
+    },
+    {
+      "stage": "v5",
+      "status": "passed",
+      "delta": 0.0,
+      "content_bottom": 178.5216989744904,
+      "execution": "edit only",
+      "empty_elements": [],
+      "output_sha256": "2db28a5bfba336f91088fd78e36f7794251fbc56e28827aa7d13419f285f9039",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "only_confirmed_paint_geometry_changed": true,
+      "images_equal": true,
+      "fixed_french_content_and_anchor": true,
+      "noop_poppler_all_changed_pixels": 0,
+      "noop_mupdf_all_pixels_equal": true,
+      "other_pages": "none in this one-page source"
+    }
+  ],
+  "negative_controls": [
+    {
+      "case": "fixed_container_growth",
+      "status": "safely_refused",
+      "reason": "Reflowed text exceeds the available vertical space.",
+      "output_created": false
+    },
+    {
+      "case": "maximum_region",
+      "status": "safely_refused",
+      "reason": "Reflowed text exceeds the available vertical space.",
+      "output_created": false
+    },
+    {
+      "case": "fixed_french_child",
+      "status": "safely_refused",
+      "reason": "edits cannot change a confirmed fixed child",
+      "output_created": false
+    },
+    {
+      "case": "paragraph_claims_shared_paint",
+      "status": "safely_refused",
+      "reason": "variable edit requires confirmation: container paint ownership or source correspondence is invalid",
+      "output_created": false
+    },
+    {
+      "case": "band_crosses_curved_corner",
+      "status": "safely_refused",
+      "reason": "variable edit requires confirmation: path vertex or curve control lies in the resize band",
+      "output_created": false
+    }
+  ],
+  "environment": {
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+      "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+      "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "document_flow.py": "5848583254389185a864dc0d63de8b0fa4d68407bb93a9ac56d307fe42ec31bc",
+      "editable.py": "529ad5fedcb9e36cec84d17b7073faa3b38c9e6fbf4b37cbd552f2dd2a23149b",
+      "elements.py": "4c12fe68a03c136aadfd236a739d50860a91368a291fe894ebb0588f7902c125",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "flow_transaction.py": "3f938e5d6c8057c8d316dd13aec62c2a2f49e278efb51ca3a85f16295afcbaf6",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+      "paint_resize.py": "fe5a66fd6c002ca66e9e81876eecaf891d29675317bd78bc35d72a27c92e3d11",
+      "paragraph.py": "dd31c67bbeb80980dc43aac66ffe07c02860ae6024e60b560f155468910c8939",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e",
+      "variable_container.py": "db34e39860d13da67b1954426f8ed3d532895a05d0c43709fa977f2da614fae9"
+    },
+    "runner_sha256": "2e088f15537d1c0e79942f02e32415a221f200d991a7fde16e59b48385742737",
+    "pymupdf": "1.27.2.3"
+  },
+  "scope": "one explicitly confirmed bottom-variable container; shared paints; fixed header; guarded sequential resize/text writers; no compound mutation",
+  "evaluation_date": "2026-09-12",
+  "decision": {
+    "primary_barrier": "fixed container height and its shared background/frame cannot follow longer content",
+    "selected_hypothesis": "A: explicitly confirmed variable container with certified paint resize",
+    "compound_hypothesis": "B not established: no demonstrated safe final configuration with all sequential orders impossible",
+    "writer": "guarded sequential resize and existing paragraph transaction writers",
+    "semantic_inference": "none; ownership and resize policy explicitly confirmed; padding unknown"
+  },
+  "stage_descriptions": {
+    "v1": "A becomes six lines; original B follows; shared background/frame expand",
+    "v2": "A becomes one line; B follows upwards; frame returns to minimum height",
+    "v3": "A and B become empty; fixed H and minimum frame remain",
+    "v4": "retype six-line A and new B from empty slots; frame expands again",
+    "v5": "no-op editing of generated A and B; leading and frame dimensions remain unchanged"
+  },
+  "visual_review": {
+    "renderer": "Poppler, 144 dpi",
+    "stages": [
+      "v1",
+      "v3",
+      "v5"
+    ],
+    "findings": "expanded note contains the edited text; empty A/B leave fixed French H; frame corners, label diagram, logo and footer remain intact"
+  },
+  "independent_text_comparison": "complete page Unicode sequence after whitespace normalization, using independent pypdf extraction",
+  "historical_exploration": [
+    {
+      "case": "six-line A ending with Use the approved label.",
+      "status": "safely_refused",
+      "reason": "composed text collides with an unselected glyph",
+      "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+      "source_baseline_gap_pt": 9.837677001953125,
+      "new_ink_bottom_pt": 166.79024685961798,
+      "following_font_bbox_top_pt": 166.25146484375,
+      "output_created": false,
+      "classification": "conservative composed-ink versus following-font-bbox guard; actual ink intersection not established",
+      "provenance": "earlier local exploratory run before retained hhea metric correction; not re-counted as a final-code negative control",
+      "subsequent_change": "kept the guard and original gap; final evaluation uses the same line count ending with Confirm the final document."
+    }
+  ],
+  "limits": [
+    "one external one-page source; five consecutive revisions are not five independent PDFs",
+    "no new external unchanged-page sample; synthetic two-page regression covers that invariant",
+    "only explicitly confirmed closed opaque solid fills with certified vertical straight crossings; no arbitrary path scaling",
+    "no paragraph ownership of shared container paint; fixed content and paint remain independently guarded",
+    "unknown padding remains unknown; explicit width, bottom range, baseline gap, paint region, band and anchor required",
+    "no compound text writer, inter-container flow, page reflow or table recomposition",
+    "narrow-gap composed-text collisions can still be conservatively refused",
+    "PDF and sidecar publication rolls back on exceptions; cross-file OS-crash atomicity is not claimed"
+  ],
+  "regression": {
+    "command": "python -m pytest -q --tb=short",
+    "passed": 453,
+    "skipped": 2,
+    "duration_seconds": 476.09,
+    "new_tests": 21,
+    "skip_reason": "existing optional AES-128/AES-256 encryption provider unavailable",
+    "engine_sha256_matches_external_evaluation": true,
+    "full_suite_executions_after_final_external_evaluation": 1,
+    "affected_suite": {
+      "passed": 60,
+      "duration_seconds": 187.43
+    }
+  }
+}

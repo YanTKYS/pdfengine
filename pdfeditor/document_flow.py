@@ -202,7 +202,7 @@ def _shift_paint(paint, dy):
     return value
 
 
-def _rebind(source, output, entry, byte_edits, *, dy=0, moving_paths=(), paint_dy=0):
+def _rebind(source, output, entry, byte_edits, *, dy=0, moving_paths=(), paint_dy=0, paint_replacements=None):
     """Carry meaning using exact glyph witnesses and known byte/paint mutations."""
     result=deepcopy(entry);state=result['binding'];old=entry['binding'];p=old['paragraph']
     checksum=source_sha(output)
@@ -259,12 +259,17 @@ def _rebind(source, output, entry, byte_edits, *, dy=0, moving_paths=(), paint_d
     element=inspect_element(output,snapshot['selection'],paragraph_snapshot=snapshot)
     old_paths,new_paths=old['element']['paths'],element['paths']
     if len(old_paths)!=len(new_paths):raise PdfError('path source order changed across the transaction')
+    replacements=paint_replacements or {}
+    if set(replacements)-{p['source_id'] for p in old_paths} or set(replacements)&set(moving_paths):
+        raise PdfError('paint replacement plan has unknown or multiply transformed source paths')
     path_map={}
     for previous,current in zip(old_paths,new_paths):
         moved=previous['source_id'] in moving_paths
+        wanted=replacements.get(previous['source_id'],
+            [_shift_paint(v,paint_dy if moved else 0) for v in previous['proof'].get('paints',[])])
         if (previous['source']['operator']!=current['source']['operator']
                 or previous['proof']['status']!=current['proof']['status']
-                or not _close([_shift_paint(v,paint_dy if moved else 0) for v in previous['proof'].get('paints',[])],
+                or not _close(wanted,
                               [_paint_value(v) for v in current['proof'].get('paints',[])])
                 or (not moved and previous['source']['operation_sha256']!=current['source']['operation_sha256'])):
             raise PdfError('path continuity differs from the explicitly translated paint plan')
