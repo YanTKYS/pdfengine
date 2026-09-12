@@ -1,0 +1,636 @@
+{
+  "schema": "pdfengine-story-flow-evaluation-1",
+  "status": "passed",
+  "source_url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf",
+  "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+  "paragraph_id": "reviewed-training-sentence",
+  "source_replay": {
+    "A": {
+      "mupdf_all_equal": true,
+      "poppler_all_changed_pixels": 0
+    },
+    "B": {
+      "mupdf_all_equal": true,
+      "poppler_all_changed_pixels": 0
+    }
+  },
+  "stages": [
+    {
+      "stage": "v1",
+      "status": "passed",
+      "output_sha256": "73b0b063db804a6c3dd647c6f2a56e68ca9c9606a5c77a084db46526df0d6dd5",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "font_cid_gid_widths": true,
+      "existing_page_font_resources_preserved": true,
+      "fixed_nontext_paint_images_annotations_preserved": true,
+      "logical_hard_break_count": 0,
+      "logical_length": 76,
+      "physical_ranges": {
+        "A": [
+          0,
+          51
+        ],
+        "B": [
+          51,
+          76
+        ]
+      },
+      "physical_breaks": [
+        {
+          "offset": 51,
+          "before": "A",
+          "after": "B",
+          "paragraph_id": "reviewed-training-sentence",
+          "kind": "generated_page_break",
+          "provenance": "generated-by-pdfengine",
+          "logical_break_inserted": false
+        }
+      ],
+      "operation": "same_sized_replacement_and_redistribution"
+    },
+    {
+      "stage": "v2",
+      "status": "passed",
+      "output_sha256": "f674fa973524521bb0a214f8f5789ab7a43f4acf6a0b327c93fe248ac2e3b9b3",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "font_cid_gid_widths": true,
+      "existing_page_font_resources_preserved": true,
+      "fixed_nontext_paint_images_annotations_preserved": true,
+      "logical_hard_break_count": 0,
+      "logical_length": 80,
+      "physical_ranges": {
+        "A": [
+          0,
+          53
+        ],
+        "B": [
+          53,
+          80
+        ]
+      },
+      "physical_breaks": [
+        {
+          "offset": 53,
+          "before": "A",
+          "after": "B",
+          "paragraph_id": "reviewed-training-sentence",
+          "kind": "generated_page_break",
+          "provenance": "generated-by-pdfengine",
+          "logical_break_inserted": false
+        }
+      ],
+      "operation": "one_edit_across_existing_page_cut"
+    },
+    {
+      "stage": "v3",
+      "status": "passed",
+      "output_sha256": "088e96d8346dee81ba42d3cfac05e4a911d8c6af375c948b4f485622f391c409",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "font_cid_gid_widths": true,
+      "existing_page_font_resources_preserved": true,
+      "fixed_nontext_paint_images_annotations_preserved": true,
+      "logical_hard_break_count": 0,
+      "logical_length": 27,
+      "physical_ranges": {
+        "A": [
+          0,
+          27
+        ],
+        "B": [
+          27,
+          27
+        ]
+      },
+      "physical_breaks": [],
+      "operation": "shorten_into_first_container"
+    },
+    {
+      "stage": "v4",
+      "status": "passed",
+      "output_sha256": "251f7fdd3aea995439994e087aed7094604995524901a26ef0277a77964572a7",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "font_cid_gid_widths": true,
+      "existing_page_font_resources_preserved": true,
+      "fixed_nontext_paint_images_annotations_preserved": true,
+      "logical_hard_break_count": 0,
+      "logical_length": 0,
+      "physical_ranges": {
+        "A": [
+          0,
+          0
+        ],
+        "B": [
+          0,
+          0
+        ]
+      },
+      "physical_breaks": [],
+      "operation": "empty_all_fragments"
+    },
+    {
+      "stage": "v5",
+      "status": "passed",
+      "output_sha256": "43ec91f96af8f14e1f62e4b3e84b99d726560b12e4c322a1cb3b5f7f37b2f505",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "font_cid_gid_widths": true,
+      "existing_page_font_resources_preserved": true,
+      "fixed_nontext_paint_images_annotations_preserved": true,
+      "logical_hard_break_count": 0,
+      "logical_length": 76,
+      "physical_ranges": {
+        "A": [
+          0,
+          51
+        ],
+        "B": [
+          51,
+          76
+        ]
+      },
+      "physical_breaks": [
+        {
+          "offset": 51,
+          "before": "A",
+          "after": "B",
+          "paragraph_id": "reviewed-training-sentence",
+          "kind": "generated_page_break",
+          "provenance": "generated-by-pdfengine",
+          "logical_break_inserted": false
+        }
+      ],
+      "operation": "retype_from_empty"
+    },
+    {
+      "stage": "v6",
+      "status": "passed",
+      "output_sha256": "a9fe6ff01a4e4f43e8cf5924e8420a6bf61acde010e32105f55b3a85fa9f11d1",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": true
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": true
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "2": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "3": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "6": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "7": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "8": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "9": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "10": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "font_cid_gid_widths": true,
+      "existing_page_font_resources_preserved": true,
+      "fixed_nontext_paint_images_annotations_preserved": true,
+      "logical_hard_break_count": 0,
+      "logical_length": 76,
+      "physical_ranges": {
+        "A": [
+          0,
+          51
+        ],
+        "B": [
+          51,
+          76
+        ]
+      },
+      "physical_breaks": [
+        {
+          "offset": 51,
+          "before": "A",
+          "after": "B",
+          "paragraph_id": "reviewed-training-sentence",
+          "kind": "generated_page_break",
+          "provenance": "generated-by-pdfengine",
+          "logical_break_inserted": false
+        }
+      ],
+      "operation": "no_op_relayout"
+    }
+  ],
+  "negative_controls": [
+    {
+      "case": "all_regions_exhausted",
+      "status": "safely_refused",
+      "reason": "story exceeds all explicitly confirmed continuation containers",
+      "output_created": false
+    },
+    {
+      "case": "heterogeneous_source_paragraph",
+      "status": "safely_refused",
+      "reason": "story flow currently requires one homogeneous logical style",
+      "output_created": false
+    },
+    {
+      "case": "inferred_continuation",
+      "status": "safely_refused",
+      "reason": "story requires confirmation: flow needs one explicitly confirmed, noncyclic chain covering its containers",
+      "output_created": false
+    },
+    {
+      "case": "protected_continuation_region",
+      "status": "safely_refused",
+      "reason": "story requires confirmation: continuation region intersects protected page content",
+      "output_created": false
+    },
+    {
+      "case": "external_revision",
+      "status": "safely_refused",
+      "reason": "story requires confirmation: story PDF revision changed",
+      "output_created": false
+    }
+  ],
+  "container_contract": {
+    "A": {
+      "id": "A",
+      "page": 4,
+      "bounds": [
+        66,
+        758,
+        540,
+        785
+      ],
+      "role": "paragraph-continuation",
+      "sizing": "fixed",
+      "paint_policy": "fixed-to-page",
+      "padding": "unknown",
+      "provenance": "explicitly_confirmed"
+    },
+    "B": {
+      "id": "B",
+      "page": 5,
+      "bounds": [
+        55,
+        130,
+        396,
+        151
+      ],
+      "role": "paragraph-continuation",
+      "sizing": "fixed",
+      "paint_policy": "fixed-to-page",
+      "padding": "unknown",
+      "provenance": "explicitly_confirmed"
+    }
+  },
+  "flow_chain": {
+    "paragraph_id": "reviewed-training-sentence",
+    "containers": [
+      "A",
+      "B"
+    ],
+    "provenance": "explicitly_confirmed",
+    "policy": "fill-fixed-regions-in-declared-order",
+    "overflow": "reject"
+  },
+  "page_policy": {
+    "1": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "2": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "3": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "4": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": [
+        {
+          "role": "fixed",
+          "bounds": [
+            398,
+            58,
+            540,
+            111
+          ],
+          "provenance": "explicitly_confirmed"
+        }
+      ]
+    },
+    "5": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": [
+        {
+          "role": "fixed",
+          "bounds": [
+            398,
+            58,
+            540,
+            111
+          ],
+          "provenance": "explicitly_confirmed"
+        }
+      ]
+    },
+    "6": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "7": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "8": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "9": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "10": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    }
+  },
+  "font_sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+  "font_index": 1,
+  "scope": "one complete source sentence explicitly confirmed as one logical paragraph across two fixed one-line regions on pages 4/5; other eight pages unchanged",
+  "environment": {
+    "pymupdf": "1.27.2.3",
+    "runner_sha256": "4fc0d79e9a8de23ec3de916fdb6c32831669969894ce66bcf2899a842a5274f9",
+    "evaluation_dependencies_sha256": {
+      "evaluations/backend/followup.py": "2a70ddd88402083b64af75dd749dc144a3eb8c671b9bacad74d3642b41e2267d",
+      "evaluations/elements/evaluate.py": "d6b0022a975c0082b7de5ffa82220ff71e604225267902287e2215f39f908f74",
+      "evaluations/attributed/evaluate.py": "6023d19e5b0c57d231a0d8f54d3ea931a52364b91c34cd84150e0269e77ccbb1"
+    },
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+      "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+      "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "document_flow.py": "5848583254389185a864dc0d63de8b0fa4d68407bb93a9ac56d307fe42ec31bc",
+      "editable.py": "529ad5fedcb9e36cec84d17b7073faa3b38c9e6fbf4b37cbd552f2dd2a23149b",
+      "elements.py": "4c12fe68a03c136aadfd236a739d50860a91368a291fe894ebb0588f7902c125",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "flow_transaction.py": "3f938e5d6c8057c8d316dd13aec62c2a2f49e278efb51ca3a85f16295afcbaf6",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+      "paint_resize.py": "fe5a66fd6c002ca66e9e81876eecaf891d29675317bd78bc35d72a27c92e3d11",
+      "paragraph.py": "dd31c67bbeb80980dc43aac66ffe07c02860ae6024e60b560f155468910c8939",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e",
+      "story_flow.py": "5a7b37b80aec5a7acbf838e9143b379b14fe0d00b6869f9c848e186acbf9be1b",
+      "variable_container.py": "db34e39860d13da67b1954426f8ed3d532895a05d0c43709fa977f2da614fae9"
+    }
+  },
+  "evaluation_date": "2026-09-13",
+  "classification": "logical_story_flow_passed_with_fixed_neighbor_whitespace",
+  "counts": {
+    "external_sources_successfully_edited": 1,
+    "edited_pages": 2,
+    "total_pages": 10,
+    "source_replay_gates": 2,
+    "sequential_saved_stages": 6,
+    "safe_negative_controls": 5
+  },
+  "container_layouts": {
+    "A": {
+      "x": 67.30000305175781,
+      "baseline": 769.5,
+      "width": 471,
+      "first_line_indent": 0,
+      "min_line_height": 21.6,
+      "max_bottom": 785
+    },
+    "B": {
+      "x": 56.79999923706055,
+      "baseline": 142.0,
+      "width": 339.2,
+      "first_line_indent": 0,
+      "min_line_height": 21.6,
+      "max_bottom": 151
+    }
+  },
+  "source_selection": {
+    "A": {
+      "page": 4,
+      "first_glyph_id": 1203,
+      "last_glyph_id": 1253,
+      "glyph_count": 51
+    },
+    "B": {
+      "page": 5,
+      "first_glyph_id": 0,
+      "last_glyph_id": 35,
+      "glyph_count": 36
+    }
+  },
+  "font_policy": "explicit MS-PMincho full-font provider, face 1; regenerate each fragment subset; preserve original page resources",
+  "source_logical_length": 87,
+  "regression": {
+    "passed": 139,
+    "skipped": 0,
+    "failed": 0,
+    "elapsed_seconds": 244.687,
+    "command": ".\\.venv\\Scripts\\python.exe -m pytest tests/test_story_flow.py tests/test_story_flow_evaluation.py tests/test_followup_audit.py tests/test_stage1_evaluation.py tests/test_editable.py tests/test_empty_element.py tests/test_rich_layout.py tests/test_proof_session.py tests/test_document_flow.py -q --tb=short --junitxml=tmp/story-related-regression.xml",
+    "scope": "new story API and audit helpers plus their editable/empty/shaping/proof/rebinding dependencies; unchanged engine full suite was not rerun"
+  },
+  "execution_provenance": {
+    "first_stage_source_write_reused": true,
+    "source_and_initial_model_and_output_hash_and_recomputed_plan_verified": true,
+    "final_source_replay_and_independent_audits_rerun": true,
+    "core_unchanged_during_first_stage_write_and_resumed_run": true,
+    "audit_repairs": [
+      "declare both edited pages while checking every undeclared page",
+      "normalize annotation object references while preserving destination and appearance graph content"
+    ],
+    "prior_full_suite": {
+      "commit": "1a69aa9ac474e73ba2eba3c54acd5fd7ec3ba8b9",
+      "passed": 453,
+      "skipped": 2,
+      "reused_as_prior_evidence_only": true
+    }
+  },
+  "historical_candidate": {
+    "source_url": "https://kenpo.pref.niigata.lg.jp/bn/R06_10/1008_t78/t78_20241008i30673.pdf",
+    "source_sha256": "9b8498becfda63c3cca8ac4a747cd17e5436c7e3e7372c192a771ae0114046e7",
+    "status": "safely_refused_at_import",
+    "reason": "plaintext editing sidecars are not supported for encrypted PDFs",
+    "final_runner_negative_control": false,
+    "output_created": false
+  },
+  "visual_review": {
+    "stages_and_pages": [
+      {
+        "stage": "v1",
+        "pages": [
+          4,
+          5
+        ]
+      },
+      {
+        "stage": "v4",
+        "pages": [
+          4,
+          5
+        ]
+      },
+      {
+        "stage": "v5",
+        "pages": [
+          4,
+          5
+        ]
+      }
+    ],
+    "findings": [
+      "target text clears and reappears without overlapping fixed neighboring text",
+      "shorter continuation leaves a visible gap before the fixed different-style sentence",
+      "full mixed-style source paragraph is outside the accepted scope"
+    ]
+  },
+  "limitations": [
+    "one reviewed complete sentence; caller confirms it as one logical paragraph; no automatic original paragraph inference",
+    "external example has two fixed one-line regions; multiline and same-page columns are covered only by synthetic tests",
+    "initial 87-to-76 edit is same-sized replacement and redistribution, not growth from the original source",
+    "one homogeneous style and one explicit full-font recipe; mixed styles and cross-container decoration ranges rejected",
+    "no new page or new blank-page insertion slot, no inferred continuation, no variable-container integration",
+    "fixed other text can leave unnatural whitespace; whole-paragraph natural reflow is not established",
+    "independent target-page Unicode comparison normalizes whitespace; exact authored Unicode is checked in the logical sidecar",
+    "Poppler checks both edited pages and one unchanged page per intermediate stage; final no-op checks all ten pages",
+    "exception rollback covers output publication; two-file OS-crash atomicity is not guaranteed"
+  ],
+  "next_structural_barrier": "global mixed-style and decoration ranges mapped to different destination source contexts"
+}

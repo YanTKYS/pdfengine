@@ -98,7 +98,7 @@ def result_class(status: str, error: str | None = None) -> str:
     return "safe_rejection"
 
 
-def render_audit(source: Path, output: Path, page: int, directory: Path, bbox: tuple[float, ...]) -> dict:
+def render_audit(source: Path, output: Path, page: int, directory: Path, bbox: tuple[float, ...], *, edited_pages=None) -> dict:
     before_png = directory / "before.png"
     after_png = directory / "after.png"
     before = poppler_render(DEFAULT_POPPLER, source, page, before_png, dpi=144)
@@ -115,15 +115,19 @@ def render_audit(source: Path, output: Path, page: int, directory: Path, bbox: t
     else:
         result["poppler_diff"] = {"rendered": False}
     with pymupdf.open(source) as original, pymupdf.open(output) as edited:
+        changed=set(edited_pages) if edited_pages is not None else {page}
+        if not changed or any(type(p) is not int or not 1<=p<=len(original) for p in changed):
+            raise EvaluationFailure('edited pages must explicitly identify existing pages')
+        result['declared_edited_pages']=sorted(changed)
         def same_pixels(a, b):
             first, second = a.get_pixmap(dpi=144, alpha=False), b.get_pixmap(dpi=144, alpha=False)
             return (first.width, first.height, first.n, first.samples) == (second.width, second.height, second.n, second.samples)
         result["mupdf_page_pixels"] = 1 <= page <= min(len(original), len(edited)) and same_pixels(original[page - 1], edited[page - 1])
         result["page_count_equal"] = len(original) == len(edited)
-        result["outside_page_text_equal"] = [original[i].get_text() for i in range(len(original)) if i != page - 1] == [edited[i].get_text() for i in range(len(edited)) if i != page - 1]
+        result["outside_page_text_equal"] = [original[i].get_text() for i in range(len(original)) if i+1 not in changed] == [edited[i].get_text() for i in range(len(edited)) if i+1 not in changed]
         result["outside_page_mupdf_pixels_equal"] = len(original) == len(edited) and all(
             same_pixels(original[i], edited[i])
-            for i in range(len(original)) if i != page - 1)
+            for i in range(len(original)) if i+1 not in changed)
     return result
 
 

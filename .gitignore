@@ -23,3 +23,4 @@ tmp/
 !/evaluations/ink_collision/summary.json
 !/evaluations/flow_transaction/summary.json
 !/evaluations/variable_container/summary.json
+!/evaluations/story_flow/summary.json

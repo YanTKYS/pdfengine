@@ -113,3 +113,5 @@ containerのanchorを安定した論理baselineと明示gapへ変更した。さ
 今回扱うのは、明示された一つの可変containerと、形状証明が成立する共有frameである。次に必要なのは、伸びたcontainerに別のcontainerが追従する契約と、伸縮帯域を持たない装飾や共有paintの幾何モデルの切り分けである。未知の形状を一律scaleしない。
 
 既存の文字衝突検査やsource font metricsにも保守的な拒否が残る。最終配置が安全でもどの逐次順序も成立しない実例が確認できた場合は、その証拠に基づいてcompound mutationを別に判断する。
+
+後続の[論理文章と物理領域列](logical-story-flow.md)では、最大領域に収まらない内容の継続先を扱うため、一本のUnicode列と固定container列を分離した。可変枠の伸長を必須の先行処理にはせず、既存の固定領域間flowを独立して検証している。

@@ -37,9 +37,9 @@ def bounds(value):
     return tuple(value[k] for k in ('x0','y0','x1','y1'))
 
 
-def audit_render(source, output, page, directory, bbox, *, noop=False):
-    directory.mkdir(parents=True)
-    audit=render_audit(source,output,page,directory,bbox)
+def audit_render(source, output, page, directory, bbox, *, noop=False, edited_pages=None):
+    directory.mkdir(parents=True,exist_ok=True)
+    audit=render_audit(source,output,page,directory,bbox,edited_pages=edited_pages)
     require_render_audit(audit)
     if audit['poppler_diff_with_1pt_margin']['outside_changed_pixels']:
         raise ValueError('any-channel Poppler difference outside the allowed one-point margin')

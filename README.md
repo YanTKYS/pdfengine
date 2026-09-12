@@ -206,6 +206,24 @@ restored = open_variable_container("resized.pdf", "resized.document.json")
 
 上下の形を維持できる直線帯域を証明したsolid fillだけを扱います。上・左右辺を固定し、下部を移動して垂直辺を延長します。曲線を含む枠でも、この形状条件を満たす場合に限定します。固定見出し、空paragraph、保存後の再編集にも同じ契約を使います。[可変コンテナとpaintの契約](docs/variable-container-paints.md)にpaint入力形式と評価範囲を記録しています。
 
+一つの文章を複数の既存領域へ続けて配置する場合は、`pdfeditor.story_flow`を使用します。単一書式の文章に対して、表示先の領域列と再組版用fontを明示します。領域は同じページにも別ページにも置けます。
+
+```python
+from pdfeditor.story_flow import confirm_story, edit_story, open_story
+
+story = confirm_story(
+    "source.pdf", reviewed_containers, paragraph_id="body-paragraph",
+    chain=["region-A", "region-B"], font=confirmed_font_recipe,
+    protected_regions=reviewed_fixed_page_regions,
+)
+edit_story("source.pdf", story, "flowed.pdf", "flowed.story.json", [
+    {"start": 0, "end": len(story["logical"]["text"]), "text": replacement_text},
+])
+restored = open_story("flowed.pdf", "flowed.story.json")
+```
+
+編集offsetは文章全体のUnicode位置です。領域・ページ境界をまたいでも同じparagraph IDを維持し、境界を論理改行へ変換しません。短文化で前領域へ戻す操作、全文削除、再入力にも対応します。[論理文章と物理領域列](docs/logical-story-flow.md)にcontainer入力形式と適用範囲を記録しています。
+
 ## 忠実性と幅の契約
 
 `observed_content_width`、`inferred_available_width`、`explicitly_supplied_width`を分離しています。推定できない幅はunknownです。`compose-selected`には既知の利用可能幅が必要で、観測文字幅を暗黙の編集幅にしません。
@@ -233,6 +251,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 - `ink_collision.py`: 元font・描画状態・変換後glyph形状に基づく、文字移動の事前非接触証明
 - `document_flow.py` / `flow_transaction.py`: 明示した段落関係、複数編集の最終配置計画、検証済みの逐次操作と一括公開
 - `variable_container.py` / `paint_resize.py`: コンテナ所有・可動辺・最大領域・下辺anchorと、直線帯域を証明したfill pathの伸縮
+- `story_flow.py`: 一つの論理文章、明示した継続領域列、全体Unicode範囲と物理fragmentの対応、跨領域の再編集
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot
