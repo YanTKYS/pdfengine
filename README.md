@@ -172,6 +172,21 @@ restored = open_document("edited.pdf", "edited.document.json")
 
 `gap`はAの最終baselineからBの先頭baselineまでの確認済み間隔です。空の段落も先頭baselineを確保します。関係を宣言していない要素は、下にあっても動かしません。対応範囲は1ページ・固定コンテナ内の明示関係で、領域不足や固定物との衝突は拒否します。[複数論理要素・追従関係の設計と評価](docs/explicit-document-flow.md)に入力形式と検証範囲を記録しています。
 
+複数段落の変更をまとめて指定する場合は、最終配置を先に計算するAPIを使用できます。各編集のUnicode offsetは、同じ入力PDF・modelの文章を基準にします。
+
+```python
+from pdfeditor.flow_transaction import plan_flow, edit_flow_batch
+
+changes = {
+    "A": {"edits": [{"start": 0, "end": 2, "text": "短い本文"}]},
+    "B": {"edits": [{"start": 0, "end": 0, "text": "追加する説明。"}]},
+}
+plan = plan_flow("source.pdf", model, changes)  # 配置・実行順の確認。描画許可ではない。
+edit_flow_batch("source.pdf", model, "batch.pdf", "batch.document.json", changes)
+```
+
+短くなる段落から空間を空ける順序を計画し、各操作の検証と最終配置の照合が完了してからPDF・sidecarを公開します。段落を空にする指定、保存後の再入力にも対応します。共有背景や枠は固定のままで、paintの伸縮や任意の衝突解決は行いません。途中のwriterが拒否した場合も出力を公開しません。[最終配置計画と複数編集transaction](docs/planned-document-transactions.md)に対応範囲を記録しています。
+
 ## 忠実性と幅の契約
 
 `observed_content_width`、`inferred_available_width`、`explicitly_supplied_width`を分離しています。推定できない幅はunknownです。`compose-selected`には既知の利用可能幅が必要で、観測文字幅を暗黙の編集幅にしません。
@@ -197,6 +212,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 - `pdf_save.py`: resource追加、共有辞書の分離、暗号化を保持する保存adapter
 - `paint_provenance.py` / `marked_content.py` / `paint_geometry.py` / `elements.py`: sourceと解釈済みpaintの対応、active scope、実形状の包含、明示的な所属と局所移動
 - `ink_collision.py`: 元font・描画状態・変換後glyph形状に基づく、文字移動の事前非接触証明
+- `document_flow.py` / `flow_transaction.py`: 明示した段落関係、複数編集の最終配置計画、検証済みの逐次操作と一括公開
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot

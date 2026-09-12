@@ -1,0 +1,387 @@
+{
+  "schema": "pdfengine-flow-transaction-evaluation-1",
+  "status": "passed",
+  "source_url": "https://fccid.io/OVNAC4/Label/Label-Sample-2-3606396.pdf",
+  "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+  "seed_sha256": "207b4e68a3e2c25cb493917e4531c23f5385edf4ceb445aed236fe8ee6b0981d",
+  "source_replay": {
+    "A": {
+      "poppler_all_changed_pixels": 0,
+      "mupdf_all_pixels_equal": true
+    },
+    "B": {
+      "poppler_all_changed_pixels": 0,
+      "mupdf_all_pixels_equal": true
+    }
+  },
+  "reused_evidence": "original A/B no-op and verified g1 lineage from ink_collision; existing backend files unchanged",
+  "font_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+  "frame_assessment": [
+    {
+      "paint_seqno": 37,
+      "role": "shared fixed background",
+      "subpath_count": 1,
+      "cubic_count": 0
+    },
+    {
+      "paint_seqno": 38,
+      "role": "fixed frame",
+      "subpath_count": 2,
+      "cubic_count": 4
+    }
+  ],
+  "stages": [
+    {
+      "stage": "b1",
+      "status": "passed",
+      "requested_order": [
+        "B",
+        "A"
+      ],
+      "schedule": [
+        "A",
+        "B"
+      ],
+      "final_positions": {
+        "A": {
+          "baseline": 105.48202514648438,
+          "last_baseline": 105.48202514648438
+        },
+        "B": {
+          "baseline": 115.3197021484375,
+          "last_baseline": 144.99522055746877
+        }
+      },
+      "extent_deltas": {
+        "A": -35.521198095631746,
+        "B": 29.67551840903127
+      },
+      "empty_elements": [],
+      "source_mutations": [
+        {
+          "kind": "edit",
+          "element_id": "A"
+        },
+        {
+          "kind": "move",
+          "element_id": "B"
+        },
+        {
+          "kind": "edit",
+          "element_id": "B"
+        }
+      ],
+      "output_sha256": "4909bfcdf3ca6a6efd0a2fe6e555babddd0d335676b1f408b3de5ca4cf65a867",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "other_pages": "none in this one-page source",
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null
+    },
+    {
+      "stage": "b2",
+      "status": "passed",
+      "requested_order": [
+        "A",
+        "B"
+      ],
+      "schedule": [
+        "B",
+        "A"
+      ],
+      "final_positions": {
+        "A": {
+          "baseline": 105.48202514648438,
+          "last_baseline": 141.00322324211612
+        },
+        "B": {
+          "baseline": 150.84090024406925,
+          "last_baseline": 150.84090024406925
+        }
+      },
+      "extent_deltas": {
+        "A": 35.521198095631746,
+        "B": -29.67551840903127
+      },
+      "empty_elements": [],
+      "source_mutations": [
+        {
+          "kind": "edit",
+          "element_id": "B"
+        },
+        {
+          "kind": "move",
+          "element_id": "B"
+        },
+        {
+          "kind": "edit",
+          "element_id": "A"
+        }
+      ],
+      "output_sha256": "c5bfb32290fce1efd34d3528e63a36f27ede9112e2b0d80385f90b3f5bea9408",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "other_pages": "none in this one-page source",
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null
+    },
+    {
+      "stage": "b3",
+      "status": "passed",
+      "requested_order": [
+        "A",
+        "B"
+      ],
+      "schedule": [
+        "A",
+        "B"
+      ],
+      "final_positions": {
+        "A": {
+          "baseline": 105.48202514648438,
+          "last_baseline": 105.48202514648438
+        },
+        "B": {
+          "baseline": 115.3197021484375,
+          "last_baseline": 115.3197021484375
+        }
+      },
+      "extent_deltas": {
+        "A": -35.521198095631746,
+        "B": 0.0
+      },
+      "empty_elements": [
+        "A",
+        "B"
+      ],
+      "source_mutations": [
+        {
+          "kind": "edit",
+          "element_id": "A"
+        },
+        {
+          "kind": "move",
+          "element_id": "B"
+        },
+        {
+          "kind": "edit",
+          "element_id": "B"
+        }
+      ],
+      "output_sha256": "56a490b6ec5fcf14292f2c9590675f907f9423f0d82c77e93f37d175d01e508d",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "other_pages": "none in this one-page source",
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null
+    },
+    {
+      "stage": "b4",
+      "status": "passed",
+      "requested_order": [
+        "B",
+        "A"
+      ],
+      "schedule": [
+        "A",
+        "B"
+      ],
+      "final_positions": {
+        "A": {
+          "baseline": 105.48202514648438,
+          "last_baseline": 105.48202514648438
+        },
+        "B": {
+          "baseline": 115.3197021484375,
+          "last_baseline": 144.99522055746877
+        }
+      },
+      "extent_deltas": {
+        "A": 0.0,
+        "B": 29.67551840903127
+      },
+      "empty_elements": [],
+      "source_mutations": [
+        {
+          "kind": "edit",
+          "element_id": "A"
+        },
+        {
+          "kind": "edit",
+          "element_id": "B"
+        }
+      ],
+      "output_sha256": "1a466383642d5525cb28146aaf36899fd73b9eb2fbd2884da0168db763f7880c",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "other_pages": "none in this one-page source",
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null
+    },
+    {
+      "stage": "b5",
+      "status": "passed",
+      "requested_order": [
+        "A",
+        "B"
+      ],
+      "schedule": [
+        "B",
+        "A"
+      ],
+      "final_positions": {
+        "A": {
+          "baseline": 105.48202514648438,
+          "last_baseline": 105.48202514648438
+        },
+        "B": {
+          "baseline": 115.3197021484375,
+          "last_baseline": 144.99522055746877
+        }
+      },
+      "extent_deltas": {
+        "A": 0.0,
+        "B": 0.0
+      },
+      "empty_elements": [],
+      "source_mutations": [
+        {
+          "kind": "edit",
+          "element_id": "B"
+        },
+        {
+          "kind": "edit",
+          "element_id": "A"
+        }
+      ],
+      "output_sha256": "45a12dd894582ba728f590cd26fa2346c9adf8dd524ff81893a43e53bdeee5e3",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "independent_complete_page_text": true,
+      "font_cid_gid_widths": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "other_pages": "none in this one-page source",
+      "noop_poppler_all_changed_pixels": 0,
+      "noop_mupdf_all_pixels_equal": true
+    }
+  ],
+  "negative_controls": [
+    {
+      "case": "isolated_b_growth",
+      "status": "safely_refused",
+      "reason": "Reflowed text exceeds the available vertical space.",
+      "output_created": false
+    },
+    {
+      "case": "isolated_a_growth",
+      "status": "safely_refused",
+      "reason": "moved element intersects a fixed vector paint",
+      "output_created": false
+    },
+    {
+      "case": "final_overflow",
+      "status": "safely_refused",
+      "reason": "Reflowed text exceeds the available vertical space.",
+      "output_created": false
+    },
+    {
+      "case": "missing_relation",
+      "status": "safely_refused",
+      "reason": "composed text collides with an unselected glyph",
+      "output_created": false
+    },
+    {
+      "case": "resize_policy_not_supported",
+      "status": "safely_refused",
+      "reason": "each batch identity needs edits and optional empty_style_id only",
+      "output_created": false
+    },
+    {
+      "case": "external_save",
+      "status": "safely_refused",
+      "reason": "batch edit requires confirmation: PDF revision differs from the document model",
+      "output_created": false
+    }
+  ],
+  "environment": {
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+      "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+      "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "document_flow.py": "1b7519f40bad1a27721977c194e25d0a15c2c82c7c20e56fa362ef9bf2045cc9",
+      "editable.py": "529ad5fedcb9e36cec84d17b7073faa3b38c9e6fbf4b37cbd552f2dd2a23149b",
+      "elements.py": "4c12fe68a03c136aadfd236a739d50860a91368a291fe894ebb0588f7902c125",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "flow_transaction.py": "3f938e5d6c8057c8d316dd13aec62c2a2f49e278efb51ca3a85f16295afcbaf6",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+      "paragraph.py": "a076eb55f6d9999f7c5b835c69fbf4b2a537946875c21bc3e4cf95bb77577f4a",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+    },
+    "runner_sha256": "28f660161b2b478740762848bdefefbe1bd49bbfc03bfec631e128c7e49fbf39",
+    "pymupdf": "1.27.2.3"
+  },
+  "scope": "two explicit paragraph edits; unchanged fixed shared frame; staged guarded source operators; no resize or general solver",
+  "date": "2026-09-12",
+  "scope_counts": {
+    "external_originals": 1,
+    "successful_batches": 5,
+    "requested_paragraph_edits": 10,
+    "guarded_lower_operations": 13,
+    "safe_refusals": 6
+  },
+  "limits": [
+    "Same confirmed single-page fixed frame; no variable container or paint resizing.",
+    "Explicit hard breaks in the external long text; existing shaper/layout reused.",
+    "Contraction-first bounded scheduler, not a general simultaneous collision solver.",
+    "Intermediate guarded writers can still refuse an extent-feasible final placement.",
+    "Independent extraction removes whitespace; glyph and graphics checks supply positional evidence.",
+    "Original source no-op and seed lineage reused with their original hashes; not rerun in this phase.",
+    "API verification uses MuPDF; Poppler 144dpi is an additional evaluation check."
+  ],
+  "final_regression": {
+    "passed": 432,
+    "skipped": 2,
+    "seconds": 377.92,
+    "command": ".venv/Scripts/python.exe -m pytest -q --tb=short",
+    "skip_reason": "AES-128/AES-256 tests require an optional AES provider unavailable in this environment",
+    "new_tests": 15
+  }
+}
