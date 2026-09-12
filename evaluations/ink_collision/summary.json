@@ -1,0 +1,365 @@
+{
+  "schema": "pdfengine-ink-collision-evaluation-1",
+  "source_url": "https://fccid.io/OVNAC4/Label/Label-Sample-2-3606396.pdf",
+  "source_sha256": "11ad813fce341afed902f98f7c5335f346bd9e746c648a509c1c7f9ba4f7f3fd",
+  "lifecycle_environment": {
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+      "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+      "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "document_flow.py": "1b7519f40bad1a27721977c194e25d0a15c2c82c7c20e56fa362ef9bf2045cc9",
+      "editable.py": "529ad5fedcb9e36cec84d17b7073faa3b38c9e6fbf4b37cbd552f2dd2a23149b",
+      "elements.py": "991515eb0e899553787a446649e0d38eb6996760b040991c3b2549ec8556c551",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+      "paragraph.py": "a076eb55f6d9999f7c5b835c69fbf4b2a537946875c21bc3e4cf95bb77577f4a",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+    },
+    "runner_sha256": "b60f4152456112eab6263063f889415111afebd60efe55381a192d4db712a53d",
+    "pymupdf": "1.27.2.3"
+  },
+  "final_environment": {
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+      "attributed.py": "b12989b2b8bbd44c308e2ad4eeb85420197306f3d03c321edf563ed1c816db45",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+      "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "document_flow.py": "1b7519f40bad1a27721977c194e25d0a15c2c82c7c20e56fa362ef9bf2045cc9",
+      "editable.py": "529ad5fedcb9e36cec84d17b7073faa3b38c9e6fbf4b37cbd552f2dd2a23149b",
+      "elements.py": "4c12fe68a03c136aadfd236a739d50860a91368a291fe894ebb0588f7902c125",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "logical_element.py": "9cfb0a4d195103b423b9292ae2e5fd62fca70f9761457926af590065381e7ef7",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+      "paragraph.py": "a076eb55f6d9999f7c5b835c69fbf4b2a537946875c21bc3e4cf95bb77577f4a",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e"
+    },
+    "runner_sha256": "94d6d117c1bc172b2528ffff0012052b2e4fccc0c7e7d58fe52aa7b5ed8b6ae1"
+  },
+  "changed_core_files_since_lifecycle": [
+    "elements.py"
+  ],
+  "final_core_g2": {
+    "status": "passed",
+    "same_pdf_bytes_as_lifecycle": true,
+    "reopened": true,
+    "pdf_sha256": "02a7074953c30d0b89e12deef0163821cffea6cd0ead91a97b3557a7dcfda5f5",
+    "poppler_outside_changed_pixels": 0,
+    "mupdf_outside_pixels_equal": true,
+    "other_pages_equal": true,
+    "fixed_nontext_paints_equal": true,
+    "images_equal": true,
+    "independent_full_page_text": true,
+    "font_codes_gids_widths": true,
+    "noop_poppler_all_changed_pixels": null,
+    "noop_mupdf_all_pixels_equal": null
+  },
+  "lifecycle_directory_hint": "evaluations/document_flow/runs/<run-name>",
+  "policy": "embedded-truetype-outline-envelopes-v1",
+  "margin_per_outline_pt": 0.501,
+  "previous_boundary": "g2 refused by unselected font bbox overlap in document_flow evaluation at 752b09f",
+  "source_replay": {
+    "A": {
+      "poppler_all_changed_pixels": 0,
+      "mupdf_all_pixels_equal": true
+    },
+    "B": {
+      "poppler_all_changed_pixels": 0,
+      "mupdf_all_pixels_equal": true
+    }
+  },
+  "font_policy": "explicit full font for changed text; original B codes retained until deletion",
+  "font_sha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+  "stages": [
+    {
+      "stage": "g1",
+      "element": "A",
+      "status": "passed",
+      "baseline_delta": 14.402026953053621,
+      "moved_elements": [
+        "B"
+      ],
+      "empty_elements": [],
+      "output_sha256": "207b4e68a3e2c25cb493917e4531c23f5385edf4ceb445aed236fe8ee6b0981d",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "other_pages_equal": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "independent_full_page_text": true,
+      "font_codes_gids_widths": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "outline_certificates": []
+    },
+    {
+      "stage": "g2",
+      "element": "A",
+      "status": "passed",
+      "baseline_delta": -35.521198095631746,
+      "moved_elements": [
+        "B"
+      ],
+      "empty_elements": [],
+      "output_sha256": "02a7074953c30d0b89e12deef0163821cffea6cd0ead91a97b3557a7dcfda5f5",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "other_pages_equal": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "independent_full_page_text": true,
+      "font_codes_gids_widths": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "outline_certificates": [
+        {
+          "policy": "embedded-truetype-outline-envelopes-v1",
+          "margin_per_outline_pt": 0.501,
+          "status": "disjoint",
+          "source_sha256": "71c27227a789aa0b6edaa4cf7163fc4048fd6340c40561d53731daddbc04268d",
+          "page": 1,
+          "translation": [
+            0,
+            -35.521198095631746
+          ],
+          "compared_pairs": 12771,
+          "minimum_axis_clearance_pt": 1.354450426240362,
+          "outline_evidence_sha256": "f6f0b02d451e2c12b4690ed27dc9854ab9439fd04df58a17677c8801ba633b85",
+          "authorization": "pre-mutation geometry; no output renderer pixels used",
+          "broad_phase_conflict_count": 15,
+          "selected_glyph_count": 32
+        }
+      ]
+    },
+    {
+      "stage": "g3",
+      "element": "B",
+      "status": "passed",
+      "baseline_delta": 0.0,
+      "moved_elements": [],
+      "empty_elements": [
+        "B"
+      ],
+      "output_sha256": "6e3656379c369b0dbda1705484379ec5069f6e5e9719b3663f6ab1f65025a112",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "other_pages_equal": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "independent_full_page_text": true,
+      "font_codes_gids_widths": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "outline_certificates": []
+    },
+    {
+      "stage": "g4",
+      "element": "A",
+      "status": "passed",
+      "baseline_delta": 35.521198095631746,
+      "moved_elements": [
+        "B"
+      ],
+      "empty_elements": [
+        "B"
+      ],
+      "output_sha256": "ca809d49cc4091108eae5cc1725eb40be6fc60f178e5ac7844cebb4664e5b328",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "other_pages_equal": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "independent_full_page_text": true,
+      "font_codes_gids_widths": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "outline_certificates": []
+    },
+    {
+      "stage": "g5",
+      "element": "A",
+      "status": "passed",
+      "baseline_delta": -35.521198095631746,
+      "moved_elements": [
+        "B"
+      ],
+      "empty_elements": [
+        "A",
+        "B"
+      ],
+      "output_sha256": "48f025dab53b797338f380ad6c6bad19c71170faa614d16fe0c31953b3c1d300",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "other_pages_equal": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "independent_full_page_text": true,
+      "font_codes_gids_widths": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "outline_certificates": []
+    },
+    {
+      "stage": "g6",
+      "element": "A",
+      "status": "passed",
+      "baseline_delta": 0.0,
+      "moved_elements": [],
+      "empty_elements": [
+        "B"
+      ],
+      "output_sha256": "045d7b535d20b6b036d339181cd54ec107975a02a8845bce0a99e2a5a83e2357",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "other_pages_equal": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "independent_full_page_text": true,
+      "font_codes_gids_widths": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "outline_certificates": []
+    },
+    {
+      "stage": "g7",
+      "element": "B",
+      "status": "passed",
+      "baseline_delta": 0.0,
+      "moved_elements": [],
+      "empty_elements": [],
+      "output_sha256": "300862bed35835382be8cdb272c7ee512bcdea70db7d4bf974bf0c17d5dc6939",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "other_pages_equal": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "independent_full_page_text": true,
+      "font_codes_gids_widths": true,
+      "noop_poppler_all_changed_pixels": null,
+      "noop_mupdf_all_pixels_equal": null,
+      "outline_certificates": []
+    },
+    {
+      "stage": "g8",
+      "element": "A",
+      "status": "passed",
+      "baseline_delta": 0.0,
+      "moved_elements": [],
+      "empty_elements": [],
+      "output_sha256": "40101937097424c19a36a9e6f340022923177c3c0668778daaf94e9be8ab7828",
+      "poppler_outside_changed_pixels": 0,
+      "mupdf_outside_pixels_equal": true,
+      "other_pages_equal": true,
+      "fixed_nontext_paints_equal": true,
+      "images_equal": true,
+      "independent_full_page_text": true,
+      "font_codes_gids_widths": true,
+      "noop_poppler_all_changed_pixels": 0,
+      "noop_mupdf_all_pixels_equal": true,
+      "outline_certificates": []
+    }
+  ],
+  "negative_controls": [
+    {
+      "case": "missing_edge",
+      "status": "safely_refused",
+      "reason": "composed text collides with an unselected glyph",
+      "output_created": false
+    },
+    {
+      "case": "container_overflow",
+      "status": "safely_refused",
+      "reason": "Reflowed text exceeds the available vertical space.",
+      "output_created": false
+    },
+    {
+      "case": "external_save",
+      "status": "safely_refused",
+      "reason": "document edit requires confirmation: PDF revision differs from the document model",
+      "output_created": false
+    },
+    {
+      "case": "insufficient_clearance",
+      "dy": -2,
+      "status": "safely_refused",
+      "reason": "moved element intersects an unselected glyph: expanded outline envelopes overlap or touch",
+      "output_created": false
+    },
+    {
+      "case": "same_baseline",
+      "dy": -9.837677001953125,
+      "status": "safely_refused",
+      "reason": "moved element intersects an unselected glyph: expanded outline envelopes overlap or touch",
+      "output_created": false
+    }
+  ],
+  "g2_embedded_bitmap_glyphs_enclosed": 139,
+  "semantic_contract": "same confirmed container, follows gap, ownership and authored identities across all stages",
+  "scope": "text-only rigid follower translation; fixed vectors/images/clip/ownership checks retained; no resize or simultaneous layout",
+  "limits": [
+    "Sufficient disjoint envelopes, not an exact outline intersection solver.",
+    "New permission requires complete unique page text correspondence and static embedded TrueType fills.",
+    "Stroke, transparency, substitute/synthetic/color/variable/Type3 fonts and unsupported bitmap/scopes remain unknown.",
+    "Clipping never reduces the envelope; all supported monochrome bitmap strikes are enclosed.",
+    "The clearance is a physical policy evaluated at 144dpi; arbitrary low-resolution rasterization is not guaranteed.",
+    "Composed-text obstacle checks and owned-paint group bounds remain conservative.",
+    "No previously valid sidecar is rewritten merely to adopt the collision policy. Evidence is recomputed for each revision."
+  ],
+  "date": "2026-09-12",
+  "final_regression": {
+    "passed": 417,
+    "skipped": 2,
+    "duration_seconds": 218.26,
+    "log_sha256": "cf2d2464df446702f9552bec31e77f447829a8b4aa5ba049c49a46a951f837da",
+    "skip_reason": "Optional AES provider unavailable; AES-128 and AES-256 save tests skipped as before.",
+    "strengthened_transform_coordinate_check": "passed separately after adding explicit expected page-space coordinates",
+    "transform_check_log_sha256": "4414f1058f1280d647a469f6dd0470b4e1218b3b8ed2cac6a93b896ddb7ba853",
+    "core_changed_after_final_evaluation": false
+  },
+  "scope_counts": {
+    "external_originals": 1,
+    "lifecycle_stages_passed": 8,
+    "final_core_g2_reruns": 1,
+    "safe_negative_controls": 5,
+    "interpretation": "One previously refused external-PDF boundary; not a general PDF success-rate estimate."
+  }
+}

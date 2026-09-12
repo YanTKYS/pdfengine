@@ -245,7 +245,8 @@ def _check_region_obstacles(content, selected, resolved, inks, layout_bounds,
             raise PdfError('composition intersects an annotation or widget')
 
 
-def _check_destination(content, original, moving_indices, bounds, snapshot, decisions, insertion_offset=None):
+def _check_destination(content, original, moving_indices, bounds, snapshot, decisions, insertion_offset=None,
+                       *, text_translation=None):
     if not Rect(*content.page.rect).contains(bounds):
         raise PdfError('moved element is outside the page')
     path_by_index = {i:p for p in snapshot['paths'] if p['proof']['status']=='proven'
@@ -273,15 +274,27 @@ def _check_destination(content, original, moving_indices, bounds, snapshot, deci
             if Rect(*rect).intersects(bounds):
                 raise PdfError('moved element intersects a fixed image')
     selected = set(snapshot['selection']['glyph_ids'])
-    for i,glyph in enumerate(_observations(content.page)):
-        if i not in selected and Rect(*glyph['bbox']).intersects(bounds):
-            raise PdfError('moved element intersects an unselected glyph')
+    conflicts=[i for i,glyph in enumerate(_observations(content.page))
+               if i not in selected and Rect(*glyph['bbox']).intersects(bounds)]
+    collision=dict(policy='conservative-group-bounds',status='disjoint')
+    if conflicts:
+        if text_translation is not None:
+            from .ink_collision import certify_text_translation
+            source,dx,dy=text_translation
+            collision=certify_text_translation(source,snapshot['selection']['page'],selected,dx,dy)
+            collision['broad_phase_conflicts']=conflicts
+            if collision['status']=='disjoint' and collision['source_sha256']!=snapshot['source_sha256']:
+                collision=dict(collision,status='unknown',reason='outline certificate belongs to a different PDF revision')
+        if text_translation is None or collision['status']!='disjoint':
+            detail=': '+collision.get('reason','geometry is unresolved') if text_translation else ''
+            raise PdfError('moved element intersects an unselected glyph'+detail)
     for link in content.page.get_links():
         if bounds.intersects(Rect(*link['from'])):
             raise PdfError('element movement intersects a link')
     for item in list(content.page.annots() or [])+list(content.page.widgets() or []):
         if bounds.intersects(Rect(*item.rect)):
             raise PdfError('element movement intersects an annotation or widget')
+    return collision
 
 
 def _local_translation(matrix, dx, dy):
@@ -410,7 +423,8 @@ def move_element(source, output, snapshot, relations, *, dx, dy, removal_output=
             for paint in p['proof']['paints']:
                 before_bounds = before_bounds.union(Rect(*paint['bounds']))
         after_bounds = shifted(before_bounds,dx,dy)
-        _check_destination(content,original,moved_indices,after_bounds,snapshot,decisions,insertion_offset)
+        collision=_check_destination(content,original,moved_indices,after_bounds,snapshot,decisions,insertion_offset,
+                                     text_translation=(source,dx,dy) if selected and not moving else None)
         for i,g in enumerate(glyphs):
             # This is a paint-ownership guard: moving a background out from
             # under unselected text needs a larger confirmed group. Text-only
@@ -489,6 +503,7 @@ def move_element(source, output, snapshot, relations, *, dx, dy, removal_output=
             snapshot_sha256=snapshot['snapshot_sha256'],selection=snapshot['selection'],relations=list(decisions.values()),
             dx=dx,dy=dy,moved_text_operators=len(events),moved_glyphs=len(selected),moved_path_operators=len(moving),
             byte_edits=sorted(byte_edits,key=lambda e:e['start']),
+            text_collision=collision,
             moved_paint_indices=sorted(moved_indices),before_bounds=asdict(before_bounds),after_bounds=asdict(after_bounds),
             path_writer='original coordinate tokens under translated source CTM',
             audit_bbox=asdict(area),paint_plan_verified=True,mupdf_outside_pixels_equal=True,

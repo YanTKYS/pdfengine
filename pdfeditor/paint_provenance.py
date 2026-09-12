@@ -15,7 +15,7 @@ import re
 
 import pymupdf
 from pypdf import PdfReader
-from pypdf.generic import ArrayObject
+from pypdf.generic import ArrayObject, ContentStream
 
 from .backend import PdfError
 from .content_stream import operators
@@ -59,8 +59,14 @@ def _program(page):
         data.extend(raw)
         parts.append(dict(index=index, xref=_xref(stream), merged_range=[start, len(data)],
                           decoded_sha256=_sha(raw), decoded_length=len(raw)))
-        if is_array and (not data or data[-1] != 10):
-            data.extend(b"\n")
+        if is_array:
+            # Obtain the separator from the actual save adapter. Some pypdf
+            # versions append LF even when the component already ends in LF.
+            # Never guess byte offsets from the intended joining algorithm.
+            joined=ContentStream(ArrayObject([item]),page.pdf).get_data()
+            if not joined.startswith(raw) or joined[len(raw):] not in (b'',b'\n'):
+                raise PdfError('save adapter transformed a Contents component unexpectedly')
+            data.extend(joined[len(raw):])
     merged = page.get_contents()
     if merged is not None and bytes(data) != merged.get_data():
         raise PdfError("physical Contents mapping differs from the save adapter program")

@@ -97,6 +97,8 @@ macOS/Linuxでは `.venv/bin/python` を使います。この版の実PDF評価�
 
 関係は `backgrounds` / `borders` / `decorates` / `unrelated`、振る舞いは `fixed-to-element` / `fixed-to-page` です。候補を自動確定せず、元命令との対応が曖昧な重複paintも拒否します。新しい要素APIは非回転ページに限定し、移動には完全な `Tj` / `TJ` の選択が必要です。移動前に同じ位置での再構築を検査し、移動後も元font・全paint・領域外画素を照合します。
 
+文字だけの移動では、font bboxが重なっていても、埋込glyphの輪郭・bitmap描画範囲と安全余白から非接触を事前証明できる場合に配置できます。`move-element`と`edit_flow`で共通に使用し、判定根拠は移動reportの`text_collision`に記録します。[輪郭に基づく配置と評価範囲](docs/ink-collision-certificates.md)を参照してください。
+
 ページ背景を固定した本文編集では、背景を `backgrounds` / `fixed-to-page` として、`edit-paragraph` に `--element element.json --relations relations.json` を追加します。元の描画順と実形状による包含が証明できる背景だけを許可します。[要素モデル・技術選定・実PDF評価](docs/element-ownership.md)を参照してください。
 
 ## 下線を文章の変更に追従させる
@@ -184,7 +186,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 
 書式付き経路は、横書き・不透明fillで、font・サイズ・色・字間・横倍率・baseline shiftを区間ごとに保持します。clipやinline属性以外の描画状態は共通である必要があります。元文字と新fontの境界を越える結合文字は、完全なgraphemeを一つのfontで置換する指定を要求します。保持区間と変更区間をまたぐkerningや合字の再形成は未対応です。
 
-新しいglyphを置く範囲はactive clipと周囲の文字・画像・図形で制限されます。後続段落や表を移動して場所を作る処理はまだありません。複雑なpathやForm内文字などは、描画単位の意味を安全に扱えるまで拒否する範囲が残ります。複雑な多glyph cluster・双方向組版も現在のUnicode復元契約を拡張する必要があります。
+新しいglyphを置く範囲はactive clipと周囲の文字・画像・図形で制限されます。後続段落の移動は、確認済みの`follows`に従う固定領域内で扱います。複雑なpathやForm内文字などは、描画単位の意味を安全に扱えるまで拒否する範囲が残ります。複雑な多glyph cluster・双方向組版も現在のUnicode復元契約を拡張する必要があります。
 
 ## 実装と検証資料
 
@@ -194,6 +196,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 - `layout.py`: PDF非依存の改行・配置。候補文字列全体の実測幅を受け取る
 - `pdf_save.py`: resource追加、共有辞書の分離、暗号化を保持する保存adapter
 - `paint_provenance.py` / `marked_content.py` / `paint_geometry.py` / `elements.py`: sourceと解釈済みpaintの対応、active scope、実形状の包含、明示的な所属と局所移動
+- `ink_collision.py`: 元font・描画状態・変換後glyph形状に基づく、文字移動の事前非接触証明
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot

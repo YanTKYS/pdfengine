@@ -1,5 +1,7 @@
 from copy import deepcopy
 
+import pytest
+
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import ArrayObject, DecodedStreamObject, DictionaryObject, NameObject, NumberObject
 
@@ -25,11 +27,12 @@ def test_identical_duplicate_paints_do_not_establish_unique_provenance(tmp_path)
     assert proof['status']=='refused' and 'duplicate' in proof['reason']
 
 
-def test_physical_stream_ranges_can_cross_contents_boundaries(tmp_path):
+@pytest.mark.parametrize('ending',[b'',b'\n',b'\r\n'])
+def test_physical_stream_ranges_can_cross_contents_boundaries(tmp_path,ending):
     p=source_pdf(tmp_path)
     writer=PdfWriter(clone_from=PdfReader(p))
     refs=[]
-    for raw in (b'10 10 100',b'100 re f'):
+    for raw in (b'10 10 100'+ending,b'100 re f'+ending):
         stream=DecodedStreamObject();stream.set_data(raw);refs.append(writer._add_object(stream))
     writer.pages[0][NameObject('/Contents')]=ArrayObject(refs)
     writer.write(p)
