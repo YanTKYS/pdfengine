@@ -224,6 +224,27 @@ restored = open_story("flowed.pdf", "flowed.story.json")
 
 編集offsetは文章全体のUnicode位置です。領域・ページ境界をまたいでも同じparagraph IDを維持し、境界を論理改行へ変換しません。短文化で前領域へ戻す操作、全文削除、再入力にも対応します。[論理文章と物理領域列](docs/logical-story-flow.md)にcontainer入力形式と適用範囲を記録しています。
 
+複数書式を持つ文章には、styleごとの再組版fontと、各領域で観測したsource styleの対応を指定します。同じlogical styleはページをまたいでも維持され、配置先ごとにfont resourceを生成します。
+
+```python
+story = confirm_story(
+    "source.pdf", reviewed_containers, paragraph_id="body-paragraph",
+    chain=["region-A", "region-B"], protected_regions=reviewed_fixed_page_regions,
+    styles={
+        "body": {"provider": body_font, "provider_relation": "confirmed_reflow_provider"},
+        "latin": {"provider": latin_font, "provider_relation": "confirmed_reflow_provider"},
+    },
+    style_assignments=reviewed_source_style_assignments, typing_style_id="body",
+)
+edit_story("source.pdf", story, "mixed.pdf", "mixed.story.json", [{
+    "start": start, "end": end,
+    "runs": [{"text": "本文と", "style_id": "body"},
+             {"text": "PDF 2026", "style_id": "latin"}],
+}])
+```
+
+書式境界をまたぐ置換では、適用するstyleまたは書式付きrunを明示します。全削除後も確認済みのtyping styleと他のstyle定義を保持します。[論理書式と配置先binding](docs/attributed-story-flow.md)に入力形式と契約を記録しています。
+
 ## 忠実性と幅の契約
 
 `observed_content_width`、`inferred_available_width`、`explicitly_supplied_width`を分離しています。推定できない幅はunknownです。`compose-selected`には既知の利用可能幅が必要で、観測文字幅を暗黙の編集幅にしません。
@@ -252,6 +273,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 - `document_flow.py` / `flow_transaction.py`: 明示した段落関係、複数編集の最終配置計画、検証済みの逐次操作と一括公開
 - `variable_container.py` / `paint_resize.py`: コンテナ所有・可動辺・最大領域・下辺anchorと、直線帯域を証明したfill pathの伸縮
 - `story_flow.py`: 一つの論理文章、明示した継続領域列、全体Unicode範囲と物理fragmentの対応、跨領域の再編集
+- `story_styles.py` / `destination_style.py`: logical style registry・書式範囲の投影、配置先contextへのinline書式binding、style別font provider
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot

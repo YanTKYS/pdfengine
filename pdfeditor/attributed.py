@@ -278,6 +278,17 @@ def apply_edits(paragraph, snapshot, edits):
         if (type(start) is not int or type(end) is not int or start not in boundaries
                 or end not in boundaries or not 0 <= start <= end <= len(paragraph.text)):
             raise PdfError("edit range must use ordered Unicode grapheme boundaries")
+        if 'runs' in edit:
+            if any(k in edit for k in ('text','style_id','font_id')) or not isinstance(edit['runs'],list):
+                raise PdfError('replacement runs must explicitly supply their own text and style')
+            runs=[]
+            for run in edit['runs']:
+                if (not isinstance(run,dict) or set(run)-{'text','style_id','font_id'}
+                        or not isinstance(run.get('text'),str) or run.get('style_id') not in paragraph.styles):
+                    raise PdfError('each replacement run needs Unicode and a known style')
+                runs.append((run['text'],run['style_id'],run.get('font_id',run['style_id'])))
+            ordered.append((start,end,runs))
+            continue
         if not isinstance(text,str):
             raise PdfError("replacement text must be Unicode")
         styles = {u.style_id for u in paragraph.units[start:end]}
@@ -291,15 +302,15 @@ def apply_edits(paragraph, snapshot, edits):
         if style not in paragraph.styles:
             raise PdfError("unknown source style_id")
         provider = edit.get("font_id",style)
-        ordered.append((start,end,text,style,provider))
+        ordered.append((start,end,[(text,style,provider)]))
     ordered.sort(key=lambda e:(e[0],e[1]))
     result, cursor = [], 0
     previous_start = None
-    for start,end,text,style,provider in ordered:
+    for start,end,runs in ordered:
         if start < cursor or start == previous_start:
             raise PdfError("edits must be disjoint, with one operation at each source position")
         result.extend(EditUnit(u.text,u.style_id,u) for u in paragraph.units[cursor:start])
-        result.extend(EditUnit(c,style,None,provider) for c in text)
+        result.extend(EditUnit(c,style,None,provider) for text,style,provider in runs for c in text)
         cursor, previous_start = end, start
     result.extend(EditUnit(u.text,u.style_id,u) for u in paragraph.units[cursor:])
     _require_complete_graphemes(paragraph, result)

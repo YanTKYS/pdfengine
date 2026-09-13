@@ -24,3 +24,4 @@ tmp/
 !/evaluations/flow_transaction/summary.json
 !/evaluations/variable_container/summary.json
 !/evaluations/story_flow/summary.json
+!/evaluations/story_styles/summary.json

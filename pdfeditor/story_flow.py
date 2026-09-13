@@ -27,6 +27,8 @@ from .proof_session import proof_session
 from .replay import ensure_destination
 from .rich_layout import layout_attributed
 from .selection import source_sha
+from . import story_styles as attributed_story
+from .destination_style import bind_destination_styles
 
 
 LINE_KEYS = ('start','end','baseline','width','ascent','descent')
@@ -54,14 +56,15 @@ def _entry(binding):
 
 def _validate(source, value):
     state=deepcopy(value);checksum=state.pop('model_sha256',None)
-    if state.get('schema')!='pdfengine-story-flow-1' or checksum!=digest(state):
+    if state.get('schema') not in ('pdfengine-story-flow-1','pdfengine-story-flow-2') or checksum!=digest(state):
         raise PdfError('story model version or checksum is invalid')
     state['model_sha256']=checksum
     if state['pdf_sha256']!=source_sha(source):raise PdfError('story PDF revision changed')
     logical=state['logical'];containers=state['containers'];chain=state['flow_chain'];fragments=state['fragments']
+    rich=state['schema']=='pdfengine-story-flow-2'
     if (not isinstance(logical['id'],str) or not logical['id'] or logical['kind']!='paragraph'
             or logical['boundaries']!=_boundaries(logical['text'])
-            or logical['style_spans']!=([dict(start=0,end=len(logical['text']),style_id='body')] if logical['text'] else [])
+            or (not rich and logical['style_spans']!=([dict(start=0,end=len(logical['text']),style_id='body')] if logical['text'] else []))
             or logical['decoration_ranges']!=[] or logical['paragraph_boundaries']!=[]):
         raise PdfError('unsupported logical identity, style or boundary semantics')
     ids=chain['containers']
@@ -69,8 +72,11 @@ def _validate(source, value):
             or chain['provenance']!='explicitly_confirmed' or chain['policy']!='fill-fixed-regions-in-declared-order'
             or chain['overflow']!='reject' or chain['paragraph_id']!=logical['id']):
         raise PdfError('flow needs one explicitly confirmed, noncyclic chain covering its containers')
-    font=state['font_recipe']
-    if source_sha(font['path'])!=font['sha256']:raise PdfError('story supplied font changed')
+    if rich:
+        attributed_story.validate_registry(state)
+    else:
+        font=state['font_recipe']
+        if source_sha(font['path'])!=font['sha256']:raise PdfError('story supplied font changed')
     cursor=0;used=set();slots=set()
     graphemes={0,len(logical['text']),*grapheme_cluster_boundaries(logical['text'])}
     with pymupdf.open(source) as doc:
@@ -105,21 +111,23 @@ def _validate(source, value):
             result=open_editable(source,b)
             if result['status']!='restored':raise PdfError(result['reason'])
             if (b['anchors'] is not None or b['boundaries']!=_boundaries(p['text'])
-                    or not _close(_style(b),state['style']) or b['layout']!=c['layout']
+                    or (not rich and not _close(_style(b),state['style'])) or b['layout']!=c['layout']
                     or b['layout']['first_line_indent']!=0 or b['layout']['width'] is None
                     or not box.contains(Rect(b['layout']['x'],b['layout']['baseline'],
                         b['layout']['x']+b['layout']['width'],b['layout']['max_bottom']))):
                 raise PdfError('fragment style, layout or decoration policy differs from its contract')
             if any(r['behavior']!='fixed-to-page' or r['relation']=='decorates' for r in b['relations']):
                 raise PdfError('semantic decoration ranges need a separate cross-container paint contract')
-            expected_fonts={s['id']:font for s in p['styles']}
-            if b['fonts']!=expected_fonts:raise PdfError('fragment must use the explicit story font recipe')
+            if not rich:
+                expected_fonts={s['id']:font for s in p['styles']}
+                if b['fonts']!=expected_fonts:raise PdfError('fragment must use the explicit story font recipe')
             a,z=f['range'];end=f['render_end']
             if (type(a) is not int or type(z) is not int or type(end) is not int or a!=cursor
                     or not a<=end<=z<=len(logical['text']) or not {a,z,end}<=graphemes or p['text']!=logical['text'][a:end]
                     or any(ch not in ' \r\n' for ch in logical['text'][end:z])):
                 raise PdfError('fragment ranges do not partition the one logical Unicode sequence')
             cursor=z
+            if rich:attributed_story.validate_fragment(state,ident)
             observed=b['element']['text_element']['observed_bounds']
             if observed and not box.contains(Rect(**observed),.002):raise PdfError('fragment glyphs exceed its confirmed region')
             for gid in p['selection']['glyph_ids']:
@@ -148,14 +156,22 @@ def _physical_breaks(state):
 
 
 @proof_session
-def confirm_story(source, containers, *, paragraph_id, chain, font, protected_regions):
-    """Confirm ordered source fragments as one homogeneous logical paragraph.
+def confirm_story(source, containers, *, paragraph_id, chain, protected_regions, font=None,
+                  styles=None, style_assignments=None, typing_style_id=None):
+    """Confirm ordered source fragments as one logical paragraph.
 
     Each container supplies page, bounds, paragraph and explicit layout.
     Its source text is concatenated exactly, without inserting line/page breaks.
-    The supplied full font is the explicit reflow provider for the entire story.
+    Use font for the legacy homogeneous contract, or explicit styles,
+    style_assignments and typing_style_id for attributed destination binding.
+    Reflow uses the confirmed full provider for each logical style.
     """
-    checksum=source_sha(source);font=dict(font,path=str(Path(font['path']).resolve()),sha256=source_sha(font['path']))
+    rich=styles is not None
+    if rich and font is not None:raise PdfError('choose per-style providers or the legacy single provider')
+    if not rich and (font is None or style_assignments is not None or typing_style_id is not None):
+        raise PdfError('legacy story needs one font; attributed story needs explicit style definitions')
+    checksum=source_sha(source)
+    if not rich:font=dict(font,path=str(Path(font['path']).resolve()),sha256=source_sha(font['path']))
     values={};fragments={};cursor=0;text='';style=None;source_family=None
     if len(chain)!=len(set(chain)) or set(chain)!=set(containers):raise PdfError('explicit chain must name each container once')
     for ident in chain:
@@ -164,15 +180,17 @@ def confirm_story(source, containers, *, paragraph_id, chain, font, protected_re
         if set(spec['layout'])!={'x','baseline','width','max_bottom','min_line_height','first_line_indent'}:
             raise PdfError('continuation requires explicit width, position, bottom, leading and indent')
         if spec['page']!=spec['paragraph']['selection']['page']:raise PdfError('source fragment page mismatch')
-        b=_initial(source,paragraph_id,ident,dict(spec,fonts={s['id']:font for s in spec['paragraph']['styles']}))['binding']
+        b=_initial(source,paragraph_id,ident,dict(spec,fonts={} if rich else {s['id']:font for s in spec['paragraph']['styles']}))['binding']
         # The caller supplies the reflow provider independently of the source subset.
-        b['fonts']={s['id']:font for s in b['paragraph']['styles']};b['boundaries']=_boundaries(b['paragraph']['text']);b=_reseal(b)
-        current=_style(b)
-        family=re.sub(r'^[A-Z]{6}\+','',b['paragraph']['styles'][0]['font_name'])
-        if source_family is None:source_family=family
-        if family!=source_family:raise PdfError('source fragments have different font families')
-        if style is None:style=current
-        if not _close(style,current):raise PdfError('initial fragments do not share the confirmed logical style')
+        if not rich:b['fonts']={s['id']:font for s in b['paragraph']['styles']}
+        b['boundaries']=_boundaries(b['paragraph']['text']);b=_reseal(b)
+        if not rich:
+            current=_style(b)
+            family=re.sub(r'^[A-Z]{6}\+','',b['paragraph']['styles'][0]['font_name'])
+            if source_family is None:source_family=family
+            if family!=source_family:raise PdfError('source fragments have different font families')
+            if style is None:style=current
+            if not _close(style,current):raise PdfError('initial fragments do not share the confirmed logical style')
         text+=b['paragraph']['text'];end=len(text)
         fragments[ident]=dict(range=[cursor,end],render_end=end,binding=b);cursor=end
         values[ident]=dict(id=ident,page=spec['page'],bounds=list(spec['bounds']),layout=deepcopy(b['layout']),
@@ -188,6 +206,16 @@ def confirm_story(source, containers, *, paragraph_id, chain, font, protected_re
         pages={str(i+1):dict(unselected_elements='fixed-to-page',header_inference='unknown',
             protected_regions=[dict(r,provenance='explicitly_confirmed') for r in protected_regions.get(str(i+1),[])]) for i in range(count)},
         layout_provenance='caller_confirmed_source_partition',previous_model_sha256=None)
+    if rich:
+        registry,spans=attributed_story.confirm_registry(source,fragments,styles,style_assignments,typing_style_id)
+        state.update(schema='pdfengine-story-flow-2',style_registry=registry,
+            reflow_font_policy='explicit_provider_for_each_logical_style_in_entire_story')
+        for key in ('style','source_font_family','font_recipe'):state.pop(key)
+        state['logical'].update(style_spans=spans,typing_style_id=typing_style_id,typing_style_provenance='explicitly_confirmed')
+        for fragment in fragments.values():
+            b=fragment['binding'];mapping=fragment['style_binding']['styles']
+            b['fonts']={local:registry[logical]['reflow_provider'] for local,logical in mapping.items()}
+            fragment['binding']=_reseal(b)
     state['physical_breaks']=_physical_breaks(state)
     return _validate(source,_reseal(state))
 
@@ -228,16 +256,28 @@ def _replacement(binding,text):
     return [dict(start=0,end=len(binding['paragraph']['text']),text=text,style_id=binding['paragraph']['styles'][0]['id'])]
 
 
-def _plan(source,state,edits):
-    text=_edit_text(state['logical']['text'],edits);cursor=0;plans={}
+def _plan(source,state,edits,typing_style_id=None):
+    rich=state['schema']=='pdfengine-story-flow-2';cursor=0;plans={}
+    if rich:
+        text,spans,typing=attributed_story.project(state,edits,typing_style_id)
+        ids=attributed_story.style_ids(text,spans,state['style_registry'])
+        recipes=attributed_story.render_styles(state);fonts=attributed_story.providers(state)
+        empty_size=recipes['logical:'+typing]['font_size']
+    else:
+        if typing_style_id is not None:raise PdfError('legacy story has no attributed typing style registry')
+        text=_edit_text(state['logical']['text'],edits);empty_size=state['style']['font_size']
     for ident in state['flow_chain']['containers']:
         c=state['containers'][ident];b=state['fragments'][ident]['binding'];remaining=text[cursor:]
         paragraph=paragraph_from_snapshot(source,b['paragraph']);shaper=None
         try:
-            sid=b['paragraph']['styles'][0]['id']
-            shaper=ParagraphShaper(paragraph,[EditUnit(ch,sid,None,sid) for ch in remaining],_fonts(b))
+            if rich:
+                paragraph=bind_destination_styles(paragraph,recipes)
+                units=[EditUnit(ch,'logical:'+sid,None,'logical:'+sid) for ch,sid in zip(remaining,ids[cursor:])]
+            else:
+                sid=b['paragraph']['styles'][0]['id'];units=[EditUnit(ch,sid,None,sid) for ch in remaining];fonts=_fonts(b)
+            shaper=ParagraphShaper(paragraph,units,fonts)
             layout=layout_attributed(remaining,shape=shaper.shape,**dict(c['layout'],max_bottom=None),
-                empty_ascent=state['style']['font_size']*.8,empty_descent=state['style']['font_size']*.2)
+                empty_ascent=empty_size*.8,empty_descent=empty_size*.2)
             fitting=[line for line in layout.lines if line.baseline+line.descent<=c['layout']['max_bottom']+1e-6]
             if remaining and not fitting:raise PdfError('continuation container cannot hold its next complete line')
             if len(fitting)==len(layout.lines):end=cut=len(remaining)
@@ -247,43 +287,59 @@ def _plan(source,state,edits):
                     raise PdfError('blank-only continuation needs a richer nonpainting line binding')
                 if any(ch not in ' \r\n' for ch in remaining[end:cut]):raise PdfError('flow would elide non-whitespace Unicode')
             visible=remaining[:end]
-            measured=plan_paragraph(source,b['paragraph'],_replacement(b,visible),fonts=_fonts(b),**c['layout'])
+            local_spans=attributed_story.canonical_spans(ids[cursor:cursor+end]) if rich else None
+            replacement=attributed_story.replacement(b,visible,local_spans) if rich else _replacement(b,visible)
+            measured=plan_paragraph(source,b['paragraph'],replacement,fonts=fonts,
+                render_styles=recipes if rich else None,**c['layout'])
             expected=[{k:getattr(line,k) for k in LINE_KEYS} for line in fitting]
             if not _close(measured['lines'],expected):raise PdfError('fragment shaping differs from the global continuation plan')
             if any(line['baseline']-line['ascent']<c['bounds'][1]-.002 for line in expected):
                 raise PdfError('planned line crosses the confirmed container top')
             plans[ident]=dict(range=[cursor,cursor+cut],render_end=cursor+end,text=visible,lines=expected)
+            if rich:plans[ident]['style_spans']=local_spans
             cursor+=cut
         finally:
             if shaper is not None:shaper.close()
             paragraph.close()
     if cursor!=len(text):raise PdfError('story exceeds all explicitly confirmed continuation containers')
-    return dict(schema='pdfengine-story-plan-1',source_sha256=state['pdf_sha256'],model_sha256=state['model_sha256'],
+    result=dict(schema='pdfengine-story-plan-1',source_sha256=state['pdf_sha256'],model_sha256=state['model_sha256'],
         paragraph_id=state['logical']['id'],text=text,boundaries=_boundaries(text),fragments=plans,
         schedule=list(state['flow_chain']['containers']),paint_authority='none; fixed page paint',
         collision_status='not_certified; every fragment writer must pass its guards')
+    if rich:result.update(schema='pdfengine-story-plan-2',style_spans=spans,typing_style_id=typing,
+        style_registry_sha256=digest(state['style_registry']),font_policy=state['reflow_font_policy'])
+    return result
 
 
 @proof_session
-def plan_story(source,model,edits):return _plan(source,_restore(source,model),edits)
+def plan_story(source,model,edits,*,typing_style_id=None):return _plan(source,_restore(source,model),edits,typing_style_id)
 
 
 @proof_session
-def edit_story(source,model,output,model_output,edits):
-    initial=_restore(source,model);plan=_plan(source,initial,edits)
+def edit_story(source,model,output,model_output,edits,*,typing_style_id=None):
+    initial=_restore(source,model);plan=_plan(source,initial,edits,typing_style_id)
     output=ensure_destination(output,source);model_output=ensure_destination(model_output,source)
     if output==model_output:raise PdfError('story PDF and sidecar need distinct destinations')
     output.parent.mkdir(parents=True,exist_ok=True);steps=[];state=deepcopy(initial)
+    rich=state['schema']=='pdfengine-story-flow-2'
+    if rich:state['logical']['typing_style_id']=plan['typing_style_id']
     with tempfile.TemporaryDirectory(prefix='.story-',dir=output.parent) as directory:
         root=Path(directory);current=Path(source)
         for n,ident in enumerate(plan['schedule']):
             b=state['fragments'][ident]['binding'];wanted=plan['fragments'][ident]
             pdf,sidecar=root/f'{n}.pdf',root/f'{n}.json'
-            report=edit_document(current,b,pdf,sidecar,_replacement(b,wanted['text']),
-                empty_style_id=b['paragraph']['styles'][0]['id'])
+            if rich:
+                report=edit_document(current,b,pdf,sidecar,attributed_story.replacement(b,wanted['text'],wanted['style_spans']),
+                    fonts=attributed_story.providers(state),render_styles=attributed_story.render_styles(state),
+                    empty_style_id='logical:'+plan['typing_style_id'])
+            else:
+                report=edit_document(current,b,pdf,sidecar,_replacement(b,wanted['text']),
+                    empty_style_id=b['paragraph']['styles'][0]['id'])
             result=open_editable(pdf,sidecar)
             if result['status']!='restored':raise PdfError(result['reason'])
-            edited=result['state'];edited['fonts']={s['id']:state['font_recipe'] for s in edited['paragraph']['styles']}
+            edited=result['state']
+            if rich:attributed_story.bind_fragment(state,ident,edited,wanted,generated=True)
+            else:edited['fonts']={s['id']:state['font_recipe'] for s in edited['paragraph']['styles']}
             edited['boundaries']=_boundaries(edited['paragraph']['text']);edited=_reseal(edited)
             actual=[{k:line[k] for k in LINE_KEYS} for line in edited['physical_layout']['lines']]
             if not _close(actual,wanted['lines']) or edited['paragraph']['text']!=wanted['text']:
@@ -295,10 +351,11 @@ def edit_story(source,model,output,model_output,edits):
                 else:
                     byte_edits=report['byte_edits'] if state['containers'][other]['page']==page else []
                     f['binding']=_rebind(current,pdf,_entry(f['binding']),byte_edits)['binding']
+                    if rich:f['style_binding']['pdf_sha256']=source_sha(pdf)
             steps.append(dict(container_id=ident,page=page,report=report));current=pdf
         if source_sha(source)!=initial['pdf_sha256']:raise PdfError('story input changed before publication')
         state['logical'].update(text=plan['text'],boundaries=plan['boundaries'],
-            style_spans=[dict(start=0,end=len(plan['text']),style_id='body')] if plan['text'] else [])
+            style_spans=plan['style_spans'] if rich else [dict(start=0,end=len(plan['text']),style_id='body')] if plan['text'] else [])
         state.update(pdf_sha256=source_sha(current),previous_model_sha256=initial['model_sha256'],layout_provenance='generated-by-pdfengine')
         state['physical_breaks']=_physical_breaks(state);state=_validate(current,_reseal(state))
         saved=root/'story.json';saved.write_bytes((json.dumps(state,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))

@@ -121,3 +121,5 @@ v1は87文字から76文字への同程度置換であり、原本からの長�
 固定の既存container列で一つのidentityを維持できた後には、複数の論理paragraphが同じcontainer列の容量を共有する配置、混合style/decoration rangeの跨領域維持、新しいcontinuation slot/pageの生成が残る。可変containerとの組合せも、伸長優先・早期break等の明示policyを追加してから判断する。
 
 今回の原本で具体的に次の障害になったのは、同じ元paragraph内のMS-PMincho 10.5ptとTimes New Roman 12ptを一つのlogical style registryで保ち、各destinationのsource描画contextへ結び直すこと。この対応とsemantic decoration rangeの維持が進めば、今は固定して残した後続文を同じ論理paragraphとして再組版する範囲を広げられる。新規page作成だけを先に追加しても、この制約は解消しない。
+
+この混合書式の境界に対する次段階の設計・検証は[論理書式と配置先binding](attributed-story-flow.md)に分離した。本資料のschema 1評価と単一書式の制限は、当時の評価範囲として保持する。

@@ -25,6 +25,8 @@ def paragraph_from_snapshot(source, snapshot):
 
 
 def style_recipes(paragraph):
+    if hasattr(paragraph, 'destination_recipes'):
+        return paragraph.destination_recipes()
     if isinstance(paragraph, EmptyParagraph):
         return deepcopy(paragraph.saved['style_recipes'])
     return {ident: dict(properties=style.export(), matrix=list(style.matrix),

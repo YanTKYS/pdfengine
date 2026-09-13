@@ -173,12 +173,14 @@ def _layout_parameters(paragraph, snapshot, *, width=None, x=None, first_line_in
         max_bottom=min(bottom,paragraph.content.page.rect.height),empty_ascent=size*.8,empty_descent=size*.2)
 
 
-def plan_paragraph(source, snapshot, edits, *, fonts=None, **layout_options):
+def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, **layout_options):
     """Measure with the writer's shaper/layout, without authorizing any paint."""
     from .logical_element import paragraph_from_snapshot
     paragraph=paragraph_from_snapshot(source,snapshot)
     shaper=None
     try:
+        from .destination_style import bind_destination_styles
+        paragraph=bind_destination_styles(paragraph,render_styles)
         units=apply_edits(paragraph,snapshot,edits)
         _,options=_layout_parameters(paragraph,snapshot,**layout_options)
         shaper=ParagraphShaper(paragraph,units,fonts or {})
@@ -194,7 +196,7 @@ def plan_paragraph(source, snapshot, edits, *, fonts=None, **layout_options):
 def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x=None,
                    first_line_indent=None, max_bottom=None, min_line_height=None,
                    removal_output=None, element_snapshot=None, element_relations=None, anchor_spec=None, baseline=None,
-                   preserve_empty=False, empty_style_id=None):
+                   preserve_empty=False, empty_style_id=None, render_styles=None):
     output = ensure_destination(output,source)
     if removal_output:
         removal_output = ensure_destination(removal_output,source)
@@ -204,6 +206,10 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
     paragraph = paragraph_from_snapshot(source,snapshot)
     shaper = None
     try:
+        from .destination_style import bind_destination_styles
+        paragraph=bind_destination_styles(paragraph,render_styles)
+        if anchor_spec is not None and any('runs' in e for e in edits):
+            raise PdfError('attributed replacement runs need explicit decoration projection')
         units = apply_edits(paragraph,snapshot,edits)
         empty_typing_style=None
         if preserve_empty and not units:
@@ -387,6 +393,7 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
                     anchored.verify(doc,removed=True)
             publish_program(source,pno,removed,removal_output,verify_removed)
         return {"schema_version":1,"backend":"attributed-source-and-shaped-fonts",
+            **({'destination_style_binding':paragraph.binding_report()} if render_styles is not None else {}),
             "element_snapshot_sha256":element_snapshot.get('snapshot_sha256') if element_snapshot else None,
             "element_relations":element_relations,
             "anchors":anchored.report() if anchored else None,
@@ -397,7 +404,7 @@ def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x
             "empty_slot_offset":empty_slot_offset,"empty_typing_style_id":empty_typing_style,
             "empty_style_recipes":style_recipes(paragraph) if empty_typing_style is not None else None,
             "logical_origins":[shaper.original_offsets[id(u.retained)] if u.retained is not None else None for u in units],
-            "styles":snapshot['styles'],"edits":edits,"fonts":font_reports,
+            "styles":paragraph.export_styles() if render_styles is not None else snapshot['styles'],"edits":edits,"fonts":font_reports,
             "widths":asdict(available),"x":x,"baseline":baseline,"first_line_indent":indent,"min_line_height":leading,
             "old_line_count":len(resolved.lines),"new_line_count":len(layout.lines),
             "lines":[{k:getattr(line,k) for k in ('text','start','end','x','baseline','width','ascent','descent')} for line in layout.lines],
