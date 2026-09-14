@@ -93,18 +93,26 @@ def _signature(g):
 
 
 def _pixels_equal(before, after, mask=None):
+    """Compare 144 dpi renderings outside one or several masked rectangles."""
     a, b = before.get_pixmap(dpi=144, alpha=False), after.get_pixmap(dpi=144, alpha=False)
     if (a.width, a.height, a.n) != (b.width, b.height, b.n):
         return False
     first, second = a.samples, b.samples
-    if mask is None:
+    masks = [] if mask is None else list(mask) if isinstance(mask, (list, tuple)) else [mask]
+    if not masks:
         return first == second
-    x0, y0 = max(0, math.floor(mask.x0 * 2) - 2), max(0, math.floor(mask.y0 * 2) - 2)
-    x1, y1 = min(a.width, math.ceil(mask.x1 * 2) + 2), min(a.height, math.ceil(mask.y1 * 2) + 2)
+    boxes = [(max(0, math.floor(m.x0 * 2) - 2), max(0, math.floor(m.y0 * 2) - 2),
+              min(a.width, math.ceil(m.x1 * 2) + 2), min(a.height, math.ceil(m.y1 * 2) + 2)) for m in masks]
     stride = a.width * a.n
     for y in range(a.height):
         start = y * stride
-        spans = ((0, stride),) if not y0 <= y < y1 else ((0, x0 * a.n), (x1 * a.n, stride))
+        holes = sorted((x0, x1) for x0, y0, x1, y1 in boxes if y0 <= y < y1)
+        spans, cursor = [], 0
+        for x0, x1 in holes:
+            if x0 * a.n > cursor:
+                spans.append((cursor, x0 * a.n))
+            cursor = max(cursor, x1 * a.n)
+        spans.append((cursor, stride))
         if any(first[start + lo:start + hi] != second[start + lo:start + hi] for lo, hi in spans):
             return False
     return True
@@ -143,7 +151,7 @@ def _state_contract(events):
     return first, state, matrix
 
 
-def _check_obstacles(content, selected, resolved, ink, layout_bounds):
+def _check_obstacles(content, selected, resolved, ink, layout_bounds, *, exclude_glyphs=frozenset()):
     original = glyph_observations(content.page)
     empty_spaces = _empty_space_indices(content, original)
     # An empty logical element has no observed paint order. Without a
@@ -151,6 +159,8 @@ def _check_obstacles(content, selected, resolved, ink, layout_bounds):
     first_paint = min((content.actual[i]["span"]["seqno"] for i in selected),default=-1)
     for rect in ink:
         for i, old in enumerate(original):
+            if i in exclude_glyphs:
+                continue
             if i not in selected and i not in empty_spaces and rect.intersects(Rect(*old["bbox"]), .1):
                 raise PdfError("composed text collides with an unselected glyph")
         for image in content.page.get_image_info():

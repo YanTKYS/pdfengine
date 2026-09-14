@@ -14,10 +14,11 @@ from uniseg.graphemecluster import grapheme_cluster_boundaries
 
 from .attributed import SourceParagraph
 from .backend import PdfError
-from .content_stream import number, serialized_event
+from .content_stream import number
 from .elements import (inspect_element, _confirmed, _close, _paint_value,
                        _check_clip, _check_region_obstacles, _local_translation)
 from .model import Rect
+from .mutation import Mutation
 from .paint_geometry import fill_cells
 from .paint_provenance import interpreted_paints
 
@@ -199,7 +200,9 @@ class AnchoredPaintEdit:
         self.indices={n for i in ids for n in self.paths[i]['proof']['paint_indices']}
         self.patches=[];self.segments=[];self.replacements={}
 
-    def plan(self, layout, inks, ink_bounds, available_region):
+    def plan(self, layout, inks, ink_bounds, available_region, *, owner=None):
+        """Plan replacement paint per visual segment; obstacles are checked at commit."""
+        self.mutations, self.removal_mutations, self.paint_changes, self.group_anchors = [], [], {}, []
         for group_index,group in enumerate(self.groups):
             paths=sorted((self.paths[i] for i in group['source_ids']),key=lambda p:p['source']['merged_range'][0])
             template=paths[0]['proof']['paints'][0]
@@ -231,21 +234,33 @@ class AnchoredPaintEdit:
                     _check_clip(template,rect)
                     rectangles.append(rect)
                     self.segments.append(dict(group=group_index,range=[glyphs[0].start,glyphs[-1].end],baseline=line.baseline,bounds=asdict(rect)))
+            anchors_of_group=[]
             for path in paths:
-                replacement=path['proof']['evidence']['replacement'].encode()
+                consume=path['proof']['evidence']['replacement'].encode()
+                a,b=path['source']['merged_range']
+                replacement=consume;anchors={}
+                for index in path['proof']['paint_indices']:
+                    self.paint_changes[index]=None
                 if path is paths[0] and rectangles:
                     # Keep one paint operator per visual segment so a reopened
                     # PDF can recover and edit these roles through source IDs.
                     replacement+=b' q '
                     painted=[]
-                    for r in rectangles:
-                        replacement+=_rect_commands([r],template['matrix'])+path['source']['operator'].encode()+b' '
+                    for k,r in enumerate(rectangles):
+                        replacement+=_rect_commands([r],template['matrix'])
+                        anchors[f'paint:{k}']=len(replacement)
+                        replacement+=path['source']['operator'].encode()+b' '
                         paint=deepcopy(template)
                         paint['geometry']=[['m',r.x0,r.y0],['l',r.x1,r.y0],['l',r.x1,r.y1],['l',r.x0,r.y1],['h']]
                         paint['bounds']=list(r.tuple());painted.append(paint)
                     replacement+=b' Q '
+                    self.paint_changes[path['proof']['paint_indices'][0]]=[_paint_value(p) for p in painted]
                     self.replacements[path['proof']['paint_indices'][0]]=painted
-                a,b=path['source']['merged_range'];self.patches.append((a,b,replacement))
+                mutation=Mutation(a,b,replacement,kind='decoration',anchors=anchors,owner=owner)
+                self.mutations.append(mutation)
+                anchors_of_group.extend((mutation,name) for name in sorted(anchors,key=lambda n:int(n.split(':')[1])))
+                self.removal_mutations.append(Mutation(a,b,consume,kind='decoration-remove',owner=owner))
+            self.group_anchors.append(anchors_of_group)
         regions=list(inks)+[Rect(**s['bounds']) for s in self.segments]
         self.bounds=ink_bounds
         for i in self.ids:
@@ -254,29 +269,12 @@ class AnchoredPaintEdit:
             self.bounds=self.bounds.union(r)
             if not Rect(*self.paragraph.content.page.rect).contains(r,.001):
                 raise PdfError('anchored decoration extends outside the page')
+        self.regions=regions
+
+    def check(self, exclude_glyphs=frozenset(), paint_changes=None):
         _check_region_obstacles(self.paragraph.content,set(self.paragraph.selection['glyph_ids']),self.paragraph.resolved,
-            regions,self.bounds,self.observation,self.paths,self.decisions,self.ids)
-
-    def removal_program(self):
-        paragraph=self.paragraph;selected=set(paragraph.selection['glyph_ids'])
-        patches=[(e.operator.start,e.operator.end,serialized_event(e,selected,remove=True)) for e in paragraph.events]
-        patches.extend((*self.paths[i]['source']['merged_range'],self.paths[i]['proof']['evidence']['replacement'].encode()) for i in self.ids)
-        data=paragraph.content.streams[-paragraph.content.page.xref]
-        for a,b,value in sorted(patches,reverse=True):data=data[:a]+value+data[b:]
-        return data
-
-    def verify(self, document, *, removed=False):
-        observation=interpreted_paints(document.tobytes(),self.paragraph.resolved.page)
-        if observation['errors']:
-            raise PdfError(observation['errors'][0])
-        def nontext(events):
-            return [_paint_value(e) for e in events if e['kind'] not in ('fill-text','stroke-text','ignore-text')]
-        expected=[]
-        for i,event in enumerate(self.observation['events']):
-            if i not in self.indices:expected.append(event)
-            elif not removed and i in self.replacements:expected.extend(self.replacements[i])
-        if not _close(nontext(expected),nontext(observation['events'])):
-            raise PdfError('saved decoration or other non-text paint differs from the anchored plan')
+            self.regions,self.bounds,self.observation,self.paths,self.decisions,self.ids,
+            exclude_glyphs=exclude_glyphs,paint_changes=paint_changes)
 
     def report(self):
         return dict(groups=self.groups,segments=self.segments,source_paths_replaced=len(self.ids),

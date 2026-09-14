@@ -8,20 +8,21 @@ paragraph. This layer introduces no compound source writer.
 from copy import deepcopy
 import json
 import math
-import os
 from pathlib import Path
 import tempfile
 
 from .attributed import digest
 from .backend import PdfError
-from .document_flow import _rebind, _reseal, open_document
-from .elements import _close, _paint_value
-from .flow_transaction import plan_flow, edit_flow_batch
+from .document_flow import _reseal, open_document
+from .editable import _publish
+from .elements import _close
+from .flow_transaction import LINE_KEYS, bind_document_transaction, plan_document_transaction, plan_flow
 from .model import Rect
-from .paint_resize import MODEL, extend_geometry, resize_paints
+from .paint_resize import MODEL, extend_geometry, plan_paint_resize
 from .proof_session import proof_session
 from .replay import ensure_destination
 from .selection import source_sha
+from .transaction import Transaction
 
 
 def _document(source, value):
@@ -185,58 +186,57 @@ def plan_variable_container(source, model, changes):
     return _plan(source,_restore(source,model),changes)
 
 
-def _remap(before, after, paints):
-    old,new=_paths(before),_paths(after)
-    if len(old)!=len(new): raise PdfError('container paint source order changed')
-    mapping={a['source_id']:b['source_id'] for a,b in zip(old,new)}
-    return [dict(p,source_id=mapping[p['source_id']]) for p in paints]
-
-
 @proof_session
 def edit_variable_container(source, model, output, model_output, changes):
+    """Resize the owned band paints and re-lay out the children in one transaction."""
     initial=_restore(source,model); changes=deepcopy(changes); plan=_plan(source,initial,changes)
     output=ensure_destination(output,source); model_output=ensure_destination(model_output,source)
     if output==model_output: raise PdfError('PDF and model need different destinations')
     output.parent.mkdir(parents=True,exist_ok=True); reports=[]
+    state=deepcopy(initial); document=state['document']
+    # Children are planned against the confirmed final bottom; their guards
+    # see the resized band paint through the transaction's planned geometry.
+    capacity=_with_bottom(document,plan['final_bottom'])
     with tempfile.TemporaryDirectory(prefix='.variable-',dir=output.parent) as directory:
-        root=Path(directory); current=Path(source); state=deepcopy(initial); document=state['document']
-        def resize():
-            nonlocal current, document
-            b=next(iter(document['elements'].values()))['binding']; target=root/'resize.pdf'
-            report=resize_paints(current,target,b['element'],state['paints'],delta=plan['delta'],
-                available_bounds=state['layout_policy']['available_paint_region'],paragraph_snapshot=b['paragraph'])
-            if report['source_sha256']!=source_sha(current) or report['output_sha256']!=source_sha(target):
-                raise PdfError('paint mutation receipt belongs to a different revision')
-            replacement={i:[p['expected']] for i,p in report['plans'].items()}
-            updated=deepcopy(document)
-            updated['elements']={i:_rebind(current,target,e,report['byte_edits'],paint_replacements=replacement)
-                                  for i,e in document['elements'].items()}
-            updated['pdf_sha256']=source_sha(target)
-            updated=_document(target,_with_bottom(updated,plan['final_bottom']))
-            state['paints']=_remap(document,updated,state['paints'])
-            reports.append(dict(kind='resize',report=report)); current,document=target,updated
-        if plan['delta']>0: resize()
-        target=root/'edited.pdf'; sidecar=root/'edited.json'
-        batch=edit_flow_batch(current,document,target,sidecar,changes)
-        updated=_document(target,sidecar)
-        state['paints']=_remap(document,updated,state['paints'])
-        reports.append(dict(kind='edit',report=batch)); current,document=target,updated
-        if plan['delta']<0: resize()
+        root=Path(directory); target=root/'edited.pdf'
+        with Transaction(source) as transaction:
+            page=transaction.page(document['container']['page'])
+            resize=None
+            if plan['delta']:
+                b=next(iter(document['elements'].values()))['binding']
+                resize=plan_paint_resize(page,b['element'],state['paints'],delta=plan['delta'],
+                    available_bounds=state['layout_policy']['available_paint_region'],paragraph_snapshot=b['paragraph'],
+                    owner=document['container']['id'])
+            entries=plan_document_transaction(transaction,capacity,changes,plan['layout'])
+            result=transaction.commit(target)
+            try:
+                elements,steps=bind_document_transaction(result,capacity,entries,plan['layout'])
+                identity=result.identity(document['container']['page'])
+                paints=[dict(p,source_id=identity.map_path(p['source_id'])) for p in state['paints']]
+                if resize is not None:
+                    reports.append(dict(kind='resize',report=resize.report(result)))
+                reports.append(dict(kind='edit',report=dict(transactions=[dict(element_id=i,report=steps[i]['report'])
+                    for i in plan['layout']['schedule']],steps=list(steps.values()))))
+                if plan['delta']<0:
+                    reports.insert(0,reports.pop())
+                mutation_map=result.mutation_map()
+            finally:result.close()
+        updated=deepcopy(capacity); updated['elements']=elements
+        updated.update(pdf_sha256=source_sha(target),previous_model_sha256=initial['document']['model_sha256'])
+        for ident,measured in plan['layout']['paragraph_plans'].items():
+            b=elements[ident]['binding']
+            lines=[{k:line[k] for k in LINE_KEYS} for line in b['physical_layout']['lines']]
+            if b['paragraph']['text']!=measured['text'] or not _close(lines,measured['lines']):
+                raise PdfError('final authored text or shaped lines differ from the variable plan')
+        document=_document(target,_with_bottom(_reseal(updated),plan['final_bottom']))
         positions={i:dict(baseline=e['binding']['layout']['baseline'],last_baseline=e['extent']['last_baseline']) for i,e in document['elements'].items()}
         if not _close(positions,plan['layout']['final_positions']): raise PdfError('variable writer positions differ from the final plan')
         if document['follows']!=initial['document']['follows']: raise PdfError('resize changed a semantic follows relation')
         if source_sha(source)!=initial['pdf_sha256']: raise PdfError('variable input revision changed before publication')
-        document['previous_model_sha256']=initial['document']['model_sha256']; document=_reseal(document)
-        state.update(document=document,pdf_sha256=source_sha(current),previous_model_sha256=initial['model_sha256'])
-        state=_validate(current,_reseal(state)); state_file=root/'variable.json'
+        state.update(document=document,paints=paints,pdf_sha256=source_sha(target),previous_model_sha256=initial['model_sha256'])
+        state=_validate(target,_reseal(state)); state_file=root/'variable.json'
         state_file.write_bytes((json.dumps(state,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
-        published=[]
-        try:
-            for temporary,destination in ((current,output),(state_file,model_output)):
-                destination.parent.mkdir(parents=True,exist_ok=True); os.link(temporary,destination); published.append(destination)
-        except Exception:
-            for destination in published: destination.unlink()
-            raise
-    return dict(backend='explicit-variable-container',plan=plan,steps=reports,pdf_sha256=state['pdf_sha256'],
-                model_sha256=state['model_sha256'],semantic_policy_verified=True,final_layout_verified=True,
-                publication='all guarded steps verified; rollback on exception')
+        _publish(root,[(target,output),(state_file,model_output)])
+    return dict(backend='explicit-variable-container',plan=plan,steps=reports,mutation_map=mutation_map,pdf_sha256=state['pdf_sha256'],
+                model_sha256=state['model_sha256'],semantic_policy_verified=True,final_layout_verified=True,saves=1,
+                publication='one transaction verified resize and edits; rollback on exception')

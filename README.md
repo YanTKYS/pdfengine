@@ -18,6 +18,7 @@
 | `inspect-anchors` → `edit-paragraph --anchors` | 文字範囲に属する下線を長文化・短文化・折返しに追従 | 元の下線paintを除去し、同じpaint状態で各行の実advanceに沿って再生成。背景・外枠は固定 |
 | `edit-paragraph --editable-state` → `edit-document` | 確認した文章・改行・装飾範囲・領域を保存し、同じ意味で再編集 | 通常のPDFとSHA-256で結び付いたsidecar。生成した折返しを論理改行へ変換しない |
 | `confirm_document` → `edit_flow`（Python API） | 複数の段落IDと明示した追従関係を保持して編集 | 固定コンテナ内で、確認した子孫とその所有paintだけを平行移動。空の段落でもIDと関係を保持 |
+| `Transaction` / `IdentityMap`（Python API） | 複数の編集を1回の保存・1回の検証で適用し、revisionをまたぐ要素の対応を byte mutation で追跡 | [stable-identity-transaction.md](docs/stable-identity-transaction.md)。flow系の中間PDF保存を廃止 |
 
 書式を保持する経路では、LibreOffice本文の英字12pt・日本語10.5ptを残した2行→1行、元の68文字を残して66文字を追加する2行→3行、仮想プリンタPDFの通常体・斜体を残す部分置換を確認しました。[書式付き編集の評価と境界](docs/attributed-editing.md)を参照してください。全文font代替経路でのWord・Chrome等の結果は [composition.md](docs/composition.md) にあります。指定fontで描く部分は、元書体と同一とは限りません。
 

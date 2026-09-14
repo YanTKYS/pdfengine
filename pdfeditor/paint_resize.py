@@ -11,16 +11,16 @@ import pymupdf
 
 from .attributed import digest
 from .backend import PdfError
-from .composition import _observations, _pixels_equal
-from .content_stream import ContentPage, number, operators
-from .elements import _check_clip, _close, _local_translation, _paint_value, inspect_element
+from .composition import _pixels_equal
+from .content_stream import number, operators
+from .elements import _check_clip, _close, _final_events, _local_translation, _paint_value, inspect_element
 from .model import Rect
+from .mutation import Mutation, MutationProgram
 from .paint_geometry import intersects_fill
 from .paint_provenance import interpreted_paints
-from .pdf_save import font_fingerprints, program_pdf_bytes, publish_program
+from .pdf_save import program_pdf_bytes
 from .proof_session import proof_session
-from .replay import compare_glyphs, ensure_destination
-from .selection import source_sha
+from .transaction import Plan, Transaction
 
 
 MODEL = 'vertical-straight-band-v1'
@@ -128,24 +128,45 @@ def _raw_path(data, ops, path, paint, band, delta):
     return b' '.join(parts)
 
 
-def _program(content, paths, policies, delta):
+def _mutations(content, paths, policies, delta, *, owner=None):
     data = content.streams[-content.page.xref]
-    ops = list(operators(data)); edits = []
+    ops = list(operators(data)); result = {}
     for policy in policies:
         path = paths[policy['source_id']]
         paint = path['proof']['paints'][0]
         raw = _raw_path(data,ops,path,paint,policy['band'],delta)
         a,b = path['source']['merged_range']
-        new = b'n q '+raw+b' '+path['source']['operator'].encode()+b' Q '
-        edits.append((a,b,new))
-    for a,b,new in sorted(edits,reverse=True): data = data[:a]+new+data[b:]
-    return data, [dict(start=a,end=b,length=len(new)) for a,b,new in sorted(edits)]
+        prefix = b'n q '+raw+b' '
+        result[policy['source_id']] = Mutation(a,b,prefix+path['source']['operator'].encode()+b' Q ',
+                                               kind='path-resize',anchors={'paint':len(prefix)},owner=owner)
+    return result
 
 
-@proof_session
-def resize_paints(source, output, snapshot, policies, *, delta, available_bounds, paragraph_snapshot=None):
+def _apply(content, mutations):
+    program = MutationProgram(content.streams[-content.page.xref])
+    for mutation in mutations: program.add(mutation)
+    return program.apply()
+
+
+class ResizePlan(Plan):
+    kind = 'resize'
+
+    def __init__(self, owner=None):
+        super().__init__(owner)
+        self._check = None
+        self._report = {}
+
+    def check(self, page, *, exclude_glyphs, paint_changes):
+        self._check(exclude_glyphs, paint_changes)
+
+    def report(self, result):
+        return dict(self._report, output_sha256=result.output_sha256,
+                    byte_edits=[m.edit() for m in sorted(self.mutations,key=lambda m:m.start)])
+
+
+def plan_paint_resize(page, snapshot, policies, *, delta, available_bounds, paragraph_snapshot=None, owner=None):
     """Change only explicitly owned paint geometry; preserve every text event."""
-    output = ensure_destination(output,source)
+    source, content = page.source, page.content
     if inspect_element(source,snapshot['selection'],paragraph_snapshot=paragraph_snapshot) != snapshot:
         raise PdfError('resize snapshot differs from the current PDF')
     if not snapshot['marked_content']['complete'] or snapshot['renderer_observation_errors']:
@@ -156,9 +177,9 @@ def resize_paints(source, output, snapshot, policies, *, delta, available_bounds
     permitted = Rect(*available_bounds)
     if not all(math.isfinite(v) for v in permitted.tuple()) or permitted.width<=0 or permitted.height<=0:
         raise PdfError('paint resize needs a finite confirmed available region')
-    observation = interpreted_paints(source,snapshot['selection']['page'])
+    observation = page.observation
     if observation['errors']: raise PdfError(observation['errors'][0])
-    expected = [_paint_value(p) for p in observation['events']]
+    plan = ResizePlan(owner)
     plans = {}; selected = set(); area = None
     for policy in policies:
         if (policy.get('geometry_model') != MODEL or policy.get('role') not in ('backgrounds','borders')
@@ -171,59 +192,63 @@ def resize_paints(source, output, snapshot, policies, *, delta, available_bounds
                 or path['source']['marked_content'] or path['source']['pending_clip_operator_indices']
                 or path['source']['operator'] not in ('f','f*')):
             raise PdfError('resize needs a unique unmarked root fill without pending clipping')
-        plan = extend_geometry(path['proof']['paints'][0],policy['band'],delta)
+        proof = extend_geometry(path['proof']['paints'][0],policy['band'],delta)
         if (not permitted.contains(Rect(*path['proof']['paints'][0]['bounds']),.002)
-                or not permitted.contains(Rect(*plan['expected']['bounds']),.002)):
+                or not permitted.contains(Rect(*proof['expected']['bounds']),.002)):
             raise PdfError('resized paint exceeds its confirmed available region')
         index = path['proof']['paint_indices'][0]
         if index in selected: raise PdfError('resize paints share a paint event')
-        selected.add(index); expected[index] = plan['expected']; plans[policy['source_id']] = plan
-        box = Rect(**plan['changed_bounds']); area = box if area is None else area.union(box)
-    content = ContentPage(source,snapshot['selection']['page'])
-    try:
-        if not Rect(*content.page.rect).contains(permitted): raise PdfError('resize region is outside the page')
-        original = _observations(content.page)
-        if delta:
-            # Clearance is a physical policy, not an inference of ownership.
-            guard = Rect(area.x0-1,area.y0-1,area.x1+1,area.y1+1)
-            if any(guard.intersects(Rect(*g['bbox'])) for g in original):
-                raise PdfError('paint resize strip intersects text; vacate it before resizing')
-            for i,event in enumerate(observation['events']):
-                if i in selected: continue
-                if event['kind'] in ('fill-path','stroke-path') and guard.intersects(Rect(*event['bounds'])):
-                    if event['kind']=='fill-path' and intersects_fill(event,guard) is False: continue
-                    raise PdfError('paint resize strip intersects a fixed vector')
-            if any(guard.intersects(Rect(*p['bbox'])) for p in content.page.get_image_info()):
-                raise PdfError('paint resize strip intersects an image')
-            if any(guard.intersects(Rect(*p['from'])) for p in content.page.get_links()):
-                raise PdfError('paint resize strip intersects a link')
-            for p in list(content.page.annots() or [])+list(content.page.widgets() or []):
-                if guard.intersects(Rect(*p.rect)): raise PdfError('paint resize strip intersects an annotation or widget')
-        control,_ = _program(content,paths,policies,0)
-        with pymupdf.open(stream=program_pdf_bytes(source,content.page.number,control),filetype='pdf') as doc:
-            paints = interpreted_paints(doc.tobytes(),snapshot['selection']['page'])
-            if (paints['errors'] or not _close([_paint_value(p) for p in observation['events']],[_paint_value(p) for p in paints['events']])
-                    or not all(_pixels_equal(content.document[i],doc[i]) for i in range(len(doc)))):
-                raise PdfError('paint resize no-op changed paint or pixels')
-        data, byte_edits = _program(content,paths,policies,delta)
-        fonts = font_fingerprints(content.document,content.page.number)
-        def verify(doc):
-            if (len(doc)!=len(content.document) or doc.permissions!=content.document.permissions
-                    or doc.metadata.get('encryption')!=content.document.metadata.get('encryption')):
-                raise PdfError('paint resize changed page count or security')
-            actual = interpreted_paints(doc.tobytes(),snapshot['selection']['page'])
-            if actual['errors'] or not _close(expected,[_paint_value(p) for p in actual['events']]):
-                raise PdfError('saved paint differs from the certified band transformation')
-            if not compare_glyphs(original,_observations(doc[content.page.number]))['passed']:
-                raise PdfError('paint resize changed a source glyph')
-            if font_fingerprints(doc,content.page.number)!=fonts: raise PdfError('paint resize changed font resources')
-            if not all(_pixels_equal(content.document[i],doc[i],area if delta and i==content.page.number else None) for i in range(len(doc))):
-                raise PdfError('paint resize changed pixels outside its proven strip')
-        if source_sha(source)!=snapshot['source_sha256']: raise PdfError('resize source revision changed')
-        publish_program(source,content.page.number,data,output,verify)
-        return dict(backend='source-linked-band-resize',source_sha256=snapshot['source_sha256'],output_sha256=source_sha(output),
-                    policies=deepcopy(policies),delta=delta,plans=plans,plan_sha256=digest(plans),byte_edits=byte_edits,
-                    audit_bbox=asdict(area),paint_plan_verified=True,all_glyphs_preserved=True,font_resources_preserved=True,
-                    no_op_verified=True,mupdf_outside_pixels_equal=True)
-    finally:
-        content.close()
+        selected.add(index); plans[policy['source_id']] = proof
+        plan.paint_changes[index] = [proof['expected']]
+        plan.planned_paths[policy['source_id']] = [proof['expected']]
+        box = Rect(**proof['changed_bounds']); area = box if area is None else area.union(box)
+    if not Rect(*content.page.rect).contains(permitted): raise PdfError('resize region is outside the page')
+    original = page.glyphs
+    def check(exclude_glyphs, paint_changes):
+        if not delta: return
+        # Clearance is a physical policy, not an inference of ownership.
+        guard = Rect(area.x0-1,area.y0-1,area.x1+1,area.y1+1)
+        if any(i not in exclude_glyphs and guard.intersects(Rect(*g['bbox'])) for i,g in enumerate(original)):
+            raise PdfError('paint resize strip intersects text; vacate it before resizing')
+        for i,event in _final_events(observation,paint_changes):
+            if i in selected: continue
+            if event['kind'] in ('fill-path','stroke-path') and guard.intersects(Rect(*event['bounds'])):
+                if event['kind']=='fill-path' and intersects_fill(event,guard) is False: continue
+                raise PdfError('paint resize strip intersects a fixed vector')
+        if any(guard.intersects(Rect(*p['bbox'])) for p in content.page.get_image_info()):
+            raise PdfError('paint resize strip intersects an image')
+        if any(guard.intersects(Rect(*p['from'])) for p in content.page.get_links()):
+            raise PdfError('paint resize strip intersects a link')
+        for p in list(content.page.annots() or [])+list(content.page.widgets() or []):
+            if guard.intersects(Rect(*p.rect)): raise PdfError('paint resize strip intersects an annotation or widget')
+    plan._check = check
+    control = _apply(content,_mutations(content,paths,policies,0).values())
+    with pymupdf.open(stream=program_pdf_bytes(source,content.page.number,control),filetype='pdf') as doc:
+        paints = interpreted_paints(doc.tobytes(),snapshot['selection']['page'])
+        if (paints['errors'] or not _close([_paint_value(p) for p in observation['events']],[_paint_value(p) for p in paints['events']])
+                or not all(_pixels_equal(content.document[i],doc[i]) for i in range(len(doc)))):
+            raise PdfError('paint resize no-op changed paint or pixels')
+    mutations = _mutations(content,paths,policies,delta,owner=owner)
+    plan.mutations = list(mutations.values())
+    plan.path_anchors = {ident:(mutation,'paint') for ident,mutation in mutations.items()}
+    plan.covering_paths = set(mutations) if delta > 0 else set()
+    plan.affected = area if delta else None
+    plan.final_rects = [area] if delta else []
+    plan._report = dict(backend='source-linked-band-resize',source_sha256=snapshot['source_sha256'],
+                        policies=deepcopy(policies),delta=delta,plans=plans,plan_sha256=digest(plans),
+                        audit_bbox=asdict(area),paint_plan_verified=True,all_glyphs_preserved=True,font_resources_preserved=True,
+                        no_op_verified=True,mupdf_outside_pixels_equal=True)
+    return page.add(plan)
+
+
+@proof_session
+def resize_paints(source, output, snapshot, policies, *, delta, available_bounds, paragraph_snapshot=None):
+    """Resize owned paints as a single-plan transaction."""
+    with Transaction(source) as transaction:
+        plan = plan_paint_resize(transaction.page(snapshot['selection']['page']),snapshot,policies,delta=delta,
+                                 available_bounds=available_bounds,paragraph_snapshot=paragraph_snapshot)
+        result = transaction.commit(output)
+        try:
+            return plan.report(result)
+        finally:
+            result.close()

@@ -116,12 +116,12 @@ def test_story_refusals_leave_no_outputs(tmp_path,mode):
 
 def test_late_failure_keeps_original_and_publishes_nothing(tmp_path,monkeypatch):
     import pdfeditor.story_flow as module
-    source,state=prepared(tmp_path);sha=source_sha(source);original=module.edit_document;calls=[]
+    source,state=prepared(tmp_path);sha=source_sha(source);original=module.plan_document_edit;calls=[]
     def fail_second(*args,**kwargs):
         calls.append(1)
         if len(calls)==2:raise PdfError('injected second fragment failure')
         return original(*args,**kwargs)
-    monkeypatch.setattr(module,'edit_document',fail_second)
+    monkeypatch.setattr(module,'plan_document_edit',fail_second)
     with pytest.raises(PdfError,match='second fragment'):
         edit_story(source,state,tmp_path/'bad.pdf',tmp_path/'bad.json',replace(state,LONG))
     assert len(calls)==2 and source_sha(source)==sha
