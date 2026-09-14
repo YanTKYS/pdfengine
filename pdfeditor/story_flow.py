@@ -7,7 +7,6 @@ context. Fragment text is a view of the story, never a new paragraph identity.
 from copy import deepcopy
 import json
 import math
-import os
 from pathlib import Path
 import re
 import tempfile
@@ -17,9 +16,10 @@ from uniseg.graphemecluster import grapheme_cluster_boundaries
 
 from .attributed import EditUnit, digest
 from .backend import PdfError
-from .document_flow import _initial, _rebind, _reseal, _fonts
-from .editable import edit_document, open_editable
+from .document_flow import _initial, _reseal, _fonts
+from .editable import _publish, bind_document_edit, open_editable, plan_document_edit
 from .elements import _close
+from .transaction import Transaction
 from .logical_element import paragraph_from_snapshot
 from .model import Rect
 from .paragraph import ParagraphShaper, plan_paragraph
@@ -317,6 +317,7 @@ def plan_story(source,model,edits,*,typing_style_id=None):return _plan(source,_r
 
 @proof_session
 def edit_story(source,model,output,model_output,edits,*,typing_style_id=None):
+    """Re-lay out every fragment of one story in a single transaction."""
     initial=_restore(source,model);plan=_plan(source,initial,edits,typing_style_id)
     output=ensure_destination(output,source);model_output=ensure_destination(model_output,source)
     if output==model_output:raise PdfError('story PDF and sidecar need distinct destinations')
@@ -324,48 +325,42 @@ def edit_story(source,model,output,model_output,edits,*,typing_style_id=None):
     rich=state['schema']=='pdfengine-story-flow-2'
     if rich:state['logical']['typing_style_id']=plan['typing_style_id']
     with tempfile.TemporaryDirectory(prefix='.story-',dir=output.parent) as directory:
-        root=Path(directory);current=Path(source)
-        for n,ident in enumerate(plan['schedule']):
-            b=state['fragments'][ident]['binding'];wanted=plan['fragments'][ident]
-            pdf,sidecar=root/f'{n}.pdf',root/f'{n}.json'
-            if rich:
-                report=edit_document(current,b,pdf,sidecar,attributed_story.replacement(b,wanted['text'],wanted['style_spans']),
-                    fonts=attributed_story.providers(state),render_styles=attributed_story.render_styles(state),
-                    empty_style_id='logical:'+plan['typing_style_id'])
-            else:
-                report=edit_document(current,b,pdf,sidecar,_replacement(b,wanted['text']),
-                    empty_style_id=b['paragraph']['styles'][0]['id'])
-            result=open_editable(pdf,sidecar)
-            if result['status']!='restored':raise PdfError(result['reason'])
-            edited=result['state']
-            if rich:attributed_story.bind_fragment(state,ident,edited,wanted,generated=True)
-            else:edited['fonts']={s['id']:state['font_recipe'] for s in edited['paragraph']['styles']}
-            edited['boundaries']=_boundaries(edited['paragraph']['text']);edited=_reseal(edited)
-            actual=[{k:line[k] for k in LINE_KEYS} for line in edited['physical_layout']['lines']]
-            if not _close(actual,wanted['lines']) or edited['paragraph']['text']!=wanted['text']:
-                raise PdfError('saved fragment differs from its precomputed line and Unicode plan')
-            page=state['containers'][ident]['page']
-            for other,f in state['fragments'].items():
-                if other==ident:
-                    f.update(binding=edited,range=wanted['range'],render_end=wanted['render_end'])
+        root=Path(directory);target=root/'story.pdf'
+        with Transaction(source) as transaction:
+            plans={}
+            for ident in plan['schedule']:
+                b=state['fragments'][ident]['binding'];wanted=plan['fragments'][ident]
+                page=transaction.page(state['containers'][ident]['page'])
+                if rich:
+                    plans[ident]=plan_document_edit(page,b,attributed_story.replacement(b,wanted['text'],wanted['style_spans']),
+                        fonts=attributed_story.providers(state),render_styles=attributed_story.render_styles(state),
+                        empty_style_id='logical:'+plan['typing_style_id'],owner=ident)
                 else:
-                    byte_edits=report['byte_edits'] if state['containers'][other]['page']==page else []
-                    f['binding']=_rebind(current,pdf,_entry(f['binding']),byte_edits)['binding']
-                    if rich:f['style_binding']['pdf_sha256']=source_sha(pdf)
-            steps.append(dict(container_id=ident,page=page,report=report));current=pdf
+                    plans[ident]=plan_document_edit(page,b,_replacement(b,wanted['text']),
+                        empty_style_id=b['paragraph']['styles'][0]['id'],owner=ident)
+            result=transaction.commit(target)
+            try:
+                for ident in plan['schedule']:
+                    wanted=plan['fragments'][ident];page=state['containers'][ident]['page']
+                    edited,report=bind_document_edit(result.identity(page),plans[ident],result)
+                    if rich:attributed_story.bind_fragment(state,ident,edited,wanted,generated=True)
+                    else:edited['fonts']={s['id']:state['font_recipe'] for s in edited['paragraph']['styles']}
+                    edited['boundaries']=_boundaries(edited['paragraph']['text']);edited=_reseal(edited)
+                    actual=[{k:line[k] for k in LINE_KEYS} for line in edited['physical_layout']['lines']]
+                    if not _close(actual,wanted['lines']) or edited['paragraph']['text']!=wanted['text']:
+                        raise PdfError('saved fragment differs from its precomputed line and Unicode plan')
+                    state['fragments'][ident].update(binding=edited,range=wanted['range'],render_end=wanted['render_end'])
+                    if rich:state['fragments'][ident]['style_binding']['pdf_sha256']=source_sha(target)
+                    steps.append(dict(container_id=ident,page=page,report=report))
+                mutation_map=result.mutation_map()
+            finally:result.close()
         if source_sha(source)!=initial['pdf_sha256']:raise PdfError('story input changed before publication')
         state['logical'].update(text=plan['text'],boundaries=plan['boundaries'],
             style_spans=plan['style_spans'] if rich else [dict(start=0,end=len(plan['text']),style_id='body')] if plan['text'] else [])
-        state.update(pdf_sha256=source_sha(current),previous_model_sha256=initial['model_sha256'],layout_provenance='generated-by-pdfengine')
-        state['physical_breaks']=_physical_breaks(state);state=_validate(current,_reseal(state))
+        state.update(pdf_sha256=source_sha(target),previous_model_sha256=initial['model_sha256'],layout_provenance='generated-by-pdfengine')
+        state['physical_breaks']=_physical_breaks(state);state=_validate(target,_reseal(state))
         saved=root/'story.json';saved.write_bytes((json.dumps(state,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
-        published=[]
-        try:
-            for temporary,destination in ((current,output),(saved,model_output)):
-                destination.parent.mkdir(parents=True,exist_ok=True);os.link(temporary,destination);published.append(destination)
-        except Exception:
-            for destination in published:destination.unlink()
-            raise
-    return dict(backend='explicit-story-flow',plan=plan,steps=steps,pdf_sha256=state['pdf_sha256'],
-        model_sha256=state['model_sha256'],logical_identity_verified=True,physical_partition_verified=True,
-        publication='all fragment guards passed; rollback on exception')
+        _publish(root,[(target,output),(saved,model_output)])
+    return dict(backend='explicit-story-flow',plan=plan,steps=steps,mutation_map=mutation_map,pdf_sha256=state['pdf_sha256'],
+        model_sha256=state['model_sha256'],logical_identity_verified=True,physical_partition_verified=True,saves=1,
+        publication='one transaction verified every fragment; rollback on exception')

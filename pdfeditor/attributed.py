@@ -65,14 +65,18 @@ class EditUnit:
 
 
 class SourceParagraph:
-    def __init__(self, source, selection, *, line_joiner="", logical=None):
+    def __init__(self, source, selection, *, line_joiner="", logical=None, content=None):
         if line_joiner not in ("", " ", "\n"):
             raise PdfError("line joiner must be empty, a space, or a newline")
         self.selection = selection
         self.line_joiner = line_joiner
         self.logical = logical
         self.resolved = resolve_selection(source, selection)
-        self.content = ContentPage(source, self.resolved.page)
+        # A shared, caller-owned content interpretation is never closed here.
+        self.owns_content = content is None
+        self.content = ContentPage(source, self.resolved.page) if content is None else content
+        if self.content.page.number != self.resolved.page - 1:
+            raise PdfError("shared content interpretation belongs to another page")
         try:
             selected = set(selection["glyph_ids"])
             self.events = self.content.selected_events(selected)
@@ -151,7 +155,8 @@ class SourceParagraph:
             raise
 
     def close(self):
-        self.content.close()
+        if self.owns_content:
+            self.content.close()
 
     def _restore_logical(self, logical):
         """Bind a reviewed logical sequence to exact, current PDF glyph IDs.

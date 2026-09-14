@@ -41,7 +41,7 @@ def run(tmp_path, source, model, changes, name):
     restored = open_document(out, path)
     assert restored['status'] == 'restored', restored
     assert restored['state']['previous_model_sha256'] == model['model_sha256']
-    assert report['final_layout_verified'] and report['every_intermediate_guard_verified']
+    assert report['final_layout_verified'] and report['single_transaction_verified']
     return out, restored['state'], report
 
 
@@ -91,7 +91,7 @@ def test_invalid_plan_never_calls_writer(tmp_path, monkeypatch, mode):
         w = PdfWriter(clone_from=PdfReader(source)); w.add_metadata({'/Title': 'external'})
         source = tmp_path/'external.pdf'; w.write(source)
     def forbidden(*a, **k): raise AssertionError('writer must not run for an invalid final plan')
-    monkeypatch.setattr(module, 'edit_flow', forbidden)
+    monkeypatch.setattr(module, 'plan_document_transaction', forbidden)
     with pytest.raises((PdfError, ValueError)):
         edit_flow_batch(source, model, tmp_path/'bad.pdf', tmp_path/'bad.json', changes)
     assert not (tmp_path/'bad.pdf').exists() and not (tmp_path/'bad.json').exists()
@@ -197,29 +197,31 @@ def test_writer_plan_mismatch_rolls_back(tmp_path, monkeypatch):
     assert not (tmp_path/'bad.pdf').exists() and not (tmp_path/'bad.json').exists()
 
 
-def test_failure_after_first_edit_and_publication_rollback(tmp_path, monkeypatch):
+def test_failure_while_planning_and_publication_rollback(tmp_path, monkeypatch):
     import pdfeditor.flow_transaction as module
+    import pdfeditor.editable as editable
     source, model = prepared(tmp_path)
     original = source_sha(source)
     changes = request(model, B='NEXT\nMORE\nEND', A='SHORT')
-    real = module.edit_flow
+    real = module.plan_document_edit
     calls = []
-    def fail_second(*a, **k):
-        calls.append(a[4])
-        if len(calls) == 2: raise PdfError('injected second writer failure')
-        return real(*a, **k)
-    monkeypatch.setattr(module, 'edit_flow', fail_second)
-    with pytest.raises(PdfError, match='second writer'):
+    def fail_second(page, binding, *a, **k):
+        calls.append(binding['logical_element']['id'])
+        if len(calls) == 2: raise PdfError('injected second planner failure')
+        return real(page, binding, *a, **k)
+    monkeypatch.setattr(module, 'plan_document_edit', fail_second)
+    with pytest.raises(PdfError, match='second planner'):
         edit_flow_batch(source, model, tmp_path/'bad.pdf', tmp_path/'bad.json', changes)
+    # The first plan never produced a PDF: nothing is written before commit.
     assert calls == ['A','B'] and source_sha(source) == original
     assert not (tmp_path/'bad.pdf').exists() and not (tmp_path/'bad.json').exists()
     assert not list(tmp_path.glob('.flow-batch-*'))
-    monkeypatch.setattr(module, 'edit_flow', real)
-    real_link = module.os.link
+    monkeypatch.setattr(module, 'plan_document_edit', real)
+    real_link = editable.os.link
     def fail_publish(a,b):
         if b == tmp_path/'bad.json': raise OSError('injected publication failure')
         return real_link(a,b)
-    monkeypatch.setattr(module.os, 'link', fail_publish)
+    monkeypatch.setattr(editable.os, 'link', fail_publish)
     with pytest.raises(OSError, match='publication'):
         edit_flow_batch(source, model, tmp_path/'bad.pdf', tmp_path/'bad.json', changes)
     assert not (tmp_path/'bad.pdf').exists() and not (tmp_path/'bad.json').exists()

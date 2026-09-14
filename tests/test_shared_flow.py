@@ -153,12 +153,12 @@ def test_shared_flow_keeps_destination_paint_guards(tmp_path,kind):
 
 def test_late_fragment_failure_does_not_publish_shared_flow(tmp_path,monkeypatch):
     import pdfeditor.shared_flow as shared
-    source,state=prepared(tmp_path);real=shared.edit_document;calls=[]
+    source,state=prepared(tmp_path);real=shared.plan_document_edit;calls=[]
     def fail(*args,**kwargs):
         calls.append(1)
         if len(calls)==2:raise PdfError('injected second-fragment failure')
         return real(*args,**kwargs)
-    monkeypatch.setattr(shared,'edit_document',fail)
+    monkeypatch.setattr(shared,'plan_document_edit',fail)
     with pytest.raises(PdfError,match='second-fragment'):
         edit_shared_flow(source,state,tmp_path/'bad.pdf',tmp_path/'bad.json',{'A':replace(state,'A',SHORT)})
     assert len(calls)==2 and not (tmp_path/'bad.pdf').exists() and not (tmp_path/'bad.json').exists()
@@ -166,13 +166,13 @@ def test_late_fragment_failure_does_not_publish_shared_flow(tmp_path,monkeypatch
 
 def test_failed_sidecar_publication_rolls_back_our_pdf(tmp_path,monkeypatch):
     from pathlib import Path
-    import pdfeditor.shared_flow as shared
+    import pdfeditor.editable as editable
     source,state=prepared(tmp_path);out,model=tmp_path/'final.pdf',tmp_path/'final.json'
-    real=shared.os.link
+    real=editable.os.link
     def fail(source,destination):
         if Path(destination)==model:raise OSError('injected final sidecar publication failure')
         return real(source,destination)
-    monkeypatch.setattr(shared.os,'link',fail)
+    monkeypatch.setattr(editable.os,'link',fail)
     with pytest.raises(OSError,match='final sidecar'):
         edit_shared_flow(source,state,out,model,{'A':replace(state,'A',SHORT)})
     assert not out.exists() and not model.exists()

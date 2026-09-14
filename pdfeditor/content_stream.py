@@ -390,25 +390,34 @@ class ContentPage:
         return events
 
 
-def serialized_event(event,selected,remove=False):
+def rewritten_event(event,selected,remove=False):
     """Rebuild text operands as explicit character codes, retaining every TJ gap.
 
     Deletion emits numeric displacement, so later text in the same BT/ET keeps
     its original position. Replay emits fresh hex-string operands using the
     same font resource and same paint state at the same stream location.
+    Returns the bytes, the offset of the rewritten operator's first operand and
+    the map from each retained character index to its index in the new operator.
     """
-    items=[]
+    items=[];chars={};old=new=0
     for atom in event.atoms:
         if isinstance(atom,PaintChar):
             if remove and selected.intersection(atom.source_orders):
                 value=-atom.advance/(event.state.size*event.state.tz/100)*1000
                 items.append(number(value))
-            else:items.append(b"<"+atom.code.hex().encode("ascii")+b">")
+            else:
+                items.append(b"<"+atom.code.hex().encode("ascii")+b">")
+                chars[old]=new;new+=1
+            old+=1
         else:items.append(number(atom))
     prefix=b""
     if event.operator.name=='"':prefix=number(event.state.tw)+b" Tw "+number(event.state.tc)+b" Tc T* "
     elif event.operator.name=="'":prefix=b"T* "
-    return prefix+b"["+b" ".join(items)+b"] TJ"
+    return prefix+b"["+b" ".join(items)+b"] TJ",len(prefix),chars
+
+
+def serialized_event(event,selected,remove=False):
+    return rewritten_event(event,selected,remove)[0]
 
 
 def patch_streams(content,events,selected,remove=False):

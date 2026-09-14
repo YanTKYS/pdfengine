@@ -17,11 +17,11 @@ from .model import Rect, WidthConstraint
 from .selection import ResolvedSelection, source_sha
 
 
-def paragraph_from_snapshot(source, snapshot):
+def paragraph_from_snapshot(source, snapshot, *, content=None):
     if snapshot.get('kind') == 'empty-logical-paragraph':
-        return EmptyParagraph(source, snapshot)
+        return EmptyParagraph(source, snapshot, content=content)
     return SourceParagraph(source, snapshot['selection'], line_joiner=snapshot['line_joiner'],
-                           logical=snapshot.get('logical'))
+                           logical=snapshot.get('logical'), content=content)
 
 
 def style_recipes(paragraph):
@@ -79,9 +79,12 @@ def bind_empty(source, report):
 
 class EmptyParagraph:
     """Layout input with zero source glyphs and real, independent style recipes."""
-    def __init__(self, source, snapshot):
+    def __init__(self, source, snapshot, *, content=None):
         self.saved=deepcopy(snapshot);self.selection=snapshot['selection']
-        self.content=ContentPage(source,self.selection['page'])
+        self.owns_content=content is None
+        self.content=ContentPage(source,self.selection['page']) if content is None else content
+        if self.content.page.number!=self.selection['page']-1:
+            raise PdfError('shared content interpretation belongs to another page')
         try:
             value=deepcopy(snapshot);checksum=value.pop('snapshot_sha256',None)
             if checksum != digest(value) or self.selection['source_sha256'] != source_sha(source):
@@ -130,4 +133,5 @@ class EmptyParagraph:
         return deepcopy(self.saved)
 
     def close(self):
-        self.content.close()
+        if self.owns_content:
+            self.content.close()

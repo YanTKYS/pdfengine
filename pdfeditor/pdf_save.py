@@ -80,14 +80,22 @@ def _add_page_fonts(writer, page_number, font_builders):
 
 @preserve_primitive_tokens
 def program_pdf_bytes(source, page_number, data, *, font_builders: Mapping[str, Callable[[PdfWriter], IndirectObject]] | None = None):
+    """Replace one page program, or several when ``data`` maps page numbers to programs.
+
+    ``font_builders`` maps aliases to builders for a single page, or page
+    numbers to such mappings when several pages change in one save.
+    """
     reader = PdfReader(source)
     if reader.is_encrypted and not reader.decrypt(""):
         raise PdfError("password required")
     writer = PdfWriter(clone_from=reader)
-    _add_page_fonts(writer, page_number, font_builders)
-    stream = DecodedStreamObject()
-    stream.set_data(data)
-    writer.pages[page_number][NameObject("/Contents")] = writer._add_object(stream.flate_encode())
+    programs = data if isinstance(data, Mapping) else {page_number: data}
+    builders = font_builders if isinstance(data, Mapping) else {page_number: font_builders}
+    for number, program in programs.items():
+        _add_page_fonts(writer, number, (builders or {}).get(number))
+        stream = DecodedStreamObject()
+        stream.set_data(program)
+        writer.pages[number][NameObject("/Contents")] = writer._add_object(stream.flate_encode())
     if reader.is_encrypted:
         # Keep the authenticated file key, original /O, /U, /P and first ID.
         # pypdf derives per-object keys using the newly assigned object numbers.

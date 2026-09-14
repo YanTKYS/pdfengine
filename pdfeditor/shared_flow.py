@@ -7,7 +7,6 @@ each scheduled fragment still goes through the guarded paragraph writer.
 from copy import deepcopy
 import json
 import math
-import os
 from pathlib import Path
 import tempfile
 
@@ -17,9 +16,10 @@ from uniseg.graphemecluster import grapheme_cluster_boundaries
 from .attributed import EditUnit, digest
 from .backend import PdfError
 from .destination_style import bind_destination_styles
-from .document_flow import _rebind, _reseal
-from .editable import edit_document, open_editable
+from .document_flow import _reseal
+from .editable import _publish, bind_document_edit, open_editable, plan_document_edit
 from .elements import _close
+from .transaction import Transaction
 from .logical_element import paragraph_from_snapshot
 from .model import Rect
 from .paragraph import ParagraphShaper, plan_paragraph
@@ -27,7 +27,7 @@ from .proof_session import proof_session
 from .replay import ensure_destination
 from .rich_layout import layout_attributed
 from .selection import source_sha
-from .story_flow import LINE_KEYS, _boundaries, _entry, open_story
+from .story_flow import LINE_KEYS, _boundaries, open_story
 from . import story_styles as styles
 
 
@@ -393,50 +393,46 @@ def plan_shared_flow(source,model,changes):return _plan(source,_restore(source,m
 
 @proof_session
 def edit_shared_flow(source,model,output,model_output,changes):
+    """Re-lay out every destination slot of the shared flow in one transaction."""
     initial=_restore(source,model);plan=_plan(source,initial,changes);state=deepcopy(initial)
     output=ensure_destination(output,source);model_output=ensure_destination(model_output,source)
     if output==model_output:raise PdfError('shared flow PDF and sidecar require distinct destinations')
     for pid,value in plan['paragraphs'].items():state['paragraphs'][pid]['logical'].update(value)
     output.parent.mkdir(parents=True,exist_ok=True);steps=[]
     with tempfile.TemporaryDirectory(prefix='.shared-flow-',dir=output.parent) as directory:
-        root=Path(directory);current=Path(source)
-        for n,sid in enumerate(plan['schedule']):
-            slot=state['slots'][sid];pid=slot['paragraph_id'];p=state['paragraphs'][pid];wanted=plan['fragments'][sid]
-            b=slot['binding'];pdf=root/f'{n}.pdf';sidecar=root/f'{n}.json'
-            report=edit_document(current,b,pdf,sidecar,styles.replacement(b,wanted['text'],wanted['style_spans']),
-                fonts=styles.providers(p),render_styles=styles.render_styles(p),empty_style_id='logical:'+p['logical']['typing_style_id'],
-                **wanted['layout'])
-            opened=open_editable(pdf,sidecar)
-            if opened['status']!='restored':raise PdfError(opened['reason'])
-            edited=opened['state']
-            if edited['paragraph']['text']!=wanted['text'] or not _close(
-                    [{k:line[k] for k in LINE_KEYS} for line in edited['physical_layout']['lines']],wanted['lines']):
-                raise PdfError('executed paragraph fragment differs from final allocation')
-            styles.bind_fragment(_style_state(state,pid),sid,edited,wanted,generated=True)
-            edited['boundaries']=_boundaries(wanted['text'])
-            edited['layout_provenance']={k:'generated-from-confirmed-shared-flow' for k in edited['layout']}
-            page=state['regions'][slot['region_id']]['page']
-            for other,f in state['slots'].items():
-                if other==sid:
-                    f['binding']=_reseal(edited)
-                    for key in ('range','render_end','occupancy'):f[key]=deepcopy(wanted[key])
-                else:
-                    edits=report['byte_edits'] if state['regions'][f['region_id']]['page']==page else []
-                    f['binding']=_rebind(current,pdf,_entry(f['binding']),edits)['binding']
-                    f['style_binding']['pdf_sha256']=source_sha(pdf)
-            steps.append(dict(slot_id=sid,paragraph_id=pid,region_id=slot['region_id'],report=report));current=pdf
+        root=Path(directory);target=root/'shared.pdf'
+        with Transaction(source) as transaction:
+            plans={}
+            for sid in plan['schedule']:
+                slot=state['slots'][sid];pid=slot['paragraph_id'];p=state['paragraphs'][pid];wanted=plan['fragments'][sid]
+                page=transaction.page(state['regions'][slot['region_id']]['page'])
+                plans[sid]=plan_document_edit(page,slot['binding'],styles.replacement(slot['binding'],wanted['text'],wanted['style_spans']),
+                    fonts=styles.providers(p),render_styles=styles.render_styles(p),
+                    empty_style_id='logical:'+p['logical']['typing_style_id'],owner=sid,**wanted['layout'])
+            result=transaction.commit(target)
+            try:
+                for sid in plan['schedule']:
+                    slot=state['slots'][sid];pid=slot['paragraph_id'];wanted=plan['fragments'][sid]
+                    page=state['regions'][slot['region_id']]['page']
+                    edited,report=bind_document_edit(result.identity(page),plans[sid],result)
+                    if edited['paragraph']['text']!=wanted['text'] or not _close(
+                            [{k:line[k] for k in LINE_KEYS} for line in edited['physical_layout']['lines']],wanted['lines']):
+                        raise PdfError('executed paragraph fragment differs from final allocation')
+                    styles.bind_fragment(_style_state(state,pid),sid,edited,wanted,generated=True)
+                    edited['boundaries']=_boundaries(wanted['text'])
+                    edited['layout_provenance']={k:'generated-from-confirmed-shared-flow' for k in edited['layout']}
+                    slot['binding']=_reseal(edited)
+                    for key in ('range','render_end','occupancy'):slot[key]=deepcopy(wanted[key])
+                    slot['style_binding']['pdf_sha256']=source_sha(target)
+                    steps.append(dict(slot_id=sid,paragraph_id=pid,region_id=slot['region_id'],report=report))
+                mutation_map=result.mutation_map()
+            finally:result.close()
         if source_sha(source)!=initial['pdf_sha256']:raise PdfError('source changed during shared flow mutation')
-        state.update(pdf_sha256=source_sha(current),allocation_provenance='generated-from-confirmed-shared-flow',
+        state.update(pdf_sha256=source_sha(target),allocation_provenance='generated-from-confirmed-shared-flow',
                      previous_model_sha256=initial['model_sha256'])
-        state['physical_breaks']=_breaks(state);state=_validate(current,_reseal(state))
+        state['physical_breaks']=_breaks(state);state=_validate(target,_reseal(state))
         saved=root/'shared.json';saved.write_bytes((json.dumps(state,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
-        published=[]
-        try:
-            for temp,dest in ((current,output),(saved,model_output)):
-                dest.parent.mkdir(parents=True,exist_ok=True);os.link(temp,dest);published.append(dest)
-        except Exception:
-            for dest in published:dest.unlink()
-            raise
-    return dict(backend='shared-attributed-paragraph-flow',plan=plan,steps=steps,pdf_sha256=state['pdf_sha256'],
-        model_sha256=state['model_sha256'],paragraph_identities_and_allocation_verified=True,
-        publication='verified PDF and revision-bound sidecar; rollback on exception')
+        _publish(root,[(target,output),(saved,model_output)])
+    return dict(backend='shared-attributed-paragraph-flow',plan=plan,steps=steps,mutation_map=mutation_map,pdf_sha256=state['pdf_sha256'],
+        model_sha256=state['model_sha256'],paragraph_identities_and_allocation_verified=True,saves=1,
+        publication='one transaction verified every slot; rollback on exception')

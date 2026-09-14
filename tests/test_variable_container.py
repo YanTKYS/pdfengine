@@ -116,7 +116,7 @@ def test_error_after_paint_mutation_does_not_publish(tmp_path,monkeypatch):
     import pdfeditor.variable_container as module
     source,model=prepared(tmp_path); original=source_sha(source)
     def fail(*a,**k): raise PdfError('injected text mutation failure')
-    monkeypatch.setattr(module,'edit_flow_batch',fail)
+    monkeypatch.setattr(module,'plan_document_transaction',fail)
     with pytest.raises(PdfError,match='injected'):
         edit_variable_container(source,model,tmp_path/'bad.pdf',tmp_path/'bad.json',
                                 change(model,A='ONE\nTWO\nTHREE\nFOUR\nFIVE\nSIX'))

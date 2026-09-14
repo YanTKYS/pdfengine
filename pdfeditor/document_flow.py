@@ -8,23 +8,20 @@ ownership is ever inferred from a coordinate, bounding box, or paint order.
 from copy import deepcopy
 import json
 import math
-import os
 from pathlib import Path
 import re
-import tempfile
 
 import pymupdf
 
 from .attributed import digest, inspect_paragraph
 from .backend import PdfError
-from .composition import _observations
-from .content_stream import ContentPage, multiply, operators
-from .editable import _seal, edit_document, open_editable
-from .elements import _close, _confirmed, _local_translation, _paint_value, inspect_element, move_element
+from .content_stream import multiply, operators
+from .editable import _seal, open_editable
+from .elements import _close, _confirmed, _local_translation, _paint_value, inspect_element
 from .logical_element import paragraph_from_snapshot, slot_binding
 from .model import Rect
-from .paragraph import _layout_parameters, plan_paragraph
-from .replay import compare_glyphs, ensure_destination
+from .mutation import map_offset
+from .paragraph import _layout_parameters
 from .selection import make_selection, source_sha
 from .proof_session import proof_session
 
@@ -43,6 +40,21 @@ def _fonts(state):
     return result
 
 
+def _fixed_relations(binding):
+    """Fixed paint relations of a binding, whether declared directly or inside its anchors."""
+    anchors=binding.get('anchors')
+    return deepcopy(anchors.get('fixed_relations',[]) if anchors is not None else binding.get('relations') or [])
+
+
+def _element_relations(element, fixed, anchors):
+    """Every relation the element paint model must resolve: fixed paint plus decorations."""
+    decorated=[i for u in (anchors or {}).get('underlines',[]) for i in u['source_ids']] if anchors else []
+    known={p['source_id'] for p in element['paths']}
+    if any(i not in known for i in decorated):
+        raise PdfError('anchored decoration references an unknown source path')
+    return list(fixed)+[dict(source_id=i,relation='decorates',behavior='fixed-to-element') for i in decorated]
+
+
 def _initial(source, ident, region, spec):
     snapshot=spec['paragraph']
     paragraph=paragraph_from_snapshot(source,snapshot)
@@ -57,16 +69,28 @@ def _initial(source, ident, region, spec):
     fonts={i:dict(s,path=str(Path(s['path']).resolve()),sha256=source_sha(s['path']))
            for i,s in spec.get('fonts',{}).items()}
     paint=inspect_element(source,snapshot['selection'],paragraph_snapshot=snapshot)
-    relations=deepcopy(spec.get('paint_relations',[]))
-    _confirmed(paint,relations)
-    if any(r['behavior']!='fixed-to-page' for r in relations):
+    anchors=deepcopy(spec.get('anchors'))
+    if anchors is not None:
+        if spec.get('paint_relations'):
+            raise PdfError('anchored elements carry their fixed relations inside the anchor specification')
+        if (anchors.get('paragraph_sha256')!=snapshot['snapshot_sha256'] or anchors.get('element_sha256')!=paint['snapshot_sha256']
+                or not isinstance(anchors.get('underlines'),list) or not anchors['underlines']):
+            raise PdfError('anchor specification must reference this paragraph and element snapshot')
+        relations=None
+        fixed=deepcopy(anchors.get('fixed_relations',[]))
+    else:
+        relations=fixed=deepcopy(spec.get('paint_relations',[]))
+    _confirmed(paint,_element_relations(paint,fixed,anchors))
+    if any(r['behavior']!='fixed-to-page' for r in fixed):
         raise PdfError('declare ownership separately; text-edit paint relations stay fixed-to-page')
+    if anchors is not None and set(spec.get('owned_paints',[]))&{i for u in anchors['underlines'] for i in u['source_ids']}:
+        raise PdfError('anchored decoration is not a separately owned paint')
     observed=snapshot['layout_suggestion']['base_baselines']
     last=observed[-1] if observed else layout['baseline']
     state=_seal(dict(schema='pdfengine-editable-2',pdf_sha256=source_sha(source),paragraph=snapshot,
         logical_element=dict(id=ident,kind='paragraph',contained_by=region,
             provenance='caller_confirmed_selection',alignment=dict(value='left',provenance='generated_layout_policy')),
-        element=paint,anchors=None,relations=relations,fonts=fonts,layout=layout,
+        element=paint,anchors=anchors,relations=relations,fonts=fonts,layout=layout,
         layout_provenance={k:'explicitly_confirmed' if spec['layout'].get(k) is not None else
                            'generated-by-pdfengine' if k=='min_line_height' else 'observed_source' for k in layout},
         boundaries=[dict(offset=m.start(),end=m.end(),kind='hard_break',provenance='explicitly_confirmed')
@@ -130,8 +154,11 @@ def _validate(source, value):
     for ident,entry in elements.items():
         b=entry['binding'];p=b['paragraph'];layout=b['layout']
         if (b['logical_element']['id']!=ident or b['logical_element']['contained_by']!=c['id']
-                or p['selection']['page']!=c['page'] or b['anchors'] is not None):
-            raise PdfError('element identity, page or decoration policy differs from the document')
+                or p['selection']['page']!=c['page']):
+            raise PdfError('element identity or page differs from the document')
+        if b['anchors'] is not None and (b['anchors']['paragraph_sha256']!=p['snapshot_sha256']
+                or b['anchors']['element_sha256']!=b['element']['snapshot_sha256']):
+            raise PdfError('anchored decoration no longer references the bound paragraph and paint')
         restored=open_editable(source,b)
         if restored['status']!='restored':raise PdfError(restored['reason'])
         if not Rect(*b['element']['page_bounds']).contains(region):
@@ -155,8 +182,8 @@ def _validate(source, value):
             slot=p['insertion_binding']['event']['byte_range'][0]
             if slot in slots:raise PdfError('logical elements cannot share an insertion slot')
             slots.add(slot)
-        paths,decisions=_confirmed(b['element'],b['relations'])
-        if any(r['behavior']!='fixed-to-page' for r in decisions.values()):
+        paths,decisions=_confirmed(b['element'],_element_relations(b['element'],_fixed_relations(b),b['anchors']))
+        if any(r['behavior']!='fixed-to-page' for r in decisions.values() if r['relation']!='decorates'):
             raise PdfError('document ownership is separate from text-edit paint behavior')
         for path_id in entry['owned_paints']:
             if (path_id in owned or path_id not in decisions or decisions[path_id]['relation']=='unrelated'
@@ -180,26 +207,6 @@ def open_document(source, model):
         return dict(status='restored',state=_validate(source,value))
     except (OSError,ValueError,TypeError,KeyError,IndexError,AttributeError,PdfError) as exc:
         return dict(status='needs_confirmation',reason=str(exc),semantics='unknown')
-
-
-def _map_offset(offset, edits):
-    delta=0
-    for edit in sorted(edits,key=lambda e:e['start']):
-        if edit['start']<=offset<edit['end']:
-            if offset==edit['start'] and 'preserved_event_offset' in edit:
-                return offset+delta+edit['preserved_event_offset']
-            raise PdfError('another element mutation consumed a bound insertion slot')
-        if edit['end']<=offset:delta+=edit['length']-(edit['end']-edit['start'])
-    return offset+delta
-
-
-def _shift_paint(paint, dy):
-    value=_paint_value(paint)
-    if dy:
-        value['bounds'][1]+=dy;value['bounds'][3]+=dy
-        for command in value['geometry']:
-            for j in range(2,len(command),2):command[j]+=dy
-    return value
 
 
 def _rebind_clip_locations(expected, before, after, byte_edits):
@@ -228,87 +235,96 @@ def _rebind_clip_locations(expected, before, after, byte_edits):
         # continuity: the source clip terminator must survive byte-for-byte.
         if any(e['start']<old_op.end and e['end']>old_op.start for e in byte_edits):
             raise PdfError('another mutation consumed the empty insertion clip witness')
-        match=new_starts.get(_map_offset(old_op.start,byte_edits))
+        try:mapped=map_offset(old_op.start,byte_edits)
+        except PdfError:mapped=None
+        match=new_starts.get(mapped) if mapped is not None else None
         if match is None or old_data[old_op.start:old_op.end]!=new_data[match[1].start:match[1].end]:
             raise PdfError('empty insertion clip operator continuity differs')
         clip['at']=[new_key,match[0]]
 
 
-def _rebind(source, output, entry, byte_edits, *, dy=0, moving_paths=(), paint_dy=0, paint_replacements=None):
-    """Carry meaning using exact glyph witnesses and known byte/paint mutations."""
+def rebind_entry(identity, entry, *, dy=0):
+    """Carry one element's meaning across a revision through the identity map.
+
+    Text glyphs and paths are mapped by source provenance and re-verified by
+    their witnesses; the observed geometry must then equal the planned
+    translation. Nothing is re-associated by proximity or list position.
+    """
     result=deepcopy(entry);state=result['binding'];old=entry['binding'];p=old['paragraph']
+    output=identity.output
     checksum=source_sha(output)
-    a=ContentPage(source,p['selection']['page']);b=ContentPage(output,p['selection']['page'])
-    try:
-        if p['selection']['glyph_ids']:
-            before,after=_observations(a.page),_observations(b.page);mapping={}
-            for index in p['selection']['glyph_ids']:
-                wanted=deepcopy(before[index]);wanted['origin'][1]+=dy
-                wanted['bbox'][1]+=dy;wanted['bbox'][3]+=dy
-                matches=[j for j,g in enumerate(after) if compare_glyphs([wanted],[g],.002)['passed']]
-                if len(matches)!=1:raise PdfError('cross-element glyph continuity is ambiguous')
-                mapping[index]=matches[0]
-            if len(set(mapping.values()))!=len(mapping):raise PdfError('cross-element glyph binding is not one-to-one')
-            selection=make_selection(output,p['selection']['page'],glyph_ids=list(mapping.values()),explicit_width=state['layout']['width'])
-            logical=deepcopy(p.get('logical'))
-            if logical is not None:
-                logical['pdf_sha256']=checksum
-                for unit in logical['units']:
-                    for key in ('glyph_id','style_glyph_id'):
-                        if unit[key] is not None:unit[key]=mapping[unit[key]]
-            snapshot=inspect_paragraph(output,selection,line_joiner=p['line_joiner'],logical=logical)
-            # Matching paint alone cannot authorize a different encoded glyph.
-            def codes(content, ids):
-                return {i:(e.state.font.name,ch.code.hex(),ch.pdf_width)
-                        for e in content.selected_events(set(ids)) for ch in e.chars for i in ch.source_orders if i in ids}
-            old_codes,new_codes=codes(a,mapping),codes(b,mapping.values())
-            if any(old_codes[i]!=new_codes[j] for i,j in mapping.items()):
-                raise PdfError('cross-element source font codes changed')
-            # Object numbers may change on a full save. The lower writer
-            # verifies font dictionaries/program fingerprints; resource names,
-            # codes, widths and style values still have to remain identical.
-            def styles(values):
-                return [{k:v for k,v in s.items() if k!='font_xref'} for s in values]
-            if styles(snapshot['styles'])!=styles(p['styles']) or snapshot['text']!=p['text']:
-                raise PdfError('cross-element logical text or style changed')
-        else:
-            snapshot=deepcopy(p);snapshot.pop('snapshot_sha256')
-            offset=_map_offset(p['insertion_binding']['event']['byte_range'][0],byte_edits)
-            binding,_=slot_binding(b,offset)
-            expected=deepcopy(p['insertion_binding']['event']);actual=json.loads(json.dumps(binding['event']))
-            _rebind_clip_locations(expected,a,b,byte_edits)
-            for event in (expected,actual):
-                for key in ('id','stream_xref','byte_range'):event.pop(key)
-                event['state'].pop('font_xref')
-            delta=_local_translation(list(pymupdf.Matrix(*expected['state']['ctm'])*a.page.transformation_matrix),0,dy)
-            expected['state']['ctm']=list(multiply((1,0,0,1,*delta),expected['state']['ctm']))
-            if not _close(expected,actual):
-                raise PdfError('empty insertion graphics state changed beyond the planned translation')
-            snapshot['insertion_binding']=json.loads(json.dumps(binding))
-            snapshot['selection']['source_sha256']=checksum;snapshot['logical']['pdf_sha256']=checksum
-            snapshot['layout_suggestion']['baseline']+=dy
-            snapshot['snapshot_sha256']=digest(snapshot)
-    finally:a.close();b.close()
+    a,b=identity.before,identity.after
+    if p['selection']['glyph_ids']:
+        mapping=identity.map_glyphs(p['selection']['glyph_ids'])
+        for index,new in mapping.items():
+            before,after=a.actual[index],b.actual[new]
+            if any(abs(x+(dy if k else 0)-y)>.002 for k,(x,y) in enumerate(zip(before['origin'],after['origin']))):
+                raise PdfError('cross-element glyph did not move by the planned translation')
+        selection=make_selection(output,p['selection']['page'],glyph_ids=list(mapping.values()),explicit_width=state['layout']['width'])
+        logical=deepcopy(p.get('logical'))
+        if logical is not None:
+            logical['pdf_sha256']=checksum
+            for unit in logical['units']:
+                for key in ('glyph_id','style_glyph_id'):
+                    if unit[key] is not None:unit[key]=mapping[unit[key]]
+        snapshot=inspect_paragraph(output,selection,line_joiner=p['line_joiner'],logical=logical)
+        # Object numbers may change on a full save. The lower writer
+        # verifies font dictionaries/program fingerprints; resource names,
+        # codes, widths and style values still have to remain identical.
+        def styles(values):
+            return [{k:v for k,v in s.items() if k!='font_xref'} for s in values]
+        if styles(snapshot['styles'])!=styles(p['styles']) or snapshot['text']!=p['text']:
+            raise PdfError('cross-element logical text or style changed')
+    else:
+        snapshot=deepcopy(p);snapshot.pop('snapshot_sha256')
+        offset=identity.map_offset(p['insertion_binding']['event']['byte_range'][0])
+        binding,_=slot_binding(b,offset)
+        expected=deepcopy(p['insertion_binding']['event']);actual=json.loads(json.dumps(binding['event']))
+        _rebind_clip_locations(expected,a,b,identity.program.edits())
+        for event in (expected,actual):
+            for key in ('id','stream_xref','byte_range'):event.pop(key)
+            event['state'].pop('font_xref')
+        delta=_local_translation(list(pymupdf.Matrix(*expected['state']['ctm'])*a.page.transformation_matrix),0,dy)
+        expected['state']['ctm']=list(multiply((1,0,0,1,*delta),expected['state']['ctm']))
+        if not _close(expected,actual):
+            raise PdfError('empty insertion graphics state changed beyond the planned translation')
+        snapshot['insertion_binding']=json.loads(json.dumps(binding))
+        snapshot['selection']['source_sha256']=checksum;snapshot['logical']['pdf_sha256']=checksum
+        snapshot['layout_suggestion']['baseline']+=dy
+        snapshot['snapshot_sha256']=digest(snapshot)
     element=inspect_element(output,snapshot['selection'],paragraph_snapshot=snapshot)
-    old_paths,new_paths=old['element']['paths'],element['paths']
-    if len(old_paths)!=len(new_paths):raise PdfError('path source order changed across the transaction')
-    replacements=paint_replacements or {}
-    if set(replacements)-{p['source_id'] for p in old_paths} or set(replacements)&set(moving_paths):
-        raise PdfError('paint replacement plan has unknown or multiply transformed source paths')
+    current={path['source_id']:path for path in element['paths']}
+    anchors=deepcopy(old['anchors'])
+    decorated=[i for u in (anchors or {}).get('underlines',[]) for i in u['source_ids']] if anchors else []
+    referenced={r['source_id'] for r in _fixed_relations(old)}|set(entry['owned_paints'])|set(decorated)
     path_map={}
-    for previous,current in zip(old_paths,new_paths):
-        moved=previous['source_id'] in moving_paths
-        wanted=replacements.get(previous['source_id'],
-            [_shift_paint(v,paint_dy if moved else 0) for v in previous['proof'].get('paints',[])])
-        if (previous['source']['operator']!=current['source']['operator']
-                or previous['proof']['status']!=current['proof']['status']
-                or not _close(wanted,
-                              [_paint_value(v) for v in current['proof'].get('paints',[])])
-                or (not moved and previous['source']['operation_sha256']!=current['source']['operation_sha256'])):
-            raise PdfError('path continuity differs from the explicitly translated paint plan')
-        path_map[previous['source_id']]=current['source_id']
+    for previous in old['element']['paths']:
+        ident=previous['source_id']
+        if ident in identity.consumed_paths:
+            if ident in referenced:
+                raise PdfError('a paint this element relies on was replaced by generated paint')
+            continue
+        successor=identity.map_path(ident)
+        after=current.get(successor)
+        if after is None:
+            raise PdfError('mapped path is missing from the saved element observation')
+        planned=identity.planned_paints.get(ident)
+        wanted=planned if planned is not None else [_paint_value(v) for v in previous['proof'].get('paints',[])]
+        if (previous['source']['operator']!=after['source']['operator']
+                or previous['proof']['status']!=after['proof']['status']
+                or not _close(wanted,[_paint_value(v) for v in after['proof'].get('paints',[])])
+                or (planned is None and previous['source']['operation_sha256']!=after['source']['operation_sha256'])):
+            raise PdfError('path continuity differs from the planned paint transformation')
+        path_map[ident]=successor
     state.update(pdf_sha256=checksum,paragraph=snapshot,element=element)
-    state['relations']=[dict(r,source_id=path_map[r['source_id']]) for r in old['relations']]
+    if anchors is not None:
+        anchors['fixed_relations']=[dict(r,source_id=path_map[r['source_id']]) for r in anchors.get('fixed_relations',[])]
+        for underline in anchors['underlines']:
+            underline['source_ids']=[path_map[i] for i in underline['source_ids']]
+        anchors.update(paragraph_sha256=snapshot['snapshot_sha256'],element_sha256=element['snapshot_sha256'])
+        state['anchors']=anchors;state['relations']=None
+    else:
+        state['relations']=[dict(r,source_id=path_map[r['source_id']]) for r in old['relations']]
     result['owned_paints']=[path_map[i] for i in entry['owned_paints']]
     if dy:
         state['layout']['baseline']+=dy
@@ -323,62 +339,24 @@ def _rebind(source, output, entry, byte_edits, *, dy=0, moving_paths=(), paint_d
 
 @proof_session
 def edit_flow(source, model, output, model_output, element_id, edits, *, empty_style_id=None):
-    """Edit one identity and move only its explicit descendants, or publish nothing."""
+    """Edit one identity and move only its explicit descendants, in one transaction."""
+    from .flow_transaction import edit_flow_batch
     restored=open_document(source,model)
     if restored['status']!='restored':raise PdfError('document edit requires confirmation: '+restored['reason'])
-    initial=restored['state'];state=deepcopy(initial)
+    state=restored['state']
     if element_id not in state['elements']:raise PdfError('unknown logical element identity')
-    output=ensure_destination(output,source);model_output=ensure_destination(model_output,source)
-    if output==model_output:raise PdfError('PDF and document model need distinct destinations')
-    order,edges=_order(state);descendants=set();queue=list(edges[element_id])
+    change=dict(edits=edits)
+    if empty_style_id is not None:change['empty_style_id']=empty_style_id
+    report=edit_flow_batch(source,state,output,model_output,{element_id:change})
+    plan=report['plan'];order,edges=_order(state)
+    descendants=set();queue=list(edges[element_id])
     while queue:
         i=queue.pop();descendants.add(i);queue.extend(edges[i])
-    entry=state['elements'][element_id];binding=entry['binding']
-    plan=plan_paragraph(source,binding['paragraph'],edits,fonts=_fonts(binding),**binding['layout'])
-    dy=plan['last_baseline']-entry['extent']['last_baseline']
+    dy=plan['extent_deltas'][element_id]
     moving=[i for i in order if i in descendants] if abs(dy)>.002 else []
-    output.parent.mkdir(parents=True,exist_ok=True)
-    reports=[]
-    with tempfile.TemporaryDirectory(prefix='.flow-',dir=output.parent) as directory:
-        root=Path(directory);current=Path(source)
-        def move(ident):
-            nonlocal current,state
-            entry=state['elements'][ident];b=entry['binding'];owned=entry['owned_paints']
-            target=root/f'{len(reports)}-move.pdf'
-            relations=[dict(r,behavior='fixed-to-element' if r['source_id'] in owned else 'fixed-to-page') for r in b['relations']]
-            report=move_element(current,target,b['element'],relations,dx=0,dy=dy,paragraph_snapshot=b['paragraph'])
-            state['elements']={i:_rebind(current,target,e,report['byte_edits'],dy=dy if i==ident else 0,
-                                      moving_paths=owned,paint_dy=dy) for i,e in state['elements'].items()}
-            reports.append(dict(kind='move',element_id=ident,report=report));current=target
-        # Expanding predecessors need the space vacated first. Contracting
-        # predecessors vacate it before followers move upward. Intermediate
-        # graphs can be unsatisfied; all PDF collision/paint guards still run.
-        if dy>0:
-            for ident in reversed(moving):move(ident)
-        target=root/f'{len(reports)}-edit.pdf';sidecar=root/'paragraph.json'
-        previous=state['elements'][element_id];b=previous['binding']
-        report=edit_document(current,b,target,sidecar,edits,empty_style_id=empty_style_id)
-        if not _close(plan['lines'],[{k:line[k] for k in ('start','end','baseline','width','ascent','descent')} for line in report['lines']]):
-            raise PdfError('writer layout differs from the follows planning measurement')
-        edited=json.loads(sidecar.read_text(encoding='utf-8'))
-        paths={a['source_id']:b['source_id'] for a,b in zip(b['element']['paths'],edited['element']['paths'])}
-        state['elements']={i:(dict(binding=edited,owned_paints=[paths[p] for p in previous['owned_paints']],
-            extent=dict(last_baseline=plan['last_baseline'],provenance='generated-by-pdfengine')) if i==element_id else
-            _rebind(current,target,e,report['byte_edits'])) for i,e in state['elements'].items()}
-        reports.append(dict(kind='edit',element_id=element_id,report=report));current=target
-        if dy<0:
-            for ident in moving:move(ident)
-        state['pdf_sha256']=source_sha(current);state['previous_model_sha256']=initial['model_sha256']
-        state=_validate(current,_reseal(state))
-        state_file=root/'document.json';state_file.write_bytes((json.dumps(state,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
-        published=[]
-        try:
-            for temporary,destination in ((current,output),(state_file,model_output)):
-                destination.parent.mkdir(parents=True,exist_ok=True)
-                os.link(temporary,destination);published.append(destination)
-        except Exception:
-            for destination in published:destination.unlink()
-            raise
+    steps={s['element_id']:s for s in report['steps']}
+    ordered=([steps[i] for i in reversed(moving)]+[steps[element_id]] if dy>0 else
+             [steps[element_id]]+[steps[i] for i in moving])
     return dict(backend='explicit-document-follows',element_id=element_id,baseline_delta=dy,
-        moved_elements=moving,steps=reports,model_sha256=state['model_sha256'],pdf_sha256=state['pdf_sha256'],
-        relation_plan_verified=True,publication='verified PDF plus revision-bound sidecar; rollback on exception')
+        moved_elements=moving,steps=ordered,model_sha256=report['model_sha256'],pdf_sha256=report['pdf_sha256'],
+        relation_plan_verified=True,publication=report['publication'])

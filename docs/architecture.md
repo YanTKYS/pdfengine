@@ -1,5 +1,7 @@
 # PDF本文編集エンジンの技術評価
 
+> **安定identityと単一transaction（2026-09-14）**: 要素の identity を page program 内の位置と mutation map に移し、flow 系の逐次保存を1回の transaction に統合した。[stable-identity-transaction.md](stable-identity-transaction.md)を参照。
+
 > **glyphが0でも残る要素（2026-09-11）**: 空paragraphのstyle recipeとPDF挿入bindingを分離し、再入力と固定背景関係の継承へ接続した。判断・拒否境界・実PDF評価は[glyph-independent-elements.md](glyph-independent-elements.md)を参照。
 
 > **編集意味の保存（2026-09-11）**: 通常のPDFと、厳密なPDF hashに結び付く編集用sidecarを分離した。確定した論理文字列・境界・装飾range・固定領域を再編集へ保持し、失効時は観測へ戻す。[persistent-editing-semantics.md](persistent-editing-semantics.md)に判断・実装・実PDF評価を記録する。

@@ -10,10 +10,11 @@ from pdfeditor.attributed import inspect_paragraph
 from pdfeditor.backend import PdfError
 from pdfeditor.content_stream import ContentPage
 from pdfeditor.document_flow import (
-    _rebind, _rebind_clip_locations, _reseal,
+    _rebind_clip_locations, _reseal, rebind_entry,
     confirm_document, edit_flow, open_document,
 )
 from pdfeditor.elements import _close
+from pdfeditor.mutation import IdentityMap
 from pdfeditor.selection import make_selection, source_sha
 from test_attributed import source_pdf
 
@@ -75,11 +76,15 @@ def test_empty_paragraph_rebinds_clip_then_retypes_after_renumbered_save(tmp_pat
         assert a[0].xref!=b[0].xref
         assert all(a[i].get_pixmap().samples==b[i].get_pixmap().samples for i in range(len(a)))
     edits=[dict(start=0,end=0,length=4)]
-    rebound=_rebind(empty,out,state['elements']['A'],edits)
+    def rebind(after):
+        identity=IdentityMap.from_edits(empty,after,1,edits)
+        try:return rebind_entry(identity,state['elements']['A'])
+        finally:identity.close()
+    rebound=rebind(out)
     bad=tmp_path/'changed-clip.pdf'
     rewrite(empty,bad,b'q Q '+program.replace(b'320 260',b'319 260'))
-    with pytest.raises(PdfError,match='graphics state changed'):
-        _rebind(empty,bad,state['elements']['A'],edits)
+    with pytest.raises(PdfError,match='graphics state changed|do not reproduce'):
+        rebind(bad)
     old_clip=state['elements']['A']['binding']['paragraph']['insertion_binding']['event']['state']['clip']
     new_clip=rebound['binding']['paragraph']['insertion_binding']['event']['state']['clip']
     assert old_clip[0]['at']!=new_clip[0]['at'] and old_clip[0]['path']==new_clip[0]['path']

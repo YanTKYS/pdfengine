@@ -1,7 +1,6 @@
 """Reflow source-linked styled text with original and supplied font providers."""
 from __future__ import annotations
 
-from collections import defaultdict
 from dataclasses import asdict
 from io import BytesIO
 import hashlib
@@ -12,17 +11,18 @@ from fontTools.pens.boundsPen import BoundsPen
 from fontTools.ttLib import TTFont
 from pypdf.generic import NameObject
 
-from .attributed import SourceParagraph, apply_edits
+from .attributed import apply_edits
 from .backend import PdfError
-from .composition import (_check_obstacles, _observations, _pixels_equal,
-                          _require_removal, _signature)
-from .content_stream import PaintChar, multiply, number, patch_streams, serialized_event, translate
+from .composition import _check_obstacles, _observations, _pixels_equal, _require_removal
+from .content_stream import PaintChar, multiply, number, patch_streams, rewritten_event, translate
 from .explicit_reflow import allow_clip, matrix_operator
 from .model import Rect
-from .pdf_save import font_fingerprints, program_pdf_bytes, publish_program
-from .replay import compare_glyphs, ensure_destination
+from .mutation import Mutation
+from .pdf_save import program_pdf_bytes
+from .replay import compare_glyphs
 from .rich_layout import InlineGlyph, layout_attributed
 from .shaped_font import ShapedFont, ShapedRun
+from .transaction import Plan, Transaction
 
 
 def _name(value):
@@ -193,228 +193,253 @@ def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, *
         paragraph.close()
 
 
-def edit_paragraph(source, output, snapshot, edits, *, fonts=None, width=None, x=None,
-                   first_line_indent=None, max_bottom=None, min_line_height=None,
-                   removal_output=None, element_snapshot=None, element_relations=None, anchor_spec=None, baseline=None,
-                   preserve_empty=False, empty_style_id=None, render_styles=None):
-    output = ensure_destination(output,source)
-    if removal_output:
-        removal_output = ensure_destination(removal_output,source)
-        if output == removal_output:
-            raise PdfError("output and removal checkpoint must be distinct")
+class ParagraphPlan(Plan):
+    """A guarded paragraph rewrite, planned on the source and applied by a transaction."""
+    kind = 'edit'
+
+    def __init__(self, owner=None):
+        super().__init__(owner)
+        self.paragraph = self.shaper = self.anchored = None
+        self.first_mutation = None
+        self.glyph_names = []
+        self.slot = False
+        self._check = None
+        self._report = {}
+
+    def check(self, page, *, exclude_glyphs, paint_changes):
+        self._check(exclude_glyphs, paint_changes)
+
+    def emitted_glyphs(self, identity):
+        return identity.emitted_glyphs(self.first_mutation, self.glyph_names)
+
+    def empty_slot_offset(self, identity):
+        return identity.program.anchor(self.first_mutation, 'slot') if self.slot else None
+
+    def report(self, result):
+        identity = result.identity(self.page.number)
+        return dict(self._report, empty_slot_offset=self.empty_slot_offset(identity),
+                    byte_edits=[m.edit() for m in sorted(self.mutations, key=lambda m: m.start)],
+                    mutation_map=[m.record() for m in sorted(self.mutations, key=lambda m: m.start)],
+                    anchors=self.anchored.report() if self.anchored else None)
+
+    def close(self):
+        if self.shaper is not None:
+            self.shaper.close()
+        if self.paragraph is not None:
+            self.paragraph.close()
+
+
+def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None, first_line_indent=None,
+                        max_bottom=None, min_line_height=None, element_snapshot=None, element_relations=None,
+                        anchor_spec=None, baseline=None, preserve_empty=False, empty_style_id=None,
+                        render_styles=None, owner=None):
+    """Prove source facts and plan every byte mutation of one paragraph edit."""
     from .logical_element import paragraph_from_snapshot, style_recipes
-    paragraph = paragraph_from_snapshot(source,snapshot)
-    shaper = None
+    from .destination_style import bind_destination_styles
+    source, content = page.source, page.content
+    result = ParagraphPlan(owner)
     try:
-        from .destination_style import bind_destination_styles
-        paragraph=bind_destination_styles(paragraph,render_styles)
+        paragraph = paragraph_from_snapshot(source, snapshot, content=content)
+        result.paragraph = paragraph
+        paragraph = bind_destination_styles(paragraph, render_styles)
+        result.paragraph = paragraph
         if anchor_spec is not None and any('runs' in e for e in edits):
             raise PdfError('attributed replacement runs need explicit decoration projection')
-        units = apply_edits(paragraph,snapshot,edits)
-        empty_typing_style=None
+        units = apply_edits(paragraph, snapshot, edits)
+        empty_typing_style = None
         if preserve_empty and not units:
             if anchor_spec is not None:
                 raise PdfError('empty element paint relations require explicit dormant decoration/ownership semantics')
             if empty_style_id is not None:
-                empty_typing_style=empty_style_id
-            elif hasattr(paragraph,'default_style_id'):
-                empty_typing_style=paragraph.default_style_id
-            elif len(paragraph.styles)==1:
-                empty_typing_style=next(iter(paragraph.styles))
+                empty_typing_style = empty_style_id
+            elif hasattr(paragraph, 'default_style_id'):
+                empty_typing_style = paragraph.default_style_id
+            elif len(paragraph.styles) == 1:
+                empty_typing_style = next(iter(paragraph.styles))
             else:
                 raise PdfError('empty multi-style paragraph needs an explicit empty_style_id')
             if empty_typing_style not in paragraph.styles:
                 raise PdfError('unknown empty paragraph typing style')
-        anchored=None
+        anchored = None
         if anchor_spec is not None:
             if element_relations is not None:
                 raise PdfError('anchored editing uses the fixed relations in its anchor specification')
             from .anchors import AnchoredPaintEdit
-            anchored=AnchoredPaintEdit(source,paragraph,snapshot,element_snapshot,anchor_spec,edits)
+            anchored = AnchoredPaintEdit(source, paragraph, snapshot, element_snapshot, anchor_spec, edits)
+            result.anchored = anchored
         selected = set(paragraph.selection['glyph_ids'])
-        resolved, content = paragraph.resolved, paragraph.content
-        pno, first = resolved.page-1, paragraph.first
+        resolved = paragraph.resolved
+        pno, first = resolved.page - 1, paragraph.first
         state = first.state
-        available,layout_options=_layout_parameters(paragraph,snapshot,width=width,x=x,
-            first_line_indent=first_line_indent,baseline=baseline,min_line_height=min_line_height,max_bottom=max_bottom)
-        x,baseline,width,indent,leading,bottom=(layout_options[k] for k in
-            ('x','baseline','width','first_line_indent','min_line_height','max_bottom'))
-        untouched = [g for i,g in enumerate(paragraph.observations) if i not in selected]
+        available, layout_options = _layout_parameters(paragraph, snapshot, width=width, x=x,
+            first_line_indent=first_line_indent, baseline=baseline, min_line_height=min_line_height, max_bottom=max_bottom)
+        x, baseline, width, indent, leading, bottom = (layout_options[k] for k in
+            ('x', 'baseline', 'width', 'first_line_indent', 'min_line_height', 'max_bottom'))
+        untouched = [g for i, g in enumerate(paragraph.observations) if i not in selected]
         virtual = -content.page.xref
-        removed = patch_streams(content,paragraph.events,selected,remove=True)[virtual]
-        replay = patch_streams(content,paragraph.events,selected,remove=False)[virtual]
-        with pymupdf.open(stream=program_pdf_bytes(source,pno,replay),filetype='pdf') as doc:
-            if not compare_glyphs(paragraph.observations,_observations(doc[pno]))['passed'] or not all(
-                    _pixels_equal(content.document[i],doc[i]) for i in range(len(doc))):
+        removed = patch_streams(content, paragraph.events, selected, remove=True)[virtual]
+        replay = patch_streams(content, paragraph.events, selected, remove=False)[virtual]
+        with pymupdf.open(stream=program_pdf_bytes(source, pno, replay), filetype='pdf') as doc:
+            if not compare_glyphs(paragraph.observations, _observations(doc[pno]))['passed'] or not all(
+                    _pixels_equal(content.document[i], doc[i]) for i in range(len(doc))):
                 raise PdfError("source no-op failed; attributed editing is prohibited")
-        with pymupdf.open(stream=program_pdf_bytes(source,pno,removed),filetype='pdf') as doc:
-            _require_removal(untouched,doc[pno])
-        shaper = ParagraphShaper(paragraph,units,fonts or {})
-        layout = layout_attributed(shaper.text,shape=shaper.shape,**layout_options)
+        with pymupdf.open(stream=program_pdf_bytes(source, pno, removed), filetype='pdf') as doc:
+            _require_removal(untouched, doc[pno])
+        shaper = ParagraphShaper(paragraph, units, fonts or {})
+        result.shaper = shaper
+        layout = layout_attributed(shaper.text, shape=shaper.shape, **layout_options)
         resources, font_reports = {}, {}
-        existing = content.pdf_page['/Resources'].get_object().get('/Font',{})
-        for provider,font in shaper.fonts.items():
+        for provider, font in shaper.fonts.items():
             glyphs = [g.glyph.payload['shaped_glyph'] for g in layout.glyphs
-                      if g.glyph.payload['provider']==provider and g.glyph.payload['source_index'] is None]
+                      if g.glyph.payload['provider'] == provider and g.glyph.payload['source_index'] is None]
             if not glyphs:
                 continue
-            resource = font.resource([ShapedRun('',tuple(glyphs))])
-            n = 1
-            while f'/PRF{n}' in existing or f'/PRF{n}' in resources:
-                n += 1
-            alias = f'/PRF{n}'
+            resource = font.resource([ShapedRun('', tuple(glyphs))])
+            alias = page.reserve_font_alias('PRF')
             resources[alias] = resource
-            font_reports[provider] = {"resource":alias,"name":font.name,
-                "source_sha256":font.source_sha256,"instance_sha256":font.instance_sha256,
-                "subset_sha256":hashlib.sha256(resource.program).hexdigest(),
-                "font_index":font.font_index,"variations":font.variations}
-        inverse = ~(pymupdf.Matrix(*state.ctm)*content.page.transformation_matrix)
+            font_reports[provider] = {"resource": alias, "name": font.name,
+                "source_sha256": font.source_sha256, "instance_sha256": font.instance_sha256,
+                "subset_sha256": hashlib.sha256(resource.program).hexdigest(),
+                "font_index": font.font_index, "variations": font.variations}
+        inverse = ~(pymupdf.Matrix(*state.ctm) * content.page.transformation_matrix)
         inverse_ctm = tuple(~pymupdf.Matrix(*state.ctm))
-        commands, plan, inks = [b' q 0 Tc 0 Tw 0 Ts '], [], []
+        commands, plan, inks, glyph_offsets = [b' q 0 Tc 0 Tw 0 Ts '], [], [], []
+        length = len(commands[0])
         for placed in layout.glyphs:
             payload = placed.glyph.payload
             style = paragraph.styles[payload['style_id']]
-            if payload['provider']!='original':
+            if payload['provider'] != 'original':
                 alias = font_reports[payload['provider']]['resource']
                 resource = resources[alias]
                 code = resource.code(payload['shaped_glyph'])
-                cid = int.from_bytes(code,'big')
+                cid = int.from_bytes(code, 'big')
             else:
-                alias,code,cid = payload['resource'],payload['code'],None
-            dx,dy = payload['offset']
-            gx,gy = placed.x+dx,placed.baseline+dy
-            point = pymupdf.Point(gx,gy)*inverse
-            basis = multiply(style.matrix,inverse_ctm)[:4]
-            fill_op,fill_values = style.event.state.fill
-            commands.extend((_name(alias),b' ',number(style.event.state.size),b' Tf ',
-                number(style.event.state.tz),b' Tz ',b' '.join(number(float(v)) for v in fill_values),
-                b' '+fill_op.encode()+b' ',matrix_operator((*basis,point.x,point.y)),
-                b'<'+code.hex().encode()+b'> Tj '))
+                alias, code, cid = payload['resource'], payload['code'], None
+            dx, dy = payload['offset']
+            gx, gy = placed.x + dx, placed.baseline + dy
+            point = pymupdf.Point(gx, gy) * inverse
+            basis = multiply(style.matrix, inverse_ctm)[:4]
+            fill_op, fill_values = style.event.state.fill
+            prefix = b''.join((_name(alias), b' ', number(style.event.state.size), b' Tf ',
+                number(style.event.state.tz), b' Tz ', b' '.join(number(float(v)) for v in fill_values),
+                b' ' + fill_op.encode() + b' ', matrix_operator((*basis, point.x, point.y))))
+            commands.append(prefix)
+            length += len(prefix)
+            glyph_offsets.append(length)
+            operand = b'<' + code.hex().encode() + b'> Tj '
+            commands.append(operand)
+            length += len(operand)
             ink = placed.ink
             if ink is not None:
-                if not Rect(x,0,x+width,bottom).contains(ink,.001) or not Rect(*content.page.rect).contains(ink,.001):
+                if not Rect(x, 0, x + width, bottom).contains(ink, .001) or not Rect(*content.page.rect).contains(ink, .001):
                     raise PdfError("styled glyph extends beyond the confirmed paragraph region")
-                allow_clip(state,ink,content.page.transformation_matrix)
+                allow_clip(state, ink, content.page.transformation_matrix)
                 inks.append(ink)
-            plan.append({"unicode":placed.glyph.text,"style_id":style.id,"start":placed.start,"end":placed.end,
-                "source_index":payload['source_index'],"provider":payload['provider'],
-                "code_witness":payload.get('code_witness'),
-                "font_resource":alias,"code":code.hex(),"cid":cid,"glyph_id":payload['glyph_id'],
-                "origin":[gx,gy],"size":style.size,
-                "trace_size":style.size*style.horizontal_scale,"color":style.color,
-                "advance":placed.glyph.advance,"bounds_source":payload['bounds_source'],
-                "nominal_pdf_width":(resources[alias].font.nominal_width(payload['glyph_id'])*1000/resources[alias].font.upem
-                                     if cid is not None else None)})
-        delta_advance = sum(a.advance if isinstance(a,PaintChar) else -float(a)/1000*state.size*state.tz/100 for a in first.atoms)
-        after = translate(first.text_matrix,delta_advance,0)
-        delta = multiply(after,tuple(~pymupdf.Matrix(*first.line_matrix)))
-        if abs(delta[5])>.001 or any(abs(a-b)>1e-5 for a,b in zip(delta[:4],(1,0,0,1))):
+            witness = payload['source_index'] if payload['source_index'] is not None else payload.get('code_witness')
+            plan.append({"unicode": placed.glyph.text, "style_id": style.id, "start": placed.start, "end": placed.end,
+                "source_index": payload['source_index'], "provider": payload['provider'],
+                "code_witness": payload.get('code_witness'),
+                "font_resource": alias, "code": code.hex(), "cid": cid, "glyph_id": payload['glyph_id'],
+                "origin": [gx, gy], "size": style.size,
+                "trace_size": style.size * style.horizontal_scale, "color": style.color,
+                "advance": placed.glyph.advance, "bounds_source": payload['bounds_source'],
+                "font": paragraph.observations[witness]['font'] if witness is not None else None,
+                "nominal_pdf_width": (resources[alias].font.nominal_width(payload['glyph_id']) * 1000 / resources[alias].font.upem
+                                      if cid is not None else None)})
+        delta_advance = sum(a.advance if isinstance(a, PaintChar) else -float(a) / 1000 * state.size * state.tz / 100 for a in first.atoms)
+        after = translate(first.text_matrix, delta_advance, 0)
+        delta = multiply(after, tuple(~pymupdf.Matrix(*first.line_matrix)))
+        if abs(delta[5]) > .001 or any(abs(a - b) > 1e-5 for a, b in zip(delta[:4], (1, 0, 0, 1))):
             raise PdfError("cannot restore original text and line matrices")
-        commands.extend((b' Q ',matrix_operator(first.line_matrix),
-            b'['+number(-delta[4]/(state.size*state.tz/100)*1000)+b'] TJ '))
-        mutations=[];empty_slot_offset=None
+        commands.extend((b' Q ', matrix_operator(first.line_matrix),
+            b'[' + number(-delta[4] / (state.size * state.tz / 100) * 1000) + b'] TJ '))
         for event in paragraph.events:
-            new = serialized_event(event,selected,remove=True)
+            data, op_offset, chars = rewritten_event(event, selected, remove=True)
+            anchors = {'rewritten': op_offset}
             if event is first:
                 if preserve_empty and not units:
-                    empty_slot_offset=event.operator.start+len(new)+1
-                    new+=b' [] TJ '
-                new += b''.join(commands)
-            mutations.append((event.operator.start,event.operator.end,new))
-        ink_bounds = Rect(x,baseline,x,baseline)
+                    anchors['slot'] = len(data) + 1
+                    data += b' [] TJ '
+                    result.slot = True
+                base = len(data)
+                for n, offset in enumerate(glyph_offsets):
+                    anchors[f'glyph:{n}'] = base + offset
+                    result.glyph_names.append(f'glyph:{n}')
+                data += b''.join(commands)
+            mutation = Mutation(event.operator.start, event.operator.end, data, kind='text-edit',
+                                anchors=anchors, chars=chars, owner=owner)
+            result.mutations.append(mutation)
+            if event is first:
+                result.first_mutation = mutation
+            removal, removal_offset, removal_chars = rewritten_event(event, selected, remove=True)
+            result.removal_mutations.append(Mutation(event.operator.start, event.operator.end, removal, kind='text-remove',
+                                                     anchors={'rewritten': removal_offset}, chars=removal_chars, owner=owner))
+        ink_bounds = Rect(x, baseline, x, baseline)
         for ink in inks:
             ink_bounds = ink_bounds.union(ink)
+        relations = element_relations
         if anchored is not None:
-            anchored.plan(layout,inks,ink_bounds,Rect(x,0,x+width,bottom))
-            mutations.extend(anchored.patches)
-            removed=anchored.removal_program()
+            anchored.plan(layout, inks, ink_bounds, Rect(x, 0, x + width, bottom), owner=owner)
+            result.mutations.extend(anchored.mutations)
+            result.removal_mutations.extend(anchored.removal_mutations)
+            result.paint_changes.update(anchored.paint_changes)
+            result.consumed_paths |= anchored.ids
+            result.final_rects.extend(Rect(**s['bounds']) for s in anchored.segments)
+            relations = anchor_spec.get('fixed_relations', [])
+            check = anchored.check
         elif element_snapshot is None:
             if element_relations is not None:
                 raise PdfError("element relations need a source-bound element snapshot")
-            _check_obstacles(content,selected,resolved,inks,ink_bounds)
+            def check(exclude_glyphs, paint_changes):
+                _check_obstacles(content, selected, resolved, inks, ink_bounds, exclude_glyphs=exclude_glyphs)
         else:
             from .elements import check_paragraph_obstacles
-            check_paragraph_obstacles(source,content,selected,resolved,inks,ink_bounds,
-                                      element_snapshot,element_relations,paragraph_snapshot=snapshot)
-        affected = resolved.bbox.union(anchored.bounds if anchored else ink_bounds)
-        data=content.streams[virtual]
-        for a,b,new in sorted(mutations,reverse=True):
-            data=data[:a]+new+data[b:]
-            if empty_slot_offset is not None and b<=first.operator.start:
-                empty_slot_offset+=len(new)-(b-a)
-        old_fonts = font_fingerprints(content.document,pno)
-        def verify(document):
-            if (len(document)!=len(content.document) or document.permissions!=content.document.permissions
-                    or document.metadata.get('encryption')!=content.document.metadata.get('encryption')):
-                raise PdfError("attributed edit changed page count or security")
-            remaining = defaultdict(list)
-            for g in untouched:
-                remaining[_signature(g)].append(g)
-            new,kept = [],[]
-            for g in _observations(document[pno]):
-                candidates = remaining[_signature(g)]
-                match = next((i for i,old in enumerate(candidates) if compare_glyphs([old],[g])['passed']),None)
-                if match is None:
-                    new.append(g)
-                else:
-                    candidates.pop(match);kept.append(g)
-            if any(remaining.values()) or not compare_glyphs(untouched,kept)['passed']:
-                raise PdfError("attributed edit changed unselected glyphs")
-            if ''.join(g['unicode'] for g in new) != ''.join(g['unicode'] for g in plan):
-                raise PdfError("saved styled Unicode differs from the line plan")
-            painted = [g for g in new if g['glyph_id']>=0]
-            if len(painted)!=len(plan):
-                raise PdfError("saved styled glyph count differs from the line plan")
-            for actual,wanted in zip(painted,plan):
-                if (actual['glyph_id']!=wanted['glyph_id'] or abs(actual['size']-wanted['trace_size'])>.002
-                        or actual['paint_type']!=0 or actual['opacity']!=1 or actual['color']!=wanted['color']
-                        or max(abs(a-b) for a,b in zip(actual['origin'],wanted['origin']))>.002):
-                    raise PdfError("saved styled glyph ID, origin or paint differs from its plan")
-                witness=wanted['source_index'] if wanted['source_index'] is not None else wanted['code_witness']
-                if witness is not None and actual['font']!=paragraph.observations[witness]['font']:
-                    raise PdfError("retained text no longer uses its original font")
-            aliases = {name[1:] for name in resources}
-            current = font_fingerprints(document,pno)
-            if [f for f in current if f[0][3] not in aliases] != old_fonts:
-                raise PdfError("an existing font resource changed")
-            for alias,resource in resources.items():
-                added = [f for f in current if f[0][3]==alias[1:]]
-                if len(added)!=1 or added[0][1]!=hashlib.sha256(resource.program).hexdigest():
-                    raise PdfError("new styled font differs from the verified subset")
-            if not all(_pixels_equal(content.document[i],document[i],affected if i==pno else None) for i in range(len(document))):
-                raise PdfError("styled edit changed pixels outside the affected region")
-            if anchored:
-                anchored.verify(document)
-        publish_program(source,pno,data,output,verify,font_builders={k:v.build for k,v in resources.items()})
-        if removal_output:
-            def verify_removed(doc):
-                _require_removal(untouched,doc[pno])
-                if anchored:
-                    anchored.verify(doc,removed=True)
-            publish_program(source,pno,removed,removal_output,verify_removed)
-        return {"schema_version":1,"backend":"attributed-source-and-shaped-fonts",
-            **({'destination_style_binding':paragraph.binding_report()} if render_styles is not None else {}),
-            "element_snapshot_sha256":element_snapshot.get('snapshot_sha256') if element_snapshot else None,
-            "element_relations":element_relations,
-            "anchors":anchored.report() if anchored else None,
-            "snapshot_sha256":snapshot['snapshot_sha256'],"selection":paragraph.selection,
-            "before":paragraph.text,"after":shaper.text,"composed_text":''.join(line.text for line in layout.lines),
-            "logical_styles":[u.style_id for u in units],
-            "byte_edits":[dict(start=a,end=b,length=len(new)) for a,b,new in sorted(mutations)],
-            "empty_slot_offset":empty_slot_offset,"empty_typing_style_id":empty_typing_style,
-            "empty_style_recipes":style_recipes(paragraph) if empty_typing_style is not None else None,
-            "logical_origins":[shaper.original_offsets[id(u.retained)] if u.retained is not None else None for u in units],
-            "styles":paragraph.export_styles() if render_styles is not None else snapshot['styles'],"edits":edits,"fonts":font_reports,
-            "widths":asdict(available),"x":x,"baseline":baseline,"first_line_indent":indent,"min_line_height":leading,
-            "old_line_count":len(resolved.lines),"new_line_count":len(layout.lines),
-            "lines":[{k:getattr(line,k) for k in ('text','start','end','x','baseline','width','ascent','descent')} for line in layout.lines],
-            "glyph_plan":plan,"audit_bbox":asdict(affected),"source_replay_mupdf_passed":True,
-            "retained_glyph_count":sum(g['source_index'] is not None for g in plan),
-            "provided_font_glyph_count":sum(g['provider']!='original' for g in plan),
-            "reused_code_glyph_count":sum(g['code_witness'] is not None for g in plan),
-            "font_policy":"Retain original codes for unedited intervals; shape edited intervals using explicitly supplied fonts.",
-            "mupdf_outside_pixels_equal":True,"independent_renderer_verified":False}
-    finally:
-        if shaper is not None:
-            shaper.close()
-        paragraph.close()
+            def check(exclude_glyphs, paint_changes):
+                check_paragraph_obstacles(source, content, selected, resolved, inks, ink_bounds,
+                                          element_snapshot, element_relations, paragraph_snapshot=snapshot,
+                                          exclude_glyphs=exclude_glyphs, paint_changes=paint_changes)
+        result._check = check
+        result.background_paths = {r['source_id'] for r in (relations or []) if r.get('relation') == 'backgrounds'}
+        result.consumed = selected
+        result.new_glyphs = plan
+        result.final_rects.extend(inks)
+        result.affected = resolved.bbox.union(anchored.bounds if anchored else ink_bounds)
+        result.font_builders = {alias: resource.build for alias, resource in resources.items()}
+        result.font_subsets = {alias: hashlib.sha256(resource.program).hexdigest() for alias, resource in resources.items()}
+        result._report = {"schema_version": 1, "backend": "attributed-source-and-shaped-fonts",
+            **({'destination_style_binding': paragraph.binding_report()} if render_styles is not None else {}),
+            "element_snapshot_sha256": element_snapshot.get('snapshot_sha256') if element_snapshot else None,
+            "element_relations": element_relations,
+            "snapshot_sha256": snapshot['snapshot_sha256'], "selection": paragraph.selection,
+            "before": paragraph.text, "after": shaper.text, "composed_text": ''.join(line.text for line in layout.lines),
+            "logical_styles": [u.style_id for u in units],
+            "empty_typing_style_id": empty_typing_style,
+            "empty_style_recipes": style_recipes(paragraph) if empty_typing_style is not None else None,
+            "logical_origins": [shaper.original_offsets[id(u.retained)] if u.retained is not None else None for u in units],
+            "styles": paragraph.export_styles() if render_styles is not None else snapshot['styles'], "edits": edits, "fonts": font_reports,
+            "widths": asdict(available), "x": x, "baseline": baseline, "first_line_indent": indent, "min_line_height": leading,
+            "old_line_count": len(resolved.lines), "new_line_count": len(layout.lines),
+            "lines": [{k: getattr(line, k) for k in ('text', 'start', 'end', 'x', 'baseline', 'width', 'ascent', 'descent')} for line in layout.lines],
+            "glyph_plan": [{k: v for k, v in g.items() if k != 'font'} for g in plan], "audit_bbox": asdict(result.affected),
+            "source_replay_mupdf_passed": True,
+            "retained_glyph_count": sum(g['source_index'] is not None for g in plan),
+            "provided_font_glyph_count": sum(g['provider'] != 'original' for g in plan),
+            "reused_code_glyph_count": sum(g['code_witness'] is not None for g in plan),
+            "font_policy": "Retain original codes for unedited intervals; shape edited intervals using explicitly supplied fonts.",
+            "mupdf_outside_pixels_equal": True, "independent_renderer_verified": False}
+        return page.add(result)
+    except Exception:
+        result.close()
+        raise
+
+
+def edit_paragraph(source, output, snapshot, edits, *, removal_output=None, **options):
+    """Edit one paragraph as a single-plan transaction."""
+    page_number = snapshot['selection']['page']
+    with Transaction(source) as transaction:
+        plan = plan_paragraph_edit(transaction.page(page_number), snapshot, edits, **options)
+        result = transaction.commit(output, removal_output=removal_output)
+        try:
+            return plan.report(result)
+        finally:
+            result.close()
