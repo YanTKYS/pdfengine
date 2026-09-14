@@ -34,11 +34,49 @@
 | 行ごとの分解と分布 | snapshot `spacing.lines` | `observed_source` | 候補生成の根拠。review 用 |
 | tracking 候補 | snapshot `spacing.tracking`（`requires_confirmation`） | `inferred_consistent_tracking` / `observed_source`(0) / `unknown` | 確認入力の既定候補。writer には直接使わない |
 | alignment 候補 | snapshot `spacing.alignment_candidates` | `alignment_candidate` / `unknown` | 同上 |
-| 確定 tracking | `SourceStyle.tracking` + `SourceStyle.tracking_provenance`、sidecar `logical_element.tracking` | `explicitly_confirmed`、0 のときのみ `observed_source` | 新 glyph advance、両端揃え時の保持 glyph 基準、PDF への witness（次 PR） |
+| 論理 tracking | `SourceStyle.tracking: float | None` + `SourceStyle.tracking_provenance`、sidecar `logical_element.tracking`（PR B） | `observed_source`（0）/ `candidate` / `unknown` / `explicitly_confirmed`（PR B） | 新 glyph advance、両端揃え時の保持 glyph 基準、PDF への witness（PR B）。`None` は「値が無い」であり 0 ではない |
 | 確定 alignment | sidecar `logical_element.alignment` | `explicitly_confirmed`（left 既定は `generated_layout_policy` のまま） | 保持 glyph advance の切替、layout（後続 PR） |
 | 生成 layout の spacing | 保存 PDF の glyph 位置（`Tm` 単位） | `generated-by-pdfengine` | 再観測では `uniform_reposition` / `none` になり候補を生まない。確定値は sidecar が権威 |
 
 `SourceStyle.word_spacing` は inline style ではないため field ごと廃止する（`Tw` は行の仕組み）。`rise` は inline のまま残す（`Ts` は上付き等の文字属性で、両端揃えは `Ts` を変えない）。
+
+### PR A 時点の `SourceStyle.tracking`
+
+確認入力は PR B なので、PR A では確定値が存在しない。`tracking` を `float | None` にし、`tracking_provenance` で 3 状態を区別する。最初の event の `Tc` を代表値として流用しない。値は style に併合された全 unit の `event.state.tc`（× matrix × `Tz`）から style ごとに求める。
+
+| 状態 | 観測 | `tracking` | `tracking_provenance` | 候補値の置き場所 |
+|---|---|---|---|---|
+| 1. `0 Tc` | その style の全 glyph で `Tc` = 0 | `0.0` | `observed_source` | 不要 |
+| 2. 全行一定の nonzero、未確認 | 行内で 1 値、全行（最終行を含む）で同一の nonzero | `None` | `candidate` | snapshot `spacing.tracking.value`（`requires_confirmation=True`） |
+| 3. 行間で異なる | 行内では 1 値だが行が変わると異なる | `None` | `unknown` | なし（`spacing.tracking` も `unknown`） |
+| 4. 確定（PR B） | 確認入力 | 値 | `explicitly_confirmed` | sidecar |
+
+行内で `Tc` が 2 値以上なら style を分割するので、1 つの style が状態 2 と 3 を同時に持つことはない。`None` を `0` として計算に使う箇所を作らない。候補値は表示と確認入力の既定にだけ使い、writer と layout は読まない。
+
+この表現を選ぶ理由: export の `'tracking'` key と story / shared の比較 key がそのまま残り、消費者の変更が「`None` を許す」だけで済む。別 field に分けると export・registry・recipe の 3 か所に新 key が増え、PR A で外してしまうと `destination_style` と `story_styles` の `PROPERTIES` を PR B で戻す往復が要る。
+
+### PR A での consumer ごとの扱い
+
+| consumer | 扱い |
+|---|---|
+| `SourceStyle.export()` | `'tracking'` に `0.0` / `None`、`'tracking_provenance'` を追加、`'word_spacing'` を削除。snapshot digest は変わる |
+| `apply_edits` | `style_id` しか見ないので変更なし。新 glyph の可否は shaper が判断する |
+| `ParagraphShaper.shape` | 保持 glyph: 現行どおり隣接 origin 差。末尾補正は `style.tracking` ではなく `unit.event.state.tc` から取る（`None` に触れない）。新 glyph: `nominal + style.tracking`。`tracking is None` なら `PdfError`（`candidate` は「確認が必要」、`unknown` は「行間で異なり確定できない」と理由を分ける）。`word_spacing` 項は削除 |
+| `destination_style` | `PROPERTIES` から `word_spacing` を削除。recipe の `tracking` は `0.0` のみ受理（nonzero と `None` は従来どおり拒否）。`SourceStyle` 生成時に `tracking_provenance='observed_source'` |
+| `editable._bind_paragraph` | 比較 key から `word_spacing` を削除。出力 PDF は `0 Tc` なので出力側は常に `0.0`。元が状態 2 / 3 なら `None != 0.0` で従来どおり persistence 拒否（PR B で解消）。状態 1 は通る |
+| story / shared flow の style 比較 | `STYLE_KEYS` / `PROPERTIES` から `word_spacing` を削除。`_close(None, None)` は等価なので、同一 style は状態 2 / 3 でも登録できる。registry の attribute 値に `None` を許す |
+| `logical_element` の recipe 検証 | `word_spacing` を項目から外し、`tracking` に `None` を許す（空段落の再入力は新 glyph 挿入なので shaper が拒否する） |
+| `spacing._line` | `tc` / `tw` を `style` からではなく `unit.event.state` から取る。分類規則は変えない |
+
+### 操作ごとに必要な tracking 情報
+
+| 操作 | 必要な情報 | 状態 1 | 状態 2 | 状態 3 |
+|---|---|---|---|---|
+| 保持のみ（同文 no-op、並べ替えなし） | 各 glyph の観測 advance（origin 差） | 許可 | 許可 | 許可 |
+| 削除のみ | 同上と末尾補正（`unit.event.state.tc`） | 許可 | 許可 | 許可 |
+| 新 glyph 挿入・置換 | 論理 tracking の値 | 許可（0） | 拒否: 確認が必要 | 拒否: 確定不能 |
+
+`_bind_paragraph` の persistence 拒否は操作の種類によらず状態 2 / 3 で残る。これは PR A の既知の制限で、PR B の witness 出力で解消する。
 
 ## 4. `SourceParagraph` の同一性規則
 
@@ -78,11 +116,12 @@
 
 | モジュール | 変更 |
 |---|---|
-| `attributed.py` | 鍵から `tracking` / `word_spacing` を除去、行内 `Tc` 変化による分割、`SourceUnit.event`、`SourceStyle.word_spacing` 廃止、`tracking_provenance` 追加、`snapshot()` に `spacing` |
-| `paragraph.py` | 新 glyph advance から `word_spacing` を除去、末尾補正を `unit.event.state.tc` に、`tracking` は確定値のみ（未確認の nonzero 候補で新 glyph を要求する編集は拒否） |
-| `logical_element.py` | recipe の検証項目から `word_spacing` を除去 |
-| `destination_style.py` | `PROPERTIES` から `word_spacing` を除去（nonzero tracking / rise の拒否は次 PR まで維持） |
-| `editable.py`, `story_flow.py`, `story_styles.py` | export 比較と `STYLE_KEYS` から `word_spacing` を除去 |
+| `attributed.py` | 鍵から `tracking` / `word_spacing` を除去、行内 `Tc` 変化による分割、`SourceUnit.event`、`SourceStyle.word_spacing` 廃止、`tracking: float | None` と `tracking_provenance`、`snapshot()` に `spacing` |
+| `paragraph.py` | 新 glyph advance から `word_spacing` を除去、末尾補正を `unit.event.state.tc` に、`tracking is None` の style への新 glyph 挿入を理由付きで拒否 |
+| `logical_element.py` | recipe の検証項目から `word_spacing` を除去、`tracking` に `None` を許容 |
+| `destination_style.py` | `PROPERTIES` から `word_spacing` を除去（nonzero / `None` tracking と nonzero rise の拒否は次 PR まで維持） |
+| `editable.py`, `story_flow.py`, `story_styles.py` | export 比較と `STYLE_KEYS` から `word_spacing` を除去、`None` の等価比較を許容 |
+| `spacing.py` | `_line` の `tc` / `tw` を `unit.event.state` から取る。分類は不変 |
 | `rich_layout.py` | 変更なし |
 
 snapshot と sidecar の digest は変わるため、既存 sidecar は `needs_confirmation` へ戻る。migration layer は作らない。
@@ -97,7 +136,7 @@ snapshot と sidecar の digest は変わるため、既存 sidecar は `needs_c
 
 - 行ごとに `Tw` または `TJ` で両端揃えされた合成段落（`tests/test_spacing.py` の fixture 相当）が `inspect_paragraph` で 1 style になり、snapshot に `spacing` の候補が載る。
 - 同じ行の途中で `Tc` が変わる段落は 2 style のままである。
-- `Tc` が全行で一定の段落は 1 style で、`spacing.tracking` が `inferred_consistent_tracking`、`requires_confirmation=True` になる。
-- 未確認の nonzero tracking 候補を持つ style へ新 glyph を挿入する編集は拒否し、削除のみ・保持 glyph のみの編集は通る。
+- `Tc` が全行で一定の nonzero の段落は 1 style で、`SourceStyle.tracking` が `None`、`tracking_provenance` が `candidate`、`spacing.tracking` が `inferred_consistent_tracking` かつ `requires_confirmation=True` になる。行間で `Tc` が異なる段落は 1 style で `tracking_provenance` が `unknown`。`0 Tc` の段落は `0.0` / `observed_source`。
+- 状態 2 / 3 の style へ新 glyph を挿入する編集は状態ごとの理由で拒否し、削除のみ・保持 glyph のみの編集（no-op 再組版を含む）は通る。`None` を 0 として advance に使う経路が無い。
 - `tests/test_attributed.py`、`test_editable.py`、`test_destination_style.py`、`test_story_styles.py`、`test_shared_flow.py`、`test_document_flow.py` が通る（既存 fixture は `Tc` 0 または一定で、分裂しない）。
 - replay / removal / no-op 検証、transaction の witness、identity map に変更がない。
