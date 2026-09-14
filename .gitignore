@@ -25,3 +25,4 @@ tmp/
 !/evaluations/variable_container/summary.json
 !/evaluations/story_flow/summary.json
 !/evaluations/story_styles/summary.json
+!/evaluations/shared_flow/summary.json

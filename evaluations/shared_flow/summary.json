@@ -1,0 +1,2148 @@
+{
+  "schema": "pdfengine-shared-flow-evaluation-1",
+  "status": "passed",
+  "source_url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf",
+  "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+  "source_replay": {
+    "slot-0": {
+      "mupdf_all_equal": true,
+      "poppler_all_changed_pixels": 0,
+      "evidence": "reused exact program and artifact hash from ab781fa",
+      "replay_pdf_sha256": "80b95e64453ce5647c4f374478bea14d5a65ff45ba1bb7ff9ef1b2199dc1d18d",
+      "prior_commit": "6690eae"
+    },
+    "slot-1": {
+      "mupdf_all_equal": true,
+      "poppler_all_changed_pixels": 0,
+      "evidence": "reused exact program and artifact hash from ab781fa",
+      "replay_pdf_sha256": "5178f66f084161a23352cf687afd349b7ed1e13308462d2f284b31db2c70d156"
+    },
+    "slot-2": {
+      "evidence": "new reviewed following paragraph replay",
+      "mupdf_all_equal": true,
+      "poppler_all_changed_pixels": 0,
+      "replay_pdf_sha256": "59bcff9836940144cac9480e66bbf361ae9e93cce557e6a7d470073984356ed7"
+    }
+  },
+  "stages": [
+    {
+      "stage": "v1",
+      "status": "passed",
+      "output_sha256": "4acf32c019f7b5bf5f0d7682e42c807f3b4e141ea3c89e563cac109a96a7442e",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "destinations": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "style_binding": {
+            "pdf_sha256": "4acf32c019f7b5bf5f0d7682e42c807f3b4e141ea3c89e563cac109a96a7442e",
+            "page": 4,
+            "styles": {
+              "s0": "body",
+              "s1": "latin"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+            "page": 4,
+            "source_snapshot_sha256": "cf1357a0fcdd58be74843a0c4f4aca4c0c2db60dea79047dd5a33ed71737987a",
+            "destination_event_sha256": "d89f2c71d0fa95882324cc6e7af45ce408bc815b8c22b3459409240d658a5b9e",
+            "active_clip_sha256": "fbda9fb3450e72c6a65ee5fb9ba88448e195e06e2f61a0f2e762219ba07b1273",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:body": "/PRF1",
+            "logical:latin": "/PRF2"
+          },
+          "glyph_count": 10,
+          "retained_source_glyph_count": 0
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "4acf32c019f7b5bf5f0d7682e42c807f3b4e141ea3c89e563cac109a96a7442e",
+            "page": 5,
+            "styles": {
+              "logical:body": "body"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "f98fe4eaaf5e4e7f48a26f0a6a4641903df81ade089c1cbc4dc2a12598e6e5e1",
+            "page": 5,
+            "source_snapshot_sha256": "a8a59e52605811e6ddc103f0758cccc4f45decd47dd1acf28aa958b4d35e815f",
+            "destination_event_sha256": "0b0f011de117e529adb2f442e8ea681c1887c4252839b00414d92a94bc9cff52",
+            "active_clip_sha256": "66a1219c12af6d6e0f247cd6f796016e9b72062ab1feec67f27f418c370d225e",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {},
+          "glyph_count": 0,
+          "retained_source_glyph_count": 0
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "4acf32c019f7b5bf5f0d7682e42c807f3b4e141ea3c89e563cac109a96a7442e",
+            "page": 5,
+            "styles": {
+              "s0": "body"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "af82fe66a915097eda988f539edf30c98b1fc6d5bda3424d4d88c25888ee0332",
+            "page": 5,
+            "source_snapshot_sha256": "5dff88feaa64af5e6a414a6ce4b1aaddbcc27bb24f70afaa009fc0c6bd332e85",
+            "destination_event_sha256": "4df0f9d627bf6ee04c75324d4ae7b955739a73fc5b487ca03a0837357812fabf",
+            "active_clip_sha256": "32344b0f3ead5b1d6763ea416d1f2f999a80a4fda31a5716a5008c633b33e593",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:body": "/PRF1"
+          },
+          "glyph_count": 140,
+          "retained_source_glyph_count": 0
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "original_font_resources_and_nontext_paint_images_annotations_preserved": true,
+      "font_cid_gid_widths_verified": true,
+      "paragraph_ids": [
+        "reviewed-mixed-training-paragraph",
+        "reviewed-following-training-paragraph"
+      ],
+      "paragraph_boundaries": [
+        {
+          "before": "reviewed-mixed-training-paragraph",
+          "after": "reviewed-following-training-paragraph",
+          "kind": "paragraph_boundary",
+          "provenance": "explicitly_confirmed"
+        }
+      ],
+      "logical": {
+        "reviewed-mixed-training-paragraph": {
+          "length": 10,
+          "style_spans": [
+            {
+              "start": 0,
+              "end": 3,
+              "style_id": "body"
+            },
+            {
+              "start": 3,
+              "end": 6,
+              "style_id": "latin"
+            },
+            {
+              "start": 6,
+              "end": 10,
+              "style_id": "body"
+            }
+          ],
+          "typing_style_id": "body",
+          "hard_breaks": [],
+          "style_registry_sha256": "35255422e9527eb72feb947da9d151d6f9c264c6ef58ed537dee21217d9aced0"
+        },
+        "reviewed-following-training-paragraph": {
+          "length": 140,
+          "style_spans": [
+            {
+              "start": 0,
+              "end": 140,
+              "style_id": "body"
+            }
+          ],
+          "typing_style_id": "body",
+          "hard_breaks": [],
+          "style_registry_sha256": "6cb4c8dce0046579c51c371f0ad931c2941af9cb3957d5fe6d356a60f08626ea"
+        }
+      },
+      "fragment_allocation": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "range": [
+            0,
+            10
+          ],
+          "render_end": 10,
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page-4-body",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 10.693359375,
+            "descent": 2.595703125,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            10,
+            10
+          ],
+          "render_end": 10,
+          "occupancy": null
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            0,
+            140
+          ],
+          "render_end": 140,
+          "occupancy": {
+            "paragraph_id": "reviewed-following-training-paragraph",
+            "region_id": "page-5-body",
+            "baseline": 142,
+            "last_baseline": 185.2,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "physical_breaks": [],
+      "schedule": [
+        "slot-0",
+        "slot-1",
+        "slot-2"
+      ],
+      "dependencies": {
+        "slot-0": [],
+        "slot-1": [],
+        "slot-2": [
+          "slot-1"
+        ]
+      },
+      "operation": "shorten_A_and_pull_B_forward"
+    },
+    {
+      "stage": "v2",
+      "status": "passed",
+      "output_sha256": "0b8ce4ceec8de9e9e5497061f260a4b92f88e69f70c74b1849e676b0c28ca0a6",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "destinations": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "style_binding": {
+            "pdf_sha256": "0b8ce4ceec8de9e9e5497061f260a4b92f88e69f70c74b1849e676b0c28ca0a6",
+            "page": 4,
+            "styles": {
+              "s0": "body",
+              "s1": "latin"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "4acf32c019f7b5bf5f0d7682e42c807f3b4e141ea3c89e563cac109a96a7442e",
+            "page": 4,
+            "source_snapshot_sha256": "d6d0fb7ada97c962f71a534cd9f250cd16b8619186ec8f281f079a7741ab5ee2",
+            "destination_event_sha256": "1b1b2a7174e8906def4c4f40d86aba3651e5cd732c05eecb633dc335e5593075",
+            "active_clip_sha256": "6f78fe95595bfd9f3907550209eba1c70ae51aecc88871d1a0e41ccefc00ecd5",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:body": "/PRF3",
+            "logical:latin": "/PRF4"
+          },
+          "glyph_count": 76,
+          "retained_source_glyph_count": 0
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "0b8ce4ceec8de9e9e5497061f260a4b92f88e69f70c74b1849e676b0c28ca0a6",
+            "page": 5,
+            "styles": {
+              "s0": "body"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "ca7a0b51993d4d1ddffa720dc26032e5b9f47fb707470d557a60b7d444a13feb",
+            "page": 5,
+            "source_snapshot_sha256": "90c71e7bf908ceddab689573e94671d508576b9daa4062536e8967bc80ae029b",
+            "destination_event_sha256": "896bd47c801c67548dd120331b71d59c128ee4953e8d3fcfc6d279fbb8729a78",
+            "active_clip_sha256": "32344b0f3ead5b1d6763ea416d1f2f999a80a4fda31a5716a5008c633b33e593",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:body": "/PRF2"
+          },
+          "glyph_count": 140,
+          "retained_source_glyph_count": 0
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "0b8ce4ceec8de9e9e5497061f260a4b92f88e69f70c74b1849e676b0c28ca0a6",
+            "page": 5,
+            "styles": {
+              "s0": "latin",
+              "s1": "body"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "d32ef831b2274fe095bf3bf115f29d5c955736da3d813de0a7d67870e2fb33f8",
+            "page": 5,
+            "source_snapshot_sha256": "e1cd8117961a23e1aad9548cb0c47799cc1e2ad0688e90cc3f743e0ff59c970e",
+            "destination_event_sha256": "43cf6c4f1e32b7476cc93603edd31f100df68ce9313d8af5c38272d8521fe421",
+            "active_clip_sha256": "493578e18dadae982b1516ff3993b9125927353411114d73290681c48f0a509e",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:latin": "/PRF3",
+            "logical:body": "/PRF4"
+          },
+          "glyph_count": 108,
+          "retained_source_glyph_count": 0
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "original_font_resources_and_nontext_paint_images_annotations_preserved": true,
+      "font_cid_gid_widths_verified": true,
+      "paragraph_ids": [
+        "reviewed-mixed-training-paragraph",
+        "reviewed-following-training-paragraph"
+      ],
+      "paragraph_boundaries": [
+        {
+          "before": "reviewed-mixed-training-paragraph",
+          "after": "reviewed-following-training-paragraph",
+          "kind": "paragraph_boundary",
+          "provenance": "explicitly_confirmed"
+        }
+      ],
+      "logical": {
+        "reviewed-mixed-training-paragraph": {
+          "length": 185,
+          "style_spans": [
+            {
+              "start": 0,
+              "end": 16,
+              "style_id": "body"
+            },
+            {
+              "start": 16,
+              "end": 156,
+              "style_id": "latin"
+            },
+            {
+              "start": 156,
+              "end": 185,
+              "style_id": "body"
+            }
+          ],
+          "typing_style_id": "body",
+          "hard_breaks": [],
+          "style_registry_sha256": "35255422e9527eb72feb947da9d151d6f9c264c6ef58ed537dee21217d9aced0"
+        },
+        "reviewed-following-training-paragraph": {
+          "length": 140,
+          "style_spans": [
+            {
+              "start": 0,
+              "end": 140,
+              "style_id": "body"
+            }
+          ],
+          "typing_style_id": "body",
+          "hard_breaks": [],
+          "style_registry_sha256": "6cb4c8dce0046579c51c371f0ad931c2941af9cb3957d5fe6d356a60f08626ea"
+        }
+      },
+      "fragment_allocation": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "range": [
+            0,
+            77
+          ],
+          "render_end": 76,
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page-4-body",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 10.693359375,
+            "descent": 2.595703125,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            77,
+            185
+          ],
+          "render_end": 185,
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page-5-body",
+            "baseline": 142,
+            "last_baseline": 163.6,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            0,
+            140
+          ],
+          "render_end": 140,
+          "occupancy": {
+            "paragraph_id": "reviewed-following-training-paragraph",
+            "region_id": "page-5-body",
+            "baseline": 190.1,
+            "last_baseline": 233.3,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "physical_breaks": [
+        {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "offset": 77,
+          "before": "slot-0",
+          "after": "slot-1",
+          "kind": "page_break",
+          "provenance": "generated-from-confirmed-shared-flow",
+          "logical_break_inserted": false
+        }
+      ],
+      "schedule": [
+        "slot-0",
+        "slot-2",
+        "slot-1"
+      ],
+      "dependencies": {
+        "slot-0": [],
+        "slot-1": [
+          "slot-2"
+        ],
+        "slot-2": []
+      },
+      "operation": "lengthen_A_and_reallocate_B"
+    },
+    {
+      "stage": "v3",
+      "status": "passed",
+      "output_sha256": "df5b4d01c2778bd35db56b2f0e63a690519f0272ddbd01a03eef92a009f901da",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "destinations": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "style_binding": {
+            "pdf_sha256": "df5b4d01c2778bd35db56b2f0e63a690519f0272ddbd01a03eef92a009f901da",
+            "page": 4,
+            "styles": {
+              "logical:latin": "latin"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "0b8ce4ceec8de9e9e5497061f260a4b92f88e69f70c74b1849e676b0c28ca0a6",
+            "page": 4,
+            "source_snapshot_sha256": "29339160b22c017fabc1bf5fe2cc63c4cc8a211afdf8d467cbcc24a65adf4061",
+            "destination_event_sha256": "0438694fe6d189e3c7cbfc45c0caeb706296d7afd0f5dd94d766843859cd2ded",
+            "active_clip_sha256": "6f78fe95595bfd9f3907550209eba1c70ae51aecc88871d1a0e41ccefc00ecd5",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {},
+          "glyph_count": 0,
+          "retained_source_glyph_count": 0
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "df5b4d01c2778bd35db56b2f0e63a690519f0272ddbd01a03eef92a009f901da",
+            "page": 5,
+            "styles": {
+              "logical:latin": "latin"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "9079dc06b5689101b5999ddf7c8dad7eb647e18f1de2391ebfe2921dedaaa848",
+            "page": 5,
+            "source_snapshot_sha256": "854340398f9f4bde28a83bb0bb24c44ac23dd8b5ff6db5d8ba6b09e5a76f69c9",
+            "destination_event_sha256": "3791203637e10976c1cf363a40d92380d925926411e43504d513f5ab045379ff",
+            "active_clip_sha256": "493578e18dadae982b1516ff3993b9125927353411114d73290681c48f0a509e",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {},
+          "glyph_count": 0,
+          "retained_source_glyph_count": 0
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "df5b4d01c2778bd35db56b2f0e63a690519f0272ddbd01a03eef92a009f901da",
+            "page": 5,
+            "styles": {
+              "s0": "body"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "f23767182c5d7c58818ebdbc406b2412046d20e5f810bd2131b656722f27eb2e",
+            "page": 5,
+            "source_snapshot_sha256": "8b2a977491ac1a0693a5ae6539ffee81ce46cfb3c962b4c3b4205ea3c4d841ed",
+            "destination_event_sha256": "82a3582ac326891449f94e6c59192222a4b1f4933ccaa622837b79498f42160d",
+            "active_clip_sha256": "493578e18dadae982b1516ff3993b9125927353411114d73290681c48f0a509e",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:body": "/PRF5"
+          },
+          "glyph_count": 140,
+          "retained_source_glyph_count": 0
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "original_font_resources_and_nontext_paint_images_annotations_preserved": true,
+      "font_cid_gid_widths_verified": true,
+      "paragraph_ids": [
+        "reviewed-mixed-training-paragraph",
+        "reviewed-following-training-paragraph"
+      ],
+      "paragraph_boundaries": [
+        {
+          "before": "reviewed-mixed-training-paragraph",
+          "after": "reviewed-following-training-paragraph",
+          "kind": "paragraph_boundary",
+          "provenance": "explicitly_confirmed"
+        }
+      ],
+      "logical": {
+        "reviewed-mixed-training-paragraph": {
+          "length": 0,
+          "style_spans": [],
+          "typing_style_id": "latin",
+          "hard_breaks": [],
+          "style_registry_sha256": "35255422e9527eb72feb947da9d151d6f9c264c6ef58ed537dee21217d9aced0"
+        },
+        "reviewed-following-training-paragraph": {
+          "length": 140,
+          "style_spans": [
+            {
+              "start": 0,
+              "end": 140,
+              "style_id": "body"
+            }
+          ],
+          "typing_style_id": "body",
+          "hard_breaks": [],
+          "style_registry_sha256": "6cb4c8dce0046579c51c371f0ad931c2941af9cb3957d5fe6d356a60f08626ea"
+        }
+      },
+      "fragment_allocation": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "range": [
+            0,
+            0
+          ],
+          "render_end": 0,
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page-4-body",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 8.4,
+            "descent": 2.1,
+            "empty": true
+          }
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            0,
+            0
+          ],
+          "render_end": 0,
+          "occupancy": null
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            0,
+            140
+          ],
+          "render_end": 140,
+          "occupancy": {
+            "paragraph_id": "reviewed-following-training-paragraph",
+            "region_id": "page-5-body",
+            "baseline": 142,
+            "last_baseline": 185.2,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "physical_breaks": [],
+      "schedule": [
+        "slot-0",
+        "slot-1",
+        "slot-2"
+      ],
+      "dependencies": {
+        "slot-0": [],
+        "slot-1": [],
+        "slot-2": [
+          "slot-1"
+        ]
+      },
+      "operation": "empty_A_reserves_confirmed_line"
+    },
+    {
+      "stage": "v4",
+      "status": "passed",
+      "output_sha256": "cdea0951de55fd480a5c6e030e18e17723f0770ca3fc1399d79ea1a1fa3d8b20",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": false
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "destinations": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "style_binding": {
+            "pdf_sha256": "cdea0951de55fd480a5c6e030e18e17723f0770ca3fc1399d79ea1a1fa3d8b20",
+            "page": 4,
+            "styles": {
+              "s0": "body",
+              "s1": "latin"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "df5b4d01c2778bd35db56b2f0e63a690519f0272ddbd01a03eef92a009f901da",
+            "page": 4,
+            "source_snapshot_sha256": "271b0d9f375238440f174a33010e469706f880cbe994ae56007f13c7cb907a28",
+            "destination_event_sha256": "4cb0fa1de57593f54c7b43824f31c0d3d383d3e70788afaf141d9d30a099320f",
+            "active_clip_sha256": "6f78fe95595bfd9f3907550209eba1c70ae51aecc88871d1a0e41ccefc00ecd5",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:body": "/PRF5",
+            "logical:latin": "/PRF6"
+          },
+          "glyph_count": 76,
+          "retained_source_glyph_count": 0
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "cdea0951de55fd480a5c6e030e18e17723f0770ca3fc1399d79ea1a1fa3d8b20",
+            "page": 5,
+            "styles": {
+              "s0": "body"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "0bc272f922cbd35fc7ca0c830971f5477c41c9033ef667d5891a841776b512a2",
+            "page": 5,
+            "source_snapshot_sha256": "599f84831232b147ad0745b1e7f08232271898116148b6d994617ee982f5509a",
+            "destination_event_sha256": "60774932fd34d2690cfc6b721c3f8bf403d84771e0b117f768c179d64c39bcc0",
+            "active_clip_sha256": "493578e18dadae982b1516ff3993b9125927353411114d73290681c48f0a509e",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:body": "/PRF6"
+          },
+          "glyph_count": 140,
+          "retained_source_glyph_count": 0
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "cdea0951de55fd480a5c6e030e18e17723f0770ca3fc1399d79ea1a1fa3d8b20",
+            "page": 5,
+            "styles": {
+              "s0": "latin",
+              "s1": "body"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "50d605238dc8cb18f69c7c24362f119653d00b2f42b78f6f32f109fb3faa0f34",
+            "page": 5,
+            "source_snapshot_sha256": "c63c51182e40eb97fc07b944d79bc1da8acbfd5106b4f6f11c713456aa97206c",
+            "destination_event_sha256": "1f7769f64715d5fb7112db29027bf4d89ed0a2badd31f052bb72d77ae2a23d29",
+            "active_clip_sha256": "49cb2b95431bc53ad652e73f442017d3cd1965cc151cf9e74ac1faa4870f3347",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:latin": "/PRF7",
+            "logical:body": "/PRF8"
+          },
+          "glyph_count": 108,
+          "retained_source_glyph_count": 0
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "original_font_resources_and_nontext_paint_images_annotations_preserved": true,
+      "font_cid_gid_widths_verified": true,
+      "paragraph_ids": [
+        "reviewed-mixed-training-paragraph",
+        "reviewed-following-training-paragraph"
+      ],
+      "paragraph_boundaries": [
+        {
+          "before": "reviewed-mixed-training-paragraph",
+          "after": "reviewed-following-training-paragraph",
+          "kind": "paragraph_boundary",
+          "provenance": "explicitly_confirmed"
+        }
+      ],
+      "logical": {
+        "reviewed-mixed-training-paragraph": {
+          "length": 185,
+          "style_spans": [
+            {
+              "start": 0,
+              "end": 16,
+              "style_id": "body"
+            },
+            {
+              "start": 16,
+              "end": 156,
+              "style_id": "latin"
+            },
+            {
+              "start": 156,
+              "end": 185,
+              "style_id": "body"
+            }
+          ],
+          "typing_style_id": "latin",
+          "hard_breaks": [],
+          "style_registry_sha256": "35255422e9527eb72feb947da9d151d6f9c264c6ef58ed537dee21217d9aced0"
+        },
+        "reviewed-following-training-paragraph": {
+          "length": 140,
+          "style_spans": [
+            {
+              "start": 0,
+              "end": 140,
+              "style_id": "body"
+            }
+          ],
+          "typing_style_id": "body",
+          "hard_breaks": [],
+          "style_registry_sha256": "6cb4c8dce0046579c51c371f0ad931c2941af9cb3957d5fe6d356a60f08626ea"
+        }
+      },
+      "fragment_allocation": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "range": [
+            0,
+            77
+          ],
+          "render_end": 76,
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page-4-body",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 10.693359375,
+            "descent": 2.595703125,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            77,
+            185
+          ],
+          "render_end": 185,
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page-5-body",
+            "baseline": 142,
+            "last_baseline": 163.6,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            0,
+            140
+          ],
+          "render_end": 140,
+          "occupancy": {
+            "paragraph_id": "reviewed-following-training-paragraph",
+            "region_id": "page-5-body",
+            "baseline": 190.1,
+            "last_baseline": 233.3,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "physical_breaks": [
+        {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "offset": 77,
+          "before": "slot-0",
+          "after": "slot-1",
+          "kind": "page_break",
+          "provenance": "generated-from-confirmed-shared-flow",
+          "logical_break_inserted": false
+        }
+      ],
+      "schedule": [
+        "slot-0",
+        "slot-2",
+        "slot-1"
+      ],
+      "dependencies": {
+        "slot-0": [],
+        "slot-1": [
+          "slot-2"
+        ],
+        "slot-2": []
+      },
+      "operation": "retype_A_and_edit_B_by_its_own_offset"
+    },
+    {
+      "stage": "v5",
+      "status": "passed",
+      "output_sha256": "d5b411ded521550399c0d088e9aa15dbfc59fd154a51fe43fdc579a7f2a3a4af",
+      "pages": {
+        "4": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": true
+        },
+        "5": {
+          "poppler_outside_changed_pixels": 0,
+          "mupdf_outside_equal": true,
+          "all_pixels_equal": true
+        },
+        "1": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "2": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "3": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "6": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "7": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "8": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "9": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        },
+        "10": {
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true
+        }
+      },
+      "destinations": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "style_binding": {
+            "pdf_sha256": "d5b411ded521550399c0d088e9aa15dbfc59fd154a51fe43fdc579a7f2a3a4af",
+            "page": 4,
+            "styles": {
+              "s0": "body",
+              "s1": "latin"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "cdea0951de55fd480a5c6e030e18e17723f0770ca3fc1399d79ea1a1fa3d8b20",
+            "page": 4,
+            "source_snapshot_sha256": "944be44c68e46197f113c631d76321be950b0b019a333d663b16efadc5e56b79",
+            "destination_event_sha256": "2b10358ba58d937a3ce0f9923b1b2cf14b17c96f023af17ed1b5790e0147070d",
+            "active_clip_sha256": "6f78fe95595bfd9f3907550209eba1c70ae51aecc88871d1a0e41ccefc00ecd5",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:body": "/PRF7",
+            "logical:latin": "/PRF8"
+          },
+          "glyph_count": 76,
+          "retained_source_glyph_count": 0
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "d5b411ded521550399c0d088e9aa15dbfc59fd154a51fe43fdc579a7f2a3a4af",
+            "page": 5,
+            "styles": {
+              "s0": "latin",
+              "s1": "body"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "d7896a0a40512ad638605900500201da1900669c3f798e633d47db5752ee3941",
+            "page": 5,
+            "source_snapshot_sha256": "f8e328739e039325415faf35f96ddead7e1893622334189b21e0037b3cbb4b54",
+            "destination_event_sha256": "13c148d17c290f2cb163e37e67d1f6166f8302d97fdab487101643ad64f459eb",
+            "active_clip_sha256": "49cb2b95431bc53ad652e73f442017d3cd1965cc151cf9e74ac1faa4870f3347",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body",
+              "logical:latin"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:latin": "/PRF9",
+            "logical:body": "/PRF10"
+          },
+          "glyph_count": 108,
+          "retained_source_glyph_count": 0
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "style_binding": {
+            "pdf_sha256": "d5b411ded521550399c0d088e9aa15dbfc59fd154a51fe43fdc579a7f2a3a4af",
+            "page": 5,
+            "styles": {
+              "s0": "body"
+            },
+            "provenance": "generated_font_and_glyph_verified"
+          },
+          "destination_context": {
+            "source_pdf_sha256": "82045df6c3b50c18f549bdd00df02a0c60cea637d8d37002c4796713b44bb86c",
+            "page": 5,
+            "source_snapshot_sha256": "58ba6ee5b5c1fa80aacbeca5200b3112c8bc8afe0a5d7f883c0818355d06c11c",
+            "destination_event_sha256": "7e11b5cf7494bc6cb6090a0b58f1040d308030cc74f8f7982214d80502fd267c",
+            "active_clip_sha256": "d1ea87ea97f7f4647ad0067b316737d564db9b10500cda181a451801bf9d5491",
+            "other_state_sha256": "fda92bbe5792fb45e337d52e5f9ca1985be32cfa1fa328d32e06fe96f06e99b5",
+            "destination_ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "inline_basis": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "render_style_ids": [
+              "logical:body"
+            ],
+            "font_resources": "generated from explicit providers in destination page",
+            "non_inline_state": "retained destination context; no imported source-page context"
+          },
+          "provider_resources": {
+            "logical:body": "/PRF11"
+          },
+          "glyph_count": 140,
+          "retained_source_glyph_count": 0
+        }
+      },
+      "independent_complete_page_unicode": true,
+      "original_font_resources_and_nontext_paint_images_annotations_preserved": true,
+      "font_cid_gid_widths_verified": true,
+      "paragraph_ids": [
+        "reviewed-mixed-training-paragraph",
+        "reviewed-following-training-paragraph"
+      ],
+      "paragraph_boundaries": [
+        {
+          "before": "reviewed-mixed-training-paragraph",
+          "after": "reviewed-following-training-paragraph",
+          "kind": "paragraph_boundary",
+          "provenance": "explicitly_confirmed"
+        }
+      ],
+      "logical": {
+        "reviewed-mixed-training-paragraph": {
+          "length": 185,
+          "style_spans": [
+            {
+              "start": 0,
+              "end": 16,
+              "style_id": "body"
+            },
+            {
+              "start": 16,
+              "end": 156,
+              "style_id": "latin"
+            },
+            {
+              "start": 156,
+              "end": 185,
+              "style_id": "body"
+            }
+          ],
+          "typing_style_id": "latin",
+          "hard_breaks": [],
+          "style_registry_sha256": "35255422e9527eb72feb947da9d151d6f9c264c6ef58ed537dee21217d9aced0"
+        },
+        "reviewed-following-training-paragraph": {
+          "length": 140,
+          "style_spans": [
+            {
+              "start": 0,
+              "end": 140,
+              "style_id": "body"
+            }
+          ],
+          "typing_style_id": "body",
+          "hard_breaks": [],
+          "style_registry_sha256": "6cb4c8dce0046579c51c371f0ad931c2941af9cb3957d5fe6d356a60f08626ea"
+        }
+      },
+      "fragment_allocation": {
+        "slot-0": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-4-body",
+          "range": [
+            0,
+            77
+          ],
+          "render_end": 76,
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page-4-body",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 10.693359375,
+            "descent": 2.595703125,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            77,
+            185
+          ],
+          "render_end": 185,
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page-5-body",
+            "baseline": 142,
+            "last_baseline": 163.6,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-2": {
+          "paragraph_id": "reviewed-following-training-paragraph",
+          "region_id": "page-5-body",
+          "range": [
+            0,
+            140
+          ],
+          "render_end": 140,
+          "occupancy": {
+            "paragraph_id": "reviewed-following-training-paragraph",
+            "region_id": "page-5-body",
+            "baseline": 190.1,
+            "last_baseline": 233.3,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "physical_breaks": [
+        {
+          "paragraph_id": "reviewed-mixed-training-paragraph",
+          "offset": 77,
+          "before": "slot-0",
+          "after": "slot-1",
+          "kind": "page_break",
+          "provenance": "generated-from-confirmed-shared-flow",
+          "logical_break_inserted": false
+        }
+      ],
+      "schedule": [
+        "slot-0",
+        "slot-1",
+        "slot-2"
+      ],
+      "dependencies": {
+        "slot-0": [],
+        "slot-1": [],
+        "slot-2": []
+      },
+      "operation": "shared_flow_noop"
+    }
+  ],
+  "negative_controls": [
+    {
+      "case": "unconfirmed_spacing",
+      "status": "safely_refused",
+      "reason": "shared flow requires confirmation: shared capacity, identities or confirmed contract changed",
+      "output_created": false
+    },
+    {
+      "case": "merged_paragraph_identity",
+      "status": "safely_refused",
+      "reason": "shared flow requires confirmation: each paragraph retains independent Unicode, hard breaks and style semantics",
+      "output_created": false
+    },
+    {
+      "case": "changed_provider",
+      "status": "safely_refused",
+      "reason": "shared flow requires confirmation: shared capacity, identities or confirmed contract changed",
+      "output_created": false
+    },
+    {
+      "case": "shared_capacity_exhausted",
+      "status": "safely_refused",
+      "reason": "paragraphs exceed all explicitly confirmed shared regions",
+      "output_created": false
+    }
+  ],
+  "paragraph_policies": {
+    "reviewed-mixed-training-paragraph": {
+      "min_line_height": 21.6,
+      "first_line_indent": 10.5,
+      "keep_together": false,
+      "break_before": "auto",
+      "break_after": "auto",
+      "empty": {
+        "kind": "reserve-line",
+        "ascent": 8.4,
+        "descent": 2.1
+      }
+    },
+    "reviewed-following-training-paragraph": {
+      "min_line_height": 21.6,
+      "first_line_indent": 10.5,
+      "keep_together": false,
+      "break_before": "auto",
+      "break_after": "auto",
+      "empty": {
+        "kind": "reserve-line",
+        "ascent": 8.4,
+        "descent": 2.1
+      }
+    }
+  },
+  "follows": [
+    {
+      "before": "reviewed-mixed-training-paragraph",
+      "after": "reviewed-following-training-paragraph",
+      "minimum_baseline_gap": 26.5,
+      "region_start": "reset-to-region-baseline",
+      "provenance": "explicitly_confirmed"
+    }
+  ],
+  "regions": {
+    "page-4-body": {
+      "page": 4,
+      "bounds": [
+        55,
+        758,
+        540,
+        785
+      ],
+      "x": 56.8,
+      "width": 482,
+      "first_baseline": 769.5,
+      "provenance": "explicitly_confirmed"
+    },
+    "page-5-body": {
+      "page": 5,
+      "bounds": [
+        55,
+        130,
+        540,
+        260
+      ],
+      "x": 56.8,
+      "width": 482,
+      "first_baseline": 142,
+      "provenance": "explicitly_confirmed"
+    }
+  },
+  "page_policy": {
+    "1": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "2": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "3": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "4": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": [
+        {
+          "role": "fixed",
+          "bounds": [
+            398,
+            58,
+            540,
+            111
+          ],
+          "provenance": "explicitly_confirmed"
+        }
+      ]
+    },
+    "5": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": [
+        {
+          "role": "fixed",
+          "bounds": [
+            398,
+            58,
+            540,
+            111
+          ],
+          "provenance": "explicitly_confirmed"
+        }
+      ]
+    },
+    "6": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "7": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "8": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "9": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    },
+    "10": {
+      "unselected_elements": "fixed-to-page",
+      "header_inference": "unknown",
+      "protected_regions": []
+    }
+  },
+  "scope": "two explicitly reviewed paragraphs sharing existing page-4/page-5 body regions; third paragraph remains fixed",
+  "environment": {
+    "pymupdf": "1.27.2.3",
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "anchors.py": "31bdbd0c9784daac08c02621aa8587a1b1533ee3ee406a129beb405034385a80",
+      "attributed.py": "04c468ca6257c113bbab9f9318be45d14d13ab09c17b0d6f14aef416b7123d7d",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+      "composition.py": "6f8acbc0dd027c7792e554f96b6757e4722b3dfa83000d49a19ae17696ea95b0",
+      "content_stream.py": "90421c3a38767673dda6519c940f9f86ba1eb358a6915ae9a8d1a19cfc87e169",
+      "destination_style.py": "b57ba209e1efc6204a1035d54638f93914e602177024f88ba1a6debd204f5b22",
+      "document_flow.py": "ffee67b09f1ca4937e201a04a418294e5d76f26c7d63c5eeb594a48a1a2f454c",
+      "editable.py": "529ad5fedcb9e36cec84d17b7073faa3b38c9e6fbf4b37cbd552f2dd2a23149b",
+      "elements.py": "4c12fe68a03c136aadfd236a739d50860a91368a291fe894ebb0588f7902c125",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "flow_transaction.py": "3f938e5d6c8057c8d316dd13aec62c2a2f49e278efb51ca3a85f16295afcbaf6",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "logical_element.py": "4a1b52cc6ad987d0f10d48d26db54df6e4f09490260904d2d4c71f23bae94b8a",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+      "paint_resize.py": "fe5a66fd6c002ca66e9e81876eecaf891d29675317bd78bc35d72a27c92e3d11",
+      "paragraph.py": "1d737cb2821b4fd71ddc3b91669f13e60be8dd57e0f42394800746542ee65d2f",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "4dd0d59978e85ec74c395646906f3da74e64e88ccaf3a86f8bd490bed5532b53",
+      "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+      "shared_flow.py": "15d517bc3e3caa5556e3cbb2550f95692cd0963c18bb2846a832515a71cd972e",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e",
+      "story_flow.py": "fc8bbf5966ce3a69d0962434575f52ce96918867d511f67bf90e1db8a2e19ebf",
+      "story_styles.py": "8b10c097d818231c296ce8f2d5003d919f0c4e298d78ead2967de8f1d4a7c83c",
+      "variable_container.py": "db34e39860d13da67b1954426f8ed3d532895a05d0c43709fa977f2da614fae9"
+    },
+    "runner_sha256": "c14e625ea6ef00f42c9dc1c374c31a9fa99471468eaa3e55a7cc6b9608980b50",
+    "evaluation_dependencies_sha256": {
+      "evaluations/story_flow/evaluate.py": "4fc0d79e9a8de23ec3de916fdb6c32831669969894ce66bcf2899a842a5274f9",
+      "evaluations/story_styles/evaluate.py": "51f5d1a048b46536286abfa6e5216e9958d9963bd315aac08616e32de2ee884c",
+      "evaluations/elements/evaluate.py": "d6b0022a975c0082b7de5ffa82220ff71e604225267902287e2215f39f908f74",
+      "evaluations/flow_transaction/evaluate.py": "28f660161b2b478740762848bdefefbe1bd49bbfc03bfec631e128c7e49fbf39",
+      "evaluations/attributed/evaluate.py": "6023d19e5b0c57d231a0d8f54d3ea931a52364b91c34cd84150e0269e77ccbb1",
+      "evaluations/backend/followup.py": "2a70ddd88402083b64af75dd749dc144a3eb8c671b9bacad74d3642b41e2267d",
+      "evaluations/realpdf/evaluate.py": "7f4754523b1849b4f744ba9a11841a9be1c6bc2d2fdcdee3c7e4706beb908a18"
+    }
+  },
+  "paragraph_style_evidence": {
+    "reviewed-mixed-training-paragraph": {
+      "body": {
+        "attributes": {
+          "font_size": {
+            "value": 10.5,
+            "provenance": "observed_source",
+            "witnesses": [
+              "A:s0",
+              "A:s1",
+              "B:s0",
+              "B:s1"
+            ]
+          },
+          "horizontal_scale": {
+            "value": 1.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "A:s0",
+              "A:s1",
+              "B:s0",
+              "B:s1"
+            ]
+          },
+          "tracking": {
+            "value": 0.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "A:s0",
+              "A:s1",
+              "B:s0",
+              "B:s1"
+            ]
+          },
+          "word_spacing": {
+            "value": 0.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "A:s0",
+              "A:s1",
+              "B:s0",
+              "B:s1"
+            ]
+          },
+          "baseline_shift": {
+            "value": 0.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "A:s0",
+              "A:s1",
+              "B:s0",
+              "B:s1"
+            ]
+          },
+          "fill": {
+            "value": [
+              "rg",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "provenance": "observed_source",
+            "witnesses": [
+              "A:s0",
+              "A:s1",
+              "B:s0",
+              "B:s1"
+            ]
+          },
+          "observed_color": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "provenance": "observed_source",
+            "witnesses": [
+              "A:s0",
+              "A:s1",
+              "B:s0",
+              "B:s1"
+            ]
+          },
+          "font_name": {
+            "value": "MS-PMincho",
+            "provenance": "observed_source",
+            "witnesses": [
+              "A:s0",
+              "A:s1",
+              "B:s0",
+              "B:s1"
+            ]
+          }
+        },
+        "traits": {
+          "weight": "unknown",
+          "italic": "unknown",
+          "script": "unknown",
+          "language": "unknown"
+        },
+        "identity_provenance": "caller_confirmed_source_assignments",
+        "provider_relation": "confirmed_reflow_provider",
+        "provider": {
+          "filename": "msmincho.ttc",
+          "sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+          "font_index": 1
+        },
+        "source_witnesses": [
+          {
+            "id": "A:s0",
+            "page": 4,
+            "pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+            "font_name": "MS-PMincho",
+            "font_resource": "/F1",
+            "font_program_sha256": "8e494f18aeceaf0433fe6bc4627fe545efe44dc006c7c044bee6411486651ada",
+            "snapshot_sha256": "cf1357a0fcdd58be74843a0c4f4aca4c0c2db60dea79047dd5a33ed71737987a",
+            "paint_context_sha256": "d89f2c71d0fa95882324cc6e7af45ce408bc815b8c22b3459409240d658a5b9e"
+          },
+          {
+            "id": "A:s1",
+            "page": 4,
+            "pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+            "font_name": "MS-PMincho",
+            "font_resource": "/F5",
+            "font_program_sha256": "e4be644343dc693518aeeceeb5ead4ddacf55eedfa2cc3b97a5590eb74b3e5bc",
+            "snapshot_sha256": "cf1357a0fcdd58be74843a0c4f4aca4c0c2db60dea79047dd5a33ed71737987a",
+            "paint_context_sha256": "09cecb9035ccbc718eb1194842a144e089fe11a8b9e7ab6ee7042793b73f5d3f"
+          },
+          {
+            "id": "B:s0",
+            "page": 5,
+            "pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+            "font_name": "MS-PMincho",
+            "font_resource": "/F1",
+            "font_program_sha256": "8e494f18aeceaf0433fe6bc4627fe545efe44dc006c7c044bee6411486651ada",
+            "snapshot_sha256": "e4d0aafe2e0bf85b1ecd131e83f32d0db2b66449555c91832e510f03e906b70a",
+            "paint_context_sha256": "00b542b196210bbbd629912f96fc723589731a21b47036dca7045850cded30a1"
+          },
+          {
+            "id": "B:s1",
+            "page": 5,
+            "pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+            "font_name": "MS-PMincho",
+            "font_resource": "/F5",
+            "font_program_sha256": "e4be644343dc693518aeeceeb5ead4ddacf55eedfa2cc3b97a5590eb74b3e5bc",
+            "snapshot_sha256": "e4d0aafe2e0bf85b1ecd131e83f32d0db2b66449555c91832e510f03e906b70a",
+            "paint_context_sha256": "f7b80efaf77e3b55e7ac59ec3b8e15299362a6e8b881359e3be68da2ed438d12"
+          }
+        ]
+      },
+      "latin": {
+        "attributes": {
+          "font_size": {
+            "value": 12.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "B:s2"
+            ]
+          },
+          "horizontal_scale": {
+            "value": 1.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "B:s2"
+            ]
+          },
+          "tracking": {
+            "value": 0.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "B:s2"
+            ]
+          },
+          "word_spacing": {
+            "value": 0.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "B:s2"
+            ]
+          },
+          "baseline_shift": {
+            "value": 0.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "B:s2"
+            ]
+          },
+          "fill": {
+            "value": [
+              "rg",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "provenance": "observed_source",
+            "witnesses": [
+              "B:s2"
+            ]
+          },
+          "observed_color": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "provenance": "observed_source",
+            "witnesses": [
+              "B:s2"
+            ]
+          },
+          "font_name": {
+            "value": "TimesNewRomanPSMT",
+            "provenance": "observed_source",
+            "witnesses": [
+              "B:s2"
+            ]
+          }
+        },
+        "traits": {
+          "weight": "unknown",
+          "italic": "unknown",
+          "script": "unknown",
+          "language": "unknown"
+        },
+        "identity_provenance": "caller_confirmed_source_assignments",
+        "provider_relation": "confirmed_reflow_provider",
+        "provider": {
+          "filename": "times.ttf",
+          "sha256": "931c5de5c70401d9324d5014c123802b4fb753000360ceb2f56c589403cd58c5",
+          "font_index": 0
+        },
+        "source_witnesses": [
+          {
+            "id": "B:s2",
+            "page": 5,
+            "pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+            "font_name": "TimesNewRomanPSMT",
+            "font_resource": "/F4",
+            "font_program_sha256": "7f63a7918860fa073a279468cca45bca34ea037dd3062b21f96f77e7fa28a68c",
+            "snapshot_sha256": "e4d0aafe2e0bf85b1ecd131e83f32d0db2b66449555c91832e510f03e906b70a",
+            "paint_context_sha256": "49456b13946ffdd2b31ece05c503d30a01367a276a3e351370c92545d4048c78"
+          }
+        ]
+      }
+    },
+    "reviewed-following-training-paragraph": {
+      "body": {
+        "attributes": {
+          "font_size": {
+            "value": 10.5,
+            "provenance": "observed_source",
+            "witnesses": [
+              "C:s0",
+              "C:s1"
+            ]
+          },
+          "horizontal_scale": {
+            "value": 1.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "C:s0",
+              "C:s1"
+            ]
+          },
+          "tracking": {
+            "value": 0.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "C:s0",
+              "C:s1"
+            ]
+          },
+          "word_spacing": {
+            "value": 0.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "C:s0",
+              "C:s1"
+            ]
+          },
+          "baseline_shift": {
+            "value": 0.0,
+            "provenance": "observed_source",
+            "witnesses": [
+              "C:s0",
+              "C:s1"
+            ]
+          },
+          "fill": {
+            "value": [
+              "rg",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "provenance": "observed_source",
+            "witnesses": [
+              "C:s0",
+              "C:s1"
+            ]
+          },
+          "observed_color": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "provenance": "observed_source",
+            "witnesses": [
+              "C:s0",
+              "C:s1"
+            ]
+          },
+          "font_name": {
+            "value": "MS-PMincho",
+            "provenance": "observed_source",
+            "witnesses": [
+              "C:s0",
+              "C:s1"
+            ]
+          }
+        },
+        "traits": {
+          "weight": "unknown",
+          "italic": "unknown",
+          "script": "unknown",
+          "language": "unknown"
+        },
+        "identity_provenance": "caller_confirmed_source_assignments",
+        "provider_relation": "confirmed_reflow_provider",
+        "provider": {
+          "filename": "msmincho.ttc",
+          "sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+          "font_index": 1
+        },
+        "source_witnesses": [
+          {
+            "id": "C:s0",
+            "page": 5,
+            "pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+            "font_name": "MS-PMincho",
+            "font_resource": "/F1",
+            "font_program_sha256": "8e494f18aeceaf0433fe6bc4627fe545efe44dc006c7c044bee6411486651ada",
+            "snapshot_sha256": "269b54a73ad1045e7d39e895cfaf9dc5cc14bb8dfb41196dd22ca72590a95e3d",
+            "paint_context_sha256": "fb764333eab856bd51ef7343ad5ad552ed47021debfc0bf9929e220bd5f5c1ed"
+          },
+          {
+            "id": "C:s1",
+            "page": 5,
+            "pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+            "font_name": "MS-PMincho",
+            "font_resource": "/F5",
+            "font_program_sha256": "e4be644343dc693518aeeceeb5ead4ddacf55eedfa2cc3b97a5590eb74b3e5bc",
+            "snapshot_sha256": "269b54a73ad1045e7d39e895cfaf9dc5cc14bb8dfb41196dd22ca72590a95e3d",
+            "paint_context_sha256": "c994d93783aca536edf59a592651a6f0c5711dd5702ee8c3d6baf3ffce7e5695"
+          }
+        ]
+      }
+    }
+  },
+  "evaluation_date": "2026-09-14",
+  "counts": {
+    "external_sources": 1,
+    "paragraphs": 2,
+    "existing_source_slots": 3,
+    "total_pages": 10,
+    "edited_pages": 2,
+    "source_replay_gates_reused": 2,
+    "source_replay_gates_new": 1,
+    "saved_stages": 5,
+    "safe_negative_controls": 4
+  },
+  "classification": "independent_paragraphs_share_confirmed_capacity_and_remain_reeditable",
+  "regression": {
+    "passed": 21,
+    "skipped": 0,
+    "failed": 0,
+    "seconds": 49.085,
+    "scope": "document_flow and empty clip regressions after common fix; full suite deferred at user-requested checkpoint",
+    "earlier_related_tests": {
+      "resolved_unique": 87,
+      "initial_passed": 86,
+      "initial_failed": 1,
+      "corrected_passed": 3,
+      "reason": "test save helper recursion corrected; lifecycle and strengthened break-policy cases passed"
+    },
+    "full_suite_pending": true,
+    "junit_sha256": "13c0fbbe04879a221e68a10cb4f99e403bf5041e60851ca2f530f1ecef59d727",
+    "new_test_sha256": {
+      "test_shared_flow.py": "f3c4418fb65b0945486f2a023bf8efcd8ec9276e3f4fff29b3a45ae8efe19a38",
+      "test_empty_clip_rebind.py": "532f536fc8ec09f9bcb28451991446375e8129b293d3e429fadfcdff5ff22d64"
+    },
+    "commands": [
+      "python -m pytest tests/test_document_flow.py tests/test_empty_clip_rebind.py -q --tb=short --junitxml=tmp/shared-flow-common.xml"
+    ]
+  },
+  "exploratory_findings": [
+    "initial clip fixture remained inside its clip and legitimately passed; moved the clip boundary to create a real crossing without changing the guard",
+    "test-helper recursive call corrected before final full-suite regression",
+    "initial real-PDF v1 succeeded but v2 safely refused: empty-slot clip locator page xref changed from -59 to -71 on full save while rule/path/CTM stayed identical; common rebinding now maps surviving operator bytes and checks full clip state; final editing sequence rerun under frozen corrected engine"
+  ],
+  "execution_provenance": {
+    "engine_frozen_during_external_run": true,
+    "external_run_resumed": false,
+    "external_run": "verified",
+    "prior_failed_run": "final; kept as exploratory evidence, no published v2 PDF or sidecar",
+    "previous_source_evidence": "ab781fa source selection/operator program/replay artifact and unchanged replay-related modules"
+  },
+  "font_policy": {
+    "original_resources": "preserved",
+    "all_selected_paragraphs": "regenerated with their own explicitly confirmed providers",
+    "retained_source_codes": 0,
+    "original_font_program_equivalence_claimed": false
+  },
+  "unicode_comparison": "complete target page extraction with whitespace normalization; exact per-paragraph authored Unicode and spans independently checked in the model",
+  "visual_review": {
+    "stages_and_pages": [
+      {
+        "stage": "v1",
+        "pages": [
+          4,
+          5
+        ],
+        "renderer": "Poppler 144dpi"
+      },
+      {
+        "stage": "v2",
+        "pages": [
+          5
+        ],
+        "renderer": "Poppler 144dpi"
+      },
+      {
+        "stage": "v3",
+        "pages": [
+          4
+        ],
+        "renderer": "Poppler 144dpi"
+      },
+      {
+        "stage": "v4",
+        "pages": [
+          5
+        ],
+        "renderer": "Poppler 144dpi"
+      }
+    ],
+    "findings": [
+      "shortening pulls B forward, growth moves B down after mixed A continuation, empty A removes page-4 text, retyping preserves mixed styles and B-local replacement without overlaps in reviewed pages",
+      "the next unselected paragraph and all other page content remain fixed; the remaining gap at that boundary is outside this flow membership"
+    ]
+  },
+  "limitations": [
+    "one reviewed external document, two explicitly confirmed paragraphs and three existing source slots",
+    "third paragraph and all unselected text/paint/image/annotation remain fixed; no automatic membership inference",
+    "new paragraph destination slots or pages are not created; missing confirmed destinations refuse",
+    "empty paragraphs require explicit reserve-line metrics; zero-height and spacing-only are unsupported",
+    "semantic decoration ranges, nonzero tracking/word spacing/rise and other prior destination-style restrictions remain",
+    "occupancy dependency cycles conservatively refuse; this is not a proof that every possible mutation order fails",
+    "font provider reflow no-op is different from the original PDF operator replay",
+    "publication rolls back on exceptions but is not a two-file OS-crash-atomic transaction",
+    "long-document latency and performance are not certified"
+  ],
+  "next_structural_barrier": "confirmed continuation capacity and paragraph-owned destination contexts beyond existing source slots; current missing-slot and capacity controls refuse, so creating new slots/pages needs its own provenance and paint contract"
+}

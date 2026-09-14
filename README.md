@@ -245,6 +245,27 @@ edit_story("source.pdf", story, "mixed.pdf", "mixed.story.json", [{
 
 書式境界をまたぐ置換では、適用するstyleまたは書式付きrunを明示します。全削除後も確認済みのtyping styleと他のstyle定義を保持します。[論理書式と配置先binding](docs/attributed-story-flow.md)に入力形式と契約を記録しています。
 
+複数の段落で同じ領域容量を共有する場合は、段落ごとのstoryを`confirm_shared_flow`へ渡します。段落IDとUnicode offsetを別々に保ち、確認した段落間隔とbreak policyから全段落の最終配置を計画します。
+
+```python
+from pdfeditor.shared_flow import confirm_shared_flow, edit_shared_flow, open_shared_flow
+
+flow = confirm_shared_flow(
+    "source.pdf", reviewed_paragraph_stories,
+    flow_id="body", paragraph_order=["paragraph-A", "paragraph-B"],
+    regions=reviewed_shared_regions, region_order=["page-1-body", "page-2-body"],
+    slot_regions=reviewed_fragment_regions,
+    paragraph_policies=confirmed_paragraph_policies,
+    follows=confirmed_paragraph_spacing, protected_regions=reviewed_fixed_page_regions,
+)
+edit_shared_flow("source.pdf", flow, "shared.pdf", "shared.flow.json", {
+    "paragraph-A": {"edits": [{"start": a_start, "end": a_end, "runs": replacement_runs}]},
+})
+restored = open_shared_flow("shared.pdf", "shared.flow.json")
+```
+
+短文化で後続段落が前へ詰まり、長文化で確認済みの次領域へ移ります。空段落の占有も明示した方針に従います。移動先には当該段落の検証済みsource slotが必要で、新しいslotやページは作成しません。[独立段落の共有flow](docs/shared-paragraph-flow.md)に入力契約と評価範囲を記録しています。
+
 ## 忠実性と幅の契約
 
 `observed_content_width`、`inferred_available_width`、`explicitly_supplied_width`を分離しています。推定できない幅はunknownです。`compose-selected`には既知の利用可能幅が必要で、観測文字幅を暗黙の編集幅にしません。
@@ -274,6 +295,7 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 - `variable_container.py` / `paint_resize.py`: コンテナ所有・可動辺・最大領域・下辺anchorと、直線帯域を証明したfill pathの伸縮
 - `story_flow.py`: 一つの論理文章、明示した継続領域列、全体Unicode範囲と物理fragmentの対応、跨領域の再編集
 - `story_styles.py` / `destination_style.py`: logical style registry・書式範囲の投影、配置先contextへのinline書式binding、style別font provider
+- `shared_flow.py`: paragraphごとのUnicode・書式・境界を保つ共有領域の最終配置、確認済みspacing/break policy、source slotごとの検証付き書込
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot

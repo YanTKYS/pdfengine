@@ -128,3 +128,5 @@ semantic decoration rangeの思想は維持するが、storyとの接続は今�
 今回の境界を越えた後には、logical decoration rangeから複数fragmentのphysical paintを再構築する問題と、複数paragraphが領域容量を共有する問題が残る。新規pageを生成してもこれらの意味関係は自動的には得られない。
 
 実PDFの初回編集と再入力後の最終出力では、別書式の部分も同じ段落へ組み込まれ、前回の段落内部の空きはなくなった。一方、後続段落は固定のため、対象段落の行数が減ると段落間の空きが増える。この原本で次に具体化した障壁は、paragraph identityと境界を保ちながら複数paragraphが同じflow領域の容量を共有し、確認済みspacing/break policyで配置することである。複数文章を一本のUnicode列へ単純連結する方式にはしない。
+
+この障壁への次段階の設計・検証は[独立した段落による共有flow](shared-paragraph-flow.md)に分離した。本資料の実測は、当時の一段落の評価範囲として保持する。

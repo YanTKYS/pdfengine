@@ -18,7 +18,7 @@ import pymupdf
 from .attributed import digest, inspect_paragraph
 from .backend import PdfError
 from .composition import _observations
-from .content_stream import ContentPage, multiply
+from .content_stream import ContentPage, multiply, operators
 from .editable import _seal, edit_document, open_editable
 from .elements import _close, _confirmed, _local_translation, _paint_value, inspect_element, move_element
 from .logical_element import paragraph_from_snapshot, slot_binding
@@ -202,6 +202,38 @@ def _shift_paint(paint, dy):
     return value
 
 
+def _rebind_clip_locations(expected, before, after, byte_edits):
+    """Map page-program clip witnesses, retaining geometry and scope checks.
+
+    Clip ``at`` records a virtual page xref and an operator ordinal, neither
+    of which is stable after a save or earlier text replacement. Map through
+    byte provenance to the same surviving path terminator; never discard the
+    locator or equate unrelated operators merely because their paint matches.
+    The caller still compares the complete ordered clip paths, CTMs and rules.
+    """
+    if not expected['state']['clip']:return
+    old_key,new_key=-before.page.xref,-after.page.xref
+    old_data,new_data=before.streams[old_key],after.streams[new_key]
+    old_ops,new_ops=list(operators(old_data)),list(operators(new_data))
+    new_starts={op.start:(i,op) for i,op in enumerate(new_ops)}
+    for clip in expected['state']['clip']:
+        at=clip.get('at')
+        if (clip.get('rule') not in ('W','W*') or not isinstance(at,list) or len(at)!=2
+                or at[0]!=old_key or type(at[1]) is not int or not 0<=at[1]<len(old_ops)):
+            raise PdfError('empty insertion clip source location cannot be rebound')
+        old_op=old_ops[at[1]]
+        if old_op.name not in ('n','S','s','f','F','f*','B','B*','b','b*'):
+            raise PdfError('empty insertion clip witness is not a path terminator')
+        # Even a replacement that happens to reproduce this operator is not
+        # continuity: the source clip terminator must survive byte-for-byte.
+        if any(e['start']<old_op.end and e['end']>old_op.start for e in byte_edits):
+            raise PdfError('another mutation consumed the empty insertion clip witness')
+        match=new_starts.get(_map_offset(old_op.start,byte_edits))
+        if match is None or old_data[old_op.start:old_op.end]!=new_data[match[1].start:match[1].end]:
+            raise PdfError('empty insertion clip operator continuity differs')
+        clip['at']=[new_key,match[0]]
+
+
 def _rebind(source, output, entry, byte_edits, *, dy=0, moving_paths=(), paint_dy=0, paint_replacements=None):
     """Carry meaning using exact glyph witnesses and known byte/paint mutations."""
     result=deepcopy(entry);state=result['binding'];old=entry['binding'];p=old['paragraph']
@@ -244,6 +276,7 @@ def _rebind(source, output, entry, byte_edits, *, dy=0, moving_paths=(), paint_d
             offset=_map_offset(p['insertion_binding']['event']['byte_range'][0],byte_edits)
             binding,_=slot_binding(b,offset)
             expected=deepcopy(p['insertion_binding']['event']);actual=json.loads(json.dumps(binding['event']))
+            _rebind_clip_locations(expected,a,b,byte_edits)
             for event in (expected,actual):
                 for key in ('id','stream_xref','byte_range'):event.pop(key)
                 event['state'].pop('font_xref')
