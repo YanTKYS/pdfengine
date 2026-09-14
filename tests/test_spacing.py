@@ -17,13 +17,20 @@ def justified_tj(text, extra):
     return ('['+f' {adjustment:.4f} '.join(parts)+'] TJ').encode()
 
 
+def positioned(text, x, y, right):
+    """Place every glyph with its own Td so the line spans exactly ``x``..``right``."""
+    step=(right-x-CHAR)/(len(text)-1)
+    return b'BT /Regular 12 Tf '+b' '.join(f'1 0 0 1 {x+i*step:.4f} {y} Tm ({c}) Tj'.encode() for i,c in enumerate(text))+b' ET '
+
+
 CASES={
     'left_tracking': (b'BT /Regular 12 Tf 1 Tc 20 200 Td (ONE TWO) Tj 0 -16 Td (THREE) Tj ET', 1.0, 'left'),
     'justify_tw': (b'BT /Regular 12 Tf 20 200 Td 20.4 Tw (ONE TWO SIX) Tj 0 -16 Td 6 Tw (FOUR FIVE SEVEN) Tj 0 -16 Td 0 Tw (END) Tj ET', 0.0, 'justify'),
     'justify_tj': (b'BT /Regular 12 Tf 20 200 Td '+justified_tj('ONE TWO',120-7*CHAR)+b' 0 -16 Td '+justified_tj('THREE FOUR',120-10*CHAR)+b' 0 -16 Td (END) Tj ET', 0.0, 'justify'),
     'tracking_and_justify': (b'BT /Regular 12 Tf .5 Tc 20 200 Td 17.9 Tw (ONE TWO SIX) Tj 0 -16 Td 2.5 Tw (FOUR FIVE SEVEN) Tj 0 -16 Td 0 Tw (END) Tj ET', 0.5, 'justify'),
     'coincidental_full_lines': (b'BT /Regular 12 Tf 20 200 Td (ONE TWOS) Tj 0 -16 Td (SIX SEVE) Tj 0 -16 Td (END) Tj ET', 0.0, 'unknown'),
-    'repositioned_words': (b'BT /Regular 12 Tf 20 200 Td (ONE) Tj 39.2 0 Td (TWO) Tj 39.2 0 Td (SIX) Tj -78.4 -16 Td (FOUR) Tj 32 0 Td (FIVE) Tj 32 0 Td (SEVEN) Tj -64 -16 Td (END) Tj ET', 0.0, 'justify'),
+    'repositioned_words': (b'BT /Regular 12 Tf 20 200 Td (ONE) Tj 39.2 0 Td (TWO) Tj 39.2 0 Td (SIX) Tj -78.4 -16 Td (FOUR) Tj 32 0 Td (FIVE) Tj 32 0 Td (SEVEN) Tj -64 -16 Td (END) Tj ET', 0.0, 'unknown'),
+    'per_glyph_positioning': (positioned('ONETWO',20,200,140)+positioned('SIXSEVEN',20,184,140)+b'BT /Regular 12 Tf 20 168 Td (END) Tj ET', 0.0, 'unknown'),
 }
 
 
@@ -62,9 +69,14 @@ def test_spacing_evidence_distinguishes_tracking_metrics_and_line_adjustments(tm
         assert all(abs(line['excess_tracking']-0.5*(line['glyph_count']-1))<1e-9 for line in lines)
     if name=='coincidental_full_lines':
         assert 'coincidental' in candidate['reason']
-    if name=='repositioned_words':
-        # Words placed by Td carry no space glyph: the gap is a repositioning,
-        # still uniform per line. Wider gaps than 2.2 em would be split into
-        # separate observation lines by the current line inference.
-        assert all(gap['reposition']>0 for line in lines[:-1] for gap in line['gaps'] if gap['space'])
-        assert all(line['distribution']=='uniform_word' for line in lines[:-1])
+    if name in ('repositioned_words','per_glyph_positioning'):
+        # Even gaps realized only by Td/Tm repositioning, without a painted
+        # whitespace glyph, prove neither a word gap nor justification. Both
+        # lines reach the same edge; the model still refuses to call it justify.
+        assert all(line['distribution']=='uniform_reposition' for line in lines[:-1])
+        assert all(not gap['whitespace'] for line in lines for gap in line['gaps'])
+        assert lines[0]['right']==pytest.approx(lines[1]['right'],abs=.15)
+        assert 'repositioning' in candidate['reason'] and candidate['unproven_lines']==[0,1]
+    if name=='justify_tw':
+        assert all(gap['whitespace']==(gap['tw']>0) for line in lines for gap in line['gaps'])
+    assert evidence['tracking']['requires_confirmation']==bool(tracking)

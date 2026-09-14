@@ -23,21 +23,32 @@ measured = nominal + tc + tw + tj + reposition
 | `tj` | 次の glyph の直前に書かれた `TJ` 数値 | `observed_source` |
 | `reposition` | 残差。operator 間の `Td` / `Tm` による再配置 | `observed_source` |
 
-PoC の6ケース（左揃え+`Tc`、両端揃え+`Tw`、両端揃え+`TJ`、`Tc`+`Tw` 混在、偶然の等幅行、`Td` で単語配置）で、全 gap がこの等式を満たすことを確認した。
+PoC の7ケース（左揃え+`Tc`、両端揃え+`Tw`、両端揃え+`TJ`、`Tc`+`Tw` 混在、偶然の等幅行、`Td` で単語配置、`Tm` で glyph 個別配置）で、全 gap がこの等式を満たすことを確認した。
 
 ## 分類
 
 **Glyph metrics** は `nominal` である。保持 glyph の再組版はこれを基準にし、再組版時に元の gap を持ち越さない。ただしカーニングとしての `TJ` 調整（glyph 対に固有で行に依存しない負または正の小さな値）は現状では両端揃えの `TJ` 配分と区別できない。confirmed alignment が左揃えの場合のみ、従来どおり origin 差を保持する（後述）。
 
-**Inline style** は font、size、横スケール、rise、color と、`Tc` が全行（最終行を含む）で同一である場合のその値だけとする。両端揃えは最終行を伸ばさないため、最終行にも同じ `Tc` があれば行調整ではない。これを `inferred_consistent_tracking` とし、確認を要する候補として扱う。`Tw` は inline style に含めない。行ごとに異なる `Tc`、行内で変わる `Tc` は `unknown` とし、tracking を推測しない。
+**Inline style** は font、size、横スケール、rise、color と、`Tc` が全行（最終行を含む）で同一である場合のその値だけとする。両端揃えは最終行を伸ばさないため、最終行にも同じ `Tc` があれば行調整ではない。これを `inferred_consistent_tracking` とし、`requires_confirmation=True` の候補として扱う。`0 Tc` は `observed_source` で確認不要。`Tw` は inline style に含めない。行ごとに異なる `Tc`、行内で変わる `Tc` は `unknown`（`requires_confirmation=True`、値なし）とし、tracking を推測しない。再配置で実現された均等字間も tracking とは見なさない。
 
-**Line layout adjustment** は各 gap の `tc − tracking + tw + tj + reposition` である。行ごとに、全 gap で等しく正なら `uniform_char`、空白 gap（空白 glyph または再配置 gap）だけで等しく正なら `uniform_word`、全て 0 なら `none`、それ以外は `irregular`。これらは行に属し、再組版で捨てて再計算する。
+**Line layout adjustment** は各 gap の `tc − tracking + tw + tj + reposition` である。行ごとに次のとおり分類する。
+
+| 分類 | 条件 |
+|---|---|
+| `none` | 全 gap の超過が 0 |
+| `uniform_char` | 再配置 gap が無く、全 gap で等しく正（`Tc` または `TJ` が operator として書かれている） |
+| `uniform_word` | 再配置 gap が無く、**塗られた空白 glyph** の gap だけで等しく正、他は 0 |
+| `uniform_reposition` | 再配置 gap があり、その超過が等しく正で、他の gap は 0 |
+| `irregular` | それ以外 |
+
+`reposition` は独立した観測事実であり、空白 glyph・`Tc`・`Tw`・`TJ` と意味上同一視しない。単語 gap の根拠は Unicode 空白 glyph だけである。`Td` / `Tm` で単語や glyph を個別配置する exporter の出力は、gap が均等で左右端が揃っていても `uniform_reposition` であり、tracking とも単語間隔とも証明できない。これらは行に属し、再組版で捨てて再計算する。
 
 ## alignment candidate
 
 候補であり確定ではない。`requires_confirmation=True` を付け、上位層またはユーザーの `explicitly_confirmed` と分離する。
 
-- `justify`: 最終行を除く行のうち配分（`uniform_*` かつ正）を持つ行が 1 行以上あり、それらの右端が一致し、全行の左端が一致し、どの行もその右端を超えない。右端に届かない行は hard break 直前または段落末の可能性があるとして `ragged_lines` に列挙する。
+- `justify`: 最終行を除く行のうち operator で証明された配分（`uniform_char` / `uniform_word` かつ正）を持つ行が 1 行以上あり、それらの右端が一致し、全行の左端が一致し、どの行もその右端を超えない。右端に届かない行は hard break 直前または段落末の可能性があるとして `ragged_lines` に、`uniform_reposition` / `irregular` の行は `unproven_lines` に列挙する。
+- `unknown`（再配置）: 左右端が揃っていても、届いた行の配分が再配置だけで実現されている場合。glyph 単位・単語単位で座標を指定する exporter がここに入る。
 - `unknown`（偶然の等幅）: 最終行を除く 2 行以上が同じ右端に届くが配分が無い場合。等幅 font の等文字数行はこれに当たる。
 - `left` / `right` / `center`: 上記に該当せず、左端のみ一致・右端のみ一致・中央のみ一致の場合。
 - 1 行の段落は `unknown`。
@@ -47,7 +58,7 @@ PoC の6ケース（左揃え+`Tc`、両端揃え+`Tw`、両端揃え+`TJ`、`Tc
 - alignment そのもの。候補は出せるが、hard break の位置は PDF から分からないため、右端に届かない行が段落末か強制改行かは確認が要る。
 - カーニング由来の `TJ` と両端揃え由来の `TJ` の区別。前者は行揃え確認後に「左揃えなら保持、両端揃えなら捨てる」という方針でしか扱えない。
 - 単語間を `Td` で配置する exporter の広い gap。現在の行推定（`inference._horizontal_lines`）は 2.2 em を超える gap を段組の区切りとして別行に分割するため、その場合は selection の行確認が先に必要になる。
-- `Tw` を使う exporter で空白 glyph が塗られない場合の「単語 gap」は再配置として観測される。分類は同じだが、writer 側で空白を再現するかは別の判断になる。
+- 空白 glyph を塗らず `Td` で単語を配置する exporter の gap は再配置として観測され、単語 gap とは判定しない。単語境界が必要なら Unicode 空白の存在か明示確認を要する。
 
 ## `SourceStyle` と snapshot の最小変更（Phase 2a 本実装）
 

@@ -8,8 +8,9 @@ exactly, in page units, into what the content stream proves:
 ``nominal`` is the glyph advance from the font's /Widths or /W (glyph
 metrics); ``tc`` and ``tw`` are the Tc/Tw state in force; ``tj`` is the TJ
 adjustment written before the next glyph; ``reposition`` is whatever remains,
-which is a Td/Tm/Tm-less repositioning between operators. Nothing here decides
-what an author meant. A Tc that is identical on every line, including the
+which is a Td/Tm repositioning between operators. Each term stays a separate
+fact: a repositioning is never read as a word gap, and only a painted
+whitespace glyph makes one. Nothing here decides what an author meant. A Tc that is identical on every line, including the
 last one, is the only spacing this module proposes as inline tracking; the
 excess above it is line layout evidence, and alignment is reported as a
 candidate that still needs explicit confirmation.
@@ -56,8 +57,11 @@ def _line(paragraph, units, adjustments):
     for a, b in zip(glyphs, glyphs[1:]):
         measured = b['x'] - a['x']
         reposition = measured - (a['nominal'] + a['tc'] + a['tw'] + b['tj'])
+        # A word gap needs a painted whitespace glyph. A repositioning between
+        # operators is recorded as its own fact; it never implies a word boundary.
         gaps.append(dict(measured=measured, nominal=a['nominal'], tc=a['tc'], tw=a['tw'], tj=b['tj'],
-                         reposition=reposition, space=a['text'] == ' ' or abs(reposition) > GAP_TOLERANCE))
+                         reposition=reposition, whitespace=a['text'].isspace(),
+                         repositioned=abs(reposition) > GAP_TOLERANCE))
     first, last = glyphs[0], glyphs[-1]
     natural = sum(g['nominal'] for g in glyphs)
     return dict(left=first['x'], right=last['x'] + last['nominal'], natural_width=natural,
@@ -67,17 +71,31 @@ def _line(paragraph, units, adjustments):
 
 
 def _distribution(line, tracking):
-    """How the spacing above inline tracking is spread over the line's gaps."""
-    excess = [g['tc'] - tracking + g['tw'] + g['tj'] + g['reposition'] for g in line['gaps']]
+    """How the spacing above inline tracking is spread over the line's gaps.
+
+    ``uniform_char`` and ``uniform_word`` are witnessed by spacing operators
+    (Tc, Tw, TJ) in the source. Spacing realized by repositioning between
+    operators is ``uniform_reposition`` even when it is perfectly even: a
+    per-glyph or per-word placement proves neither tracking nor a word gap.
+    """
+    gaps = line['gaps']
+    excess = [g['tc'] - tracking + g['tw'] + g['tj'] + g['reposition'] for g in gaps]
     if not excess:
         return 'none', 0.0
     total = sum(excess)
     if all(abs(v) <= GAP_TOLERANCE for v in excess):
         return 'none', total
+    positive = [v for v in excess if abs(v) > GAP_TOLERANCE]
+    if any(g['repositioned'] for g in gaps):
+        carried = [v for v, g in zip(excess, gaps) if g['repositioned']]
+        rest = [v for v, g in zip(excess, gaps) if not g['repositioned']]
+        if all(abs(v) <= GAP_TOLERANCE for v in rest) and _close(carried, GAP_TOLERANCE) and carried[0] > GAP_TOLERANCE:
+            return 'uniform_reposition', total
+        return 'irregular', total
     if _close(excess, GAP_TOLERANCE) and excess[0] > GAP_TOLERANCE:
         return 'uniform_char', total
-    spaces = [v for v, g in zip(excess, line['gaps']) if g['space']]
-    others = [v for v, g in zip(excess, line['gaps']) if not g['space']]
+    spaces = [v for v, g in zip(excess, gaps) if g['whitespace']]
+    others = [v for v, g in zip(excess, gaps) if not g['whitespace']]
     if spaces and all(abs(v) <= GAP_TOLERANCE for v in others) and _close(spaces, GAP_TOLERANCE) and spaces[0] > GAP_TOLERANCE:
         return 'uniform_word', total
     return 'irregular', total
@@ -104,10 +122,10 @@ def observe_spacing(paragraph):
     if all(len(s) == 1 for s in tc_sets) and len(set(tc_sets)) == 1:
         value = tc_sets[0][0]
         result['tracking'] = dict(value=value, provenance='inferred_consistent_tracking' if value else 'observed_source',
-                                  evidence=dict(lines=len(lines)))
+                                  requires_confirmation=bool(value), evidence=dict(lines=len(lines)))
         tracking = value
     else:
-        result['tracking'] = dict(value=None, provenance='unknown',
+        result['tracking'] = dict(value=None, provenance='unknown', requires_confirmation=True,
                                   reason='character spacing differs between lines or inside a line', tc_by_line=tc_sets)
         tracking = 0.0
     for line in lines:
@@ -125,6 +143,7 @@ def _alignment(lines):
     rights = [line['right'] for line in lines]
     distributed = [line for line in full if line['distribution'] in ('uniform_char', 'uniform_word')
                    and line['excess'] > GAP_TOLERANCE]
+    unproven = [line for line in full if line['distribution'] in ('uniform_reposition', 'irregular')]
     edge = max(line['right'] for line in full)
     candidates = []
     if distributed and _close([line['right'] for line in distributed], EDGE_TOLERANCE) and _close(lefts, EDGE_TOLERANCE) \
@@ -132,8 +151,13 @@ def _alignment(lines):
         candidates.append(dict(value='justify', provenance='alignment_candidate', requires_confirmation=True,
             evidence=dict(distributed_lines=[line['index'] for line in distributed],
                           distributions=sorted({line['distribution'] for line in distributed}),
+                          unproven_lines=[line['index'] for line in unproven],
                           right_edge=edge, ragged_lines=[line['index'] for line in lines if line['right'] < edge - EDGE_TOLERANCE],
                           note='ragged lines may end before a hard break or the paragraph; they are not stretched')))
+    elif unproven and _close(lefts, EDGE_TOLERANCE) and _close([line['right'] for line in full], EDGE_TOLERANCE):
+        candidates.append(dict(value='unknown', provenance='unknown',
+            reason='even edges are realized by repositioning between operators; no spacing operator witnesses a word gap or justification',
+            unproven_lines=[line['index'] for line in unproven]))
     elif len(full) >= 2 and _close(lefts, EDGE_TOLERANCE) and _close([line['right'] for line in full], EDGE_TOLERANCE) \
             and all(abs(line['excess']) <= GAP_TOLERANCE for line in full):
         candidates.append(dict(value='unknown', provenance='unknown',
