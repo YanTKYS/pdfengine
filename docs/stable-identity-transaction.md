@@ -12,7 +12,9 @@ revision をまたぐ対応は `pdfeditor/mutation.py` の `MutationProgram` が
 
 `IdentityMap` は before/after の `ContentPage`、`MutationProgram`、計画済み paint 幾何（移動・伸縮）、生成 paint に置換されて消費された path をまとめ、`map_glyphs` / `map_path` / `emitted_glyphs` / `emitted_paths` を提供する。
 
-永続化する記録は二層ある。`byte_edits`（`Mutation.edit`）は start / end / length と保持 operator の offset だけの byte 位置写像で、mutation の外側の要素にしか使えない。`mutation_map`（`Mutation.record`）はそれに kind / owner / 全 anchor / `chars` を加えた完全な identity 記録で、report に載る。保存済み PDF と `mutation_map` から `IdentityMap.from_records` で再構築すると、書き直した operator 内の保持文字、生成 glyph、生成 paint まで元の transaction と同じ写像が得られる。記録が保存 program を再現しないときは拒否する。
+永続化する記録は二層ある。`byte_edits`（`Mutation.edit`）は start / end / length と保持 operator の offset だけの byte 位置写像で、mutation の外側の要素にしか使えない。`mutation_map`（`Mutation.record`）はそれに kind / owner / 全 anchor / `chars` を加えた identity 記録で、report に載る。保存済み PDF と `mutation_map` から `IdentityMap.from_records` で再構築すると、mutation 外の要素、書き直した operator 内の保持文字、生成 glyph、生成 paint operator の位置は元の transaction と同じ写像が得られる。記録が保存 program を再現しないときは拒否する。
+
+記録が持つのは位置と anchor までである。「どの元 path がどの生成 paint に置き換わったか」（`path_anchors`）、生成 paint に置換されて単一の後継を持たない path（`consumed_paths`）、移動・伸縮後の期待幾何（`planned_paints`）は transaction の意味情報であり、live の `IdentityMap` だけが持つ。flow の再結合はすべて transaction 内の live map で行うため、この分離は現在の利用モデルで問題にならない。記録から再構築した map でこれらが必要な場合は、呼び出し側が mutation の kind と anchor 名から明示的に与える。
 
 `MutationProgram` の規則: 空でない mutation は隣接（一方の end が他方の start）してよい。長さ 0 の挿入は他の mutation の start / end に触れてはならず、重なりや同一位置の複数挿入とともに拒否する。挿入位置の元 byte は挿入の後ろに写像される。
 

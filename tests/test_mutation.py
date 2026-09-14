@@ -129,6 +129,13 @@ def test_path_identity_maps_untouched_and_emitted_operators(tmp_path):
         map_path(catalog,after_catalog,program,blue['id'])
     with pytest.raises(PdfError,match='unknown'):
         map_path(catalog,after_catalog,program,'path-missing')
+    # Changing the construction operands while keeping the paint token is not continuity.
+    tampered=MutationProgram(program.source)
+    construction=red['path_source_ranges'][0]['merged_range']
+    tampered.add(Mutation(construction[0],construction[1],b'100 150 31 8 re'))
+    out=saved(tmp_path,source,tampered.apply(),'tampered')
+    with pytest.raises(PdfError,match='construction was changed'):
+        map_path(catalog,source_path_catalog(out,1),tampered,red['id'])
     before.close()
 
 
@@ -182,6 +189,8 @@ def test_identity_map_is_rebuilt_from_persisted_records_not_only_byte_edits(tmp_
     finally:
         partial.close()
     # Complete records reproduce the original map, including JSON round-tripping.
+    # Which source path a generated paint replaces is transaction semantics:
+    # the caller states it from the mutation's anchor name; records hold positions.
     rebuilt=IdentityMap.from_records(source,out,1,json.loads(json.dumps(records)),
                                      path_anchors={blue['id']:None})
     try:

@@ -266,15 +266,22 @@ def map_path(before_catalog, after_catalog, program: MutationProgram, path_id: s
             raise PdfError('emitted paint anchor does not replace this source path')
         offset = program.anchor(target, name)
     elif mutation is None:
+        # The witness is the whole construction, not only the paint token: no
+        # mutation may touch any of its operators, and their bytes must survive.
+        first = min([a] + [r['merged_range'][0] for r in path['path_source_ranges']])
+        if any(m.start < b and first < m.end for m in program.mutations):
+            raise PdfError('path construction was changed by a mutation; the paint has no untouched successor')
         offset = program.map_offset(a)
         applied = program.apply()
-        if applied[offset:offset + (b - a)] != program.source[a:b]:
+        if applied[offset - (a - first):offset + (b - a)] != program.source[first:b]:
             raise PdfError('path operator bytes changed at the mapped offset')
     else:
         raise PdfError('path operator was consumed by a mutation without an emitted successor')
     successor = _paths_by_offset(after_catalog).get(offset)
     if successor is None:
         raise PdfError('no path paint survives at the mapped source offset')
+    if successor['operator'] != path['operator']:
+        raise PdfError('successor paint uses a different operator than its source')
     if anchor is None and successor['operation_sha256'] != path['operation_sha256']:
         raise PdfError('path operation differs from its source witness')
     return successor['id']
