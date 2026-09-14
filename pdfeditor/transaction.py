@@ -246,9 +246,9 @@ class TransactionResult:
         return self._identities[number]
 
     def mutation_map(self):
-        return {number: dict(byte_edits=edits, mutations=[
-            dict(kind=m.kind, owner=m.owner, start=m.start, end=m.end, length=len(m.data), anchors=dict(m.anchors))
-            for m in self.pages[number].program.mutations]) for number, edits in self.byte_edits.items()}
+        """Persisted identity record per page: byte edits plus complete mutation records."""
+        return {number: dict(byte_edits=edits, mutations=self.pages[number].program.records())
+                for number, edits in self.byte_edits.items()}
 
     def close(self):
         for identity in self._identities.values():

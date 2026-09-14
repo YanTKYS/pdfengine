@@ -36,10 +36,46 @@ class Mutation:
     owner: str | None = None
 
     def edit(self):
+        """The byte-position part only: enough to map offsets outside mutations."""
         value = dict(start=self.start, end=self.end, length=len(self.data))
         if 'op' in self.anchors:
             value['preserved_event_offset'] = self.anchors['op']
         return value
+
+    def record(self):
+        """The complete identity record: every anchor and retained character."""
+        return dict(self.edit(), kind=self.kind, owner=self.owner, anchors=dict(self.anchors),
+                    chars=None if self.chars is None else {str(k): v for k, v in self.chars.items()})
+
+    @classmethod
+    def from_record(cls, record, data: bytes):
+        anchors = dict(record.get('anchors') or {})
+        if 'preserved_event_offset' in record:
+            if anchors.get('op', record['preserved_event_offset']) != record['preserved_event_offset']:
+                raise PdfError('mutation record disagrees about its preserved operator')
+            anchors['op'] = record['preserved_event_offset']
+        chars = record.get('chars')
+        if chars is not None:
+            chars = {int(k): int(v) for k, v in chars.items()}
+        if len(data) != record['length']:
+            raise PdfError('mutation record length does not match the saved bytes')
+        return cls(record['start'], record['end'], data, kind=record.get('kind', 'mutation'),
+                   anchors=anchors, chars=chars, owner=record.get('owner'))
+
+
+def _conflicts(a: Mutation, b: Mutation) -> bool:
+    """Two mutations conflict when they overlap, or when an insertion touches another.
+
+    Non-empty replacements may be adjacent (one ends where the next starts).
+    A zero-length insertion has no source bytes of its own, so its order
+    relative to a mutation starting or ending at the same offset would be a
+    convention rather than provenance: such insertions are refused.
+    """
+    if a.start < b.end and b.start < a.end:
+        return True
+    if a.start == a.end or b.start == b.end:
+        return a.start <= b.end and b.start <= a.end
+    return False
 
 
 class MutationProgram:
@@ -56,10 +92,8 @@ class MutationProgram:
             if not isinstance(name, str) or not 0 <= offset <= len(mutation.data):
                 raise PdfError('mutation anchor is outside its emitted bytes')
         for other in self.mutations:
-            overlap = other.start < mutation.end and mutation.start < other.end
-            same_insertion = other.start == other.end == mutation.start == mutation.end
-            if overlap or same_insertion:
-                raise PdfError('mutations overlap in the source program; one operator cannot have two owners')
+            if _conflicts(other, mutation):
+                raise PdfError('mutations overlap or an insertion touches another mutation; one operator cannot have two owners')
         self.mutations.append(mutation)
         self.mutations.sort(key=lambda m: (m.start, m.end))
         return mutation
@@ -99,7 +133,18 @@ class MutationProgram:
         return data
 
     def edits(self) -> list[dict]:
+        """Byte-position map only (``byte_edits``)."""
         return [m.edit() for m in self.mutations]
+
+    def records(self) -> list[dict]:
+        """Complete, serializable mutation records (``mutation_map``)."""
+        return [m.record() for m in self.mutations]
+
+    def mutation_at(self, start: int) -> Mutation:
+        for mutation in self.mutations:
+            if mutation.start == start:
+                return mutation
+        raise PdfError('no mutation starts at the given source offset')
 
 
 def map_offset(offset, edits):
@@ -263,25 +308,37 @@ class IdentityMap:
         self._catalogs = {}
 
     @classmethod
-    def from_edits(cls, source, output, page, edits):
-        """Rebuild the map of a saved page from its recorded byte edits."""
+    def from_records(cls, source, output, page, records, *, path_anchors=None, consumed_paths=(), planned_paints=None):
+        """Rebuild the map of a saved page from persisted mutation records.
+
+        Records carry every anchor and retained-character map, so glyphs kept
+        inside rewritten operators and generated glyphs or paints are mapped
+        exactly as in the original transaction. Plain ``byte_edits`` are
+        accepted too, but then only offsets outside mutations and preserved
+        operators can be followed. The saved program must be reproduced.
+        """
         before, after = ContentPage(source, page), ContentPage(output, page)
         try:
             data, saved = before.streams[-before.page.xref], after.streams[-after.page.xref]
             program = MutationProgram(data)
             delta = 0
-            for edit in sorted(edits, key=lambda e: (e['start'], e['end'])):
-                start = edit['start'] + delta
-                anchors = {'op': edit['preserved_event_offset']} if 'preserved_event_offset' in edit else {}
-                program.add(Mutation(edit['start'], edit['end'], saved[start:start + edit['length']], anchors=anchors))
-                delta += edit['length'] - (edit['end'] - edit['start'])
+            for record in sorted(records, key=lambda e: (e['start'], e['end'])):
+                start = record['start'] + delta
+                program.add(Mutation.from_record(record, saved[start:start + record['length']]))
+                delta += record['length'] - (record['end'] - record['start'])
             if program.apply() != saved:
                 raise PdfError('recorded byte edits do not reproduce the saved page program')
         except Exception:
             before.close()
             after.close()
             raise
-        return cls(source, output, before, after, program, owns_before=True)
+        return cls(source, output, before, after, program, owns_before=True, path_anchors=path_anchors,
+                   consumed_paths=consumed_paths, planned_paints=planned_paints)
+
+    @classmethod
+    def from_edits(cls, source, output, page, edits):
+        """Rebuild from byte edits or full records; see ``from_records``."""
+        return cls.from_records(source, output, page, edits)
 
     @property
     def page(self):

@@ -392,6 +392,7 @@ class MovePlan(Plan):
 
     def report(self, result):
         return dict(self._report,byte_edits=[m.edit() for m in sorted(self.mutations,key=lambda m:m.start)],
+                    mutation_map=[m.record() for m in sorted(self.mutations,key=lambda m:m.start)],
                     text_collision=self.collision)
 
 

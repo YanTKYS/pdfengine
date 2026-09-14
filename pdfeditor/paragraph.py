@@ -219,6 +219,7 @@ class ParagraphPlan(Plan):
         identity = result.identity(self.page.number)
         return dict(self._report, empty_slot_offset=self.empty_slot_offset(identity),
                     byte_edits=[m.edit() for m in sorted(self.mutations, key=lambda m: m.start)],
+                    mutation_map=[m.record() for m in sorted(self.mutations, key=lambda m: m.start)],
                     anchors=self.anchored.report() if self.anchored else None)
 
     def close(self):

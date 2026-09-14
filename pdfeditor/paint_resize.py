@@ -161,7 +161,8 @@ class ResizePlan(Plan):
 
     def report(self, result):
         return dict(self._report, output_sha256=result.output_sha256,
-                    byte_edits=[m.edit() for m in sorted(self.mutations,key=lambda m:m.start)])
+                    byte_edits=[m.edit() for m in sorted(self.mutations,key=lambda m:m.start)],
+                    mutation_map=[m.record() for m in sorted(self.mutations,key=lambda m:m.start)])
 
 
 def plan_paint_resize(page, snapshot, policies, *, delta, available_bounds, paragraph_snapshot=None, owner=None):

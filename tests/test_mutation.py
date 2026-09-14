@@ -1,9 +1,12 @@
 """Source identities survive byte mutations through provenance, never geometry."""
+import json
+
 import pytest
 
 from pdfeditor.backend import PdfError
 from pdfeditor.content_stream import ContentPage, rewritten_event
-from pdfeditor.mutation import IdentityMap, Mutation, MutationProgram, map_glyphs, map_offset, map_path
+from pdfeditor.mutation import (IdentityMap, Mutation, MutationProgram, emitted_glyphs, map_glyphs,
+                                map_offset, map_path)
 from pdfeditor.paint_provenance import source_path_catalog
 from pdfeditor.pdf_save import program_pdf_bytes
 from test_attributed import source_pdf
@@ -127,3 +130,69 @@ def test_path_identity_maps_untouched_and_emitted_operators(tmp_path):
     with pytest.raises(PdfError,match='unknown'):
         map_path(catalog,after_catalog,program,'path-missing')
     before.close()
+
+
+def test_program_boundaries_refuse_ambiguous_insertions_and_allow_adjacent_replacements():
+    def program():
+        return MutationProgram(b'0123456789ABCDEFGHIJKLMNOPQRS')
+    for start,end,label in [(15,15,'inside'),(10,10,'at start'),(20,20,'at end')]:
+        p=program();p.add(Mutation(10,20,b'XY'))
+        with pytest.raises(PdfError,match='overlap|touches'):
+            p.add(Mutation(start,end,b'ins'))
+        p=program();p.add(Mutation(start,end,b'ins'))
+        with pytest.raises(PdfError,match='overlap|touches'):
+            p.add(Mutation(10,20,b'XY'))
+    p=program();p.add(Mutation(12,12,b'a'))
+    with pytest.raises(PdfError,match='overlap|touches'):
+        p.add(Mutation(12,12,b'b'))
+    p=program();p.add(Mutation(10,20,b'XY'));p.add(Mutation(20,25,b'z'));p.add(Mutation(5,10,b'Q'))
+    assert p.apply()==b'01234QXYzPQRS'
+    assert p.map_offset(25)==len(b'01234QXYz') and p.map_offset(4)==4
+    # An insertion strictly inside a gap precedes the source byte at its position.
+    p=program();p.add(Mutation(10,20,b'XY'));p.add(Mutation(3,3,b'ins'))
+    assert p.apply()==b'012ins3456789XYKLMNOPQRS' and p.map_offset(3)==6 and p.map_offset(20)==15
+
+
+def test_identity_map_is_rebuilt_from_persisted_records_not_only_byte_edits(tmp_path):
+    source,before,program=opened(tmp_path)
+    second=before.events[1]
+    data,offset,chars=rewritten_event(second,{3},remove=True)
+    prefix=b'q 1 0 0 1 0 0 cm ';generated=data+b' '+prefix+b'(Z) Tj Q'
+    program.add(Mutation(second.operator.start,second.operator.end,generated,kind='text-edit',
+                         anchors={'rewritten':offset,'glyph:0':len(data)+1+len(prefix)},chars=chars,owner='B'))
+    catalog=source_path_catalog(source,1);blue=catalog['paths'][0]
+    path_prefix=b'n q 20 150 60 8 re '
+    moved=program.add(Mutation(blue['merged_range'][0],blue['merged_range'][1],path_prefix+b'f Q',kind='path-move',
+                               anchors={'paint':len(path_prefix)}))
+    out=saved(tmp_path,source,program.apply(),'records')
+    after=ContentPage(out,1)
+    try:
+        expected=map_glyphs(before,after,program,[0,4,5,8])
+        emitted=emitted_glyphs(after,program,program.mutation_at(second.operator.start),['glyph:0'])
+        expected_path=map_path(catalog,source_path_catalog(out,1),program,blue['id'],anchor=(moved,'paint'))
+        records=program.records();edits=program.edits()
+    finally:
+        after.close();before.close()
+    del program
+    # Byte edits alone cannot follow retained or generated components.
+    partial=IdentityMap.from_edits(source,out,1,edits)
+    try:
+        with pytest.raises(PdfError,match='consumed'):
+            partial.map_glyphs([4])
+    finally:
+        partial.close()
+    # Complete records reproduce the original map, including JSON round-tripping.
+    rebuilt=IdentityMap.from_records(source,out,1,json.loads(json.dumps(records)),
+                                     path_anchors={blue['id']:None})
+    try:
+        assert rebuilt.map_glyphs([0,4,5,8])==expected
+        mutation=rebuilt.program.mutation_at(second.operator.start)
+        assert mutation.chars=={1:0,2:1} and mutation.owner=='B'
+        assert rebuilt.emitted_glyphs(mutation,['glyph:0'])==emitted
+        assert rebuilt.after.actual[emitted[0]]['unicode']=='Z'
+        rebuilt.path_anchors[blue['id']]=(rebuilt.program.mutation_at(blue['merged_range'][0]),'paint')
+        assert rebuilt.map_path(blue['id'])==expected_path
+        with pytest.raises(PdfError,match='no successor'):
+            rebuilt.map_glyphs([3])
+    finally:
+        rebuilt.close()

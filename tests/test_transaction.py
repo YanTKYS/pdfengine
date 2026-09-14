@@ -149,3 +149,42 @@ def test_anchored_decoration_and_follows_share_one_identity_map(tmp_path):
     assert report['moved_elements']==['B'] and len(underlines(state,'A'))==1
     with pymupdf.open(source) as a,pymupdf.open(pdf) as b:
         assert a[1].get_pixmap().samples==b[1].get_pixmap().samples
+
+
+def test_paragraph_report_records_rebuild_the_identity_map(tmp_path):
+    from pdfeditor.mutation import IdentityMap
+    source,fonts,_,_=two_paragraphs(tmp_path)
+    # The paragraph is the tail of one Tj operator: "ONE " stays inside the
+    # rewritten operator while "TWO" is removed and re-emitted with new text.
+    part=inspect_paragraph(source,make_selection(source,glyph_ids=[4,5,6],explicit_width=120))
+    output=tmp_path/'edited.pdf'
+    report=edit_paragraph(source,output,part,[dict(start=3,end=3,text=' MORE')],fonts=fonts,max_bottom=110)
+    record=report['mutation_map'][0]
+    assert record['chars']=={'0':0,'1':1,'2':2,'3':3} and 'rewritten' in record['anchors'] and 'glyph:0' in record['anchors']
+    with Transaction(source) as transaction:
+        page=transaction.page(1)
+        plan=plan_paragraph_edit(page,part,[dict(start=3,end=3,text=' MORE')],fonts=fonts,max_bottom=110)
+        result=transaction.commit(tmp_path/'again.pdf')
+        try:
+            live=result.identity(1)
+            expected=live.map_glyphs([0,1,2,3])
+            expected_generated=plan.emitted_glyphs(live)
+        finally:
+            result.close()
+    # The live map is gone; only the saved PDF and the persisted records remain.
+    identity=IdentityMap.from_records(source,tmp_path/'again.pdf',1,report['mutation_map'])
+    try:
+        assert identity.map_glyphs([0,1,2,3])==expected
+        assert [identity.after.actual[expected[i]]['unicode'] for i in (0,1,2,3)]==['O','N','E',' ']
+        mutation=identity.program.mutation_at(record['start'])
+        names=sorted((n for n in mutation.anchors if n.startswith('glyph:')),key=lambda n:int(n.split(':')[1]))
+        generated=identity.emitted_glyphs(mutation,names)
+        assert generated==expected_generated
+        assert ''.join(identity.after.actual[i]['unicode'] for i in generated)==report['after']=='TWO MORE'
+        for glyph,new in zip(report['glyph_plan'],generated):
+            if glyph['source_index'] is not None:
+                assert identity.before.actual[glyph['source_index']]['unicode']==identity.after.actual[new]['unicode']
+        with pytest.raises(PdfError,match='no successor'):
+            identity.map_glyphs([4])
+    finally:
+        identity.close()
