@@ -1,5 +1,7 @@
 # 独立した段落による共有flow
 
+実行基盤は、その後[安定identityと単一transaction](stable-identity-transaction.md)へ移行した。現在の`edit_shared_flow`は全slotのplanを一つのtransactionで保存・検証し、mutation mapでbindingする。以下の逐次書込と`runs/verified`の記述は導入時の設計・評価記録であり、現mainの実行方式や再評価結果とは区別する。
+
 ## 最大障壁の再判断
 
 [混合書式story](attributed-story-flow.md)のLibreOffice原本では、一段落全体の書式を保った再組版と再編集が成立した。一方、段落を短くすると後続段落が固定位置に残った。今回はこの証拠を引き継ぎ、**独立した複数段落が、確認済みの領域容量を共有できないこと**を対象範囲での最大障壁と判断した。業務PDF全体の障害頻度を順位付けした判断ではない。

@@ -39,3 +39,11 @@ revision をまたぐ対応は `pdfeditor/mutation.py` の `MutationProgram` が
 ## 変わらないこと
 
 provenance の証明は省略していない。paragraph ごとの replay・除去監査、path ごとの counterfactual 証明、保存結果の再観測はそのまま残る。sidecar の schema は維持し、identity の継続だけを mutation map に移した。
+
+## 最新mainの引継ぎ検証（2026-09-20）
+
+`532dc1b79ba5f98bdcc04b161d9e3eec2f133dc5`を取得し、engineを変更せず全repository suiteを実行した。**551 passed / 2 skipped、1294.84秒**。clip rebind、shared flow、stable identity / single transaction、spacing分類を含め、失敗はなかった。skipはAES-128 / AES-256のprovider未導入（cryptography / pycryptodome）による既存2件。
+
+実行: `python -m pytest -q --tb=short -o cache_dir=tmp/pytest-cache-resume --junitxml=tmp/resume-main-full.xml`。Python 3.12.14 / PyMuPDF 1.27.2.3 / pypdf 6.10.0。既存`.pytest_cache`へのアクセス制限があるためcacheだけ別の場所へ指定した。JUnit SHA-256: `e10962ade61780ea0133d1b3cb69e15f161120f21559ea30e8cda6574953c57b`。
+
+これで前回残したfull suite確認を完了した。過去のshared-flow実PDF集計のengine hashや成功数は変更しておらず、その実PDF系列を現mainで再実行したという意味ではない。長時間実行ではメモリ使用量の増加が見られ、性能・メモリ上限は今回保証していない。
