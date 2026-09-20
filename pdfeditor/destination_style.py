@@ -24,7 +24,7 @@ def inline_properties(style):
 
 
 class DestinationParagraph:
-    def __init__(self, paragraph, recipes):
+    def __init__(self, paragraph, recipes, paragraph_style=None):
         self.base = paragraph
         self.styles = dict(paragraph.styles)
         self.rendered = {}
@@ -42,10 +42,12 @@ class DestinationParagraph:
             if (not all(type(v) in (int, float) and math.isfinite(v) for v in (size, scale, tracking, rise))
                     or size <= 0 or scale <= 0):
                 raise PdfError('invalid destination inline metrics')
-            # The persistent lower binding currently observes normalized Tc/Tw/Ts.
-            # Do not discard nonzero logical values to make that binding succeed.
-            if tracking or rise:
-                raise PdfError('destination persistence of nonzero tracking or rise is unsupported')
+            from .style_confirmation import values
+            confirmed=(paragraph_style or {}).get(ident,{})
+            if confirmed:values(confirmed)
+            for key,value in (('tracking',tracking),('baseline_shift',rise)):
+                if value and confirmed.get(key)!=value:
+                    raise PdfError('nonzero destination tracking/rise needs explicit confirmation')
             op, color = recipe['fill']
             if (op not in ('g', 'rg', 'k') or len(color) != {'g':1, 'rg':3, 'k':4}[op]
                     or any(type(v) not in (float, int) or not math.isfinite(v) or not 0 <= v <= 1 for v in color)
@@ -57,7 +59,8 @@ class DestinationParagraph:
             # CTM and page coordinates. Keep destination clip/other state intact.
             self.styles[ident] = SourceStyle(ident, event, size, scale, tracking, rise,
                                             (1, 0, 0, 1, 0, 0), deepcopy(recipe['observed_color']), recipe['font_name'])
-            self.rendered[ident] = dict(recipe, id=ident, font_resource=None, font_xref=None,tracking_provenance='observed_source')
+            self.rendered[ident] = dict(recipe, id=ident, font_resource=None, font_xref=None,
+                tracking_provenance='observed_source',baseline_shift_provenance='observed_source')
 
     def __getattr__(self, name):
         return getattr(self.base, name)
@@ -89,5 +92,7 @@ class DestinationParagraph:
             non_inline_state='retained destination context; no imported source-page context')
 
 
-def bind_destination_styles(paragraph, recipes):
-    return DestinationParagraph(paragraph, recipes) if recipes is not None else paragraph
+def bind_destination_styles(paragraph, recipes, paragraph_style=None):
+    if paragraph_style is not None and not isinstance(paragraph_style,dict):
+        raise PdfError('paragraph_style must map known style IDs to explicit values')
+    return DestinationParagraph(paragraph, recipes, paragraph_style) if recipes is not None else paragraph

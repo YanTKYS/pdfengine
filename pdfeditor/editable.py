@@ -98,6 +98,8 @@ def _bind_paragraph(identity, plan, report):
     try:
         observed={u.source_index:u for u in physical.units}
         records=[None]*len(report['after'])
+        from .style_confirmation import confirmations, require_witness
+        confirmed_styles={}
         for glyph,index in zip(glyph_plan,ids):
             unit=observed[index];style=physical.styles[unit.style_id]
             if (glyph['end']-glyph['start']!=1 or style.event.state.font.name!=glyph['font_resource']
@@ -105,9 +107,18 @@ def _bind_paragraph(identity, plan, report):
                 raise PdfError('persistent glyph binding needs matching single-codepoint source codes')
             expected=next(s for s in report['styles'] if s['id']==glyph['style_id'])
             actual=style.export()
+            confirmed=confirmations(expected)
+            if confirmed:
+                require_witness(unit,{k:v['value'] for k,v in confirmed.items()})
+            if style.id in confirmed_styles and confirmed_styles[style.id]!=confirmed:
+                raise PdfError('one physical style cannot merge distinct confirmation provenance')
+            confirmed_styles[style.id]=confirmed
             if any(not _close(expected[k],actual[k]) for k in
-                   ('font_size','horizontal_scale','tracking','baseline_shift','observed_color')):
+                   ('font_size','horizontal_scale','tracking','baseline_shift','observed_color') if k not in confirmed):
                 raise PdfError('normalized output cannot yet restore this logical style; persistence refused')
+            if (expected['fill'][0]!=actual['fill'][0]
+                    or not _close([float(v) for v in expected['fill'][1]], [float(v) for v in actual['fill'][1]])):
+                raise PdfError('saved fill differs from logical style')
             records[glyph['start']]=dict(glyph_id=index,style_glyph_id=index)
         for offset,record in enumerate(records):
             if record is not None:
@@ -121,6 +132,8 @@ def _bind_paragraph(identity, plan, report):
             records[offset]=dict(glyph_id=None,style_glyph_id=index)
         logical=dict(pdf_sha256=source_sha(source),text=report['after'],units=records,
                      text_provenance='explicitly_confirmed',binding_provenance='generated-by-pdfengine')
+        if any(confirmed_styles.values()):
+            logical['style_confirmations']={k:v for k,v in confirmed_styles.items() if v}
         snapshot=inspect_paragraph(source,selection,logical=logical)
         # Output style IDs may split when a retained resource and a new font
         # coexist. Keep supplied-font intent attached to their actual witnesses.

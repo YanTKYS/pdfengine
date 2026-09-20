@@ -104,6 +104,8 @@ class EmptyParagraph:
             self.units=[];self.text='';self.styles={};self.line_joiner='';self.logical=snapshot['logical']
             for ident,recipe in snapshot['style_recipes'].items():
                 properties=recipe['properties'];matrix=tuple(recipe['matrix'])
+                if properties.get('baseline_shift_provenance')!='observed_source':
+                    raise PdfError('empty confirmed baseline shift lacks a painted PDF witness')
                 values=[properties[k] for k in ('font_size','horizontal_scale','tracking','baseline_shift')]
                 provenance=properties['tracking_provenance']
                 if (provenance not in ('observed_source','candidate','unknown')

@@ -178,15 +178,17 @@ def _layout_parameters(paragraph, snapshot, *, width=None, x=None, first_line_in
         max_bottom=min(bottom,paragraph.content.page.rect.height),empty_ascent=size*.8,empty_descent=size*.2)
 
 
-def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, **layout_options):
+def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, paragraph_style=None, **layout_options):
     """Measure with the writer's shaper/layout, without authorizing any paint."""
     from .logical_element import paragraph_from_snapshot
     paragraph=paragraph_from_snapshot(source,snapshot)
     shaper=None
     try:
         from .destination_style import bind_destination_styles
-        paragraph=bind_destination_styles(paragraph,render_styles)
+        paragraph=bind_destination_styles(paragraph,render_styles,paragraph_style)
         units=apply_edits(paragraph,snapshot,edits)
+        from .style_confirmation import confirm_paragraph
+        paragraph=confirm_paragraph(paragraph,paragraph_style)
         _,options=_layout_parameters(paragraph,snapshot,**layout_options)
         shaper=ParagraphShaper(paragraph,units,fonts or {})
         layout=layout_attributed(shaper.text,shape=shaper.shape,**options)
@@ -237,7 +239,7 @@ class ParagraphPlan(Plan):
 def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None, first_line_indent=None,
                         max_bottom=None, min_line_height=None, element_snapshot=None, element_relations=None,
                         anchor_spec=None, baseline=None, preserve_empty=False, empty_style_id=None,
-                        render_styles=None, owner=None):
+                        render_styles=None, paragraph_style=None, owner=None):
     """Prove source facts and plan every byte mutation of one paragraph edit."""
     from .logical_element import paragraph_from_snapshot, style_recipes
     from .destination_style import bind_destination_styles
@@ -246,13 +248,18 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
     try:
         paragraph = paragraph_from_snapshot(source, snapshot, content=content)
         result.paragraph = paragraph
-        paragraph = bind_destination_styles(paragraph, render_styles)
+        paragraph = bind_destination_styles(paragraph, render_styles, paragraph_style)
         result.paragraph = paragraph
         if anchor_spec is not None and any('runs' in e for e in edits):
             raise PdfError('attributed replacement runs need explicit decoration projection')
         units = apply_edits(paragraph, snapshot, edits)
+        from .style_confirmation import confirm_paragraph, confirmations, writer_spacing
+        paragraph = confirm_paragraph(paragraph, paragraph_style)
+        result.paragraph = paragraph
         empty_typing_style = None
         if preserve_empty and not units:
+            if any(confirmations(s.export()) for s in paragraph.styles.values()):
+                raise PdfError('empty confirmed styles need a PDF style witness; empty persistence refused')
             if anchor_spec is not None:
                 raise PdfError('empty element paint relations require explicit dormant decoration/ownership semantics')
             if empty_style_id is not None:
@@ -322,11 +329,15 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                 alias, code, cid = payload['resource'], payload['code'], None
             dx, dy = payload['offset']
             gx, gy = placed.x + dx, placed.baseline + dy
-            point = pymupdf.Point(gx, gy) * inverse
+            tc, ts, witnessed_rise = writer_spacing(style)
+            # Tc advances after this single glyph; the next Tm supplies its own
+            # origin. Ts moves this glyph, so remove its already-baked offset.
+            point = pymupdf.Point(gx, gy - witnessed_rise) * inverse
             basis = multiply(style.matrix, inverse_ctm)[:4]
             fill_op, fill_values = style.event.state.fill
             prefix = b''.join((_name(alias), b' ', number(style.event.state.size), b' Tf ',
-                number(style.event.state.tz), b' Tz ', b' '.join(number(float(v)) for v in fill_values),
+                number(style.event.state.tz), b' Tz ', number(tc), b' Tc ', number(ts), b' Ts ',
+                b' '.join(number(float(v)) for v in fill_values),
                 b' ' + fill_op.encode() + b' ', matrix_operator((*basis, point.x, point.y))))
             commands.append(prefix)
             length += len(prefix)
@@ -421,7 +432,7 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             "empty_typing_style_id": empty_typing_style,
             "empty_style_recipes": style_recipes(paragraph) if empty_typing_style is not None else None,
             "logical_origins": [shaper.original_offsets[id(u.retained)] if u.retained is not None else None for u in units],
-            "styles": paragraph.export_styles() if render_styles is not None else snapshot['styles'], "edits": edits, "fonts": font_reports,
+            "styles": paragraph.export_styles() if hasattr(paragraph,'export_styles') else snapshot['styles'], "edits": edits, "fonts": font_reports,
             "widths": asdict(available), "x": x, "baseline": baseline, "first_line_indent": indent, "min_line_height": leading,
             "old_line_count": len(resolved.lines), "new_line_count": len(layout.lines),
             "lines": [{k: getattr(line, k) for k in ('text', 'start', 'end', 'x', 'baseline', 'width', 'ascent', 'descent')} for line in layout.lines],

@@ -27,3 +27,4 @@ tmp/
 !/evaluations/story_styles/summary.json
 !/evaluations/shared_flow/summary.json
 !/evaluations/spacing/summary.json
+!/evaluations/confirmed_style/summary.json

@@ -86,3 +86,7 @@ PoC の7ケース（左揃え+`Tc`、両端揃え+`Tw`、両端揃え+`TJ`、`Tc
 snapshot の digest が変わるので旧 sidecar は再確認が必要。migration は行わない。生成 layout は従来の左揃えであり、両端揃えの再現を実装したという意味ではない。次の障壁は確定 tracking / rise を PDF に witness して再編集できること、その後に alignment の確認と再配置である。
 
 検証の再現方法と実 PDF 結果は [spacing 評価](../evaluations/spacing/README.md) を参照。
+
+## PR B の追加
+
+上記 PR A の後、styleごとの明示確認、確認済み tracking / rise の `Tc` / `Ts` witness、PDF再観測による永続復元を追加した。[confirmed-inline-style.md](confirmed-inline-style.md) を現行契約とする。未確認 candidate / unknown の拒否と source event の保持は維持し、alignment は未実装のままである。

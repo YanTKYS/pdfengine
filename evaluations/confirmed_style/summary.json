@@ -1,0 +1,533 @@
+{
+  "date": "2026-09-20",
+  "source_id": "word_osaka_fire_notice",
+  "source_url": "https://www.pref.osaka.lg.jp/documents/63648/20250327jimurennraku.pdf",
+  "source_sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+  "selection": {
+    "schema_version": 1,
+    "source_sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+    "page": 1,
+    "page_observation_sha256": "347f12ce65f5c55c88b8cabcf31f252f483ec5cd02c78b01d8ccca86023a40f6",
+    "glyph_ids": [
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189
+    ],
+    "explicitly_supplied_width": 488,
+    "inferred_available_width": null
+  },
+  "confirmed": {
+    "tracking": -0.12,
+    "baseline_shift": 0.0
+  },
+  "source_replay": {
+    "mupdf_all_equal": true,
+    "poppler_changed_pixels": 0
+  },
+  "unconfirmed_refusals": {
+    "selected_run": "new glyphs require logical tracking: tracking candidate requires explicit confirmation",
+    "mixed_paragraph": "new glyphs require logical tracking: tracking candidate requires explicit confirmation"
+  },
+  "stages": [
+    {
+      "stage": 0,
+      "status": "passed",
+      "logical_unicode_restored": true,
+      "confirmed_styles_verified": true,
+      "pdf_witnesses": [
+        {
+          "tracking": -0.12,
+          "baseline_shift": -0.0
+        },
+        {
+          "tracking": -0.12,
+          "baseline_shift": -0.0
+        }
+      ],
+      "output_sha256": "fbbf989df58033886d9b5c916d618de62c15e4aab270c46aff46ab115f63035a",
+      "independent_text": {
+        "passed": true,
+        "normalization": "remove whitespace from both target-page strings and both selection strings",
+        "source_occurrences": 1,
+        "old_text_present_in_output": true,
+        "replacement_contains_original": true,
+        "policy": "one occurrence replaced in the complete normalized target page; other pages exactly unchanged"
+      },
+      "poppler_outside_changed_pixels": 0,
+      "poppler_all_changed_pixels": 0,
+      "mupdf_all_equal": true,
+      "other_pages_equal": true,
+      "fixed_paints_images_annotations_fonts_preserved": true,
+      "font_mapping": {
+        "passed": true,
+        "new_glyph_occurrences": 0,
+        "retained_glyph_occurrences": 47,
+        "reused_code_occurrences": 0
+      },
+      "original_codes": {
+        "passed": true,
+        "policy": "original resource alias and encoded bytes retained; saved GIDs verified by backend"
+      },
+      "mutation_record_count": 4
+    },
+    {
+      "stage": 1,
+      "status": "passed",
+      "logical_unicode_restored": true,
+      "confirmed_styles_verified": true,
+      "pdf_witnesses": [
+        {
+          "tracking": -0.12,
+          "baseline_shift": -0.0
+        },
+        {
+          "tracking": -0.12,
+          "baseline_shift": -0.0
+        }
+      ],
+      "output_sha256": "b9799c87a440fd98ad4fb8059ea2c67e0df31b6bf2cb55c4076594f8ffe8a05e",
+      "independent_text": {
+        "passed": true,
+        "normalization": "remove whitespace from both target-page strings and both selection strings",
+        "source_occurrences": 1,
+        "old_text_present_in_output": false,
+        "replacement_contains_original": false,
+        "policy": "one occurrence replaced in the complete normalized target page; other pages exactly unchanged"
+      },
+      "poppler_outside_changed_pixels": 0,
+      "poppler_all_changed_pixels": 1927,
+      "mupdf_all_equal": false,
+      "other_pages_equal": true,
+      "fixed_paints_images_annotations_fonts_preserved": true,
+      "font_mapping": {
+        "passed": true,
+        "new_glyph_occurrences": 2,
+        "retained_glyph_occurrences": 45,
+        "reused_code_occurrences": 0
+      },
+      "original_codes": {
+        "passed": true,
+        "policy": "original resource alias and encoded bytes retained; saved GIDs verified by backend"
+      },
+      "mutation_record_count": 47
+    },
+    {
+      "stage": 2,
+      "status": "passed",
+      "logical_unicode_restored": true,
+      "confirmed_styles_verified": true,
+      "pdf_witnesses": [
+        {
+          "tracking": -0.12,
+          "baseline_shift": -0.0
+        },
+        {
+          "tracking": -0.12,
+          "baseline_shift": -0.0
+        }
+      ],
+      "output_sha256": "4ca3a78c132eaf5434e3a12e88ee567ffaedde1a3ebcb37a4972854b537729e5",
+      "independent_text": {
+        "passed": true,
+        "normalization": "remove whitespace from both target-page strings and both selection strings",
+        "source_occurrences": 1,
+        "old_text_present_in_output": false,
+        "replacement_contains_original": false,
+        "policy": "one occurrence replaced in the complete normalized target page; other pages exactly unchanged"
+      },
+      "poppler_outside_changed_pixels": 0,
+      "poppler_all_changed_pixels": 582,
+      "mupdf_all_equal": false,
+      "other_pages_equal": true,
+      "fixed_paints_images_annotations_fonts_preserved": true,
+      "font_mapping": {
+        "passed": true,
+        "new_glyph_occurrences": 2,
+        "retained_glyph_occurrences": 45,
+        "reused_code_occurrences": 0
+      },
+      "original_codes": {
+        "passed": true,
+        "policy": "original resource alias and encoded bytes retained; saved GIDs verified by backend"
+      },
+      "mutation_record_count": 47
+    },
+    {
+      "stage": 3,
+      "status": "passed",
+      "logical_unicode_restored": true,
+      "confirmed_styles_verified": true,
+      "pdf_witnesses": [
+        {
+          "tracking": -0.12,
+          "baseline_shift": -0.0
+        },
+        {
+          "tracking": -0.12,
+          "baseline_shift": -0.0
+        }
+      ],
+      "output_sha256": "4b846fbc2d9e45f7c8c941b632eb2836edc90abf499dd0cd4c6c2c59bedf8360",
+      "independent_text": {
+        "passed": true,
+        "normalization": "remove whitespace from both target-page strings and both selection strings",
+        "source_occurrences": 1,
+        "old_text_present_in_output": true,
+        "replacement_contains_original": true,
+        "policy": "one occurrence replaced in the complete normalized target page; other pages exactly unchanged"
+      },
+      "poppler_outside_changed_pixels": 0,
+      "poppler_all_changed_pixels": 0,
+      "mupdf_all_equal": true,
+      "other_pages_equal": true,
+      "fixed_paints_images_annotations_fonts_preserved": true,
+      "font_mapping": {
+        "passed": true,
+        "new_glyph_occurrences": 0,
+        "retained_glyph_occurrences": 47,
+        "reused_code_occurrences": 0
+      },
+      "original_codes": {
+        "passed": true,
+        "policy": "original resource alias and encoded bytes retained; saved GIDs verified by backend"
+      },
+      "mutation_record_count": 47
+    }
+  ],
+  "engine_sha256": {
+    "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "anchors.py": "f721d5dc4d05e0140b6879ac36a978c791558e4c50b70b21640d99a0484ad030",
+    "attributed.py": "bdf5c328bf6e499ddfb1c75923aa45304f7311c2ffa7f87164200124d597dd6c",
+    "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+    "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+    "composition.py": "027cc84733e17ddcce62e767cfba160e49820f003c56b03fb9c5aee2546a9705",
+    "content_stream.py": "94e274c23d56eb154846b165f405f7ab766a63e44bf3dad065a1367e8cca2a0c",
+    "destination_style.py": "2e47cf2507045d9eb93c465acf0abb942d3a69702bb85805af80524f74b41d09",
+    "document_flow.py": "7918a091ca1efb9fa08c6496b617780c8c1cb4129ebf1a08331841da2c4f1920",
+    "editable.py": "3920a48a652ba4d0e9685e5d74daf188710f21a80076bc7cb8cb66b5fc937733",
+    "elements.py": "e0d9c0ee0615d04168ec4a1ad7e044a949b7254746754c366e63b9ee3b374949",
+    "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+    "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+    "flow_transaction.py": "a6198a3371c4d6c97024cec26fbcf27c6d7f52735c722a0efb6acf45d96f8b05",
+    "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+    "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+    "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+    "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+    "logical_element.py": "7bdf7b598c494ce334bc5d2e528e56f32266c4d53f8465c40321051e36ee6eea",
+    "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+    "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+    "mutation.py": "b9eb726d10d7bc57d60d0721e88110f1754bb04eddcb088f02dfad5c93126dde",
+    "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+    "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+    "paint_resize.py": "b9bcb8a8da13f3317c37c54c3fa83f74f6de5fe97f89439f25559b78fc0e68f8",
+    "paragraph.py": "af8c83a3a82bfae3664ca0e6097bdddb9723f63a279caa40b9f50329616c6712",
+    "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+    "pdf_save.py": "9c4058379921878dbe25e49d2646e90234087b240510e5025665c5e03d5ffd79",
+    "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+    "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+    "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+    "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+    "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+    "shared_flow.py": "7b3be16d04828c58d5751ab8f4ab86bd970b63992e3070384653aef6106efb59",
+    "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e",
+    "spacing.py": "e44fab983055b373c1473e41846545135880753ba32be8a460748437a2769526",
+    "story_flow.py": "364192a590022c2259c748ad99a8a1bf84fb9a84069056a2c3757253b01e4ffe",
+    "story_styles.py": "8b10c097d818231c296ce8f2d5003d919f0c4e298d78ead2967de8f1d4a7c83c",
+    "style_confirmation.py": "5beabff6b423d908c3cce192b1b4ddffb8e4876dff438a9548aa8267d11064bd",
+    "transaction.py": "74e71b4e587305fce5c16bd71e8dbc89a5051e2c635f06b62b2b3587510a65a5",
+    "variable_container.py": "5c4e3336aa2187a37adf6d36bd2ccd3fb33c01e4ef7fbd4f24fe50708b98df82"
+  },
+  "runner_sha256": "d861453545c3f5c06b7b224e1794c8f8cc08248b04c9c47508109318b6c77d5b",
+  "provider_sha256": "4bde3e6392b96910fb59094c6c1a4dbfae18fee78d0bf13dc30616837c4f95db",
+  "font_policy": "MS Gothic TTC face 0 explicitly supplied for new glyphs; original resource/code retained otherwise",
+  "environment": {
+    "pymupdf": "1.27.2.3",
+    "python": "3.12.14",
+    "pypdf": "6.10.0"
+  },
+  "scope": "Full first line selected to preserve nearby glyph context; only its two-glyph nonzero tracking style is confirmed. Real rise is zero; synthetic roundtrips cover nonzero rise. No alignment or paragraph-wide spacing inference.",
+  "baseline": {
+    "commit": "b60c3245e847f3fd1d86f7d9abb73d4da9654fcb",
+    "passed": 561,
+    "skipped": 2
+  },
+  "targeted": {
+    "passed": 47,
+    "failures": 0,
+    "skipped": 0,
+    "junit_sha256": "d88aa6b6ae785bf8b913f0d30881876bb438c873b26dbade3dd74dd165f9b0e2",
+    "modules": [
+      "tests/test_style_confirmation.py",
+      "tests/test_empty_element.py",
+      "tests/test_destination_style.py"
+    ]
+  },
+  "regression": {
+    "tests": 586,
+    "passed": 584,
+    "skipped": 2,
+    "failures": 0,
+    "errors": 0,
+    "existing_phase_a_test_ids_preserved": true,
+    "added_test_ids": [
+      [
+        "tests.test_style_confirmation",
+        "test_anisotropic_source_noop_keeps_existing_outside_pixel_refusal"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmation_is_explicit_and_fail_closed[bool]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmation_is_explicit_and_fail_closed[invalid_registry]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmation_is_explicit_and_fail_closed[nan]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmation_is_explicit_and_fail_closed[unconfirmed]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmation_is_explicit_and_fail_closed[unknown]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmation_is_explicit_and_fail_closed[unknown_style]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmation_is_explicit_and_fail_closed[wrong_value]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmed_destination_style_roundtrip"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmed_empty_style_requires_a_pdf_witness"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmed_spacing_roundtrip_and_exact_noop[0-2-False]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmed_spacing_roundtrip_and_exact_noop[1--2-False]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmed_spacing_roundtrip_and_exact_noop[1-0-False]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmed_spacing_roundtrip_and_exact_noop[1-2-False]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_confirmed_spacing_roundtrip_and_exact_noop[2-2-True]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_empty_recipe_cannot_claim_confirmation_without_pdf_witness"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_partial_confirmation_does_not_promote_other_properties[confirmed0]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_partial_confirmation_does_not_promote_other_properties[confirmed1]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_pdf_observation_alone_never_promotes_a_candidate"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_saved_style_must_match_pdf_even_when_sidecar_is_resealed[baseline_shift]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_saved_style_must_match_pdf_even_when_sidecar_is_resealed[tracking]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_writer_witness_mismatch_never_publishes[tc]"
+      ],
+      [
+        "tests.test_style_confirmation",
+        "test_writer_witness_mismatch_never_publishes[ts]"
+      ]
+    ],
+    "skip_details": [
+      {
+        "classname": "tests.test_pdf_save",
+        "name": "test_empty_user_password_and_original_owner_password_are_preserved[AES-128]",
+        "reason": "AES provider unavailable: pypdf needs cryptography or pycryptodome"
+      },
+      {
+        "classname": "tests.test_pdf_save",
+        "name": "test_empty_user_password_and_original_owner_password_are_preserved[AES-256]",
+        "reason": "AES provider unavailable: pypdf needs cryptography or pycryptodome"
+      }
+    ],
+    "batches": [
+      {
+        "batch": 1,
+        "files": [
+          "tests\\test_content_replay.py",
+          "tests\\test_empty_clip_rebind.py",
+          "tests\\test_fonts.py",
+          "tests\\test_paragraph_cli.py",
+          "tests\\test_proof_session.py",
+          "tests\\test_rich_layout.py",
+          "tests\\test_shared_flow.py",
+          "tests\\test_stage1_evaluation.py"
+        ],
+        "exit_code": 0,
+        "seconds": 272.28,
+        "junit_sha256": "2b3e377a30207cc703b38241010e72c52585ef13c22689c00aec971c7dc3ed71",
+        "tests": 135,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "batch": 2,
+        "files": [
+          "tests\\test_attributed.py",
+          "tests\\test_external_regressions.py",
+          "tests\\test_inference.py",
+          "tests\\test_layout.py",
+          "tests\\test_marked_content.py",
+          "tests\\test_pdf_save.py",
+          "tests\\test_selection_cli.py",
+          "tests\\test_spacing.py",
+          "tests\\test_story_flow.py",
+          "tests\\test_transaction.py"
+        ],
+        "exit_code": 0,
+        "seconds": 285.82,
+        "junit_sha256": "204c2e075a09677b07a239532002c4b4bbd36272395fba24a3252baebfd21480",
+        "tests": 145,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      {
+        "batch": 3,
+        "files": [
+          "tests\\test_composition.py",
+          "tests\\test_destination_style.py",
+          "tests\\test_document_flow.py",
+          "tests\\test_ink_collision.py",
+          "tests\\test_integration.py",
+          "tests\\test_mutation.py",
+          "tests\\test_selection.py",
+          "tests\\test_story_flow_evaluation.py",
+          "tests\\test_story_styles.py",
+          "tests\\test_variable_container.py"
+        ],
+        "exit_code": 0,
+        "seconds": 315.27,
+        "junit_sha256": "0d5a199a1221f8df2f3163f8faad11cb331a1d0d4ea232bfebec2afddf9eb2b7",
+        "tests": 123,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "batch": 4,
+        "files": [
+          "tests\\test_anchors.py",
+          "tests\\test_attributed_boundaries.py",
+          "tests\\test_editable.py",
+          "tests\\test_elements.py",
+          "tests\\test_empty_element.py",
+          "tests\\test_flow_transaction.py",
+          "tests\\test_followup_audit.py",
+          "tests\\test_paint_provenance.py",
+          "tests\\test_safety.py",
+          "tests\\test_shaped_font.py",
+          "tests\\test_style_confirmation.py"
+        ],
+        "exit_code": 0,
+        "seconds": 264.05,
+        "junit_sha256": "14609e1f0deadbd8700bcc412dcc21a3820edc5608ac11ea20e811d453d7c81d",
+        "tests": 183,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "execution": "four disjoint module groups, sequential root-owned pytest processes"
+  },
+  "narrow_selection_refusal": {
+    "glyph_ids": [
+      182,
+      183
+    ],
+    "explicit_width": 21.12,
+    "status": "safe_refusal",
+    "reason": "composed text collides with an unselected glyph",
+    "phase": "same-text save before any replacement",
+    "output_created": false
+  },
+  "visual_review": {
+    "pages": [
+      "original page 1",
+      "v2 page 1"
+    ],
+    "release_matches_reviewed_run": true,
+    "compared_png_count": 10
+  }
+}
