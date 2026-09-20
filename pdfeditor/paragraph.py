@@ -86,7 +86,8 @@ class ParagraphShaper:
                 observation = original.observation
                 if observation['glyph_id'] < 0:
                     raise PdfError("retained source cluster is not a single painted glyph")
-                advance = original.char.advance * style.matrix[0]
+                source_matrix=multiply(original.event.text_matrix,original.event.state.ctm)
+                advance = original.char.advance * source_matrix[0]
                 if index+1 < end:
                     following = self.units[index+1].retained
                     if (following is not None and following.char is not None
@@ -95,7 +96,7 @@ class ParagraphShaper:
                             and self.original_offsets[id(following)] == self.original_offsets[id(original)]+1):
                         advance = following.observation['origin'][0] - observation['origin'][0]
                 else:
-                    advance -= style.tracking
+                    advance -= original.event.state.tc * source_matrix[0] * original.event.state.tz / 100
                 ink, bounds_source = self.source_ink(original,style)
                 _, y0, _, y1 = observation['bbox']
                 baseline = observation['origin'][1]
@@ -129,6 +130,10 @@ class ParagraphShaper:
                         or (next_unit.provider or next_unit.style_id) != provider):
                     break
                 stop += 1
+            if style.tracking is None:
+                reason=('tracking candidate requires explicit confirmation' if style.tracking_provenance=='candidate'
+                        else 'tracking is unknown because source character spacing varies')
+                raise PdfError('new glyphs require logical tracking: '+reason)
             font = self.font(provider)
             run = font.shape(self.text[index:stop])
             sx, sy = style.size*style.horizontal_scale/font.upem, style.size/font.upem
@@ -137,7 +142,7 @@ class ParagraphShaper:
                 bounds = font.ink(glyph.gid)
                 ink = (Rect(dx+bounds[0]*sx,dy-bounds[3]*sy,dx+bounds[2]*sx,dy-bounds[1]*sy)
                        if bounds is not None else None)
-                advance = glyph.advance*sx + style.tracking + (style.word_spacing if glyph.text == ' ' else 0)
+                advance = glyph.advance*sx + style.tracking
                 if stop == end and position == len(run.glyphs)-1:
                     advance -= style.tracking
                 result.append(InlineGlyph(glyph.text,advance,ink,

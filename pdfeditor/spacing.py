@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from statistics import median
 
-from .content_stream import PaintChar
+from .content_stream import PaintChar, multiply
 
 SCHEMA = 'pdfengine-spacing-evidence-1'
 GAP_TOLERANCE = .02
@@ -45,14 +45,17 @@ def _close(values, tolerance):
 def _line(paragraph, units, adjustments):
     glyphs = []
     for unit in units:
-        style = paragraph.styles[unit.style_id]
-        scale = style.size * style.horizontal_scale
+        state=unit.event.state
+        matrix=multiply(unit.event.text_matrix,state.ctm)
+        horizontal=matrix[0]*state.tz/100
+        scale=state.size*horizontal
+        tc,tw=state.tc*horizontal,state.tw*horizontal if state.font.unit==1 else 0.0
         glyphs.append(dict(text=unit.text, x=unit.observation['origin'][0],
                            nominal=unit.char.pdf_width / 1000 * scale,
-                           tc=style.tracking,
-                           tw=style.word_spacing if unit.char.code == b' ' else 0.0,
+                           tc=tc,
+                           tw=tw if unit.char.code == b' ' else 0.0,
                            tj=-adjustments[id(unit.char)] / 1000 * scale,
-                           state_tc=style.tracking, state_tw=style.word_spacing))
+                           state_tc=tc, state_tw=tw))
     gaps = []
     for a, b in zip(glyphs, glyphs[1:]):
         measured = b['x'] - a['x']

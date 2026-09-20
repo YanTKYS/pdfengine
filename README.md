@@ -281,6 +281,8 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 
 書式付き経路は、横書き・不透明fillで、font・サイズ・色・字間・横倍率・baseline shiftを区間ごとに保持します。clipやinline属性以外の描画状態は共通である必要があります。元文字と新fontの境界を越える結合文字は、完全なgraphemeを一つのfontで置換する指定を要求します。保持区間と変更区間をまたぐkerningや合字の再形成は未対応です。
 
+行ごとの `Tw` / `TJ` と inline style を分離し、snapshot の `spacing` に glyph ごとの観測と行揃え候補を記録します。非ゼロまたは不明な tracking は `None` と provenance を保持し、未確認の値で新 glyph を配置する操作は拒否します。行内の `Tc` 変更は別 style のままです。確認入力と両端揃えの再現は未実装です。[契約](docs/spacing-classification.md)・[実PDF評価](evaluations/spacing/README.md)。
+
 新しいglyphを置く範囲はactive clipと周囲の文字・画像・図形で制限されます。後続段落の移動は、確認済みの`follows`に従う固定領域内で扱います。複雑なpathやForm内文字などは、描画単位の意味を安全に扱えるまで拒否する範囲が残ります。複雑な多glyph cluster・双方向組版も現在のUnicode復元契約を拡張する必要があります。
 
 ## 実装と検証資料

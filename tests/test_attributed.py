@@ -223,16 +223,21 @@ def test_scaled_source_style_retains_physical_size_tracking_and_baseline_shift(t
     paragraph = snapshot(source, count=4, width=110)
     style = paragraph["styles"][0]
     assert style["font_size"] == 12
-    assert style["tracking"] == pytest.approx(1.2)
+    assert style["tracking"] is None and style['tracking_provenance']=='candidate'
+    assert paragraph['spacing']['tracking']['value']==pytest.approx(1.2)
     assert style["horizontal_scale"] == pytest.approx(.8)
     assert style["baseline_shift"] == pytest.approx(-2.25)
     output = tmp_path / "scaled.pdf"
     before = observe(source)
+    with pytest.raises(PdfError,match='tracking candidate requires explicit confirmation'):
+        edit_paragraph(source, output, paragraph,
+            [{"start": 1, "end": 3, "text": "本文"}], fonts={"s0": font}, max_bottom=170)
+    assert not output.exists()
     report = edit_paragraph(source, output, paragraph,
-        [{"start": 1, "end": 3, "text": "本文"}], fonts={"s0": font}, max_bottom=170)
+        [{"start": 1, "end": 3, "text": ""}], max_bottom=170)
     after = observe(output)
     assert compare_glyphs(before[4:], after[-4:])["passed"]
-    assert compact_text(output) == "A本文DKEEP"
+    assert compact_text(output) == "ADKEEP"
     assert all(g["size"] == 12 for g in report["glyph_plan"])
     assert all(g["origin"][1] == pytest.approx(before[0]["origin"][1], abs=.002)
                for g in report["glyph_plan"])

@@ -106,7 +106,7 @@ def _bind_paragraph(identity, plan, report):
             expected=next(s for s in report['styles'] if s['id']==glyph['style_id'])
             actual=style.export()
             if any(not _close(expected[k],actual[k]) for k in
-                   ('font_size','horizontal_scale','tracking','word_spacing','baseline_shift','observed_color')):
+                   ('font_size','horizontal_scale','tracking','baseline_shift','observed_color')):
                 raise PdfError('normalized output cannot yet restore this logical style; persistence refused')
             records[glyph['start']]=dict(glyph_id=index,style_glyph_id=index)
         for offset,record in enumerate(records):

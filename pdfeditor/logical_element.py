@@ -104,8 +104,13 @@ class EmptyParagraph:
             self.units=[];self.text='';self.styles={};self.line_joiner='';self.logical=snapshot['logical']
             for ident,recipe in snapshot['style_recipes'].items():
                 properties=recipe['properties'];matrix=tuple(recipe['matrix'])
-                values=[properties[k] for k in ('font_size','horizontal_scale','tracking','word_spacing','baseline_shift')]
-                if (len(matrix)!=6 or not all(math.isfinite(v) for v in [*matrix,*values,recipe['pdf_font_size'],recipe['pdf_horizontal_scale']])
+                values=[properties[k] for k in ('font_size','horizontal_scale','tracking','baseline_shift')]
+                provenance=properties['tracking_provenance']
+                if (provenance not in ('observed_source','candidate','unknown')
+                        or (values[2] is None)!=(provenance in ('candidate','unknown'))
+                        or values[2] is not None and values[2]!=0.0):
+                    raise PdfError('independent tracking needs its observed, candidate or unknown provenance')
+                if (len(matrix)!=6 or not all(math.isfinite(v) for v in [*matrix,*[v for v in values if v is not None],recipe['pdf_font_size'],recipe['pdf_horizontal_scale']])
                         or matrix[0]<=0 or matrix[3]<=0 or abs(matrix[1])+abs(matrix[2])>1e-5
                         or values[0]<=0 or values[1]<=0 or recipe['pdf_font_size']<=0 or recipe['pdf_horizontal_scale']<=0
                         or properties['fill'][0] not in ('g','rg','k') or properties['id']!=ident
@@ -117,7 +122,7 @@ class EmptyParagraph:
                 event=copy(self.first);event.state=copy(self.first.state)
                 event.state.size=recipe['pdf_font_size'];event.state.tz=recipe['pdf_horizontal_scale']
                 event.state.fill=properties['fill']
-                self.styles[ident]=SourceStyle(ident,event,*values,matrix,properties['observed_color'],properties['font_name'])
+                self.styles[ident]=SourceStyle(ident,event,*values,matrix,properties['observed_color'],properties['font_name'],provenance)
             if snapshot['styles'] != [r['properties'] for r in snapshot['style_recipes'].values()]:
                 raise PdfError('independent style registry disagrees with paragraph styles')
             self.default_style_id=snapshot['typing_style_id']

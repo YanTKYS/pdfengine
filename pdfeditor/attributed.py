@@ -29,18 +29,18 @@ class SourceStyle:
     event: object
     size: float
     horizontal_scale: float
-    tracking: float
-    word_spacing: float
+    tracking: float | None
     rise: float
     matrix: tuple
     color: list
     font_name: str
+    tracking_provenance: str = 'observed_source'
 
     def export(self):
         return {"id":self.id, "font_resource":self.event.state.font.name,
                 "font_name":self.font_name, "font_size":self.size,
                 "horizontal_scale":self.horizontal_scale, "tracking":self.tracking,
-                "word_spacing":self.word_spacing, "baseline_shift":self.rise,
+                "tracking_provenance":self.tracking_provenance, "baseline_shift":self.rise,
                 "fill":self.event.state.fill, "observed_color":self.color,
                 "font_xref":self.event.state.font.xref}
 
@@ -54,6 +54,7 @@ class SourceUnit:
     char: object = None
     observation: dict | None = None
     code_witness: int | None = None
+    event: object = None
 
 
 @dataclass
@@ -86,10 +87,13 @@ class SourceParagraph:
             self.units = []
             styles_by_key = {}
             mapping = {}
+            line_of = {g.source_order:n for n,line in enumerate(self.resolved.lines) for g in line.glyphs}
+            event_specs = []
+            spacing_by_line = {}
             clip = _canonical(self.first.state.clip)
             non_inline_state = _canonical(self.first.state.other)
-            # Text remains in one paint context. Variable font/size/color/Tc
-            # are inline attributes, while clip/blend/marked semantics are not.
+            # Text remains in one paint context. Font/size/color are inline;
+            # spacing is classified separately from clip/blend/marked semantics.
             for event in self.events:
                 state = event.state
                 matrix = multiply(event.text_matrix, state.ctm)
@@ -123,26 +127,40 @@ class SourceParagraph:
                     raise PdfError("source word spacing is not associated with Unicode space")
                 ids = [i for c in event.chars for i in c.source_orders if i in selected]
                 observation = self.observations[ids[0]]
-                key = digest([state.font.xref, state.font.name, size, scale, tracking, word,
+                key = digest([state.font.xref, state.font.name, size, scale,
                               -state.ts*matrix[3], state.fill, observation["color"]])
+                for index in ids:
+                    spacing_by_line.setdefault(key, {}).setdefault(line_of[index], set()).add(tracking)
+                event_specs.append((event,size,scale,tracking,matrix,observation,key))
+            # A within-line Tc change still distinguishes inline source styles.
+            # Across-line differences remain observed spacing, never a logical
+            # tracking value copied from the first event of the paragraph.
+            for event,size,scale,tracking,matrix,observation,base_key in event_specs:
+                state=event.state
+                rows=spacing_by_line[base_key]
+                split=any(len(values)>1 for values in rows.values())
+                key=digest([base_key,tracking]) if split else base_key
+                values={tracking} if split else set().union(*rows.values())
+                value=0.0 if values=={0.0} else None
+                provenance='observed_source' if value==0.0 else 'candidate' if len(values)==1 else 'unknown'
                 if key not in styles_by_key:
                     ident = f"s{len(self.styles)}"
                     styles_by_key[key] = ident
-                    self.styles[ident] = SourceStyle(ident,event,size,scale,tracking,word,
-                        -state.ts*matrix[3],matrix,observation["color"],observation["font"])
+                    self.styles[ident] = SourceStyle(ident,event,size,scale,value,
+                        -state.ts*matrix[3],matrix,observation["color"],observation["font"],provenance)
                 for char in event.chars:
                     for index in char.source_orders:
                         if index in selected:
                             if index in mapping:
                                 raise PdfError("ambiguous attributed glyph provenance")
-                            mapping[index] = (styles_by_key[key], char)
+                            mapping[index] = (styles_by_key[key], char, event)
             for line_index, line in enumerate(self.resolved.lines):
                 if line_index and line_joiner:
                     self.units.append(SourceUnit(line_joiner, self.units[-1].style_id, None, line_index))
                 for glyph in line.glyphs:
-                    style_id, char = mapping[glyph.source_order]
+                    style_id, char, event = mapping[glyph.source_order]
                     self.units.append(SourceUnit(glyph.text,style_id,glyph.source_order,line_index,
-                                                 char,self.observations[glyph.source_order]))
+                                                 char,self.observations[glyph.source_order],event=event))
             if len([u for u in self.units if u.source_index is not None]) != len(selected):
                 raise PdfError("line reconstruction did not account for every selected glyph")
             self.text = "".join(u.text for u in self.units)
@@ -185,7 +203,7 @@ class SourceParagraph:
                 spaces=[u for u in observed.values() if char==' ' and u.text==' ' and u.style_id==style.style_id]
                 if spaces:
                     space=spaces[0]
-                    units.append(SourceUnit(char,style.style_id,None,style.line,space.char,space.observation,space.source_index))
+                    units.append(SourceUnit(char,style.style_id,None,style.line,space.char,space.observation,space.source_index,space.event))
                 else:
                     units.append(SourceUnit(char,style.style_id,None,style.line))
             else:
@@ -199,6 +217,7 @@ class SourceParagraph:
         self.units,self.text=units,text
 
     def snapshot(self):
+        from .spacing import observe_spacing
         spans = []
         for offset, unit in enumerate(self.units):
             if not spans or spans[-1]["style_id"] != unit.style_id:
@@ -212,6 +231,7 @@ class SourceParagraph:
         x = min(lefts)
         value = {"schema_version":1,"selection":self.selection,"line_joiner":self.line_joiner,
                  "text":self.text,"spans":spans,"styles":[s.export() for s in self.styles.values()],
+                 "spacing":observe_spacing(self),
                  "layout_suggestion":{"x":x,"first_line_indent":lefts[0]-x,
                     "baseline":baselines[0],"base_baselines":baselines,
                     "observed_baselines":[line.baseline for line in self.resolved.lines]},

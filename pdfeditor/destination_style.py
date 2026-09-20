@@ -11,7 +11,7 @@ from .attributed import SourceStyle,digest
 from .backend import PdfError
 
 
-PROPERTIES = ('font_size', 'horizontal_scale', 'tracking', 'word_spacing',
+PROPERTIES = ('font_size', 'horizontal_scale', 'tracking',
               'baseline_shift', 'fill', 'observed_color', 'font_name')
 
 
@@ -38,14 +38,14 @@ class DestinationParagraph:
             if set(recipe) != set(PROPERTIES):
                 raise PdfError('destination style properties must be explicit')
             recipe=inline_properties(recipe)
-            size, scale, tracking, word, rise = (recipe[k] for k in PROPERTIES[:5])
-            if (not all(type(v) in (int, float) and math.isfinite(v) for v in (size, scale, tracking, word, rise))
+            size, scale, tracking, rise = (recipe[k] for k in PROPERTIES[:4])
+            if (not all(type(v) in (int, float) and math.isfinite(v) for v in (size, scale, tracking, rise))
                     or size <= 0 or scale <= 0):
                 raise PdfError('invalid destination inline metrics')
             # The persistent lower binding currently observes normalized Tc/Tw/Ts.
             # Do not discard nonzero logical values to make that binding succeed.
-            if tracking or word or rise:
-                raise PdfError('destination persistence of nonzero tracking, word spacing or rise is unsupported')
+            if tracking or rise:
+                raise PdfError('destination persistence of nonzero tracking or rise is unsupported')
             op, color = recipe['fill']
             if (op not in ('g', 'rg', 'k') or len(color) != {'g':1, 'rg':3, 'k':4}[op]
                     or any(type(v) not in (float, int) or not math.isfinite(v) or not 0 <= v <= 1 for v in color)
@@ -55,9 +55,9 @@ class DestinationParagraph:
             event.state.size = size; event.state.tz = scale * 100; event.state.fill = deepcopy(recipe['fill'])
             # Normalize the inline basis; the writer maps it through destination
             # CTM and page coordinates. Keep destination clip/other state intact.
-            self.styles[ident] = SourceStyle(ident, event, size, scale, tracking, word, rise,
+            self.styles[ident] = SourceStyle(ident, event, size, scale, tracking, rise,
                                             (1, 0, 0, 1, 0, 0), deepcopy(recipe['observed_color']), recipe['font_name'])
-            self.rendered[ident] = dict(recipe, id=ident, font_resource=None, font_xref=None)
+            self.rendered[ident] = dict(recipe, id=ident, font_resource=None, font_xref=None,tracking_provenance='observed_source')
 
     def __getattr__(self, name):
         return getattr(self.base, name)

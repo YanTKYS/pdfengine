@@ -32,7 +32,7 @@ from .destination_style import bind_destination_styles
 
 
 LINE_KEYS = ('start','end','baseline','width','ascent','descent')
-STYLE_KEYS = ('font_size','horizontal_scale','tracking','word_spacing','baseline_shift','observed_color')
+STYLE_KEYS = ('font_size','horizontal_scale','tracking','baseline_shift','observed_color')
 
 
 def _style(binding):

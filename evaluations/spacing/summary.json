@@ -1,0 +1,610 @@
+{
+  "date": "2026-09-20",
+  "cases": [
+    {
+      "id": "word_osaka_fire_notice",
+      "source_url": "https://www.pref.osaka.lg.jp/documents/63648/20250327jimurennraku.pdf",
+      "source_sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+      "page": 1,
+      "selection": {
+        "schema_version": 1,
+        "source_sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+        "page": 1,
+        "page_observation_sha256": "347f12ce65f5c55c88b8cabcf31f252f483ec5cd02c78b01d8ccca86023a40f6",
+        "glyph_ids": [
+          143,
+          144,
+          145,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154,
+          155,
+          156,
+          157,
+          158,
+          159,
+          160,
+          161,
+          162,
+          163,
+          164,
+          165,
+          166,
+          167,
+          168,
+          169,
+          170,
+          171,
+          172,
+          173,
+          174,
+          175,
+          176,
+          177,
+          178,
+          179,
+          180,
+          181,
+          182,
+          183,
+          184,
+          185,
+          186,
+          187,
+          188,
+          189,
+          190,
+          191,
+          192,
+          193,
+          194,
+          195,
+          196,
+          197,
+          198,
+          199,
+          200,
+          201,
+          202,
+          203,
+          204,
+          205,
+          206,
+          207,
+          208,
+          209,
+          210,
+          211,
+          212,
+          213,
+          214,
+          215,
+          216,
+          217
+        ],
+        "explicitly_supplied_width": 480,
+        "inferred_available_width": null
+      },
+      "observation": {
+        "snapshot_sha256": "9aa0a8266ad3660b40c7f0763e121796d94be8ecf3c85721fed50b8a03bbc271",
+        "unicode_length": 75,
+        "styles": [
+          {
+            "id": "s0",
+            "font_name": "MS-Gothic",
+            "font_size": 10.56,
+            "tracking": 0.0,
+            "tracking_provenance": "observed_source"
+          },
+          {
+            "id": "s1",
+            "font_name": "MS-Gothic",
+            "font_size": 10.56,
+            "tracking": null,
+            "tracking_provenance": "candidate"
+          }
+        ],
+        "tracking": {
+          "value": null,
+          "provenance": "unknown",
+          "requires_confirmation": true,
+          "reason": "character spacing differs between lines or inside a line",
+          "tc_by_line": [
+            [
+              -0.12,
+              0.0
+            ],
+            [
+              0.0
+            ]
+          ]
+        },
+        "alignment_candidates": [
+          {
+            "value": "unknown",
+            "provenance": "unknown",
+            "reason": "line edges witness no single alignment"
+          }
+        ],
+        "lines": [
+          {
+            "index": 0,
+            "tc": [
+              -0.12,
+              0.0
+            ],
+            "tw": [
+              0.0
+            ],
+            "distribution": "irregular",
+            "glyph_count": 47
+          },
+          {
+            "index": 1,
+            "tc": [
+              0.0
+            ],
+            "tw": [
+              0.0
+            ],
+            "distribution": "irregular",
+            "glyph_count": 28
+          }
+        ]
+      },
+      "source_replay": {
+        "mupdf_all_equal": true,
+        "poppler_all_changed_pixels": 0
+      },
+      "status": "safe_refusal",
+      "reason": "new glyphs require logical tracking: tracking candidate requires explicit confirmation",
+      "output_created": false,
+      "cause": "within-line Tc difference remains a separate style; nonzero logical tracking is unconfirmed"
+    },
+    {
+      "id": "word_okinawa_procurement",
+      "source_url": "https://www.pref.okinawa.lg.jp/_res/projects/default_project/_page_/001/035/156/01_koukoku.pdf",
+      "source_sha256": "bbaa2b12eeaf1c7eac2dc91aca03c00da4ed948e7c14d99d879ff4c3083fd0b3",
+      "page": 2,
+      "selection": {
+        "schema_version": 1,
+        "source_sha256": "bbaa2b12eeaf1c7eac2dc91aca03c00da4ed948e7c14d99d879ff4c3083fd0b3",
+        "page": 2,
+        "page_observation_sha256": "e5e934b35c60f5a9dbf0041a17fa9ad14318bba1c84f30932e125a01515cb68f",
+        "glyph_ids": [
+          912,
+          913,
+          914,
+          915,
+          916,
+          917,
+          918,
+          919,
+          920,
+          921,
+          922,
+          923,
+          924,
+          925,
+          926,
+          927,
+          928,
+          929,
+          930,
+          931,
+          932,
+          933,
+          934,
+          935,
+          936,
+          937,
+          938,
+          939,
+          940
+        ],
+        "explicitly_supplied_width": 468,
+        "inferred_available_width": null
+      },
+      "observation": {
+        "snapshot_sha256": "5cc9686900c46c10a42058c6983d19f55694e455e68194b418b417481c6f4411",
+        "unicode_length": 29,
+        "styles": [
+          {
+            "id": "s0",
+            "font_name": "lr¾©",
+            "font_size": 10.56,
+            "tracking": 0.0,
+            "tracking_provenance": "observed_source"
+          },
+          {
+            "id": "s1",
+            "font_name": "Arial",
+            "font_size": 10.56,
+            "tracking": 0.0,
+            "tracking_provenance": "observed_source"
+          }
+        ],
+        "tracking": {
+          "value": 0.0,
+          "provenance": "observed_source",
+          "requires_confirmation": false,
+          "evidence": {
+            "lines": 1
+          }
+        },
+        "alignment_candidates": [
+          {
+            "value": "unknown",
+            "provenance": "unknown",
+            "reason": "a single line cannot witness its alignment"
+          }
+        ],
+        "lines": [
+          {
+            "index": 0,
+            "tc": [
+              0.0
+            ],
+            "tw": [
+              0.0
+            ],
+            "distribution": "irregular",
+            "glyph_count": 29
+          }
+        ]
+      },
+      "source_replay": {
+        "mupdf_all_equal": true,
+        "poppler_all_changed_pixels": 0
+      },
+      "status": "passed",
+      "stages": [
+        {
+          "stage": 0,
+          "status": "passed",
+          "logical_unicode_restored": true,
+          "output_sha256": "4f63cd60f9c73e94f2aca89a73238b29e3dfe96cbaef21b8cf264a434271b1e3",
+          "independent_text": {
+            "passed": true,
+            "normalization": "remove whitespace from both target-page strings and both selection strings",
+            "source_occurrences": 1,
+            "old_text_present_in_output": true,
+            "replacement_contains_original": true,
+            "policy": "one occurrence replaced in the complete normalized target page; other pages exactly unchanged"
+          },
+          "poppler_outside_changed_pixels": 0,
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true,
+          "other_pages_equal": true,
+          "fixed_paints_images_annotations_fonts_preserved": true,
+          "font_mapping": {
+            "passed": true,
+            "new_glyph_occurrences": 0,
+            "retained_glyph_occurrences": 28,
+            "reused_code_occurrences": 0
+          },
+          "original_codes": {
+            "passed": true,
+            "policy": "original resource alias and encoded bytes retained; saved GIDs verified by backend"
+          },
+          "mutation_record_count": 29
+        },
+        {
+          "stage": 1,
+          "status": "passed",
+          "logical_unicode_restored": true,
+          "output_sha256": "c20a30e469367aec4f1502f05517390bc7070162374e643518cb903d06eefed1",
+          "independent_text": {
+            "passed": true,
+            "normalization": "remove whitespace from both target-page strings and both selection strings",
+            "source_occurrences": 1,
+            "old_text_present_in_output": false,
+            "replacement_contains_original": false,
+            "policy": "one occurrence replaced in the complete normalized target page; other pages exactly unchanged"
+          },
+          "poppler_outside_changed_pixels": 0,
+          "poppler_all_changed_pixels": 3887,
+          "mupdf_all_equal": false,
+          "other_pages_equal": true,
+          "fixed_paints_images_annotations_fonts_preserved": true,
+          "font_mapping": {
+            "passed": true,
+            "new_glyph_occurrences": 12,
+            "retained_glyph_occurrences": 4,
+            "reused_code_occurrences": 0
+          },
+          "original_codes": {
+            "passed": true,
+            "policy": "original resource alias and encoded bytes retained; saved GIDs verified by backend"
+          },
+          "mutation_record_count": 28
+        },
+        {
+          "stage": 2,
+          "status": "passed",
+          "logical_unicode_restored": true,
+          "output_sha256": "fd2157b08354412537fd6509f5046435cf69decddf8845e0843420e6b93ec384",
+          "independent_text": {
+            "passed": true,
+            "normalization": "remove whitespace from both target-page strings and both selection strings",
+            "source_occurrences": 1,
+            "old_text_present_in_output": false,
+            "replacement_contains_original": false,
+            "policy": "one occurrence replaced in the complete normalized target page; other pages exactly unchanged"
+          },
+          "poppler_outside_changed_pixels": 0,
+          "poppler_all_changed_pixels": 564,
+          "mupdf_all_equal": false,
+          "other_pages_equal": true,
+          "fixed_paints_images_annotations_fonts_preserved": true,
+          "font_mapping": {
+            "passed": true,
+            "new_glyph_occurrences": 2,
+            "retained_glyph_occurrences": 14,
+            "reused_code_occurrences": 0
+          },
+          "original_codes": {
+            "passed": true,
+            "policy": "original resource alias and encoded bytes retained; saved GIDs verified by backend"
+          },
+          "mutation_record_count": 16
+        },
+        {
+          "stage": 3,
+          "status": "passed",
+          "logical_unicode_restored": true,
+          "output_sha256": "139a99f6bc787ea523d06bd64cd82c34f4e55231962a8e75522cf24f1544d5b5",
+          "independent_text": {
+            "passed": true,
+            "normalization": "remove whitespace from both target-page strings and both selection strings",
+            "source_occurrences": 1,
+            "old_text_present_in_output": true,
+            "replacement_contains_original": true,
+            "policy": "one occurrence replaced in the complete normalized target page; other pages exactly unchanged"
+          },
+          "poppler_outside_changed_pixels": 0,
+          "poppler_all_changed_pixels": 0,
+          "mupdf_all_equal": true,
+          "other_pages_equal": true,
+          "fixed_paints_images_annotations_fonts_preserved": true,
+          "font_mapping": {
+            "passed": true,
+            "new_glyph_occurrences": 0,
+            "retained_glyph_occurrences": 16,
+            "reused_code_occurrences": 0
+          },
+          "original_codes": {
+            "passed": true,
+            "policy": "original resource alias and encoded bytes retained; saved GIDs verified by backend"
+          },
+          "mutation_record_count": 16
+        }
+      ],
+      "font_policy": "explicit MS Mincho face 0 for new glyphs; original codes retained otherwise"
+    }
+  ],
+  "engine_sha256": {
+    "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "anchors.py": "f721d5dc4d05e0140b6879ac36a978c791558e4c50b70b21640d99a0484ad030",
+    "attributed.py": "4018ed2e982bb3e580bf695a2aed883380835196aa1783fe84a1beae39fa90b3",
+    "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+    "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+    "composition.py": "027cc84733e17ddcce62e767cfba160e49820f003c56b03fb9c5aee2546a9705",
+    "content_stream.py": "94e274c23d56eb154846b165f405f7ab766a63e44bf3dad065a1367e8cca2a0c",
+    "destination_style.py": "9090293c9bc87f1fc53324fce6a378c475c83939efc3b1d28f7406a5826af550",
+    "document_flow.py": "7918a091ca1efb9fa08c6496b617780c8c1cb4129ebf1a08331841da2c4f1920",
+    "editable.py": "777d0233ac2f06f07248348021c97b543922105bd1ef54c5e7e9553b887e0a5b",
+    "elements.py": "e0d9c0ee0615d04168ec4a1ad7e044a949b7254746754c366e63b9ee3b374949",
+    "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+    "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+    "flow_transaction.py": "a6198a3371c4d6c97024cec26fbcf27c6d7f52735c722a0efb6acf45d96f8b05",
+    "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+    "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+    "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+    "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+    "logical_element.py": "addfc4afe9784a48e8cd22c7c7ba18f140fd70e60b38078521c281234feca0c2",
+    "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+    "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+    "mutation.py": "b9eb726d10d7bc57d60d0721e88110f1754bb04eddcb088f02dfad5c93126dde",
+    "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+    "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+    "paint_resize.py": "b9bcb8a8da13f3317c37c54c3fa83f74f6de5fe97f89439f25559b78fc0e68f8",
+    "paragraph.py": "8238f2d7d477b325e9991f19d10d43d05235a8c2e31e5eb347046437f020f97f",
+    "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+    "pdf_save.py": "9c4058379921878dbe25e49d2646e90234087b240510e5025665c5e03d5ffd79",
+    "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+    "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+    "rich_layout.py": "961bce82f1204b9702ae0a45f955f3b8ebb726bc3bb0647efed6eac88c966c91",
+    "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+    "shaped_font.py": "25f591aad44c819f0ba1794bb9d498c0cf79647c01a8db20ca9328c77f8703e9",
+    "shared_flow.py": "7b3be16d04828c58d5751ab8f4ab86bd970b63992e3070384653aef6106efb59",
+    "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e",
+    "spacing.py": "e44fab983055b373c1473e41846545135880753ba32be8a460748437a2769526",
+    "story_flow.py": "364192a590022c2259c748ad99a8a1bf84fb9a84069056a2c3757253b01e4ffe",
+    "story_styles.py": "8b10c097d818231c296ce8f2d5003d919f0c4e298d78ead2967de8f1d4a7c83c",
+    "transaction.py": "74e71b4e587305fce5c16bd71e8dbc89a5051e2c635f06b62b2b3587510a65a5",
+    "variable_container.py": "5c4e3336aa2187a37adf6d36bd2ccd3fb33c01e4ef7fbd4f24fe50708b98df82"
+  },
+  "runner_sha256": "dae5fd1a03de5c02e5793c9f70172a64ba52007d3a78b93589ef091136967301",
+  "environment": {
+    "pymupdf": "1.27.2.3",
+    "python": "3.12.14",
+    "pypdf": "6.10.0"
+  },
+  "scope": "PR A spacing/style separation only; alignment rendering and confirmed nonzero tracking are not implemented",
+  "interpretation": "synthetic Tw line fragmentation is fixed; the real Word inline Tc difference must remain split",
+  "provider_sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+  "baseline": {
+    "commit": "532dc1b79ba5f98bdcc04b161d9e3eec2f133dc5",
+    "passed": 551,
+    "skipped": 2,
+    "failures": 0,
+    "junit_sha256": "e10962ade61780ea0133d1b3cb69e15f161120f21559ea30e8cda6574953c57b"
+  },
+  "regression": {
+    "tests": 563,
+    "passed": 561,
+    "skipped": 2,
+    "failures": 0,
+    "errors": 0,
+    "all_baseline_test_ids_preserved": true,
+    "added_test_ids": [
+      [
+        "tests.test_spacing",
+        "test_line_varying_tc_merges_but_inline_tc_changes_stay_separate[False]"
+      ],
+      [
+        "tests.test_spacing",
+        "test_line_varying_tc_merges_but_inline_tc_changes_stay_separate[True]"
+      ],
+      [
+        "tests.test_spacing",
+        "test_line_word_spacing_no_longer_creates_false_edit_boundaries"
+      ],
+      [
+        "tests.test_spacing",
+        "test_retained_spacing_uses_each_glyph_witness_and_noop_is_exact[.4]"
+      ],
+      [
+        "tests.test_spacing",
+        "test_retained_spacing_uses_each_glyph_witness_and_noop_is_exact[.8]"
+      ],
+      [
+        "tests.test_spacing",
+        "test_snapshot_separates_line_spacing_and_unconfirmed_tracking[justify_tj]"
+      ],
+      [
+        "tests.test_spacing",
+        "test_snapshot_separates_line_spacing_and_unconfirmed_tracking[justify_tw]"
+      ],
+      [
+        "tests.test_spacing",
+        "test_snapshot_separates_line_spacing_and_unconfirmed_tracking[left_tracking]"
+      ],
+      [
+        "tests.test_spacing",
+        "test_snapshot_separates_line_spacing_and_unconfirmed_tracking[tracking_and_justify]"
+      ],
+      [
+        "tests.test_spacing",
+        "test_unknown_typing_recipe_survives_deletion_but_cannot_invent_tracking"
+      ]
+    ],
+    "skip_details": [
+      {
+        "classname": "tests.test_pdf_save",
+        "name": "test_empty_user_password_and_original_owner_password_are_preserved[AES-128]",
+        "reason": "AES provider unavailable: pypdf needs cryptography or pycryptodome"
+      },
+      {
+        "classname": "tests.test_pdf_save",
+        "name": "test_empty_user_password_and_original_owner_password_are_preserved[AES-256]",
+        "reason": "AES provider unavailable: pypdf needs cryptography or pycryptodome"
+      }
+    ],
+    "batches": [
+      {
+        "batch": 1,
+        "files": [
+          "tests\\test_elements.py",
+          "tests\\test_ink_collision.py",
+          "tests\\test_integration.py",
+          "tests\\test_marked_content.py",
+          "tests\\test_selection.py",
+          "tests\\test_shared_flow.py",
+          "tests\\test_spacing.py"
+        ],
+        "exit_code": 0,
+        "seconds": 321.26,
+        "junit_sha256": "0002dba0dc906c38edcbe525bcb89c1cbdf51935bef14844d6549e7ff48af0f1",
+        "tests": 102,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "batch": 2,
+        "files": [
+          "tests\\test_attributed_boundaries.py",
+          "tests\\test_composition.py",
+          "tests\\test_empty_clip_rebind.py",
+          "tests\\test_fonts.py",
+          "tests\\test_inference.py",
+          "tests\\test_layout.py",
+          "tests\\test_paragraph_cli.py",
+          "tests\\test_rich_layout.py",
+          "tests\\test_selection_cli.py",
+          "tests\\test_story_flow.py",
+          "tests\\test_story_flow_evaluation.py"
+        ],
+        "exit_code": 0,
+        "seconds": 300.5,
+        "junit_sha256": "cb9f449b0bf3e37ef657e307750b72e0b4bd5e7d2c3064a5a92ad5c6f49415b7",
+        "tests": 190,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "batch": 3,
+        "files": [
+          "tests\\test_anchors.py",
+          "tests\\test_attributed.py",
+          "tests\\test_content_replay.py",
+          "tests\\test_followup_audit.py",
+          "tests\\test_pdf_save.py",
+          "tests\\test_proof_session.py",
+          "tests\\test_shaped_font.py",
+          "tests\\test_stage1_evaluation.py",
+          "tests\\test_story_styles.py",
+          "tests\\test_transaction.py"
+        ],
+        "exit_code": 0,
+        "seconds": 303.52,
+        "junit_sha256": "9c3ff32524415840a83d0a0e97087fda093d5d207d50865ad8d5960652cb0f16",
+        "tests": 137,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      {
+        "batch": 4,
+        "files": [
+          "tests\\test_destination_style.py",
+          "tests\\test_document_flow.py",
+          "tests\\test_editable.py",
+          "tests\\test_empty_element.py",
+          "tests\\test_external_regressions.py",
+          "tests\\test_flow_transaction.py",
+          "tests\\test_mutation.py",
+          "tests\\test_paint_provenance.py",
+          "tests\\test_safety.py",
+          "tests\\test_variable_container.py"
+        ],
+        "exit_code": 0,
+        "seconds": 278.29,
+        "junit_sha256": "b10b97dfcfc98d5b0594049652cbc1dbcf0255531f26ac5bb92be18da65ca309",
+        "tests": 134,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "execution": "four disjoint module groups, sequential root-owned pytest processes; a temporary progress-label index error was fixed before starting group 4, with completed groups preserved"
+  },
+  "visual_review": {
+    "reviewed_pages": [
+      "word_okinawa_procurement original page 2",
+      "word_okinawa_procurement v2 page 2"
+    ],
+    "published_run_pngs_equal_reviewed_run": true,
+    "compared_png_count": 12
+  }
+}

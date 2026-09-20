@@ -1,10 +1,15 @@
 """Spacing evidence separates glyph metrics, inline tracking and line adjustments."""
 import pytest
 
-from pdfeditor.attributed import SourceParagraph
+from pdfeditor.attributed import SourceParagraph,inspect_paragraph
+from pdfeditor.backend import PdfError
+from pdfeditor.editable import write_editable,open_editable,edit_document
+from pdfeditor.paragraph import edit_paragraph,plan_paragraph
+from pdfeditor.replay import glyph_observations,compare_glyphs
 from pdfeditor.selection import inspect_selection_source, make_selection
 from pdfeditor.spacing import observe_spacing
 from test_attributed import source_pdf
+import pymupdf
 
 CHAR=7.2  # Courier 600/1000 at 12 pt
 
@@ -80,3 +85,81 @@ def test_spacing_evidence_distinguishes_tracking_metrics_and_line_adjustments(tm
     if name=='justify_tw':
         assert all(gap['whitespace']==(gap['tw']>0) for line in lines for gap in line['gaps'])
     assert evidence['tracking']['requires_confirmation']==bool(tracking)
+
+
+@pytest.mark.parametrize('name',['justify_tw','justify_tj','tracking_and_justify','left_tracking'])
+def test_snapshot_separates_line_spacing_and_unconfirmed_tracking(tmp_path,name):
+    source=source_pdf(tmp_path,CASES[name][0])
+    ids=[g for l in inspect_selection_source(source)['lines'] for g in l['glyph_ids']]
+    p=inspect_paragraph(source,make_selection(source,glyph_ids=ids,explicit_width=120))
+    assert len(p['styles'])==1 and 'word_spacing' not in p['styles'][0]
+    assert p['spacing']['schema']=='pdfengine-spacing-evidence-1'
+    assert p['spacing']['alignment_candidates'][0]['value']==CASES[name][2]
+    expected=None if CASES[name][1] else 0.0
+    assert p['styles'][0]['tracking']==expected
+    assert p['styles'][0]['tracking_provenance']==('candidate' if expected is None else 'observed_source')
+
+
+@pytest.mark.parametrize('inline',[False,True])
+def test_line_varying_tc_merges_but_inline_tc_changes_stay_separate(tmp_path,inline):
+    program=(b'BT /Regular 12 Tf .4 Tc 20 200 Td (AB) Tj .8 Tc (CD) Tj ET' if inline else
+             b'BT /Regular 12 Tf .4 Tc 20 200 Td (ABCD) Tj 0 -16 Td .8 Tc (EFGH) Tj ET')
+    source=source_pdf(tmp_path,program)
+    p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(4 if inline else 8)),explicit_width=120))
+    assert len(p['styles'])==(2 if inline else 1)
+    assert all(s['tracking'] is None and s['tracking_provenance']==('candidate' if inline else 'unknown') for s in p['styles'])
+    assert p['spacing']['tracking']['provenance']=='unknown'
+    with pytest.raises(PdfError,match='confirmation' if inline else 'tracking is unknown'):
+        plan_paragraph(source,p,[dict(start=0,end=1,text='X')])
+
+
+@pytest.mark.parametrize('tc',[b'.4',b'.8'])
+def test_retained_spacing_uses_each_glyph_witness_and_noop_is_exact(tmp_path,tc):
+    source=source_pdf(tmp_path,b'BT /Regular 12 Tf .4 Tc 20 200 Td (ABCD) Tj 0 -16 Td '+tc+b' Tc (EFGH) Tj ET')
+    p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(8)),explicit_width=120),line_joiner='\n')
+    output=tmp_path/'noop.pdf'
+    edit_paragraph(source,output,p,[],min_line_height=16)
+    with pymupdf.open(source) as a,pymupdf.open(output) as b:
+        assert compare_glyphs(glyph_observations(a[0]),glyph_observations(b[0]))['passed']
+        assert all(a[i].get_pixmap(dpi=144).samples==b[i].get_pixmap(dpi=144).samples for i in range(len(a)))
+    plan=plan_paragraph(source,p,[dict(start=8,end=9,text='')],min_line_height=16)
+    assert plan['lines'][-1]['width']==pytest.approx(3*CHAR+2*float(tc),abs=.002)
+    assert p['styles'][0]['tracking'] is None
+    with pytest.raises(PdfError,match='persistence refused'):
+        write_editable(source,tmp_path/'bad.pdf',tmp_path/'bad.json',p,[],min_line_height=16)
+    assert not (tmp_path/'bad.pdf').exists() and not (tmp_path/'bad.json').exists()
+
+
+def test_unknown_typing_recipe_survives_deletion_but_cannot_invent_tracking(tmp_path):
+    source=source_pdf(tmp_path,b'BT /Regular 12 Tf .4 Tc 20 200 Td (ABCD) Tj ET')
+    p=inspect_paragraph(source,make_selection(source,glyph_ids=[0,1,2,3],explicit_width=120))
+    out,model=tmp_path/'empty.pdf',tmp_path/'empty.json'
+    write_editable(source,out,model,p,[dict(start=0,end=4,text='')])
+    opened=open_editable(out,model)
+    assert opened['status']=='restored'
+    assert opened['state']['paragraph']['styles'][0]['tracking'] is None
+    with pytest.raises(PdfError,match='tracking candidate'):
+        edit_document(out,model,tmp_path/'bad.pdf',tmp_path/'bad.json',[dict(start=0,end=0,text='X')])
+    assert not (tmp_path/'bad.pdf').exists() and not (tmp_path/'bad.json').exists()
+
+
+def test_line_word_spacing_no_longer_creates_false_edit_boundaries(tmp_path):
+    source=source_pdf(tmp_path,CASES['justify_tw'][0])
+    ids=[g for l in inspect_selection_source(source)['lines'] for g in l['glyph_ids']]
+    p=inspect_paragraph(source,make_selection(source,glyph_ids=ids,explicit_width=150))
+    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    out,model=tmp_path/'edited.pdf',tmp_path/'edited.json'
+    # No explicit style override: these are three lines of one inline style.
+    write_editable(source,out,model,p,[dict(start=0,end=len(p['text']),text='First line\nSecond line')],
+        fonts={'s0':dict(path=str(font))},min_line_height=16,max_bottom=140)
+    state=open_editable(out,model)
+    assert state['status']=='restored' and len(state['state']['paragraph']['styles'])==1
+    assert state['state']['paragraph']['styles'][0]['tracking']==0.0
+    again,model2=tmp_path/'again.pdf',tmp_path/'again.json'
+    edit_document(out,model,again,model2,[dict(start=0,end=5,text='Other')])
+    opened=open_editable(again,model2)
+    assert opened['status']=='restored' and opened['state']['paragraph']['text']=='Other line\nSecond line'
+    noop=tmp_path/'noop.pdf'
+    edit_document(again,model2,noop,tmp_path/'noop.json',[])
+    with pymupdf.open(again) as a,pymupdf.open(noop) as b:
+        assert all(a[i].get_pixmap(dpi=144).samples==b[i].get_pixmap(dpi=144).samples for i in range(len(a)))
