@@ -32,10 +32,11 @@ def _name(value):
 
 
 class ParagraphShaper:
-    def __init__(self, paragraph, units, fonts):
+    def __init__(self, paragraph, units, fonts, *, alignment='left'):
         self.paragraph, self.units, self.specs = paragraph, units, fonts
         self.text = "".join(u.text for u in units)
         self.fonts, self.source_fonts = {}, {}
+        self.alignment = alignment
         self.original_offsets = {id(unit):i for i,unit in enumerate(paragraph.units)}
 
     def font(self, ident):
@@ -88,7 +89,13 @@ class ParagraphShaper:
                     raise PdfError("retained source cluster is not a single painted glyph")
                 source_matrix=multiply(original.event.text_matrix,original.event.state.ctm)
                 advance = original.char.advance * source_matrix[0]
-                if index+1 < end:
+                if self.alignment != 'left':
+                    if style.tracking is None:
+                        raise PdfError('non-left alignment needs known or explicitly confirmed logical tracking')
+                    advance = original.char.pdf_width / 1000 * original.event.state.size * source_matrix[0] * original.event.state.tz / 100
+                    if index + 1 < end:
+                        advance += style.tracking
+                elif index+1 < end:
                     following = self.units[index+1].retained
                     if (following is not None and following.char is not None
                             and original.source_index is not None and following.source_index is not None
@@ -135,14 +142,17 @@ class ParagraphShaper:
                         else 'tracking is unknown because source character spacing varies')
                 raise PdfError('new glyphs require logical tracking: '+reason)
             font = self.font(provider)
-            run = font.shape(self.text[index:stop])
+            run = (font.shape(self.text[index:stop]) if self.alignment == 'left' else
+                   font.shape(self.text[index:stop], nominal_spacing=True))
+            if self.alignment != 'left' and any(g.x_offset or g.y_offset for g in run.glyphs):
+                raise PdfError('nominal alignment needs glyphs without contextual placement offsets')
             sx, sy = style.size*style.horizontal_scale/font.upem, style.size/font.upem
             for position, glyph in enumerate(run.glyphs):
                 dx,dy = glyph.x_offset*sx, -glyph.y_offset*sy+style.rise
                 bounds = font.ink(glyph.gid)
                 ink = (Rect(dx+bounds[0]*sx,dy-bounds[3]*sy,dx+bounds[2]*sx,dy-bounds[1]*sy)
                        if bounds is not None else None)
-                advance = glyph.advance*sx + style.tracking
+                advance = (glyph.advance if self.alignment == 'left' else font.nominal_width(glyph.gid))*sx + style.tracking
                 if stop == end and position == len(run.glyphs)-1:
                     advance -= style.tracking
                 result.append(InlineGlyph(glyph.text,advance,ink,
@@ -178,7 +188,8 @@ def _layout_parameters(paragraph, snapshot, *, width=None, x=None, first_line_in
         max_bottom=min(bottom,paragraph.content.page.rect.height),empty_ascent=size*.8,empty_descent=size*.2)
 
 
-def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, paragraph_style=None, **layout_options):
+def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, paragraph_style=None,
+                   paragraph_layout=None, _paragraph_continues=False, **layout_options):
     """Measure with the writer's shaper/layout, without authorizing any paint."""
     from .logical_element import paragraph_from_snapshot
     paragraph=paragraph_from_snapshot(source,snapshot)
@@ -189,9 +200,11 @@ def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, p
         units=apply_edits(paragraph,snapshot,edits)
         from .style_confirmation import confirm_paragraph
         paragraph=confirm_paragraph(paragraph,paragraph_style)
+        from .alignment import confirm, options as alignment_options
+        alignment=confirm(snapshot,paragraph_layout)
         _,options=_layout_parameters(paragraph,snapshot,**layout_options)
-        shaper=ParagraphShaper(paragraph,units,fonts or {})
-        layout=layout_attributed(shaper.text,shape=shaper.shape,**options)
+        shaper=ParagraphShaper(paragraph,units,fonts or {},alignment=alignment['value'])
+        layout=layout_attributed(shaper.text,shape=shaper.shape,**options,**alignment_options(alignment),continues=_paragraph_continues)
         return dict(text=shaper.text,baseline=options['baseline'],
             last_baseline=layout.lines[-1].baseline if layout.lines else options['baseline'],
             lines=[{k:getattr(line,k) for k in ('start','end','baseline','width','ascent','descent')} for line in layout.lines])
@@ -239,7 +252,7 @@ class ParagraphPlan(Plan):
 def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None, first_line_indent=None,
                         max_bottom=None, min_line_height=None, element_snapshot=None, element_relations=None,
                         anchor_spec=None, baseline=None, preserve_empty=False, empty_style_id=None,
-                        render_styles=None, paragraph_style=None, owner=None):
+                        render_styles=None, paragraph_style=None, paragraph_layout=None, _paragraph_continues=False, owner=None):
     """Prove source facts and plan every byte mutation of one paragraph edit."""
     from .logical_element import paragraph_from_snapshot, style_recipes
     from .destination_style import bind_destination_styles
@@ -256,6 +269,8 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
         from .style_confirmation import confirm_paragraph, confirmations, writer_spacing
         paragraph = confirm_paragraph(paragraph, paragraph_style)
         result.paragraph = paragraph
+        from .alignment import confirm, options as alignment_options
+        alignment = confirm(snapshot, paragraph_layout)
         empty_typing_style = None
         if preserve_empty and not units:
             if any(confirmations(s.export()) for s in paragraph.styles.values()):
@@ -297,9 +312,9 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                 raise PdfError("source no-op failed; attributed editing is prohibited")
         with pymupdf.open(stream=program_pdf_bytes(source, pno, removed), filetype='pdf') as doc:
             _require_removal(untouched, doc[pno])
-        shaper = ParagraphShaper(paragraph, units, fonts or {})
+        shaper = ParagraphShaper(paragraph, units, fonts or {}, alignment=alignment['value'])
         result.shaper = shaper
-        layout = layout_attributed(shaper.text, shape=shaper.shape, **layout_options)
+        layout = layout_attributed(shaper.text, shape=shaper.shape, **layout_options, **alignment_options(alignment),continues=_paragraph_continues)
         resources, font_reports = {}, {}
         for provider, font in shaper.fonts.items():
             glyphs = [g.glyph.payload['shaped_glyph'] for g in layout.glyphs
@@ -427,6 +442,8 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             "element_snapshot_sha256": element_snapshot.get('snapshot_sha256') if element_snapshot else None,
             "element_relations": element_relations,
             "snapshot_sha256": snapshot['snapshot_sha256'], "selection": paragraph.selection,
+            "alignment": alignment,
+            "paragraph_continues": _paragraph_continues,
             "before": paragraph.text, "after": shaper.text, "composed_text": ''.join(line.text for line in layout.lines),
             "logical_styles": [u.style_id for u in units],
             "empty_typing_style_id": empty_typing_style,

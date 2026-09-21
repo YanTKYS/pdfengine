@@ -92,6 +92,9 @@ def layout_attributed(
     empty_ascent: float,
     empty_descent: float,
     first_line_indent: float = 0.0,
+    alignment: str = 'left',
+    justify_policy: str | None = None,
+    continues: bool = False,
 ) -> AttributedLayout:
     """Fit attributed text within an explicitly supplied horizontal region.
 
@@ -113,6 +116,13 @@ def layout_attributed(
     """
     if not isinstance(text, str):
         raise LayoutError("Text must be a Unicode string.")
+    if alignment not in ('left', 'right', 'center', 'justify'):
+        raise LayoutError('Unknown paragraph alignment.')
+    if type(continues) is not bool:
+        raise LayoutError('Continuation must come from a verified logical fragment boundary.')
+    if ((alignment == 'justify' and justify_policy not in ('word', 'character'))
+            or (alignment != 'justify' and justify_policy is not None)):
+        raise LayoutError('Justification needs an explicit word or character gap policy.')
     numbers = (x, baseline, width, min_line_height, empty_ascent, empty_descent,
                first_line_indent)
     if not all(isfinite(value) for value in numbers):
@@ -178,7 +188,7 @@ def layout_attributed(
     lines: list[AttributedLine] = []
     placed: list[PlacedInlineGlyph] = []
 
-    def append(start: int, end: int, metrics: _Measured) -> None:
+    def append(start: int, end: int, metrics: _Measured, *, soft_break=False) -> None:
         line_baseline = baseline
         if lines:
             previous = lines[-1]
@@ -189,20 +199,48 @@ def layout_attributed(
         if max_bottom is not None and line_baseline + metrics.descent > max_bottom + _EPSILON:
             raise LayoutError("Reflowed text exceeds the available vertical space.")
         line_x = x + (first_line_indent if not lines else 0.0)
+        available = width - (first_line_indent if not lines else 0.0)
+        slack = max(0.0, available - metrics.width)
+        gaps = set()
+        if alignment == 'right':
+            line_x += slack
+        elif alignment == 'center':
+            line_x += slack / 2
+        elif alignment == 'justify' and soft_break and metrics.glyphs and slack > _EPSILON:
+            offset = start
+            boundaries = set(grapheme_cluster_boundaries(text[start:end]))
+            for index, glyph in enumerate(metrics.glyphs[:-1]):
+                offset += len(glyph.text)
+                following = metrics.glyphs[index + 1]
+                if justify_policy == 'word':
+                    # Only authored ASCII word separators. Tabs, NBSP and
+                    # inferred operator repositioning never create word gaps.
+                    if glyph.text == ' ' and following.text != ' ' and text[start:offset].strip(' '):
+                        gaps.add(index)
+                elif offset - start in boundaries and not glyph.text.isspace() and not following.text.isspace():
+                    gaps.add(index)
+            if not gaps:
+                raise LayoutError('Justified soft line has no eligible confirmed gaps.')
+        extra = slack / len(gaps) if gaps else 0.0
         pen, offset = line_x + metrics.inset, start
         line_glyphs: list[PlacedInlineGlyph] = []
-        for glyph in metrics.glyphs:
+        for index, glyph in enumerate(metrics.glyphs):
             next_offset = offset + len(glyph.text)
             item = PlacedInlineGlyph(glyph, pen, line_baseline, offset, next_offset)
             line_glyphs.append(item)
-            pen += glyph.advance
+            pen += glyph.advance + (extra if index in gaps else 0.0)
             offset = next_offset
+        line_width = metrics.width + (slack if gaps else 0.0)
+        if gaps:
+            right = max([pen] + [g.ink.x1 for g in line_glyphs if g.ink is not None])
+            if abs(right - line_x - line_width) > _EPSILON:
+                raise LayoutError('Internal glyph overhang prevents exact justified line edges.')
         lines.append(AttributedLine(text[start:end], start, end, line_x, line_baseline,
-                                    metrics.width, metrics.ascent, metrics.descent,
+                                    line_width, metrics.ascent, metrics.descent,
                                     metrics.inset, line_glyphs))
         placed.extend(line_glyphs)
 
-    def wrap(start: int, end: int) -> None:
+    def wrap(start: int, end: int, *, continuation=False) -> None:
         forced = text[start:end]
         if not forced:
             append(start, end, measured(start, end))
@@ -233,7 +271,8 @@ def layout_attributed(
                 raise LayoutError(
                     "The text box is too narrow for a grapheme or an unbreakable Japanese punctuation group.")
             boundary, trimmed, metrics = chosen
-            append(start + cursor, start + trimmed, metrics)
+            append(start + cursor, start + trimmed, metrics,
+                   soft_break=bool(forced[boundary:].strip(_SPACES)) or continuation)
             cursor = boundary
             while cursor < len(forced) and forced[cursor] in _SPACES:
                 cursor += 1
@@ -242,7 +281,7 @@ def layout_attributed(
     for newline in re.finditer(r"\r\n|\r|\n", text):
         wrap(offset, newline.start())
         offset = newline.end()
-    wrap(offset, len(text))
+    wrap(offset, len(text), continuation=continues)
     bbox = Rect(min(line.x for line in lines),
                 min(line.baseline - line.ascent for line in lines),
                 max(line.x + line.width for line in lines),

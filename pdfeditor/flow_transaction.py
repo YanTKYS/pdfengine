@@ -13,6 +13,7 @@ from pathlib import Path
 import tempfile
 
 from .attributed import digest
+from .alignment import request as alignment_request
 from .backend import PdfError
 from .document_flow import _element_relations, _fixed_relations, _fonts, _order, _reseal, open_document, rebind_entry
 from .editable import _publish, bind_document_edit, plan_document_edit
@@ -86,7 +87,8 @@ def _plan(source, state, changes):
                  b['layout']['baseline'])
         if ident in changes:
             p = plan_paragraph(source, b['paragraph'], changes[ident]['edits'],
-                               fonts=_fonts(b), **dict(b['layout'], baseline=first))
+                               fonts=_fonts(b), paragraph_layout=alignment_request(b['logical_element']['alignment']),
+                               **dict(b['layout'], baseline=first))
             measured[ident] = p
             height = p['last_baseline'] - first
             deltas[ident] = height - heights[ident]

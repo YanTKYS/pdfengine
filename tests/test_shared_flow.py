@@ -13,7 +13,7 @@ from pdfeditor.story_flow import confirm_story
 from test_attributed import source_pdf
 
 
-def prepared(tmp_path, *, keep=False, break_before='auto', decorate=None):
+def prepared(tmp_path, *, keep=False, break_before='auto', decorate=None, paragraph_layout=None):
     source=source_pdf(tmp_path,b'BT /Regular 12 Tf 20 200 Td (First ) Tj /Bold 14 Tf 0 0 1 rg (BLUE) Tj ET '
         b'BT /Regular 11 Tf 0 .5 0 rg 20 144 Td (Second ) Tj ET '
         b'BT /Regular 12 Tf 20 20 Td (FIXED FOOTER) Tj ET')
@@ -32,6 +32,7 @@ def prepared(tmp_path, *, keep=False, break_before='auto', decorate=None):
                 layout=dict(x=20,baseline=baseline,width=150,max_bottom=bottom,min_line_height=22,first_line_indent=0))
             mapping[ident]={'s0':'accent'} if ident=='b2' else {'s0':'body','s1':'accent'} if pid=='A' else {'s0':'body'}
         stories[pid]=confirm_story(source,specs,paragraph_id=pid,chain=list(specs),protected_regions={},
+            paragraph_layout=paragraph_layout,
             styles={i:dict(provider=dict(path=str(font)),provider_relation='substituted') for i in ('body','accent')},
             style_assignments=mapping,typing_style_id='body')
     policies={i:dict(min_line_height=22,first_line_indent=0,keep_together=False,break_before='auto',break_after='auto',

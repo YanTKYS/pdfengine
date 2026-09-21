@@ -90,3 +90,7 @@ snapshot の digest が変わるので旧 sidecar は再確認が必要。migrat
 ## PR B の追加
 
 上記 PR A の後、styleごとの明示確認、確認済み tracking / rise の `Tc` / `Ts` witness、PDF再観測による永続復元を追加した。[confirmed-inline-style.md](confirmed-inline-style.md) を現行契約とする。未確認 candidate / unknown の拒否と source event の保持は維持し、alignment は未実装のままである。
+
+## PR C の追加
+
+PR Bの後、明示確認したalignmentとword / character justifyを追加した。[confirmed-alignment.md](confirmed-alignment.md) が現行契約。spacing分類は変更せず、候補の確認、layoutでの配分、保存後PDFのgeometry検証を分離する。

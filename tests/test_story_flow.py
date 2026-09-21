@@ -12,7 +12,7 @@ from pdfeditor.story_flow import confirm_story,edit_story,open_story,plan_story
 from test_attributed import source_pdf
 
 
-def prepared(tmp_path, *, same_page=False, decorate=None):
+def prepared(tmp_path, *, same_page=False, decorate=None, paragraph_layout=None):
     program=b'BT /Regular 12 Tf 20 200 Td (FIRST TEXT) Tj 0 -180 Td (FIXED FOOTER) Tj ET '
     if same_page:program+=b'BT /Regular 12 Tf 180 200 Td (SECOND) Tj ET '
     source=source_pdf(tmp_path,program)
@@ -26,6 +26,7 @@ def prepared(tmp_path, *, same_page=False, decorate=None):
         specs[ident]=dict(page=page,bounds=[x-2,43,x+112,bottom],paragraph=p,
             layout=dict(x=x,baseline=60,width=110,max_bottom=bottom,min_line_height=20,first_line_indent=0),paint_relations=[])
     state=confirm_story(source,specs,paragraph_id='one-paragraph',chain=['A','B'],font={'path':str(font)},
+        paragraph_layout=paragraph_layout,
         protected_regions={'1':[dict(role='footer',bounds=[10,226,310,253])]})
     return source,state
 

@@ -283,7 +283,9 @@ CLIの自動検証はMuPDFによるものです。**CLIで保存できたこと�
 
 行ごとの `Tw` / `TJ` と inline style を分離し、snapshot の `spacing` に glyph ごとの観測と行揃え候補を記録します。非ゼロまたは不明な tracking は `None` と provenance を保持し、未確認の値で新 glyph を配置する操作は拒否します。行内の `Tc` 変更は別 style のままです。[分類契約](docs/spacing-classification.md)。
 
-style ID ごとの `paragraph_style={"s1": {"tracking": -0.12, "baseline_shift": 0}}` で観測値を明示確認できます。確認値をPDFの `Tc` / `Ts` に記録し、保存後のPDFと照合してから再編集用sidecarへ復元します。unknownを自動確認せず、両端揃えは未実装です。[確認と保存の契約](docs/confirmed-inline-style.md)・[実PDF往復評価](evaluations/confirmed_style/README.md)。
+style ID ごとの `paragraph_style={"s1": {"tracking": -0.12, "baseline_shift": 0}}` で観測値を明示確認できます。確認値をPDFの `Tc` / `Ts` に記録し、保存後のPDFと照合してから再編集用sidecarへ復元します。[確認と保存の契約](docs/confirmed-inline-style.md)・[実PDF往復評価](evaluations/confirmed_style/README.md)。
+
+paragraphの行揃えは `paragraph_layout={"alignment": "justify", "justify_policy": "character"}` のように別途確認します。left / right / center / justifyを保存・再編集へ引き継ぎ、保存後のPDF glyph位置・行端・Unicode割当を再検証します。justifyはword / character配分を明示し、候補やunknownを自動確認しません。[alignment契約](docs/confirmed-alignment.md)・[実PDF評価](evaluations/alignment/README.md)。
 
 新しいglyphを置く範囲はactive clipと周囲の文字・画像・図形で制限されます。後続段落の移動は、確認済みの`follows`に従う固定領域内で扱います。複雑なpathやForm内文字などは、描画単位の意味を安全に扱えるまで拒否する範囲が残ります。複雑な多glyph cluster・双方向組版も現在のUnicode復元契約を拡張する必要があります。
 

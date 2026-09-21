@@ -103,7 +103,7 @@ class ShapedFont:
         return pen.value
 
     @lru_cache(maxsize=2048)
-    def shape(self, text: str) -> ShapedRun:
+    def shape(self, text: str, *, nominal_spacing=False) -> ShapedRun:
         for c in text:
             if (unicodedata.category(c) in {"Cc", "Cf", "Cs"}
                     or unicodedata.bidirectional(c) in {"R", "AL", "AN"}):
@@ -115,7 +115,7 @@ class ShapedFont:
         buffer.guess_segment_properties()
         if buffer.direction != "ltr":
             raise FontError("bidirectional/vertical paragraph composition is not implemented")
-        hb.shape(self.hb_font, buffer)
+        hb.shape(self.hb_font, buffer, {'kern': False} if nominal_spacing else None)
         infos, positions = buffer.glyph_infos, buffer.glyph_positions
         clusters = [g.cluster for g in infos]
         if clusters != sorted(set(clusters)) or not clusters or clusters[0] != 0:

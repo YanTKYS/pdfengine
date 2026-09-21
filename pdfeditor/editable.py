@@ -57,9 +57,10 @@ def open_editable(source, model=None, *, page=1):
         if state['schema']=='pdfengine-editable-2':
             identity=state['logical_element']
             if (not isinstance(identity['id'],str) or not identity['id'] or identity['kind']!='paragraph'
-                    or not isinstance(identity['contained_by'],str) or not identity['contained_by']
-                    or identity['alignment']!=dict(value='left',provenance='generated_layout_policy')):
+                    or not isinstance(identity['contained_by'],str) or not identity['contained_by']):
                 raise PdfError('unsupported logical element identity or paragraph formatting')
+            from .alignment import request
+            request(identity['alignment'])
         declared=state['boundaries']
         spans=[(m.start(),m.end()) for m in re.finditer(r'\r\n|\r|\n',snapshot['text'])]
         if ([(b['offset'],b['end']) for b in declared]!=spans or
@@ -71,7 +72,10 @@ def open_editable(source, model=None, *, page=1):
                     first_baseline=layout['baseline'],bottom=layout['max_bottom'])):
             raise PdfError('unsupported or inconsistent persistent container relations')
         paragraph=paragraph_from_snapshot(source,snapshot)
-        try:actual=paragraph.snapshot()
+        try:
+            actual=paragraph.snapshot()
+            from .alignment import verify
+            verify(paragraph,state)
         finally:paragraph.close()
         if actual!=snapshot:
             raise PdfError('stored paragraph no longer matches physical PDF evidence')
@@ -236,11 +240,17 @@ def bind_editable(identity, plan, result, *, fonts=None, boundary_kinds=None, pr
             id='paragraph-1',kind='paragraph',contained_by='region-1',
             provenance='caller_confirmed_selection',alignment=dict(value='left',provenance='generated_layout_policy')),
         element=element,anchors=anchors,relations=relations,fonts=supplied,layout=layout,layout_provenance=provenance,
-        boundaries=boundaries,physical_layout=dict(provenance='generated-by-pdfengine',lines=report['lines']),
+        boundaries=boundaries,physical_layout=dict(provenance='generated-by-pdfengine',lines=report['lines'],
+            paragraph_continues=report['paragraph_continues']),
         container=dict(kind='text_region',sizing='fixed',overflow='reject',padding=None,padding_provenance='unknown',
                        region=dict(x=layout['x'],width=layout['width'],first_baseline=layout['baseline'],bottom=layout['max_bottom']),
                        follows=[],follows_provenance='not_declared',ownership='only explicitly confirmed paint relations'),
         previous_model_sha256=(previous_state or {}).get('model_sha256')))
+    state.pop('model_sha256')
+    state['logical_element']['alignment']=report['alignment']
+    if report['alignment']['provenance']=='explicitly_confirmed':
+        state['physical_layout']['alignment_contract']=deepcopy(report['alignment'])
+    state=_seal(state)
     restored=open_editable(pdf,state)
     if restored['status']!='restored':
         raise PdfError('new editable state did not verify: '+restored['reason'])
@@ -313,8 +323,11 @@ def _saved_fonts(state, fonts):
 
 
 def document_edit_options(state, overrides):
+    from .alignment import request, DEFAULT
     options=dict(state['layout'],element_snapshot=state['element'],anchor_spec=state['anchors'],
-                 element_relations=state['relations'])
+                 element_relations=state['relations'],
+                 _paragraph_continues=state['physical_layout'].get('paragraph_continues',False),
+                 paragraph_layout=request(state.get('logical_element',{}).get('alignment',DEFAULT)))
     options.update(overrides)
     return options
 

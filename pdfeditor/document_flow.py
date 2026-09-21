@@ -100,6 +100,10 @@ def _initial(source, ident, region, spec):
             region=dict(x=layout['x'],width=layout['width'],first_baseline=layout['baseline'],bottom=layout['max_bottom']),
             follows=[],follows_provenance='not_declared',ownership='only explicitly confirmed paint relations'),
         previous_model_sha256=None))
+    if spec.get('paragraph_layout') is not None:
+        from .alignment import confirm
+        state['logical_element']['alignment']=confirm(snapshot,spec['paragraph_layout'])
+        state=_reseal(state)
     return dict(binding=state,owned_paints=list(spec.get('owned_paints',[])),
                 extent=dict(last_baseline=last,provenance='observed_source' if observed else 'explicit_empty_policy'))
 

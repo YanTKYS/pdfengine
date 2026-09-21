@@ -29,6 +29,7 @@ from .rich_layout import layout_attributed
 from .selection import source_sha
 from .story_flow import LINE_KEYS, _boundaries, open_story
 from . import story_styles as styles
+from .alignment import DEFAULT, request as alignment_request, options as alignment_options, continuation
 
 
 SCHEMA = 'pdfengine-shared-flow-1'
@@ -159,6 +160,7 @@ def _validate(source,value):
                 insertion_slots.add(key)
         for pid,p in state['paragraphs'].items():
             logical=p['logical'];cursor=0
+            alignment=logical.get('alignment',DEFAULT);alignment_request(alignment)
             boundaries={0,len(logical['text']),*grapheme_cluster_boundaries(logical['text'])}
             if (logical['id']!=pid or logical['kind']!='paragraph' or logical['boundaries']!=_boundaries(logical['text'])
                     or logical['decoration_ranges']!=[] or logical['paragraph_boundaries']!=[]):
@@ -173,6 +175,11 @@ def _validate(source,value):
                         or any(c not in ' \r\n' for c in logical['text'][end:z])):
                     raise PdfError('fragment ranges must partition only their owning paragraph')
                 styles.validate_fragment(_style_state(state,pid),sid);cursor=z
+                if state['allocation_provenance']=='generated-from-confirmed-shared-flow':
+                    b=slot['binding']
+                    if (b['logical_element']['alignment']!=alignment
+                            or alignment!=DEFAULT and b['physical_layout'].get('paragraph_continues',False)!=continuation(logical['text'],end,z)):
+                        raise PdfError('shared fragment alignment or continuation differs from its paragraph')
             if cursor!=len(logical['text']):raise PdfError('unbound paragraph Unicode remains')
     if state['physical_breaks']!=_breaks(state):raise PdfError('physical breaks differ from paragraph fragment allocation')
     if state['allocation_provenance']=='generated-from-confirmed-shared-flow':_verify_placement(state)
@@ -241,11 +248,13 @@ def _layout(source,state,pid,binding,text,ids,region,indent):
     p=state['paragraphs'][pid];paragraph=paragraph_from_snapshot(source,binding['paragraph']);shaper=None
     try:
         paragraph=bind_destination_styles(paragraph,styles.render_styles(p))
-        shaper=ParagraphShaper(paragraph,[EditUnit(ch,'logical:'+sid,None,'logical:'+sid) for ch,sid in zip(text,ids)],styles.providers(p))
+        alignment=p['logical'].get('alignment',DEFAULT)
+        shaper=ParagraphShaper(paragraph,[EditUnit(ch,'logical:'+sid,None,'logical:'+sid) for ch,sid in zip(text,ids)],
+                              styles.providers(p),alignment=alignment['value'])
         size=styles.properties(p['style_registry'][p['logical']['typing_style_id']])['font_size']
         return layout_attributed(text,shape=shaper.shape,x=region['x'],baseline=0,width=region['width'],
             min_line_height=state['paragraph_policies'][pid]['min_line_height'],max_bottom=None,
-            first_line_indent=indent,empty_ascent=size*.8,empty_descent=size*.2)
+            first_line_indent=indent,empty_ascent=size*.8,empty_descent=size*.2,**alignment_options(alignment))
     finally:
         if shaper is not None:shaper.close()
         paragraph.close()
@@ -321,7 +330,9 @@ def _plan(source,state,changes):
             lines=[dict(**{k:getattr(line,k) for k in LINE_KEYS if k!='baseline'},baseline=baseline+line.baseline) for line in fitting]
             options=_layout_options(state,pid,rid,baseline,indent)
             measured=plan_paragraph(source,binding['paragraph'],styles.replacement(binding,visible,spans),
-                fonts=styles.providers(p),render_styles=styles.render_styles(p),**options)
+                fonts=styles.providers(p),render_styles=styles.render_styles(p),
+                paragraph_layout=alignment_request(p['logical'].get('alignment',DEFAULT)),
+                _paragraph_continues=continuation(remaining,end,cut),**options)
             if not _close(measured['lines'],lines):raise PdfError('local writer differs from final shared paragraph layout')
             ink=[list(Rect(g.ink.x0,g.ink.y0+baseline,g.ink.x1,g.ink.y1+baseline).tuple())
                  for line in fitting for g in line.glyphs if g.ink is not None]
@@ -408,6 +419,8 @@ def edit_shared_flow(source,model,output,model_output,changes):
                 page=transaction.page(state['regions'][slot['region_id']]['page'])
                 plans[sid]=plan_document_edit(page,slot['binding'],styles.replacement(slot['binding'],wanted['text'],wanted['style_spans']),
                     fonts=styles.providers(p),render_styles=styles.render_styles(p),
+                    paragraph_layout=alignment_request(p['logical'].get('alignment',DEFAULT)),
+                    _paragraph_continues=continuation(p['logical']['text'],wanted['render_end'],wanted['range'][1]),
                     empty_style_id='logical:'+p['logical']['typing_style_id'],owner=sid,**wanted['layout'])
             result=transaction.commit(target)
             try:
@@ -420,7 +433,8 @@ def edit_shared_flow(source,model,output,model_output,changes):
                         raise PdfError('executed paragraph fragment differs from final allocation')
                     styles.bind_fragment(_style_state(state,pid),sid,edited,wanted,generated=True)
                     edited['boundaries']=_boundaries(wanted['text'])
-                    edited['layout_provenance']={k:'generated-from-confirmed-shared-flow' for k in edited['layout']}
+                    edited['layout_provenance']={k:('explicitly_confirmed' if k=='width' else
+                        'generated-from-confirmed-shared-flow') for k in edited['layout']}
                     slot['binding']=_reseal(edited)
                     for key in ('range','render_end','occupancy'):slot[key]=deepcopy(wanted[key])
                     slot['style_binding']['pdf_sha256']=source_sha(target)

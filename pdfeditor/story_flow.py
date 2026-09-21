@@ -29,6 +29,7 @@ from .rich_layout import layout_attributed
 from .selection import source_sha
 from . import story_styles as attributed_story
 from .destination_style import bind_destination_styles
+from .alignment import DEFAULT, confirm as confirm_alignment, request as alignment_request, options as alignment_options, continuation
 
 
 LINE_KEYS = ('start','end','baseline','width','ascent','descent')
@@ -62,6 +63,8 @@ def _validate(source, value):
     if state['pdf_sha256']!=source_sha(source):raise PdfError('story PDF revision changed')
     logical=state['logical'];containers=state['containers'];chain=state['flow_chain'];fragments=state['fragments']
     rich=state['schema']=='pdfengine-story-flow-2'
+    alignment=logical.get('alignment',DEFAULT)
+    alignment_request(alignment)
     if (not isinstance(logical['id'],str) or not logical['id'] or logical['kind']!='paragraph'
             or logical['boundaries']!=_boundaries(logical['text'])
             or (not rich and logical['style_spans']!=([dict(start=0,end=len(logical['text']),style_id='body')] if logical['text'] else []))
@@ -126,6 +129,12 @@ def _validate(source, value):
                     or not a<=end<=z<=len(logical['text']) or not {a,z,end}<=graphemes or p['text']!=logical['text'][a:end]
                     or any(ch not in ' \r\n' for ch in logical['text'][end:z])):
                 raise PdfError('fragment ranges do not partition the one logical Unicode sequence')
+            if state['layout_provenance']=='generated-by-pdfengine':
+                if (b['logical_element']['alignment']!=alignment
+                        or alignment!=DEFAULT and b['physical_layout'].get('paragraph_continues',False)!=continuation(logical['text'],end,z)):
+                    raise PdfError('fragment alignment or soft continuation differs from its logical paragraph')
+            elif state['layout_provenance']!='generated-by-pdfengine' and confirm_alignment(p,alignment_request(alignment))!=alignment:
+                raise PdfError('source alignment confirmation differs from its evidence')
             cursor=z
             if rich:attributed_story.validate_fragment(state,ident)
             observed=b['element']['text_element']['observed_bounds']
@@ -157,7 +166,7 @@ def _physical_breaks(state):
 
 @proof_session
 def confirm_story(source, containers, *, paragraph_id, chain, protected_regions, font=None,
-                  styles=None, style_assignments=None, typing_style_id=None):
+                  styles=None, style_assignments=None, typing_style_id=None, paragraph_layout=None):
     """Confirm ordered source fragments as one logical paragraph.
 
     Each container supplies page, bounds, paragraph and explicit layout.
@@ -181,6 +190,7 @@ def confirm_story(source, containers, *, paragraph_id, chain, protected_regions,
             raise PdfError('continuation requires explicit width, position, bottom, leading and indent')
         if spec['page']!=spec['paragraph']['selection']['page']:raise PdfError('source fragment page mismatch')
         b=_initial(source,paragraph_id,ident,dict(spec,fonts={} if rich else {s['id']:font for s in spec['paragraph']['styles']}))['binding']
+        confirm_alignment(b['paragraph'],paragraph_layout)
         # The caller supplies the reflow provider independently of the source subset.
         if not rich:b['fonts']={s['id']:font for s in b['paragraph']['styles']}
         b['boundaries']=_boundaries(b['paragraph']['text']);b=_reseal(b)
@@ -206,6 +216,7 @@ def confirm_story(source, containers, *, paragraph_id, chain, protected_regions,
         pages={str(i+1):dict(unselected_elements='fixed-to-page',header_inference='unknown',
             protected_regions=[dict(r,provenance='explicitly_confirmed') for r in protected_regions.get(str(i+1),[])]) for i in range(count)},
         layout_provenance='caller_confirmed_source_partition',previous_model_sha256=None)
+    state['logical']['alignment']=confirm_alignment({},paragraph_layout)
     if rich:
         registry,spans=attributed_story.confirm_registry(source,fragments,styles,style_assignments,typing_style_id)
         state.update(schema='pdfengine-story-flow-2',style_registry=registry,
@@ -258,6 +269,7 @@ def _replacement(binding,text):
 
 def _plan(source,state,edits,typing_style_id=None):
     rich=state['schema']=='pdfengine-story-flow-2';cursor=0;plans={}
+    alignment=state['logical'].get('alignment',DEFAULT)
     if rich:
         text,spans,typing=attributed_story.project(state,edits,typing_style_id)
         ids=attributed_story.style_ids(text,spans,state['style_registry'])
@@ -275,9 +287,9 @@ def _plan(source,state,edits,typing_style_id=None):
                 units=[EditUnit(ch,'logical:'+sid,None,'logical:'+sid) for ch,sid in zip(remaining,ids[cursor:])]
             else:
                 sid=b['paragraph']['styles'][0]['id'];units=[EditUnit(ch,sid,None,sid) for ch in remaining];fonts=_fonts(b)
-            shaper=ParagraphShaper(paragraph,units,fonts)
+            shaper=ParagraphShaper(paragraph,units,fonts,alignment=alignment['value'])
             layout=layout_attributed(remaining,shape=shaper.shape,**dict(c['layout'],max_bottom=None),
-                empty_ascent=empty_size*.8,empty_descent=empty_size*.2)
+                empty_ascent=empty_size*.8,empty_descent=empty_size*.2,**alignment_options(alignment))
             fitting=[line for line in layout.lines if line.baseline+line.descent<=c['layout']['max_bottom']+1e-6]
             if remaining and not fitting:raise PdfError('continuation container cannot hold its next complete line')
             if len(fitting)==len(layout.lines):end=cut=len(remaining)
@@ -290,12 +302,14 @@ def _plan(source,state,edits,typing_style_id=None):
             local_spans=attributed_story.canonical_spans(ids[cursor:cursor+end]) if rich else None
             replacement=attributed_story.replacement(b,visible,local_spans) if rich else _replacement(b,visible)
             measured=plan_paragraph(source,b['paragraph'],replacement,fonts=fonts,
-                render_styles=recipes if rich else None,**c['layout'])
+                render_styles=recipes if rich else None,paragraph_layout=alignment_request(alignment),
+                _paragraph_continues=continuation(remaining,end,cut),**c['layout'])
             expected=[{k:getattr(line,k) for k in LINE_KEYS} for line in fitting]
             if not _close(measured['lines'],expected):raise PdfError('fragment shaping differs from the global continuation plan')
             if any(line['baseline']-line['ascent']<c['bounds'][1]-.002 for line in expected):
                 raise PdfError('planned line crosses the confirmed container top')
             plans[ident]=dict(range=[cursor,cursor+cut],render_end=cursor+end,text=visible,lines=expected)
+            plans[ident]['paragraph_continues']=continuation(remaining,end,cut)
             if rich:plans[ident]['style_spans']=local_spans
             cursor+=cut
         finally:
@@ -334,9 +348,13 @@ def edit_story(source,model,output,model_output,edits,*,typing_style_id=None):
                 if rich:
                     plans[ident]=plan_document_edit(page,b,attributed_story.replacement(b,wanted['text'],wanted['style_spans']),
                         fonts=attributed_story.providers(state),render_styles=attributed_story.render_styles(state),
+                        paragraph_layout=alignment_request(state['logical'].get('alignment',DEFAULT)),
+                        _paragraph_continues=wanted['paragraph_continues'],
                         empty_style_id='logical:'+plan['typing_style_id'],owner=ident)
                 else:
                     plans[ident]=plan_document_edit(page,b,_replacement(b,wanted['text']),
+                        paragraph_layout=alignment_request(state['logical'].get('alignment',DEFAULT)),
+                        _paragraph_continues=wanted['paragraph_continues'],
                         empty_style_id=b['paragraph']['styles'][0]['id'],owner=ident)
             result=transaction.commit(target)
             try:

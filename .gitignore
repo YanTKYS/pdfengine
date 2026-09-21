@@ -28,3 +28,4 @@ tmp/
 !/evaluations/shared_flow/summary.json
 !/evaluations/spacing/summary.json
 !/evaluations/confirmed_style/summary.json
+!/evaluations/alignment/summary.json
