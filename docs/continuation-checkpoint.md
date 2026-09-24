@@ -49,11 +49,46 @@ skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans J
 - 評価providerの`msmincho.ttc` face 1と`times.ttf`、およびPoppler / pypdfの既定pathはWindows検証環境を前提とし、このcontainerにはない。代替fontで実行すると評価者が確認したprovider判断が変わるため、実行していない。
 - engineが変わったため、以前の`runs/verified`も最終engineの証跡ではない。公開`summary.json`は作成していない。
 
+## 外部評価の実行確認 — 2026-09-24（`beaecad`）
+
+起点はPR #4のmerge commit `beaecad`。`pdfeditor/*.py`は変えておらず、engine digestは上の`a20828d9…52e0`と一致した。
+
+| 確認項目 | 結果 |
+|---|---|
+| Python / PyMuPDF / MuPDF / pypdf | 3.12.3 / 1.27.2.3 / 1.27.2 / 6.10.0（Linux x64 container） |
+| Poppler | `pdftoppm` 24.02.0（container内） |
+| 原本`lo_migration_ja.pdf` | 不在。取得元hostはnetwork policyで403。別の取得元や別PDFは使っていない |
+| `msmincho.ttc` face 1 / `times.ttf` | 不在。代替fontは使っていない |
+
+このため外部原本の編集系列は**実行していない**。`summary.json`は作成せず、「検証中」を維持する。
+
+### 評価コードの修正
+
+変更は`evaluations/continuation/evaluate.py`だけで、engineは変えていない。原本、provider、face、hash、領域、保護範囲、既存の照合は変えていない。
+
+- **容量拒否の入力**: `extra*20`（1,600字追加）を`extra*2`（160字追加）にした。`_layout`は各regionで残り全文を組み、行ごとに全改行候補を計測する。日本語はほぼ全文字が改行候補になるため、組版量は文字数の3乗で増える。合成PDFで150・300・450字を拒否させた実測は3.5・12.8・39.1秒、ピーク214・564・1,435MBだった。原本の行幅に当てはめると、`extra*20`は1回の組版で約2,400万glyph、約25GBになる。この拒否は評価の最後に実行されるため、メモリ不足になると全段階が成功しても集計が書かれない。160字追加でも最終245字は確認済み容量（約271字）を3行以上超え、同じ拒否経路を通る。
+- **段階ごとの明示照合**:
+  - 生成slotを作るのはoverflowだけで、作成証跡はその後も変わらない。
+  - shortenでは生成slotが文字を描かない。
+  - final no-opでは、paragraph・style・destinationの記録、slotのidentity・範囲・行geometry・alignment・inline style、計画glyph（Unicode・GID・origin・size・advance・code・CID・`W`幅）が直前のregrowと一致する。
+  - これまでは画素一致による間接的な保証だけだった。
+- **集計の記録**: engine digest、評価helperのhash、Python・platform、Poppler・独立pypdfの版、providerのfile・face・hashを加えた。Popplerの存在は、版表示の文字列で判定する（`-v`で99を返すbuildがあるため）。
+
+### 評価コードのdry-run（証跡ではない）
+
+修正後の評価コードを、合成の7ページPDFで最後まで動かした。置き換えたのは入力（原本・座標・provider）とWindows固定の外部tool pathだけで、段階処理・監査・拒否は評価コードそのものである。全段階と容量拒否が79秒で通った。外部原本の代わりにはならないため、集計にも資料の結果にも使わず、成果物もcommitしていない。
+
+同じdry-runで、生成blockが保存ごとに2,327Bから9,487Bへ増えることを確認した。既存writerは、置き換えた文字のoperatorを削除せず、非描画の`[-1000] TJ`へ書き換えてtext matrixの状態を保つ。この増加はその設計によるもので、source slotの再編集でも同じように起きる。画素・Unicode・照合には影響しないため、変更していない。
+
 ## 最短の再開手順
 
-1. Windows検証環境で最新commitを取得し、上のengine digestと一致することを確認する。
-2. 新しいrun名で`python -m evaluations.continuation.evaluate --run-name <name>`を実行する。元PDF no-op、overflow、reopen、second、shorten、regrow、最終no-opを完了し、画像も目視確認する。
-3. 同じengine digestの成功結果だけを`evaluations/continuation/summary.json`へ記録し、資料の「検証中」表示を更新する。
-4. 評価のためにengineを修正した場合は、継続テストと全suiteを再実行する。
+Windows検証環境で[評価README](../evaluations/continuation/README.md)の手順を実行する。
+
+1. 最新commitを取得し、engine digest `a20828d9…52e0`と評価コードの`runner_sha256` `c2c279db3ee58d6a4594481e73a0280bbb78be98f35f75a9df8d75ec50503537`を確認する。
+2. 原本（SHA-256 `1366587531…a5f3`）、`msmincho.ttc` face 1、`times.ttf`、Poppler、独立pypdfを揃える。
+3. 未使用のrun名で`python -m evaluations.continuation.evaluate --run-name <name>`を実行する。
+4. overflowのallocationを以前の計画（既存slot 209字、生成slot 36字・2行）と比べ、画像を目視する。
+5. すべて成功した場合だけ、そのrunの`summary.json`を`evaluations/continuation/summary.json`へ置き、資料の「検証中」を更新する。
+6. 評価のためにengineを修正した場合は、継続テスト、関連テスト、外部評価、全suiteを最終コードで再実行する。
 
 最終コードについて未完了の全体結果を先取りしない。外部PDF・派生PDF/PNG・font・本文/glyphログは引き続き公開しない。

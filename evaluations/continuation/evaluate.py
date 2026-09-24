@@ -5,8 +5,12 @@ PDFs, full text, glyph logs and raster artifacts stay under ignored runs/.
 """
 import argparse
 from copy import deepcopy
+import hashlib
 import json
 from pathlib import Path
+import platform
+import subprocess
+import sys
 
 import pymupdf
 from pypdf import PdfReader
@@ -20,6 +24,8 @@ from pdfeditor.pdf_save import font_fingerprints, program_pdf_bytes
 from pdfeditor.selection import source_sha
 from pdfeditor.shared_flow import confirm_shared_flow, edit_shared_flow, open_shared_flow, plan_shared_flow
 from evaluations.attributed.evaluate import font_mapping_audit
+import evaluations.backend.followup as renderer_paths
+import evaluations.elements.evaluate as extractor_paths
 from evaluations.elements.evaluate import audit_render, extraction
 from evaluations.flow_transaction.evaluate import normalize, refuse
 from evaluations.realpdf.evaluate import image_fingerprints
@@ -28,6 +34,10 @@ from evaluations.story_styles.evaluate import prepare as prepare_story
 
 
 ROOT=Path(__file__).resolve().parents[2];BASE=Path(__file__).resolve().parent
+DEPENDENCIES=['evaluations/story_flow/evaluate.py','evaluations/story_styles/evaluate.py','evaluations/elements/evaluate.py',
+    'evaluations/flow_transaction/evaluate.py','evaluations/attributed/evaluate.py','evaluations/backend/followup.py',
+    'evaluations/realpdf/evaluate.py','evaluations/realpdf/independent_extract.py']
+GLYPH_FIELDS=('unicode','glyph_id','origin','size','advance','code','cid','nominal_pdf_width')
 
 
 def write(path,value):path.write_bytes((json.dumps(value,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
@@ -112,13 +122,33 @@ def audit(before,after,state,initial,report,directory,original_text,*,noop=False
         allocation={sid:dict(range=s['range'],occupancy=s['occupancy']) for sid,s in state['slots'].items()})
 
 
+def tools():
+    poppler=subprocess.run([str(renderer_paths.DEFAULT_POPPLER),'-v'],capture_output=True,timeout=60)
+    extractor=subprocess.run([str(extractor_paths.DEFAULT_PYPDF),'-c','import sys,pypdf;print(pypdf.__version__,sys.version.split()[0])'],
+        capture_output=True,timeout=60)
+    # Some Poppler builds exit 99 after printing -v; identify the tool by its banner.
+    banner=next((l.strip() for l in (poppler.stderr+poppler.stdout).decode(errors='replace').splitlines() if 'pdftoppm version' in l),None)
+    if banner is None or extractor.returncode:raise ValueError('independent renderer or extractor is unavailable')
+    version,python=extractor.stdout.decode().split()
+    return dict(poppler=banner,independent_pypdf=version,independent_python=python)
+
+
+def stable_slot(slot):
+    """Semantic slot record; byte offsets, xrefs and resource aliases legitimately change on resave."""
+    binding=slot['binding']
+    return dict({k:slot.get(k) for k in ('paragraph_id','region_id','destination_id','creation_provenance','range','render_end','occupancy')},
+        text=binding['paragraph']['text'],lines=binding['physical_layout']['lines'],alignment=binding['logical_element'].get('alignment'),
+        styles=[{k:v for k,v in style.items() if k not in ('font_resource','font_xref')} for style in binding['paragraph']['styles']])
+
+
 def run(directory):
     engine={p.name:source_sha(p) for p in sorted((ROOT/'pdfeditor').glob('*.py'))}
+    environment=tools()
     state,pid,destination=prepare();initial=deepcopy(state);write(directory/'initial.json',state)
     replay=source_replay(directory,state);original_text=extraction(SOURCE,directory,'original')['pages']
     logical=deepcopy(state['paragraphs'][pid]['logical']);sid=slot_id(destination)
     extra='確認した空き領域へ同じ文章の続きを配置し、再編集と保存後の文字位置を確認します。'*2
-    stages=[];pdf=SOURCE
+    stages=[];pdf=SOURCE;previous=creation=None
     for name in ('overflow','second','shorten','regrow','noop'):
         edits=({pid:dict(edits=[dict(start=0,end=len(state['paragraphs'][pid]['logical']['text']),text='確認。',style_id='body')])}
                if name=='shorten' else {} if name=='noop' else
@@ -135,20 +165,43 @@ def run(directory):
         if sid not in updated['slots'] or len(updated['slots'])!=3:raise ValueError('generated identity changed')
         if (updated['slots'][sid]['occupancy'] is None)!=(name=='shorten'):raise ValueError('continuation did not activate/dormant')
         if updated['contract_sha256']!=initial['contract_sha256']:raise ValueError('confirmation changed')
+        # Only the first overflow creates the generated slot; later edits reuse it.
+        if set(report['plan']['new_slots'])!=({sid} if name=='overflow' else set()):raise ValueError('generated slot was not reused')
+        creation=creation or updated['slots'][sid]['creation_binding']
+        if updated['slots'][sid]['creation_binding']!=creation:raise ValueError('generated creation provenance changed')
+        if name=='shorten' and updated['slots'][sid]['binding']['paragraph']['text']:raise ValueError('dormant slot still paints text')
+        checks={}
         if name=='noop':
             for ident,s in state['slots'].items():
                 if s['range']!=updated['slots'][ident]['range'] or s['occupancy']!=updated['slots'][ident]['occupancy']:
                     raise ValueError('no-op allocation changed')
+            if updated['paragraphs']!=state['paragraphs'] or updated['continuation_destinations']!=state['continuation_destinations']:
+                raise ValueError('no-op changed paragraph, style or destination records')
+            if any(stable_slot(s)!=stable_slot(updated['slots'][i]) for i,s in state['slots'].items()):
+                raise ValueError('no-op changed slot identity, allocation, layout or inline style')
+            glyphs=lambda r:[[{k:g[k] for k in GLYPH_FIELDS} for g in step['report']['glyph_plan']] for step in r['steps']]
+            if glyphs(previous)!=glyphs(report):raise ValueError('no-op changed planned glyphs')
+            checks=dict(paragraph_style_destination_records_equal=True,slot_identity_allocation_layout_style_equal=True,
+                planned_glyph_fields_equal=list(GLYPH_FIELDS),planned_glyphs=sum(map(len,glyphs(report))))
         proof=audit(pdf,out,updated,initial,report,directory/(name+'-audit'),original_text,noop=name=='noop')
-        stages.append(dict(stage=name,status='passed',restored=True,slot_id=sid,saves=report['saves'],**proof))
-        write(directory/'stages.json',stages);print(name,'passed',flush=True);pdf,state=out,updated
+        stages.append(dict(stage=name,status='passed',restored=True,slot_id=sid,saves=report['saves'],
+            new_slots=sorted(report['plan']['new_slots']),
+            generated_lines=len(updated['slots'][sid]['binding']['physical_layout']['lines']),**checks,**proof))
+        write(directory/'stages.json',stages);print(name,'passed',flush=True);pdf,state,previous=out,updated,report
+    # 245+160 chars exceed the ~271-char confirmed capacity by several lines.
+    # Layout measures every break candidate per line (cubic in Japanese text):
+    # extra*20 would need roughly 25 GB before the same refusal is reached.
     refused=refuse(directory,'capacity',lambda o,j:edit_shared_flow(pdf,state,o,j,
-        {pid:dict(edits=[dict(start=0,end=0,text=extra*20,style_id='body')])}))
+        {pid:dict(edits=[dict(start=0,end=0,text=extra*2,style_id='body')])}))
     if engine!={p.name:source_sha(p) for p in sorted((ROOT/'pdfeditor').glob('*.py'))}:raise ValueError('engine changed during evaluation')
     return dict(schema='pdfengine-continuation-evaluation-1',status='passed',source_url=URL,source_sha256=SOURCE_SHA,
         source_replay=replay,stages=stages,negative_controls=[refused],destination=destination,
         scope='one external LibreOffice paragraph, original slots on pages 4/5, reviewed empty area on existing page 6',
-        environment=dict(engine_sha256=engine,runner_sha256=source_sha(Path(__file__)),pymupdf=pymupdf.VersionBind))
+        providers={i:dict(file=Path(r['reflow_provider']['path']).name,font_index=r['reflow_provider'].get('font_index',0),
+            sha256=r['reflow_provider']['sha256']) for i,r in initial['paragraphs'][pid]['style_registry'].items()},
+        environment=dict(engine_digest=hashlib.sha256(json.dumps(engine,sort_keys=True).encode()).hexdigest(),engine_sha256=engine,
+            runner_sha256=source_sha(Path(__file__)),evaluation_dependencies_sha256={d:source_sha(ROOT/d) for d in DEPENDENCIES},
+            python=sys.version.split()[0],platform=platform.platform(),pymupdf=pymupdf.VersionBind,**environment))
 
 
 if __name__=='__main__':
