@@ -265,7 +265,7 @@ edit_shared_flow("source.pdf", flow, "shared.pdf", "shared.flow.json", {
 restored = open_shared_flow("shared.pdf", "shared.flow.json")
 ```
 
-短文化で後続段落が前へ詰まり、長文化で確認済みの次領域へ移ります。continuation経路では、既存source slotを超える場合、利用者が空き領域と描画contextを確認した既存ページ上のdestinationへ、同じparagraphのslotを生成できます。短文化で空になったslotも再利用します。対象の外部LibreOffice PDFの1 paragraphでは、確認済みdestinationについてoverflow → reopen → re-edit → shorten → regrow → no-opと容量拒否の系列評価を完了しました（[評価](evaluations/continuation/README.md)）。単一原本・単一destinationの範囲です。[独立段落の共有flow](docs/shared-paragraph-flow.md)と[確認済みcontinuation](docs/confirmed-continuation.md)に入力契約と評価範囲を記録しています。
+短文化で後続段落が前へ詰まり、長文化で確認済みの次領域へ移ります。continuation経路では、既存source slotを超える場合、利用者が空き領域と描画contextを確認した既存ページ上のdestinationへ、同じparagraphのslotを生成できます。短文化で空になったslotも再利用します。対象の外部LibreOffice PDFの1 paragraphでは、確認済みdestinationについてoverflow → reopen → re-edit → shorten → regrow → no-opと容量拒否の系列評価を完了しました（[評価](evaluations/continuation/README.md)）。単一原本・単一destinationの範囲です。再保存では、sidecarの記録で所有を証明したpdfengine生成fontだけを再利用・置換し、元PDFのresourceは削除しません。no-op保存を繰り返してもfont数は増えません。page program内の非描画operatorは別途増えます（[生成fontの寿命](docs/confirmed-continuation.md#生成fontの寿命)）。[独立段落の共有flow](docs/shared-paragraph-flow.md)と[確認済みcontinuation](docs/confirmed-continuation.md)に入力契約と評価範囲を記録しています。
 
 ## 忠実性と幅の契約
 

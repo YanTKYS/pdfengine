@@ -1,5 +1,5 @@
 {
-  "schema": "pdfengine-continuation-evaluation-1",
+  "schema": "pdfengine-continuation-evaluation-2",
   "status": "passed",
   "source_url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf",
   "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
@@ -15,6 +15,23 @@
       "poppler_changed_pixels": 0
     }
   ],
+  "source_resources": {
+    "pdf_bytes": 369912,
+    "page_font_resources": {
+      "4": 7,
+      "5": 7,
+      "6": 7
+    },
+    "generated_fonts_by_page": {
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "type0_fonts": 0,
+    "generated_fonts": 0,
+    "generated_font_graph_objects": 0,
+    "generated_block_bytes": 0
+  },
   "stages": [
     {
       "stage": "overflow",
@@ -90,6 +107,35 @@
             "ascent": 9.0234375,
             "descent": 1.4765625,
             "empty": false
+          }
+        }
+      },
+      "resources": {
+        "pdf_bytes": 371035,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "6": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "6": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 3049,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "added"
+          },
+          "5": {
+            "/PRF1": "added",
+            "/PRF2": "added"
+          },
+          "6": {
+            "/PRF1": "added"
           }
         }
       }
@@ -168,6 +214,35 @@
             "empty": false
           }
         }
+      },
+      "resources": {
+        "pdf_bytes": 374256,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "6": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "6": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 6305,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "reused"
+          },
+          "5": {
+            "/PRF1": "replaced",
+            "/PRF2": "reused"
+          },
+          "6": {
+            "/PRF1": "replaced"
+          }
+        }
       }
     },
     {
@@ -227,6 +302,28 @@
             3
           ],
           "occupancy": null
+        }
+      },
+      "resources": {
+        "pdf_bytes": 365512,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "6": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "6": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 6646,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "replaced"
+          }
         }
       }
     },
@@ -304,10 +401,39 @@
             "empty": false
           }
         }
+      },
+      "resources": {
+        "pdf_bytes": 374259,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "6": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "6": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 9626,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "replaced"
+          },
+          "5": {
+            "/PRF1": "replaced",
+            "/PRF2": "reused"
+          },
+          "6": {
+            "/PRF1": "replaced"
+          }
+        }
       }
     },
     {
-      "stage": "noop",
+      "stage": "noop1",
       "status": "passed",
       "restored": true,
       "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
@@ -428,6 +554,341 @@
             "empty": false
           }
         }
+      },
+      "resources": {
+        "pdf_bytes": 374492,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "6": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "6": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 12702,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "reused"
+          },
+          "5": {
+            "/PRF1": "reused",
+            "/PRF2": "reused"
+          },
+          "6": {
+            "/PRF1": "reused"
+          }
+        }
+      }
+    },
+    {
+      "stage": "noop2",
+      "status": "passed",
+      "restored": true,
+      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "saves": 1,
+      "new_slots": [],
+      "generated_lines": 2,
+      "paragraph_style_destination_records_equal": true,
+      "slot_identity_allocation_layout_style_equal": true,
+      "planned_glyph_fields_equal": [
+        "unicode",
+        "glyph_id",
+        "origin",
+        "size",
+        "advance",
+        "code",
+        "cid",
+        "nominal_pdf_width"
+      ],
+      "planned_glyphs": 245,
+      "renderers": {
+        "1": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "2": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "3": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "4": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "6": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "7": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "8": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "9": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "10": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-0ca851c7b7e027846e4cfcdb": {
+          "range": [
+            209,
+            245
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page6",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "resources": {
+        "pdf_bytes": 374815,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "6": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "6": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 15778,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "reused"
+          },
+          "5": {
+            "/PRF1": "reused",
+            "/PRF2": "reused"
+          },
+          "6": {
+            "/PRF1": "reused"
+          }
+        }
+      }
+    },
+    {
+      "stage": "noop3",
+      "status": "passed",
+      "restored": true,
+      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "saves": 1,
+      "new_slots": [],
+      "generated_lines": 2,
+      "paragraph_style_destination_records_equal": true,
+      "slot_identity_allocation_layout_style_equal": true,
+      "planned_glyph_fields_equal": [
+        "unicode",
+        "glyph_id",
+        "origin",
+        "size",
+        "advance",
+        "code",
+        "cid",
+        "nominal_pdf_width"
+      ],
+      "planned_glyphs": 245,
+      "renderers": {
+        "1": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "2": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "3": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "4": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "6": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "7": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "8": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "9": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "10": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-0ca851c7b7e027846e4cfcdb": {
+          "range": [
+            209,
+            245
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page6",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "resources": {
+        "pdf_bytes": 375105,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "6": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "6": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 18854,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "reused"
+          },
+          "5": {
+            "/PRF1": "reused",
+            "/PRF2": "reused"
+          },
+          "6": {
+            "/PRF1": "reused"
+          }
+        }
       }
     }
   ],
@@ -536,7 +997,7 @@
     "sha256": "c2329afaefcfcb93ff4d57920d0a3e081dd2b0743bc41bf805bddf9168b6c7c2"
   },
   "environment": {
-    "engine_digest": "a20828d95176ea6b8473654f144b74d88b2579f5c89a20d6063643b31fec52e0",
+    "engine_digest": "f23c2f08d3e4407180b63d0a888187199ca9d6c765b6d1c7d2cc5eb2c2a0b4c0",
     "engine_sha256": {
       "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
       "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
@@ -566,24 +1027,24 @@
       "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
       "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
       "paint_resize.py": "b9bcb8a8da13f3317c37c54c3fa83f74f6de5fe97f89439f25559b78fc0e68f8",
-      "paragraph.py": "77caaa8aa96bdb7e9749a94211a6cf73fb3547053e8e479dda991055319696da",
+      "paragraph.py": "5be201735c2fc932537c3df1aaeed8711247e01027ad4de7750ccd8ca8b93c99",
       "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
-      "pdf_save.py": "9c4058379921878dbe25e49d2646e90234087b240510e5025665c5e03d5ffd79",
+      "pdf_save.py": "bc1e7868043370a1d017de00d31685cc9b4783beeaf4d727cb33fcddfacfd654",
       "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
       "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
       "rich_layout.py": "d8c9e52d184e3f75e1ac50f853e8a71c2053e0791bff27bfb24eff7a4f9bea70",
       "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
       "shaped_font.py": "59bca6d2db19db2cd6602f6badfc7ae8d5d60e3bec4dee3d7d41ff51fe276f83",
-      "shared_flow.py": "8fffefe69393c48574ed04129c17547ad040182c9b4571ac8575bf1cf69ba006",
+      "shared_flow.py": "4c092a333759f980e9d4ca549837634adea446bf399ae218047277964b939585",
       "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e",
       "spacing.py": "e44fab983055b373c1473e41846545135880753ba32be8a460748437a2769526",
       "story_flow.py": "00de2b47fa3862584955da4b59bc9b8347b09887c146ee7cd49a6382af554764",
       "story_styles.py": "f9d5d425b37f3ea94939e413432969cbb672e726cf9ad0396bb3cb702d544358",
       "style_confirmation.py": "5beabff6b423d908c3cce192b1b4ddffb8e4876dff438a9548aa8267d11064bd",
-      "transaction.py": "74e71b4e587305fce5c16bd71e8dbc89a5051e2c635f06b62b2b3587510a65a5",
+      "transaction.py": "d9dd95b3f9a10f12ed08eae4df2e12d021b55334132cd01d171d263399e185b5",
       "variable_container.py": "5c4e3336aa2187a37adf6d36bd2ccd3fb33c01e4ef7fbd4f24fe50708b98df82"
     },
-    "runner_sha256": "3eb35b38946906e4aef460c26a2263a4ce1612c3e2012f32bb2097d4e2ac535b",
+    "runner_sha256": "dd6d53295ac82b96baee723bf41e2b11044453f452e31783a44a7b47d3b4f402",
     "evaluation_dependencies_sha256": {
       "evaluations/story_flow/evaluate.py": "4fc0d79e9a8de23ec3de916fdb6c32831669969894ce66bcf2899a842a5274f9",
       "evaluations/story_styles/evaluate.py": "51f5d1a048b46536286abfa6e5216e9958d9963bd315aac08616e32de2ee884c",
@@ -592,7 +1053,8 @@
       "evaluations/attributed/evaluate.py": "6023d19e5b0c57d231a0d8f54d3ea931a52364b91c34cd84150e0269e77ccbb1",
       "evaluations/backend/followup.py": "2a70ddd88402083b64af75dd749dc144a3eb8c671b9bacad74d3642b41e2267d",
       "evaluations/realpdf/evaluate.py": "7f4754523b1849b4f744ba9a11841a9be1c6bc2d2fdcdee3c7e4706beb908a18",
-      "evaluations/realpdf/independent_extract.py": "435766089686f927c6bc72aa8da4463ab48c3ef1b305c7cc08442a10dd3bacdb"
+      "evaluations/realpdf/independent_extract.py": "435766089686f927c6bc72aa8da4463ab48c3ef1b305c7cc08442a10dd3bacdb",
+      "evaluations/continuation/resources.py": "4c55b9fa04584064f1ffdb65f074f0f2c8ff152538461d07580f9618196d0f93"
     },
     "python": "3.12.14",
     "platform": "Windows-11-10.0.26200-SP0",

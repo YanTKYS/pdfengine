@@ -24,6 +24,7 @@ from pdfeditor.pdf_save import font_fingerprints, program_pdf_bytes
 from pdfeditor.selection import source_sha
 from pdfeditor.shared_flow import confirm_shared_flow, edit_shared_flow, open_shared_flow, plan_shared_flow
 from evaluations.attributed.evaluate import font_mapping_audit
+from evaluations.continuation.resources import generated_block_bytes, inventory
 import evaluations.backend.followup as renderer_paths
 import evaluations.elements.evaluate as extractor_paths
 from evaluations.elements.evaluate import audit_render, extraction
@@ -36,11 +37,15 @@ from evaluations.story_styles.evaluate import prepare as prepare_story
 ROOT=Path(__file__).resolve().parents[2];BASE=Path(__file__).resolve().parent
 DEPENDENCIES=['evaluations/story_flow/evaluate.py','evaluations/story_styles/evaluate.py','evaluations/elements/evaluate.py',
     'evaluations/flow_transaction/evaluate.py','evaluations/attributed/evaluate.py','evaluations/backend/followup.py',
-    'evaluations/realpdf/evaluate.py','evaluations/realpdf/independent_extract.py']
+    'evaluations/realpdf/evaluate.py','evaluations/realpdf/independent_extract.py','evaluations/continuation/resources.py']
 GLYPH_FIELDS=('unicode','glyph_id','origin','size','advance','code','cid','nominal_pdf_width')
 PROVIDER_FIELDS=('filename','font_index','sha256','variations')
 REVIEWED_PROVIDERS='evaluations/story_styles/summary.json'
 CAPACITY_REASON='paragraphs exceed all explicitly confirmed shared regions'
+STAGES=('overflow','second','shorten','regrow','noop1','noop2','noop3')
+EDITED=('4','5','6')
+# Counts a repeated identical save must not change.
+RESOURCE_COUNTS=('page_font_resources','generated_fonts_by_page','type0_fonts','generated_fonts','generated_font_graph_objects')
 
 
 def write(path,value):path.write_bytes((json.dumps(value,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
@@ -84,7 +89,7 @@ def source_replay(directory,state):
     return proof
 
 
-def audit(before,after,state,initial,report,directory,original_text,*,noop=False):
+def audit(before,after,state,initial,report,directory,original_text,*,noop=False,owned=None):
     directory.mkdir();visual={};edited={4,5,6}
     for page in range(1,state['page_count']+1):
         if page in edited or noop:
@@ -119,7 +124,11 @@ def audit(before,after,state,initial,report,directory,original_text,*,noop=False
                 raise ValueError('image/annotation changed')
             aliases={g['font_resource'][1:] for step in report['steps'] if step['report']['selection']['page']==i+1
                      for g in step['report']['glyph_plan']}
-            if [f for f in font_fingerprints(b,i) if f[0][3] not in aliases]!=font_fingerprints(a,i):
+            # Only aliases the previous revision's verified records prove to be
+            # pdfengine-generated, and that this save re-targeted, may differ.
+            retargeted={a[1:] for a in report['generated_font_outcome'].get(str(i+1),{}) if a in (owned or {}).get(str(i+1),{})}
+            if ([f for f in font_fingerprints(b,i) if f[0][3] not in aliases]
+                    !=[f for f in font_fingerprints(a,i) if f[0][3] not in retargeted]):
                 raise ValueError('original font resource changed')
     return dict(renderers=visual,all_page_unicode=True,all_nontext_paint_images_annotations_original_fonts=True,cid_gid_w=True,
         allocation={sid:dict(range=s['range'],occupancy=s['occupancy']) for sid,s in state['slots'].items()})
@@ -156,6 +165,22 @@ def stable_slot(slot):
         styles=[{k:v for k,v in style.items() if k not in ('font_resource','font_xref')} for style in binding['paragraph']['styles']])
 
 
+def resources(pdf,state,destination,source_aliases):
+    """Font/resource sizes of one saved revision; ownership only from verified records."""
+    records=state.get('generated_fonts',{})
+    inv=inventory(pdf,records=records,source=SOURCE)
+    for page,entries in inv['pages'].items():
+        if any(e['kind']=='unknown' for e in entries):raise ValueError(f'unrecorded font resource on page {page}')
+        if {e['alias'] for e in entries if e['kind']=='original'}!=source_aliases[page]:
+            raise ValueError(f'source font resource removed or changed on page {page}')
+    return dict(pdf_bytes=Path(pdf).stat().st_size,
+        page_font_resources={p:len(inv['pages'][p]) for p in EDITED},
+        generated_fonts_by_page={p:len(records.get(p,{})) for p in EDITED},
+        type0_fonts=inv['type0_fonts'],generated_fonts=inv['owned_font_roots'],
+        generated_font_graph_objects=inv['owned_font_graph_objects'],
+        generated_block_bytes=generated_block_bytes(pdf,6,destination))
+
+
 def run(directory):
     engine={p.name:source_sha(p) for p in sorted((ROOT/'pdfeditor').glob('*.py'))}
     environment=tools()
@@ -168,10 +193,13 @@ def run(directory):
     replay=source_replay(directory,state);original_text=extraction(SOURCE,directory,'original')['pages']
     logical=deepcopy(state['paragraphs'][pid]['logical']);sid=slot_id(destination)
     extra='確認した空き領域へ同じ文章の続きを配置し、再編集と保存後の文字位置を確認します。'*2
-    stages=[];pdf=SOURCE;previous=creation=None
-    for name in ('overflow','second','shorten','regrow','noop'):
+    source_aliases={p:{e['alias'] for e in v} for p,v in inventory(SOURCE,source=SOURCE)['pages'].items()}
+    baseline=resources(SOURCE,state,destination,source_aliases)
+    stages=[];pdf=SOURCE;previous=creation=None;previous_sizes=baseline
+    for name in STAGES:
+        noop=name.startswith('noop')
         edits=({pid:dict(edits=[dict(start=0,end=len(state['paragraphs'][pid]['logical']['text']),text='確認。',style_id='body')])}
-               if name=='shorten' else {} if name=='noop' else
+               if name=='shorten' else {} if noop else
                {pid:dict(edits=[dict(start=0,end=len(state['paragraphs'][pid]['logical']['text']),runs=[
                    *[dict(text=logical['text'][s['start']:s['end']],style_id=s['style_id']) for s in logical['style_spans']],
                    dict(text=extra.replace('再編集','追加編集') if name=='second' else extra,style_id='body')])])})
@@ -191,7 +219,7 @@ def run(directory):
         if updated['slots'][sid]['creation_binding']!=creation:raise ValueError('generated creation provenance changed')
         if name=='shorten' and updated['slots'][sid]['binding']['paragraph']['text']:raise ValueError('dormant slot still paints text')
         checks={}
-        if name=='noop':
+        if noop:
             for ident,s in state['slots'].items():
                 if s['range']!=updated['slots'][ident]['range'] or s['occupancy']!=updated['slots'][ident]['occupancy']:
                     raise ValueError('no-op allocation changed')
@@ -203,11 +231,20 @@ def run(directory):
             if glyphs(previous)!=glyphs(report):raise ValueError('no-op changed planned glyphs')
             checks=dict(paragraph_style_destination_records_equal=True,slot_identity_allocation_layout_style_equal=True,
                 planned_glyph_fields_equal=list(GLYPH_FIELDS),planned_glyphs=sum(map(len,glyphs(report))))
-        proof=audit(pdf,out,updated,initial,report,directory/(name+'-audit'),original_text,noop=name=='noop')
+        proof=audit(pdf,out,updated,initial,report,directory/(name+'-audit'),original_text,noop=noop,
+                    owned=state.get('generated_fonts',{}))
+        sizes=resources(out,updated,destination,source_aliases);outcome=report['generated_font_outcome']
+        if noop:
+            # An identical re-save keeps every generated font object and adds none.
+            if any(sizes[k]!=previous_sizes[k] for k in RESOURCE_COUNTS):raise ValueError('no-op changed font/resource counts')
+            if any(set(v.values())!={'reused'} for v in outcome.values()):raise ValueError('no-op wrote a new font object')
+            if updated['generated_fonts']!=state['generated_fonts']:raise ValueError('no-op changed generated font records')
         stages.append(dict(stage=name,status='passed',restored=True,slot_id=sid,saves=report['saves'],
             new_slots=sorted(report['plan']['new_slots']),
-            generated_lines=len(updated['slots'][sid]['binding']['physical_layout']['lines']),**checks,**proof))
-        write(directory/'stages.json',stages);print(name,'passed',flush=True);pdf,state,previous=out,updated,report
+            generated_lines=len(updated['slots'][sid]['binding']['physical_layout']['lines']),**checks,**proof,
+            resources=dict(sizes,font_outcome=outcome)))
+        write(directory/'stages.json',stages);print(name,'passed',flush=True)
+        pdf,state,previous,previous_sizes=out,updated,report,sizes
     # 245+160 chars exceed the ~271-char confirmed capacity by several lines.
     # Layout measures every break candidate per line (cubic in Japanese text):
     # extra*20 would need roughly 25 GB before the same refusal is reached.
@@ -216,8 +253,8 @@ def run(directory):
     if refused['reason']!=CAPACITY_REASON:
         raise ValueError('capacity negative control was refused for an unexpected reason: '+refused['reason'])
     if engine!={p.name:source_sha(p) for p in sorted((ROOT/'pdfeditor').glob('*.py'))}:raise ValueError('engine changed during evaluation')
-    return dict(schema='pdfengine-continuation-evaluation-1',status='passed',source_url=URL,source_sha256=SOURCE_SHA,
-        source_replay=replay,stages=stages,negative_controls=[refused],destination=destination,
+    return dict(schema='pdfengine-continuation-evaluation-2',status='passed',source_url=URL,source_sha256=SOURCE_SHA,
+        source_replay=replay,source_resources=baseline,stages=stages,negative_controls=[refused],destination=destination,
         scope='one external LibreOffice paragraph, original slots on pages 4/5, reviewed empty area on existing page 6',
         providers=providers,provider_evidence_source=provider_evidence_source,
         environment=dict(engine_digest=hashlib.sha256(json.dumps(engine,sort_keys=True).encode()).hexdigest(),engine_sha256=engine,

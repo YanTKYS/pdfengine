@@ -1,6 +1,6 @@
 # Continuation開発の再開地点 — 2026-09-24
 
-**現状**: 外部原本の系列評価まで完了し、この開発段階を閉じた。結果は末尾の「外部原本評価の完了」節を参照。以下の各節は、その時点の記録として残す。
+**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。結果は「外部原本評価の完了」と「生成fontの寿命」の節を参照。以下の各節は、その時点の記録として残す。
 
 利用者の「最短の区切りでコミット」指示による途中保存。起点は`02a526ff2781ae80551f2ad4367f6f8d50c2b430`。サブエージェントは使用していない。
 
@@ -102,6 +102,57 @@ skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans J
 ### 観測した性質（未変更）
 
 保存ごとに、6ページの生成blockは3,049 → 6,305 → 6,646 → 9,626 → 12,702Bと増えた。PDFも371KBから570KBへ増えた。blockの増加は、置き換えた文字を非描画の`TJ`として残す既存writerの設計による。PDFの増加は主に、保存ごとに新しいsubset fontを埋め込み、以前の生成fontをfileに残すことによる。Type0 fontは4から17個になり、no-op保存でも増える。画素・Unicode・照合には影響しない。性能・容量の最適化は今回の範囲外のため、変更していない。
+
+## 生成fontの寿命 — 2026-09-25（`f7fa600`）
+
+起点はPR #6のmerge commit `f7fa600`。サブエージェントは使用していない。PR #6の外部評価で、生成fontが保存ごとに累積することが分かった（Type0 4→17、PDF 371KB→570KB、no-opでも増加）。
+
+### 原因
+
+実PDFのobject・resource・programで確かめた。
+
+- 保存ごとに、空いている`/PRFn`へ新しいsubsetを追加していた。
+- 古いaliasは描画には使われていない。ただし、置き換えた生成glyphの`/PRFn size Tf … Tm`が非描画の数値`TJ`とともにprogramに残り、dormant slotの`[] TJ`挿入文脈とTc/Ts witnessも生成aliasを`Tf`で選ぶ。そのため古いaliasは最終programから参照され続け、font graphは到達可能だった。
+- 例えばPR #6のno-opの5ページでは、`/PRF1`〜`/PRF6`が非描画の`Tf`からだけ参照され、描画は`/PRF7`・`/PRF8`だった。
+- sidecarには、styleが描くaliasとproviderはあったが、「pdfengineが生成した」ことやsubset hashの記録はなかった。
+
+### 修正
+
+- **`pdfeditor/shared_flow.py`**: 生成fontの所有記録`generated_fonts`をsidecarに持つ。記録を作るのはそのsubsetを書いた保存だけで、open時にpage resourceのbytesと照合する。
+- **`pdfeditor/transaction.py`**: 記録のあるaliasだけを再利用候補にする。条件は、そのaliasで描かれるglyphがすべて計画で消費され、保持codeにも使われないことである。commit時に全計画で再検証する。Transactionの元font指紋照合は、置き換えたaliasだけを除外する。
+- **`pdfeditor/pdf_save.py`**: page-local辞書のalias先を置き換えるのは、保存直前にFontFile2 hashを再照合できた場合だけである。書込値が同じなら既存objectを残す。旧graphは既存の到達可能性GCで落ちる。
+- **`pdfeditor/paragraph.py`**: 予約時に、消費glyph・保持alias・provider identityを渡し、生成fontの記録を返す。
+- **engine digest**: `f23c2f08d3e4407180b63d0a888187199ca9d6c765b6d1c7d2cc5eb2c2a0b4c0`（44ファイル）。
+- **削除しないもの**: 元PDFのresourceや記録のないfontは削除しない。aliasも削除しない。生成aliasは非描画operatorから参照され続けるため、外すと未定義resourceになる。
+
+### 検証（Windows 11 x64、Python 3.12.14、lockfileの版）
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_continuation.py` | 26 passed（426.18秒） |
+| `tests/test_generated_fonts.py`（新規） | 6 passed（186.22秒） |
+| 全suite `python -m pytest -q` | 649件中642 passed / 7 skipped / 0 failed（2,728.79秒、外部評価と並行） |
+| 外部原本 run `font-lifecycle-windows-3` | 全段階・no-op 3回・容量拒否が通過（2,868秒）。runner SHA-256 `dd6d5329…f402` |
+
+上の2つは最終engineの結果である。その直前、docstringだけが異なるengine（`8fa3691a…b1b3`）でも、全suite（642 passed / 7 skipped、2,056.46秒）と外部原本run `-2`が通った。run `-2`と`-3`のPDFはbyte単位で同一だった。
+
+- **新規の回帰**（`tests/test_generated_fonts.py`）:
+  - grow → second → shorten → regrow → no-op 3回の各段階で、alias・`/Font`数・Type0数・所有graph数・記録を照合する。
+  - secondでは旧subsetが文書から消える。shortenではdormant slotの`Tf`参照とmarkerを保つ。
+  - 共有・継承resourceと、記録のない`/PRF1`（pdfengineと同じ構造のType0）を含む原本では、どれも置き換えない。
+  - 予約規則を単体で確認する（証跡なし、未消費glyph、保持codeでは再利用しない）。
+  - 改ざんした記録ではsidecarを復元しない。再照合失敗・記録作成失敗でPDF・sidecarを公開しない。
+  - 再利用を無効にすると、このテストはsecondの段階で失敗する。
+- **全suiteの実行条件**: この環境では既定の一時directory（`%TEMP%\pytest-of-agri0`）へ書けないため、`--basetemp`をrepo内の`tmp/`へ指定した。
+- **skip 7件**: 未取得の他外部corpus 5件と、AES provider不在2件。Windows fontは揃っているため、以前のfont不在skipはない。
+- **外部評価の最初の試行**（run `font-lifecycle-windows`）: 評価コードの監査がsecondで停止した。原因は、置き換えた生成aliasを元fontとして比較した評価側の前提である。除外条件を「直前revisionの記録で所有を証明し、この保存が置き換えたalias」に限って修正し、新しいrun名で再実行した。
+
+### 残る累積と次の障壁
+
+- **fontとresource**: 保存回数に比例して増えない。no-opは新しいfont objectを書かない。
+- **page program**: 非描画operatorが保存ごとに一定量（外部原本で展開後+21,784 byte、圧縮後約300 byte）増える。
+- **dormant alias**: 直前のsubsetを保持する（aliasごとに1つ）。
+- **次の最小の構造障壁**: 置き換えられた生成glyph単位（`Tf … Tm [-n] TJ`）の所有と不使用を証明し、text matrixとmutation map・markerの対応を保ったまま除去する契約である。これが成立すれば、非描画operatorだけが参照する生成aliasも外せる。
 
 ## 再評価の手順
 
