@@ -319,15 +319,22 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
         shaper = ParagraphShaper(paragraph, units, fonts or {}, alignment=alignment['value'])
         result.shaper = shaper
         layout = layout_attributed(shaper.text, shape=shaper.shape, **layout_options, **alignment_options(alignment),continues=_paragraph_continues)
-        resources, font_reports = {}, {}
+        resources, font_reports, font_records = {}, {}, {}
+        # Codes kept for unedited text still select their current resources.
+        retained_aliases = {g.glyph.payload['resource'] for g in layout.glyphs if g.glyph.payload['provider'] == 'original'}
         for provider, font in shaper.fonts.items():
             glyphs = [g.glyph.payload['shaped_glyph'] for g in layout.glyphs
                       if g.glyph.payload['provider'] == provider and g.glyph.payload['source_index'] is None]
             if not glyphs:
                 continue
             resource = font.resource([ShapedRun('', tuple(glyphs))])
-            alias = page.reserve_font_alias('PRF')
+            identity = dict(source_sha256=font.source_sha256, font_index=font.font_index,
+                            variations=font.variations, instance_sha256=font.instance_sha256)
+            alias = page.reserve_font_alias('PRF', consumed=frozenset(selected), retained=frozenset(retained_aliases),
+                                            provider=identity)
             resources[alias] = resource
+            font_records[alias] = dict(subset_sha256=hashlib.sha256(resource.program).hexdigest(),
+                                       basefont=resource.basefont, provider=identity)
             font_reports[provider] = {"resource": alias, "name": font.name,
                 "source_sha256": font.source_sha256, "instance_sha256": font.instance_sha256,
                 "subset_sha256": hashlib.sha256(resource.program).hexdigest(),
@@ -468,6 +475,7 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
         result.affected = resolved.bbox.union(anchored.bounds if anchored else ink_bounds)
         result.font_builders = {alias: resource.build for alias, resource in resources.items()}
         result.font_subsets = {alias: hashlib.sha256(resource.program).hexdigest() for alias, resource in resources.items()}
+        result.font_records = font_records
         result._report = {"schema_version": 1, "backend": "attributed-source-and-shaped-fonts",
             **({'destination_style_binding': paragraph.binding_report()} if render_styles is not None else {}),
             "element_snapshot_sha256": element_snapshot.get('snapshot_sha256') if element_snapshot else None,

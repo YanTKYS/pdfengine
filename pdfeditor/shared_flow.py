@@ -11,6 +11,7 @@ from pathlib import Path
 import tempfile
 
 import pymupdf
+from pypdf import PdfReader
 from uniseg.graphemecluster import grapheme_cluster_boundaries
 
 from .attributed import EditUnit, digest
@@ -23,6 +24,7 @@ from .transaction import Transaction
 from .logical_element import paragraph_from_snapshot
 from .model import Rect
 from .paragraph import ParagraphShaper, plan_paragraph
+from .pdf_save import embedded_font_sha256
 from .proof_session import proof_session
 from .replay import ensure_destination
 from .rich_layout import layout_attributed
@@ -35,6 +37,57 @@ from . import continuation as destinations
 
 SCHEMA = 'pdfengine-shared-flow-1'
 POLICY_KEYS = {'min_line_height', 'first_line_indent', 'keep_together', 'break_before', 'break_after', 'empty'}
+GENERATED_FONT_KEYS = {'provenance', 'subset_sha256', 'basefont', 'provider', 'slot_id', 'paragraph_id', 'created_pdf_sha256'}
+
+
+def _verify_generated_fonts(source, state):
+    """Ownership records: page-local fonts that pdfengine wrote for a slot of this flow.
+
+    A record is written only by the save that embedded the subset and is
+    carried forward only while the page resource still holds those bytes.
+    Fonts without a record (source, foreign or legacy) are never owned.
+    """
+    records = state.get('generated_fonts')
+    if records is None:
+        return
+    if not isinstance(records, dict):
+        raise PdfError('generated font records must map pages to aliases')
+    reader = PdfReader(source)
+    if reader.is_encrypted:
+        reader.decrypt('')
+    for number, fonts in records.items():
+        if number not in state['pages'] or not isinstance(fonts, dict) or not fonts:
+            raise PdfError('generated font records name an unknown page')
+        resources = reader.pages[int(number) - 1].get('/Resources')
+        page_fonts = resources.get_object().get('/Font') if resources is not None else None
+        page_fonts = page_fonts.get_object() if page_fonts is not None else {}
+        for alias, record in fonts.items():
+            slot = state['slots'].get(record.get('slot_id')) if isinstance(record, dict) else None
+            if (slot is None or set(record) != GENERATED_FONT_KEYS or record['provenance'] != 'generated-by-pdfengine'
+                    or slot['paragraph_id'] != record['paragraph_id']
+                    or state['regions'][slot['region_id']]['page'] != int(number)
+                    or alias not in page_fonts or embedded_font_sha256(page_fonts[alias]) != record['subset_sha256']
+                    or page_fonts[alias].get_object().get('/BaseFont') != '/' + record['basefont']):
+                raise PdfError('generated font record differs from the saved page resources')
+
+
+def _generated_fonts(initial, state, result, output_sha256):
+    """Carry verified records forward and record the subsets written by this save."""
+    fonts = deepcopy(initial.get('generated_fonts', {}))
+    for number, page in result.pages.items():
+        current = fonts.setdefault(str(number), {})
+        outcome = result.font_outcome.get(number, {})
+        for plan in page.plans:
+            for alias, record in plan.font_records.items():
+                previous = current.get(alias)
+                kept = (outcome.get(alias) == 'reused' and previous is not None
+                        and previous['subset_sha256'] == record['subset_sha256'])
+                current[alias] = dict(record, provenance='generated-by-pdfengine', slot_id=plan.owner,
+                    paragraph_id=state['slots'][plan.owner]['paragraph_id'],
+                    created_pdf_sha256=previous['created_pdf_sha256'] if kept else output_sha256)
+        if not current:
+            del fonts[str(number)]
+    return fonts
 
 
 def _contract(state):
@@ -188,6 +241,7 @@ def _validate(source,value):
                         raise PdfError('shared fragment alignment or continuation differs from its paragraph')
             if cursor!=len(logical['text']):raise PdfError('unbound paragraph Unicode remains')
     destinations.validate_destinations(source,state)
+    _verify_generated_fonts(source,state)
     if state['physical_breaks']!=_breaks(state):raise PdfError('physical breaks differ from paragraph fragment allocation')
     if state['allocation_provenance']=='generated-from-confirmed-shared-flow':_verify_placement(state)
     elif state['allocation_provenance']!='observed-source-uncomposed':raise PdfError('unknown allocation provenance')
@@ -447,10 +501,14 @@ def edit_shared_flow(source,model,output,model_output,changes):
     with tempfile.TemporaryDirectory(prefix='.shared-flow-',dir=output.parent) as directory:
         root=Path(directory);target=root/'shared.pdf'
         with Transaction(source) as transaction:
-            plans={}
+            plans={};owned=initial.get('generated_fonts',{})
             for sid in plan['schedule']:
                 slot=state['slots'][sid];pid=slot['paragraph_id'];p=state['paragraphs'][pid];wanted=plan['fragments'][sid]
-                page=transaction.page(state['regions'][slot['region_id']]['page'])
+                number=state['regions'][slot['region_id']]['page'];fresh=number not in transaction.pages
+                page=transaction.page(number)
+                # Verified records from this flow's previous saves are the only
+                # ownership evidence; every other font on the page stays untouched.
+                if fresh:page.own_fonts(owned.get(str(number),{}))
                 options=dict(
                     fonts=styles.providers(p),render_styles=styles.render_styles(p),
                     paragraph_style=styles.render_confirmations(p),
@@ -503,6 +561,8 @@ def edit_shared_flow(source,model,output,model_output,changes):
                                 raise PdfError('generated continuation block lost its insertion identity')
                         state['destination_bindings'][ident]=current
                     finally:content.close()
+                state['generated_fonts']=_generated_fonts(initial,state,result,source_sha(target))
+                font_outcome={str(n):dict(sorted(v.items())) for n,v in sorted(result.font_outcome.items()) if v}
             finally:result.close()
         if source_sha(source)!=initial['pdf_sha256']:raise PdfError('source changed during shared flow mutation')
         state.update(pdf_sha256=source_sha(target),allocation_provenance='generated-from-confirmed-shared-flow',
@@ -510,6 +570,7 @@ def edit_shared_flow(source,model,output,model_output,changes):
         state['physical_breaks']=_breaks(state);state=_validate(target,_reseal(state))
         saved=root/'shared.json';saved.write_bytes((json.dumps(state,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
         _publish(root,[(target,output),(saved,model_output)])
-    return dict(backend='shared-attributed-paragraph-flow',plan=plan,steps=steps,mutation_map=mutation_map,pdf_sha256=state['pdf_sha256'],
+    return dict(backend='shared-attributed-paragraph-flow',plan=plan,steps=steps,mutation_map=mutation_map,
+        generated_font_outcome=font_outcome,pdf_sha256=state['pdf_sha256'],
         model_sha256=state['model_sha256'],paragraph_identities_and_allocation_verified=True,saves=1,
         publication='one transaction verified every slot; rollback on exception')

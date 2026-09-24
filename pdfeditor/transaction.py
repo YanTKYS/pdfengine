@@ -21,7 +21,7 @@ from .composition import _observations, _pixels_equal, _require_removal, _signat
 from .content_stream import ContentPage
 from .mutation import IdentityMap, MutationProgram
 from .paint_provenance import _load_catalog, interpreted_paints
-from .pdf_save import font_fingerprints, publish_program
+from .pdf_save import embedded_font_sha256, font_fingerprints, publish_program
 from .replay import compare_glyphs, ensure_destination
 from .selection import source_sha
 
@@ -73,6 +73,7 @@ class Plan:
         self.covering_paths = set()
         self.font_builders = {}
         self.font_subsets = {}
+        self.font_records = {}
 
     def check(self, page, *, exclude_glyphs, paint_changes):
         """Final-state obstacle checks; other plans' changes are already applied."""
@@ -104,6 +105,9 @@ class PageTransaction:
         self.program = MutationProgram(self.content.streams[-self.content.page.xref])
         self.plans = []
         self.reserved_aliases = set()
+        self.owned_fonts = {}
+        self.replaced_fonts = {}
+        self._font_usage = None
         self._observation = self._glyphs = self._catalog = None
 
     @property
@@ -128,14 +132,92 @@ class PageTransaction:
             self._catalog = _load_catalog(self.source, self.number)[0]
         return self._catalog
 
-    def reserve_font_alias(self, prefix):
-        existing = self.content.pdf_page['/Resources'].get_object().get('/Font', {})
+    def _page_fonts(self):
+        fonts = self.content.pdf_page['/Resources'].get_object().get('/Font')
+        return fonts.get_object() if fonts is not None else {}
+
+    def own_fonts(self, records):
+        """Accept the caller's evidence that aliases hold pdfengine-generated subsets.
+
+        ``records`` maps an alias to the record pdfengine persisted when it wrote
+        that font, including the FontFile2 ``subset_sha256``. The evidence must
+        describe this revision's page resource bytes. An alias prefix, or an
+        unrecorded font that merely looks generated, is never ownership.
+        """
+        if self.plans:
+            raise PdfError('generated font ownership must be registered before planning')
+        fonts = self._page_fonts()
+        for alias, record in records.items():
+            if (not isinstance(alias, str) or alias not in fonts or not isinstance(record, dict)
+                    or embedded_font_sha256(fonts[alias]) != record.get('subset_sha256')):
+                raise PdfError('generated font ownership evidence differs from the page resources')
+            self.owned_fonts[alias] = dict(record)
+
+    def _painted_by_alias(self):
+        """Source glyph occurrences each font alias paints, and aliases with unknown painting."""
+        if self._font_usage is None:
+            usage, unknown = defaultdict(set), set()
+            for event in self.content.events:
+                font = event.state.font
+                if font is None:
+                    continue
+                if event.error or any(not c.source_orders for c in event.chars):
+                    unknown.add(font.name)
+                for c in event.chars:
+                    usage[font.name].update(c.source_orders)
+            self._font_usage = usage, unknown
+        return self._font_usage
+
+    def _releasable(self, alias, consumed, retained_aliases):
+        usage, unknown = self._painted_by_alias()
+        return (alias not in unknown and alias not in retained_aliases
+                and usage.get(alias, set()) <= consumed)
+
+    def reserve_font_alias(self, prefix, *, consumed=frozenset(), retained=frozenset(), provider=None):
+        """Name the resource for a new generated font on this page.
+
+        A proven pdfengine-owned alias is re-targeted to the new subset when
+        every glyph it paints is consumed by the planned edits and no planned
+        glyph keeps its codes. Superseded generated operators may still select
+        it, but they paint nothing. Otherwise an unused name is chosen, so
+        source and foreign fonts are never re-targeted.
+        """
+        if self.owned_fonts and not self.content.errors:
+            claimed, kept = set(consumed), set(retained)
+            for plan in self.plans:
+                claimed |= plan.consumed
+                kept |= {g['font_resource'] for g in plan.new_glyphs if g.get('provider') == 'original'}
+            reusable = sorted((a for a in self.owned_fonts if a not in self.reserved_aliases
+                               and self._releasable(a, claimed, kept)), key=lambda a: (len(a), a))
+            if reusable:
+                same = [a for a in reusable if provider is not None and self.owned_fonts[a].get('provider') == provider]
+                alias = (same or reusable)[0]
+                self.reserved_aliases.add(alias)
+                self.replaced_fonts[alias] = self.owned_fonts[alias]['subset_sha256']
+                return alias
+        existing = self._page_fonts()
         n = 1
         while f'/{prefix}{n}' in existing or f'/{prefix}{n}' in self.reserved_aliases:
             n += 1
         alias = f'/{prefix}{n}'
         self.reserved_aliases.add(alias)
         return alias
+
+    def font_replacements(self):
+        return dict(self.replaced_fonts)
+
+    def _check_font_reuse(self):
+        """Re-prove every re-targeted alias against the complete final plan set."""
+        if not self.replaced_fonts:
+            return
+        consumed, _, _ = self._merged()
+        builders = self.font_builders()
+        kept = {g['font_resource'] for plan in self.plans for g in plan.new_glyphs if g.get('provider') == 'original'}
+        for alias in self.replaced_fonts:
+            if alias not in builders:
+                raise PdfError('a re-targeted generated font alias has no new font')
+            if not self._releasable(alias, consumed, kept):
+                raise PdfError('a re-targeted generated font alias still paints retained glyphs')
 
     def add(self, plan):
         if plan.page is not None:
@@ -171,6 +253,7 @@ class PageTransaction:
                 for second in b.final_rects:
                     if first.intersects(second, .001):
                         raise PdfError('planned elements overlap in the final page state')
+        self._check_font_reuse()
 
     def expected_glyphs(self):
         consumed, moved, _ = self._merged()
@@ -288,7 +371,7 @@ class Transaction:
             self.document.close()
             self.document = None
 
-    def _verify(self, document, expected_kept, expected_new, expected_paints, masks, old_fonts, added_fonts):
+    def _verify(self, document, expected_kept, expected_new, expected_paints, masks, old_fonts, added_fonts, replaced_fonts=None):
         if (len(document) != self.page_count or document.permissions != self.document.permissions
                 or document.metadata.get('encryption') != self.document.metadata.get('encryption')):
             raise PdfError('transaction changed page count or security')
@@ -327,8 +410,11 @@ class Transaction:
             if cursor != len(new):
                 raise PdfError('transaction produced glyphs outside its plans')
             aliases = {alias[1:] for alias in added_fonts[number]}
+            # Only proven generated aliases re-targeted by this save may differ;
+            # every other font resource of the page keeps its exact fingerprint.
+            retargeted = {alias[1:] for alias in (replaced_fonts or {}).get(number, ())}
             current = font_fingerprints(document, pno)
-            if [f for f in current if f[0][3] not in aliases] != old_fonts[number]:
+            if [f for f in current if f[0][3] not in aliases] != [f for f in old_fonts[number] if f[0][3] not in retargeted]:
                 raise PdfError('an existing font resource changed')
             for alias, digest_value in added_fonts[number].items():
                 added = [f for f in current if f[0][3] == alias[1:]]
@@ -357,10 +443,12 @@ class Transaction:
         if source_sha(self.source) != self.source_sha256:
             raise PdfError('source revision changed while planning')
         programs, builders, kept, new, paints, masks, old_fonts, added = {}, {}, {}, {}, {}, {}, {}, {}
+        replacements, retargeted, outcome = {}, {}, {}
         for number, page in self.pages.items():
             page.check()
             programs[number - 1] = page.program.apply()
             builders[number - 1] = page.font_builders()
+            replacements[number - 1] = retargeted[number] = page.font_replacements()
             kept[number] = page.expected_glyphs()
             new[number] = sorted((p for p in page.plans if p.new_glyphs), key=lambda p: min(m.start for m in p.mutations))
             paints[number] = page.expected_paints()
@@ -370,8 +458,8 @@ class Transaction:
             for plan in page.plans:
                 added[number].update(plan.font_subsets)
         publish_program(self.source, None, programs, output,
-                        lambda document: self._verify(document, kept, new, paints, masks, old_fonts, added),
-                        font_builders=builders)
+                        lambda document: self._verify(document, kept, new, paints, masks, old_fonts, added, retargeted),
+                        font_builders=builders, font_replacements=replacements, font_outcome=outcome)
         if removal_output is not None:
             removals = {}
             for number, page in self.pages.items():
@@ -393,4 +481,6 @@ class Transaction:
                         raise PdfError('removing the planned elements changed other paint or scope')
             publish_program(self.source, None, removals, removal_output, verify_removed)
         self.committed = True
-        return TransactionResult(self, output)
+        result = TransactionResult(self, output)
+        result.font_outcome = {number + 1: aliases for number, aliases in outcome.items()}
+        return result
