@@ -73,10 +73,12 @@ skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans J
   - final no-opでは、paragraph・style・destinationの記録、slotのidentity・範囲・行geometry・alignment・inline style、計画glyph（Unicode・GID・origin・size・advance・code・CID・`W`幅）が直前のregrowと一致する。
   - これまでは画素一致による間接的な保証だけだった。
 - **集計の記録**: engine digest、評価helperのhash、Python・platform、Poppler・独立pypdfの版、providerのfile・face・hashを加えた。Popplerの存在は、版表示の文字列で判定する（`-v`で99を返すbuildがあるため）。
+- **providerの固定**: 実際に使うproviderのfile名・face・SHA-256・variationsを、`evaluations/story_styles/summary.json`の公開証跡と照合する。一致しなければ編集前に停止する。同名fontではなく、以前の評価者が確認したものと同じfont bytesとfaceであることを保証するためである。集計には、実際に使ったproviderと照合元集計のhashを記録する。
+- **容量拒否の理由**: 拒否されたことに加え、理由が確認済みregionを使い切ったこと（`paragraphs exceed all explicitly confirmed shared regions`）まで照合する。
 
 ### 評価コードのdry-run（証跡ではない）
 
-修正後の評価コードを、合成の7ページPDFで最後まで動かした。置き換えたのは入力（原本・座標・provider）とWindows固定の外部tool pathだけで、段階処理・監査・拒否は評価コードそのものである。全段階と容量拒否が79秒で通った。外部原本の代わりにはならないため、集計にも資料の結果にも使わず、成果物もcommitしていない。
+修正後の評価コードを、合成の7ページPDFで最後まで動かした。置き換えたのは入力（原本・座標・provider）とWindows固定の外部tool pathだけで、段階処理・監査・拒否は評価コードそのものである。全段階と容量拒否が約72〜79秒で通った。期待providerのhashまたはfaceを変えると編集前に停止し、拒否理由を差し替えると最後に停止することも確認した。外部原本の代わりにはならないため、集計にも資料の結果にも使わず、成果物もcommitしていない。
 
 同じdry-runで、生成blockが保存ごとに2,327Bから9,487Bへ増えることを確認した。既存writerは、置き換えた文字のoperatorを削除せず、非描画の`[-1000] TJ`へ書き換えてtext matrixの状態を保つ。この増加はその設計によるもので、source slotの再編集でも同じように起きる。画素・Unicode・照合には影響しないため、変更していない。
 
@@ -84,7 +86,7 @@ skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans J
 
 Windows検証環境で[評価README](../evaluations/continuation/README.md)の手順を実行する。
 
-1. 最新commitを取得し、engine digest `a20828d9…52e0`と評価コードの`runner_sha256` `c2c279db3ee58d6a4594481e73a0280bbb78be98f35f75a9df8d75ec50503537`を確認する。
+1. 最新commitを取得し、engine digest `a20828d9…52e0`と評価コードの`runner_sha256` `3eb35b38946906e4aef460c26a2263a4ce1612c3e2012f32bb2097d4e2ac535b`を確認する。
 2. 原本（SHA-256 `1366587531…a5f3`）、`msmincho.ttc` face 1、`times.ttf`、Poppler、独立pypdfを揃える。
 3. 未使用のrun名で`python -m evaluations.continuation.evaluate --run-name <name>`を実行する。
 4. overflowのallocationを以前の計画（既存slot 209字、生成slot 36字・2行）と比べ、画像を目視する。

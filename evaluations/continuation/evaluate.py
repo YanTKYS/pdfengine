@@ -38,6 +38,9 @@ DEPENDENCIES=['evaluations/story_flow/evaluate.py','evaluations/story_styles/eva
     'evaluations/flow_transaction/evaluate.py','evaluations/attributed/evaluate.py','evaluations/backend/followup.py',
     'evaluations/realpdf/evaluate.py','evaluations/realpdf/independent_extract.py']
 GLYPH_FIELDS=('unicode','glyph_id','origin','size','advance','code','cid','nominal_pdf_width')
+PROVIDER_FIELDS=('filename','font_index','sha256','variations')
+REVIEWED_PROVIDERS='evaluations/story_styles/summary.json'
+CAPACITY_REASON='paragraphs exceed all explicitly confirmed shared regions'
 
 
 def write(path,value):path.write_bytes((json.dumps(value,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
@@ -133,6 +136,18 @@ def tools():
     return dict(poppler=banner,independent_pypdf=version,independent_python=python)
 
 
+def provider_evidence(registry):
+    return {i:dict(filename=Path(r['reflow_provider']['path']).name,font_index=r['reflow_provider'].get('font_index',0),
+        sha256=r['reflow_provider']['sha256'],variations=r['reflow_provider'].get('variations')) for i,r in registry.items()}
+
+
+def reviewed_providers():
+    """Providers published by the story_styles evaluation: same bytes and face, not merely the same file name."""
+    data=(ROOT/REVIEWED_PROVIDERS).read_bytes();styles=json.loads(data.decode('utf-8'))['logical_styles']
+    return ({i:{k:style['provider'][k] for k in PROVIDER_FIELDS} for i,style in styles.items()},
+            dict(path=REVIEWED_PROVIDERS,sha256=hashlib.sha256(data).hexdigest()))
+
+
 def stable_slot(slot):
     """Semantic slot record; byte offsets, xrefs and resource aliases legitimately change on resave."""
     binding=slot['binding']
@@ -144,7 +159,12 @@ def stable_slot(slot):
 def run(directory):
     engine={p.name:source_sha(p) for p in sorted((ROOT/'pdfeditor').glob('*.py'))}
     environment=tools()
-    state,pid,destination=prepare();initial=deepcopy(state);write(directory/'initial.json',state)
+    state,pid,destination=prepare();initial=deepcopy(state)
+    providers=provider_evidence(state['paragraphs'][pid]['style_registry'])
+    reviewed,provider_evidence_source=reviewed_providers()
+    if providers!=reviewed:
+        raise ValueError('reflow providers differ from the reviewed story_styles providers: '+json.dumps(providers,sort_keys=True))
+    write(directory/'initial.json',state)
     replay=source_replay(directory,state);original_text=extraction(SOURCE,directory,'original')['pages']
     logical=deepcopy(state['paragraphs'][pid]['logical']);sid=slot_id(destination)
     extra='確認した空き領域へ同じ文章の続きを配置し、再編集と保存後の文字位置を確認します。'*2
@@ -193,12 +213,13 @@ def run(directory):
     # extra*20 would need roughly 25 GB before the same refusal is reached.
     refused=refuse(directory,'capacity',lambda o,j:edit_shared_flow(pdf,state,o,j,
         {pid:dict(edits=[dict(start=0,end=0,text=extra*2,style_id='body')])}))
+    if refused['reason']!=CAPACITY_REASON:
+        raise ValueError('capacity negative control was refused for an unexpected reason: '+refused['reason'])
     if engine!={p.name:source_sha(p) for p in sorted((ROOT/'pdfeditor').glob('*.py'))}:raise ValueError('engine changed during evaluation')
     return dict(schema='pdfengine-continuation-evaluation-1',status='passed',source_url=URL,source_sha256=SOURCE_SHA,
         source_replay=replay,stages=stages,negative_controls=[refused],destination=destination,
         scope='one external LibreOffice paragraph, original slots on pages 4/5, reviewed empty area on existing page 6',
-        providers={i:dict(file=Path(r['reflow_provider']['path']).name,font_index=r['reflow_provider'].get('font_index',0),
-            sha256=r['reflow_provider']['sha256']) for i,r in initial['paragraphs'][pid]['style_registry'].items()},
+        providers=providers,provider_evidence_source=provider_evidence_source,
         environment=dict(engine_digest=hashlib.sha256(json.dumps(engine,sort_keys=True).encode()).hexdigest(),engine_sha256=engine,
             runner_sha256=source_sha(Path(__file__)),evaluation_dependencies_sha256={d:source_sha(ROOT/d) for d in DEPENDENCIES},
             python=sys.version.split()[0],platform=platform.platform(),pymupdf=pymupdf.VersionBind,**environment))

@@ -27,7 +27,7 @@
 
 ## 自動照合
 
-- 開始時: Poppler・独立pypdfの存在と原本hashを確認し、provider fileのhashとfaceを記録する。
+- 開始時: Poppler・独立pypdfの存在と原本hashを確認する。providerは、[story_styles公開集計](../story_styles/summary.json)で評価者が確認したものと、file名・face・SHA-256・variationsまで一致しなければ編集前に停止する。同名fontであることだけでは通さない。
 - source no-op: 4/5ページのsource slotの同文replayが、MuPDF全画素・Poppler全画素・独立Unicodeで元PDFと一致する。
 - 各保存（overflow、second、shorten、regrow、no-op）:
   - 事前planと実行planが一致する。
@@ -44,13 +44,13 @@
   - 全ページでMuPDF・Popplerの全画素が一致する。
   - allocation、paragraph・style・destinationの記録、slotのidentity・行geometry・alignment・inline style（tracking・riseを含む）が変わらない。
   - 計画glyphのUnicode・GID・origin・size・advance・code・CID・`W`幅が直前のregrowと一致する。
-- 容量不足: 最終状態へ160字を加えると確認済み容量（約271字）を超え、最終PDF/sidecarを公開せずに拒否する。
+- 容量不足: 最終状態へ160字を加えると確認済み容量（約271字）を超え、最終PDF/sidecarを公開せずに拒否する。拒否されたことだけでなく、理由が確認済みregionを使い切ったこと（`paragraphs exceed all explicitly confirmed shared regions`）まで照合する。
 
 ## 実行後に確認すること
 
-1. `summary.json`の`environment.engine_digest`が上のdigestと、`runner_sha256`が`c2c279db3ee58d6a4594481e73a0280bbb78be98f35f75a9df8d75ec50503537`と一致することを確認する。
+1. `summary.json`の`environment.engine_digest`が上のdigestと、`runner_sha256`が`3eb35b38946906e4aef460c26a2263a4ce1612c3e2012f32bb2097d4e2ac535b`と一致することを確認する。
 2. overflowのallocationを以前の計画（既存slot 209字、生成slot 36字・2行）と比べる。差があれば原因を調べ、過去値へ合わせるためのコード変更はしない。
 3. `runs/<run名>/`の各`*-audit/page-<n>/after.png`を目視する。対象はoverflow・second・shorten・regrowの4〜6ページと、no-opの全ページ。文字の重なり、行ずれ、不自然な余白、図版への侵入、欠落、別paragraphの破損、想定外のpaint順序を見る。
 4. すべて成功した場合だけ、`runs/<run名>/summary.json`を`evaluations/continuation/summary.json`へ置き、資料の「検証中」を更新する。
 
-公開集計には、原本URL/hash、engine・評価コード・helperのhash、実行環境、provider fileのhash/face、各段階と拒否の検査結果だけを含める。これは単一外部原本での境界評価であり、一般PDFの成功率ではない。
+公開集計には、原本URL/hash、engine・評価コード・helperのhash、実行環境、実際に使ったproviderのfile名・face・hashと照合元集計のhash、各段階と拒否の検査結果だけを含める。これは単一外部原本での境界評価であり、一般PDFの成功率ではない。
