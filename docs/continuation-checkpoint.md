@@ -1,5 +1,7 @@
 # Continuation開発の再開地点 — 2026-09-24
 
+**現状**: 外部原本の系列評価まで完了し、この開発段階を閉じた。結果は末尾の「外部原本評価の完了」節を参照。以下の各節は、その時点の記録として残す。
+
 利用者の「最短の区切りでコミット」指示による途中保存。起点は`02a526ff2781ae80551f2ad4367f6f8d50c2b430`。サブエージェントは使用していない。
 
 ## 実装済み
@@ -30,7 +32,7 @@ text matrix復元修正後、後続の未選択文字を保つテストと同一
 |---|---|
 | `tests/test_continuation.py` | 26 passed（260.41秒）。4 alignmentの生成→second→shorten→regrow→no-op、拒否7種、空き確認6種、late failure 3種を含む |
 | 全suite `python -m pytest -q -o cache_dir=... --junitxml=...` | 643件中625 passed / 18 skipped / 0 failed（879.16秒、RSS記録用の外部pluginのみ追加）。`02a526f`で収集した616 IDは全て存在し、新規は継続26件と下記の回帰1件 |
-| 外部原本の継続評価 | **未実行**。理由は下記 |
+| 外部原本の継続評価 | **未実行**（このsessionの時点）。理由は下記。後にWindowsで実行した（末尾の節） |
 
 skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans JP）不在11、外部corpus未取得5、pypdf AES provider（cryptography / pycryptodome）不在2。lockfileはAES providerを含まない。
 
@@ -82,15 +84,33 @@ skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans J
 
 同じdry-runで、生成blockが保存ごとに2,327Bから9,487Bへ増えることを確認した。既存writerは、置き換えた文字のoperatorを削除せず、非描画の`[-1000] TJ`へ書き換えてtext matrixの状態を保つ。この増加はその設計によるもので、source slotの再編集でも同じように起きる。画素・Unicode・照合には影響しないため、変更していない。
 
-## 最短の再開手順
+## 外部原本評価の完了 — 2026-09-24（`d33d236`）
+
+起点はPR #5のmerge commit `d33d236`。サブエージェントは使用していない。Windows 11 x64（10.0.26200）、Python 3.12.14、lockfileの版で、評価READMEの手順どおりにrun `final-windows`を実行した。
+
+- **開始時の確認**: engine digest `a20828d9…52e0`（44ファイル）と`runner_sha256` `3eb35b38…535b`が一致した。
+- **入力**: 原本hashが一致した。取得済みの同一bytesを使い、別版は使っていない。`msmincho.ttc` face 1・`times.ttf`は、評価コードがstory_styles公開集計と照合して一致した。
+- **tool**: Poppler 26.07.0と独立pypdf 6.10.0は既定pathに存在し、評価契約とpathを変えずに実行できた。
+- **結果**: source no-op、overflow、reopen、second、shorten、regrow、final no-opと容量拒否がすべて通った（1,846秒）。
+- **allocation**: overflowは既存slot 209字、生成slot 36字・2行で、以前の計画と一致した。regrowはoverflowと同じallocation・同じ生成slotへ戻った。
+- **目視**: 対象画像を確認し、欠陥は見つからなかった。
+- **公開**: runの`summary.json`（SHA-256 `6ec6bdd1…6135`）を`evaluations/continuation/summary.json`として公開した。
+- **engine**: 評価で問題が見つからなかったため、engine・評価コードは変更していない。全suiteは再実行しておらず、上記の625 passed / 18 skippedは同じengineのLinux上の結果である。
+
+詳細と目視上の注記（原本の和欧間隔を再組版で再現しないこと、生成先が評価者の明示した配置であること）は[評価README](../evaluations/continuation/README.md#結果--2026-09-24)にある。
+
+### 観測した性質（未変更）
+
+保存ごとに、6ページの生成blockは3,049 → 6,305 → 6,646 → 9,626 → 12,702Bと増えた。PDFも371KBから570KBへ増えた。blockの増加は、置き換えた文字を非描画の`TJ`として残す既存writerの設計による。PDFの増加は主に、保存ごとに新しいsubset fontを埋め込み、以前の生成fontをfileに残すことによる。Type0 fontは4から17個になり、no-op保存でも増える。画素・Unicode・照合には影響しない。性能・容量の最適化は今回の範囲外のため、変更していない。
+
+## 再評価の手順
 
 Windows検証環境で[評価README](../evaluations/continuation/README.md)の手順を実行する。
 
-1. 最新commitを取得し、engine digest `a20828d9…52e0`と評価コードの`runner_sha256` `3eb35b38946906e4aef460c26a2263a4ce1612c3e2012f32bb2097d4e2ac535b`を確認する。
+1. 最新commitを取得し、engine digestと評価コードの`runner_sha256`を公開集計の値と比べる。
 2. 原本（SHA-256 `1366587531…a5f3`）、`msmincho.ttc` face 1、`times.ttf`、Poppler、独立pypdfを揃える。
 3. 未使用のrun名で`python -m evaluations.continuation.evaluate --run-name <name>`を実行する。
-4. overflowのallocationを以前の計画（既存slot 209字、生成slot 36字・2行）と比べ、画像を目視する。
-5. すべて成功した場合だけ、そのrunの`summary.json`を`evaluations/continuation/summary.json`へ置き、資料の「検証中」を更新する。
-6. 評価のためにengineを修正した場合は、継続テスト、関連テスト、外部評価、全suiteを最終コードで再実行する。
+4. overflowのallocation（既存slot 209字、生成slot 36字・2行）を確認し、画像を目視する。
+5. engineを修正した場合は、継続テスト、関連テスト、外部評価、全suiteを最終コードで再実行し、公開集計を更新する。
 
-最終コードについて未完了の全体結果を先取りしない。外部PDF・派生PDF/PNG・font・本文/glyphログは引き続き公開しない。
+外部PDF・派生PDF/PNG・font・本文/glyphログは引き続き公開しない。
