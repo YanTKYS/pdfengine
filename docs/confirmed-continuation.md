@@ -1,6 +1,6 @@
 # 既存ページ上の確認済みcontinuation destination
 
-**開発途中のチェックポイント（2026-09-24）**。利用者の最短commit指示により、この時点では全suiteと外部PDFの全編集系列を完了していない。新規APIは検証中として扱う。[再開地点と検証状況](continuation-checkpoint.md)を参照。
+**検証途中（2026-09-24）**。最終engineで回帰26件と全suite（625 passed / 18 skipped / 0 failed）は完了した。外部PDFの全編集系列は未実行のため、新規APIは引き続き検証中として扱う。[再開地点と検証状況](continuation-checkpoint.md)を参照。
 
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
 

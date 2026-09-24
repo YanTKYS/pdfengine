@@ -119,6 +119,21 @@ def test_new_japanese_digits_and_symbols_have_real_outlines(cjk):
         assert bounds[0] < bounds[2] and bounds[1] < bounds[3]
 
 
+def test_memoized_shaping_does_not_keep_used_fonts_alive(cjk_bytes):
+    import gc
+    import weakref
+    font = ShapedFont(cjk_bytes)
+    run = font.shape(JAPANESE)
+    assert font.shape(JAPANESE) is run
+    gid = run.glyphs[0].gid
+    assert font.ink(gid) is font.ink(gid) and font.outline(gid) is font.outline(gid)
+    # Every shaper opens its own provider instance; caches must not pin them.
+    reference = weakref.ref(font)
+    del font, run
+    gc.collect()
+    assert reference() is None
+
+
 def test_variable_font_uses_serialized_instance_for_shaping_and_subset_outlines():
     path = Path("C:/Windows/Fonts/NotoSansJP-VF.ttf")
     if not path.is_file():

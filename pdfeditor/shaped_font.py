@@ -86,8 +86,12 @@ class ShapedFont:
         self.hb_font = hb.Font(hb.Face(self.data))
         self.hb_font.scale = (self.upem, self.upem)
         hb.ot_font_set_funcs(self.hb_font)
+        # Memoize per instance. A class-level lru_cache keys on self and keeps
+        # every font (bytes, parsed tables, HarfBuzz face) alive process-wide.
+        self.ink = lru_cache(maxsize=8192)(self.ink)
+        self.outline = lru_cache(maxsize=8192)(self.outline)
+        self.shape = lru_cache(maxsize=2048)(self.shape)
 
-    @lru_cache(maxsize=8192)
     def ink(self, gid):
         pen = BoundsPen(self.glyph_set)
         self.glyph_set[self.order[gid]].draw(pen)
@@ -96,13 +100,11 @@ class ShapedFont:
     def nominal_width(self, gid):
         return self.font["hmtx"][self.order[gid]][0]
 
-    @lru_cache(maxsize=8192)
     def outline(self, gid):
         pen = DecomposingRecordingPen(self.glyph_set)
         self.glyph_set[self.order[gid]].draw(pen)
         return pen.value
 
-    @lru_cache(maxsize=2048)
     def shape(self, text: str, *, nominal_spacing=False) -> ShapedRun:
         for c in text:
             if (unicodedata.category(c) in {"Cc", "Cf", "Cs"}
