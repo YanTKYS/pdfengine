@@ -24,7 +24,7 @@
 
 ## インストール
 
-Python 3.11以上。検証環境はWindows x64 / Python 3.12です。lockfileのPyMuPDF 1.27.2.3はPython 3.11では長い処理中にabortすることを確認しているため、3.12以上で実行してください（[詳細](docs/continuation-checkpoint.md#環境上の注意)）。
+Python 3.12以上。検証環境はWindows x64 / Python 3.12です（3.11を対象外とする理由は[環境上の注意](docs/continuation-checkpoint.md#環境上の注意)）。
 
 ```powershell
 python -m venv .venv
