@@ -1,5 +1,7 @@
 # 独立した段落による共有flow
 
+現行の共有flowは[確認済みcontinuation destination](confirmed-continuation.md)も受け取る。既存source slotだけでは不足するparagraphは、同じparagraphが所有する確認済みdestinationへgenerated slotを作れる。以下のmissing slotによる拒否は、対応するdestination契約も存在しない場合に適用する。
+
 実行基盤は、その後[安定identityと単一transaction](stable-identity-transaction.md)へ移行した。現在の`edit_shared_flow`は全slotのplanを一つのtransactionで保存・検証し、mutation mapでbindingする。以下の逐次書込と`runs/verified`の記述は導入時の設計・評価記録であり、現mainの実行方式や再評価結果とは区別する。
 
 ## 最大障壁の再判断

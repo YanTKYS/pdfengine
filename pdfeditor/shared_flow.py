@@ -30,6 +30,7 @@ from .selection import source_sha
 from .story_flow import LINE_KEYS, _boundaries, open_story
 from . import story_styles as styles
 from .alignment import DEFAULT, request as alignment_request, options as alignment_options, continuation
+from . import continuation as destinations
 
 
 SCHEMA = 'pdfengine-shared-flow-1'
@@ -42,7 +43,9 @@ def _contract(state):
         paragraph_policies=state['paragraph_policies'],
         paragraphs={i:dict(source_model_sha256=p['source_model_sha256'], style_registry=p['style_registry'],
                           reflow_font_policy=p['reflow_font_policy']) for i,p in state['paragraphs'].items()},
-        slots={i:{k:s[k] for k in ('paragraph_id','region_id','source_snapshot_sha256')} for i,s in state['slots'].items()}))
+        slots={i:{k:s[k] for k in ('paragraph_id','region_id','source_snapshot_sha256')}
+            for i,s in state['slots'].items() if s.get('creation_provenance')!=destinations.PROVENANCE},
+        **({'continuation_destinations':state['continuation_destinations']} if state.get('continuation_destinations') else {})))
 
 
 def _slots(state, paragraph):
@@ -158,6 +161,9 @@ def _validate(source,value):
                 key=(r['page'],p['insertion_binding']['event']['byte_range'][0])
                 if key in insertion_slots:raise PdfError('paragraphs cannot share source insertion slots')
                 insertion_slots.add(key)
+            if slot.get('creation_provenance')==destinations.PROVENANCE:
+                d=state.get('continuation_destinations',{}).get(slot.get('destination_id'))
+                if d is None or sid!=destinations.slot_id(d):raise PdfError('generated slot has no confirmed destination owner')
         for pid,p in state['paragraphs'].items():
             logical=p['logical'];cursor=0
             alignment=logical.get('alignment',DEFAULT);alignment_request(alignment)
@@ -181,6 +187,7 @@ def _validate(source,value):
                             or alignment!=DEFAULT and b['physical_layout'].get('paragraph_continues',False)!=continuation(logical['text'],end,z)):
                         raise PdfError('shared fragment alignment or continuation differs from its paragraph')
             if cursor!=len(logical['text']):raise PdfError('unbound paragraph Unicode remains')
+    destinations.validate_destinations(source,state)
     if state['physical_breaks']!=_breaks(state):raise PdfError('physical breaks differ from paragraph fragment allocation')
     if state['allocation_provenance']=='generated-from-confirmed-shared-flow':_verify_placement(state)
     elif state['allocation_provenance']!='observed-source-uncomposed':raise PdfError('unknown allocation provenance')
@@ -189,7 +196,7 @@ def _validate(source,value):
 
 @proof_session
 def confirm_shared_flow(source, stories, *, flow_id, paragraph_order, regions, region_order,
-                        slot_regions, paragraph_policies, follows, protected_regions):
+                        slot_regions, paragraph_policies, follows, protected_regions, continuation_destinations=None):
     """Import reviewed schema-2 stories and independently confirm shared capacity.
 
     slot_regions maps each paragraph's existing fragment ids to region ids.
@@ -225,6 +232,16 @@ def confirm_shared_flow(source, stories, *, flow_id, paragraph_order, regions, r
         pages={str(i+1):dict(unselected_elements='fixed-to-page',header_inference='unknown',
                     protected_regions=[dict(r,provenance='explicitly_confirmed') for r in protected_regions.get(str(i+1),[])]) for i in range(count)},
         allocation_provenance='observed-source-uncomposed',previous_model_sha256=None)
+    if continuation_destinations:
+        from .content_stream import ContentPage
+        state['continuation_destinations']=deepcopy(continuation_destinations);state['destination_bindings']={}
+        for ident,d in continuation_destinations.items():
+            if d['source_pdf_sha256']!=state['pdf_sha256']:raise PdfError('continuation confirmation belongs to another PDF')
+            content=ContentPage(source,d['page'])
+            try:state['destination_bindings'][ident]=destinations.witness(content,d,False)
+            finally:content.close()
+            if state['destination_bindings'][ident]['program_sha256']!=d['source_program_sha256']:
+                raise PdfError('confirmed continuation source program differs')
     state['contract_sha256']=_contract(state);state['physical_breaks']=_breaks(state)
     return _validate(source,_reseal(state))
 
@@ -247,7 +264,9 @@ def _restore(source,model):
 def _layout(source,state,pid,binding,text,ids,region,indent):
     p=state['paragraphs'][pid];paragraph=paragraph_from_snapshot(source,binding['paragraph']);shaper=None
     try:
-        paragraph=bind_destination_styles(paragraph,styles.render_styles(p))
+        paragraph=bind_destination_styles(paragraph,styles.render_styles(p),styles.render_confirmations(p))
+        from .style_confirmation import confirm_paragraph
+        paragraph=confirm_paragraph(paragraph,styles.render_confirmations(p))
         alignment=p['logical'].get('alignment',DEFAULT)
         shaper=ParagraphShaper(paragraph,[EditUnit(ch,'logical:'+sid,None,'logical:'+sid) for ch,sid in zip(text,ids)],
                               styles.providers(p),alignment=alignment['value'])
@@ -273,7 +292,8 @@ def _schedule(state,fragments):
     for sid,wanted in fragments.items():
         page=state['regions'][state['slots'][sid]['region_id']]['page']
         for other,slot in state['slots'].items():
-            bounds=slot['binding']['element']['text_element']['observed_bounds']
+            element=slot['binding'].get('element')
+            bounds=element['text_element']['observed_bounds'] if element else None
             if other==sid or bounds is None or state['regions'][slot['region_id']]['page']!=page:continue
             if any(Rect(*ink).intersects(Rect(**bounds)) for ink in wanted['ink_bounds']):needs[sid].add(other)
     order=[];remaining=list(fragments)
@@ -295,7 +315,7 @@ def _plan(source,state,changes):
         projected[pid]=dict(text=text,style_spans=spans,typing_style_id=typing,boundaries=_boundaries(text))
     working=deepcopy(state)
     for pid,value in projected.items():working['paragraphs'][pid]['logical'].update(value)
-    fragments={};rids=state['flow']['regions'];ri=0;previous=None
+    fragments={};new_slots={};rids=state['flow']['regions'];ri=0;previous=None
     incoming={e['after']:e for e in state['follows']}
     for pid in state['flow']['paragraphs']:
         p=working['paragraphs'][pid];logical=p['logical'];text=logical['text'];cursor=0
@@ -309,7 +329,17 @@ def _plan(source,state,changes):
             baseline=region['first_baseline'] if previous is None else previous['last_baseline']+incoming[pid]['minimum_baseline_gap']
             if baseline>=region['bounds'][3]-.002:ri+=1;previous=None;continue
             indent=policy['first_line_indent'] if cursor==0 else 0
-            binding=state['slots'][sid or owned[0]]['binding']
+            if sid is None:
+                d=next((d for d in state.get('continuation_destinations',{}).values()
+                    if d['paragraph_id']==pid and d['region_id']==rid),None)
+                if d is not None:
+                    sid=destinations.slot_id(d)
+                    new_slots[sid]=dict(paragraph_id=pid,region_id=rid,destination_id=d['destination_id'],page=d['page'],
+                        creation_provenance=destinations.PROVENANCE,source_snapshot_sha256=None,
+                        binding=dict(paragraph=destinations.snapshot(source,d,state['destination_bindings'][d['destination_id']],
+                            region,logical['typing_style_id'])))
+                    working['slots'][sid]=new_slots[sid]
+            binding=working['slots'][sid or owned[0]]['binding']
             remaining=text[cursor:]
             layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent)
             first_ascent=layout.lines[0].ascent if layout.lines else policy['empty']['ascent']
@@ -330,7 +360,7 @@ def _plan(source,state,changes):
             lines=[dict(**{k:getattr(line,k) for k in LINE_KEYS if k!='baseline'},baseline=baseline+line.baseline) for line in fitting]
             options=_layout_options(state,pid,rid,baseline,indent)
             measured=plan_paragraph(source,binding['paragraph'],styles.replacement(binding,visible,spans),
-                fonts=styles.providers(p),render_styles=styles.render_styles(p),
+                fonts=styles.providers(p),render_styles=styles.render_styles(p),paragraph_style=styles.render_confirmations(p),
                 paragraph_layout=alignment_request(p['logical'].get('alignment',DEFAULT)),
                 _paragraph_continues=continuation(remaining,end,cut),**options)
             if not _close(measured['lines'],lines):raise PdfError('local writer differs from final shared paragraph layout')
@@ -353,12 +383,15 @@ def _plan(source,state,changes):
             rid=state['slots'][sid]['region_id'];r=state['regions'][rid]
             fragments[sid]=dict(range=[pos,pos],render_end=pos,text='',style_spans=[],lines=[],ink_bounds=[],occupancy=None,
                 layout=_layout_options(state,pid,rid,r['first_baseline'],0))
-    schedule,dependencies=_schedule(state,fragments)
+    new_slots={sid:slot for sid,slot in new_slots.items() if sid in fragments}
+    scheduling=deepcopy(state);scheduling['slots'].update(new_slots)
+    schedule,dependencies=_schedule(scheduling,fragments)
     result=dict(schema='pdfengine-shared-flow-plan-1',source_sha256=state['pdf_sha256'],model_sha256=state['model_sha256'],
         contract_sha256=state['contract_sha256'],changes_sha256=digest(changes),paragraphs=projected,fragments=fragments,
+        new_slots=new_slots,
         schedule=schedule,source_occupancy_dependencies=dependencies,
         collision_status='not_certified; every intermediate writer must pass its existing guards',
-        paint_authority='selected source glyphs only; all nontext and unselected paragraphs fixed')
+        paint_authority='owned source slots and explicitly confirmed continuation destinations; other content fixed')
     result['plan_sha256']=digest(result)
     return result
 
@@ -409,6 +442,7 @@ def edit_shared_flow(source,model,output,model_output,changes):
     output=ensure_destination(output,source);model_output=ensure_destination(model_output,source)
     if output==model_output:raise PdfError('shared flow PDF and sidecar require distinct destinations')
     for pid,value in plan['paragraphs'].items():state['paragraphs'][pid]['logical'].update(value)
+    state['slots'].update(deepcopy(plan['new_slots']))
     output.parent.mkdir(parents=True,exist_ok=True);steps=[]
     with tempfile.TemporaryDirectory(prefix='.shared-flow-',dir=output.parent) as directory:
         root=Path(directory);target=root/'shared.pdf'
@@ -417,17 +451,34 @@ def edit_shared_flow(source,model,output,model_output,changes):
             for sid in plan['schedule']:
                 slot=state['slots'][sid];pid=slot['paragraph_id'];p=state['paragraphs'][pid];wanted=plan['fragments'][sid]
                 page=transaction.page(state['regions'][slot['region_id']]['page'])
-                plans[sid]=plan_document_edit(page,slot['binding'],styles.replacement(slot['binding'],wanted['text'],wanted['style_spans']),
+                options=dict(
                     fonts=styles.providers(p),render_styles=styles.render_styles(p),
+                    paragraph_style=styles.render_confirmations(p),
                     paragraph_layout=alignment_request(p['logical'].get('alignment',DEFAULT)),
                     _paragraph_continues=continuation(p['logical']['text'],wanted['render_end'],wanted['range'][1]),
+                    _allow_empty_style_witnesses=bool(state.get('continuation_destinations')),
                     empty_style_id='logical:'+p['logical']['typing_style_id'],owner=sid,**wanted['layout'])
+                edits=styles.replacement(slot['binding'],wanted['text'],wanted['style_spans'])
+                if sid in plan['new_slots']:
+                    from .editable import plan_editable
+                    plans[sid]=plan_editable(page,slot['binding']['paragraph'],edits,**options)
+                    plans[sid].document_context=dict(fonts=options['fonts'],
+                        options={k:v for k,v in options.items() if k!='fonts'},previous_state=None)
+                else:plans[sid]=plan_document_edit(page,slot['binding'],edits,**options)
             result=transaction.commit(target)
             try:
                 for sid in plan['schedule']:
                     slot=state['slots'][sid];pid=slot['paragraph_id'];wanted=plan['fragments'][sid]
                     page=state['regions'][slot['region_id']]['page']
                     edited,report=bind_document_edit(result.identity(page),plans[sid],result)
+                    if sid in plan['new_slots']:
+                        from .elements import inspect_element
+                        edited['logical_element'].update(id=pid,contained_by=slot['region_id'])
+                        edited['element']=inspect_element(target,edited['paragraph']['selection'],paragraph_snapshot=edited['paragraph'])
+                        edited['relations']=[]
+                        d=state['continuation_destinations'][slot['destination_id']]
+                        slot['creation_binding']=dict(source_pdf_sha256=initial['pdf_sha256'],
+                            destination_contract_sha256=digest(d),mutation=plans[sid].first_mutation.record())
                     if edited['paragraph']['text']!=wanted['text'] or not _close(
                             [{k:line[k] for k in LINE_KEYS} for line in edited['physical_layout']['lines']],wanted['lines']):
                         raise PdfError('executed paragraph fragment differs from final allocation')
@@ -440,6 +491,18 @@ def edit_shared_flow(source,model,output,model_output,changes):
                     slot['style_binding']['pdf_sha256']=source_sha(target)
                     steps.append(dict(slot_id=sid,paragraph_id=pid,region_id=slot['region_id'],report=report))
                 mutation_map=result.mutation_map()
+                from .content_stream import ContentPage
+                for ident,d in state.get('continuation_destinations',{}).items():
+                    content=ContentPage(target,d['page'])
+                    try:
+                        current=destinations.witness(content,d,destinations.slot_id(d) in state['slots'])
+                        if destinations.slot_id(d) in initial['slots']:
+                            old=initial['destination_bindings'][ident]
+                            identity=result.identity(d['page'])
+                            if identity.program.map_offset(old['end'])!=current['end']:
+                                raise PdfError('generated continuation block lost its insertion identity')
+                        state['destination_bindings'][ident]=current
+                    finally:content.close()
             finally:result.close()
         if source_sha(source)!=initial['pdf_sha256']:raise PdfError('source changed during shared flow mutation')
         state.update(pdf_sha256=source_sha(target),allocation_provenance='generated-from-confirmed-shared-flow',

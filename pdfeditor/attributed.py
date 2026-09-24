@@ -38,13 +38,13 @@ class SourceStyle:
     baseline_shift_provenance: str = 'observed_source'
 
     def export(self):
-        return {"id":self.id, "font_resource":self.event.state.font.name,
+        return {"id":self.id, "font_resource":self.event.state.font.name if self.event.state.font else None,
                 "font_name":self.font_name, "font_size":self.size,
                 "horizontal_scale":self.horizontal_scale, "tracking":self.tracking,
                 "tracking_provenance":self.tracking_provenance, "baseline_shift":self.rise,
                 "baseline_shift_provenance":self.baseline_shift_provenance,
                 "fill":self.event.state.fill, "observed_color":self.color,
-                "font_xref":self.event.state.font.xref}
+                "font_xref":self.event.state.font.xref if self.event.state.font else None}
 
 
 @dataclass

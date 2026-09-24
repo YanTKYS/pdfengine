@@ -265,7 +265,7 @@ edit_shared_flow("source.pdf", flow, "shared.pdf", "shared.flow.json", {
 restored = open_shared_flow("shared.pdf", "shared.flow.json")
 ```
 
-短文化で後続段落が前へ詰まり、長文化で確認済みの次領域へ移ります。空段落の占有も明示した方針に従います。移動先には当該段落の検証済みsource slotが必要で、新しいslotやページは作成しません。[独立段落の共有flow](docs/shared-paragraph-flow.md)に入力契約と評価範囲を記録しています。
+短文化で後続段落が前へ詰まり、長文化で確認済みの次領域へ移ります。検証中のcontinuation経路では、既存source slotを超える場合、利用者が空き領域と描画contextを確認した既存ページ上のdestinationへ、同じparagraphのslotを生成できます。短文化で空になったslotも再利用します。[独立段落の共有flow](docs/shared-paragraph-flow.md)と[確認済みcontinuation](docs/confirmed-continuation.md)に入力契約と評価範囲を記録しています。
 
 ## 忠実性と幅の契約
 

@@ -18,6 +18,9 @@ from .selection import ResolvedSelection, source_sha
 
 
 def paragraph_from_snapshot(source, snapshot, *, content=None):
+    if snapshot.get('kind') == 'confirmed-continuation-input':
+        from .continuation import ContinuationParagraph
+        return ContinuationParagraph(source,snapshot,content=content)
     if snapshot.get('kind') == 'empty-logical-paragraph':
         return EmptyParagraph(source, snapshot, content=content)
     return SourceParagraph(source, snapshot['selection'], line_joiner=snapshot['line_joiner'],
@@ -70,6 +73,9 @@ def bind_empty(source, report):
                 first_line_indent=report['first_line_indent'],base_baselines=[],observed_baselines=[]),
             logical=dict(pdf_sha256=source_sha(source),text='',units=[],
                          text_provenance='explicitly_confirmed',binding_provenance='generated-by-pdfengine'))
+        if report.get('empty_style_offsets'):
+            value['style_slot_bindings']={ident:slot_binding(content,offset)[0]
+                for ident,offset in report['empty_style_offsets'].items()}
         # Preserve JSON round-tripping just like observed paragraph snapshots.
         value=json.loads(json.dumps(value));value['snapshot_sha256']=digest(value)
         return value,{ident:ident for ident in report['empty_style_recipes']}
@@ -104,11 +110,25 @@ class EmptyParagraph:
             self.units=[];self.text='';self.styles={};self.line_joiner='';self.logical=snapshot['logical']
             for ident,recipe in snapshot['style_recipes'].items():
                 properties=recipe['properties'];matrix=tuple(recipe['matrix'])
-                if properties.get('baseline_shift_provenance')!='observed_source':
+                from .style_confirmation import observed_values
+                witnessed=ident in snapshot.get('style_slot_bindings',{})
+                if witnessed:
+                    stored_style=snapshot['style_slot_bindings'][ident]
+                    actual_style,style_event=slot_binding(self.content,stored_style['event']['byte_range'][0])
+                    if json.loads(json.dumps(actual_style))!=stored_style:
+                        raise PdfError('dormant style slot no longer matches its PDF witness')
+                    from types import SimpleNamespace
+                    actual=observed_values(SimpleNamespace(event=style_event))
+                    if any(abs(actual[k]-properties[k])>.001 for k in ('tracking','baseline_shift') if properties[k] is not None):
+                        raise PdfError('dormant style differs from nonpainting Tc/Ts witness')
+                    if any(properties[k] not in (0,None) and properties[k+'_provenance']!='explicitly_confirmed'
+                           for k in ('tracking','baseline_shift')):
+                        raise PdfError('dormant nonzero inline values need explicit confirmation')
+                if properties.get('baseline_shift_provenance')!='observed_source' and not witnessed:
                     raise PdfError('empty confirmed baseline shift lacks a painted PDF witness')
                 values=[properties[k] for k in ('font_size','horizontal_scale','tracking','baseline_shift')]
                 provenance=properties['tracking_provenance']
-                if (provenance not in ('observed_source','candidate','unknown')
+                if not witnessed and (provenance not in ('observed_source','candidate','unknown')
                         or (values[2] is None)!=(provenance in ('candidate','unknown'))
                         or values[2] is not None and values[2]!=0.0):
                     raise PdfError('independent tracking needs its observed, candidate or unknown provenance')
@@ -124,7 +144,8 @@ class EmptyParagraph:
                 event=copy(self.first);event.state=copy(self.first.state)
                 event.state.size=recipe['pdf_font_size'];event.state.tz=recipe['pdf_horizontal_scale']
                 event.state.fill=properties['fill']
-                self.styles[ident]=SourceStyle(ident,event,*values,matrix,properties['observed_color'],properties['font_name'],provenance)
+                self.styles[ident]=SourceStyle(ident,event,*values,matrix,properties['observed_color'],properties['font_name'],
+                    provenance,properties['baseline_shift_provenance'])
             if snapshot['styles'] != [r['properties'] for r in snapshot['style_recipes'].values()]:
                 raise PdfError('independent style registry disagrees with paragraph styles')
             self.default_style_id=snapshot['typing_style_id']

@@ -223,6 +223,7 @@ class ParagraphPlan(Plan):
         self.first_mutation = None
         self.glyph_names = []
         self.slot = False
+        self.empty_style_names = {}
         self._check = None
         self._report = {}
 
@@ -238,6 +239,8 @@ class ParagraphPlan(Plan):
     def report(self, result):
         identity = result.identity(self.page.number)
         return dict(self._report, empty_slot_offset=self.empty_slot_offset(identity),
+                    empty_style_offsets={ident:identity.program.anchor(self.first_mutation,name)
+                        for ident,name in self.empty_style_names.items()},
                     byte_edits=[m.edit() for m in sorted(self.mutations, key=lambda m: m.start)],
                     mutation_map=[m.record() for m in sorted(self.mutations, key=lambda m: m.start)],
                     anchors=self.anchored.report() if self.anchored else None)
@@ -252,7 +255,8 @@ class ParagraphPlan(Plan):
 def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None, first_line_indent=None,
                         max_bottom=None, min_line_height=None, element_snapshot=None, element_relations=None,
                         anchor_spec=None, baseline=None, preserve_empty=False, empty_style_id=None,
-                        render_styles=None, paragraph_style=None, paragraph_layout=None, _paragraph_continues=False, owner=None):
+                        render_styles=None, paragraph_style=None, paragraph_layout=None, _paragraph_continues=False,
+                        _allow_empty_style_witnesses=False, owner=None):
     """Prove source facts and plan every byte mutation of one paragraph edit."""
     from .logical_element import paragraph_from_snapshot, style_recipes
     from .destination_style import bind_destination_styles
@@ -273,7 +277,7 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
         alignment = confirm(snapshot, paragraph_layout)
         empty_typing_style = None
         if preserve_empty and not units:
-            if any(confirmations(s.export()) for s in paragraph.styles.values()):
+            if any(confirmations(s.export()) for s in paragraph.styles.values()) and not _allow_empty_style_witnesses:
                 raise PdfError('empty confirmed styles need a PDF style witness; empty persistence refused')
             if anchor_spec is not None:
                 raise PdfError('empty element paint relations require explicit dormant decoration/ownership semantics')
@@ -304,8 +308,8 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             ('x', 'baseline', 'width', 'first_line_indent', 'min_line_height', 'max_bottom'))
         untouched = [g for i, g in enumerate(paragraph.observations) if i not in selected]
         virtual = -content.page.xref
-        removed = patch_streams(content, paragraph.events, selected, remove=True)[virtual]
-        replay = patch_streams(content, paragraph.events, selected, remove=False)[virtual]
+        removed = patch_streams(content, paragraph.events, selected, remove=True).get(virtual,content.streams.get(virtual,b''))
+        replay = patch_streams(content, paragraph.events, selected, remove=False).get(virtual,content.streams.get(virtual,b''))
         with pymupdf.open(stream=program_pdf_bytes(source, pno, replay), filetype='pdf') as doc:
             if not compare_glyphs(paragraph.observations, _observations(doc[pno]))['passed'] or not all(
                     _pixels_equal(content.document[i], doc[i]) for i in range(len(doc))):
@@ -384,6 +388,20 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             raise PdfError("cannot restore original text and line matrices")
         commands.extend((b' Q ', matrix_operator(first.line_matrix),
             b'[' + number(-delta[4] / (state.size * state.tz / 100) * 1000) + b'] TJ '))
+        if getattr(paragraph,'creation',False):
+            from .continuation import markers
+            if not units:raise PdfError('an unused continuation destination creates no physical slot')
+            begin,end=markers(snapshot['destination'])
+            prefix=begin+b'q BT '
+            # The common writer emitted all glyphs above. Only the enclosing
+            # source-free text object differs from a source-operator rewrite.
+            data=prefix+b''.join(commands[:-3])+b' Q ET Q\n'+end
+            anchors={name:len(prefix)+offset for name,offset in
+                ((f'glyph:{n}',o) for n,o in enumerate(glyph_offsets))}
+            result.glyph_names=list(anchors)
+            anchors.update(block_start=0,block_end=len(data))
+            mutation=Mutation(0,0,data,kind='confirmed-continuation-create',anchors=anchors,owner=owner)
+            result.mutations.append(mutation);result.first_mutation=mutation
         for event in paragraph.events:
             data, op_offset, chars = rewritten_event(event, selected, remove=True)
             anchors = {'rewritten': op_offset}
@@ -397,6 +415,19 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                     anchors[f'glyph:{n}'] = base + offset
                     result.glyph_names.append(f'glyph:{n}')
                 data += b''.join(commands)
+                if empty_typing_style is not None and _allow_empty_style_witnesses:
+                    for ident,style in paragraph.styles.items():
+                        if render_styles is not None and ident not in render_styles:continue
+                        tc,ts,_=writer_spacing(style)
+                        data+=b' q '+_name(style.event.state.font.name)+b' '+number(style.event.state.size)+b' Tf '
+                        data+=number(style.event.state.tz)+b' Tz '+number(tc)+b' Tc '+number(ts)+b' Ts '
+                        data+=matrix_operator(multiply(style.matrix,inverse_ctm))
+                        name='empty-style:'+ident;anchors[name]=len(data)
+                        data+=b'[] TJ Q '
+                        result.empty_style_names[ident]=name
+                    # q/Q saves graphics state, not the text/line matrices.
+                    # A following unselected Tj must retain its original cursor.
+                    data+=commands[-2]+commands[-1]
             mutation = Mutation(event.operator.start, event.operator.end, data, kind='text-edit',
                                 anchors=anchors, chars=chars, owner=owner)
             result.mutations.append(mutation)
@@ -460,6 +491,9 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             "reused_code_glyph_count": sum(g['code_witness'] is not None for g in plan),
             "font_policy": "Retain original codes for unedited intervals; shape edited intervals using explicitly supplied fonts.",
             "mupdf_outside_pixels_equal": True, "independent_renderer_verified": False}
+        if empty_typing_style is not None and _allow_empty_style_witnesses and render_styles is not None:
+            result._report['styles']=[s for s in result._report['styles'] if s['id'] in render_styles]
+            result._report['empty_style_recipes']={k:v for k,v in result._report['empty_style_recipes'].items() if k in render_styles}
         return page.add(result)
     except Exception:
         result.close()

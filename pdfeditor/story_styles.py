@@ -53,6 +53,16 @@ def render_styles(state):
     return {'logical:'+ident:properties(entry) for ident,entry in state['style_registry'].items()}
 
 
+def render_confirmations(state):
+    """Carry source-confirmed inline values; do not promote spacing candidates."""
+    result={}
+    for ident,entry in state['style_registry'].items():
+        values={k:entry['attributes'][k]['value'] for k in ('tracking','baseline_shift')
+            if all(w['properties'].get(k+'_provenance')=='explicitly_confirmed' for w in entry['source_observations'])}
+        if values:result['logical:'+ident]=values
+    return result or None
+
+
 def providers(state):
     return {'logical:'+ident:entry['reflow_provider'] for ident,entry in state['style_registry'].items()}
 
