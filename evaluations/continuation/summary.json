@@ -1,0 +1,604 @@
+{
+  "schema": "pdfengine-continuation-evaluation-1",
+  "status": "passed",
+  "source_url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf",
+  "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+  "source_replay": [
+    {
+      "page": 4,
+      "mupdf_equal": true,
+      "poppler_changed_pixels": 0
+    },
+    {
+      "page": 5,
+      "mupdf_equal": true,
+      "poppler_changed_pixels": 0
+    }
+  ],
+  "stages": [
+    {
+      "stage": "overflow",
+      "status": "passed",
+      "restored": true,
+      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "saves": 1,
+      "new_slots": [
+        "continuation-0ca851c7b7e027846e4cfcdb"
+      ],
+      "generated_lines": 2,
+      "renderers": {
+        "4": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 530,
+          "poppler_outside_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 25008,
+          "poppler_outside_changed_pixels": 0
+        },
+        "6": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5227,
+          "poppler_outside_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-0ca851c7b7e027846e4cfcdb": {
+          "range": [
+            209,
+            245
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page6",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      }
+    },
+    {
+      "stage": "second",
+      "status": "passed",
+      "restored": true,
+      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "saves": 1,
+      "new_slots": [],
+      "generated_lines": 2,
+      "renderers": {
+        "4": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5427,
+          "poppler_outside_changed_pixels": 0
+        },
+        "6": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 8555,
+          "poppler_outside_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-0ca851c7b7e027846e4cfcdb": {
+          "range": [
+            209,
+            247
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page6",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      }
+    },
+    {
+      "stage": "shorten",
+      "status": "passed",
+      "restored": true,
+      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "saves": 1,
+      "new_slots": [],
+      "generated_lines": 0,
+      "renderers": {
+        "4": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5443,
+          "poppler_outside_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 18081,
+          "poppler_outside_changed_pixels": 0
+        },
+        "6": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5494,
+          "poppler_outside_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            3
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            3,
+            3
+          ],
+          "occupancy": null
+        },
+        "continuation-0ca851c7b7e027846e4cfcdb": {
+          "range": [
+            3,
+            3
+          ],
+          "occupancy": null
+        }
+      }
+    },
+    {
+      "stage": "regrow",
+      "status": "passed",
+      "restored": true,
+      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "saves": 1,
+      "new_slots": [],
+      "generated_lines": 2,
+      "renderers": {
+        "4": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5443,
+          "poppler_outside_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 18037,
+          "poppler_outside_changed_pixels": 0
+        },
+        "6": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5227,
+          "poppler_outside_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-0ca851c7b7e027846e4cfcdb": {
+          "range": [
+            209,
+            245
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page6",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      }
+    },
+    {
+      "stage": "noop",
+      "status": "passed",
+      "restored": true,
+      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "saves": 1,
+      "new_slots": [],
+      "generated_lines": 2,
+      "paragraph_style_destination_records_equal": true,
+      "slot_identity_allocation_layout_style_equal": true,
+      "planned_glyph_fields_equal": [
+        "unicode",
+        "glyph_id",
+        "origin",
+        "size",
+        "advance",
+        "code",
+        "cid",
+        "nominal_pdf_width"
+      ],
+      "planned_glyphs": 245,
+      "renderers": {
+        "1": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "2": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "3": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "4": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "6": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "7": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "8": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "9": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        },
+        "10": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-0ca851c7b7e027846e4cfcdb": {
+          "range": [
+            209,
+            245
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page6",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      }
+    }
+  ],
+  "negative_controls": [
+    {
+      "case": "capacity",
+      "status": "safely_refused",
+      "reason": "paragraphs exceed all explicitly confirmed shared regions",
+      "output_created": false
+    }
+  ],
+  "destination": {
+    "destination_id": "reviewed-page6-space",
+    "paragraph_id": "reviewed-mixed-training-paragraph",
+    "region_id": "page6",
+    "page": 6,
+    "bounds": [
+      55,
+      80,
+      385,
+      120
+    ],
+    "provenance": "explicitly_confirmed",
+    "authority": {
+      "position": "before-page-program",
+      "offset": 0,
+      "z_order": "before-all-existing-page-paint",
+      "graphics_state": {
+        "ctm": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "font_resource": null,
+        "font_xref": null,
+        "font_size": 0,
+        "character_spacing": 0,
+        "word_spacing": 0,
+        "horizontal_scale": 100,
+        "leading": 0,
+        "rise": 0,
+        "rendering_mode": 0,
+        "fill": [
+          "g",
+          [
+            0
+          ]
+        ],
+        "stroke": [
+          "G",
+          [
+            0
+          ]
+        ],
+        "opacity": 1,
+        "stroke_opacity": 1,
+        "clip": [],
+        "other": {}
+      },
+      "page_group": {
+        "/S": "/Transparency",
+        "/CS": "/DeviceRGB",
+        "/I": "True"
+      },
+      "page_transform": [
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        842.0
+      ],
+      "page_bounds": [
+        0.0,
+        0.0,
+        595.0,
+        842.0
+      ],
+      "initial_clip": "page-crop-box",
+      "isolation": "q-BT-ET-Q",
+      "font_policy": "explicit-paragraph-style-providers"
+    },
+    "source_pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+    "source_program_sha256": "823166585f1387c3aa1844145795623125df2d211b4b24a2b9c59589e800fcd7"
+  },
+  "scope": "one external LibreOffice paragraph, original slots on pages 4/5, reviewed empty area on existing page 6",
+  "providers": {
+    "body": {
+      "filename": "msmincho.ttc",
+      "font_index": 1,
+      "sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+      "variations": null
+    },
+    "latin": {
+      "filename": "times.ttf",
+      "font_index": 0,
+      "sha256": "931c5de5c70401d9324d5014c123802b4fb753000360ceb2f56c589403cd58c5",
+      "variations": null
+    }
+  },
+  "provider_evidence_source": {
+    "path": "evaluations/story_styles/summary.json",
+    "sha256": "c2329afaefcfcb93ff4d57920d0a3e081dd2b0743bc41bf805bddf9168b6c7c2"
+  },
+  "environment": {
+    "engine_digest": "a20828d95176ea6b8473654f144b74d88b2579f5c89a20d6063643b31fec52e0",
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "alignment.py": "e1d67a5194a5a90fff1b70c286f602d5483619752bea99cecd6678df73950efd",
+      "anchors.py": "f721d5dc4d05e0140b6879ac36a978c791558e4c50b70b21640d99a0484ad030",
+      "attributed.py": "bd1612558a8da9296ef90f6fdc7b50a78ad53d7329667241a6b7809880e84696",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+      "composition.py": "027cc84733e17ddcce62e767cfba160e49820f003c56b03fb9c5aee2546a9705",
+      "content_stream.py": "94e274c23d56eb154846b165f405f7ab766a63e44bf3dad065a1367e8cca2a0c",
+      "continuation.py": "6a0538bd90cfd352b5a972055f1f7e1cd6c9498dcb6e22deeacbcb3d1c0ce842",
+      "destination_style.py": "2e47cf2507045d9eb93c465acf0abb942d3a69702bb85805af80524f74b41d09",
+      "document_flow.py": "bf3b6149039337dd3481e7402a8ab187665cadf59abbfea8088de9761e30de17",
+      "editable.py": "d153f340a81050e6113c909b1aefb9b55bdffde4019d25f22d0915e5d796acba",
+      "elements.py": "e0d9c0ee0615d04168ec4a1ad7e044a949b7254746754c366e63b9ee3b374949",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "flow_transaction.py": "2a334c2b0688f7ac9eb444c0d18fccc1bacf60b418190b1c4b4638f2073ca957",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "logical_element.py": "e9ddbc789e77e33c9774db1877b57bc643acb8f75187dc050ae71f2caed990f1",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "mutation.py": "b9eb726d10d7bc57d60d0721e88110f1754bb04eddcb088f02dfad5c93126dde",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+      "paint_resize.py": "b9bcb8a8da13f3317c37c54c3fa83f74f6de5fe97f89439f25559b78fc0e68f8",
+      "paragraph.py": "77caaa8aa96bdb7e9749a94211a6cf73fb3547053e8e479dda991055319696da",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "9c4058379921878dbe25e49d2646e90234087b240510e5025665c5e03d5ffd79",
+      "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "d8c9e52d184e3f75e1ac50f853e8a71c2053e0791bff27bfb24eff7a4f9bea70",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "59bca6d2db19db2cd6602f6badfc7ae8d5d60e3bec4dee3d7d41ff51fe276f83",
+      "shared_flow.py": "8fffefe69393c48574ed04129c17547ad040182c9b4571ac8575bf1cf69ba006",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e",
+      "spacing.py": "e44fab983055b373c1473e41846545135880753ba32be8a460748437a2769526",
+      "story_flow.py": "00de2b47fa3862584955da4b59bc9b8347b09887c146ee7cd49a6382af554764",
+      "story_styles.py": "f9d5d425b37f3ea94939e413432969cbb672e726cf9ad0396bb3cb702d544358",
+      "style_confirmation.py": "5beabff6b423d908c3cce192b1b4ddffb8e4876dff438a9548aa8267d11064bd",
+      "transaction.py": "74e71b4e587305fce5c16bd71e8dbc89a5051e2c635f06b62b2b3587510a65a5",
+      "variable_container.py": "5c4e3336aa2187a37adf6d36bd2ccd3fb33c01e4ef7fbd4f24fe50708b98df82"
+    },
+    "runner_sha256": "3eb35b38946906e4aef460c26a2263a4ce1612c3e2012f32bb2097d4e2ac535b",
+    "evaluation_dependencies_sha256": {
+      "evaluations/story_flow/evaluate.py": "4fc0d79e9a8de23ec3de916fdb6c32831669969894ce66bcf2899a842a5274f9",
+      "evaluations/story_styles/evaluate.py": "51f5d1a048b46536286abfa6e5216e9958d9963bd315aac08616e32de2ee884c",
+      "evaluations/elements/evaluate.py": "d6b0022a975c0082b7de5ffa82220ff71e604225267902287e2215f39f908f74",
+      "evaluations/flow_transaction/evaluate.py": "28f660161b2b478740762848bdefefbe1bd49bbfc03bfec631e128c7e49fbf39",
+      "evaluations/attributed/evaluate.py": "6023d19e5b0c57d231a0d8f54d3ea931a52364b91c34cd84150e0269e77ccbb1",
+      "evaluations/backend/followup.py": "2a70ddd88402083b64af75dd749dc144a3eb8c671b9bacad74d3642b41e2267d",
+      "evaluations/realpdf/evaluate.py": "7f4754523b1849b4f744ba9a11841a9be1c6bc2d2fdcdee3c7e4706beb908a18",
+      "evaluations/realpdf/independent_extract.py": "435766089686f927c6bc72aa8da4463ab48c3ef1b305c7cc08442a10dd3bacdb"
+    },
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pymupdf": "1.27.2.3",
+    "poppler": "pdftoppm version 26.07.0",
+    "independent_pypdf": "6.10.0",
+    "independent_python": "3.12.14"
+  }
+}

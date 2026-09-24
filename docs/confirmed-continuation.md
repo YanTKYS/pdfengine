@@ -1,6 +1,6 @@
 # 既存ページ上の確認済みcontinuation destination
 
-**検証途中（2026-09-24）**。最終engineで回帰26件と全suite（625 passed / 18 skipped / 0 failed）は完了した。外部PDFの全編集系列は未実行のため、新規APIは引き続き検証中として扱う。[再開地点と検証状況](continuation-checkpoint.md)を参照。
+**外部PDF評価済み（2026-09-24）**。最終engineで回帰26件と全suite（625 passed / 18 skipped / 0 failed）を完了した。Windows環境では、対象の外部LibreOffice PDFの1 paragraphについて系列評価を完了した。内容は、確認済みの6ページdestinationを使った`overflow → reopen → re-edit → shorten → regrow → no-op`と、容量拒否である。自動照合と目視の結果は[評価](../evaluations/continuation/README.md#結果--2026-09-24)と[公開集計](../evaluations/continuation/summary.json)にある。確認したのは単一原本・単一destinationの範囲であり、任意のPDFで自然な再レイアウトができることは示していない。経緯は[再開地点と検証状況](continuation-checkpoint.md)を参照。
 
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
 
@@ -62,6 +62,6 @@ region境界はUnicodeへ改行を追加しない。style spansとparagraph ID�
 
 最終allocationを先に確定し、既存operatorのmutationと新しいblockの挿入を同じ`Transaction`へ登録する。保存は一回。glyph/font/paint/領域外画素を検証し、mutation mapで全fragmentをbindingして再openできた後だけPDFとsidecarを公開する。binding・検証・公開途中の例外は自分が公開したファイルをrollbackする。プロセス停止を含む二ファイルのOS-level atomic replaceまでは保証しない。
 
-回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
+回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。外部原本では、regrowが同じ生成slotへ戻り、final no-opで全10ページがMuPDF・Popplerとも全画素一致した。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
 
 次の最小の構造障壁は、同一ページの複数destinationや、先頭以外の描画境界へ独立した挿入権限を与えることである。必要なのは境界ごとのstate/clip/paint順序の証跡と複数挿入の順序契約であり、新規ページの自動生成ではない。
