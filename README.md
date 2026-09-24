@@ -24,7 +24,7 @@
 
 ## インストール
 
-Python 3.11以上。検証環境はWindows x64 / Python 3.12です。
+Python 3.12以上。検証環境はWindows x64 / Python 3.12です（3.11を対象外とする理由は[環境上の注意](docs/continuation-checkpoint.md#環境上の注意)）。
 
 ```powershell
 python -m venv .venv
