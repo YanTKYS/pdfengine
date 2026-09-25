@@ -9,9 +9,11 @@ creation or activation order.
 A confirmed page-program boundary places a block between two top-level
 operators that the caller selected from the candidates this module lists.
 A candidate is a page-level boundary (no open q, text object, marked-content
-or compatibility scope, path or pending clip) whose state is the page-entry
-state for what a block draws: identity CTM, no clip, full opacity, fill-only
-text rendering, no ExtGState. The block paints after all paint of the
+or compatibility scope, path or pending clip) of a program whose operators
+nest (see operator_nesting; otherwise no scope is trusted and no boundary is
+a candidate), and whose state is the page-entry state for what a block
+draws: identity CTM, no clip, full opacity, fill-only text rendering, no
+ExtGState. The block paints after all paint of the
 confirmed prefix and before all paint of the confirmed suffix. One
 destination owns one exact boundary.
 
@@ -31,6 +33,7 @@ from .backend import PdfError
 from .composition import _check_obstacles, _observations
 from .content_stream import ContentPage, State, TextEvent, Operator, operators, state_object
 from .model import Rect, WidthConstraint
+from .operator_nesting import audit
 from .selection import ResolvedSelection, source_sha
 
 
@@ -131,6 +134,11 @@ def _refusals(scope, state):
     return reasons
 
 
+def _nesting_refusals(data):
+    """A program whose text objects, q/Q or marked content do not nest has no trustworthy scope."""
+    return ['invalid-operator-nesting'] if audit(data)['violations'] else []
+
+
 def _boundary_authority(content, page, ident):
     """The caller-selected candidate of this exact program, fixed with its witnesses."""
     inspected=_inspect(content,page,include_refused=True)
@@ -180,6 +188,8 @@ def _boundary_value(content, data, sha, d, generated, legacy, location):
     for mine,theirs in ((previous,confirmed['previous']),(following,confirmed['next'])):
         if (mine['operator'],mine['sha256'])!=(theirs['operator'],theirs['sha256']):
             raise PdfError('confirmed page-program boundary operators differ from their source witnesses')
+    if _nesting_refusals(data):
+        raise PdfError('confirmed page-program boundary is in a program whose operators do not nest')
     scope,state=_scope(b),_state(b)
     if scope!=confirmed['scope'] or state!=auth['graphics_state'] or _refusals(scope,state):
         raise PdfError('confirmed page-program boundary state or scope differs from its authority')
@@ -215,14 +225,14 @@ def inspect_continuation_boundaries(source, page, *, include_refused=False):
 def _inspect(content, page, *, include_refused=False):
     page_context=_page_context(content)
     data=program(content);sha=hashlib.sha256(data).hexdigest()
-    items=content.boundaries
+    items=content.boundaries;invalid=_nesting_refusals(data)
     paints=[b.ordinal for b in items if b.operator.name in PAINT]
     candidates,refused,counts=[],[],defaultdict(int)
     for index,b in enumerate(items[:-1]):
         previous=_operator(data,b.operator,b.ordinal)
         following=_operator(data,items[index+1].operator,items[index+1].ordinal)
         scope,state=_scope(b),_state(b)
-        reasons=_refusals(scope,state)
+        reasons=invalid+_refusals(scope,state)
         value=dict(page=page,boundary_id=boundary_id(page,sha,previous,following),program_sha256=sha,
             offset=b.operator.end,ordinal=b.ordinal,previous=previous,next=following,scope=scope,graphics_state=state,
             z_order=dict(semantics=Z_ORDER,prefix_paint_operators=sum(p<=b.ordinal for p in paints),

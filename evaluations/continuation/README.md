@@ -1,15 +1,17 @@
 # 確認済み空き領域へのcontinuation評価
 
-**確認済みpage-program境界（2026-09-25）**。最終engine（digest `fca1e014164c93c6c62b1aad4344d1184760bd5e8f98404b44a453674ee0a731`）で、次の外部評価を行った。
+**確認済みpage-program境界（2026-09-25）**。最終engine（digest `59fe6125948d44a732da8c22a18cd619cdc3a34f7d6599c6141250144e481bfd`）で、次の外部評価を行った。このengineは、operatorの入れ子が崩れたpage programで境界候補を出さない（fail closed）。
 
-- **単一destination**（run `boundary-single-windows`）: 全段階と容量拒否が通った。7保存のPDF・sidecarが、下記のrun `nesting-single-windows`とbyte単位で一致した。[公開集計](summary.json)はこのrunの集計である。
-- **確認済み境界**（run `boundary-windows`）: 全段階と容量拒否が通った。page entryのrunと、生成glyphと画素が一致した。[境界の公開集計](boundary-destination-summary.json)はこのrunの集計である。結果は[下記](#確認済みpage-program境界の評価)にある。
-- **同一ページ2 destination**（run `multi-boundary-windows`）: 全段階と容量拒否が通った。PDF・sidecar・記録の57件が、下記のrun `multi-nesting-windows`とbyte単位で一致した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+- **単一destination**（run `failclosed-single-windows`）: 全段階と容量拒否が通った。成果物129件（PDF・sidecar・記録・画像）が、run `boundary-single-windows`とbyte単位で一致した。[公開集計](summary.json)はこのrunの集計である。
+- **確認済み境界**（run `boundary-failclosed-windows`）: 全段階と容量拒否が通った。page entryのrun `failclosed-single-windows`と、生成glyphと画素が一致した。成果物129件が、run `boundary-windows`とbyte単位で一致した。[境界の公開集計](boundary-destination-summary.json)はこのrunの集計である。結果は[下記](#確認済みpage-program境界の評価)にある。
+- **同一ページ2 destination**（run `multi-failclosed-windows`）: 逐次生成・同時生成・容量拒否が通った。成果物177件（PDF・sidecar・記録・画像）が、run `multi-boundary-windows`とbyte単位で一致した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+
+その前のengine（digest `fca1e014164c93c6c62b1aad4344d1184760bd5e8f98404b44a453674ee0a731`、入れ子の監査なし）では、run `boundary-single-windows`・`boundary-windows`・`multi-boundary-windows`が通った。`boundary-single-windows`の7保存のPDF・sidecarは、下記のrun `nesting-single-windows`と、`multi-boundary-windows`のPDF・sidecar・記録57件は、run `multi-nesting-windows`とbyte単位で一致した。
 
 **operator nesting正規化後の評価（2026-09-25）**。engine digest `341859e13035bfd6a85f04b33f7fe0c7f95b708cf97b8b13548db771d8f079e4`で、次の2本を同じWindows検証環境で実行し、どちらも全段階と容量拒否が通った。各保存では、編集した4〜6ページがPDF 1.xのoperator nestingを満たすこと、出力のPDF versionが原本と同じ（`%PDF-1.4`）であることも照合した。
 
-- **単一destination**（run `nesting-single-windows`）: allocation・生成slot・font/resource数は以前と同じだった。監査画像は、以前のengineの画像とPNGのbytesまで一致した。公開集計は、上記のrun `boundary-single-windows`の集計に置き換えた。
-- **同一ページ2 destination**（run `multi-nesting-windows`）: 確認済みの6ページ領域を評価者が2つのregionへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。公開集計は、上記のrun `multi-boundary-windows`の集計に置き換えた。
+- **単一destination**（run `nesting-single-windows`）: allocation・生成slot・font/resource数は以前と同じだった。監査画像は、以前のengineの画像とPNGのbytesまで一致した。公開集計は、上記のrun `failclosed-single-windows`の集計に置き換えた。
+- **同一ページ2 destination**（run `multi-nesting-windows`）: 確認済みの6ページ領域を評価者が2つのregionへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。公開集計は、上記のrun `multi-failclosed-windows`の集計に置き換えた。
 
 結果は[operator nesting正規化後の再評価](#operator-nesting正規化後の再評価)にある。どちらも単一外部原本の1 paragraphと、評価者が確認した1つの空き領域に対する境界評価である。一般PDFの成功率や、任意のPDFで複数destinationが動くことを示すものではない。PR #8・PR #7・PR #6のengineでの結果は[履歴](#pr-8-engineでの単一destination再評価)として残す。
 
@@ -416,7 +418,7 @@ run `multi-pr8-windows`（2026-09-25）。単一destinationの再評価（run `p
 
 engine digest `fca1e014…a731`、評価コード`boundary_destination.py`（SHA-256 `5d9a5bf8…bbce`）。原本・provider・Poppler 26.07.0・独立pypdf 6.10.0は単一destination評価と同じで、照合も一致した。全段階と容量拒否が通った（2,940.79秒）。
 
-[公開集計](boundary-destination-summary.json)はこのrunの集計である。
+入れ子の監査を加えた最終engine（digest `59fe6125…1bfd`）で、run `boundary-failclosed-windows`として再実行した（5,609.44秒）。他の評価と並行して実行したため、時間は長い。集計の違いは、engine digest・`continuation.py`のhash・比較したpage-entry runの名前とengine digestだけだった。成果物129件（PDF・sidecar・記録・画像）が、このrunとbyte単位で一致した。[公開集計](boundary-destination-summary.json)は再実行の集計である。下の値は両方のrunに当てはまる。
 
 | 保存 | block（6ページ、byte範囲） | text object（4/5/6ページ） | 違反 | PDF byte |
 |---|---|---|---|---|
@@ -440,7 +442,7 @@ engine digest `fca1e014…a731`、評価コード`boundary_destination.py`（SHA
   - 対象外ページのMuPDF全画素、独立pypdfの全ページUnicode、CID/GID/`W`、元font resource、text以外のpaint、画像、annotation。
   - operator nestingの違反0、PDF version `%PDF-1.4`。
 - **容量拒否**: `paragraphs exceed all explicitly confirmed shared regions`で拒否した。PDF・sidecarは作られていない。
-- **page entryとの比較**: 同じengineのpage-entry run `boundary-single-windows`と、全段階で次が一致した。
+- **page entryとの比較**: 同じengineのpage-entry run（`boundary-windows`では`boundary-single-windows`、再実行では`failclosed-single-windows`）と、全段階で次が一致した。
   - 計画glyphの全field。
   - Poppler監査画像。編集段階は4〜6ページ、no-opは全10ページ。
   - 生成文字はページ上の既存の描画と重ならないため、描画順序が違っても画素は同じである。

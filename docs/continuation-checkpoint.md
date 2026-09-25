@@ -1,6 +1,6 @@
 # Continuation開発の再開地点 — 2026-09-24
 
-**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。その後、writerがtext object内に`q`/`Q`を出していた問題を直し、出力のPDF versionを元PDFと同じにして、両方の外部評価をやり直した。さらに、callerが確認したpage levelの安全なoperator境界を、2つ目の挿入authorityにした。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」「PDF operator nestingの正規化」「確認済みpage-program境界」の節を参照。以下の各節は、その時点の記録として残す。
+**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。その後、writerがtext object内に`q`/`Q`を出していた問題を直し、出力のPDF versionを元PDFと同じにして、両方の外部評価をやり直した。さらに、callerが確認したpage levelの安全なoperator境界を、2つ目の挿入authorityにした。レビュー指摘を受けて、operatorの入れ子が崩れたpage programでは境界候補を出さないようにした（fail closed）。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」「PDF operator nestingの正規化」「確認済みpage-program境界」の節を参照。以下の各節は、その時点の記録として残す。
 
 利用者の「最短の区切りでコミット」指示による途中保存。起点は`02a526ff2781ae80551f2ad4367f6f8d50c2b430`。サブエージェントは使用していない。
 
@@ -431,7 +431,7 @@ paragraph writer（`paragraph.py`）は、新しい文字のtext state（font・
 
 ### 検証（Windows 11 x64、Python 3.12.14）
 
-以下はすべて最終engine（digest `fca1e014…a731`）の結果である。
+以下は、PR作成時のengine（digest `fca1e014…a731`）の結果である。レビュー指摘の修正後の再検証は、[下記](#レビュー指摘-入れ子が崩れたprogramのfail-closedpr-11)にある。
 
 | 検証 | 結果 |
 |---|---|
@@ -478,6 +478,38 @@ paragraph writer（`paragraph.py`）は、新しい文字のtext state（font・
 ### 次の最小の構造障壁
 
 page entryと同じ状態を証明できない境界である。identity以外のCTM、有効なclip、ExtGStateを持つ境界を、どこまで安全に扱えるかを示す必要がある。例えば、CTMの逆変換で同じpage座標に描けること、destinationがclipの内側に収まることの証明である。
+
+### レビュー指摘: 入れ子が崩れたprogramのfail closed（PR #11）
+
+- **問題**: `ContentPage._walk`はtext objectの内外をboolで数える。そのため、構造が不正なprogramで、text objectの外に見える境界を安全な候補として出していた。
+  - 入れ子の`BT ... BT ... ET`: 内側の`ET`で外に出たと数える。
+  - `BT`のない`ET`、閉じていない`BT`: 数え方は崩れないが、programは不正である。
+  - 修正前は、この3例で`0 0 5 5 re f`の直後などが`safe`になった。
+- **変更**（`pdfeditor/continuation.py`だけ）: 既存の`operator_nesting.audit`をpage program全体に使う。scopeの数え方を二重に実装しない。
+  - 違反が1つでもあれば、`inspect_continuation_boundaries()`はそのページのすべての境界を`invalid-operator-nesting`で拒否する。候補は出ない。確認もできない。
+  - revisionごとの境界の検証（`_boundary_value`）も同じ監査を行う。前後のoperator・scope・状態が同じでも、入れ子が崩れていれば拒否する。
+  - `ContentPage`・MutationProgram・page entry・binding形式は変えていない。
+- **LibreOffice原本**: 10ページすべてで監査の違反は0だった。候補は修正前と同じ各2つで、6ページの確認済み境界`boundary-b848698b464255ff0b2b6f90`もそのまま候補に残る。
+- **追加試験**（`tests/test_boundary_destination.py`、6件）:
+  - `test_a_program_whose_operators_do_not_nest_has_no_candidates`: 入れ子の`BT`・`BT`のない`ET`・閉じていない`BT`の3例で、候補が0件になる。すべての境界に`invalid-operator-nesting`が付く。それ以外の条件は満たす境界の拒否理由が`invalid-operator-nesting`だけであり、その境界は確認もできない。
+  - `test_a_revision_whose_operators_do_not_nest_is_not_the_same_authority`: 生成済みrevisionのprogramを同じ長さで改ざんし、同じ3例にする。境界の前後・scope・状態は同じままでも、証跡の検証で拒否し、openは`needs_confirmation`になる。
+  - 6件とも、修正前のengineでは失敗し、修正後は成功した。
+
+#### 修正後の検証（Windows 11 x64、Python 3.12.14）
+
+以下はすべて修正後の最終engine（digest `59fe6125948d44a732da8c22a18cd619cdc3a34f7d6599c6141250144e481bfd`、45ファイル）の結果である。外部評価と試験を並行して実行したため、時間は単独実行より長い。
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_boundary_destination.py` | 33 passed（842.89秒）。修正前の27件と追加6件 |
+| `test_continuation.py`・`test_multi_destination.py`・`test_operator_nesting.py`・`test_mutation.py`・`test_generated_fonts.py` | 87 passed（4,408.76秒） |
+| 全suite `python -m pytest -q` | 724 passed, 7 skipped（7,199.91秒）。失敗・エラー0 |
+| 外部原本 単一destination（run `failclosed-single-windows`） | 全段階・no-op 3回・容量拒否が通過（5,628.55秒）。集計はengine digestと`continuation.py`のhash以外、修正前の公開集計と同じ。成果物129件（PDF・sidecar・記録・画像）が、run `boundary-single-windows`とbyte単位で一致 |
+| 外部原本 確認済み境界（run `boundary-failclosed-windows`） | 全段階・no-op 3回・容量拒否が通過（5,609.44秒）。page-entry run `failclosed-single-windows`と、計画glyph・Poppler画像が一致。集計はengine digest・hash・比較runの名前以外同じ。成果物129件がrun `boundary-windows`とbyte単位で一致 |
+| 外部原本 同一ページ2 destination（run `multi-failclosed-windows`） | 逐次8段階・同時2段階・容量拒否が通過（3,787.93秒）。集計はengine digestと`continuation.py`のhash以外、修正前の公開集計と同じ。成果物177件がrun `multi-boundary-windows`とbyte単位で一致 |
+
+- **公開集計**: 3つのrunの集計を`summary.json`・`boundary-destination-summary.json`・`multi-destination-summary.json`として公開した。
+- **外部評価の結果**: 修正前と変わらない。LibreOffice原本は入れ子の監査に違反がなく、確認済み境界もそのまま候補に残るためである。
 
 ## 再評価の手順
 

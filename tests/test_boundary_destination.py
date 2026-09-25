@@ -163,6 +163,28 @@ def test_only_safe_page_level_boundaries_are_candidates(tmp_path, data, after, r
     assert all(c['status'] == 'safe' and c['z_order']['semantics'] == Z_ORDER for c in found['candidates'])
 
 
+# A program whose text objects do not nest has no trustworthy scope at any
+# boundary, even where the scope counters alone look page-level: fail closed.
+MALFORMED = [(b'BT /Regular 12 Tf 20 200 Td (A) Tj BT (B) Tj ET 0 0 5 5 re f 0 g', b'0 0 5 5 re f'),
+             (b'0 0 5 5 re f 0 g ET 1 g', b'0 0 5 5 re f'),
+             (b'0 0 5 5 re f 0 g BT /Regular 12 Tf 20 200 Td (A) Tj', b'0 0 5 5 re f')]
+
+
+@pytest.mark.parametrize('data,after', MALFORMED, ids=['nested-BT', 'ET-without-BT', 'unclosed-BT'])
+def test_a_program_whose_operators_do_not_nest_has_no_candidates(tmp_path, data, after):
+    source = build(tmp_path, data)
+    found = inspect_continuation_boundaries(source, 1, include_refused=True)
+    assert found['candidates'] == []
+    assert found['refusal_reasons']['invalid-operator-nesting'] == found['refused_boundaries'] == len(found['refused'])
+    # Every other condition holds here; only the nesting refuses it.
+    boundary = next(b for b in found['refused'] if b['offset'] == data.index(after) + len(after))
+    assert boundary['reasons'] == ['invalid-operator-nesting']
+    with pytest.raises(PdfError, match='invalid-operator-nesting'):
+        confirm_continuation_destination(source, destination_id='d', paragraph_id='A', region_id='R1', page=1,
+            bounds=[100, 100, 200, 200], insertion=BOUNDARY, graphics_state=BOUNDARY_STATE,
+            boundary=boundary['boundary_id'])
+
+
 # -- B. explicit confirmation --------------------------------------------------
 
 def test_the_caller_confirms_one_listed_candidate_not_a_geometry(tmp_path):
@@ -392,6 +414,26 @@ def test_same_offset_with_another_state_is_not_the_same_authority(tmp_path, pref
                    DESTINATION_PAGE.replace(PREFIX_SLOT, prefix.ljust(len(PREFIX_SLOT)))
                    .replace(SUFFIX_SLOT, suffix.ljust(len(SUFFIX_SLOT))))
     assert not [c for c in inspect_continuation_boundaries(source, 2)['candidates'] if c['offset'] == chosen['offset']]
+
+
+@pytest.mark.parametrize('prefix,suffix', [(b'BT BT ET', b''), (b'ET', b''), (b'', b'BT')],
+                         ids=['nested-BT', 'ET-without-BT', 'unclosed-BT'])
+def test_a_revision_whose_operators_do_not_nest_is_not_the_same_authority(tmp_path, prefix, suffix):
+    """Same neighbors, scope and state at the boundary, but the program no longer nests."""
+    out, state, chosen = _grown(tmp_path)
+    d, binding = state['continuation_destinations']['dest-R2'], state['destination_bindings']['dest-R2']
+    data = program(out, 2)
+    value = data.replace(PREFIX_SLOT, prefix.ljust(len(PREFIX_SLOT)), 1)
+    value = value.replace(SUFFIX_SLOT, suffix.ljust(len(SUFFIX_SLOT)), 1)
+    assert len(value) == len(data) and value.index(markers(d)[0]) == binding['start']
+    tampered = _tampered(out, 2, value, 'nesting.pdf')
+    content = ContentPage(tampered, 2)
+    try:
+        with pytest.raises(PdfError, match='do not nest'):
+            destinations.page_witness(content, [d], {'dest-R2'})
+    finally:
+        content.close()
+    assert open_shared_flow(tampered, tmp_path / 'grow.json')['status'] == 'needs_confirmation'
 
 
 # -- N. page-entry coexistence -------------------------------------------------

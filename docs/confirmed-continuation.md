@@ -183,11 +183,13 @@ destination = confirm_continuation_destination(
 
 境界で次をすべて満たすものだけが候補になる。生成blockがpage entryと同じpage座標・同じ見た目で描けることを証明できる場合に限る。
 
+- **programの入れ子**: page program全体が、[operator nesting](#pdf-1xのoperator-nesting)の`audit`で違反なしである。違反の例は、入れ子の`BT ... BT ... ET`、`BT`のない`ET`、閉じていない`BT`、対応しない`q`/`Q`やmarked content、text object内のpage記述レベルのoperatorである。違反が1つでもあれば、scopeを信用できないので、そのページのどの境界も候補にしない（fail closed）。scopeの判定は、入れ子が正しいことを前提にしている。
 - **scope**: `q`の深さ0（page levelの状態が閉じている）。text object、marked-content sequence、`BX ... EX`の外で、組み立て中のpathや未適用の`W`/`W*`がない。
 - **graphics state**: CTMがidentity、有効なclipがない（page entryと同じくCropBoxだけ）、不透明度とstroke不透明度が1、text描画モードが0。ExtGStateと`ri`・`i`の設定はない。
 - **stroke専用の値は許す**: `w`・`J`・`j`・`M`・`d`はstrokeにしか効かない。blockはTr 0の塗りの文字だけを描くので、既定値でなくてよい。
 - **blockが自分で設定する値**: font・size・Tz・Tc・Tw・Ts・fill（`g`/`rg`/`k`で色空間ごと）は、blockが自分で設定し、外側の`q ... Q`で元に戻す。そのため境界での値は問わない。strokeの色やTLは、blockが使わない。
 - **拒否**: 迷う状態は拒否する。拒否理由は次のとおりである。
+  - `invalid-operator-nesting`（ページのすべての境界に付く）
   - `inside-graphics-state-save`、`inside-text-object`、`inside-marked-content`、`inside-compatibility-section`
   - `pending-path`、`pending-clip`
   - `nonidentity-ctm`、`active-clip`、`transparency`、`text-rendering-mode`、`extgstate`、`graphics-state-side-effect`
@@ -206,12 +208,13 @@ destination = confirm_continuation_destination(
 ### bindingとrebind
 
 - **bindingの内容**: 各revisionのbindingは、境界のoffsetと、直前・直後operatorの範囲を持つ。blockがあれば、その範囲・block SHA-256・`operator_nesting`も持つ。
-- **再検証**: open・保存のたびに、境界で終わるoperatorと次のsource operatorが確認時と同じ（名前とbytes）ことを確かめる。その位置のscopeと状態が確認時と同じで、今も安全であることも確かめる。offsetやxrefの一致だけでは同じ境界とみなさない。
+- **再検証**: open・保存のたびに、境界で終わるoperatorと次のsource operatorが確認時と同じ（名前とbytes）ことを確かめる。その位置のscopeと状態が確認時と同じで、今も安全であることも確かめる。page program全体の入れ子が正しいことも、毎回確かめる。offsetやxrefの一致だけでは同じ境界とみなさない。
 - **blockの追跡**: 自分の一意なmarkerで見つける。保存をまたぐときは、既存blockはmarkerとmutation map、新blockは作成mutationのanchorで追跡する。
 - **未使用の境界の追跡**: 保存ごとに、その保存のmutation mapで写す（`map_offset`）。消費されたoffsetには後継がない。
 - **検証の例**:
   - prefix側やsuffix側の無関係なmutation、block自身の再編集で長さが変わっても、同じ境界を追跡する。
   - 同じoffsetでも、CTM・clip・ExtGState・`q`・marked contentが変われば、同じauthorityとして扱わない。
+  - 境界の前後のoperator・scope・状態が同じでも、programの入れ子が崩れていれば（入れ子の`BT`、`BT`のない`ET`、閉じていない`BT`）同じauthorityとして扱わない。
 
 ### MutationProgram
 
@@ -236,14 +239,15 @@ destination = confirm_continuation_destination(
 | 確認済みの安全なpage level境界 | 対応 |
 | `q`の内側、有効なclipの下、identity以外のCTM、任意のExtGState | 未対応（拒否） |
 | text object・marked content・`BX ... EX`・Form XObjectの内側 | 未対応（拒否） |
+| operatorの入れ子が崩れたpage program | 未対応（ページ全体を拒否） |
 
 ### 回帰と評価
 
 - **回帰**: [tests/test_boundary_destination.py](../tests/test_boundary_destination.py)で次を確認する。
-  - 候補の列挙と拒否理由、callerの明示確認。
+  - 候補の列挙と拒否理由、callerの明示確認。入れ子が崩れたprogramでは候補を出さないこと。
   - 非zero offsetでの作成、reopen、second、shorten、regrow、no-op 3回。prefix/block/suffixの順序と、描画operatorの順序も確かめる。
   - 同じtransactionでのprefix側・suffix側の変更。
-  - 境界に触れるmutationの拒否、sidecarとprogramの改ざん、同じoffsetでの状態の改ざん。
+  - 境界に触れるmutationの拒否、sidecarとprogramの改ざん、同じoffsetでの状態の改ざん、入れ子を崩す改ざん。
   - page entryとの共存、late failureのrollback。
   - page entryと境界で同じ文字・同じ画素になること。
 - **外部評価**: [評価コード](../evaluations/continuation/boundary_destination.py)は、LibreOffice原本の6ページで評価者が確認した境界を使う。この境界は、本文の`q ... Q`とCC-BY-SAロゴの`q ... Q`の間にある。結果は[評価README](../evaluations/continuation/README.md#確認済みpage-program境界の評価)にある。
