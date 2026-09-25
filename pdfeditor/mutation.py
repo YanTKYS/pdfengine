@@ -7,6 +7,11 @@ page program at once and maps offsets forward through them. Nothing is bound
 by geometry: a mapped component is re-verified by its witness (font resource,
 character code, Unicode, glyph ID, or the exact operation bytes) and any
 consumed, missing or non-unique correspondence fails closed.
+
+One source byte or operator has one owner. The only mutations that may share
+a source boundary are zero-length page-entry insertions of confirmed
+continuation destinations, each carrying its own explicit order and owner;
+their final byte order is that order, never the order they were added in.
 """
 from __future__ import annotations
 
@@ -14,6 +19,13 @@ from dataclasses import dataclass, field
 
 from .backend import PdfError
 from .content_stream import ContentPage
+
+
+# Zero-length insertions of these kinds may share one source boundary when each
+# carries an explicit order. Only the ordered page-entry chain of confirmed
+# continuation destinations has such an order; every other insertion still
+# refuses to touch another mutation.
+ORDERED_INSERTION_KINDS = frozenset({'confirmed-continuation-create'})
 
 
 @dataclass
@@ -25,7 +37,8 @@ class Mutation:
     original operator preserved inside a wrapper, ``rewritten`` a rewritten
     text operator whose retained characters are listed in ``chars`` (old
     character index to new index), and free names such as ``glyph:3`` or
-    ``paint:0`` mark generated operators.
+    ``paint:0`` mark generated operators. ``insertion_order`` is the explicit
+    order of an owned page-entry insertion among the insertions at its boundary.
     """
     start: int
     end: int
@@ -34,12 +47,19 @@ class Mutation:
     anchors: dict = field(default_factory=dict)
     chars: dict | None = None
     owner: str | None = None
+    insertion_order: int | None = None
 
     def edit(self):
-        """The byte-position part only: enough to map offsets outside mutations."""
+        """The byte-position part only: enough to map offsets outside mutations.
+
+        An ordered insertion keeps its kind, owner and order: at a shared
+        boundary they decide where its bytes are, so they are position data.
+        """
         value = dict(start=self.start, end=self.end, length=len(self.data))
         if 'op' in self.anchors:
             value['preserved_event_offset'] = self.anchors['op']
+        if self.insertion_order is not None:
+            value.update(kind=self.kind, owner=self.owner, insertion_order=self.insertion_order)
         return value
 
     def record(self):
@@ -60,7 +80,19 @@ class Mutation:
         if len(data) != record['length']:
             raise PdfError('mutation record length does not match the saved bytes')
         return cls(record['start'], record['end'], data, kind=record.get('kind', 'mutation'),
-                   anchors=anchors, chars=chars, owner=record.get('owner'))
+                   anchors=anchors, chars=chars, owner=record.get('owner'),
+                   insertion_order=record.get('insertion_order'))
+
+
+def _key(mutation: Mutation):
+    return (mutation.start, mutation.end, -1 if mutation.insertion_order is None else mutation.insertion_order)
+
+
+def _ordered(a: Mutation, b: Mutation) -> bool:
+    """Two owned page-entry insertions at one boundary with distinct explicit orders."""
+    return (a.insertion_order is not None and b.insertion_order is not None
+            and a.start == a.end == b.start == b.end
+            and a.insertion_order != b.insertion_order and a.owner != b.owner)
 
 
 def _conflicts(a: Mutation, b: Mutation) -> bool:
@@ -69,13 +101,22 @@ def _conflicts(a: Mutation, b: Mutation) -> bool:
     Non-empty replacements may be adjacent (one ends where the next starts).
     A zero-length insertion has no source bytes of its own, so its order
     relative to a mutation starting or ending at the same offset would be a
-    convention rather than provenance: such insertions are refused.
+    convention rather than provenance: such insertions are refused. The one
+    exception is a pair of explicitly ordered page-entry insertions, whose
+    order is confirmed data carried by both mutations.
     """
     if a.start < b.end and b.start < a.end:
         return True
     if a.start == a.end or b.start == b.end:
-        return a.start <= b.end and b.start <= a.end
+        return a.start <= b.end and b.start <= a.end and not _ordered(a, b)
     return False
+
+
+def _precedes(a: Mutation, b: Mutation) -> bool:
+    """Whether ``a``'s emitted bytes come before ``b``'s in the applied program."""
+    if _ordered(a, b):
+        return a.insertion_order < b.insertion_order
+    return a.end <= b.start
 
 
 class MutationProgram:
@@ -91,11 +132,16 @@ class MutationProgram:
         for name, offset in mutation.anchors.items():
             if not isinstance(name, str) or not 0 <= offset <= len(mutation.data):
                 raise PdfError('mutation anchor is outside its emitted bytes')
+        order = mutation.insertion_order
+        if order is not None and (type(order) is not int or order < 0 or mutation.kind not in ORDERED_INSERTION_KINDS
+                                  or mutation.start != mutation.end or not isinstance(mutation.owner, str)
+                                  or not mutation.owner):
+            raise PdfError('only an owned zero-length page-entry insertion may carry an explicit order')
         for other in self.mutations:
             if _conflicts(other, mutation):
                 raise PdfError('mutations overlap or an insertion touches another mutation; one operator cannot have two owners')
         self.mutations.append(mutation)
-        self.mutations.sort(key=lambda m: (m.start, m.end))
+        self.mutations.sort(key=_key)
         return mutation
 
     def containing(self, offset: int) -> Mutation | None:
@@ -104,9 +150,19 @@ class MutationProgram:
                 return mutation
         return None
 
-    def _delta_before(self, offset: int, *, exclude: Mutation | None = None) -> int:
-        return sum(len(m.data) - (m.end - m.start) for m in self.mutations
-                   if m is not exclude and m.end <= offset)
+    def _delta_before(self, offset: int) -> int:
+        """Length change of the mutations whose bytes precede source ``offset``.
+
+        Every insertion at ``offset`` precedes the source byte there.
+        """
+        return sum(len(m.data) - (m.end - m.start) for m in self.mutations if m.end <= offset)
+
+    def position(self, mutation: Mutation) -> int:
+        """Offset in the applied program where ``mutation``'s emitted bytes begin."""
+        if not any(m is mutation for m in self.mutations):
+            raise PdfError('anchor belongs to a mutation outside this program')
+        return mutation.start + sum(len(m.data) - (m.end - m.start) for m in self.mutations
+                                    if m is not mutation and _precedes(m, mutation))
 
     def map_offset(self, offset: int) -> int:
         """Forward-map a source offset; a consumed offset has no successor."""
@@ -120,15 +176,17 @@ class MutationProgram:
         return offset + self._delta_before(offset)
 
     def anchor(self, mutation: Mutation, name: str) -> int:
-        if mutation not in self.mutations:
+        if not any(m is mutation for m in self.mutations):
             raise PdfError('anchor belongs to a mutation outside this program')
         if name not in mutation.anchors:
             raise PdfError(f'mutation has no emitted operator named {name}')
-        return mutation.start + self._delta_before(mutation.start, exclude=mutation) + mutation.anchors[name]
+        return self.position(mutation) + mutation.anchors[name]
 
     def apply(self) -> bytes:
+        # Ordered insertions at one boundary: the later order is applied first,
+        # so each earlier one lands in front of it.
         data = self.source
-        for mutation in sorted(self.mutations, key=lambda m: m.start, reverse=True):
+        for mutation in sorted(self.mutations, key=_key, reverse=True):
             data = data[:mutation.start] + mutation.data + data[mutation.end:]
         return data
 
@@ -141,10 +199,12 @@ class MutationProgram:
         return [m.record() for m in self.mutations]
 
     def mutation_at(self, start: int) -> Mutation:
-        for mutation in self.mutations:
-            if mutation.start == start:
-                return mutation
-        raise PdfError('no mutation starts at the given source offset')
+        found = [mutation for mutation in self.mutations if mutation.start == start]
+        if not found:
+            raise PdfError('no mutation starts at the given source offset')
+        if len(found) != 1:
+            raise PdfError('several ordered insertions start at the given source offset')
+        return found[0]
 
 
 def map_offset(offset, edits):
@@ -152,7 +212,9 @@ def map_offset(offset, edits):
     program = MutationProgram(b'\0' * (max([offset] + [e['end'] for e in edits]) + 1))
     for edit in edits:
         anchors = {'op': edit['preserved_event_offset']} if 'preserved_event_offset' in edit else {}
-        program.add(Mutation(edit['start'], edit['end'], b'\0' * edit['length'], anchors=anchors))
+        program.add(Mutation(edit['start'], edit['end'], b'\0' * edit['length'], anchors=anchors,
+                             kind=edit.get('kind', 'mutation'), owner=edit.get('owner'),
+                             insertion_order=edit.get('insertion_order')))
     return program.map_offset(offset)
 
 
@@ -329,7 +391,8 @@ class IdentityMap:
             data, saved = before.streams[-before.page.xref], after.streams[-after.page.xref]
             program = MutationProgram(data)
             delta = 0
-            for record in sorted(records, key=lambda e: (e['start'], e['end'])):
+            # Ordered insertions at one boundary are laid out in their order.
+            for record in sorted(records, key=lambda e: (e['start'], e['end'], e.get('insertion_order', -1))):
                 start = record['start'] + delta
                 program.add(Mutation.from_record(record, saved[start:start + record['length']]))
                 delta += record['length'] - (record['end'] - record['start'])

@@ -331,7 +331,7 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             identity = dict(source_sha256=font.source_sha256, font_index=font.font_index,
                             variations=font.variations, instance_sha256=font.instance_sha256)
             alias = page.reserve_font_alias('PRF', consumed=frozenset(selected), retained=frozenset(retained_aliases),
-                                            provider=identity)
+                                            provider=identity, owner=owner)
             resources[alias] = resource
             font_records[alias] = dict(subset_sha256=hashlib.sha256(resource.program).hexdigest(),
                                        basefont=resource.basefont, provider=identity)
@@ -396,7 +396,7 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
         commands.extend((b' Q ', matrix_operator(first.line_matrix),
             b'[' + number(-delta[4] / (state.size * state.tz / 100) * 1000) + b'] TJ '))
         if getattr(paragraph,'creation',False):
-            from .continuation import markers
+            from .continuation import CREATE, markers
             if not units:raise PdfError('an unused continuation destination creates no physical slot')
             begin,end=markers(snapshot['destination'])
             prefix=begin+b'q BT '
@@ -407,7 +407,11 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                 ((f'glyph:{n}',o) for n,o in enumerate(glyph_offsets))}
             result.glyph_names=list(anchors)
             anchors.update(block_start=0,block_end=len(data))
-            mutation=Mutation(0,0,data,kind='confirmed-continuation-create',anchors=anchors,owner=owner)
+            # The block enters the page-entry chain at the boundary verified for
+            # this revision; blocks sharing that boundary follow their confirmed order.
+            offset=paragraph.entry
+            mutation=Mutation(offset,offset,data,kind=CREATE,anchors=anchors,owner=owner,
+                              insertion_order=snapshot['page_entry']['order'])
             result.mutations.append(mutation);result.first_mutation=mutation
         for event in paragraph.events:
             data, op_offset, chars = rewritten_event(event, selected, remove=True)

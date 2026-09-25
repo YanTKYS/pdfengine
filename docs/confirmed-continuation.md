@@ -2,6 +2,8 @@
 
 **外部PDF評価済み（2026-09-24）**。Windows環境で、対象の外部LibreOffice PDFの1 paragraphについて系列評価を完了した。内容は、確認済みの6ページdestinationを使った`overflow → reopen → re-edit → shorten → regrow → no-op`と、容量拒否である。その後、再保存で生成fontが累積する問題を修正し（[下記](#生成fontの寿命)）、同じ系列をno-op 3回まで拡げて再評価した。最終engineでの全suiteは642 passed / 7 skipped / 0 failed（Windows）である。結果は[評価](../evaluations/continuation/README.md#現行の結果)と[公開集計](../evaluations/continuation/summary.json)にある。確認したのは単一原本・単一destinationの範囲であり、任意のPDFで自然な再レイアウトができることは示していない。経緯は[再開地点と検証状況](continuation-checkpoint.md)を参照。
 
+その後、同じpage-entry authorityを**同一ページの複数destination**へ拡張した（[下記](#同一ページの複数destination)）。合成PDFの回帰とdry-runで確認した。外部原本での2 destination評価は、このsessionの実行環境に原本とproviderがないため**未実施**である。
+
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
 
 ## 契約
@@ -18,6 +20,7 @@ destination = confirm_continuation_destination(
     bounds=reviewed_regions["next-region"]["bounds"],
     insertion="before-page-program",
     graphics_state="isolated-pdf-initial-state",
+    page_entry_order=10,  # 同じページに複数destinationがある場合は必須
 )
 flow = confirm_shared_flow(
     source, reviewed_stories,
@@ -29,7 +32,7 @@ flow = confirm_shared_flow(
 
 destinationは`destination_id / paragraph_id / region_id / page / bounds / provenance`に加え、`authority`、確認時PDF hash、canonical page program hashを保持する。`authority`には挿入位置、z-order、初期graphics state、page transform/CropBox、透明度group、font policyを記録する。region geometryだけを渡す呼出しや、不明な描画状態は拒否する。
 
-今回の挿入位置は**page program先頭、既存描画より背面**。1ページにつき1つのdestinationがその境界を所有し、destination boundsは確認済みshared region全体と一致させる。これは任意の描画contextから状態を推測するAPIではなく、callerが明示的に選ぶ限定的な描画policyである。
+挿入位置は**page program先頭、既存描画より背面**。同じページの複数destinationは、この一つのauthorityを順序付きのpage-entry chainとして共有する（[下記](#同一ページの複数destination)）。destination boundsは確認済みshared region全体と一致させる。これは任意の描画contextから状態を推測するAPIではなく、callerが明示的に選ぶ限定的な描画policyである。任意のcontent-stream位置、既存BT/ET内部、既存graphics stateへの挿入権限ではない。
 
 先頭の初期CTMはidentity、clipはページのCropBox、不透明度は1、fill/strokeは初期値、blend/maskは初期状態。独立した`q BT ... ET Q`で状態を閉じ、必要なdevice fill、font、size、Tz、Tc、Ts、Tmを既存writerが設定する。既存paragraphのfont resourceやclipは参照しない。各論理styleに確認済みproviderが必要で、生成resourceは対象ページへ独立に追加する。
 
@@ -44,19 +47,84 @@ destinationは`destination_id / paragraph_id / region_id / page / bounds / prove
 | generated slot | destinationを実際に使用したときに生まれる物理fragment。独立ID・owner・destination IDを持つ |
 | capacity | regionの明示幅・baseline・bottomとparagraph policyで計算した有限の行容量 |
 
-destination全域の空きを確認する。glyph、画像、path、shading等の非text paint、annotation、widget、linkが重なる場合は拒否する。外接矩形による判定は保守的な拒否方向に使い、pathの内側や背景を勝手に空きへ変換しない。別paragraphの現在の文字は、それが同じtransactionで退く予定でも空きとみなさない。生成後の検査で除外するのはそのgenerated slot自身のglyphだけである。
+destination全域の空きを確認する。glyph、画像、path、shading等の非text paint、annotation、widget、linkが重なる場合は拒否する。外接矩形による判定は保守的な拒否方向に使い、pathの内側や背景を勝手に空きへ変換しない。別paragraphの現在の文字は、それが同じtransactionで退く予定でも空きとみなさない。生成後の検査で除外するのはそのgenerated slot自身のglyphだけである。同じページの別destinationが生成したglyphも、除外せず障害物として扱う。
 
-regionはページ内で、保護領域および他regionと交差してはならない。最終計画間のglyph ink衝突もTransactionで検査する。全確認済み容量を超えれば拒否し、font/leading/widthやpage数を変えない。
+regionはページ内で、保護領域および他regionと交差してはならない。同じページのdestination同士も交差を拒否する（辺が接するだけなら既存`Rect`契約どおり交差ではない。そのうえでpaint envelopeの保守的な判定が適用される）。最終計画間のglyph ink衝突もTransactionで検査する。全確認済み容量を超えれば拒否し、font/leading/widthやpage数を変えない。
 
 ## Persistenceと再編集
 
 生成IDはdestination ID、paragraph ID、region ID、pageのdigestから定まる。slotには`creation_provenance = generated-from-confirmed-continuation-destination`、生成時mutation record、確認契約hash、物理editable bindingを記録する。確認契約はsource slotとdestinationの権限を固定し、後から生成されたslotの数には依存しない。
 
-挿入blockにはID由来の一意な開始・終了comment markerを置く。`destination_bindings`は現在revisionのprogram digest、block digest、範囲を保持する。最初のglyph対応はmutation anchorから解決し、再保存ではbyte mutation mapによる終了位置の対応も照合する。slot内のglyphがそのblock内にあること、他slotのglyphを含まないことを検証する。xref番号やgeometryだけでは再bindingしない。
+挿入blockにはID由来の一意な開始・終了comment markerを置く。`destination_bindings`はdestinationごとに、現在revisionのprogram digest、block自身のdigest、範囲、確認済みpage-entry orderを保持する。最初のglyph対応はmutation anchorから解決し、再保存ではbyte mutation mapで開始・終了markerの対応を照合する。slot内のglyphがそのblock内にあること、他slotのglyphを含まないことを検証する。xref番号やgeometryだけでは再bindingしない。
 
 長文化→短文化で不要になったgenerated slotは文字を除去し、`occupancy=None`のdormant状態にする。非描画`[] TJ`の挿入context、destinationとslot IDは残る。確認済みtracking/riseにはstyleごとの非描画Tc/Ts witnessを保存し、再open時に数値とprogram証跡を検証する。これはpaintされたglyphが存在するという主張ではない。再長文化は同じslotへ描画する。
 
 region境界はUnicodeへ改行を追加しない。style spansとparagraph IDは一本のまま、first-line indentは最初のvisual lineだけに適用する。justifyの末尾行処理は既存のparagraph continuation policyを引き継ぐ。
+
+## 同一ページの複数destination
+
+以前は1ページにつき1 destinationに限っていた。現在は、同じページに互いに交差しない複数の確認済みdestinationを置ける。例えば同じparagraphが`source slot → destination-A → destination-B`と続く場合や、`paragraph-A → destination-A`、`paragraph-B → destination-B`と別々のparagraphが続く場合である。各destinationは、destination ID、paragraph owner、region、geometry、generated slot ID、作成provenance、marker block、binding、font所有、reopen identityを独立に持つ。挿入authorityは引き続き`before-page-program`と`isolated-pdf-initial-state`だけである。
+
+### page-entry chainと順序契約
+
+同じページのgenerated blockは、original page programの前に並ぶ順序付きの**page-entry chain**を作る。
+
+```text
+page entry
+|- generated block (order 10)   q BT ... ET Q
+|- generated block (order 20)   q BT ... ET Q
+original page program
+```
+
+- **順序**: 各destinationは`page_entry_order`（非負整数）を持つ。複数destinationのページでは全destinationに必須で、ページ内で一意でなければならない。dict順、slot生成順、activation順、flowのregion順は使わない。flowの読み順と描画順は別の契約であり、engineは読み順を推定しない。
+- **保存と再検証**: orderはdestination契約の一部としてsidecarに保存し、shared flowの確認契約hashと、generated slotの作成証跡（`destination_contract_sha256`）に含まれる。orderの変更は既存confirmationの変更として扱い、再open時に`needs_confirmation`になる。
+- **単一destination**: 1ページに1つだけなら`page_entry_order`を省略できる。その場合は従来と同じ契約（offset 0、順序なしの作成mutation、同じbinding形式）になる。orderの有無が混在するページは拒否する。
+- **独立性**: 各blockは独立した`q BT ... ET Q`で、PDF初期graphics stateから始まり自分の状態を閉じる。他blockのtext state、font resource、clipを引き継がず借用しない。
+
+### 挿入境界
+
+新しいblockは、そのrevisionで検証済みのchainから求めた境界に入る。境界は「orderが小さい生成済みblockのうち最後のものの終端」、なければoffset 0である。orderが大きい生成済みblockはその後ろに残る。例えばorderが`A < B < C`でAだけが既存なら、Bは`A | B | original`となる境界（Aの終端）に入る。Bだけが既存でAを後から作る場合（逆順activation）は、Aはoffset 0に入り`A | B`になる。同時に複数の新blockを作る場合、同じ境界に入るblockは次の順序付きinsertionで並ぶ。計画時の境界（先行・後続blockのslot IDとoffset）はsnapshotに入り、writerは保存前にprogramのbytesから再照合する。
+
+### MutationProgramの同位置insertion
+
+`MutationProgram`は、zero-length insertionが他mutationの境界に触れることを拒否する。同じoffsetでの順序が慣習であってprovenanceではないためである。この規則は維持し、例外を一つだけ追加した。
+
+- **許可する唯一の組**: 同じoffsetにある2つのzero-length insertionで、どちらも`confirmed-continuation-create`、owner（slot ID）を持ち、明示的な`insertion_order`が異なり、ownerも異なるもの。
+- **引き続き拒否**: 順序のないinsertion同士、順序付きinsertionと通常insertionまたは置換mutationとの接触、同じorderや同じownerの重複、zero-lengthでない・ownerのない・別kindのmutationにorderを付けること。one source byte/operator = one ownerは変わらない。
+- **byte順**: 同じ境界ではorderの昇順に並び、追加順に依存しない。`apply()`、`position()`/`anchor()`（先行するmutationの長さ変化の総和）、`map_offset()`（source offsetは同じ境界の全insertionの後ろへ写る）は、この順序で定義する。
+- **記録**: mutation recordとbyte edit（`edits()`）はorder・kind・ownerを保持する。同じ境界ではこれらがbytesの位置を決めるためである。`from_records()`と`IdentityMap`はorder順に再構築し、JSON往復後も同じprogramを再現する。
+- **Transaction**: 生成glyphの順序照合も、mutationの開始offsetではなく適用後programでの位置で並べる。
+
+### 各blockの証跡
+
+- **作成provenance**: 各generated slotは独立した作成mutationを持つ。`kind = confirmed-continuation-create`、`owner = slot ID`、`insertion_order = page_entry_order`、`block_start = 0`、`block_end = 長さ`である。複数blockを一つのmutationにまとめない。
+- **witness**: 以前の`data.startswith(begin)`という1block前提をやめた。各destinationについて、自分のbegin/end markerがそれぞれ1回だけあることを確かめ、そのblock自身の範囲を取る。block SHA-256は他blockのprefixを含まない。
+- **chain全体の検証**（再openごと）:
+  - 生成済みblockがoffset 0から隙間なく連続し、確認済みorder順に並び、original page programより前にある。block間に未知のbytesはない。
+  - 未生成のdestinationにはmarkerがない。
+  - 各block本体は`q BT ... ET Q`で始まり終わる。text object・graphics stateの入れ子が閉じている。`q Q BT ET Tf Tz Tc Tw Ts Tm Tj TJ g rg k`以外のoperatorや、別のcomment/markerを含まない。
+  - block内の文字はそのslotのglyphだけで、各glyphは初期graphics state（CTM identity、clipなし、不透明度1、Tr 0）で描かれる。
+  - block内の`Tf`が選ぶaliasは、sidecarの`generated_fonts`がそのslotの所有と記録したものだけである（記録を持たない旧版sidecarでは、この照合を行えない）。
+  - 同じページのdestination bounds同士が交差しない。
+- **再binding**: 既存blockは、前revisionのbegin/end marker先頭のsource offsetをmutation mapで写した位置と、保存後に見つかったmarkerの位置が一致することで追跡する。新blockは作成mutationのanchorで追跡する。隣のblockが伸びたり、前に新blockが入ったりして絶対offsetが変わっても、正しいblockへbindingする。
+
+### 生成fontの所有
+
+`reserve_font_alias`は、sidecar記録のslotと計画のowner slotが一致するaliasだけを再利用する。同じtransactionでglyphが消費されていても、別slotのaliasは使わない。その別slotの非描画operatorやdormant witnessが、まだ`Tf`でそのaliasを選んでいるためである。commit時にも、置き換えたaliasを書いたplanのownerを記録と照合する。同じpage transaction内の複数planが同じaliasを予約することも、従来どおり拒否する。
+
+### dormant / regrow
+
+短文化で使わなくなったdestinationのslotは、従来どおりdormantになる。blockとmarker、chain内の位置は残る。再長文化では同じslot・同じblock・同じorderへ戻り、新しいblockは作らない。
+
+### 回帰と評価
+
+- **回帰**: [tests/test_multi_destination.py](../tests/test_multi_destination.py)で次を確認する。
+  - 同時初回生成、逐次生成、逆順activation、3 destinationで既存chainへ2 blockを同時に入れる場合。
+  - 1 paragraphのA→B continuation（left・justify、tracking/rise）と、2 paragraphの所有分離。
+  - shorten→dormant→regrow、各保存後の再open、no-op 3回（block順序・slot identity・marker・生成font数・画素）。
+  - order・marker・chainの改ざん、destination同士・保護領域・固定paint・他destinationの生成glyphとの交差、後段failure時のrollback。
+- **MutationProgram**: 同位置insertionの規則は[tests/test_mutation.py](../tests/test_mutation.py)で確認する。
+- **外部評価**: [評価コード](../evaluations/continuation/multi_destination.py)は、単一destination評価で確認済みの6ページ領域`[55,80,385,120]`を評価者が2つのregionへ分割する。範囲外を新たに空きとは仮定しない。このsessionでは外部原本とproviderを取得できず、**実行していない**。同じ評価コードを合成原本で最後まで動かしたdry-runは、[評価README](../evaluations/continuation/README.md#同一ページ2-destinationの評価)にある。
 
 ## 生成fontの寿命
 
@@ -82,4 +150,4 @@ region境界はUnicodeへ改行を追加しない。style spansとparagraph ID�
 
 回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。外部原本では、regrowが同じ生成slotへ戻り、final no-opで全10ページがMuPDF・Popplerとも全画素一致した。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
 
-次の最小の構造障壁は、同一ページの複数destinationや、先頭以外の描画境界へ独立した挿入権限を与えることである。必要なのは境界ごとのstate/clip/paint順序の証跡と複数挿入の順序契約であり、新規ページの自動生成ではない。
+同一ページの複数destinationと、その順序契約は上記で扱った。次の最小の構造障壁は、page-program先頭以外のcontent-stream境界へ独立した挿入権限を与えることである。必要なのは、その境界で有効なgraphics state・clip・paint順序の証跡である。新規ページの自動生成ではない。

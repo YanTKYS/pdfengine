@@ -1,5 +1,7 @@
 # 確認済み空き領域へのcontinuation評価
 
+**同一ページ2 destinationの評価は外部原本では未実施**（[下記](#同一ページ2-destinationの評価)。合成原本のdry-runのみ）。以下は単一destinationの評価で、複数destination対応前のengine（digest `f23c2f08…b4c0`）の結果である。対応後のengineでは外部原本を再実行していない。単一destinationの経路は従来の契約のまま（orderなし、offset 0）で、合成PDFの5保存ではPDF・sidecarが旧engineとbyte単位で一致した（[再開地点](../../docs/continuation-checkpoint.md#同一ページの複数destination--2026-09-25be00ece)）。
+
 **実行済み（2026-09-25、run `font-lifecycle-windows-3`）**。生成fontの寿命を修正した現行engine（digest `f23c2f08d3e4407180b63d0a888187199ca9d6c765b6d1c7d2cc5eb2c2a0b4c0`）と評価コード（SHA-256 `dd6d53295ac82b96baee723bf41e2b11044453f452e31783a44a7b47d3b4f402`）で、外部原本の編集系列、no-op 3回、容量拒否がすべて通った。[公開集計](summary.json)はこのrunの集計である。結果は[下記](#現行の結果)にある。PR #6時点の結果は[履歴](#pr-6の結果)として残す。単一外部原本の1 paragraphに対する境界評価であり、一般PDFの成功率ではない。
 
 既存corpusのLibreOffice移行資料を使用する。対象は前段階と同じ4/5ページの混合書式paragraph、生成先は目視確認した6ページ上部左側の空き領域`[55,80,385,120]`。右上の図版は固定・保護する。領域・描画順序の判断は評価者の明示指定であり、engineによる意味推定ではない。
@@ -89,6 +91,75 @@ PR #6の値は、保持していた同runのPDFを同じinventoryで測った。
 ### 目視
 
 run `-3`のPoppler 144dpi画像は、各段階でPR #6 runの画像と全画素一致した。対象はoverflow・second・shorten・regrowの4〜6ページと、no-opの全10ページで、MuPDFでも全10ページが一致した。PR #6 runの画像は下記のとおり目視で確認済みである。no-op 3の5・6ページはrun `-2`の画像も直接確認し、同じ配置であることを見た（run `-2`と`-3`はPDFがbyte単位で同一）。
+
+## 同一ページ2 destinationの評価
+
+**外部原本では未実施**。[評価コード](multi_destination.py)は用意したが、このsessionの実行環境（Linux container）では実行できなかった。原本の取得元hostがnetwork policyで拒否され（403）、評価provider（`msmincho.ttc` face 1、`times.ttf`）もない。別の取得元・別PDF・代替fontでは実行していない。下記のdry-runは合成原本によるもので、外部原本の証跡ではない。
+
+### 評価者の指定
+
+- **領域**: 単一destination評価で空きと確認した6ページの`[55,80,385,120]`だけを使う。これを互いに交差しない2つのregionへ分ける。範囲外を新たに空きとは仮定しない。
+  - `page6-a`: `[55,80,385,100]`、先頭baseline 92。1行分。
+  - `page6-b`: `[55,101.5,385,120]`、先頭baseline 113.6。1行分。
+- **順序**: flow順は`A → B → page6-a → page6-b`。page-entry orderは`page6-a = 10`、`page6-b = 20`。どちらも評価者の明示指定であり、engineが読み順を推定したものではない。
+- **保護・provider・paragraph**: 単一destination評価と同じ（右上の図版を保護、story_styles公開集計と一致するprovider）。
+- 分割regionが保守的な空き判定を通らない場合や、activationが下記と異なる場合は、評価は停止する。確認範囲の外へregionを動かして通すことはしない。
+
+### 系列
+
+| 系列 | 段階 |
+|---|---|
+| 逐次 | source no-op → `a-only`（60字追加。6ページは約16字・1行で`page6-a`だけ）→ `b-added`（80字追加。単一評価と同じ36字が`page6-a`と`page6-b`へ）→ `second` → `shorten`（`a-only`の文面へ戻し、`page6-b`だけdormant）→ `regrow` → no-op 3回 → 容量拒否 |
+| 同時 | `both`（同じ80字で2 blockを1 transactionで初回生成）→ no-op |
+
+### 自動照合
+
+単一destination評価の照合をすべて行い、次を加える。
+
+- **activation**: 各段階で有効なdestinationと、新しく作られたblockが期待どおりである。
+- **挿入境界**: `b-added`の新blockは直前の`page6-a` blockの終端に入り、`both`の2 blockはoffset 0に確認済みorder順で入る。作成mutationのowner・orderを照合する。
+- **作成証跡**: 作成後の各slotの作成証跡は変わらない。
+- **page-entry chain**: 保存PDFのbytesから検証する。生成blockがoffset 0から隙間なく並び、確認済みorder順で、各bindingが自分のmarker対とblock SHA-256を指す。
+- **Poppler差分**: 領域の外接矩形だけでなく、各regionの外（1pt余白込み）で0画素である。2つのregionの間も含む。
+- **独立抽出**: 期待するUnicodeは、生成blockの文字をpage-entry順に並べ、その後にページ本来の文字を続けたものとする。独立抽出器はcontent stream順に読むためである。
+- **font**: 6ページの生成fontがslotごとに1つずつあり、所有slotが入れ替わらない。
+- **no-op**: 上記に加え、page-entry順序が変わらない。
+- **同時と逐次の一致**: `both`と`b-added`で、chain順序とallocationが一致する。
+
+### 実行
+
+```powershell
+.\.venv\Scripts\python.exe -m evaluations.continuation.multi_destination --run-name <未使用のrun名>
+```
+
+成果物は`runs/multi-<run名>/`に保存する。すべて成功し、画像の目視（`sequential/*-audit`と`simultaneous/*-audit`の4〜6ページ、no-opの全ページ）で欠陥がない場合だけ、`summary.json`を`evaluations/continuation/multi-destination-summary.json`として公開する。
+
+### dry-run（合成原本。外部原本の証跡ではない）
+
+[synthetic_multi.py](synthetic_multi.py)は、同じ系列・監査・拒否を合成の6ページPDFで実行する。
+
+- **合成原本**: 4・5ページにparagraphのsource fragment、4〜6ページの保護領域に固定図形、6ページに同じ2 regionを置く。
+- **置き換えたもの**: 入力（原本・story・provider）と、外部toolのpathだけである。
+  - Poppler: `/usr/bin/pdftoppm` 24.02.0
+  - 独立pypdf: 別interpreterのPython 3.13.12 + pypdf 6.10.0
+- **実行環境**: Linux x64 container、Python 3.12.3、PyMuPDF 1.27.2.3。engine digest `564da875…44a1`。
+- **結果**: 全段階と容量拒否が通り、`status = passed`になった（約6分）。集計は公開していない。
+
+| 段階 | 新block | 有効 | chain（page-entry順、byte範囲） | Type0 | 生成font（6ページ） | 6ページfont出力 |
+|---|---|---|---|---|---|---|
+| a-only | page6-a | a | a[0,1114) | 3 | 1 | PRF1 added |
+| b-added | page6-b | a, b | a[0,3521) b[3521,3830) | 4 | 2 | PRF1 replaced, PRF2 added |
+| second | — | a, b | a[0,5946) b[5946,6676) | 4 | 2 | 両方replaced |
+| shorten | — | a | a[0,7021) b[7021,7957) | 4 | 2 | PRF1 replaced |
+| regrow | — | a, b | a[0,9428) b[9428,10613) | 4 | 2 | 両方replaced |
+| no-op 1〜3 | — | a, b | 順序不変 | 4 | 2 | 全alias reused |
+| both（同時） | page6-a, page6-b | a, b | a[0,2464) b[2464,2773) | 4 | 2 | 両方added |
+
+- **no-op**: 3回とも全6ページでMuPDF・Popplerの全画素が一致した。計画glyph 363個の全fieldが一致し、font/resource数も変わらなかった。
+- **各region外の差分**: 全保存で、Popplerの各region外（1pt余白込み）の差分は0画素だった。
+- **同時と逐次**: 同時生成（`both`）のchain順序とallocationは、逐次の`b-added`と一致した。
+- **容量拒否**: `paragraphs exceed all explicitly confirmed shared regions`で拒否され、出力は作られなかった。
+- **生成blockの増加**: 保存ごとに増える。置き換えた文字の非描画operatorを残す既存writerの性質で、単一destinationと同じである。
 
 ## PR #6の結果
 

@@ -173,14 +173,17 @@ class PageTransaction:
         return (alias not in unknown and alias not in retained_aliases
                 and usage.get(alias, set()) <= consumed)
 
-    def reserve_font_alias(self, prefix, *, consumed=frozenset(), retained=frozenset(), provider=None):
+    def reserve_font_alias(self, prefix, *, consumed=frozenset(), retained=frozenset(), provider=None, owner=None):
         """Name the resource for a new generated font on this page.
 
         A proven pdfengine-owned alias is re-targeted to the new subset when
-        every glyph it paints is consumed by the planned edits and no planned
-        glyph keeps its codes. Superseded generated operators may still select
-        it, but they paint nothing. Otherwise an unused name is chosen, so
-        source and foreign fonts are never re-targeted.
+        it is recorded for the same slot ``owner``, every glyph it paints is
+        consumed by the planned edits and no planned glyph keeps its codes.
+        Superseded generated operators may still select it, but they paint
+        nothing. Another slot's alias is never taken, even when its glyphs are
+        consumed in the same transaction: its non-painting operators and
+        dormant witnesses still select it. Otherwise an unused name is chosen,
+        so source and foreign fonts are never re-targeted.
         """
         if self.owned_fonts and not self.content.errors:
             claimed, kept = set(consumed), set(retained)
@@ -188,6 +191,7 @@ class PageTransaction:
                 claimed |= plan.consumed
                 kept |= {g['font_resource'] for g in plan.new_glyphs if g.get('provider') == 'original'}
             reusable = sorted((a for a in self.owned_fonts if a not in self.reserved_aliases
+                               and self.owned_fonts[a].get('slot_id', owner) == owner
                                and self._releasable(a, claimed, kept)), key=lambda a: (len(a), a))
             if reusable:
                 same = [a for a in reusable if provider is not None and self.owned_fonts[a].get('provider') == provider]
@@ -212,12 +216,15 @@ class PageTransaction:
             return
         consumed, _, _ = self._merged()
         builders = self.font_builders()
+        writers = {alias: plan.owner for plan in self.plans for alias in plan.font_builders}
         kept = {g['font_resource'] for plan in self.plans for g in plan.new_glyphs if g.get('provider') == 'original'}
         for alias in self.replaced_fonts:
             if alias not in builders:
                 raise PdfError('a re-targeted generated font alias has no new font')
             if not self._releasable(alias, consumed, kept):
                 raise PdfError('a re-targeted generated font alias still paints retained glyphs')
+            if self.owned_fonts[alias].get('slot_id', writers[alias]) != writers[alias]:
+                raise PdfError("a generated font alias was re-targeted by another slot's plan")
 
     def add(self, plan):
         if plan.page is not None:
@@ -450,7 +457,10 @@ class Transaction:
             builders[number - 1] = page.font_builders()
             replacements[number - 1] = retargeted[number] = page.font_replacements()
             kept[number] = page.expected_glyphs()
-            new[number] = sorted((p for p in page.plans if p.new_glyphs), key=lambda p: min(m.start for m in p.mutations))
+            # Generated glyphs appear in applied-program order; ordered
+            # insertions sharing one boundary are ordered by their position.
+            new[number] = sorted((p for p in page.plans if p.new_glyphs),
+                                 key=lambda p: min(page.program.position(m) for m in p.mutations))
             paints[number] = page.expected_paints()
             masks[number] = page.masks()
             old_fonts[number] = font_fingerprints(self.document, number - 1)

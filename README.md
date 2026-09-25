@@ -265,7 +265,7 @@ edit_shared_flow("source.pdf", flow, "shared.pdf", "shared.flow.json", {
 restored = open_shared_flow("shared.pdf", "shared.flow.json")
 ```
 
-短文化で後続段落が前へ詰まり、長文化で確認済みの次領域へ移ります。continuation経路では、既存source slotを超える場合、利用者が空き領域と描画contextを確認した既存ページ上のdestinationへ、同じparagraphのslotを生成できます。短文化で空になったslotも再利用します。対象の外部LibreOffice PDFの1 paragraphでは、確認済みdestinationについてoverflow → reopen → re-edit → shorten → regrow → no-opと容量拒否の系列評価を完了しました（[評価](evaluations/continuation/README.md)）。単一原本・単一destinationの範囲です。再保存では、sidecarの記録で所有を証明したpdfengine生成fontだけを再利用・置換し、元PDFのresourceは削除しません。no-op保存を繰り返してもfont数は増えません。page program内の非描画operatorは別途増えます（[生成fontの寿命](docs/confirmed-continuation.md#生成fontの寿命)）。[独立段落の共有flow](docs/shared-paragraph-flow.md)と[確認済みcontinuation](docs/confirmed-continuation.md)に入力契約と評価範囲を記録しています。
+短文化で後続段落が前へ詰まり、長文化で確認済みの次領域へ移ります。continuation経路では、既存source slotを超える場合、利用者が空き領域と描画contextを確認した既存ページ上のdestinationへ、同じparagraphのslotを生成できます。短文化で空になったslotも再利用します。対象の外部LibreOffice PDFの1 paragraphでは、確認済みdestinationについてoverflow → reopen → re-edit → shorten → regrow → no-opと容量拒否の系列評価を完了しました（[評価](evaluations/continuation/README.md)）。単一原本・単一destinationの範囲です。同じページに互いに交差しない複数のdestinationを置くこともできます。生成blockは、利用者が確認した`page_entry_order`の順でpage program先頭のpage-entry chainに並び、生成順やactivation順には依存しません（[同一ページの複数destination](docs/confirmed-continuation.md#同一ページの複数destination)）。これは同じpage-entry authorityの拡張であり、任意のcontent-stream位置への挿入ではありません。合成PDFで確認済みで、外部原本での2 destination評価は未実施です。再保存では、sidecarの記録で所有を証明したpdfengine生成fontだけを再利用・置換し、元PDFのresourceは削除しません。no-op保存を繰り返してもfont数は増えません。page program内の非描画operatorは別途増えます（[生成fontの寿命](docs/confirmed-continuation.md#生成fontの寿命)）。[独立段落の共有flow](docs/shared-paragraph-flow.md)と[確認済みcontinuation](docs/confirmed-continuation.md)に入力契約と評価範囲を記録しています。
 
 ## 忠実性と幅の契約
 
@@ -303,6 +303,7 @@ paragraphの行揃えは `paragraph_layout={"alignment": "justify", "justify_pol
 - `story_flow.py`: 一つの論理文章、明示した継続領域列、全体Unicode範囲と物理fragmentの対応、跨領域の再編集
 - `story_styles.py` / `destination_style.py`: logical style registry・書式範囲の投影、配置先contextへのinline書式binding、style別font provider
 - `shared_flow.py`: paragraphごとのUnicode・書式・境界を保つ共有領域の最終配置、確認済みspacing/break policy、source slotごとの検証付き書込
+- `continuation.py` / `mutation.py`: 確認済みcontinuation destinationとpage-entry chain（明示順序・block単位のmarkerと証跡）、byte mutation mapによるsource identity（順序付きpage-entry insertionを含む）
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot

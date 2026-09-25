@@ -101,6 +101,13 @@ def _contract(state):
         **({'continuation_destinations':state['continuation_destinations']} if state.get('continuation_destinations') else {})))
 
 
+def _destination_pages(state):
+    """Confirmed continuation destinations grouped by page, in their page-entry order."""
+    pages={}
+    for d in state.get('continuation_destinations',{}).values():pages.setdefault(d['page'],[]).append(d)
+    return {number:destinations.chain(group) for number,group in pages.items()}
+
+
 def _slots(state, paragraph):
     order=state['flow']['regions']
     return sorted((i for i,s in state['slots'].items() if s['paragraph_id']==paragraph),
@@ -289,12 +296,13 @@ def confirm_shared_flow(source, stories, *, flow_id, paragraph_order, regions, r
     if continuation_destinations:
         from .content_stream import ContentPage
         state['continuation_destinations']=deepcopy(continuation_destinations);state['destination_bindings']={}
-        for ident,d in continuation_destinations.items():
-            if d['source_pdf_sha256']!=state['pdf_sha256']:raise PdfError('continuation confirmation belongs to another PDF')
-            content=ContentPage(source,d['page'])
-            try:state['destination_bindings'][ident]=destinations.witness(content,d,False)
+        for number,group in _destination_pages(state).items():
+            if any(d['source_pdf_sha256']!=state['pdf_sha256'] for d in group):
+                raise PdfError('continuation confirmation belongs to another PDF')
+            content=ContentPage(source,number)
+            try:state['destination_bindings'].update(destinations.page_witness(content,group,set())[0])
             finally:content.close()
-            if state['destination_bindings'][ident]['program_sha256']!=d['source_program_sha256']:
+            if any(state['destination_bindings'][d['destination_id']]['program_sha256']!=d['source_program_sha256'] for d in group):
                 raise PdfError('confirmed continuation source program differs')
     state['contract_sha256']=_contract(state);state['physical_breaks']=_breaks(state)
     return _validate(source,_reseal(state))
@@ -388,10 +396,13 @@ def _plan(source,state,changes):
                     if d['paragraph_id']==pid and d['region_id']==rid),None)
                 if d is not None:
                     sid=destinations.slot_id(d)
+                    # The boundary comes from this revision's verified chain,
+                    # never from the order destinations are activated in.
+                    entry=destinations.entry(d,_destination_pages(state)[d['page']],state['destination_bindings'])
                     new_slots[sid]=dict(paragraph_id=pid,region_id=rid,destination_id=d['destination_id'],page=d['page'],
                         creation_provenance=destinations.PROVENANCE,source_snapshot_sha256=None,
                         binding=dict(paragraph=destinations.snapshot(source,d,state['destination_bindings'][d['destination_id']],
-                            region,logical['typing_style_id'])))
+                            region,logical['typing_style_id'],entry)))
                     working['slots'][sid]=new_slots[sid]
             binding=working['slots'][sid or owned[0]]['binding']
             remaining=text[cursor:]
@@ -550,17 +561,18 @@ def edit_shared_flow(source,model,output,model_output,changes):
                     steps.append(dict(slot_id=sid,paragraph_id=pid,region_id=slot['region_id'],report=report))
                 mutation_map=result.mutation_map()
                 from .content_stream import ContentPage
-                for ident,d in state.get('continuation_destinations',{}).items():
-                    content=ContentPage(target,d['page'])
+                for number,group in _destination_pages(state).items():
+                    content=ContentPage(target,number)
                     try:
-                        current=destinations.witness(content,d,destinations.slot_id(d) in state['slots'])
-                        if destinations.slot_id(d) in initial['slots']:
-                            old=initial['destination_bindings'][ident]
-                            identity=result.identity(d['page'])
-                            if identity.program.map_offset(old['end'])!=current['end']:
-                                raise PdfError('generated continuation block lost its insertion identity')
-                        state['destination_bindings'][ident]=current
+                        current,_=destinations.page_witness(content,group,
+                            {d['destination_id'] for d in group if destinations.slot_id(d) in state['slots']})
                     finally:content.close()
+                    program=result.identity(number).program
+                    for d in group:
+                        ident=d['destination_id'];sid=destinations.slot_id(d)
+                        destinations.rebind(program,sid,initial['destination_bindings'][ident],current[ident],
+                            plans[sid].first_mutation if sid in plan['new_slots'] else None)
+                        state['destination_bindings'][ident]=current[ident]
                 state['generated_fonts']=_generated_fonts(initial,state,result,source_sha(target))
                 font_outcome={str(n):dict(sorted(v.items())) for n,v in sorted(result.font_outcome.items()) if v}
             finally:result.close()

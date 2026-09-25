@@ -203,7 +203,9 @@ def test_reservation_needs_ownership_evidence_and_released_glyphs(tmp_path):
         page.own_fonts(records)
         assert page.reserve_font_alias('PRF') != alias  # glyphs it paints are not consumed
         assert page.reserve_font_alias('PRF', consumed=frozenset(painted), retained=frozenset({alias})) != alias
-        assert page.reserve_font_alias('PRF', consumed=frozenset(painted)) == alias
+        # Another slot never takes this slot's alias, even with its glyphs consumed.
+        assert page.reserve_font_alias('PRF', consumed=frozenset(painted), owner='slot-0') != alias
+        assert page.reserve_font_alias('PRF', consumed=frozenset(painted), owner=records[alias]['slot_id']) == alias
         assert page.font_replacements() == {alias: records[alias]['subset_sha256']}
     with Transaction(out) as transaction:
         # Without a record the same alias is never ownership, however it looks.
