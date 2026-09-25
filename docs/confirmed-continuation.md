@@ -9,7 +9,9 @@
 
 その後、writerがtext object内に`q`/`Q`を出していた問題を直した（[下記](#pdf-1xのoperator-nesting)）。その最終engineで両方の外部評価をやり直した。全保存が入れ子の規則を満たし、出力は原本と同じ`%PDF-1.4`だった。描画は以前のengineと画素単位で同じだった。
 
-現行の結果は[評価](../evaluations/continuation/README.md#operator-nesting正規化後の再評価)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
+確認済みpage-program境界を加えた最終engineでも、両方の外部評価をやり直した。PDF・sidecarは、上記の再評価とbyte単位で同じだった。
+
+現行の結果は[評価](../evaluations/continuation/README.md)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
 
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
 

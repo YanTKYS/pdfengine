@@ -4,12 +4,12 @@
 
 - **単一destination**（run `boundary-single-windows`）: 全段階と容量拒否が通った。7保存のPDF・sidecarが、下記のrun `nesting-single-windows`とbyte単位で一致した。[公開集計](summary.json)はこのrunの集計である。
 - **確認済み境界**（run `boundary-windows`）: 全段階と容量拒否が通った。page entryのrunと、生成glyphと画素が一致した。[境界の公開集計](boundary-destination-summary.json)はこのrunの集計である。結果は[下記](#確認済みpage-program境界の評価)にある。
-- **同一ページ2 destination**（run `multi-boundary-windows`）: PR作成時点で実行中である。
+- **同一ページ2 destination**（run `multi-boundary-windows`）: 全段階と容量拒否が通った。PDF・sidecar・記録の57件が、下記のrun `multi-nesting-windows`とbyte単位で一致した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
 
 **operator nesting正規化後の評価（2026-09-25）**。engine digest `341859e13035bfd6a85f04b33f7fe0c7f95b708cf97b8b13548db771d8f079e4`で、次の2本を同じWindows検証環境で実行し、どちらも全段階と容量拒否が通った。各保存では、編集した4〜6ページがPDF 1.xのoperator nestingを満たすこと、出力のPDF versionが原本と同じ（`%PDF-1.4`）であることも照合した。
 
-- **単一destination**（run `nesting-single-windows`）: allocation・生成slot・font/resource数は以前と同じだった。監査画像は、以前のengineの画像とPNGのbytesまで一致した。[公開集計](summary.json)はこのrunの集計である。
-- **同一ページ2 destination**（run `multi-nesting-windows`）: 確認済みの6ページ領域を評価者が2つのregionへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+- **単一destination**（run `nesting-single-windows`）: allocation・生成slot・font/resource数は以前と同じだった。監査画像は、以前のengineの画像とPNGのbytesまで一致した。公開集計は、上記のrun `boundary-single-windows`の集計に置き換えた。
+- **同一ページ2 destination**（run `multi-nesting-windows`）: 確認済みの6ページ領域を評価者が2つのregionへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。公開集計は、上記のrun `multi-boundary-windows`の集計に置き換えた。
 
 結果は[operator nesting正規化後の再評価](#operator-nesting正規化後の再評価)にある。どちらも単一外部原本の1 paragraphと、評価者が確認した1つの空き領域に対する境界評価である。一般PDFの成功率や、任意のPDFで複数destinationが動くことを示すものではない。PR #8・PR #7・PR #6のengineでの結果は[履歴](#pr-8-engineでの単一destination再評価)として残す。
 

@@ -439,8 +439,8 @@ paragraph writer（`paragraph.py`）は、新しい文字のtext state（font・
 | `test_continuation.py`・`test_multi_destination.py`・`test_operator_nesting.py`・`test_mutation.py`・`test_generated_fonts.py` | 87 passed（1,429.75秒） |
 | 外部原本 単一destination（run `boundary-single-windows`） | 全段階・no-op 3回・容量拒否が通過（2,923.23秒）。集計はengine digest以外PR #10と同じ。7保存のPDF・sidecarはPR #10のrun `nesting-single-windows`とbyte単位で一致 |
 | 外部原本 確認済み境界（run `boundary-windows`） | 全段階・no-op 3回・容量拒否が通過（2,940.79秒）。page-entry runと、全段階の計画glyphとPoppler画像が一致 |
-| 外部原本 同一ページ2 destination（run `multi-boundary-windows`） | PR作成時点で実行中（逐次8段階は通過） |
-| 全suite `python -m pytest -q` | PR作成時点で実行中 |
+| 外部原本 同一ページ2 destination（run `multi-boundary-windows`） | 逐次8段階・同時2段階・容量拒否が通過（4,655.47秒）。集計はengine digest以外PR #10と同じ。PDF・sidecar・記録57件がPR #10のrun `multi-nesting-windows`とbyte単位で一致 |
+| 全suite `python -m pytest -q` | 718 passed, 7 skipped（4,676.96秒） |
 
 - **新しい試験**（`tests/test_boundary_destination.py`）:
   - A. 候補の列挙: 安全な境界だけが候補になる。拒否理由は、text object・`q`・marked content・`BX`・path・未適用のclip・CTM・clip・ExtGState・`ri`・Trである。
