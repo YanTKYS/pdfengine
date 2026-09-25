@@ -1,6 +1,6 @@
 # Continuation開発の再開地点 — 2026-09-24
 
-**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張した（合成PDFで検証済み、外部原本では未実施）。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」の節を参照。以下の各節は、その時点の記録として残す。
+**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」の節を参照。以下の各節は、その時点の記録として残す。
 
 利用者の「最短の区切りでコミット」指示による途中保存。起点は`02a526ff2781ae80551f2ad4367f6f8d50c2b430`。サブエージェントは使用していない。
 
@@ -97,7 +97,7 @@ skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans J
 - **公開**: runの`summary.json`（SHA-256 `6ec6bdd1…6135`）を`evaluations/continuation/summary.json`として公開した。
 - **engine**: 評価で問題が見つからなかったため、engine・評価コードは変更していない。全suiteは再実行しておらず、上記の625 passed / 18 skippedは同じengineのLinux上の結果である。
 
-詳細と目視上の注記（原本の和欧間隔を再組版で再現しないこと、生成先が評価者の明示した配置であること）は[評価README](../evaluations/continuation/README.md#結果--2026-09-24)にある。
+詳細と目視上の注記（原本の和欧間隔を再組版で再現しないこと、生成先が評価者の明示した配置であること）は[評価README](../evaluations/continuation/README.md#pr-6の結果)にある。
 
 ### 観測した性質（未変更）
 
@@ -187,13 +187,13 @@ skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans J
 | 全suite `python -m pytest -q` | 668件中650 passed / 18 skipped / 0 failed（1,422.70秒） |
 | 単一destinationの互換 | PR #7のengine（`be00ece`）と最終engineで同じ単一destinationの系列（tracking/rise付き、grow → second → shorten → regrow → no-op）を同じpathで実行した。5保存すべてでPDFとsidecarがbyte単位で一致した |
 | 2 destination評価コードのdry-run | 合成原本で全段階・同時生成・容量拒否が通過（約6分）。MuPDF、Poppler 24.02.0、別interpreterのpypdf 6.10.0を使った（[評価README](../evaluations/continuation/README.md#dry-run合成原本外部原本の証跡ではない)）。外部原本の証跡ではない |
-| 外部原本 | **未実施**（下記） |
+| 外部原本 | このsessionでは**未実施**（下記）。後にWindowsで実行した（[PR #8の外部原本評価](#pr-8の外部原本評価--2026-09-254a1220b)） |
 
 - **skip 18件**: すべて環境要因である。Windows font（Arial / Noto Sans JP）不在11、外部corpus未取得5、pypdf AES provider不在2。
 - **全suiteの実行条件**: `--junitxml`と`-p no:cacheprovider`だけを加えた。この結果を得る前に、同じengineで途中版の全suite（650 passed / 18 skipped）も通っている。
 - **Poppler**: dry-runのため、このcontainerへaptで導入した（`pdftoppm` 24.02.0）。
 
-### 外部原本評価が未実施の理由
+### 外部原本評価が未実施だった理由（このsession）
 
 - 原本の取得元host（`wiki.documentfoundation.org`）とweb archiveへの接続が、このcontainerのnetwork policyで拒否された（403）。
 - 評価provider（`msmincho.ttc` face 1、`times.ttf`）がない。別の取得元・別PDF・代替fontでは実行していない。
@@ -202,6 +202,57 @@ skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans J
 ### 次の最小の構造障壁
 
 page-program先頭以外のcontent-stream境界へ、独立した挿入authorityを与えることである。page-entryでは初期graphics stateが仕様で決まり、各blockがそれを閉じるだけで状態を証明できた。途中の境界では、その位置で有効なCTM・clip・ExtGState・text stateと、後続paintとの順序を、その境界ごとの証跡として確認する必要がある。
+
+## PR #8の外部原本評価 — 2026-09-25（`4a1220b`）
+
+起点はPR #8のmerge commit `4a1220b`。サブエージェントは使用していない。新しい構造機能は実装していない。PR #8の最終engineを、評価済みの外部LibreOffice PDFと確認済みWindows fontで評価した。engine（`pdfeditor/*.py`）と評価コードは変更していない。
+
+### 開始時の確認
+
+| 項目 | 結果 |
+|---|---|
+| HEAD | `4a1220b048c0826394a068e3b646f27963b11770`。作業ツリーはclean |
+| 環境 | Windows 11 x64（10.0.26200）、Python 3.12.14、PyMuPDF 1.27.2.3、pypdf 6.10.0 |
+| engine digest | `564da875826429f82fc018f6f856d10af191970f473d4bc0b7c0c481040e44a1`（44ファイル）。PR #8の値と一致 |
+| 評価コード | `evaluate.py` `dd6d5329…f402`、`multi_destination.py` `7c01283e…a0df` |
+| 原本 | `lo_migration_ja.pdf`、SHA-256 `13665875…a5f3`で一致。ローカルにある取得済みのbytesを使った |
+| provider | body `msmincho.ttc` face 1（`ceb8d745…44c2`）、latin `times.ttf` face 0（`931c5de5…58c5`）。評価コードがstory_styles公開集計（`c2329afa…c7c2`）と照合して一致 |
+| 独立tool | Poppler `pdftoppm` 26.07.0、独立pypdf 6.10.0（Python 3.12.14）。既定pathのまま |
+
+### 結果
+
+| 評価 | run | 結果 |
+|---|---|---|
+| 単一destination | `pr8-single-windows` | 全段階・no-op 3回・容量拒否が通過（3,927秒）。7保存のPDF・sidecarが、PR #7 engineのrun `font-lifecycle-windows-3`とbyte単位で一致 |
+| 同一ページ2 destination | `multi-pr8-windows` | 逐次8段階・同時2段階・容量拒否が通過（3,622秒）。`status = passed` |
+
+- **単一destinationの後方互換**: destination・bindingに`page_entry_order`がない。作成mutationはoffset 0で順序を持たない従来形式のままだった。allocationは既存slot 209字、生成slot 36字・2行で、以前と同じである。
+- **2 destination**:
+  - a-onlyでは`page6-a`だけが生成された。b-addedでは`page6-b`が`page6-a`の終端へ加わった（order 10 → 20）。
+  - secondは既存の2 blockを再利用した。shortenでは`page6-b`だけがdormantになり、regrowで同じslot・blockへ戻った。
+  - no-op 3回で、順序・identity・作成証跡・allocation・計画glyph・font/resource数・画素が変わらなかった。
+  - 同時生成（both）はoffset 0の同位置ordered insertionで同じchainになり、逐次生成とallocation・chain順序・所有が一致した。
+- **監査**: MuPDF・Poppler・独立pypdfの監査がすべて通った。Popplerの変更は、各region（1pt余白込み）の外で全保存0画素だった。region間の1.5ptも含む。
+- **容量拒否**: 理由は`paragraphs exceed all explicitly confirmed shared regions`で、PDF・sidecarは作られなかった。
+- **目視**: 両runの対象画像を確認し、欠陥はなかった。2 destinationの6ページの画像は、単一destinationの対応する画像とbyte単位で同じだった。
+- **公開**:
+  - 単一destinationのrunの集計を`summary.json`として公開した。以前の集計との違いはengine digestとengine hashだけである。
+  - 2 destinationのrunの集計を`multi-destination-summary.json`として公開した。
+- **engine**: 問題が見つからなかったため変更していない。engineを変えていないので、全suiteは再実行していない。PR #8の650 passed / 18 skippedは、同じengineのLinux上の結果である。
+
+詳細は[評価README](../evaluations/continuation/README.md#pr-8-engineでの単一destination再評価)と[2 destinationの結果](../evaluations/continuation/README.md#外部原本の結果)にある。
+
+### 観測した性質（未変更）
+
+- **text object内のq/Q**: 生成blockは`q BT q 0 Tc 0 Tw 0 Ts … Q ET Q`の形で、text object内に`q`/`Q`を含む。
+  - これはsource slotの再編集と共用するglyph writer（`paragraph.py`）に由来する。再編集した4・5ページでも、既存のtext object内に同じ`q … Q`が入る。原本にはない。PR #8以前からの性質である。
+  - ISO 32000-1の図9（graphics objects）では、text object内で使えるoperatorに特殊graphics state（`q`/`Q`/`cm`）は含まれない。
+  - MuPDF・Poppler・pypdfは受理し、画素・抽出・照合に影響はなかった。今回は変更していない。
+- **生成blockの増加**: 置き換えた文字の非描画operatorにより、生成blockは保存ごとに増える（`page6-a`は1,419 → 19,537 byte）。単一destinationと同じ既存writerの性質である。
+
+### 次の最小の構造障壁
+
+変わらない。page-program先頭以外のcontent-stream境界へ、独立した挿入authorityを与えることである。途中の境界では、その位置で有効なCTM・clip・ExtGState・text stateと、後続paintとの順序を、境界ごとの証跡として確認する必要がある。
 
 ## 再評価の手順
 
@@ -212,6 +263,6 @@ Windows検証環境で[評価README](../evaluations/continuation/README.md)の�
 3. 未使用のrun名で`python -m evaluations.continuation.evaluate --run-name <name>`を実行する。
 4. overflowのallocation（既存slot 209字、生成slot 36字・2行）を確認し、画像を目視する。
 5. engineを修正した場合は、継続テスト、関連テスト、外部評価、全suiteを最終コードで再実行し、公開集計を更新する。
-6. 同一ページ2 destinationの評価は、未使用のrun名で`python -m evaluations.continuation.multi_destination --run-name <name>`を実行する。`a-only`で`page6-a`だけ、`b-added`で`page6-b`が加わることと、page-entry順序を確認し、画像を目視する。すべて通った場合だけ`multi-destination-summary.json`として公開する。単一destinationの評価も、この変更後のengineで再実行していない。
+6. 同一ページ2 destinationの評価は、未使用のrun名で`python -m evaluations.continuation.multi_destination --run-name <name>`を実行する。`a-only`で`page6-a`だけ、`b-added`で`page6-b`が加わることと、page-entry順序を確認し、画像を目視する。すべて通った場合だけ`multi-destination-summary.json`として公開する。単一destinationの評価を先に通してから実行する（2026-09-25の評価はこの順で行った）。
 
 外部PDF・派生PDF/PNG・font・本文/glyphログは引き続き公開しない。
