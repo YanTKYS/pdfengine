@@ -11,6 +11,8 @@
 
 確認済みpage-program境界を加えた最終engineでも、両方の外部評価をやり直した。PDF・sidecarは、上記の再評価とbyte単位で同じだった。
 
+その後、page levelの確認済み境界に残る制約のうち、CTMだけを1段緩めた（[下記](#identity以外のctmの相殺)）。clip等の他の条件が安全で、境界のCTMを安全に逆変換できる場合に限り、生成blockをpage座標へ相殺して描く。合成PDFの回帰だけで確認しており、外部原本での評価はしていない。LibreOffice原本で確認済みの境界はCTM identityで、この変更の対象ではない。
+
 現行の結果は[評価](../evaluations/continuation/README.md)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
 
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
@@ -185,14 +187,15 @@ destination = confirm_continuation_destination(
 
 - **programの入れ子**: page program全体が、[operator nesting](#pdf-1xのoperator-nesting)の`audit`で違反なしである。違反の例は、入れ子の`BT ... BT ... ET`、`BT`のない`ET`、閉じていない`BT`、対応しない`q`/`Q`やmarked content、text object内のpage記述レベルのoperatorである。違反が1つでもあれば、scopeを信用できないので、そのページのどの境界も候補にしない（fail closed）。scopeの判定は、入れ子が正しいことを前提にしている。
 - **scope**: `q`の深さ0（page levelの状態が閉じている）。text object、marked-content sequence、`BX ... EX`の外で、組み立て中のpathや未適用の`W`/`W*`がない。
-- **graphics state**: CTMがidentity、有効なclipがない（page entryと同じくCropBoxだけ）、不透明度とstroke不透明度が1、text描画モードが0。ExtGStateと`ri`・`i`の設定はない。
+- **graphics state**: 有効なclipがない（page entryと同じくCropBoxだけ）、不透明度とstroke不透明度が1、text描画モードが0。ExtGStateと`ri`・`i`の設定はない。CTMはidentityか、blockが逆行列で相殺できることを証明できるもの（[下記](#identity以外のctmの相殺)）。
 - **stroke専用の値は許す**: `w`・`J`・`j`・`M`・`d`はstrokeにしか効かない。blockはTr 0の塗りの文字だけを描くので、既定値でなくてよい。
 - **blockが自分で設定する値**: font・size・Tz・Tc・Tw・Ts・fill（`g`/`rg`/`k`で色空間ごと）は、blockが自分で設定し、外側の`q ... Q`で元に戻す。そのため境界での値は問わない。strokeの色やTLは、blockが使わない。
 - **拒否**: 迷う状態は拒否する。拒否理由は次のとおりである。
   - `invalid-operator-nesting`（ページのすべての境界に付く）
   - `inside-graphics-state-save`、`inside-text-object`、`inside-marked-content`、`inside-compatibility-section`
   - `pending-path`、`pending-clip`
-  - `nonidentity-ctm`、`active-clip`、`transparency`、`text-rendering-mode`、`extgstate`、`graphics-state-side-effect`
+  - `nonfinite-ctm`、`singular-ctm`、`numerically-unstable-ctm`（相殺を証明できないCTM）
+  - `active-clip`、`transparency`、`text-rendering-mode`、`extgstate`、`graphics-state-side-effect`
 
 ### authorityとz-order
 
@@ -201,6 +204,7 @@ destination = confirm_continuation_destination(
   - `boundary`: offset・序数・直前/直後operatorの証跡・scope。
   - `graphics_state`: 境界の状態の証跡。
   - `graphics_state_contract`、`z_order`、pageのcontext、`initial_clip = page-crop-box`、`isolation = q-BT-ET-Q`、font policy。
+  - CTMがidentity以外の境界だけ、`ctm_compensation`を持ち、`isolation = q-cm-BT-ET-Q`になる（[下記](#identity以外のctmの相殺)）。identityの境界のauthorityはPR #11と同じである。
 - **z-order**: `z_order.semantics = after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix`。確認時のprefixとsuffixの描画operator数も記録する。前面・背面ではなく、callerが選んだ境界そのものが描画順序の契約である。
 - **空き判定**: page entryと同じ`require_empty()`を使う。prefix・suffixの描画との重なりも許さない。重なりを使ったlayer編集ではなく、挿入順序だけをoffset 0以外へ広げる。
 - **1境界1destination**: 1つの境界は1つのdestinationだけが持つ。page-entry orderは持たない。同じ境界への複数の順序付き挿入は、まだ扱わない。
@@ -231,13 +235,56 @@ destination = confirm_continuation_destination(
 - page-entry chainは従来どおりoffset 0からの連続prefixとして検証し、境界のblockは別のauthorityとして検証する。
 - 生成fontは、slotごとの所有記録で分かれる。互いのaliasを使わない。
 
+### identity以外のCTMの相殺
+
+**範囲**: page levelの確認済み境界で、clip等の他の条件が安全で、CTMを安全に逆変換できる場合に限り、生成blockをpage座標へ相殺して描く。identity以外のCTMを一般に扱えるようにしたものではない。`q`の内側・有効なclip・ExtGStateは、CTMにかかわらず従来どおり拒否する。
+
+```text
+confirmed prefix                     CTM = M
+marker q N cm BT ... ET Q marker     N = Mの逆行列。block内はpage entryと同じ座標
+confirmed suffix                     CTM = M（blockのQが戻す）
+```
+
+- **形式**: `N cm`は、blockの`q`の直後、text objectの外に1回だけ置く（PDF 1.x。`cm`は`BT ... ET`の中に置けない）。blockの`Q`がMを戻すので、suffixの既存の描画は元のCTMのままである。identityの境界のblockは、従来どおり`q BT ... ET Q`で、`cm`を持たない。
+- **writer**: 生成glyphの位置・Tmは、page entryと同じpage座標で計算する。glyph planはpage-entry版と同じになる。
+
+**逆行列と証明**（`compensation()`）
+
+- **M**: 境界の確認済みCTM（authorityの`graphics_state.ctm`）。interpreterは、MuPDFと同じくbinary32で行列を合成する。
+- **有限・可逆**: Mの成分がすべて有限であること。行列式を有理数で厳密に計算し、0でないこと。
+- **N**: Mの厳密な逆行列を、有効数字12桁に丸める。PDFの数値には指数表記がないので、固定小数表記で書く。証明には、書いたoperandそのものを使う。
+- **値の範囲**: NとMの0でない成分は、binary32の正規数で、PDFの整数の範囲（2^31−1以下）に収まること。
+- **identityへ戻ることの証明**: page box（CropBox、user space）の4隅pについて、pとp·N·Mの距離の上界を求める。
+  - 厳密な残差: 有理数で計算した|p·(N·M − I)|。
+  - 丸めの上界: γ·(|p|·|N|·|M|)（成分ごとの絶対値）。γ = 8u/(1−8u)、u = 2^−24。binary32での合成（operand・積・和）と、合成したCTMを点に適用するときの丸め、計8段を含む。
+  - Mとして、interpreterのCTMと、`cm`のoperandから厳密に合成したCTM（binary64で合成する描画系が見る値）の両方を使う。
+  - 上界が0.002を超えれば拒否する。0.002は、保存したrevisionで生成glyphの原点を検証する許容値と同じである。
+- **上界の目安**: 上界はページの大きさにほぼ比例する。合成試験の320×260ptページでは、translation・異方scale・30°回転・skew・反転のいずれも0.001以下である。A0程度の大きなページでは、回転を含むCTMが上界を超えて拒否されうる（保守的な上界のため）。
+- **拒否**: 成分が有限でない（`nonfinite-ctm`）、特異（`singular-ctm`）、値の範囲外か上界超過（`numerically-unstable-ctm`）。
+
+**authorityの記録**（`ctm_compensation`）
+
+- `policy = inverse-ctm-inside-block-save`、`confirmed_ctm`（M）、`matrix`（Nとして書くoperand）、`operator`（`N cm`のbytes）。
+- `proof`: operandから合成したCTM、page box、厳密な残差、丸めのモデル（binary32・u・段数）、上界、許容値。
+- `graphics_state_contract`は、blockが記録した逆行列でCTMを相殺することを明記する。
+
+**再検証**
+
+- open・保存のたびに、境界の確認済みCTMとprogramのoperandから`ctm_compensation`全体を再導出し、記録と一致しなければ拒否する。記録を読み戻して使うことはしない。
+- CTMが変わった境界は、offset・前後のoperatorが同じでも同じauthorityではない。binary32で同じ値になる変更でも、operandが変われば証明が変わるので拒否する。
+- blockは`q N cm BT`で始まる。`cm`は、authorityの`operator`とbytesが同じものが1つだけで、ほかの`cm`は許さない。identityのblockは`cm`を持たない。PDF 1.xの入れ子以前の形式（legacy）のbindingでは、相殺を認めない。
+- block内の文字は、MにNを合成したCTM（interpreterの値）で描かれていること。blockの`Q`の直後は、CTMがMで、`q`の深さが0であること。
+- bindingとrebind（marker、mutation map、作成mutationのanchor）は変えていない。
+
 ### 対応範囲
 
 | 状態 | 対応 |
 |---|---|
 | page entry（`before-page-program`） | 対応 |
-| 確認済みの安全なpage level境界 | 対応 |
-| `q`の内側、有効なclipの下、identity以外のCTM、任意のExtGState | 未対応（拒否） |
+| 確認済みの安全なpage level境界（CTM identity） | 対応 |
+| 同上で、CTMがidentity以外だが、逆行列での相殺を証明できるもの | 対応（`q N cm BT ... ET Q`、合成PDFのみで確認） |
+| 特異・非有限・数値的に不安定なCTM | 未対応（拒否） |
+| `q`の内側、有効なclipの下、任意のExtGState | 未対応（拒否） |
 | text object・marked content・`BX ... EX`・Form XObjectの内側 | 未対応（拒否） |
 | operatorの入れ子が崩れたpage program | 未対応（ページ全体を拒否） |
 
@@ -250,6 +297,12 @@ destination = confirm_continuation_destination(
   - 境界に触れるmutationの拒否、sidecarとprogramの改ざん、同じoffsetでの状態の改ざん、入れ子を崩す改ざん。
   - page entryとの共存、late failureのrollback。
   - page entryと境界で同じ文字・同じ画素になること。
+- **CTMの相殺**: [tests/test_ctm_compensation.py](../tests/test_ctm_compensation.py)で次を確認する。
+  - translation・scale・回転・skew・反転の証明と、特異・非有限・不安定なCTMの拒否。
+  - 同じCTMでも、有効なclip・`q`・ExtGState・marked contentの境界は従来どおり拒否すること。
+  - 生成glyphのpage座標・画素がpage-entry版と一致すること。suffixの既存の描画（文字・path・画素）が元のCTMのまま変わらないこと。逆行列がsuffixへ漏れた場合に検出できること（対照）。
+  - reopen・second・shorten・regrow・no-op 3回、生成fontの所有、operator nestingの違反0。
+  - CTM・逆行列・証明の改ざん（sidecarとprogram）の拒否。page entry・identityの境界との共存。late failureのrollback。
 - **外部評価**: [評価コード](../evaluations/continuation/boundary_destination.py)は、LibreOffice原本の6ページで評価者が確認した境界を使う。この境界は、本文の`q ... Q`とCC-BY-SAロゴの`q ... Q`の間にある。結果は[評価README](../evaluations/continuation/README.md#確認済みpage-program境界の評価)にある。
 
 ## 生成fontの寿命
@@ -307,4 +360,4 @@ pdfengineが書くcontent streamは、出力PDFのversionのoperator nesting規�
 
 回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。外部原本では、regrowが同じ生成slotへ戻り、final no-opで全10ページがMuPDF・Popplerとも全画素一致した。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
 
-同一ページの複数destinationと、その順序契約、確認済みのpage level境界は上記で扱った。次の最小の構造障壁は、page entryと同じ状態を証明できない境界である。identity以外のCTM、有効なclip、ExtGStateを持つ境界を、どこまで安全に扱えるかを示す必要がある。例えばCTMの逆変換や、clipの内側に収まることの証明である。新規ページの自動生成ではない。
+同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺は上記で扱った。次の最小の構造障壁は、有効なclipの下の境界である。page levelのclipは、blockの`q ... Q`では外せない（戻す先の状態がblockの外にない）。そのため、destinationと生成glyphがclipの内側に収まることを証明する必要がある。ExtGState（不透明度・blend・soft mask）と`q`の内側は、その後である。新規ページの自動生成ではない。

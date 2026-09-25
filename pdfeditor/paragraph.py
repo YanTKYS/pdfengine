@@ -405,7 +405,10 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             from .continuation import CREATE, markers
             if not units:raise PdfError('an unused continuation destination creates no physical slot')
             begin,end=markers(snapshot['destination'])
-            prefix=begin+b'q BT'
+            # A boundary under a nonidentity CTM first cancels it with the
+            # inverse its authority records, outside the text object.
+            compensated=snapshot['destination']['authority'].get('ctm_compensation')
+            prefix=begin+b'q'+(b' '+compensated['operator'].encode('ascii') if compensated else b'')+b' BT'
             # The common writer emitted all glyphs above. The block is one
             # text object inside its own graphics-state save, starting from
             # the PDF initial state; no q/Q occurs inside the text object.

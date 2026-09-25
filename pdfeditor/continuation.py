@@ -12,26 +12,38 @@ A candidate is a page-level boundary (no open q, text object, marked-content
 or compatibility scope, path or pending clip) of a program whose operators
 nest (see operator_nesting; otherwise no scope is trusted and no boundary is
 a candidate), and whose state is the page-entry state for what a block
-draws: identity CTM, no clip, full opacity, fill-only text rendering, no
-ExtGState. The block paints after all paint of the
-confirmed prefix and before all paint of the confirmed suffix. One
-destination owns one exact boundary.
+draws: no clip, full opacity, fill-only text rendering, no ExtGState, and an
+identity CTM or one the block can cancel (see compensation). The block
+paints after all paint of the confirmed prefix and before all paint of the
+confirmed suffix. One destination owns one exact boundary.
 
 Each generated block starts from that state, not another paragraph's text
 context, and closes its own state again. Each destination's entire rectangle
 must be empty, including paint which will be moved/removed by another flow
 plan; only its own generated glyphs are exempt.
+
+CTM compensation. At a boundary whose CTM M is not the identity, the block
+is ``q N cm BT ... ET Q``: N is the inverse of M, written once, right after
+the block's own q and outside its text object. The block's glyphs are then
+placed in page-entry coordinates, and its Q restores M for the suffix. N is
+derived from the confirmed CTM alone and recorded in the authority with its
+proof; a block's ``cm`` must be exactly that N. M is refused when it is not
+finite, is singular, or N·M cannot be proven to stay close enough to the
+identity (see compensation).
 """
 from collections import defaultdict
 from copy import deepcopy
+from decimal import Decimal, localcontext
+from fractions import Fraction
 import hashlib
 from itertools import combinations
 import json
+import math
 
 from .attributed import digest
 from .backend import PdfError
 from .composition import _check_obstacles, _observations
-from .content_stream import ContentPage, State, TextEvent, Operator, operators, state_object
+from .content_stream import ContentPage, State, TextEvent, Operator, multiply, operators, state_object
 from .model import Rect, WidthConstraint
 from .operator_nesting import audit
 from .selection import ResolvedSelection, source_sha
@@ -59,6 +71,23 @@ PAINT = frozenset({'Tj', 'TJ', "'", '"', 'S', 's', 'f', 'F', 'f*', 'B', 'B*', 'b
 # requires fill-only text (Tr 0) and paints nothing else, so these may differ
 # from the page-entry defaults. Every other state parameter must be default.
 STROKE_ONLY = frozenset({'w', 'J', 'j', 'M', 'd'})
+IDENTITY = (1, 0, 0, 1, 0, 0)
+COMPENSATION = 'inverse-ctm-inside-block-save'
+# Significant decimal digits of each written operand of N, in fixed notation:
+# PDF numbers have no exponent syntax.
+COMPENSATION_DIGITS = 12
+# Renderers such as MuPDF compose matrices in IEEE binary32. The proof bounds,
+# anywhere on the page, how far a point drawn under the composed N·M can land
+# from the same point drawn at page entry. The limit is the tolerance a saved
+# revision's generated glyph origins are verified with (user-space units).
+COMPENSATION_TOLERANCE = 0.002
+UNIT_ROUNDOFF = 2.0 ** -24
+# Rounding steps the bound covers per coordinate: both matrix operands, one
+# product and two sums per composed entry, then applying the composite to a
+# point (one product and two sums).
+ROUNDING_STEPS = 8
+# Every operand of N and of M stays a normal binary32 value and a PDF integer.
+MAGNITUDE = (2.0 ** -126, 2 ** 31 - 1)
 
 
 def program(content):
@@ -115,7 +144,99 @@ def _scope(boundary):
                 pending_path=boundary.pending_path, pending_clip=boundary.pending_clip)
 
 
-def _refusals(scope, state):
+def _compose(first, then):
+    """``first`` then ``then`` as one PDF matrix (row vectors: p·first·then)."""
+    a,b,c,d,e,f=first;A,B,C,D,E,F=then
+    return (a*A+b*C,a*B+b*D,c*A+d*C,c*B+d*D,e*A+f*C+E,e*B+f*D+F)
+
+
+def _inverse(m):
+    a,b,c,d,e,f=m;det=a*d-b*c
+    return (d/det,-b/det,-c/det,a/det,(c*f-d*e)/det,(b*e-a*f)/det)
+
+
+def _written(value):
+    """``value`` rounded to COMPENSATION_DIGITS significant digits, as a PDF number."""
+    with localcontext() as context:
+        context.prec=COMPENSATION_DIGITS
+        text=format(Decimal(value.numerator)/Decimal(value.denominator),'f')
+    if '.' in text:text=text.rstrip('0').rstrip('.')
+    return '0' if text in ('0','-0') else text
+
+
+def source_ctms(data):
+    """The CTM after each top-level operator, exactly, from the operands as parsed.
+
+    The interpreter composes in binary32, like MuPDF; a renderer composing in
+    binary64 sees these. Only q, Q and cm change the page-level CTM. None
+    stands for a CTM with a nonfinite operand.
+    """
+    ctm=tuple(map(Fraction,IDENTITY));stack=[];result=[]
+    for op in operators(data):
+        if op.name=='q':stack.append(ctm)
+        elif op.name=='Q' and stack:ctm=stack.pop()
+        elif op.name=='cm':
+            values=[float(v) for v in op.args]
+            ctm=(_compose(tuple(map(Fraction,values)),ctm)
+                 if ctm is not None and len(values)==6 and all(map(math.isfinite,values)) else None)
+        result.append(ctm)
+    return result
+
+
+def compensation(ctm, source_ctm, page_transform, page_bounds):
+    """N for a nonidentity boundary CTM, with its proof; or why no N is proven.
+
+    ``ctm`` is the confirmed (interpreted, binary32) CTM M and ``source_ctm``
+    the same CTM composed exactly from the parsed operands. N is the exact
+    inverse of M rounded to COMPENSATION_DIGITS significant digits; the proof
+    uses exactly those written operands. For each of the two CTMs and each
+    corner p of the page box (user space) it bounds the distance between p
+    and p·N·M: the exact residual plus, per coordinate, γ·(|p|·|N|·|M|) with
+    γ = ROUNDING_STEPS·u/(1-ROUNDING_STEPS·u), u the binary32 unit roundoff,
+    the standard bound on the rounding of those products and sums. A
+    bound over COMPENSATION_TOLERANCE refuses M as numerically unstable.
+    Returns ``(value, None)`` or ``(None, reason)``.
+    """
+    if source_ctm is None or not all(map(math.isfinite,ctm)):return None,'nonfinite-ctm'
+    m=tuple(map(Fraction,ctm))
+    if m[0]*m[3]-m[1]*m[2]==0:return None,'singular-ctm'
+    operands=[_written(v) for v in _inverse(m)]
+    n=tuple(Fraction(Decimal(v)) for v in operands)
+    if any(v and not MAGNITUDE[0]<=abs(v)<=MAGNITUDE[1] for v in (*n,*m,*source_ctm)):
+        return None,'numerically-unstable-ctm'
+    x0,y0,x1,y1=page_bounds
+    user=_inverse(tuple(map(Fraction,page_transform)))
+    corners=[_compose((0,0,0,0,Fraction(x),Fraction(y)),user)[4:] for x in (x0,x1) for y in (y0,y1)]
+    gamma=ROUNDING_STEPS*UNIT_ROUNDOFF/(1-ROUNDING_STEPS*UNIT_ROUNDOFF)
+    bound=0.0
+    for matrix in (m,source_ctm):
+        r=_compose(n,matrix);s=_compose(tuple(map(abs,n)),tuple(map(abs,matrix)))
+        for x,y in corners:
+            dx=float(abs(x*(r[0]-1)+y*r[2]+r[4]))+gamma*float(abs(x)*s[0]+abs(y)*s[2]+s[4])
+            dy=float(abs(x*r[1]+y*(r[3]-1)+r[5]))+gamma*float(abs(x)*s[1]+abs(y)*s[3]+s[5])
+            bound=max(bound,math.sqrt(dx*dx+dy*dy))
+    if not bound<=COMPENSATION_TOLERANCE:return None,'numerically-unstable-ctm'
+    xs,ys=[float(x) for x,_ in corners],[float(y) for _,y in corners]
+    return dict(policy=COMPENSATION,confirmed_ctm=list(ctm),matrix=operands,operator=' '.join(operands)+' cm',
+        proof=dict(source_ctm=[float(v) for v in source_ctm],page_box=[min(xs),min(ys),max(xs),max(ys)],
+                   residual=[float(v) for v in _compose(n,m)],arithmetic='binary32',unit_roundoff=UNIT_ROUNDOFF,
+                   rounding_steps=ROUNDING_STEPS,displacement_bound=bound,tolerance=COMPENSATION_TOLERANCE)),None
+
+
+def _compensation(state, source_ctm, page):
+    """``(None, None)`` at an identity CTM, else compensation()."""
+    if state['ctm']==list(IDENTITY):return None,None
+    return compensation(state['ctm'],source_ctm,page['page_transform'],page['page_bounds'])
+
+
+def block_ctm(destination):
+    """The CTM a destination's block draws under, as the interpreter composes it."""
+    value=destination['authority'].get('ctm_compensation')
+    if value is None:return IDENTITY
+    return multiply(tuple(map(float,value['matrix'])),tuple(value['confirmed_ctm']))
+
+
+def _refusals(scope, state, ctm_reason=None):
     """Why a block drawn at this boundary would not look like one drawn at page entry."""
     reasons=[]
     if scope['q_depth']:reasons.append('inside-graphics-state-save')
@@ -124,7 +245,7 @@ def _refusals(scope, state):
     if scope['compatibility_depth']:reasons.append('inside-compatibility-section')
     if scope['pending_path']:reasons.append('pending-path')
     if scope['pending_clip']:reasons.append('pending-clip')
-    if state['ctm']!=[1,0,0,1,0,0]:reasons.append('nonidentity-ctm')
+    if ctm_reason:reasons.append(ctm_reason)
     if state['clip']:reasons.append('active-clip')
     if state['opacity']!=1 or state['stroke_opacity']!=1:reasons.append('transparency')
     if state['rendering_mode']!=0:reasons.append('text-rendering-mode')
@@ -147,13 +268,23 @@ def _boundary_authority(content, page, ident):
         reasons=[r['reasons'] for r in inspected['refused'] if r['boundary_id']==ident]
         raise PdfError('the confirmed boundary is not a safe page-level candidate of this page program'
                        +(': '+', '.join(reasons[0]) if reasons else ''))
-    c=found[0]
-    return dict(position=BOUNDARY,boundary_id=ident,source_program_sha256=c['program_sha256'],
+    c=found[0];compensated=c.get('ctm_compensation')
+    value=dict(position=BOUNDARY,boundary_id=ident,source_program_sha256=c['program_sha256'],
         boundary=dict(offset=c['offset'],ordinal=c['ordinal'],previous=c['previous'],next=c['next'],scope=c['scope']),
         z_order=c['z_order'],graphics_state=c['graphics_state'],
         graphics_state_contract='witnessed page-level state; the block sets its own font, text state and fill '
-                                'and restores every parameter with its own q ... Q',
-        **c['context'],initial_clip='page-crop-box',isolation='q-BT-ET-Q',font_policy='explicit-paragraph-style-providers')
+                                'and restores every parameter with its own q ... Q' if compensated is None else
+                                'witnessed page-level state; the block cancels the witnessed CTM with the recorded '
+                                'inverse, sets its own font, text state and fill and restores every parameter '
+                                'with its own q ... Q',
+        **c['context'],initial_clip='page-crop-box',isolation=_isolation(compensated),
+        font_policy='explicit-paragraph-style-providers')
+    if compensated is not None:value['ctm_compensation']=compensated
+    return value
+
+
+def _isolation(compensated):
+    return 'q-BT-ET-Q' if compensated is None else 'q-cm-BT-ET-Q'
 
 
 def _boundary_value(content, data, sha, d, generated, legacy, location):
@@ -166,13 +297,16 @@ def _boundary_value(content, data, sha, d, generated, legacy, location):
     the confirmed, still safe, ones. An offset alone never identifies it.
     """
     auth=d['authority'];confirmed=auth['boundary'];sid=slot_id(d);begin,end=_markers(sid)
+    compensated=auth.get('ctm_compensation')
     if auth['boundary_id']!=boundary_id(d['page'],auth['source_program_sha256'],confirmed['previous'],confirmed['next']):
         raise PdfError('confirmed page-program boundary ID differs from its own source witnesses')
     fonts=None;value=dict(program_sha256=sha)
     if generated:
         if data.count(begin)!=1:
             raise PdfError('generated continuation insertion marker is missing or ambiguous')
-        offset=data.find(begin);stop,fonts=_block(data,sid,offset,legacy=legacy)
+        offset=data.find(begin)
+        stop,fonts=_block(data,sid,offset,legacy=legacy,
+                          compensation=None if compensated is None else compensated['operator'].encode('ascii'))
         after=stop
     else:
         if any(marker in data for marker in (begin,end)):
@@ -191,8 +325,14 @@ def _boundary_value(content, data, sha, d, generated, legacy, location):
     if _nesting_refusals(data):
         raise PdfError('confirmed page-program boundary is in a program whose operators do not nest')
     scope,state=_scope(b),_state(b)
-    if scope!=confirmed['scope'] or state!=auth['graphics_state'] or _refusals(scope,state):
+    # The CTM is part of the state: another CTM is another authority. The
+    # compensation is re-derived from the witnessed CTM, never read back.
+    exact=source_ctms(data)[b.ordinal] if state['ctm']!=list(IDENTITY) else None
+    expected,reason=_compensation(state,exact,auth)
+    if scope!=confirmed['scope'] or state!=auth['graphics_state'] or _refusals(scope,state,reason):
         raise PdfError('confirmed page-program boundary state or scope differs from its authority')
+    if compensated!=expected or auth['isolation']!=_isolation(expected):
+        raise PdfError('confirmed page-program boundary CTM compensation differs from its authority')
     value['boundary']=dict(offset=offset,previous=dict(start=previous['start'],end=previous['end']),
                            next=dict(start=following['start'],end=following['end']))
     if generated:
@@ -228,16 +368,19 @@ def _inspect(content, page, *, include_refused=False):
     items=content.boundaries;invalid=_nesting_refusals(data)
     paints=[b.ordinal for b in items if b.operator.name in PAINT]
     candidates,refused,counts=[],[],defaultdict(int)
+    exact=source_ctms(data) if any(b.state.ctm!=IDENTITY for b in items[:-1]) else None
     for index,b in enumerate(items[:-1]):
         previous=_operator(data,b.operator,b.ordinal)
         following=_operator(data,items[index+1].operator,items[index+1].ordinal)
         scope,state=_scope(b),_state(b)
-        reasons=invalid+_refusals(scope,state)
+        compensated,reason=_compensation(state,exact[b.ordinal] if exact else None,page_context)
+        reasons=invalid+_refusals(scope,state,reason)
         value=dict(page=page,boundary_id=boundary_id(page,sha,previous,following),program_sha256=sha,
             offset=b.operator.end,ordinal=b.ordinal,previous=previous,next=following,scope=scope,graphics_state=state,
             z_order=dict(semantics=Z_ORDER,prefix_paint_operators=sum(p<=b.ordinal for p in paints),
                          suffix_paint_operators=sum(p>b.ordinal for p in paints)),
             context=page_context,status='refused' if reasons else 'safe',reasons=reasons)
+        if compensated is not None:value['ctm_compensation']=compensated
         if reasons:
             refused.append(value)
             for reason in reasons:counts[reason]+=1
@@ -345,21 +488,34 @@ def chain(destinations):
             +sorted(boundaries,key=lambda d:d['authority']['boundary']['ordinal']))
 
 
-def _block(data, sid, start, *, legacy=False):
+def _block(data, sid, start, *, legacy=False, compensation=None):
     """The generated block of ``sid`` at ``start``: its own markers, closed state, known operators.
 
     One q ... Q encloses the whole block and closes only at its end; text
     objects are neither nested nor left open; text positioning and showing
     occur only inside them. q/Q inside a text object is accepted only for a
-    ``legacy`` binding (see OPERATOR_NESTING).
+    ``legacy`` binding (see OPERATOR_NESTING). ``compensation`` is the exact
+    ``N cm`` operator its authority records: the block then opens with
+    ``q N cm BT`` and holds no other cm. Without it, a block holds no cm.
     """
     begin,end=_markers(sid)
     if data.count(begin)!=1 or data.count(end)!=1 or data.find(begin)!=start:
         raise PdfError('generated continuation insertion marker is missing, ambiguous or out of page-entry order')
     stop=data.index(end)+len(end);body=data[start+len(begin):stop-len(end)]
-    if stop<=start+len(begin) or not body.startswith(b'q BT ') or not body.endswith(b'Q\n') or b'%' in body:
-        raise PdfError('generated continuation block is not one isolated q BT ... ET Q object')
+    head=b'q BT ' if compensation is None else b'q '+compensation+b' BT '
+    if (stop<=start+len(begin) or not body.startswith(head) or not body.endswith(b'Q\n') or b'%' in body
+            or compensation is not None and legacy):
+        raise PdfError('generated continuation block is not one isolated q BT ... ET Q object'
+                       if compensation is None else
+                       'generated continuation block is not one isolated q N cm BT ... ET Q object '
+                       'with the inverse CTM of its authority')
     ops=list(operators(body));depth=0;text=False;fonts=set()
+    # The recorded inverse, right after the block's own q, outside its text object.
+    if compensation is not None:
+        if [op.name for op in ops[:3]]!=['q','cm','BT'] or len(ops[1].args)!=6:
+            raise PdfError('generated continuation block is not one isolated q N cm BT ... ET Q object '
+                           'with the inverse CTM of its authority')
+        del ops[1]
     for index,op in enumerate(ops):
         if op.name not in BLOCK_OPERATORS:raise PdfError('generated continuation block contains a foreign operator')
         if op.name in ('q','Q'):
@@ -560,12 +716,15 @@ def _validate_destination(content,state,d,binding,current,fonts,records):
     if not events or any(e.invocation or not start<e.operator.start<stop for e in events):
         raise PdfError('generated glyphs are outside their own insertion block')
     # Page entry: nothing but the initial state. A confirmed boundary: its
-    # witnessed stroke-only parameters, and no open marked content (scope).
+    # witnessed stroke-only parameters, and no open marked content (scope);
+    # its CTM is the identity or the witnessed CTM cancelled by the recorded
+    # inverse, exactly as the interpreter composes them.
     expected=d['authority']['graphics_state']['other'] if is_boundary(d) else {}
+    ctm=block_ctm(d) if is_boundary(d) else IDENTITY
     for e in events:
         s=e.state
         other={k:v for k,v in s.other.items() if k!='marked_content'} if is_boundary(d) else s.other
-        if (s.ctm!=(1,0,0,1,0,0) or s.clip or json.loads(json.dumps(other))!=expected
+        if (s.ctm!=ctm or s.clip or json.loads(json.dumps(other))!=expected
                 or s.opacity!=1 or s.stroke_opacity!=1 or s.tr!=0):
             raise PdfError('generated continuation graphics state differs from its confirmed authority')
     if any(set(c.source_orders)-owned for e in content.events if not e.invocation and start<=e.operator.start<stop
