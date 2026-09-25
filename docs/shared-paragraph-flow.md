@@ -1,6 +1,6 @@
 # 独立した段落による共有flow
 
-現行の共有flowは[確認済みcontinuation destination](confirmed-continuation.md)も受け取る。既存source slotだけでは不足するparagraphは、同じparagraphが所有する確認済みdestinationへgenerated slotを作れる。同じページに互いに交差しない複数のdestinationを置くこともでき、そのgenerated blockはcallerが確認した`page_entry_order`の順でpage program先頭に並ぶ（[同一ページの複数destination](confirmed-continuation.md#同一ページの複数destination)）。以下のmissing slotによる拒否は、対応するdestination契約も存在しない場合に適用する。
+現行の共有flowは[確認済みcontinuation destination](confirmed-continuation.md)も受け取る。既存source slotだけでは不足するparagraphは、同じparagraphが所有する確認済みdestinationへgenerated slotを作れる。同じページに互いに交差しない複数のdestinationを置くこともでき、そのgenerated blockはcallerが確認した`page_entry_order`の順でpage program先頭に並ぶ（[同一ページの複数destination](confirmed-continuation.md#同一ページの複数destination)）。page entryの代わりに、callerが候補一覧から確認したpage levelの安全なoperator境界へ入れることもできる。そのblockは確認したprefixの描画より後、suffixの描画より前に描かれる（[確認済みpage-program境界](confirmed-continuation.md#確認済みpage-program境界)）。以下のmissing slotによる拒否は、対応するdestination契約も存在しない場合に適用する。
 
 実行基盤は、その後[安定identityと単一transaction](stable-identity-transaction.md)へ移行した。現在の`edit_shared_flow`は全slotのplanを一つのtransactionで保存・検証し、mutation mapでbindingする。以下の逐次書込と`runs/verified`の記述は導入時の設計・評価記録であり、現mainの実行方式や再評価結果とは区別する。
 

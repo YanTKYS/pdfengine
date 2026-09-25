@@ -1,9 +1,17 @@
 # 確認済み空き領域へのcontinuation評価
 
-**外部原本で評価済み（2026-09-25、operator nestingを正規化したengine）**。engine digest `341859e13035bfd6a85f04b33f7fe0c7f95b708cf97b8b13548db771d8f079e4`で、次の2本を同じWindows検証環境で実行し、どちらも全段階と容量拒否が通った。各保存では、編集した4〜6ページがPDF 1.xのoperator nestingを満たすこと、出力のPDF versionが原本と同じ（`%PDF-1.4`）であることも照合した。
+**確認済みpage-program境界（2026-09-25）**。最終engine（digest `59fe6125948d44a732da8c22a18cd619cdc3a34f7d6599c6141250144e481bfd`）で、次の外部評価を行った。このengineは、operatorの入れ子が崩れたpage programで境界候補を出さない（fail closed）。
 
-- **単一destination**（run `nesting-single-windows`）: allocation・生成slot・font/resource数は以前と同じだった。監査画像は、以前のengineの画像とPNGのbytesまで一致した。[公開集計](summary.json)はこのrunの集計である。
-- **同一ページ2 destination**（run `multi-nesting-windows`）: 確認済みの6ページ領域を評価者が2つのregionへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+- **単一destination**（run `failclosed-single-windows`）: 全段階と容量拒否が通った。成果物129件（PDF・sidecar・記録・画像）が、run `boundary-single-windows`とbyte単位で一致した。[公開集計](summary.json)はこのrunの集計である。
+- **確認済み境界**（run `boundary-failclosed-windows`）: 全段階と容量拒否が通った。page entryのrun `failclosed-single-windows`と、生成glyphと画素が一致した。成果物129件が、run `boundary-windows`とbyte単位で一致した。[境界の公開集計](boundary-destination-summary.json)はこのrunの集計である。結果は[下記](#確認済みpage-program境界の評価)にある。
+- **同一ページ2 destination**（run `multi-failclosed-windows`）: 逐次生成・同時生成・容量拒否が通った。成果物177件（PDF・sidecar・記録・画像）が、run `multi-boundary-windows`とbyte単位で一致した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+
+その前のengine（digest `fca1e014164c93c6c62b1aad4344d1184760bd5e8f98404b44a453674ee0a731`、入れ子の監査なし）では、run `boundary-single-windows`・`boundary-windows`・`multi-boundary-windows`が通った。`boundary-single-windows`の7保存のPDF・sidecarは、下記のrun `nesting-single-windows`と、`multi-boundary-windows`のPDF・sidecar・記録57件は、run `multi-nesting-windows`とbyte単位で一致した。
+
+**operator nesting正規化後の評価（2026-09-25）**。engine digest `341859e13035bfd6a85f04b33f7fe0c7f95b708cf97b8b13548db771d8f079e4`で、次の2本を同じWindows検証環境で実行し、どちらも全段階と容量拒否が通った。各保存では、編集した4〜6ページがPDF 1.xのoperator nestingを満たすこと、出力のPDF versionが原本と同じ（`%PDF-1.4`）であることも照合した。
+
+- **単一destination**（run `nesting-single-windows`）: allocation・生成slot・font/resource数は以前と同じだった。監査画像は、以前のengineの画像とPNGのbytesまで一致した。公開集計は、上記のrun `failclosed-single-windows`の集計に置き換えた。
+- **同一ページ2 destination**（run `multi-nesting-windows`）: 確認済みの6ページ領域を評価者が2つのregionへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。公開集計は、上記のrun `multi-failclosed-windows`の集計に置き換えた。
 
 結果は[operator nesting正規化後の再評価](#operator-nesting正規化後の再評価)にある。どちらも単一外部原本の1 paragraphと、評価者が確認した1つの空き領域に対する境界評価である。一般PDFの成功率や、任意のPDFで複数destinationが動くことを示すものではない。PR #8・PR #7・PR #6のengineでの結果は[履歴](#pr-8-engineでの単一destination再評価)として残す。
 
@@ -370,6 +378,85 @@ run `multi-pr8-windows`（2026-09-25）。単一destinationの再評価（run `p
 - **同時と逐次**: 同時生成（`both`）のchain順序とallocationは、逐次の`b-added`と一致した。
 - **容量拒否**: `paragraphs exceed all explicitly confirmed shared regions`で拒否され、出力は作られなかった。
 - **生成blockの増加**: 保存ごとに増える。置き換えた文字の非描画operatorを残す既存writerの性質で、単一destinationと同じである。
+
+## 確認済みpage-program境界の評価
+
+[評価コード](boundary_destination.py)は、単一destination評価と同じparagraph・provider・編集・6ページの確認済み領域`[55,80,385,120]`を使う。挿入authorityだけが異なり、page entryではなく、評価者が確認したpage levelの境界に入れる。
+
+### 評価者の指定
+
+- **境界**: `inspect_continuation_boundaries`で6ページを調べた。候補は2つで、prefixとsuffixの両方に描画があるのは次の1つだけだった。評価者はこれを確認し、IDと証跡を評価コードに固定した。
+  - ID: `boundary-b848698b464255ff0b2b6f90`
+  - 位置: offset 17602。本文のtop-level `q ... Q`の最後の`Q`（序数1303）の直後で、CC-BY-SAロゴのtop-level `q`（序数1304）の直前にある。
+  - 証跡: 直前・直後のoperatorのbytesのSHA-256。
+  - 描画: prefixの描画operatorは286、suffixは15（ロゴのpath）である。
+  - 状態: CTM identity、clipなし、不透明度1、Tr 0、stroke専用の`w 0.1`だけである。
+- **検出順では選ばない**: 評価コードは、engineがこの境界を同じ証跡の安全な候補として列挙することを最初に確かめ、違えば停止する。候補一覧の最初の項目を選ぶような動的な選択はしない。
+- **意味**: 生成blockは本文（文字と下線のpath）の後、ロゴの前に描かれる。領域は既に確認済みのものを使い、新しい空き領域は仮定しない。
+- **Unicodeの順序**: suffixは文字を描かない（評価コードが確かめる）。そのため独立抽出器が読む6ページの文字は、本来の文字の後に生成文字が続く。
+
+### 実行
+
+```powershell
+.\.venv\Scripts\python.exe -m evaluations.continuation.boundary_destination --run-name <未使用のrun名> --page-entry-run <同じengineのevaluate.pyのrun名>
+```
+
+成果物は`runs/boundary-<run名>/`に保存する。`--page-entry-run`を指定すると、同じengineでpage entryに入れた単一destination評価と比べる。そのrunが実行中なら、完了を待つ。
+
+### 自動照合
+
+単一destination評価の照合をすべて行う。6ページのUnicodeだけは上の順序で照合する。次を加える。
+
+- **確認した境界**: authorityの`boundary_id`が変わらない。作成mutationは、確認した境界のoffsetにある順序なしのzero-length insertionである。
+- **prefix / block / suffix**: 保存ごとに6ページのbytesを分け、次を確かめる。
+  - prefixとsuffixを連結すると、原本の6ページprogramとbyte単位で一致する。6ページにはsource slotがないためである。
+  - blockの直前・直後のoperatorは、確認した`Q`・`q`（同じbytes）である。
+  - bindingは自分のmarker対とblock SHA-256を指す。
+- **page entryとの比較**: 各段階の計画glyph（Unicode・GID・origin・size・advance・code・CID・`W`幅）と、Poppler 144dpiの監査画像が、page entryのrunと一致する。PDF・sidecarのbytesや、ページ全体の抽出順序は比べない。
+
+### 結果（run `boundary-windows`、2026-09-25）
+
+engine digest `fca1e014…a731`、評価コード`boundary_destination.py`（SHA-256 `5d9a5bf8…bbce`）。原本・provider・Poppler 26.07.0・独立pypdf 6.10.0は単一destination評価と同じで、照合も一致した。全段階と容量拒否が通った（2,940.79秒）。
+
+入れ子の監査を加えた最終engine（digest `59fe6125…1bfd`）で、run `boundary-failclosed-windows`として再実行した（5,609.44秒）。他の評価と並行して実行したため、時間は長い。集計の違いは、engine digest・`continuation.py`のhash・比較したpage-entry runの名前とengine digestだけだった。成果物129件（PDF・sidecar・記録・画像）が、このrunとbyte単位で一致した。[公開集計](boundary-destination-summary.json)は再実行の集計である。下の値は両方のrunに当てはまる。
+
+| 保存 | block（6ページ、byte範囲） | text object（4/5/6ページ） | 違反 | PDF byte |
+|---|---|---|---|---|
+| overflow | [17602,20646) | 58 / 85 / 86 | 0 | 371,067 |
+| second | [17602,23914) | 60 / 87 / 88 | 0 | 374,313 |
+| shorten | [17602,24202) | 62 / 90 / 91 | 0 | 365,553 |
+| regrow | [17602,27194) | 64 / 92 / 93 | 0 | 374,318 |
+| no-op 1 | [17602,30282) | 66 / 94 / 95 | 0 | 374,552 |
+| no-op 2 | [17602,33370) | 68 / 96 / 97 | 0 | 374,862 |
+| no-op 3 | [17602,36458) | 70 / 98 / 99 | 0 | 375,147 |
+
+- **境界**: 全保存で、blockは確認したoffset 17602（`Q`の直後、`q`の直前）にある。
+  - prefixの描画operatorは286、suffixは15のままである。
+  - prefixとsuffixを連結すると、原本の6ページprogramとbyte単位で一致した。
+  - authorityの`boundary_id`は変わらない。作成mutationは、そのoffsetにある順序なしのzero-length insertionである。
+- **allocation・slot**: 既存slot 209字（51+158）、生成slot 36字・2行で、page entryと同じである。生成slotを作るのはoverflowだけで、以後は同じslot・作成証跡を使う。shortenでは生成slotが`occupancy=None`になり、blockは同じ位置に残る。
+- **font/resource**: 全保存でType0 4、所有する生成font 4（graph object 24）、4/5/6ページの`/Font` 8/9/8である。no-opでは全aliasが`reused`だった。
+- **no-op 3回**: 全10ページでMuPDF・Popplerの全画素が一致した。計画glyph 245個の全fieldも一致した。
+- **監査**: 各保存で次がすべて通った。
+  - 編集した4〜6ページのPoppler差分が、確認済み領域（1pt余白込み）の外で0画素。
+  - 対象外ページのMuPDF全画素、独立pypdfの全ページUnicode、CID/GID/`W`、元font resource、text以外のpaint、画像、annotation。
+  - operator nestingの違反0、PDF version `%PDF-1.4`。
+- **容量拒否**: `paragraphs exceed all explicitly confirmed shared regions`で拒否した。PDF・sidecarは作られていない。
+- **page entryとの比較**: 同じengineのpage-entry run（`boundary-windows`では`boundary-single-windows`、再実行では`failclosed-single-windows`）と、全段階で次が一致した。
+  - 計画glyphの全field。
+  - Poppler監査画像。編集段階は4〜6ページ、no-opは全10ページ。
+  - 生成文字はページ上の既存の描画と重ならないため、描画順序が違っても画素は同じである。
+- **検査結果**: 6ページの候補は2つで、有用なのは確認した1つだけだった。残る1,638の境界は拒否された。拒否理由（重複あり）の内訳は次のとおりである。
+  - `q`の内側 1,638、有効なclip 1,632、text object 946
+  - 組み立て中のpath 320、描画モード 18、未適用のclip 2
+
+補助確認として、保存済みの成果物を一時スクリプトで読み直した。これは評価コード外の確認で、スクリプトはcommitしていない。
+
+- **blockの構造**: pypdfの分解器で、各保存のblockを確かめた。外側の`q ... Q`で閉じ、text object内に`q`/`Q`はなく、`Tf`は自分のaliasだけを選ぶ。blockの直前・直後は`Q`・`q`である。
+- **ページの入れ子**: 4〜6ページの規則を、engineとは別の分解器で満たした。
+- **blockの描画と文字**: blockだけを描いたページのインクは`[55,80,385,120]`の内側にあり、shortenでは何も描かない。blockの文字はslotの文字と一致した。
+
+**目視**: overflow・second・shorten・regrow・no-op 3の4〜6ページの300dpi切出しを確認した。どれも、page entryのrunの切出しとbytesまで同じだった。6ページでは、本文の後、ロゴの前に描かれた2行が確認済みの領域内にあり、ロゴ・本文・図版に変化はなかった。shortenでは領域に文字が残っていない。
 
 ## PR #6の結果
 

@@ -1,8 +1,44 @@
 {
-  "schema": "pdfengine-continuation-evaluation-3",
+  "schema": "pdfengine-boundary-destination-evaluation-1",
   "status": "passed",
   "source_url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf",
   "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+  "reviewed_boundary": {
+    "page": 6,
+    "boundary_id": "boundary-b848698b464255ff0b2b6f90",
+    "offset": 17602,
+    "ordinal": 1303,
+    "previous": {
+      "operator": "Q",
+      "start": 17601,
+      "end": 17602,
+      "sha256": "4ae81572f06e1b88fd5ced7a1a000945432e83e1551e6f721ee9c00b8cc33260"
+    },
+    "next": {
+      "operator": "q",
+      "start": 17603,
+      "end": 17604,
+      "sha256": "8e35c2cd3bf6641bdb0e2050b76932cbb2e6034a0ddacc1d9bea82a6ba57f7cf"
+    },
+    "prefix_paint_operators": 286,
+    "suffix_paint_operators": 15
+  },
+  "inspection": {
+    "candidates": 2,
+    "refused_boundaries": 1638,
+    "operators": 1641,
+    "refusal_reasons": {
+      "active-clip": 1632,
+      "inside-graphics-state-save": 1638,
+      "inside-text-object": 946,
+      "pending-clip": 2,
+      "pending-path": 320,
+      "text-rendering-mode": 18
+    },
+    "useful_candidates": [
+      "boundary-b848698b464255ff0b2b6f90"
+    ]
+  },
   "source_replay": [
     {
       "page": 4,
@@ -52,12 +88,23 @@
       "stage": "overflow",
       "status": "passed",
       "restored": true,
-      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "slot_id": "continuation-00a189c3cc8afa73cee11640",
       "saves": 1,
       "new_slots": [
-        "continuation-0ca851c7b7e027846e4cfcdb"
+        "continuation-00a189c3cc8afa73cee11640"
       ],
       "generated_lines": 2,
+      "boundary": {
+        "block": true,
+        "start": 17602,
+        "end": 20646,
+        "block_bytes": 3044,
+        "prefix_bytes": 17602,
+        "suffix_bytes": 8714,
+        "prefix_paint_operators": 286,
+        "suffix_paint_operators": 15,
+        "prefix_and_suffix_are_the_source_program": true
+      },
       "renderers": {
         "4": {
           "mupdf_equal": false,
@@ -109,7 +156,7 @@
             "empty": false
           }
         },
-        "continuation-0ca851c7b7e027846e4cfcdb": {
+        "continuation-00a189c3cc8afa73cee11640": {
           "range": [
             209,
             245
@@ -141,7 +188,7 @@
       },
       "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 371054,
+        "pdf_bytes": 371067,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -174,10 +221,21 @@
       "stage": "second",
       "status": "passed",
       "restored": true,
-      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "slot_id": "continuation-00a189c3cc8afa73cee11640",
       "saves": 1,
       "new_slots": [],
       "generated_lines": 2,
+      "boundary": {
+        "block": true,
+        "start": 17602,
+        "end": 23914,
+        "block_bytes": 6312,
+        "prefix_bytes": 17602,
+        "suffix_bytes": 8714,
+        "prefix_paint_operators": 286,
+        "suffix_paint_operators": 15,
+        "prefix_and_suffix_are_the_source_program": true
+      },
       "renderers": {
         "4": {
           "mupdf_equal": true,
@@ -229,7 +287,7 @@
             "empty": false
           }
         },
-        "continuation-0ca851c7b7e027846e4cfcdb": {
+        "continuation-00a189c3cc8afa73cee11640": {
           "range": [
             209,
             247
@@ -261,7 +319,7 @@
       },
       "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 374281,
+        "pdf_bytes": 374313,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -294,10 +352,21 @@
       "stage": "shorten",
       "status": "passed",
       "restored": true,
-      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "slot_id": "continuation-00a189c3cc8afa73cee11640",
       "saves": 1,
       "new_slots": [],
       "generated_lines": 0,
+      "boundary": {
+        "block": true,
+        "start": 17602,
+        "end": 24202,
+        "block_bytes": 6600,
+        "prefix_bytes": 17602,
+        "suffix_bytes": 8714,
+        "prefix_paint_operators": 286,
+        "suffix_paint_operators": 15,
+        "prefix_and_suffix_are_the_source_program": true
+      },
       "renderers": {
         "4": {
           "mupdf_equal": false,
@@ -341,7 +410,7 @@
           ],
           "occupancy": null
         },
-        "continuation-0ca851c7b7e027846e4cfcdb": {
+        "continuation-00a189c3cc8afa73cee11640": {
           "range": [
             3,
             3
@@ -365,7 +434,7 @@
       },
       "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 365519,
+        "pdf_bytes": 365553,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -391,10 +460,21 @@
       "stage": "regrow",
       "status": "passed",
       "restored": true,
-      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "slot_id": "continuation-00a189c3cc8afa73cee11640",
       "saves": 1,
       "new_slots": [],
       "generated_lines": 2,
+      "boundary": {
+        "block": true,
+        "start": 17602,
+        "end": 27194,
+        "block_bytes": 9592,
+        "prefix_bytes": 17602,
+        "suffix_bytes": 8714,
+        "prefix_paint_operators": 286,
+        "suffix_paint_operators": 15,
+        "prefix_and_suffix_are_the_source_program": true
+      },
       "renderers": {
         "4": {
           "mupdf_equal": false,
@@ -446,7 +526,7 @@
             "empty": false
           }
         },
-        "continuation-0ca851c7b7e027846e4cfcdb": {
+        "continuation-00a189c3cc8afa73cee11640": {
           "range": [
             209,
             245
@@ -478,7 +558,7 @@
       },
       "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 374277,
+        "pdf_bytes": 374318,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -511,10 +591,21 @@
       "stage": "noop1",
       "status": "passed",
       "restored": true,
-      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "slot_id": "continuation-00a189c3cc8afa73cee11640",
       "saves": 1,
       "new_slots": [],
       "generated_lines": 2,
+      "boundary": {
+        "block": true,
+        "start": 17602,
+        "end": 30282,
+        "block_bytes": 12680,
+        "prefix_bytes": 17602,
+        "suffix_bytes": 8714,
+        "prefix_paint_operators": 286,
+        "suffix_paint_operators": 15,
+        "prefix_and_suffix_are_the_source_program": true
+      },
       "paragraph_style_destination_records_equal": true,
       "slot_identity_allocation_layout_style_equal": true,
       "planned_glyph_fields_equal": [
@@ -614,7 +705,7 @@
             "empty": false
           }
         },
-        "continuation-0ca851c7b7e027846e4cfcdb": {
+        "continuation-00a189c3cc8afa73cee11640": {
           "range": [
             209,
             245
@@ -646,7 +737,7 @@
       },
       "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 374510,
+        "pdf_bytes": 374552,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -679,10 +770,21 @@
       "stage": "noop2",
       "status": "passed",
       "restored": true,
-      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "slot_id": "continuation-00a189c3cc8afa73cee11640",
       "saves": 1,
       "new_slots": [],
       "generated_lines": 2,
+      "boundary": {
+        "block": true,
+        "start": 17602,
+        "end": 33370,
+        "block_bytes": 15768,
+        "prefix_bytes": 17602,
+        "suffix_bytes": 8714,
+        "prefix_paint_operators": 286,
+        "suffix_paint_operators": 15,
+        "prefix_and_suffix_are_the_source_program": true
+      },
       "paragraph_style_destination_records_equal": true,
       "slot_identity_allocation_layout_style_equal": true,
       "planned_glyph_fields_equal": [
@@ -782,7 +884,7 @@
             "empty": false
           }
         },
-        "continuation-0ca851c7b7e027846e4cfcdb": {
+        "continuation-00a189c3cc8afa73cee11640": {
           "range": [
             209,
             245
@@ -814,7 +916,7 @@
       },
       "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 374826,
+        "pdf_bytes": 374862,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -847,10 +949,21 @@
       "stage": "noop3",
       "status": "passed",
       "restored": true,
-      "slot_id": "continuation-0ca851c7b7e027846e4cfcdb",
+      "slot_id": "continuation-00a189c3cc8afa73cee11640",
       "saves": 1,
       "new_slots": [],
       "generated_lines": 2,
+      "boundary": {
+        "block": true,
+        "start": 17602,
+        "end": 36458,
+        "block_bytes": 18856,
+        "prefix_bytes": 17602,
+        "suffix_bytes": 8714,
+        "prefix_paint_operators": 286,
+        "suffix_paint_operators": 15,
+        "prefix_and_suffix_are_the_source_program": true
+      },
       "paragraph_style_destination_records_equal": true,
       "slot_identity_allocation_layout_style_equal": true,
       "planned_glyph_fields_equal": [
@@ -950,7 +1063,7 @@
             "empty": false
           }
         },
-        "continuation-0ca851c7b7e027846e4cfcdb": {
+        "continuation-00a189c3cc8afa73cee11640": {
           "range": [
             209,
             245
@@ -982,7 +1095,7 @@
       },
       "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 375117,
+        "pdf_bytes": 375147,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -1021,7 +1134,7 @@
     }
   ],
   "destination": {
-    "destination_id": "reviewed-page6-space",
+    "destination_id": "reviewed-page6-boundary",
     "paragraph_id": "reviewed-mixed-training-paragraph",
     "region_id": "page6",
     "page": 6,
@@ -1033,9 +1146,40 @@
     ],
     "provenance": "explicitly_confirmed",
     "authority": {
-      "position": "before-page-program",
-      "offset": 0,
-      "z_order": "before-all-existing-page-paint",
+      "position": "confirmed-page-program-boundary",
+      "boundary_id": "boundary-b848698b464255ff0b2b6f90",
+      "source_program_sha256": "823166585f1387c3aa1844145795623125df2d211b4b24a2b9c59589e800fcd7",
+      "boundary": {
+        "offset": 17602,
+        "ordinal": 1303,
+        "previous": {
+          "ordinal": 1303,
+          "operator": "Q",
+          "start": 17601,
+          "end": 17602,
+          "sha256": "4ae81572f06e1b88fd5ced7a1a000945432e83e1551e6f721ee9c00b8cc33260"
+        },
+        "next": {
+          "ordinal": 1304,
+          "operator": "q",
+          "start": 17603,
+          "end": 17604,
+          "sha256": "8e35c2cd3bf6641bdb0e2050b76932cbb2e6034a0ddacc1d9bea82a6ba57f7cf"
+        },
+        "scope": {
+          "q_depth": 0,
+          "text_object": false,
+          "marked_content_depth": 0,
+          "compatibility_depth": 0,
+          "pending_path": false,
+          "pending_clip": false
+        }
+      },
+      "z_order": {
+        "semantics": "after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix",
+        "prefix_paint_operators": 286,
+        "suffix_paint_operators": 15
+      },
       "graphics_state": {
         "ctm": [
           1,
@@ -1046,7 +1190,6 @@
           0
         ],
         "font_resource": null,
-        "font_xref": null,
         "font_size": 0,
         "character_spacing": 0,
         "word_spacing": 0,
@@ -1069,8 +1212,11 @@
         "opacity": 1,
         "stroke_opacity": 1,
         "clip": [],
-        "other": {}
+        "other": {
+          "w": "[0.1]"
+        }
       },
+      "graphics_state_contract": "witnessed page-level state; the block sets its own font, text state and fill and restores every parameter with its own q ... Q",
       "page_group": {
         "/S": "/Transparency",
         "/CS": "/DeviceRGB",
@@ -1097,7 +1243,97 @@
     "source_pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
     "source_program_sha256": "823166585f1387c3aa1844145795623125df2d211b4b24a2b9c59589e800fcd7"
   },
-  "scope": "one external LibreOffice paragraph, original slots on pages 4/5, reviewed empty area on existing page 6",
+  "page_entry_comparison": {
+    "page_entry_run": "failclosed-single-windows",
+    "page_entry_engine_digest": "59fe6125948d44a732da8c22a18cd619cdc3a34f7d6599c6141250144e481bfd",
+    "stages": {
+      "overflow": {
+        "planned_glyph_fields_equal": true,
+        "planned_glyphs": 245,
+        "poppler_images_equal": [
+          "page-4",
+          "page-5",
+          "page-6"
+        ]
+      },
+      "second": {
+        "planned_glyph_fields_equal": true,
+        "planned_glyphs": 247,
+        "poppler_images_equal": [
+          "page-4",
+          "page-5",
+          "page-6"
+        ]
+      },
+      "shorten": {
+        "planned_glyph_fields_equal": true,
+        "planned_glyphs": 3,
+        "poppler_images_equal": [
+          "page-4",
+          "page-5",
+          "page-6"
+        ]
+      },
+      "regrow": {
+        "planned_glyph_fields_equal": true,
+        "planned_glyphs": 245,
+        "poppler_images_equal": [
+          "page-4",
+          "page-5",
+          "page-6"
+        ]
+      },
+      "noop1": {
+        "planned_glyph_fields_equal": true,
+        "planned_glyphs": 245,
+        "poppler_images_equal": [
+          "page-1",
+          "page-10",
+          "page-2",
+          "page-3",
+          "page-4",
+          "page-5",
+          "page-6",
+          "page-7",
+          "page-8",
+          "page-9"
+        ]
+      },
+      "noop2": {
+        "planned_glyph_fields_equal": true,
+        "planned_glyphs": 245,
+        "poppler_images_equal": [
+          "page-1",
+          "page-10",
+          "page-2",
+          "page-3",
+          "page-4",
+          "page-5",
+          "page-6",
+          "page-7",
+          "page-8",
+          "page-9"
+        ]
+      },
+      "noop3": {
+        "planned_glyph_fields_equal": true,
+        "planned_glyphs": 245,
+        "poppler_images_equal": [
+          "page-1",
+          "page-10",
+          "page-2",
+          "page-3",
+          "page-4",
+          "page-5",
+          "page-6",
+          "page-7",
+          "page-8",
+          "page-9"
+        ]
+      }
+    }
+  },
+  "scope": "one external LibreOffice paragraph; the reviewed page-6 area at one reviewed page-level boundary",
   "providers": {
     "body": {
       "filename": "msmincho.ttc",
@@ -1165,7 +1401,7 @@
       "transaction.py": "ab1c88ee731d97bc65f15502669c483fdcde351166f319babd535656c1f2b597",
       "variable_container.py": "5c4e3336aa2187a37adf6d36bd2ccd3fb33c01e4ef7fbd4f24fe50708b98df82"
     },
-    "runner_sha256": "468f658ef540a7df4d0be18eff8c5321ba763bdf330d3086a1eebb10375cce3b",
+    "runner_sha256": "5d9a5bf8e510f5fde09d07eb80dd97a1f8f67a37826a8aa1642004b99aeabbce",
     "evaluation_dependencies_sha256": {
       "evaluations/story_flow/evaluate.py": "4fc0d79e9a8de23ec3de916fdb6c32831669969894ce66bcf2899a842a5274f9",
       "evaluations/story_styles/evaluate.py": "51f5d1a048b46536286abfa6e5216e9958d9963bd315aac08616e32de2ee884c",
@@ -1175,7 +1411,8 @@
       "evaluations/backend/followup.py": "2a70ddd88402083b64af75dd749dc144a3eb8c671b9bacad74d3642b41e2267d",
       "evaluations/realpdf/evaluate.py": "7f4754523b1849b4f744ba9a11841a9be1c6bc2d2fdcdee3c7e4706beb908a18",
       "evaluations/realpdf/independent_extract.py": "435766089686f927c6bc72aa8da4463ab48c3ef1b305c7cc08442a10dd3bacdb",
-      "evaluations/continuation/resources.py": "4c55b9fa04584064f1ffdb65f074f0f2c8ff152538461d07580f9618196d0f93"
+      "evaluations/continuation/resources.py": "4c55b9fa04584064f1ffdb65f074f0f2c8ff152538461d07580f9618196d0f93",
+      "evaluations/continuation/evaluate.py": "468f658ef540a7df4d0be18eff8c5321ba763bdf330d3086a1eebb10375cce3b"
     },
     "python": "3.12.14",
     "platform": "Windows-11-10.0.26200-SP0",

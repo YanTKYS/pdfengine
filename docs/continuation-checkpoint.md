@@ -1,6 +1,6 @@
 # Continuation開発の再開地点 — 2026-09-24
 
-**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。その後、writerがtext object内に`q`/`Q`を出していた問題を直し、出力のPDF versionを元PDFと同じにして、両方の外部評価をやり直した。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」「PDF operator nestingの正規化」の節を参照。以下の各節は、その時点の記録として残す。
+**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。その後、writerがtext object内に`q`/`Q`を出していた問題を直し、出力のPDF versionを元PDFと同じにして、両方の外部評価をやり直した。さらに、callerが確認したpage levelの安全なoperator境界を、2つ目の挿入authorityにした。レビュー指摘を受けて、operatorの入れ子が崩れたpage programでは境界候補を出さないようにした（fail closed）。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」「PDF operator nestingの正規化」「確認済みpage-program境界」の節を参照。以下の各節は、その時点の記録として残す。
 
 利用者の「最短の区切りでコミット」指示による途中保存。起点は`02a526ff2781ae80551f2ad4367f6f8d50c2b430`。サブエージェントは使用していない。
 
@@ -387,6 +387,129 @@ paragraph writer（`paragraph.py`）は、新しい文字のtext state（font・
 ### 次の最小の構造障壁
 
 変わらない。page-program先頭以外のcontent-stream境界へ、独立した挿入authorityを与えることである。その境界で有効なCTM・clip・ExtGState・text stateと後続paintとの順序を、境界ごとの証跡として確認する必要がある。今回の分割は、既存text objectの中で新しい文字を隔離する位置を1.xに合わせたもので、任意の境界への挿入権限ではない。
+
+## 確認済みpage-program境界 — 2026-09-25（`ed0cb92`）
+
+起点はPR #10のmerge commit `ed0cb92`。サブエージェントは使用していない。continuationの挿入authorityを、page entry（offset 0）に加えて、callerが明示的に確認したpage levelの安全なoperator境界へ広げた。契約は[確認済みpage-program境界](confirmed-continuation.md#確認済みpage-program境界)にある。任意のbyte offset、`q`の内側、有効なclipの下、identity以外のCTM、任意のExtGState、text object・marked content・Form XObjectの内側には進んでいない。
+
+### 開始時の確認
+
+| 項目 | 結果 |
+|---|---|
+| HEAD | `ed0cb92d3191a83611e7af6cd0852fa7fa99db43`。作業ツリーはclean |
+| engine digest（開始時） | `341859e1…79e4`（45ファイル）。PR #10の値と一致 |
+| 環境 | Windows 11 x64（10.0.26200）、Python 3.12.14、lockfileの版 |
+
+### 変更
+
+- **`pdfeditor/content_stream.py`**: `_walk`はtop-level page programのoperatorごとに、その直後の`State`とscopeを`Boundary`として記録する。scopeは`q`の深さ、text object、marked-contentと`BX`の深さ、組み立て中のpath、未適用のclipである。解釈は従来の1つだけで、記録を加えただけである。
+- **`pdfeditor/continuation.py`**:
+  - `inspect_continuation_boundaries()`で、page levelの境界を列挙し、安全性を判定する。
+  - `confirm_continuation_destination(..., insertion='confirmed-page-program-boundary', graphics_state='confirmed-boundary-state', boundary=...)`で、候補を1つ確認する。
+  - 境界authorityをrevisionごとに検証する（`_boundary_value`）。
+  - `chain()`はpage-entryの順序付けだけに使い、境界destinationは別に並べる。
+  - page-entryの検証、binding形式、snapshotは変えていない。
+- **`pdfeditor/shared_flow.py`**: 未使用の境界を、保存ごとのmutation mapで写す。
+- **`pdfeditor/paragraph.py`**: 境界の作成mutationは順序を持たない。
+- **`pdfeditor/mutation.py`**: 変更なし。
+- **engine digest**: `fca1e014164c93c6c62b1aad4344d1184760bd5e8f98404b44a453674ee0a731`（45ファイル）。
+
+### LibreOffice原本の検査
+
+`inspect_continuation_boundaries`で10ページすべてを調べた。
+
+- **候補**: 各ページの候補は2つだけだった。
+  - 先頭の`0.1 w`の直後。prefixに描画がない。
+  - 本文のtop-level `q ... Q`とCC-BY-SAロゴのtop-level `q ... Q`の間。
+- **拒否**: 残りの境界は、`q`の内側・有効なclip・text object・組み立て中のpath/clip・描画モードのいずれかで拒否した。
+- **採用した境界**: 6ページでprefixとsuffixの両方に描画がある候補は1つだった（`boundary-b848698b464255ff0b2b6f90`）。
+  - offsetは17602で、`Q`（序数1303）の直後、`q`（序数1304）の直前にある。
+  - prefixの描画operatorは286、suffixは15（ロゴ）である。
+  - 状態はCTM identity、clipなし、stroke専用の`w 0.1`だけである。
+  - 評価者はこれを確認し、IDと証跡を評価コードに固定した。
+  - 空き領域は、既に確認済みの`[55,80,385,120]`をそのまま使った。
+
+### 検証（Windows 11 x64、Python 3.12.14）
+
+以下は、PR作成時のengine（digest `fca1e014…a731`）の結果である。レビュー指摘の修正後の再検証は、[下記](#レビュー指摘-入れ子が崩れたprogramのfail-closedpr-11)にある。
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_boundary_destination.py`（新規） | 27 passed |
+| `test_continuation.py`・`test_multi_destination.py`・`test_operator_nesting.py`・`test_mutation.py`・`test_generated_fonts.py` | 87 passed（1,429.75秒） |
+| 外部原本 単一destination（run `boundary-single-windows`） | 全段階・no-op 3回・容量拒否が通過（2,923.23秒）。集計はengine digest以外PR #10と同じ。7保存のPDF・sidecarはPR #10のrun `nesting-single-windows`とbyte単位で一致 |
+| 外部原本 確認済み境界（run `boundary-windows`） | 全段階・no-op 3回・容量拒否が通過（2,940.79秒）。page-entry runと、全段階の計画glyphとPoppler画像が一致 |
+| 外部原本 同一ページ2 destination（run `multi-boundary-windows`） | 逐次8段階・同時2段階・容量拒否が通過（4,655.47秒）。集計はengine digest以外PR #10と同じ。PDF・sidecar・記録57件がPR #10のrun `multi-nesting-windows`とbyte単位で一致 |
+| 全suite `python -m pytest -q` | 718 passed, 7 skipped（4,676.96秒） |
+
+- **新しい試験**（`tests/test_boundary_destination.py`）:
+  - A. 候補の列挙: 安全な境界だけが候補になる。拒否理由は、text object・`q`・marked content・`BX`・path・未適用のclip・CTM・clip・ExtGState・`ri`・Trである。
+  - B. callerの明示確認と、誤ったIDや拒否された境界の拒否。geometryは境界を選ばない。
+  - C〜I. 非zero offsetでの作成・reopen・second・shorten・regrow・no-op 3回。prefix/block/suffixの順序、描画operatorの順序、作成証跡、生成font、画素を確かめる。
+  - J・K. 同じtransactionでの、境界より前・後のsource slotの変更。prefixが伸びるとblockはそれに合わせて移り、suffixの変更ではoffsetが変わらない。
+  - L. 境界に触れるmutationの拒否。直後operatorが変わると証跡で拒否する。
+  - M. sidecar（ID・証跡・状態・scope・offset・近傍）とprogram（marker・block位置・近傍operator）の改ざんの拒否。
+  - 同じoffsetでのCTM・clip・ExtGState・`q`・marked contentの改ざんの拒否。
+  - N. page entryとの共存と、生成fontの分離。
+  - O. late failureのrollback。
+  - page entryと境界で、同じ文字・同じ画素になること。
+- **PR #10形式の互換**: PR #10のengine（`ed0cb92`のworktree）で作った出力を、最終engineで扱った。対象は単一destinationのdormant状態と、2 destinationのchainである。
+  - openはrestoredになった。no-op保存は全aliasが`reused`で成功した。
+  - page-entryの編集（regrow・shorten）も成功した。
+  - 各revisionで、入れ子・version・bindingの記録を確かめた。
+- **補助確認**: 一時スクリプト（commitしていない）で、境界runの保存済み成果物を読み直した。
+  - pypdfの分解器で、blockの構造、ページの入れ子、block直前・直後の`Q`・`q`を確かめた。
+  - blockだけを描いたページのインクが確認済み領域の内側にあること、shortenで描画しないこと、blockの文字がslotと一致することを確かめた。
+- **目視**: 境界runの4〜6ページの300dpi切出しは、page entryのrunの切出しとbytesまで同じだった。6ページでは、2行が本文の後・ロゴの前に確認済み領域内で描かれ、ロゴ・本文に変化はなかった。
+
+### 残る未対応の状態
+
+次の境界は候補にならない。
+
+- `q`の内側
+- 有効なclipの下
+- identity以外のCTM
+- ExtGState・`ri`・`i`
+- text object・marked content・`BX ... EX`の内側
+- 組み立て中のpathや未適用のclip
+
+1つの境界に複数のdestinationを順序付きで入れることも、まだ扱っていない。
+
+### 次の最小の構造障壁
+
+page entryと同じ状態を証明できない境界である。identity以外のCTM、有効なclip、ExtGStateを持つ境界を、どこまで安全に扱えるかを示す必要がある。例えば、CTMの逆変換で同じpage座標に描けること、destinationがclipの内側に収まることの証明である。
+
+### レビュー指摘: 入れ子が崩れたprogramのfail closed（PR #11）
+
+- **問題**: `ContentPage._walk`はtext objectの内外をboolで数える。そのため、構造が不正なprogramで、text objectの外に見える境界を安全な候補として出していた。
+  - 入れ子の`BT ... BT ... ET`: 内側の`ET`で外に出たと数える。
+  - `BT`のない`ET`、閉じていない`BT`: 数え方は崩れないが、programは不正である。
+  - 修正前は、この3例で`0 0 5 5 re f`の直後などが`safe`になった。
+- **変更**（`pdfeditor/continuation.py`だけ）: 既存の`operator_nesting.audit`をpage program全体に使う。scopeの数え方を二重に実装しない。
+  - 違反が1つでもあれば、`inspect_continuation_boundaries()`はそのページのすべての境界を`invalid-operator-nesting`で拒否する。候補は出ない。確認もできない。
+  - revisionごとの境界の検証（`_boundary_value`）も同じ監査を行う。前後のoperator・scope・状態が同じでも、入れ子が崩れていれば拒否する。
+  - `ContentPage`・MutationProgram・page entry・binding形式は変えていない。
+- **LibreOffice原本**: 10ページすべてで監査の違反は0だった。候補は修正前と同じ各2つで、6ページの確認済み境界`boundary-b848698b464255ff0b2b6f90`もそのまま候補に残る。
+- **追加試験**（`tests/test_boundary_destination.py`、6件）:
+  - `test_a_program_whose_operators_do_not_nest_has_no_candidates`: 入れ子の`BT`・`BT`のない`ET`・閉じていない`BT`の3例で、候補が0件になる。すべての境界に`invalid-operator-nesting`が付く。それ以外の条件は満たす境界の拒否理由が`invalid-operator-nesting`だけであり、その境界は確認もできない。
+  - `test_a_revision_whose_operators_do_not_nest_is_not_the_same_authority`: 生成済みrevisionのprogramを同じ長さで改ざんし、同じ3例にする。境界の前後・scope・状態は同じままでも、証跡の検証で拒否し、openは`needs_confirmation`になる。
+  - 6件とも、修正前のengineでは失敗し、修正後は成功した。
+
+#### 修正後の検証（Windows 11 x64、Python 3.12.14）
+
+以下はすべて修正後の最終engine（digest `59fe6125948d44a732da8c22a18cd619cdc3a34f7d6599c6141250144e481bfd`、45ファイル）の結果である。外部評価と試験を並行して実行したため、時間は単独実行より長い。
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_boundary_destination.py` | 33 passed（842.89秒）。修正前の27件と追加6件 |
+| `test_continuation.py`・`test_multi_destination.py`・`test_operator_nesting.py`・`test_mutation.py`・`test_generated_fonts.py` | 87 passed（4,408.76秒） |
+| 全suite `python -m pytest -q` | 724 passed, 7 skipped（7,199.91秒）。失敗・エラー0 |
+| 外部原本 単一destination（run `failclosed-single-windows`） | 全段階・no-op 3回・容量拒否が通過（5,628.55秒）。集計はengine digestと`continuation.py`のhash以外、修正前の公開集計と同じ。成果物129件（PDF・sidecar・記録・画像）が、run `boundary-single-windows`とbyte単位で一致 |
+| 外部原本 確認済み境界（run `boundary-failclosed-windows`） | 全段階・no-op 3回・容量拒否が通過（5,609.44秒）。page-entry run `failclosed-single-windows`と、計画glyph・Poppler画像が一致。集計はengine digest・hash・比較runの名前以外同じ。成果物129件がrun `boundary-windows`とbyte単位で一致 |
+| 外部原本 同一ページ2 destination（run `multi-failclosed-windows`） | 逐次8段階・同時2段階・容量拒否が通過（3,787.93秒）。集計はengine digestと`continuation.py`のhash以外、修正前の公開集計と同じ。成果物177件がrun `multi-boundary-windows`とbyte単位で一致 |
+
+- **公開集計**: 3つのrunの集計を`summary.json`・`boundary-destination-summary.json`・`multi-destination-summary.json`として公開した。
+- **外部評価の結果**: 修正前と変わらない。LibreOffice原本は入れ子の監査に違反がなく、確認済み境界もそのまま候補に残るためである。
 
 ## 再評価の手順
 
