@@ -26,10 +26,16 @@ from .selection import ResolvedSelection, source_sha
 
 PROVENANCE = 'generated-from-confirmed-continuation-destination'
 CREATE = 'confirmed-continuation-create'
-# A generated block is one isolated text object in the initial graphics state:
-# no CTM, clip, ExtGState, XObject, path or rendering-mode operator.
+# A generated block is one graphics-state save around text objects in the
+# initial graphics state: no CTM, clip, ExtGState, XObject, path or
+# rendering-mode operator.
 BLOCK_OPERATORS = frozenset({'q', 'Q', 'BT', 'ET', 'Tf', 'Tz', 'Tc', 'Tw', 'Ts', 'Tm', 'Tj', 'TJ', 'g', 'rg', 'k'})
-BLOCK_HEAD, BLOCK_TAIL = b'q BT ', b' Q ET Q\n'
+TEXT_OBJECT_ONLY = frozenset({'Tm', 'Tj', 'TJ'})
+# Blocks keep q/Q outside text objects (PDF 1.x, see operator_nesting) and
+# their bindings record it. A binding without this record was written before
+# the contract, when the writer nested q/Q inside the block's text object; it
+# is read with that rule and never written again.
+OPERATOR_NESTING = 'pdf-1.x-text-objects'
 
 
 def program(content):
@@ -131,34 +137,47 @@ def chain(destinations):
     return sorted(destinations,key=lambda d:d.get('page_entry_order') or 0)
 
 
-def _block(data, sid, start):
-    """The generated block of ``sid`` at ``start``: its own markers, closed state, known operators."""
+def _block(data, sid, start, *, legacy=False):
+    """The generated block of ``sid`` at ``start``: its own markers, closed state, known operators.
+
+    One q ... Q encloses the whole block and closes only at its end; text
+    objects are neither nested nor left open; text positioning and showing
+    occur only inside them. q/Q inside a text object is accepted only for a
+    ``legacy`` binding (see OPERATOR_NESTING).
+    """
     begin,end=_markers(sid)
     if data.count(begin)!=1 or data.count(end)!=1 or data.find(begin)!=start:
         raise PdfError('generated continuation insertion marker is missing, ambiguous or out of page-entry order')
     stop=data.index(end)+len(end);body=data[start+len(begin):stop-len(end)]
-    if stop<=start+len(begin) or not body.startswith(BLOCK_HEAD) or not body.endswith(BLOCK_TAIL) or b'%' in body:
+    if stop<=start+len(begin) or not body.startswith(b'q BT ') or not body.endswith(b'Q\n') or b'%' in body:
         raise PdfError('generated continuation block is not one isolated q BT ... ET Q object')
-    depth=0;text=False;fonts=set()
-    for op in operators(body):
+    ops=list(operators(body));depth=0;text=False;fonts=set()
+    for index,op in enumerate(ops):
         if op.name not in BLOCK_OPERATORS:raise PdfError('generated continuation block contains a foreign operator')
-        if op.name in ('q','Q'):depth+=1 if op.name=='q' else -1
+        if op.name in ('q','Q'):
+            if text and not legacy:
+                raise PdfError('generated continuation block saves or restores graphics state inside a text object')
+            depth+=1 if op.name=='q' else -1
+            if depth==0 and index!=len(ops)-1:
+                raise PdfError('generated continuation block restores state it does not own')
         elif op.name in ('BT','ET'):
             if text==(op.name=='BT'):raise PdfError('generated continuation block nests or leaves a text object')
             text=op.name=='BT'
+        elif op.name in TEXT_OBJECT_ONLY and not text:
+            raise PdfError('generated continuation block positions or shows text outside a text object')
         elif op.name=='Tf':fonts.add(str(op.args[0]))
-        if depth<0:raise PdfError('generated continuation block restores state it does not own')
     if depth or text:raise PdfError('generated continuation block does not close its own graphics and text state')
     return stop,fonts
 
 
-def page_witness(content, destinations, generated):
+def page_witness(content, destinations, generated, legacy=frozenset()):
     """Witness every confirmed destination of one page against its page-entry chain.
 
     ``generated`` names the destinations whose block must exist. Their blocks
     form a contiguous prefix of the page program in confirmed order, before
     the original program, each with exactly one pair of its own markers and
     no bytes between them. Destinations without a block have no marker.
+    ``legacy`` names blocks whose stored binding predates OPERATOR_NESTING.
     Returns each destination's witness and the font aliases its block selects.
     """
     ordered=chain(destinations);authority=context(content)
@@ -169,8 +188,9 @@ def page_witness(content, destinations, generated):
         value=dict(program_sha256=sha);ident=d['destination_id']
         if 'page_entry_order' in d:value['page_entry_order']=d['page_entry_order']
         if ident in generated:
-            stop,fonts[ident]=_block(data,slot_id(d),cursor)
+            stop,fonts[ident]=_block(data,slot_id(d),cursor,legacy=ident in legacy)
             value.update(start=cursor,end=stop,block_sha256=hashlib.sha256(data[cursor:stop]).hexdigest())
+            if ident not in legacy:value['operator_nesting']=OPERATOR_NESTING
             cursor=stop
         elif any(marker in data for marker in markers(d)):
             raise PdfError('an unused continuation destination already has an insertion marker')
@@ -203,10 +223,12 @@ def entry(destination, destinations, bindings):
 def verify_entry(content, destination, value):
     """Re-verify a planned page-entry boundary on the bytes of this revision."""
     if value.get('order')!=destination.get('page_entry_order'):raise PdfError('continuation page-entry order changed')
+    # Only the boundaries are re-verified here; this revision's blocks were
+    # validated in their recorded nesting mode when it was opened.
     data=program(content);cursor=0
-    for sid in value['preceding']:cursor,_=_block(data,sid,cursor)
+    for sid in value['preceding']:cursor,_=_block(data,sid,cursor,legacy=True)
     if cursor!=value['offset']:raise PdfError('continuation page-entry boundary changed')
-    for sid in value['following']:cursor,_=_block(data,sid,cursor)
+    for sid in value['following']:cursor,_=_block(data,sid,cursor,legacy=True)
     return value['offset']
 
 
@@ -262,9 +284,10 @@ def validate_destinations(source,state):
         if any(Rect(*a['bounds']).intersects(Rect(*b['bounds'])) for a,b in combinations(ordered,2)):
             raise PdfError('continuation destinations of one page must not intersect')
         generated={d['destination_id'] for d in ordered if slot_id(d) in state['slots']}
+        legacy={i for i in generated if 'end' in bindings[i] and 'operator_nesting' not in bindings[i]}
         content=ContentPage(source,page)
         try:
-            current,fonts=page_witness(content,ordered,generated)
+            current,fonts=page_witness(content,ordered,generated,legacy)
             for d in ordered:_validate_destination(content,state,d,bindings[d['destination_id']],
                 current[d['destination_id']],fonts.get(d['destination_id']),records)
         finally:content.close()

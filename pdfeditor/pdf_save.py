@@ -181,6 +181,10 @@ def program_pdf_bytes(source, page_number, data, *, font_builders: Mapping[str, 
     if reader.is_encrypted and not reader.decrypt(""):
         raise PdfError("password required")
     writer = PdfWriter(clone_from=reader)
+    # Keep the source's PDF version. A clone otherwise writes pypdf's default
+    # %PDF-1.3 header, which silently changes (usually lowers) the version the
+    # written content is interpreted against. The catalog /Version is cloned.
+    writer.pdf_header = reader.pdf_header
     programs = data if isinstance(data, Mapping) else {page_number: data}
     builders = font_builders if isinstance(data, Mapping) else {page_number: font_builders}
     replacements = font_replacements if isinstance(data, Mapping) else {page_number: font_replacements}

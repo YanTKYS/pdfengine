@@ -19,6 +19,7 @@ from pdfeditor.attributed import digest
 from pdfeditor.content_stream import ContentPage, patch_streams
 from pdfeditor.continuation import confirm_continuation_destination, slot_id
 from pdfeditor.elements import _close, _paint_value
+from pdfeditor.operator_nesting import audit as nesting_audit
 from pdfeditor.paint_provenance import interpreted_paints
 from pdfeditor.pdf_save import font_fingerprints, program_pdf_bytes
 from pdfeditor.selection import source_sha
@@ -134,6 +135,26 @@ def audit(before,after,state,initial,report,directory,original_text,*,noop=False
         allocation={sid:dict(range=s['range'],occupancy=s['occupancy']) for sid,s in state['slots'].items()})
 
 
+def pdf_header(pdf):
+    return Path(pdf).read_bytes().split(b'\n',1)[0].strip().decode('ascii')
+
+
+def operator_nesting(pdf,pages):
+    """PDF 1.x operator nesting of whole edited-page programs.
+
+    Whole programs are attributable to pdfengine only because the reviewed
+    source pages are clean (checked once on the source); any violation then
+    is pdfengine's, and the save is not accepted.
+    """
+    reader=PdfReader(pdf);result={}
+    for page in pages:
+        report=nesting_audit(reader.pages[int(page)-1].get_contents().get_data())
+        if report['violations']:
+            raise ValueError(f'operator nesting violated on page {page}: '+json.dumps(report['violations'][:3]))
+        result[str(page)]=dict(text_objects=report['text_objects'],violations=0)
+    return result
+
+
 def tools():
     poppler=subprocess.run([str(renderer_paths.DEFAULT_POPPLER),'-v'],capture_output=True,timeout=60)
     extractor=subprocess.run([str(extractor_paths.DEFAULT_PYPDF),'-c','import sys,pypdf;print(pypdf.__version__,sys.version.split()[0])'],
@@ -195,6 +216,10 @@ def run(directory):
     extra='確認した空き領域へ同じ文章の続きを配置し、再編集と保存後の文字位置を確認します。'*2
     source_aliases={p:{e['alias'] for e in v} for p,v in inventory(SOURCE,source=SOURCE)['pages'].items()}
     baseline=resources(SOURCE,state,destination,source_aliases)
+    try:source_nesting=operator_nesting(SOURCE,EDITED)
+    except ValueError as exc:
+        raise ValueError('reviewed source pages already violate operator nesting; pdfengine output cannot be attributed') from exc
+    source_header=pdf_header(SOURCE)
     stages=[];pdf=SOURCE;previous=creation=None;previous_sizes=baseline
     for name in STAGES:
         noop=name.startswith('noop')
@@ -233,6 +258,10 @@ def run(directory):
                 planned_glyph_fields_equal=list(GLYPH_FIELDS),planned_glyphs=sum(map(len,glyphs(report))))
         proof=audit(pdf,out,updated,initial,report,directory/(name+'-audit'),original_text,noop=noop,
                     owned=state.get('generated_fonts',{}))
+        # pdfengine keeps q/Q/cm outside text objects on every page it edits,
+        # and keeps the source's PDF version.
+        nesting=operator_nesting(out,EDITED)
+        if pdf_header(out)!=source_header:raise ValueError('saving changed the PDF version')
         sizes=resources(out,updated,destination,source_aliases);outcome=report['generated_font_outcome']
         if noop:
             # An identical re-save keeps every generated font object and adds none.
@@ -242,7 +271,7 @@ def run(directory):
         stages.append(dict(stage=name,status='passed',restored=True,slot_id=sid,saves=report['saves'],
             new_slots=sorted(report['plan']['new_slots']),
             generated_lines=len(updated['slots'][sid]['binding']['physical_layout']['lines']),**checks,**proof,
-            resources=dict(sizes,font_outcome=outcome)))
+            operator_nesting=nesting,pdf_header=pdf_header(out),resources=dict(sizes,font_outcome=outcome)))
         write(directory/'stages.json',stages);print(name,'passed',flush=True)
         pdf,state,previous,previous_sizes=out,updated,report,sizes
     # 245+160 chars exceed the ~271-char confirmed capacity by several lines.
@@ -253,8 +282,9 @@ def run(directory):
     if refused['reason']!=CAPACITY_REASON:
         raise ValueError('capacity negative control was refused for an unexpected reason: '+refused['reason'])
     if engine!={p.name:source_sha(p) for p in sorted((ROOT/'pdfeditor').glob('*.py'))}:raise ValueError('engine changed during evaluation')
-    return dict(schema='pdfengine-continuation-evaluation-2',status='passed',source_url=URL,source_sha256=SOURCE_SHA,
-        source_replay=replay,source_resources=baseline,stages=stages,negative_controls=[refused],destination=destination,
+    return dict(schema='pdfengine-continuation-evaluation-3',status='passed',source_url=URL,source_sha256=SOURCE_SHA,
+        source_replay=replay,source_resources=baseline,source_operator_nesting=source_nesting,source_pdf_header=source_header,
+        stages=stages,negative_controls=[refused],destination=destination,
         scope='one external LibreOffice paragraph, original slots on pages 4/5, reviewed empty area on existing page 6',
         providers=providers,provider_evidence_source=provider_evidence_source,
         environment=dict(engine_digest=hashlib.sha256(json.dumps(engine,sort_keys=True).encode()).hexdigest(),engine_sha256=engine,

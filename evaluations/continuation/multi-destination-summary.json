@@ -1,5 +1,5 @@
 {
-  "schema": "pdfengine-multi-destination-evaluation-1",
+  "schema": "pdfengine-multi-destination-evaluation-2",
   "status": "passed",
   "source_url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf",
   "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
@@ -40,6 +40,21 @@
       "page6-b": 0
     }
   },
+  "source_operator_nesting": {
+    "4": {
+      "text_objects": 56,
+      "violations": 0
+    },
+    "5": {
+      "text_objects": 83,
+      "violations": 0
+    },
+    "6": {
+      "text_objects": 85,
+      "violations": 0
+    }
+  },
+  "source_pdf_header": "%PDF-1.4",
   "sequential": [
     {
       "stage": "a-only",
@@ -57,8 +72,8 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 1419,
-            "bytes": 1419
+            "end": 1414,
+            "bytes": 1414
           }
         ]
       },
@@ -129,8 +144,23 @@
           }
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 58,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 85,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 86,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 367069,
+        "pdf_bytes": 367088,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -157,7 +187,7 @@
         "generated_fonts": 4,
         "generated_font_graph_objects": 24,
         "generated_block_bytes": {
-          "page6-a": 1419,
+          "page6-a": 1414,
           "page6-b": 0
         },
         "font_outcome": {
@@ -191,14 +221,14 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 4174,
-            "bytes": 4174
+            "end": 4181,
+            "bytes": 4181
           },
           {
             "region": "page6-b",
-            "start": 4174,
-            "end": 4583,
-            "bytes": 409
+            "start": 4181,
+            "end": 4585,
+            "bytes": 404
           }
         ]
       },
@@ -284,8 +314,23 @@
           }
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 60,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 87,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 89,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 377455,
+        "pdf_bytes": 377479,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -313,8 +358,8 @@
         "generated_fonts": 5,
         "generated_font_graph_objects": 30,
         "generated_block_bytes": {
-          "page6-a": 4174,
-          "page6-b": 409
+          "page6-a": 4181,
+          "page6-b": 404
         },
         "font_outcome": {
           "4": {
@@ -346,14 +391,14 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 6968,
-            "bytes": 6968
+            "end": 6987,
+            "bytes": 6987
           },
           {
             "region": "page6-b",
-            "start": 6968,
-            "end": 7919,
-            "bytes": 951
+            "start": 6987,
+            "end": 7945,
+            "bytes": 958
           }
         ]
       },
@@ -439,8 +484,23 @@
           }
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 62,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 89,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 93,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 379168,
+        "pdf_bytes": 379198,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -468,8 +528,8 @@
         "generated_fonts": 5,
         "generated_font_graph_objects": 30,
         "generated_block_bytes": {
-          "page6-a": 6968,
-          "page6-b": 951
+          "page6-a": 6987,
+          "page6-b": 958
         },
         "font_outcome": {
           "4": {
@@ -500,14 +560,14 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 8400,
-            "bytes": 8400
+            "end": 8431,
+            "bytes": 8431
           },
           {
             "region": "page6-b",
-            "start": 8400,
-            "end": 9628,
-            "bytes": 1228
+            "start": 8431,
+            "end": 9604,
+            "bytes": 1173
           }
         ]
       },
@@ -585,8 +645,23 @@
           "occupancy": null
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 64,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 91,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 98,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 376013,
+        "pdf_bytes": 376034,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -614,8 +689,8 @@
         "generated_fonts": 5,
         "generated_font_graph_objects": 30,
         "generated_block_bytes": {
-          "page6-a": 8400,
-          "page6-b": 1228
+          "page6-a": 8431,
+          "page6-b": 1173
         },
         "font_outcome": {
           "4": {
@@ -646,14 +721,14 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 11155,
-            "bytes": 11155
+            "end": 11198,
+            "bytes": 11198
           },
           {
             "region": "page6-b",
-            "start": 11155,
+            "start": 11198,
             "end": 12732,
-            "bytes": 1577
+            "bytes": 1534
           }
         ]
       },
@@ -739,8 +814,23 @@
           }
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 66,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 93,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 102,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 379071,
+        "pdf_bytes": 379089,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -768,8 +858,8 @@
         "generated_fonts": 5,
         "generated_font_graph_objects": 30,
         "generated_block_bytes": {
-          "page6-a": 11155,
-          "page6-b": 1577
+          "page6-a": 11198,
+          "page6-b": 1534
         },
         "font_outcome": {
           "4": {
@@ -801,14 +891,14 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 13949,
-            "bytes": 13949
+            "end": 14004,
+            "bytes": 14004
           },
           {
             "region": "page6-b",
-            "start": 13949,
-            "end": 15888,
-            "bytes": 1939
+            "start": 14004,
+            "end": 15912,
+            "bytes": 1908
           }
         ]
       },
@@ -943,8 +1033,23 @@
           }
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 68,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 95,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 106,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 379299,
+        "pdf_bytes": 379319,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -972,8 +1077,8 @@
         "generated_fonts": 5,
         "generated_font_graph_objects": 30,
         "generated_block_bytes": {
-          "page6-a": 13949,
-          "page6-b": 1939
+          "page6-a": 14004,
+          "page6-b": 1908
         },
         "font_outcome": {
           "4": {
@@ -1005,14 +1110,14 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 16743,
-            "bytes": 16743
+            "end": 16810,
+            "bytes": 16810
           },
           {
             "region": "page6-b",
-            "start": 16743,
-            "end": 19044,
-            "bytes": 2301
+            "start": 16810,
+            "end": 19092,
+            "bytes": 2282
           }
         ]
       },
@@ -1147,8 +1252,23 @@
           }
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 70,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 97,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 110,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 379600,
+        "pdf_bytes": 379618,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -1176,8 +1296,8 @@
         "generated_fonts": 5,
         "generated_font_graph_objects": 30,
         "generated_block_bytes": {
-          "page6-a": 16743,
-          "page6-b": 2301
+          "page6-a": 16810,
+          "page6-b": 2282
         },
         "font_outcome": {
           "4": {
@@ -1209,14 +1329,14 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 19537,
-            "bytes": 19537
+            "end": 19616,
+            "bytes": 19616
           },
           {
             "region": "page6-b",
-            "start": 19537,
-            "end": 22200,
-            "bytes": 2663
+            "start": 19616,
+            "end": 22272,
+            "bytes": 2656
           }
         ]
       },
@@ -1351,8 +1471,23 @@
           }
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 72,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 99,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 114,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 379897,
+        "pdf_bytes": 379923,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -1380,8 +1515,8 @@
         "generated_fonts": 5,
         "generated_font_graph_objects": 30,
         "generated_block_bytes": {
-          "page6-a": 19537,
-          "page6-b": 2663
+          "page6-a": 19616,
+          "page6-b": 2656
         },
         "font_outcome": {
           "4": {
@@ -1418,14 +1553,14 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 2779,
-            "bytes": 2779
+            "end": 2774,
+            "bytes": 2774
           },
           {
             "region": "page6-b",
-            "start": 2779,
-            "end": 3188,
-            "bytes": 409
+            "start": 2774,
+            "end": 3178,
+            "bytes": 404
           }
         ]
       },
@@ -1511,8 +1646,23 @@
           }
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 58,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 85,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 87,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 375183,
+        "pdf_bytes": 375202,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -1540,8 +1690,8 @@
         "generated_fonts": 5,
         "generated_font_graph_objects": 30,
         "generated_block_bytes": {
-          "page6-a": 2779,
-          "page6-b": 409
+          "page6-a": 2774,
+          "page6-b": 404
         },
         "font_outcome": {
           "4": {
@@ -1573,14 +1723,14 @@
           {
             "region": "page6-a",
             "start": 0,
-            "end": 5573,
-            "bytes": 5573
+            "end": 5580,
+            "bytes": 5580
           },
           {
             "region": "page6-b",
-            "start": 5573,
-            "end": 6344,
-            "bytes": 771
+            "start": 5580,
+            "end": 6358,
+            "bytes": 778
           }
         ]
       },
@@ -1715,8 +1865,23 @@
           }
         }
       },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 60,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 87,
+          "violations": 0
+        },
+        "6": {
+          "text_objects": 91,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
       "resources": {
-        "pdf_bytes": 377685,
+        "pdf_bytes": 377712,
         "page_font_resources": {
           "4": 8,
           "5": 9,
@@ -1744,8 +1909,8 @@
         "generated_fonts": 5,
         "generated_font_graph_objects": 30,
         "generated_block_bytes": {
-          "page6-a": 5573,
-          "page6-b": 771
+          "page6-a": 5580,
+          "page6-b": 778
         },
         "font_outcome": {
           "4": {
@@ -1960,7 +2125,7 @@
     "sha256": "c2329afaefcfcb93ff4d57920d0a3e081dd2b0743bc41bf805bddf9168b6c7c2"
   },
   "environment": {
-    "engine_digest": "564da875826429f82fc018f6f856d10af191970f473d4bc0b7c0c481040e44a1",
+    "engine_digest": "341859e13035bfd6a85f04b33f7fe0c7f95b708cf97b8b13548db771d8f079e4",
     "engine_sha256": {
       "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
       "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
@@ -1969,15 +2134,15 @@
       "attributed.py": "bd1612558a8da9296ef90f6fdc7b50a78ad53d7329667241a6b7809880e84696",
       "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
       "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
-      "composition.py": "027cc84733e17ddcce62e767cfba160e49820f003c56b03fb9c5aee2546a9705",
+      "composition.py": "61791f593714ad4529f851e413b48590c22ad87dde45acfbd083f445111f430a",
       "content_stream.py": "94e274c23d56eb154846b165f405f7ab766a63e44bf3dad065a1367e8cca2a0c",
-      "continuation.py": "22194d1fa686cd605389894e677d1b50ea6df9e4693b5dd378e6d5b2802d83e9",
+      "continuation.py": "97765c425e15850db9e302347283b54a21a65571911cae688b1ce639f2af0865",
       "destination_style.py": "2e47cf2507045d9eb93c465acf0abb942d3a69702bb85805af80524f74b41d09",
       "document_flow.py": "bf3b6149039337dd3481e7402a8ab187665cadf59abbfea8088de9761e30de17",
       "editable.py": "d153f340a81050e6113c909b1aefb9b55bdffde4019d25f22d0915e5d796acba",
-      "elements.py": "e0d9c0ee0615d04168ec4a1ad7e044a949b7254746754c366e63b9ee3b374949",
+      "elements.py": "8f29198de4043efff9f8c099ad796b8cd27b4404fc7df79a7446934702ba0011",
       "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
-      "explicit_reflow.py": "39ce7f3ada87bb28aa86423dcdf0617e7d791153b1d9f8e572579c004a3f6d51",
+      "explicit_reflow.py": "845c910e8c31a76f8c6e3b33efa0fc50f548888874b25d22a8916ca4a55a2c7b",
       "flow_transaction.py": "2a334c2b0688f7ac9eb444c0d18fccc1bacf60b418190b1c4b4638f2073ca957",
       "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
       "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
@@ -1987,12 +2152,13 @@
       "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
       "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
       "mutation.py": "13e0c537b88054f414f4d5b46db22d94141c469090c2361c1d7aee46b56948aa",
+      "operator_nesting.py": "18bda9e2d394fb3484592e719bc3dc81a6228a586d2a80c757203b320f73b7b6",
       "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
       "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
       "paint_resize.py": "b9bcb8a8da13f3317c37c54c3fa83f74f6de5fe97f89439f25559b78fc0e68f8",
-      "paragraph.py": "d403cad221d240df3f30242e1da3ea9c7a788f8b9c1aa4704aa34dfba5446f98",
+      "paragraph.py": "b217830d49031938b55b2adf667d7746f78b74bab043225eabe4ba35d7b79a20",
       "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
-      "pdf_save.py": "bc1e7868043370a1d017de00d31685cc9b4783beeaf4d727cb33fcddfacfd654",
+      "pdf_save.py": "e31772d2f1487abdc1063dd587d60702a48fe60f6285aaea2f8a2bfb3197c114",
       "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
       "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
       "rich_layout.py": "d8c9e52d184e3f75e1ac50f853e8a71c2053e0791bff27bfb24eff7a4f9bea70",
@@ -2007,7 +2173,7 @@
       "transaction.py": "ab1c88ee731d97bc65f15502669c483fdcde351166f319babd535656c1f2b597",
       "variable_container.py": "5c4e3336aa2187a37adf6d36bd2ccd3fb33c01e4ef7fbd4f24fe50708b98df82"
     },
-    "runner_sha256": "7c01283ea1d1d409dfaffb8f176d5a1b04942cefd1c2d95b49da9c3dc5b8a0df",
+    "runner_sha256": "a9c65e1bbed7414e967b16f2b5cf52d916748fa05dc88fda9b52c9a4062ed701",
     "evaluation_dependencies_sha256": {
       "evaluations/story_flow/evaluate.py": "4fc0d79e9a8de23ec3de916fdb6c32831669969894ce66bcf2899a842a5274f9",
       "evaluations/story_styles/evaluate.py": "51f5d1a048b46536286abfa6e5216e9958d9963bd315aac08616e32de2ee884c",
@@ -2018,7 +2184,7 @@
       "evaluations/realpdf/evaluate.py": "7f4754523b1849b4f744ba9a11841a9be1c6bc2d2fdcdee3c7e4706beb908a18",
       "evaluations/realpdf/independent_extract.py": "435766089686f927c6bc72aa8da4463ab48c3ef1b305c7cc08442a10dd3bacdb",
       "evaluations/continuation/resources.py": "4c55b9fa04584064f1ffdb65f074f0f2c8ff152538461d07580f9618196d0f93",
-      "evaluations/continuation/evaluate.py": "dd6d53295ac82b96baee723bf41e2b11044453f452e31783a44a7b47d3b4f402"
+      "evaluations/continuation/evaluate.py": "468f658ef540a7df4d0be18eff8c5321ba763bdf330d3086a1eebb10375cce3b"
     },
     "python": "3.12.14",
     "platform": "Windows-11-10.0.26200-SP0",

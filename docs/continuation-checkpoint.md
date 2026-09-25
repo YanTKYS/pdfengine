@@ -1,6 +1,6 @@
 # Continuation開発の再開地点 — 2026-09-24
 
-**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」の節を参照。以下の各節は、その時点の記録として残す。
+**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。その後、writerがtext object内に`q`/`Q`を出していた問題を直し、出力のPDF versionを元PDFと同じにして、両方の外部評価をやり直した。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」「PDF operator nestingの正規化」の節を参照。以下の各節は、その時点の記録として残す。
 
 利用者の「最短の区切りでコミット」指示による途中保存。起点は`02a526ff2781ae80551f2ad4367f6f8d50c2b430`。サブエージェントは使用していない。
 
@@ -247,12 +247,146 @@ page-program先頭以外のcontent-stream境界へ、独立した挿入authority
 - **text object内のq/Q**: 生成blockは`q BT q 0 Tc 0 Tw 0 Ts … Q ET Q`の形で、text object内に`q`/`Q`を含む。
   - これはsource slotの再編集と共用するglyph writer（`paragraph.py`）に由来する。再編集した4・5ページでも、既存のtext object内に同じ`q … Q`が入る。原本にはない。PR #8以前からの性質である。
   - ISO 32000-1の図9（graphics objects）では、text object内で使えるoperatorに特殊graphics state（`q`/`Q`/`cm`）は含まれない。
-  - MuPDF・Poppler・pypdfは受理し、画素・抽出・照合に影響はなかった。今回は変更していない。
+  - MuPDF・Poppler・pypdfは受理し、画素・抽出・照合に影響はなかった。このsessionでは変更していない。
+  - 後に修正した（[PDF operator nestingの正規化](#pdf-operator-nestingの正規化--2026-09-25c4ea5fb)）。
 - **生成blockの増加**: 置き換えた文字の非描画operatorにより、生成blockは保存ごとに増える（`page6-a`は1,419 → 19,537 byte）。単一destinationと同じ既存writerの性質である。
 
 ### 次の最小の構造障壁
 
 変わらない。page-program先頭以外のcontent-stream境界へ、独立した挿入authorityを与えることである。途中の境界では、その位置で有効なCTM・clip・ExtGState・text stateと、後続paintとの順序を、境界ごとの証跡として確認する必要がある。
+
+## PDF operator nestingの正規化 — 2026-09-25（`c4ea5fb`）
+
+起点はPR #9のmerge commit `c4ea5fb`。サブエージェントは使用していない。新しい編集機能は加えていない。PR #9の外部評価で観測した「text object内の`q`/`Q`」を修正した。pdfengineが生成・再編集するcontent streamを、出力PDFのversionのoperator nesting規則に合わせた。page-program先頭以外の挿入authorityには進んでいない。契約は[PDF 1.xのoperator nesting](confirmed-continuation.md#pdf-1xのoperator-nesting)にある。
+
+### 開始時の確認
+
+| 項目 | 結果 |
+|---|---|
+| HEAD | `c4ea5fb65f2bc60bb1e835a8fe82ed988521dcc8`。作業ツリーはclean |
+| 環境 | Windows 11 x64（10.0.26200）、Python 3.12.14、PyMuPDF 1.27.2.3、pypdf 6.10.0 |
+| engine digest（開始時） | `564da875…44a1`（44ファイル）。PR #8・#9と同じ |
+| 外部原本のversion | `%PDF-1.4`（catalogに`/Version`なし）。4〜6ページはPDF 1.xの入れ子規則を満たす（text object 56・83・85、違反0） |
+| 保存後のversion | 常に`%PDF-1.3`。pypdfの`PdfWriter(clone_from=...)`が既定のheaderを書くためで、1.4の透明度groupを持つ原本でも1.3に下がっていた |
+| 意図するversion | 元PDFと同じ。この変更でheaderを保つようにした |
+
+### 仕様上の契約
+
+- **PDF 1.x**: PDF Reference 1.4の4.1節Figure 4.1（ISO 32000-1の8.2節Figure 9も同じ）で、text object内に置けるのは一般graphics state・色・text state・text位置・text表示・marked contentのoperatorである。特殊graphics state（`q`・`Q`・`cm`）はpage記述レベルだけに置ける。marked-content sequenceとtext objectはそれぞれ正しく入れ子にする（PDF Reference 9.5節）。
+- **PDF 2.0**: ISO 32000-2（errata適用後）では、text object内の`q`/`Q`も許され、そこでは`Tm`/`Tlm`も保存・復元される。
+- **選択**: pdfengineは元のversionを保つため、1.xの形で書く。versionを上げて現在のbytesを通す方法は取らない。rendererの受理は仕様の代わりにしない。
+
+### root cause
+
+paragraph writer（`paragraph.py`）は、新しい文字のtext state（font・size・Tz・Tc・Tw・Ts・fill）を`q ... Q`で隔離し、選択した最初のtext operatorの直後、つまり既存text objectの内側へ挿入していた。
+
+- **source paragraphの再編集**: `BT ... [書き換えたoperator] q ... Q Tm TJ ... ET`になっていた。`Q`の後の`Tm`と`TJ`は、PDF 1.xの`q`/`Q`が保存しない`Tm`/`Tlm`を明示的に戻していた。
+- **生成block**: 同じglyph writerの出力を包み、`q BT q ... Q ET Q`になっていた。
+- **dormant styleのwitness**: `q Tf Tz Tc Ts Tm [] TJ Q`をtext object内に置いていた。
+- **同じ原因の他のwriter**: `compose_selected`（`q ... Q`）、`edit_reflow`（`q ... Q`）、要素の平行移動（text operatorを`q 1 0 0 1 dx dy cm ... Q`で包む）も同じだった。pathを包む`q ... Q`（下線・path移動・paint resize）はpage記述レベルにあり、規則に合っている。
+- **調査**: このほかにpdfengineがtext object内へ出すoperatorは`Tf`・`Tz`・`Tc`・`Tw`・`Ts`・`Tm`・`Tj`・`TJ`・`g`・`rg`・`k`で、どれも1.xでtext object内に置ける。
+
+### 変更
+
+- **`pdfeditor/operator_nesting.py`**（新規）: 既存の`operators()`を使う狭い検査。
+  - `audit()`: text objectの入れ子、`q`/`Q`の対応、text object内の特殊graphics stateとpage記述レベル専用のoperator、marked contentとtext objectの交差を報告する。
+  - `text_object_split()` / `require_text_object_split()`: 編集位置でtext objectを閉じて開き直せるかを判定する。そのtext object内で開いた`q`・marked content・`BX`が開いたままの場合と、clipping描画モード（Tr 4〜7）の文字がある場合は拒否する。
+- **`pdfeditor/paragraph.py`**:
+  - source再編集では、書き換えたoperatorの後に`ET`、新しい文字と各witnessを独立した`q BT ... ET Q`、`BT`、元のline matrixの`Tm`と数値`TJ`を置く。
+  - 生成blockは`q BT ... ET Q`にした。
+- **`pdfeditor/composition.py`**: 同じ分割にした。
+- **`pdfeditor/explicit_reflow.py`**: 状態を変えない`q`/`Q`を除いた。挿入が直前のoperatorに連結しないよう、先頭に空白を置いた。
+- **`pdfeditor/elements.py`**: text-moveを`ET q cm BT <復元> op ET Q BT <復元>`にした。`'`/`"`は、残したoperatorが`T*`を行うため1行上の行列から開き直す。
+- **`pdfeditor/continuation.py`**:
+  - blockの検証をoperatorの構造で行う。外側の`q ... Q`はblockの最後でだけ閉じる。text objectの入れ子がない。`Tm`/`Tj`/`TJ`はtext object内だけにある。text object内に`q`/`Q`はない。
+  - 新しいbindingは`operator_nesting = pdf-1.x-text-objects`を記録する。記録のない旧bindingのblockは旧規則で検証する。
+- **`pdfeditor/pdf_save.py`**: 元PDFのheader（version）を保つ。
+- **engine digest**: `341859e13035bfd6a85f04b33f7fe0c7f95b708cf97b8b13548db771d8f079e4`（45ファイル）。
+
+### text / line matrixの復元
+
+- **状態の復元**: 分割の直前、source text objectの中で書き換えたoperatorを実行する。text表示operatorはgraphics stateを変えない。そのため`q`の時点の状態は、選択した最初のoperatorの状態と同じである。`Q`は、font・size・Tc・Tw・Tz・TL・Ts・Tr・fill/strokeの色と色空間・CTM・clip・ExtGStateをそのまま戻す。
+- **Tm / Tlmの復元**: 開き直した`BT`は`Tm`と`Tlm`だけを単位行列にする。直後の`Tm`で両方を元のline matrixにし、数値だけの`TJ`で`Tm`を元のoperatorの後の位置へ進める。
+  - `TJ`の数値は`Q`で戻った元のsizeとTzで換算する。`Tc`/`Tw`は数値だけの`TJ`に影響しない。
+  - `'`と`"`は、書き換えたoperatorの中で`T*`を実行した後の行列を使う。
+- **確認**: 合成PDFの回帰（`test_source_rewrite_isolates_new_text_and_keeps_following_cursor_and_state`）で、非既定のTc・Tw・Tz・Ts・TL・fill・strokeの後に編集し、後続のoperatorを比べた。対象は`Tj`・`Td`・`T*`・`'`・`"`・`TJ`で、次がすべて一致した。
+  - text matrix・line matrix。
+  - font・size・Tc・Tw・Tz・Ts・TL・Tr・色・CTM。
+  - code、glyph origin、trace上の観測。
+- **精度**: 復元する`TJ`は12桁で書くため、位置は約1e-5 pt以内で一致する。以前のwriterと同じ方法である。外部原本では、全保存の監査画像が以前のengineの画像と同じbytesだった。
+
+### 旧形式の出力
+
+実際に、PR #9のengine（`c4ea5fb`のworktree）で合成PDFのshared flowを保存した。その出力（`fits`・`grow`・`shorten`）を最終engineで扱った。
+
+- **検査**: どれもtext object内の`q`/`Q`で違反した。source slotのページと生成blockの両方である。
+- **open**: `open_shared_flow`は`restored`になった。bindingに記録がないため、blockを旧規則で検証する。
+- **再保存**: no-op・再編集とも、`cannot isolate new text: a graphics-state save ... opened inside this text object is still open`で拒否し、PDF・sidecarを公開しなかった。
+- **所有の証明**:
+  - 生成blockの`q`/`Q`は、marker対・binding・block hash・作成証跡でpdfengineの所有を証明できる。
+  - source slotの再編集で入った`q`/`Q`は、sidecarに対応する記録（mutation mapなど）が保存されていない。byteの形から推測することはしない。
+  - shared flowの保存はparagraphのすべてのslotを書き直す。そのため、blockだけを正規化しても保存は成立しない。
+  - 旧形式の書き換え（migration）は行わず、旧形式はopen専用とした。準拠した出力が必要なら元PDFから編集し直す。この変更後のengineが元PDFから作る出力は、何回保存しても規則を満たす。
+
+### 検証（Windows 11 x64、Python 3.12.14、lockfileの版）
+
+以下はすべて最終engine（digest `341859e1…79e4`）の結果である。
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_operator_nesting.py`（新規） | 30 passed |
+| `tests/test_multi_destination.py`・`test_mutation.py`・`test_continuation.py`・`test_generated_fonts.py`と上記 | 87件中86 passed（1,763.58秒）。失敗1件は、単一destinationのbindingのkey集合を固定する試験で、`operator_nesting`が加わったためである。期待値を更新し、追加した改ざんvariantとともに再実行して通った |
+| 全suite `python -m pytest -q` | 698件中691 passed / 7 skipped / 0 failed（5,239.87秒、1回の実行） |
+| 外部原本 単一destination（run `nesting-single-windows`） | 全段階・no-op 3回・容量拒否が通過（4,222.67秒） |
+| 外部原本 同一ページ2 destination（run `multi-nesting-windows`） | 逐次8段階・同時2段階・容量拒否が通過（4,515.36秒）。`simultaneous_equals_sequential = true` |
+
+- **全suiteの条件**: 既定の一時directoryへ書けないため、`--basetemp`をrepo内の`tmp/`にした。`--junitxml`と`-p no:cacheprovider`を加えた。
+- **skip 7件**: 未取得の外部corpus 5件と、AES provider不在2件で、どれも環境要因である。
+- **試験の追加**（`tests/test_operator_nesting.py`）:
+  - 検査の単体試験: 違反の種類と、分割できる位置・できない位置。
+  - source paragraphの再編集: 後続のoperatorのcursor・状態・glyphが変わらない（前節）。
+  - 分割できない場合の拒否: text object内で開いた`q`、`BDC`、clip文字。いずれも何も公開しない。
+  - dormant styleのwitness: 独立した`q BT ... ET Q`の中にある。
+  - PDF version: `%PDF-1.4`・`%PDF-1.7`の原本からの保存で、versionが変わらない。
+  - `compose_selected`（`Tj`・`'`・`"`）と要素の平行移動の出力が規則を満たし、後続の文字が動かない。
+  - blockの検証: 新形式、旧形式、閉じ方の誤り。
+- **lifecycle試験への組み込み**: `test_continuation.py`と`test_multi_destination.py`の保存helperは、保存した全revisionについて次を確かめる。
+  - 全ページが規則を満たす。
+  - PDF versionが変わらない。
+  - 生成blockのbindingが`operator_nesting`を記録する。
+  - これにより、次の既存試験が入れ子の回帰を兼ねる: 4 alignmentの系列、tracking/rise、shorten→dormant→regrow、2 destination（同時・逐次・逆順、3 block）、no-op 3回、生成fontの寿命。
+  - `test_multi_destination.py`の改ざん試験には、block内のtext objectへ`q`/`Q`を入れたvariantを加えた。
+- **補助の走査**: 試験が残したPDF 878個を`audit()`で走査した。違反があったのは次だけで、pdfengineのwriterの出力にはなかった。
+  - 意図的に不正な試験原本。
+  - `tests/test_mutation.py`がmutation mapの試験のために手書きした入力。
+- **外部原本**: 評価コードは、各保存で編集した4〜6ページの入れ子とPDF versionを照合し、集計に記録する。詳細は[評価README](../evaluations/continuation/README.md#operator-nesting正規化後の再評価)にある。
+  - 原本・provider・Poppler・独立pypdfは前回と同じで、照合も一致した。
+  - **両run**: 全保存で入れ子の違反は0で、出力は`%PDF-1.4`だった。前回まで出力は`%PDF-1.3`だった。
+  - **単一destination**: allocation（209字＋36字・2行）、生成slot ID、font/resource数、aliasごとのfont出力は前回と同じだった。no-op 3回で全10ページの画素と計画glyph 245個が一致し、容量拒否の理由も一致した。
+  - **2 destination**: 次が前回と同じだった。
+    - 有効destination・新block・allocation・font出力。
+    - 作成位置。`page6-b`は直前revisionの`page6-a`の終端（1,414）に作られた。
+    - chain順序（10 → 20）。
+    - 同時と逐次の一致。
+    - 各region外（region間の1.5ptを含む）の差分0。
+  - **画像**: 監査画像は、単一の84枚、2 destinationの116枚がすべて、前回のrunの画像とPNGのbytesまで一致した。writerの構造は変わったが、描画は1画素も変わっていない。PDF・sidecarのbytesは、構造が変わったため一致しない。
+- **目視**: 次の切出しを確認した。どれも前回の切出しとbytesまで同じで、位置のずれ、region間の隙間への侵入、dormantの`page6-b`の文字残りはなかった。
+  - 4・5ページのsource再編集、6ページの生成先、shorten、regrow（300dpi）。
+  - 2 destinationの隙間（600dpi）。
+- **公開**: 2つのrunの集計を`summary.json`と`multi-destination-summary.json`として公開した。
+
+### 残る問題
+
+- **text knockout**: 分割はtext objectを増やす。透明度groupのtext knockout（ExtGState `/TK`）では、同じtext object内の文字同士の扱いが変わりうる。新しい文字は保護検査で既存の文字と重ならないため、pdfengineの出力では差が出ない。この点は明示的には扱っていない。
+- **分割の拒否**: 次のsourceでは、以前は編集できた位置を、今回から拒否する。
+  - text object内で`q`や`BDC`を開いたままの位置（非準拠のsourceやtagged PDFの一部）。
+  - clip文字を含むtext object。
+- **test_mutationの入力**: `tests/test_mutation.py`はmutation mapの単体試験のために、text object内の`q ... cm ... Q`を手書きで作る。writerの出力ではないので変更していない。
+- **生成blockの増加**: 非描画operatorの累積は変わらない。分割のため、text objectの数も保存ごとに2つ増える。
+
+### 次の最小の構造障壁
+
+変わらない。page-program先頭以外のcontent-stream境界へ、独立した挿入authorityを与えることである。その境界で有効なCTM・clip・ExtGState・text stateと後続paintとの順序を、境界ごとの証跡として確認する必要がある。今回の分割は、既存text objectの中で新しい文字を隔離する位置を1.xに合わせたもので、任意の境界への挿入権限ではない。
 
 ## 再評価の手順
 

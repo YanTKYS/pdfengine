@@ -1,11 +1,11 @@
 # 確認済み空き領域へのcontinuation評価
 
-**外部原本で評価済み（2026-09-25、PR #8の最終engine）**。engine digest `564da875826429f82fc018f6f856d10af191970f473d4bc0b7c0c481040e44a1`で、次の2本を同じWindows検証環境で実行し、どちらも全段階と容量拒否が通った。
+**外部原本で評価済み（2026-09-25、operator nestingを正規化したengine）**。engine digest `341859e13035bfd6a85f04b33f7fe0c7f95b708cf97b8b13548db771d8f079e4`で、次の2本を同じWindows検証環境で実行し、どちらも全段階と容量拒否が通った。各保存では、編集した4〜6ページがPDF 1.xのoperator nestingを満たすこと、出力のPDF versionが原本と同じ（`%PDF-1.4`）であることも照合した。
 
-- **単一destination**（run `pr8-single-windows`）: PR #7以前から成立していた系列を再実行した。7保存のPDF・sidecarが、PR #7のengineのrun `font-lifecycle-windows-3`とbyte単位で一致した。[公開集計](summary.json)はこのrunの集計である。結果は[下記](#pr-8-engineでの単一destination再評価)。
-- **同一ページ2 destination**（run `multi-pr8-windows`）: 確認済みの6ページ領域を評価者が2つのregionへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。結果は[下記](#外部原本の結果)。
+- **単一destination**（run `nesting-single-windows`）: allocation・生成slot・font/resource数は以前と同じだった。監査画像は、以前のengineの画像とPNGのbytesまで一致した。[公開集計](summary.json)はこのrunの集計である。
+- **同一ページ2 destination**（run `multi-nesting-windows`）: 確認済みの6ページ領域を評価者が2つのregionへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
 
-どちらも単一外部原本の1 paragraphと、評価者が確認した1つの空き領域に対する境界評価である。一般PDFの成功率や、任意のPDFで複数destinationが動くことを示すものではない。PR #7・PR #6のengineでの結果は[履歴](#pr-7-engineの結果)として残す。
+結果は[operator nesting正規化後の再評価](#operator-nesting正規化後の再評価)にある。どちらも単一外部原本の1 paragraphと、評価者が確認した1つの空き領域に対する境界評価である。一般PDFの成功率や、任意のPDFで複数destinationが動くことを示すものではない。PR #8・PR #7・PR #6のengineでの結果は[履歴](#pr-8-engineでの単一destination再評価)として残す。
 
 既存corpusのLibreOffice移行資料を使用する。対象は前段階と同じ4/5ページの混合書式paragraph、生成先は目視確認した6ページ上部左側の空き領域`[55,80,385,120]`。右上の図版は固定・保護する。領域・描画順序の判断は評価者の明示指定であり、engineによる意味推定ではない。
 
@@ -46,6 +46,8 @@
   - CID/GID/`W`とfont対応を確認する。
   - 元font resource、text以外のpaint、画像、annotationが変わらない。font指紋の比較で除外するのは、この保存の計画glyphが使うaliasと、直前revisionの検証済み記録（`generated_fonts`）がpdfengine生成と証明し、この保存が置き換えたaliasだけである。
   - font inventory（[resources.py](resources.py)）: 各ページの`/Font`は、元PDFと同じaliasで同じ書込値の元fontと、記録で所有を証明した生成fontだけからなる。記録のないfontが1つでもあれば停止する。
+  - operator nesting（[operator_nesting.py](../../pdfeditor/operator_nesting.py)）: 編集した4〜6ページのprogram全体が、PDF 1.xの入れ子規則を満たす。text object内に`q`/`Q`/`cm`がなく、text objectとmarked contentが交差しない。確認済み原本の4〜6ページが規則を満たすことを最初に確かめるので、違反があればpdfengineが書いたものである。
+  - PDF version: 出力のheaderが原本と同じ（`%PDF-1.4`）である。
   - PDF byte数、4〜6ページの`/Font`数、ページごとの生成font数、文書全体のType0 font数、所有する生成fontの数とgraph object数、6ページの生成block byte数、aliasごとの結果（added / replaced / reused）を記録する。
 - no-op（regrowの後に3回。各回は直前の保存と比べる）:
   - 全ページでMuPDF・Popplerの全画素が一致する。
@@ -53,6 +55,85 @@
   - 計画glyphのUnicode・GID・origin・size・advance・code・CID・`W`幅が直前の保存と一致する。
   - font/resource数（`/Font`数、生成font数、Type0数、生成graph object数）が変わらず、全aliasが`reused`（新しいfont objectを書かない）で、生成font記録が変わらない。
 - 容量不足: 最終状態へ160字を加えると確認済み容量（約271字）を超え、最終PDF/sidecarを公開せずに拒否する。拒否されたことだけでなく、理由が確認済みregionを使い切ったこと（`paragraphs exceed all explicitly confirmed shared regions`）まで照合する。
+
+## operator nesting正規化後の再評価
+
+起点は`c4ea5fb`（PR #9のmerge）。サブエージェントは使用していない。
+
+- **engine**: writerを[PDF 1.xのoperator nesting](../../docs/confirmed-continuation.md#pdf-1xのoperator-nesting)に合わせ、出力のPDF versionを元PDFと同じにした（digest `341859e13035bfd6a85f04b33f7fe0c7f95b708cf97b8b13548db771d8f079e4`、45ファイル）。
+- **評価コード**: 各保存の照合にoperator nestingとPDF versionを加えた（`evaluate.py` SHA-256 `468f658e…ce3b`、`multi_destination.py` `a9c65e1b…d701`）。
+- **環境・入力**: 原本hash、provider照合（story_styles公開集計`c2329afa…c7c2`）、Poppler 26.07.0、独立pypdf 6.10.0は前回と同じである。
+- **原本**: 確認済み原本の4〜6ページはPDF 1.xの規則を満たす（text object 56・83・85、違反0、`%PDF-1.4`）。
+
+### 単一destination（run `nesting-single-windows`）
+
+全段階と容量拒否が通った（4,222.67秒）。[公開集計](summary.json)はこのrunの集計である。
+
+- **allocation・生成slot**: allocation（既存slot 209字、生成slot 36字・2行）と生成slot IDは前回と同じである。
+  - 作成証跡のdestination契約・owner・kind・offset 0（順序なし）も同じである。
+  - 作成mutationの長さとanchorは、blockのbytesが変わったため異なる（3,049 → 3,044 byte）。
+  - 単一destinationの従来形式（`page_entry_order`なし）も変わらない。
+- **font/resource**: 全保存でType0 4、所有する生成font 4（graph object 24）、4/5/6ページの`/Font` 8/9/8である。全段階のaliasごとの結果（added / replaced / reused）も前回と同じだった。
+- **no-op 3回**: 全10ページでMuPDF・Popplerの全画素が一致した。計画glyph 245個の全fieldが一致し、全aliasが`reused`だった。
+- **容量拒否**: `paragraphs exceed all explicitly confirmed shared regions`で拒否した。PDF・sidecarは作られていない。
+- **operator nesting**: 全保存で4〜6ページの違反は0である。text objectは保存ごとに増える。source再編集とblockの再編集がそれぞれtext objectを3つに分けるためである。
+- **PDF version**: 全保存の出力が`%PDF-1.4`（前回までの出力は`%PDF-1.3`）。
+- **画像**: 監査画像84枚（各段階の前後）が、前回のrun `pr8-single-windows`の画像とPNGのbytesまで一致した。
+- **PDFの差**: PDFとsidecarは、構造が変わったため以前のengineとbyte単位では一致しない。
+
+| 保存 | text object（4/5/6ページ） | 違反 | PDF byte（前回 → 今回） | 生成block byte（前回 → 今回） |
+|---|---|---|---|---|
+| 原本 | 56 / 83 / 85 | 0 | 369,912 | 0 |
+| overflow | 58 / 85 / 86 | 0 | 371,035 → 371,054 | 3,049 → 3,044 |
+| second | 60 / 87 / 88 | 0 | 374,256 → 374,281 | 6,305 → 6,312 |
+| shorten | 62 / 90 / 91 | 0 | 365,512 → 365,519 | 6,646 → 6,600 |
+| regrow | 64 / 92 / 93 | 0 | 374,259 → 374,277 | 9,626 → 9,592 |
+| no-op 1 | 66 / 94 / 95 | 0 | 374,492 → 374,510 | 12,702 → 12,680 |
+| no-op 2 | 68 / 96 / 97 | 0 | 374,815 → 374,826 | 15,778 → 15,768 |
+| no-op 3 | 70 / 98 / 99 | 0 | 375,105 → 375,117 | 18,854 → 18,856 |
+
+補助確認として、保存済みの成果物を一時スクリプトで読み直した。これは評価コード外の確認で、スクリプトはcommitしていない。
+
+- **blockの構造**: pypdfの分解器で、各保存の6ページblockを確かめた。外側の`q ... Q`はblockの最後でだけ閉じ、text object内に`q`/`Q`はなく、`Tm`/`Tj`/`TJ`はtext object内だけにある。
+- **ページの入れ子**: engineとは別の分解器で、4〜6ページの入れ子規則を確かめた。数えたtext objectの数はengineの検査と一致した。
+- **blockの描画と文字**: blockだけを描いたページのインクは確認済み領域の内側にあり、shortenでは何も描かない。block内の文字はslotの文字と一致した。
+
+目視では、overflow・second・shorten・regrowの4〜6ページを300dpiの切出しで確認した。切出しは前回の切出しとbytesまで同じで、4・5ページのsource再編集と6ページの生成先に位置のずれはなかった。
+
+### 同一ページ2 destination（run `multi-nesting-windows`）
+
+単一destinationの再評価が通った後に実行した。全段階・同時生成・容量拒否が通り、`status = passed`、`simultaneous_equals_sequential = true`になった（4,515.36秒）。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+
+- **前回と同じもの**: 各段階の有効destination・新block・allocation・aliasごとのfont出力（added / replaced / reused）・Type0数（4、b-added以降5）。
+  - `page6-b`の作成位置は、直前revisionの`page6-a` blockの終端（1,414）である。chainは全保存でorder 10 → 20だった。
+  - `both`は2 blockをoffset 0の同位置ordered insertionで作り、逐次の`b-added`と有効destination・slot ID・allocation・chain順序・所有が一致した。
+- **operator nesting**: 全保存で4〜6ページの違反は0である。blockのbindingはすべて`operator_nesting = pdf-1.x-text-objects`を記録した。
+- **PDF version**: 全保存の出力が`%PDF-1.4`である。
+- **Poppler差分**: 各region（1pt余白込み）の外で、region間の1.5ptを含めて全保存0画素だった。
+- **no-op**: 逐次3回と同時系列の1回で、全10ページのMuPDF・Poppler全画素と、計画glyph 245個の全fieldが一致した。全aliasが`reused`だった。
+- **容量拒否**: `paragraphs exceed all explicitly confirmed shared regions`で拒否した。PDF・sidecarは作られていない。
+- **画像**: 監査画像116枚が、前回のrun `multi-pr8-windows`の画像とPNGのbytesまで一致した。
+
+| 保存 | chain（page-entry順、byte範囲） | text object（4/5/6ページ） | 違反 | PDF byte（前回 → 今回） |
+|---|---|---|---|---|
+| a-only | a[0,1414) | 58 / 85 / 86 | 0 | 367,069 → 367,088 |
+| b-added | a[0,4181) b[4181,4585) | 60 / 87 / 89 | 0 | 377,455 → 377,479 |
+| second | a[0,6987) b[6987,7945) | 62 / 89 / 93 | 0 | 379,168 → 379,198 |
+| shorten | a[0,8431) b[8431,9604) | 64 / 91 / 98 | 0 | 376,013 → 376,034 |
+| regrow | a[0,11198) b[11198,12732) | 66 / 93 / 102 | 0 | 379,071 → 379,089 |
+| no-op 1 | a[0,14004) b[14004,15912) | 68 / 95 / 106 | 0 | 379,299 → 379,319 |
+| no-op 2 | a[0,16810) b[16810,19092) | 70 / 97 / 110 | 0 | 379,600 → 379,618 |
+| no-op 3 | a[0,19616) b[19616,22272) | 72 / 99 / 114 | 0 | 379,897 → 379,923 |
+| both（同時） | a[0,2774) b[2774,3178) | 58 / 85 / 87 | 0 | 375,183 → 375,202 |
+| both → no-op | a[0,5580) b[5580,6358) | 60 / 87 / 91 | 0 | 377,685 → 377,712 |
+
+補助確認（同じ一時スクリプト、commitしていない）:
+
+- **blockの構造**: 各保存の2 blockは外側の`q ... Q`で閉じ、text object内に`q`/`Q`はなかった。text objectの数は、b-addedの時点で`page6-a` 3・`page6-b` 1で、no-op 3の時点で15・14になった。
+- **blockの描画と文字**: blockを1つだけ描いたページのインクは、`page6-a`がy 83〜93.5pt、`page6-b`がy 105〜115ptで、region間の隙間に入らない。dormantの`page6-b`は何も描かない。blockの文字はそれぞれのslotの文字と一致した。
+- **所有**: aliasとslotの対応（`/PRF1`は`page6-a`、`/PRF2`は`page6-b`）は全保存で変わらず、同時と逐次でも同じだった。
+
+目視では、逐次・同時の各段階の4〜6ページの300dpi切出しと、6ページの2 regionと隙間の600dpi切出しを確認した。どれも前回の切出しとbytesまで同じだった。行の位置、region間の隙間、dormant時の空白、図版と本来の文字に変化はなかった。
 
 ## PR #8 engineでの単一destination再評価
 
@@ -130,7 +211,9 @@ run `-3`のPoppler 144dpi画像は、各段階でPR #6 runの画像と全画素�
 
 ## 同一ページ2 destinationの評価
 
-**外部原本で評価済み（2026-09-25、run `multi-pr8-windows`）**。PR #8で用意した[評価コード](multi_destination.py)を変更せず、Windows検証環境の外部原本で実行した。結果は[下記](#外部原本の結果)にある。PR #8のsession（Linux container）では原本とproviderがなく実行できなかったため、その時点では合成原本のdry-runだけを行っていた（[下記](#dry-run合成原本外部原本の証跡ではない)。外部原本の証跡ではない）。
+**外部原本で評価済み**。PR #8で用意した[評価コード](multi_destination.py)を、Windows検証環境の外部原本で実行した。
+- **最初の評価**（2026-09-25、run `multi-pr8-windows`）: 評価コードは変更していない。結果は[下記](#外部原本の結果)。
+- **operator nesting正規化後の再評価**（run `multi-nesting-windows`）: 評価コードにnestingとversionの照合を加えた。結果は[再評価の節](#同一ページ2-destinationrun-multi-nesting-windows)。PR #8のsession（Linux container）では原本とproviderがなく実行できなかったため、その時点では合成原本のdry-runだけを行っていた（[下記](#dry-run合成原本外部原本の証跡ではない)。外部原本の証跡ではない）。
 
 ### 評価者の指定
 

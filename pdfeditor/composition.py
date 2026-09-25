@@ -278,7 +278,9 @@ def compose_selected(source, output, manifest, replacement, *, font_source, font
         while f"/PEF{alias_index}" in existing:
             alias_index += 1
         alias = f"/PEF{alias_index}"
-        commands = [b" q ", alias.encode(), b" ", number(state.size), b" Tf 0 Tc 0 Tw 0 Ts "]
+        # Isolated as its own text object in its own graphics-state save,
+        # outside the source text object (PDF 1.x, see operator_nesting).
+        commands = [b" ET q BT ", alias.encode(), b" ", number(state.size), b" Tf 0 Tc 0 Tw 0 Ts "]
         inverse = ~(pymupdf.Matrix(*state.ctm) * content.page.transformation_matrix)
         plan, ink = [], []
         for line, run in zip(layout.lines, runs):
@@ -312,7 +314,11 @@ def compose_selected(source, output, manifest, replacement, *, font_source, font
         delta = multiply(after_matrix, tuple(~pymupdf.Matrix(*first.line_matrix)))
         if abs(delta[5]) > .001 or any(abs(a-b) > 1e-5 for a,b in zip(delta[:4], (1,0,0,1))):
             raise PdfError("cannot restore both original text matrices after composition")
-        commands.extend((b"Q ", matrix_operator(first.line_matrix), b"["+number(-delta[4]/(state.size*state.tz/100)*1000)+b"] TJ "))
+        # The reopened text object starts at identity Tm/Tlm; Q restored the
+        # rest. Set the original line matrix, then advance the text matrix.
+        commands.extend((b" ET Q BT ", matrix_operator(first.line_matrix), b"["+number(-delta[4]/(state.size*state.tz/100)*1000)+b"] TJ "))
+        from .operator_nesting import require_text_object_split
+        require_text_object_split(content, first.operator.end)
         data = content.streams[virtual]
         for event in sorted(events, key=lambda e:e.operator.start, reverse=True):
             new = serialized_event(event, selected, remove=True)
