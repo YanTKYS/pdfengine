@@ -1,8 +1,13 @@
 # 既存ページ上の確認済みcontinuation destination
 
-**外部PDF評価済み（2026-09-24）**。Windows環境で、対象の外部LibreOffice PDFの1 paragraphについて系列評価を完了した。内容は、確認済みの6ページdestinationを使った`overflow → reopen → re-edit → shorten → regrow → no-op`と、容量拒否である。その後、再保存で生成fontが累積する問題を修正し（[下記](#生成fontの寿命)）、同じ系列をno-op 3回まで拡げて再評価した。最終engineでの全suiteは642 passed / 7 skipped / 0 failed（Windows）である。結果は[評価](../evaluations/continuation/README.md#現行の結果)と[公開集計](../evaluations/continuation/summary.json)にある。確認したのは単一原本・単一destinationの範囲であり、任意のPDFで自然な再レイアウトができることは示していない。経緯は[再開地点と検証状況](continuation-checkpoint.md)を参照。
+**外部PDF評価済み（2026-09-24）**。Windows環境で、対象の外部LibreOffice PDFの1 paragraphについて系列評価を完了した。内容は、確認済みの6ページdestinationを使った`overflow → reopen → re-edit → shorten → regrow → no-op`と、容量拒否である。その後、再保存で生成fontが累積する問題を修正し（[下記](#生成fontの寿命)）、同じ系列をno-op 3回まで拡げて再評価した。そのengineでの全suiteは642 passed / 7 skipped / 0 failed（Windows）である。確認したのは単一原本・単一destinationの範囲であり、任意のPDFで自然な再レイアウトができることは示していない。経緯は[再開地点と検証状況](continuation-checkpoint.md)を参照。
 
-その後、同じpage-entry authorityを**同一ページの複数destination**へ拡張した（[下記](#同一ページの複数destination)）。合成PDFの回帰とdry-runで確認した。外部原本での2 destination評価は、このsessionの実行環境に原本とproviderがないため**未実施**である。
+その後、同じpage-entry authorityを**同一ページの複数destination**へ拡張した（[下記](#同一ページの複数destination)）。合成PDFの回帰とdry-runに加え、**外部原本でも評価済み（2026-09-25）**である。拡張後の最終engineで、同じ外部原本について次の2本を実行し、どちらも通った。
+
+- **単一destination**: 上記の系列を再実行した。7保存のPDF・sidecarが拡張前のengineとbyte単位で一致した。
+- **同一ページ2 destination**: 確認済みの6ページ領域を評価者が2 destinationへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。
+
+結果は[評価](../evaluations/continuation/README.md#pr-8-engineでの単一destination再評価)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
 
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
 
@@ -124,7 +129,11 @@ original page program
   - shorten→dormant→regrow、各保存後の再open、no-op 3回（block順序・slot identity・marker・生成font数・画素）。
   - order・marker・chainの改ざん、destination同士・保護領域・固定paint・他destinationの生成glyphとの交差、後段failure時のrollback。
 - **MutationProgram**: 同位置insertionの規則は[tests/test_mutation.py](../tests/test_mutation.py)で確認する。
-- **外部評価**: [評価コード](../evaluations/continuation/multi_destination.py)は、単一destination評価で確認済みの6ページ領域`[55,80,385,120]`を評価者が2つのregionへ分割する。範囲外を新たに空きとは仮定しない。このsessionでは外部原本とproviderを取得できず、**実行していない**。同じ評価コードを合成原本で最後まで動かしたdry-runは、[評価README](../evaluations/continuation/README.md#同一ページ2-destinationの評価)にある。
+- **外部評価**（2026-09-25）: [評価コード](../evaluations/continuation/multi_destination.py)は、単一destination評価で確認済みの6ページ領域`[55,80,385,120]`を評価者が2つのregionへ分割する（`[55,80,385,100]` order 10、`[55,101.5,385,120]` order 20）。範囲外を新たに空きとは仮定しない。この評価コードをWindows検証環境の外部原本で実行し、全段階が通った（[結果](../evaluations/continuation/README.md#外部原本の結果)）。
+  - **逐次生成**: `page6-a`だけの生成 → 既存blockの後ろへの`page6-b`追加（作成位置は直前revisionの`page6-a`の終端）→ 再編集 → `page6-b`のdormant化 → 同じslot・blockへの復帰 → no-op 3回。
+  - **同時生成**: offset 0に同位置ordered insertionで2 blockを作り、order 10 → 20 → 元のpage programの順になった。逐次生成とallocation・chain順序・所有が一致した。
+  - **監査**: 各region外（region間の1.5ptを含む）のPoppler差分は全保存で0画素だった。6ページの生成fontはslotごとに所有され、入れ替わらなかった。
+  - **dry-run**: 合成原本で最後まで動かした結果も[評価README](../evaluations/continuation/README.md#同一ページ2-destinationの評価)に残す。
 
 ## 生成fontの寿命
 
@@ -142,7 +151,7 @@ original page program
 
 記録を持たない他の保存経路（単独paragraph編集、editable、story flow）は、従来どおり空いているaliasへ追加する。
 
-外部原本の系列で、Type0 fontは全保存で4個のままだった。所有する生成fontは4ページ1、5ページ2、6ページ1である。no-op 3回は新しいfont objectを書かず、全ページの画素・記録・計画glyphも不変だった。PDFはno-op 1で374,492 byte（PR #6では570,054 byte）になった。その後の増加（1回あたり約300 byte）は、page program内の非描画operatorによる。
+外部原本の系列で、Type0 fontは全保存で4個のままだった。所有する生成fontは4ページ1、5ページ2、6ページ1である。no-op 3回は新しいfont objectを書かず、全ページの画素・記録・計画glyphも不変だった。PDFはno-op 1で374,492 byte（PR #6では570,054 byte）になった。その後の増加（1回あたり約300 byte）は、page program内の非描画operatorによる。同一ページ2 destinationの外部原本評価では、6ページの生成fontがslotごとに1つ（計2つ）になり、Type0は5個だった。所有slotは全保存で入れ替わらず、no-opでは増えなかった。
 
 ## Transactionと評価
 
