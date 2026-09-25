@@ -212,6 +212,25 @@ class PaintChar:
 
 
 @dataclass
+class Boundary:
+    """State and structural scope right after one top-level page-program operator.
+
+    Recorded by the same walk that interprets the page; the boundary lies
+    between ``operator`` and the next top-level operator. ``state`` omits the
+    marked-content history, whose open depth is ``marked_content_depth``.
+    """
+    ordinal: int
+    operator: Operator
+    state: State
+    q_depth: int
+    text_object: bool
+    marked_content_depth: int
+    compatibility_depth: int
+    pending_path: bool
+    pending_clip: bool
+
+
+@dataclass
 class TextEvent:
     id: str
     stream_xref: int
@@ -242,7 +261,7 @@ class ContentPage:
         if self.document.needs_pass:raise PdfError("password required")
         self.page=self.document[page_number-1]
         self.events=[];self.streams={};self.errors=[];self._font_cache={}
-        self.actual=[]
+        self.actual=[];self.boundaries=[]
         for span in self.page.get_texttrace():
             for c in span["chars"]:
                 self.actual.append({"unicode":chr(c[0]),"gid":c[1],"origin":c[2],"bbox":c[3],
@@ -273,11 +292,16 @@ class ContentPage:
         data=obj.get_data() if data_override is None else data_override
         self.streams[xref]=data
         path=[];pending_clip=None;pending_text_clips=[]
+        # Structural scope, recorded at top-level operator boundaries only.
+        top=depth==0 and not invocation;in_text=False;marked=0;compatibility=0
         try:ops=list(operators(data))
         except Exception as exc:
             self.errors.append(f"stream {xref}: {exc}");return state,tm,lm,stack
         for index,op in enumerate(ops):
             n,a=op.name,op.args
+            if n in ("BT","ET"):in_text=n=="BT"
+            elif n in ("BMC","BDC","EMC"):marked+=-1 if n=="EMC" else 1
+            elif n in ("BX","EX"):compatibility+=-1 if n=="EX" else 1
             if n=="q":stack.append(copy(state));state.other=deepcopy(state.other)
             elif n=="Q":
                 if not stack:raise PdfError("unbalanced Q")
@@ -347,6 +371,11 @@ class ContentPage:
                 self.events.append(event)
             elif n not in {"ET","sh","MP","DP","BX","EX","d0","d1"}:
                 self.errors.append(f"unsupported operator {n}")
+            if top:
+                # The state in effect between this operator and the next one.
+                snapshot=copy(state);snapshot.other={k:v for k,v in state.other.items() if k!="marked_content"}
+                self.boundaries.append(Boundary(index,op,snapshot,len(stack),in_text,marked,compatibility,
+                                                bool(path),pending_clip is not None))
         return state,tm,lm,stack
 
     def _map_observations(self):

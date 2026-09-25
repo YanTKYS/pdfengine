@@ -39,7 +39,12 @@ flow = confirm_shared_flow(
 
 destinationは`destination_id / paragraph_id / region_id / page / bounds / provenance`に加え、`authority`、確認時PDF hash、canonical page program hashを保持する。`authority`には挿入位置、z-order、初期graphics state、page transform/CropBox、透明度group、font policyを記録する。region geometryだけを渡す呼出しや、不明な描画状態は拒否する。
 
-挿入位置は**page program先頭、既存描画より背面**。同じページの複数destinationは、この一つのauthorityを順序付きのpage-entry chainとして共有する（[下記](#同一ページの複数destination)）。destination boundsは確認済みshared region全体と一致させる。これは任意の描画contextから状態を推測するAPIではなく、callerが明示的に選ぶ限定的な描画policyである。任意のcontent-stream位置、既存BT/ET内部、既存graphics stateへの挿入権限ではない。
+挿入authorityは2つある。
+
+- **page entry**（`before-page-program`）: page program先頭で、既存の全描画より前に描く。同じページの複数destinationは、このauthorityを順序付きのpage-entry chainとして共有する（[下記](#同一ページの複数destination)）。
+- **確認済みpage-program境界**（`confirmed-page-program-boundary`）: callerが候補一覧から選んだ、page levelの安全な1つのoperator境界に描く。確認したprefixの全描画より後、確認したsuffixの全描画より前である（[下記](#確認済みpage-program境界)）。
+
+destination boundsは確認済みshared region全体と一致させる。どちらも任意の描画contextから状態を推測するAPIではなく、callerが明示的に選ぶ限定的な描画policyである。任意のcontent-stream位置、既存BT/ET内部、既存graphics stateの内側への挿入権限ではない。
 
 先頭の初期CTMはidentity、clipはページのCropBox、不透明度は1、fill/strokeは初期値、blend/maskは初期状態。独立した`q BT ... ET Q`で状態を閉じ、必要なdevice fill、font、size、Tz、Tc、Ts、Tmを既存writerが設定する。既存paragraphのfont resourceやclipは参照しない。各論理styleに確認済みproviderが必要で、生成resourceは対象ページへ独立に追加する。
 
@@ -138,6 +143,109 @@ original page program
   - **監査**: 各region外（region間の1.5ptを含む）のPoppler差分は全保存で0画素だった。6ページの生成fontはslotごとに所有され、入れ替わらなかった。
   - **dry-run**: 合成原本で最後まで動かした結果も[評価README](../evaluations/continuation/README.md#同一ページ2-destinationの評価)に残す。
 
+## 確認済みpage-program境界
+
+page entry以外にも、callerが確認したpage levelのoperator境界を挿入authorityにできる。目的は、既存の描画順序の中で生成blockの位置を明示することである。
+
+```text
+confirmed prefix（既存の描画を含む）
+generated block   marker q BT ... ET Q marker
+confirmed suffix（既存の描画を含む）
+```
+
+任意の途中位置へ書けるようにするものではない。境界が安全であることを証明でき、その境界自体をcallerが明示的に確認した場合だけ使える。
+
+### 候補の列挙
+
+```python
+from pdfeditor.continuation import (
+    confirm_continuation_destination, inspect_continuation_boundaries)
+
+found = inspect_continuation_boundaries(source, page=6)
+# found["candidates"]: 安全な境界。callerが1つを選んで確認する
+destination = confirm_continuation_destination(
+    source, destination_id="reviewed-boundary", paragraph_id="paragraph-A",
+    region_id="next-region", page=6, bounds=reviewed_bounds,
+    insertion="confirmed-page-program-boundary",
+    graphics_state="confirmed-boundary-state",
+    boundary=reviewed_boundary_id)
+```
+
+- **対象**: `inspect_continuation_boundaries(source, page, include_refused=False)`は、結合したpage `/Contents` programのtop-level operator同士の間の境界を列挙する。offset 0（page entry）と、最後のoperatorの後は含まない。operatorやoperandの途中、inline image・Form XObjectの内部には境界がない。
+- **証跡**: 各境界の状態と入れ子は、pageを編集するときと同じ`ContentPage`の解釈で得る。`_walk`は、top-level operatorごとに直後の`State`とscopeを記録する（`Boundary`）。別のinterpreterは作っていない。`operator_nesting`は構文上の入れ子を、境界の検査はその位置で有効な描画状態とscopeを扱う。
+- **候補の記録**: page、`boundary_id`、program SHA-256、offset、operatorの序数、直前・直後のoperatorの証跡を持つ。operatorの証跡は、名前・範囲・operandを含むbytesのSHA-256である。さらに、scope・graphics state・z-order（prefix/suffixの描画operator数と意味）・pageのcontext（group・transform・範囲）・`status`・拒否理由を持つ。
+- **`boundary_id`**: page、program SHA-256、直前operatorの序数・終端・SHA-256、直後operatorのSHA-256から作る。確認時のsource programに固有で、以後はauthorityに固定される。
+- **geometryからは選ばない**: callerが候補を1つ選ぶ。engineはdestinationの位置から境界を推定しない。
+
+### 安全な境界の条件
+
+境界で次をすべて満たすものだけが候補になる。生成blockがpage entryと同じpage座標・同じ見た目で描けることを証明できる場合に限る。
+
+- **scope**: `q`の深さ0（page levelの状態が閉じている）。text object、marked-content sequence、`BX ... EX`の外で、組み立て中のpathや未適用の`W`/`W*`がない。
+- **graphics state**: CTMがidentity、有効なclipがない（page entryと同じくCropBoxだけ）、不透明度とstroke不透明度が1、text描画モードが0。ExtGStateと`ri`・`i`の設定はない。
+- **stroke専用の値は許す**: `w`・`J`・`j`・`M`・`d`はstrokeにしか効かない。blockはTr 0の塗りの文字だけを描くので、既定値でなくてよい。
+- **blockが自分で設定する値**: font・size・Tz・Tc・Tw・Ts・fill（`g`/`rg`/`k`で色空間ごと）は、blockが自分で設定し、外側の`q ... Q`で元に戻す。そのため境界での値は問わない。strokeの色やTLは、blockが使わない。
+- **拒否**: 迷う状態は拒否する。拒否理由は次のとおりである。
+  - `inside-graphics-state-save`、`inside-text-object`、`inside-marked-content`、`inside-compatibility-section`
+  - `pending-path`、`pending-clip`
+  - `nonidentity-ctm`、`active-clip`、`transparency`、`text-rendering-mode`、`extgstate`、`graphics-state-side-effect`
+
+### authorityとz-order
+
+- **authority**: 確認したdestinationの`authority`は次を持つ。
+  - `position = confirmed-page-program-boundary`、`boundary_id`、確認時の`source_program_sha256`。
+  - `boundary`: offset・序数・直前/直後operatorの証跡・scope。
+  - `graphics_state`: 境界の状態の証跡。
+  - `graphics_state_contract`、`z_order`、pageのcontext、`initial_clip = page-crop-box`、`isolation = q-BT-ET-Q`、font policy。
+- **z-order**: `z_order.semantics = after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix`。確認時のprefixとsuffixの描画operator数も記録する。前面・背面ではなく、callerが選んだ境界そのものが描画順序の契約である。
+- **空き判定**: page entryと同じ`require_empty()`を使う。prefix・suffixの描画との重なりも許さない。重なりを使ったlayer編集ではなく、挿入順序だけをoffset 0以外へ広げる。
+- **1境界1destination**: 1つの境界は1つのdestinationだけが持つ。page-entry orderは持たない。同じ境界への複数の順序付き挿入は、まだ扱わない。
+
+### bindingとrebind
+
+- **bindingの内容**: 各revisionのbindingは、境界のoffsetと、直前・直後operatorの範囲を持つ。blockがあれば、その範囲・block SHA-256・`operator_nesting`も持つ。
+- **再検証**: open・保存のたびに、境界で終わるoperatorと次のsource operatorが確認時と同じ（名前とbytes）ことを確かめる。その位置のscopeと状態が確認時と同じで、今も安全であることも確かめる。offsetやxrefの一致だけでは同じ境界とみなさない。
+- **blockの追跡**: 自分の一意なmarkerで見つける。保存をまたぐときは、既存blockはmarkerとmutation map、新blockは作成mutationのanchorで追跡する。
+- **未使用の境界の追跡**: 保存ごとに、その保存のmutation mapで写す（`map_offset`）。消費されたoffsetには後継がない。
+- **検証の例**:
+  - prefix側やsuffix側の無関係なmutation、block自身の再編集で長さが変わっても、同じ境界を追跡する。
+  - 同じoffsetでも、CTM・clip・ExtGState・`q`・marked contentが変われば、同じauthorityとして扱わない。
+
+### MutationProgram
+
+変更していない。境界のblockは、順序を持たない通常のzero-length insertion（`confirmed-continuation-create`）である。
+
+- **拒否**: 同じtransactionで境界に触れるmutationは、既存の規則で拒否する。直前operatorの置換や、同じoffsetへの別の挿入がこれにあたる。
+- **直後operatorの変更**: insertionに触れない変更でも、次のrevisionの証跡が一致しないため保存が失敗し、何も公開しない。
+- **page-entryの順序付きinsertionの特例**: 広げていない。
+
+### page entryとの共存
+
+同じページにpage-entry destinationと境界destinationがあってもよい。
+
+- page-entry chainは従来どおりoffset 0からの連続prefixとして検証し、境界のblockは別のauthorityとして検証する。
+- 生成fontは、slotごとの所有記録で分かれる。互いのaliasを使わない。
+
+### 対応範囲
+
+| 状態 | 対応 |
+|---|---|
+| page entry（`before-page-program`） | 対応 |
+| 確認済みの安全なpage level境界 | 対応 |
+| `q`の内側、有効なclipの下、identity以外のCTM、任意のExtGState | 未対応（拒否） |
+| text object・marked content・`BX ... EX`・Form XObjectの内側 | 未対応（拒否） |
+
+### 回帰と評価
+
+- **回帰**: [tests/test_boundary_destination.py](../tests/test_boundary_destination.py)で次を確認する。
+  - 候補の列挙と拒否理由、callerの明示確認。
+  - 非zero offsetでの作成、reopen、second、shorten、regrow、no-op 3回。prefix/block/suffixの順序と、描画operatorの順序も確かめる。
+  - 同じtransactionでのprefix側・suffix側の変更。
+  - 境界に触れるmutationの拒否、sidecarとprogramの改ざん、同じoffsetでの状態の改ざん。
+  - page entryとの共存、late failureのrollback。
+  - page entryと境界で同じ文字・同じ画素になること。
+- **外部評価**: [評価コード](../evaluations/continuation/boundary_destination.py)は、LibreOffice原本の6ページで評価者が確認した境界を使う。この境界は、本文の`q ... Q`とCC-BY-SAロゴの`q ... Q`の間にある。結果は[評価README](../evaluations/continuation/README.md#確認済みpage-program境界の評価)にある。
+
 ## 生成fontの寿命
 
 以前の実装は、保存ごとに新しいsubsetを空いている`/PRFn`へ追加し、古いaliasを残していた。PR #6の外部評価では、Type0 fontが4個から17個に、PDFが371KBから570KBに増えた。no-op保存でも増えていた。
@@ -193,4 +301,4 @@ pdfengineが書くcontent streamは、出力PDFのversionのoperator nesting規�
 
 回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。外部原本では、regrowが同じ生成slotへ戻り、final no-opで全10ページがMuPDF・Popplerとも全画素一致した。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
 
-同一ページの複数destinationと、その順序契約は上記で扱った。次の最小の構造障壁は、page-program先頭以外のcontent-stream境界へ独立した挿入権限を与えることである。必要なのは、その境界で有効なgraphics state・clip・paint順序の証跡である。新規ページの自動生成ではない。
+同一ページの複数destinationと、その順序契約、確認済みのpage level境界は上記で扱った。次の最小の構造障壁は、page entryと同じ状態を証明できない境界である。identity以外のCTM、有効なclip、ExtGStateを持つ境界を、どこまで安全に扱えるかを示す必要がある。例えばCTMの逆変換や、clipの内側に収まることの証明である。新規ページの自動生成ではない。

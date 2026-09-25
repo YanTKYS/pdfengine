@@ -417,8 +417,10 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             # The block enters the page-entry chain at the boundary verified for
             # this revision; blocks sharing that boundary follow their confirmed order.
             offset=paragraph.entry
+            # Only a page-entry chain carries an explicit order; a confirmed
+            # page-program boundary is one unordered insertion.
             mutation=Mutation(offset,offset,data,kind=CREATE,anchors=anchors,owner=owner,
-                              insertion_order=snapshot['page_entry']['order'])
+                              insertion_order=snapshot.get('page_entry',{}).get('order'))
             result.mutations.append(mutation);result.first_mutation=mutation
         for event in paragraph.events:
             data, op_offset, chars = rewritten_event(event, selected, remove=True)

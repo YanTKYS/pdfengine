@@ -31,3 +31,4 @@ tmp/
 !/evaluations/alignment/summary.json
 !/evaluations/continuation/summary.json
 !/evaluations/continuation/multi-destination-summary.json
+!/evaluations/continuation/boundary-destination-summary.json

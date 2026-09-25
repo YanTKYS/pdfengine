@@ -562,12 +562,17 @@ def edit_shared_flow(source,model,output,model_output,changes):
                 mutation_map=result.mutation_map()
                 from .content_stream import ContentPage
                 for number,group in _destination_pages(state).items():
+                    program=result.identity(number).program
+                    generated={d['destination_id'] for d in group if destinations.slot_id(d) in state['slots']}
+                    # An unused page-program boundary moves with this save's own
+                    # byte mutations; a consumed offset has no successor.
+                    locations={d['destination_id']:program.map_offset(
+                                   initial['destination_bindings'][d['destination_id']]['boundary']['offset'])
+                               for d in group if destinations.is_boundary(d) and d['destination_id'] not in generated}
                     content=ContentPage(target,number)
                     try:
-                        current,_=destinations.page_witness(content,group,
-                            {d['destination_id'] for d in group if destinations.slot_id(d) in state['slots']})
+                        current,_=destinations.page_witness(content,group,generated,locations=locations)
                     finally:content.close()
-                    program=result.identity(number).program
                     for d in group:
                         ident=d['destination_id'];sid=destinations.slot_id(d)
                         destinations.rebind(program,sid,initial['destination_bindings'][ident],current[ident],
