@@ -341,7 +341,9 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                 "font_index": font.font_index, "variations": font.variations}
         inverse = ~(pymupdf.Matrix(*state.ctm) * content.page.transformation_matrix)
         inverse_ctm = tuple(~pymupdf.Matrix(*state.ctm))
-        commands, plan, inks, glyph_offsets = [b' q 0 Tc 0 Tw 0 Ts '], [], [], []
+        # Glyph commands only; the graphics-state isolation around them is
+        # added outside any text object below (PDF 1.x, see operator_nesting).
+        commands, plan, inks, glyph_offsets = [b' 0 Tc 0 Tw 0 Ts '], [], [], []
         length = len(commands[0])
         for placed in layout.glyphs:
             payload = placed.glyph.payload
@@ -393,16 +395,21 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
         delta = multiply(after, tuple(~pymupdf.Matrix(*first.line_matrix)))
         if abs(delta[5]) > .001 or any(abs(a - b) > 1e-5 for a, b in zip(delta[:4], (1, 0, 0, 1))):
             raise PdfError("cannot restore original text and line matrices")
-        commands.extend((b' Q ', matrix_operator(first.line_matrix),
-            b'[' + number(-delta[4] / (state.size * state.tz / 100) * 1000) + b'] TJ '))
+        # A new BT resets Tm and Tlm to identity; Q restores every other text
+        # state parameter. Tm sets both to the original line matrix, then a
+        # numeric TJ advances Tm (not Tlm) to where the original operator left
+        # it, in the original font size and horizontal scale restored by Q.
+        restore = (matrix_operator(first.line_matrix)
+                   + b'[' + number(-delta[4] / (state.size * state.tz / 100) * 1000) + b'] TJ ')
         if getattr(paragraph,'creation',False):
             from .continuation import CREATE, markers
             if not units:raise PdfError('an unused continuation destination creates no physical slot')
             begin,end=markers(snapshot['destination'])
-            prefix=begin+b'q BT '
-            # The common writer emitted all glyphs above. Only the enclosing
-            # source-free text object differs from a source-operator rewrite.
-            data=prefix+b''.join(commands[:-3])+b' Q ET Q\n'+end
+            prefix=begin+b'q BT'
+            # The common writer emitted all glyphs above. The block is one
+            # text object inside its own graphics-state save, starting from
+            # the PDF initial state; no q/Q occurs inside the text object.
+            data=prefix+b''.join(commands)+b' ET Q\n'+end
             anchors={name:len(prefix)+offset for name,offset in
                 ((f'glyph:{n}',o) for n,o in enumerate(glyph_offsets))}
             result.glyph_names=list(anchors)
@@ -421,24 +428,37 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                     anchors['slot'] = len(data) + 1
                     data += b' [] TJ '
                     result.slot = True
-                base = len(data)
-                for n, offset in enumerate(glyph_offsets):
-                    anchors[f'glyph:{n}'] = base + offset
-                    result.glyph_names.append(f'glyph:{n}')
-                data += b''.join(commands)
+                # Each isolated group is its own text object inside its own
+                # graphics-state save: (body, {anchor name: offset in body}).
+                groups = []
+                if glyph_offsets:
+                    groups.append((b''.join(commands), {f'glyph:{n}': offset for n, offset in enumerate(glyph_offsets)}))
+                    result.glyph_names.extend(f'glyph:{n}' for n in range(len(glyph_offsets)))
                 if empty_typing_style is not None and _allow_empty_style_witnesses:
                     for ident,style in paragraph.styles.items():
                         if render_styles is not None and ident not in render_styles:continue
                         tc,ts,_=writer_spacing(style)
-                        data+=b' q '+_name(style.event.state.font.name)+b' '+number(style.event.state.size)+b' Tf '
-                        data+=number(style.event.state.tz)+b' Tz '+number(tc)+b' Tc '+number(ts)+b' Ts '
-                        data+=matrix_operator(multiply(style.matrix,inverse_ctm))
-                        name='empty-style:'+ident;anchors[name]=len(data)
-                        data+=b'[] TJ Q '
+                        # A nonpainting Tc/Ts witness of a dormant style.
+                        body=b' '+_name(style.event.state.font.name)+b' '+number(style.event.state.size)+b' Tf '
+                        body+=number(style.event.state.tz)+b' Tz '+number(tc)+b' Tc '+number(ts)+b' Ts '
+                        body+=matrix_operator(multiply(style.matrix,inverse_ctm))
+                        name='empty-style:'+ident
+                        groups.append((body+b'[] TJ',{name:len(body)}))
                         result.empty_style_names[ident]=name
-                    # q/Q saves graphics state, not the text/line matrices.
-                    # A following unselected Tj must retain its original cursor.
-                    data+=commands[-2]+commands[-1]
+                if groups:
+                    # Close the source text object after the rewritten operator,
+                    # isolate each group at the page description level, then
+                    # reopen it with the original text and line matrices so a
+                    # following unselected operator keeps its original cursor.
+                    from .operator_nesting import require_text_object_split
+                    require_text_object_split(content, first.operator.end)
+                    data += b' ET'
+                    for body, marks in groups:
+                        data += b' q BT'
+                        for name, offset in marks.items():
+                            anchors[name] = len(data) + offset
+                        data += body + b' ET Q'
+                    data += b' BT ' + restore
             mutation = Mutation(event.operator.start, event.operator.end, data, kind='text-edit',
                                 anchors=anchors, chars=chars, owner=owner)
             result.mutations.append(mutation)

@@ -108,6 +108,8 @@ def save(tmp_path, source, state, changes, name):
     assert opened['state']['contract_sha256'] == state['contract_sha256']
     for step in report['steps']:
         font_mapping_audit(out, step['report'])
+    from test_operator_nesting import assert_saved_revision
+    assert_saved_revision(source, out, opened['state'])
     return out, opened['state'], report
 
 
@@ -410,6 +412,9 @@ def test_marker_and_chain_tampering_is_refused(tmp_path):
         'missing-end': block_a + block_b.replace(b1, b'') + rest,
         'foreign-bytes-between': block_a + b'0 0 1 rg\n' + block_b + rest,
         'foreign-operator-inside': block_a.replace(b'q BT ', b'q 1 0 0 1 5 5 cm BT ', 1) + block_b + rest,
+        # PDF 1.x: no graphics-state save inside the block's text object.
+        'graphics-state-inside-text-object': block_a.replace(b'q BT ', b'q BT q ', 1).replace(b' ET Q\n', b' Q ET Q\n', 1)
+                                             + block_b + rest,
         'block-after-original': block_a + rest + block_b,
     }
     generated = {'dest-DA', 'dest-DB'}
@@ -509,4 +514,7 @@ def test_single_destination_keeps_the_original_page_entry_form(tmp_path):
     state = open_shared_flow(out, side)['state']
     mutation = state['slots'][slot_id(d)]['creation_binding']['mutation']
     assert mutation['start'] == mutation['end'] == 0 and 'insertion_order' not in mutation
-    assert set(state['destination_bindings']['empty']) == {'program_sha256', 'start', 'end', 'block_sha256'}
+    # No page-entry order; the block records only that it was written with
+    # PDF 1.x operator nesting, as every generated block now does.
+    assert set(state['destination_bindings']['empty']) == {'program_sha256', 'start', 'end', 'block_sha256',
+                                                           'operator_nesting'}

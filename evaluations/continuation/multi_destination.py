@@ -289,6 +289,11 @@ def series(directory, names, state, pid, dests, original_text, source_aliases, s
                           page_entry_order_equal=True)
         proof = audit(pdf, out, updated, initial, report, directory / (name + '-audit'), original_text, noop=noop,
                       owned=state.get('generated_fonts', {}))
+        # q/Q/cm stay outside text objects on every edited page, including
+        # both page-entry blocks; the source's PDF version is kept.
+        nesting = single.operator_nesting(out, sorted({r['page'] for r in updated['regions'].values()}))
+        if single.pdf_header(out) != single.pdf_header(source):
+            raise ValueError('saving changed the PDF version')
         sizes = resources(out, updated, dests, source_aliases, source)
         outcome = report['generated_font_outcome']
         if noop:
@@ -300,7 +305,8 @@ def series(directory, names, state, pid, dests, original_text, source_aliases, s
                 raise ValueError('no-op changed generated font records')
         allocations[name] = {sid: dict(range=s['range'], occupancy=s['occupancy']) for sid, s in updated['slots'].items()}
         stages.append(dict(stage=name, status='passed', restored=True, saves=report['saves'], new_slots=sorted(created),
-            active=sorted(active), page_entry_chain=blocks, **checks, **proof, resources=dict(sizes, font_outcome=outcome)))
+            active=sorted(active), page_entry_chain=blocks, **checks, **proof, operator_nesting=nesting,
+            pdf_header=single.pdf_header(out), resources=dict(sizes, font_outcome=outcome)))
         single.write(directory / 'stages.json', stages)
         print(name, 'passed', flush=True)
         pdf, state, previous, previous_sizes, previous_blocks = out, updated, report, sizes, blocks
@@ -343,11 +349,16 @@ def run(directory):
     replay = single.source_replay(directory, state)
     baseline = resources(single.SOURCE, state, dests,
         {p: {e['alias'] for e in v} for p, v in inventory(single.SOURCE, source=single.SOURCE)['pages'].items()}, single.SOURCE)
+    try:
+        source_nesting = single.operator_nesting(single.SOURCE, sorted({r['page'] for r in state['regions'].values()}))
+    except ValueError as exc:
+        raise ValueError('reviewed source pages already violate operator nesting; pdfengine output cannot be attributed') from exc
     sequential, simultaneous, refused = compare_series(directory, state, pid, dests, single.SOURCE)
     if engine != {p.name: source_sha(p) for p in sorted((ROOT / 'pdfeditor').glob('*.py'))}:
         raise ValueError('engine changed during evaluation')
-    return dict(schema='pdfengine-multi-destination-evaluation-1', status='passed', source_url=single.URL,
+    return dict(schema='pdfengine-multi-destination-evaluation-2', status='passed', source_url=single.URL,
         source_sha256=single.SOURCE_SHA, source_replay=replay, source_resources=baseline,
+        source_operator_nesting=source_nesting, source_pdf_header=single.pdf_header(single.SOURCE),
         sequential=sequential, simultaneous=simultaneous, simultaneous_equals_sequential=True,
         negative_controls=[refused], destinations=dests, reviewed_area=REVIEWED_AREA, page_entry_order=PAGE_ENTRY_ORDER,
         scope='one external LibreOffice paragraph; the reviewed page-6 area split by the evaluator into two ordered destinations',

@@ -76,7 +76,12 @@ def edit_reflow(source,output,manifest,replacement,*,stage1_report):
         layout=layout_text(replacement,x=resolved.bbox.x0,baseline=lines[0].baseline,width=width,
                            line_height=leading,ascender=ascender,descender=descender,
                            measure=measure,max_bottom=content.page.rect.height)
-        expected_new=[];commands=[b"q "]
+        # Only Tm and Tj in the source's own text state: no graphics-state
+        # parameter changes, so nothing needs a q/Q save. PDF 1.x forbids q/Q
+        # inside this text object (see operator_nesting).
+        # The insertion precedes the first operator's operands, which may
+        # follow the previous operator without whitespace: start with one.
+        expected_new=[];commands=[b" "]
         inverse=~(pymupdf.Matrix(*state.ctm)*content.page.transformation_matrix)
         for line in layout.lines:
             x=line.x
@@ -90,7 +95,7 @@ def edit_reflow(source,output,manifest,replacement,*,stage1_report):
         delta=multiply(first.text_matrix,tuple(~pymupdf.Matrix(*first.line_matrix)))
         if abs(delta[5])>.00001 or any(abs(a-b)>.00001 for a,b in zip(delta[:4],(1,0,0,1))):
             raise PdfError("cannot restore the original text/line matrix relationship")
-        commands += [b"Q ",matrix_operator(first.line_matrix),b"["+number(-delta[4]/(state.size*state.tz/100)*1000)+b"] TJ "]
+        commands += [matrix_operator(first.line_matrix),b"["+number(-delta[4]/(state.size*state.tz/100)*1000)+b"] TJ "]
         insertion=b"".join(commands)
         data=content.streams[-content.page.xref]
         for event in sorted(events,key=lambda e:e.operator.start,reverse=True):

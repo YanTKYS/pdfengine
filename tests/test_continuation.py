@@ -72,6 +72,8 @@ def saved(tmp_path,source,state,changes,name):
     opened=open_shared_flow(out,side);assert opened['status']=='restored',opened
     assert opened['state']['contract_sha256']==state['contract_sha256']
     assert report['saves']==1
+    from test_operator_nesting import assert_saved_revision
+    assert_saved_revision(source,out,opened['state'])
     return out,opened['state'],report
 
 

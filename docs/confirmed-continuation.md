@@ -7,7 +7,9 @@
 - **単一destination**: 上記の系列を再実行した。7保存のPDF・sidecarが拡張前のengineとbyte単位で一致した。
 - **同一ページ2 destination**: 確認済みの6ページ領域を評価者が2 destinationへ明示分割した。逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走した。
 
-結果は[評価](../evaluations/continuation/README.md#pr-8-engineでの単一destination再評価)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
+その後、writerがtext object内に`q`/`Q`を出していた問題を直した（[下記](#pdf-1xのoperator-nesting)）。その最終engineで両方の外部評価をやり直した。全保存が入れ子の規則を満たし、出力は原本と同じ`%PDF-1.4`だった。描画は以前のengineと画素単位で同じだった。
+
+現行の結果は[評価](../evaluations/continuation/README.md#operator-nesting正規化後の再評価)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
 
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
 
@@ -107,7 +109,8 @@ original page program
 - **chain全体の検証**（再openごと）:
   - 生成済みblockがoffset 0から隙間なく連続し、確認済みorder順に並び、original page programより前にある。block間に未知のbytesはない。
   - 未生成のdestinationにはmarkerがない。
-  - 各block本体は`q BT ... ET Q`で始まり終わる。text object・graphics stateの入れ子が閉じている。`q Q BT ET Tf Tz Tc Tw Ts Tm Tj TJ g rg k`以外のoperatorや、別のcomment/markerを含まない。
+  - 各block本体は`q BT ... ET Q`で始まり終わる。外側の`q ... Q`はblockの最後でだけ閉じる。text objectは入れ子にならず、すべて閉じる。`Tm`・`Tj`・`TJ`はtext object内だけにある。`q Q BT ET Tf Tz Tc Tw Ts Tm Tj TJ g rg k`以外のoperatorや、別のcomment/markerを含まない。
+  - text object内に`q`/`Q`はない（[PDF 1.xのoperator nesting](#pdf-1xのoperator-nesting)）。bindingはこの規則で書いたことを`operator_nesting`に記録する。
   - block内の文字はそのslotのglyphだけで、各glyphは初期graphics state（CTM identity、clipなし、不透明度1、Tr 0）で描かれる。
   - block内の`Tf`が選ぶaliasは、sidecarの`generated_fonts`がそのslotの所有と記録したものだけである（記録を持たない旧版sidecarでは、この照合を行えない）。
   - 同じページのdestination bounds同士が交差しない。
@@ -152,6 +155,37 @@ original page program
 記録を持たない他の保存経路（単独paragraph編集、editable、story flow）は、従来どおり空いているaliasへ追加する。
 
 外部原本の系列で、Type0 fontは全保存で4個のままだった。所有する生成fontは4ページ1、5ページ2、6ページ1である。no-op 3回は新しいfont objectを書かず、全ページの画素・記録・計画glyphも不変だった。PDFはno-op 1で374,492 byte（PR #6では570,054 byte）になった。その後の増加（1回あたり約300 byte）は、page program内の非描画operatorによる。同一ページ2 destinationの外部原本評価では、6ページの生成fontがslotごとに1つ（計2つ）になり、Type0は5個だった。所有slotは全保存で入れ替わらず、no-opでは増えなかった。
+
+## PDF 1.xのoperator nesting
+
+pdfengineが書くcontent streamは、出力PDFのversionのoperator nesting規則に従う。出力のversionは元PDFのheaderと同じにする。以前はpypdfの既定により、出力は常に`%PDF-1.3`になっていた。
+
+- **規則**: text object（`BT ... ET`）内に置けるのは、一般graphics state・色・text state・text位置・text表示・marked contentのoperatorだけである（PDF Reference 1.3〜1.7の4.1節Figure 4.1、ISO 32000-1の8.2節Figure 9）。
+  - 特殊graphics state（`q`・`Q`・`cm`）はpage記述レベルに置く。
+  - marked-content sequenceとtext objectは、それぞれ正しく入れ子にする（PDF Reference 9.5節、ISO 32000-1の14.6節）。
+  - PDF 2.0ではtext object内の`q`/`Q`も許され、そこでは`Tm`/`Tlm`も保存・復元される。pdfengineは元のversionを保つので1.xの形で書く。versionを2.0へ上げて既存のbytesを通すことはしない。
+- **原因**: paragraph writerは、新しい文字のtext state（font・size・Tz・Tc・Tw・Ts・fill）を`q ... Q`で隔離し、それを既存text object内の編集位置へ挿入していた。生成blockは`q BT q ... Q ET Q`、dormant styleのwitnessは`q ... [] TJ Q`だった。MuPDF・Poppler・pypdfは受理していたが、PDF 1.xの規則には合わない。
+- **source paragraphの再編集**: 選択した最初のoperatorの直後でsource text objectを閉じる（`ET`）。新しい文字と各witnessを、それぞれ独立した`q BT ... ET Q`としてpage記述レベルに置き、text objectを開き直す（`BT`）。
+  - `Q`が、編集位置のgraphics state（font・size・Tc・Tw・Tz・TL・Ts・Tr・色・CTM・clip）をそのまま戻す。
+  - 新しい`BT`は`Tm`と`Tlm`だけを単位行列に戻す。直後の`Tm`で両方を元のline matrixにし、数値だけの`TJ`で`Tm`を元のoperatorの後の位置へ進める。数値は`Q`で戻った元のsizeとTzで換算する。この復元は、以前のwriterが`Q`の後に置いていたものと同じである。
+- **分割できない場合**: text objectを閉じて開き直せないときは拒否し、出力は作らない。
+  - 編集位置で、そのtext object内で開いた`q`・marked-content sequence・`BX`が閉じていない場合。閉じると交差する。
+  - そのtext objectにclipping描画モード（Tr 4〜7）の文字がある場合。clipは`ET`でまとめて適用されるためである。
+- **生成block**: `marker q BT ... ET Q marker`で、text object内に`q`/`Q`はない。再編集では上と同じ分割がblockの`q ... Q`の内側で起き、block内に複数のtext objectができる。
+- **同じ原因の他のwriter**:
+  - `compose_selected`は同じ分割で隔離する。
+  - `edit_reflow`の`q`/`Q`は、状態を変えない`Tm`・`Tj`だけを囲んでいたため取り除いた。
+  - 要素の平行移動（text-move）は、text operatorを`q cm ... Q`で包んでいた。これを、text objectを閉じて`q cm BT ... ET Q`の中で描き、前後で`Tm`/`Tlm`を復元する形にした。
+  - pathを動かす`q ... Q`はpage記述レベルにあるため、変更していない。
+- **検査**: [operator_nesting.py](../pdfeditor/operator_nesting.py)は、pdfengineが書くoperatorに限った狭い検査で、汎用のPDF validatorではない。既存の`operators()`で分解し、次を調べる。
+  - text objectの入れ子と、`q`/`Q`の対応。
+  - text object内の特殊graphics stateと、page記述レベル専用のoperator。
+  - marked contentとtext objectの交差。
+- **旧形式の出力**: この変更より前にpdfengineが書いたPDFは、text object内に`q`/`Q`を含む。
+  - bindingに`operator_nesting`がない生成blockは、旧規則（text object内の`q`/`Q`を許す）で検証する。旧sidecarは引き続き開ける。
+  - 生成blockはmarker・binding・hashでpdfengineの所有を証明できる。一方、source slotを再編集した`q`/`Q`にはsidecarに所有の記録がなく、byteの形から所有を推測することはしない。
+  - shared flowの保存はparagraphのすべてのslotを書き直す。そのため旧形式の出力の再保存は、source slotの旧`q`の内側で分割が必要になって拒否され、何も公開しない。旧形式を書き換える正規化はしていない。準拠した出力が必要なら、元PDFから編集し直す。
+  - この変更後のengineが元PDFから作る出力は、何回保存しても上の規則を満たす。
 
 ## Transactionと評価
 

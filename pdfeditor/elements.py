@@ -333,8 +333,27 @@ def _local_translation(matrix, dx, dy):
     return (d*dx-c*dy)/determinant,(-b*dx+a*dy)/determinant
 
 
+def _cursor(event, matrix, line_matrix):
+    """Tm and Tlm in a freshly opened text object: Tm sets both, a TJ advances Tm."""
+    from .content_stream import multiply
+    from .explicit_reflow import matrix_operator
+    delta=multiply(matrix,tuple(~pymupdf.Matrix(*line_matrix)))
+    scale=event.state.size*event.state.tz/100
+    if abs(delta[5])>.001 or any(abs(a-b)>1e-5 for a,b in zip(delta[:4],(1,0,0,1))) or not scale:
+        raise PdfError('cannot restore the moved text operator\'s text and line matrices')
+    return matrix_operator(line_matrix)+b'['+number(-delta[4]/scale*1000)+b'] TJ'
+
+
 def _move_mutations(content, events, moving, dx, dy, *, owner=None):
-    """Byte mutations of a rigid move: wrappers for text, replayed tokens for paths."""
+    """Byte mutations of a rigid move: wrappers for text, replayed tokens for paths.
+
+    A moved text operator keeps its bytes. Its cm and graphics-state save are
+    placed outside its text object (PDF 1.x forbids q/Q/cm inside one, see
+    operator_nesting): the text object is closed before the operator and
+    reopened after it, and each new text object restores Tm and Tlm first.
+    """
+    from .content_stream import PaintChar, translate
+    from .operator_nesting import require_text_object_split
     data = content.streams[-content.page.xref]
     mutations = []
     source_operators=list(operators(data))
@@ -342,9 +361,19 @@ def _move_mutations(content, events, moving, dx, dy, *, owner=None):
         matrix = pymupdf.Matrix(*event.state.ctm)*content.page.transformation_matrix
         delta = _local_translation(list(matrix),dx,dy)
         op = data[event.operator.start:event.operator.end]
-        prefix = b'q 1 0 0 1 '+number(delta[0])+b' '+number(delta[1])+b' cm '
-        mutations.append(Mutation(event.operator.start,event.operator.end,prefix+op+b' Q ',kind='text-move',
-                                  anchors={'op':len(prefix)},owner=owner))
+        require_text_object_split(content,event.operator.start)
+        size=event.state.size*event.state.tz/100
+        advance=sum(a.advance if isinstance(a,PaintChar) else -float(a)/1000*size for a in event.atoms)
+        if event.operator.name in ("'",'"'):
+            # The kept operator performs T* itself: reopen one line above.
+            line=translate(event.line_matrix,0,event.state.tl)
+            before=_cursor(event,line,line)
+        else:
+            before=_cursor(event,event.text_matrix,event.line_matrix)
+        after=_cursor(event,translate(event.text_matrix,advance,0),event.line_matrix)
+        prefix = (b' ET q 1 0 0 1 '+number(delta[0])+b' '+number(delta[1])+b' cm BT '+before+b' ')
+        mutations.append(Mutation(event.operator.start,event.operator.end,prefix+op+b' ET Q BT '+after+b' ',
+                                  kind='text-move',anchors={'op':len(prefix)},owner=owner))
     for path in moving:
         a,b = path['source']['merged_range']
         paints = path['proof']['paints']
