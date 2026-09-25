@@ -205,3 +205,109 @@ def test_identity_map_is_rebuilt_from_persisted_records_not_only_byte_edits(tmp_
             rebuilt.map_glyphs([3])
     finally:
         rebuilt.close()
+
+
+PAGE_ENTRY='confirmed-continuation-create'
+
+
+def entry(offset, data, order, owner, **kwargs):
+    return Mutation(offset, offset, data, kind=PAGE_ENTRY, owner=owner, insertion_order=order,
+                    anchors=dict(block_start=0, block_end=len(data)), **kwargs)
+
+
+def test_ordered_page_entry_insertions_share_a_boundary_in_their_explicit_order():
+    source=b'0123456789ABCDEFGHIJKLMNOPQRS'
+    results=set()
+    for sequence in ([10,20,30],[30,10,20],[20,30,10]):
+        p=MutationProgram(source)
+        added={o:p.add(entry(4,b'<%d>'%o,o,f'slot-{o}')) for o in sequence}
+        # A replacement elsewhere shifts every insertion identically.
+        p.add(Mutation(0,2,b'xyz'))
+        results.add(p.apply())
+        # Anchors and positions follow the explicit order, never add order.
+        assert [p.position(added[o]) for o in (10,20,30)]==[5,9,13]
+        assert p.anchor(added[20],'block_end')==13
+        # A source offset at the boundary maps behind every insertion.
+        assert p.map_offset(4)==17 and p.map_offset(3)==4
+        assert map_offset(4,p.edits())==17
+        # Serialized records carry the order and rebuild the same layout.
+        rebuilt=MutationProgram(source);delta=0
+        applied=p.apply()
+        for record in sorted(json.loads(json.dumps(p.records())),key=lambda r:(r['start'],r['end'],r.get('insertion_order',-1))):
+            start=record['start']+delta
+            rebuilt.add(Mutation.from_record(record,applied[start:start+record['length']]))
+            delta+=record['length']-(record['end']-record['start'])
+        assert rebuilt.apply()==applied
+        assert [m.insertion_order for m in rebuilt.mutations if m.insertion_order is not None]==[10,20,30]
+        assert [rebuilt.position(m) for m in rebuilt.mutations if m.insertion_order is not None]==[5,9,13]
+        with pytest.raises(PdfError,match='several'):
+            p.mutation_at(4)
+    assert results=={b'xyz23<10><20><30>456789ABCDEFGHIJKLMNOPQRS'}
+
+
+def test_ordered_insertions_do_not_relax_any_other_boundary_rule():
+    def program():
+        return MutationProgram(b'0123456789ABCDEFGHIJKLMNOPQRS')
+    refusals=[
+        # An unordered insertion, or a replacement, still may not touch an ordered one.
+        [entry(10,b'a',1,'A'),Mutation(10,10,b'b')],
+        [entry(10,b'a',1,'A'),Mutation(10,20,b'XY')],
+        [entry(10,b'a',1,'A'),Mutation(5,10,b'XY')],
+        [entry(15,b'a',1,'A'),Mutation(10,20,b'XY')],
+        # One explicit order and one owner per boundary.
+        [entry(10,b'a',1,'A'),entry(10,b'b',1,'B')],
+        [entry(10,b'a',1,'A'),entry(10,b'b',2,'A')],
+    ]
+    for mutations in refusals:
+        p=program()
+        with pytest.raises(PdfError,match='overlap|touches'):
+            for m in mutations:p.add(m)
+    # Only an owned, zero-length page-entry insertion may carry an order.
+    for bad in (Mutation(10,10,b'a',kind='text-edit',owner='A',insertion_order=1),
+                Mutation(10,12,b'a',kind=PAGE_ENTRY,owner='A',insertion_order=1),
+                Mutation(10,10,b'a',kind=PAGE_ENTRY,owner=None,insertion_order=1),
+                Mutation(10,10,b'a',kind=PAGE_ENTRY,owner='A',insertion_order=-1),
+                Mutation(10,10,b'a',kind=PAGE_ENTRY,owner='A',insertion_order=True),
+                Mutation(10,10,b'a',kind=PAGE_ENTRY,owner='A',insertion_order=1.0)):
+        with pytest.raises(PdfError,match='explicit order'):
+            program().add(bad)
+    # Unordered page-entry creation keeps the original refusal.
+    p=program();p.add(Mutation(0,0,b'a',kind=PAGE_ENTRY,owner='A'))
+    with pytest.raises(PdfError,match='overlap|touches'):
+        p.add(Mutation(0,0,b'b',kind=PAGE_ENTRY,owner='B'))
+    # Ordered insertions at different boundaries remain ordinary insertions.
+    p=program();p.add(entry(3,b'a',2,'A'));p.add(entry(7,b'b',1,'B'))
+    assert p.apply()==b'012a3456b789ABCDEFGHIJKLMNOPQRS'
+
+
+def test_identity_map_rebuilds_ordered_page_entry_blocks_from_records(tmp_path):
+    source,before,program=opened(tmp_path)
+    first=before.events[0]
+    blocks={}
+    for order,owner,text in ((20,'B',b'B'),(10,'A',b'A')):
+        data=b'q BT /Regular 12 Tf 1 0 0 1 20 20 Tm ('+text+b') Tj ET Q\n'
+        blocks[owner]=program.add(Mutation(0,0,data,kind=PAGE_ENTRY,owner=owner,insertion_order=order,
+            anchors={'glyph:0':data.index(b'('),'block_start':0,'block_end':len(data)}))
+    data,offset,chars=rewritten_event(first,{0},remove=True)
+    program.add(Mutation(first.operator.start,first.operator.end,data,kind='text-edit',anchors={'rewritten':offset},chars=chars))
+    applied=program.apply()
+    assert applied.startswith(b'q BT /Regular 12 Tf 1 0 0 1 20 20 Tm (A)')
+    out=saved(tmp_path,source,applied,'ordered')
+    after=ContentPage(out,1)
+    try:
+        expected={owner:emitted_glyphs(after,program,m,['glyph:0']) for owner,m in blocks.items()}
+        assert [after.actual[expected[o][0]]['unicode'] for o in 'AB']==['A','B']
+        kept=map_glyphs(before,after,program,[1,2,3,4,5])
+    finally:
+        after.close();before.close()
+    rebuilt=IdentityMap.from_records(source,out,1,json.loads(json.dumps(list(reversed(program.records())))))
+    try:
+        mutations={m.owner:m for m in rebuilt.program.mutations if m.insertion_order is not None}
+        assert {o:rebuilt.emitted_glyphs(m,['glyph:0']) for o,m in mutations.items()}==expected
+        assert rebuilt.map_glyphs([1,2,3,4,5])==kept
+        assert rebuilt.program.anchor(mutations['A'],'block_end')==rebuilt.program.position(mutations['B'])
+    finally:
+        rebuilt.close()
+    # Byte edits alone keep the order too: they are position data.
+    partial=IdentityMap.from_edits(source,out,1,program.edits())
+    partial.close()

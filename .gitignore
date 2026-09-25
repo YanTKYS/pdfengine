@@ -30,3 +30,4 @@ tmp/
 !/evaluations/confirmed_style/summary.json
 !/evaluations/alignment/summary.json
 !/evaluations/continuation/summary.json
+!/evaluations/continuation/multi-destination-summary.json

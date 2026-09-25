@@ -1,6 +1,6 @@
 # Continuation開発の再開地点 — 2026-09-24
 
-**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。結果は「外部原本評価の完了」と「生成fontの寿命」の節を参照。以下の各節は、その時点の記録として残す。
+**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張した（合成PDFで検証済み、外部原本では未実施）。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」の節を参照。以下の各節は、その時点の記録として残す。
 
 利用者の「最短の区切りでコミット」指示による途中保存。起点は`02a526ff2781ae80551f2ad4367f6f8d50c2b430`。サブエージェントは使用していない。
 
@@ -154,6 +154,55 @@ skip 18件はすべて環境要因である。Windows font（Arial / Noto Sans J
 - **dormant alias**: 直前のsubsetを保持する（aliasごとに1つ）。
 - **次の最小の構造障壁**: 置き換えられた生成glyph単位（`Tf … Tm [-n] TJ`）の所有と不使用を証明し、text matrixとmutation map・markerの対応を保ったまま除去する契約である。これが成立すれば、非描画operatorだけが参照する生成aliasも外せる。
 
+## 同一ページの複数destination — 2026-09-25（`be00ece`）
+
+起点はPR #7のmerge commit `be00ece`。サブエージェントは使用していない。「1ページにつき1 destination」の制約を外し、同じpage-entry authorityを、互いに独立した複数の順序付きdestinationへ拡張した。挿入authorityは`before-page-program` / `isolated-pdf-initial-state`のままで、page program途中・既存BT/ET内部・既存graphics stateへの挿入には進んでいない。契約は[同一ページの複数destination](confirmed-continuation.md#同一ページの複数destination)にある。
+
+### 変更
+
+- **`pdfeditor/continuation.py`**:
+  - destination契約に`page_entry_order`を加えた。複数destinationのページでは必須・ページ内で一意とする。
+  - page-entry chainの検証を加えた。markerが一意であること、blockが連続すること、order順であること、各blockが`q BT ... ET Q`として閉じ、許可したoperatorだけを含むこと、block内の文字とfontがそのslotの所有であること、を確かめる。
+  - 新blockの挿入境界の計算と、bytesによる再照合を加えた。
+  - marker・mutation mapによるblockの再bindingと、ページ単位の再open検証を加えた。
+- **`pdfeditor/mutation.py`**: 明示的な順序を持つ`confirmed-continuation-create`のzero-length insertionに限り、同じoffsetを共有できる。
+  - byte順はorderで決まる。`apply` / `position` / `anchor` / `map_offset`、記録、`from_records`はこの順序で定義した。
+  - 他のmutationのoverlap・接触の拒否は変えていない。
+- **`pdfeditor/paragraph.py`**: 作成mutationを検証済みの境界に置き、orderを付ける。font aliasの予約にowner slotを渡す。
+- **`pdfeditor/transaction.py`**:
+  - 生成fontのaliasは、記録上の所有slotと同じslotのplanだけが再利用できる。commit時にも照合する。
+  - 生成glyphの順序照合は、適用後programでの位置で並べる。
+- **`pdfeditor/shared_flow.py`**: 確認・計画・保存後bindingをページ単位のchainで行う。
+- **engine digest**: `564da875826429f82fc018f6f856d10af191970f473d4bc0b7c0c481040e44a1`（44ファイル）。
+
+### 検証（Linux x64 container、Python 3.12.3、lockfileの版）
+
+以下は同じ最終engine（上記digest）の結果である。
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_multi_destination.py`（新規） | 16 passed（全suite内で370.3秒） |
+| `tests/test_mutation.py` | 9 passed（順序付きinsertionの3件を追加） |
+| `tests/test_continuation.py` / `tests/test_generated_fonts.py` | 26 / 6 passed |
+| 全suite `python -m pytest -q` | 668件中650 passed / 18 skipped / 0 failed（1,422.70秒） |
+| 単一destinationの互換 | PR #7のengine（`be00ece`）と最終engineで同じ単一destinationの系列（tracking/rise付き、grow → second → shorten → regrow → no-op）を同じpathで実行した。5保存すべてでPDFとsidecarがbyte単位で一致した |
+| 2 destination評価コードのdry-run | 合成原本で全段階・同時生成・容量拒否が通過（約6分）。MuPDF、Poppler 24.02.0、別interpreterのpypdf 6.10.0を使った（[評価README](../evaluations/continuation/README.md#dry-run合成原本外部原本の証跡ではない)）。外部原本の証跡ではない |
+| 外部原本 | **未実施**（下記） |
+
+- **skip 18件**: すべて環境要因である。Windows font（Arial / Noto Sans JP）不在11、外部corpus未取得5、pypdf AES provider不在2。
+- **全suiteの実行条件**: `--junitxml`と`-p no:cacheprovider`だけを加えた。この結果を得る前に、同じengineで途中版の全suite（650 passed / 18 skipped）も通っている。
+- **Poppler**: dry-runのため、このcontainerへaptで導入した（`pdftoppm` 24.02.0）。
+
+### 外部原本評価が未実施の理由
+
+- 原本の取得元host（`wiki.documentfoundation.org`）とweb archiveへの接続が、このcontainerのnetwork policyで拒否された（403）。
+- 評価provider（`msmincho.ttc` face 1、`times.ttf`）がない。別の取得元・別PDF・代替fontでは実行していない。
+- 2 destinationの評価コード[multi_destination.py](../evaluations/continuation/multi_destination.py)は用意した。評価者の分割（確認済み`[55,80,385,120]`内の`[55,80,385,100]`と`[55,101.5,385,120]`、order 10/20）と系列は[評価README](../evaluations/continuation/README.md#同一ページ2-destinationの評価)にある。Windows検証環境で実行する。
+
+### 次の最小の構造障壁
+
+page-program先頭以外のcontent-stream境界へ、独立した挿入authorityを与えることである。page-entryでは初期graphics stateが仕様で決まり、各blockがそれを閉じるだけで状態を証明できた。途中の境界では、その位置で有効なCTM・clip・ExtGState・text stateと、後続paintとの順序を、その境界ごとの証跡として確認する必要がある。
+
 ## 再評価の手順
 
 Windows検証環境で[評価README](../evaluations/continuation/README.md)の手順を実行する。
@@ -163,5 +212,6 @@ Windows検証環境で[評価README](../evaluations/continuation/README.md)の�
 3. 未使用のrun名で`python -m evaluations.continuation.evaluate --run-name <name>`を実行する。
 4. overflowのallocation（既存slot 209字、生成slot 36字・2行）を確認し、画像を目視する。
 5. engineを修正した場合は、継続テスト、関連テスト、外部評価、全suiteを最終コードで再実行し、公開集計を更新する。
+6. 同一ページ2 destinationの評価は、未使用のrun名で`python -m evaluations.continuation.multi_destination --run-name <name>`を実行する。`a-only`で`page6-a`だけ、`b-added`で`page6-b`が加わることと、page-entry順序を確認し、画像を目視する。すべて通った場合だけ`multi-destination-summary.json`として公開する。単一destinationの評価も、この変更後のengineで再実行していない。
 
 外部PDF・派生PDF/PNG・font・本文/glyphログは引き続き公開しない。
