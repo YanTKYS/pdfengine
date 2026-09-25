@@ -539,7 +539,7 @@ existing suffix              CTM = M
 - **証明**（`compensation()`）: Mが有限で、行列式が0でない（有理数で厳密に計算）。Nは厳密な逆行列を有効数字12桁に丸め、指数表記なしで書く。page box（CropBox）の4隅で、pとp·N·Mの距離の上界（厳密な残差と、binary32で8段の丸めの上界）が0.002以下。Mには、interpreterのCTM（MuPDFと同じbinary32合成）と、operandから厳密に合成したCTMの両方を使う。
 - **拒否**: `nonfinite-ctm`、`singular-ctm`、`numerically-unstable-ctm`（値の範囲外か上界超過）。従来の`nonidentity-ctm`はなくなった。
 - **authority**: `ctm_compensation`に、confirmed CTM・逆行列（書くoperandと`N cm`のbytes）・policy（`inverse-ctm-inside-block-save`）・証明を記録する。`isolation = q-cm-BT-ET-Q`。boundary ID・前後operatorの証跡・scope・state・source program・mutation mapによるrebindは従来どおり。
-- **再検証**: open・保存のたびに、境界のCTMとprogramのoperandから`ctm_compensation`全体を再導出して記録と比べる。blockの`cm`は、記録した`operator`とbytesが同じものが1つだけ。block内の文字のCTMは、MにNを合成した値。blockの`Q`の直後はCTMがMで、`q`の深さ0。
+- **再検証**: open・保存のたびに、境界のCTMとprogramのoperandから`ctm_compensation`全体を再導出して記録と比べる。blockの`cm`は、記録した`operator`とbytesが同じものが1つだけ。block内の文字のCTMは、MにNを合成した値。blockの`q ... Q`は末尾でだけ閉じるので、`Q`の直後はCTMがM、`q`の深さ0に戻る（試験でも直接確かめる）。
 
 ### 変更
 

@@ -273,7 +273,7 @@ confirmed suffix                     CTM = M（blockのQが戻す）
 - open・保存のたびに、境界の確認済みCTMとprogramのoperandから`ctm_compensation`全体を再導出し、記録と一致しなければ拒否する。記録を読み戻して使うことはしない。
 - CTMが変わった境界は、offset・前後のoperatorが同じでも同じauthorityではない。binary32で同じ値になる変更でも、operandが変われば証明が変わるので拒否する。
 - blockは`q N cm BT`で始まる。`cm`は、authorityの`operator`とbytesが同じものが1つだけで、ほかの`cm`は許さない。identityのblockは`cm`を持たない。PDF 1.xの入れ子以前の形式（legacy）のbindingでは、相殺を認めない。
-- block内の文字は、MにNを合成したCTM（interpreterの値）で描かれていること。blockの`Q`の直後は、CTMがMで、`q`の深さが0であること。
+- block内の文字は、MにNを合成したCTM（interpreterの値）で描かれていること。blockの`q ... Q`は末尾でだけ閉じる（`_block`）ので、`Q`の直後はCTMがM、`q`の深さが0に戻る。これは試験でも直接確かめる。
 - bindingとrebind（marker、mutation map、作成mutationのanchor）は変えていない。
 
 ### 対応範囲
