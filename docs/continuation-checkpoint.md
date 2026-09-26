@@ -807,8 +807,9 @@ matching Q                             scopeの前の状態を戻す
 | `tests/test_boundary_destination.py` | 38 passed（深さ2の拒否例を追加） |
 | `tests/test_ctm_compensation.py`・`tests/test_clip_boundary.py` | 39 passed・46 passed（件数は同じ。拒否例を深さ2に差し替え） |
 | continuation・multi・nesting・generated fonts・mutationを含む関連8ファイル | 210 passed |
+| 全suite `python -m pytest -q`（`fdc5917`） | 838 passed, 18 skipped, 0 failed（3,072.70秒、単一process） |
 
-- **全suiteの件数**: PR #14までの820件に、新規36件（`test_scope_boundary.py`の35件と拒否例1件）を加えた856件である。
+- **全suiteの件数**: PR #14までの820件に、新規36件（`test_scope_boundary.py`の35件と拒否例1件）を加えた856件である。skip 18件はPR #14と同じで、すべて環境によるもの（Windowsのfont、外部corpus、AES provider）である。
 - **新しい試験**（`tests/test_scope_boundary.py`、35件）:
   - 候補: 深さ1の境界が`graphics_state_scope`を持つ候補になること。開く`q`・対応する`Q`の位置とbytes、`restored_state`。scope内の境界がすべて同じ記録を持ち、scopeの外の境界は持たないこと。
   - 11種の境界: 証明できるscope（1つ、閉じた兄弟scopeの後、scope内で閉じたmarked content・`BX`）、拒否するscope（深さ2、marked content・`BX`との交差）、scope内でも拒否する状態（ExtGState、特異なCTM、多角形のclip、描画モード）。`q`/`Q`が釣り合わないページ（閉じない`q`、`q`のない`Q`）は扱わないこと。
