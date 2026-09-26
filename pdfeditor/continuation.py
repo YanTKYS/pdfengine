@@ -12,10 +12,11 @@ A candidate is a page-level boundary (no open q, text object, marked-content
 or compatibility scope, path or pending clip) of a program whose operators
 nest (see operator_nesting; otherwise no scope is trusted and no boundary is
 a candidate), and whose state is the page-entry state for what a block
-draws: no clip, full opacity, fill-only text rendering, no ExtGState, and an
-identity CTM or one the block can cancel (see compensation). The block
-paints after all paint of the confirmed prefix and before all paint of the
-confirmed suffix. One destination owns one exact boundary.
+draws: full opacity, fill-only text rendering, no ExtGState, an identity CTM
+or one the block can cancel (see compensation), and no clip or one proven to
+be a single page rectangle (see clip_constraint). The block paints after all
+paint of the confirmed prefix and before all paint of the confirmed suffix.
+One destination owns one exact boundary.
 
 Each generated block starts from that state, not another paragraph's text
 context, and closes its own state again. Each destination's entire rectangle
@@ -30,6 +31,14 @@ derived from the confirmed CTM alone and recorded in the authority with its
 proof; a block's ``cm`` must be exactly that N. M is refused when it is not
 finite, is singular, or N·M cannot be proven to stay close enough to the
 identity (see compensation).
+
+Inherited clip. A clip set at page level cannot be ended by the block's own
+q ... Q: there is no saved state without it. The block therefore inherits
+it unchanged, writes no W, W* or n, and must lie entirely inside it. Only a
+clip proven to be one rectangle in page coordinates is inherited; the
+destination bounds and every generated glyph's ink, grown by INK_MARGIN, must
+lie inside that rectangle. The block's own cm cancels the CTM, never the
+clip, which was fixed in page space when it was set.
 """
 from collections import defaultdict
 from copy import deepcopy
@@ -88,6 +97,17 @@ UNIT_ROUNDOFF = 2.0 ** -24
 ROUNDING_STEPS = 8
 # Every operand of N and of M stays a normal binary32 value and a PDF integer.
 MAGNITUDE = (2.0 ** -126, 2 ** 31 - 1)
+CLIP = 'inherited-rectangular-clip'
+CLIP_PROOF = 'intersection-of-single-re-clips-under-ctms-without-rotation-or-skew'
+CLIP_CONTAINMENT = 'destination-bounds-and-generated-ink-inside-the-clip-rectangle'
+# The renderer's paint envelope of a glyph, as the bbox log records it and
+# require_empty() reads it, is its outline box grown by one unit of the
+# 72 dpi device (MuPDF's allowance for glyph-cache positioning).
+PAINT_PADDING = 1.0
+# A planned glyph's outline ink box, grown by that padding and by the
+# tolerance its saved origin is verified with (which also bounds a
+# compensated block's displacement), must lie inside the clip rectangle.
+INK_MARGIN = PAINT_PADDING + COMPENSATION_TOLERANCE
 
 
 def program(content):
@@ -134,7 +154,17 @@ def _state(boundary):
     value=json.loads(json.dumps(boundary.state.report()))
     # Object numbers are not state; the marked-content depth is scope.
     value.pop('font_xref',None)
+    value['clip']=clip_state(boundary.state.clip)
     return value
+
+
+def clip_state(clip):
+    """A clip as state: each rule and path, not where or through which object it was set.
+
+    Where a clip was set is witnessed by its operator bytes (clip_constraint);
+    a program position moves with every edit before it.
+    """
+    return json.loads(json.dumps([{k:v for k,v in c.items() if k not in ('at','font_xref')} for c in clip]))
 
 
 def _scope(boundary):
@@ -236,8 +266,129 @@ def block_ctm(destination):
     return multiply(tuple(map(float,value['matrix'])),tuple(value['confirmed_ctm']))
 
 
-def _refusals(scope, state, ctm_reason=None):
-    """Why a block drawn at this boundary would not look like one drawn at page entry."""
+def _outward(value, up):
+    """The exact ``value`` as a float, rounded up when ``up``, else down."""
+    result=float(value)
+    if up and Fraction(result)<value:result=math.nextafter(result,math.inf)
+    elif not up and Fraction(result)>value:result=math.nextafter(result,-math.inf)
+    return result
+
+
+def _clip_rectangle(entry, data, ops, ctms, xref, page_transform):
+    """One path clip of the page program: ``((witness, exact rectangle), None)`` or ``(None, reason)``."""
+    rule,path,at=entry.get('rule'),entry.get('path'),entry.get('at')
+    if rule=='text clipping':return None,'text-clip'
+    if rule not in ('W','W*') or not isinstance(path,list):return None,'unproven-clip'
+    # One subpath, and a rectangle: not a polygon, curve or several subpaths.
+    if len(path)!=1 or path[0]['operator']!='re':return None,'nonrectangular-clip'
+    # Set at page level by the three consecutive operators re, W or W*, n: no
+    # cm or other path between them, so the CTM of the path is the clip's.
+    index=at[1] if isinstance(at,list) and len(at)==2 and at[0]==xref else None
+    if (type(index) is not int or not 2<=index<len(ops)
+            or [op.name for op in ops[index-2:index+1]]!=['re',rule,'n']):
+        return None,'unproven-clip'
+    values,ctm,exact=path[0]['args'],tuple(path[0]['ctm']),ctms[index-2]
+    if (len(values)!=4 or [float(v) for v in ops[index-2].args]!=values or exact is None
+            or not all(map(math.isfinite,(*values,*ctm)))):
+        return None,'unproven-clip'
+    matrices=(tuple(map(Fraction,ctm)),exact)
+    # Without rotation or skew the rectangle stays one axis-aligned page rectangle.
+    if any(m[1] or m[2] for m in matrices):return None,'rotated-clip'
+    x,y,w,h=map(Fraction,values)
+    if any(v and not MAGNITUDE[0]<=abs(v)<=MAGNITUDE[1] for v in (x,y,w,h,*matrices[0],*matrices[1])):
+        return None,'unproven-clip'
+    page=tuple(map(Fraction,page_transform));u=Fraction(UNIT_ROUNDOFF)
+    gamma=ROUNDING_STEPS*u/(1-ROUNDING_STEPS*u)
+    # |x|+|w| bounds |x|, |x+w| and the error of x+w composed from rounded operands.
+    size=(abs(x)+abs(w),abs(y)+abs(h));rectangles=[];bound=Fraction(0)
+    for m in matrices:
+        t=_compose(m,page)
+        corners=[_compose((0,0,0,0,px,py),t)[4:] for px in (x,x+w) for py in (y,y+h)]
+        xs,ys=[p[0] for p in corners],[p[1] for p in corners]
+        rectangles.append((min(xs),min(ys),max(xs),max(ys)))
+        bound=max(bound,gamma*(size[0]*(abs(t[0])+abs(t[1]))+size[1]*(abs(t[2])+abs(t[3]))+abs(t[4])+abs(t[5])))
+    exact_box=(max(r[0] for r in rectangles)+bound,max(r[1] for r in rectangles)+bound,
+               min(r[2] for r in rectangles)-bound,min(r[3] for r in rectangles)-bound)
+    witness=dict(rule=rule,operands=[float(v) for v in values],ctm=list(ctm),source_ctm=[float(v) for v in exact],
+        operators=[dict(operator=op.name,sha256=hashlib.sha256(data[op.start:op.end]).hexdigest())
+                   for op in ops[index-2:index+1]],
+        rectangle=[float(v) for v in rectangles[0]],source_rectangle=[float(v) for v in rectangles[1]],
+        rounding_bound=_outward(bound,True))
+    return (witness,exact_box),None
+
+
+def clip_constraint(clip, data, ops, ctms, xref, page_transform):
+    """The rectangle an inherited clip certainly contains, with its proof; or why none is proven.
+
+    ``clip`` is the interpreted clip at a boundary of the page program
+    ``data`` (virtual stream ``xref``), ``ops`` its operators and ``ctms`` the
+    exact CTM after each (source_ctms). Only an intersection of path clips is
+    proven, each one ``x y w h re`` subpath set by the consecutive operators
+    ``re W n`` or ``re W* n`` under a CTM without rotation or skew; for one
+    rectangle both rules clip the same area. For each clip and each of its
+    interpreted (binary32) CTM and the CTM composed exactly from the
+    operands, the page rectangle is exact; the certified rectangle is their
+    intersection over all clips, each shrunk on every side by
+    γ·((|x|+|w|)·(|t_a|+|t_b|) + (|y|+|h|)·(|t_c|+|t_d|) + |t_e| + |t_f|), t
+    the CTM composed with the page transform and γ as in compensation(); it
+    is then rounded inward to binary64. Every renderer's clip contains it.
+    Returns ``(None, [])`` without a clip, ``(value, [])`` or ``(None, reasons)``.
+    """
+    if not clip:return None,[]
+    witnesses,reasons,box=[],[],None
+    for entry in clip:
+        value,reason=_clip_rectangle(entry,data,ops,ctms,xref,page_transform)
+        if reason:
+            if reason not in reasons:reasons.append(reason)
+            continue
+        witness,rectangle=value;witnesses.append(witness)
+        box=rectangle if box is None else (max(box[0],rectangle[0]),max(box[1],rectangle[1]),
+                                           min(box[2],rectangle[2]),min(box[3],rectangle[3]))
+    if reasons:return None,reasons
+    rectangle=[_outward(box[0],True),_outward(box[1],True),_outward(box[2],False),_outward(box[3],False)]
+    if not (rectangle[0]<rectangle[2] and rectangle[1]<rectangle[3]):return None,['empty-clip']
+    value=dict(policy=CLIP,rectangle=rectangle,clips=witnesses,
+        proof=dict(method=CLIP_PROOF,page_transform=list(page_transform),arithmetic='binary32',
+                   unit_roundoff=UNIT_ROUNDOFF,rounding_steps=ROUNDING_STEPS,
+                   rounding_bound=max(w['rounding_bound'] for w in witnesses)),
+        containment=dict(policy=CLIP_CONTAINMENT,destination='bounds-inside-rectangle',
+                         ink='each-planned-glyph-ink-grown-by-the-margin-inside-rectangle',ink_margin=INK_MARGIN,
+                         paint_padding=PAINT_PADDING,origin_tolerance=COMPENSATION_TOLERANCE,
+                         saved_paint='each-generated-text-paint-envelope-inside-rectangle'))
+    return json.loads(json.dumps(value)),[]
+
+
+def clip_contains(constraint, box, margin=0):
+    """``box`` grown by ``margin`` on every side lies inside the certified clip rectangle, exactly."""
+    try:
+        x0,y0,x1,y1=map(Fraction,constraint['rectangle']);a,b,c,d=map(Fraction,box);m=Fraction(margin)
+    except (TypeError,ValueError,OverflowError):
+        return False
+    return x0<=a-m and y0<=b-m and c+m<=x1 and d+m<=y1
+
+
+def require_inside_clip(destination, inks=()):
+    """The destination bounds, and each planned glyph ink grown by INK_MARGIN, inside its inherited clip.
+
+    The margin makes the plan predict the saved check of _validate_destination
+    (each generated paint's envelope inside the rectangle). Nothing is
+    required of a destination without a clip constraint. A box on the
+    rectangle's edge is inside; anything beyond it, by any amount, is not.
+    """
+    clip=destination['authority'].get('clip_constraint')
+    if clip is None:return
+    if not clip_contains(clip,destination['bounds']):
+        raise PdfError('continuation destination extends beyond its inherited rectangular clip')
+    for ink in inks:
+        if not clip_contains(clip,ink.tuple() if isinstance(ink,Rect) else ink,INK_MARGIN):
+            raise PdfError('generated glyph ink may extend beyond its inherited rectangular clip')
+
+
+def _refusals(scope, state, ctm_reason=None, clip_reasons=None):
+    """Why a block drawn at this boundary would not look like one drawn at page entry.
+
+    ``clip_reasons`` are clip_constraint()'s; a clip that was not analyzed is refused.
+    """
     reasons=[]
     if scope['q_depth']:reasons.append('inside-graphics-state-save')
     if scope['text_object']:reasons.append('inside-text-object')
@@ -246,7 +397,7 @@ def _refusals(scope, state, ctm_reason=None):
     if scope['pending_path']:reasons.append('pending-path')
     if scope['pending_clip']:reasons.append('pending-clip')
     if ctm_reason:reasons.append(ctm_reason)
-    if state['clip']:reasons.append('active-clip')
+    if state['clip']:reasons.extend(['unproven-clip'] if clip_reasons is None else clip_reasons)
     if state['opacity']!=1 or state['stroke_opacity']!=1:reasons.append('transparency')
     if state['rendering_mode']!=0:reasons.append('text-rendering-mode')
     if any(k.startswith('ExtGState:') for k in state['other']):reasons.append('extgstate')
@@ -268,23 +419,32 @@ def _boundary_authority(content, page, ident):
         reasons=[r['reasons'] for r in inspected['refused'] if r['boundary_id']==ident]
         raise PdfError('the confirmed boundary is not a safe page-level candidate of this page program'
                        +(': '+', '.join(reasons[0]) if reasons else ''))
-    c=found[0];compensated=c.get('ctm_compensation')
+    c=found[0];compensated=c.get('ctm_compensation');clipped=c.get('clip_constraint')
     value=dict(position=BOUNDARY,boundary_id=ident,source_program_sha256=c['program_sha256'],
         boundary=dict(offset=c['offset'],ordinal=c['ordinal'],previous=c['previous'],next=c['next'],scope=c['scope']),
         z_order=c['z_order'],graphics_state=c['graphics_state'],
-        graphics_state_contract='witnessed page-level state; the block sets its own font, text state and fill '
-                                'and restores every parameter with its own q ... Q' if compensated is None else
-                                'witnessed page-level state; the block cancels the witnessed CTM with the recorded '
-                                'inverse, sets its own font, text state and fill and restores every parameter '
-                                'with its own q ... Q',
-        **c['context'],initial_clip='page-crop-box',isolation=_isolation(compensated),
+        graphics_state_contract=_graphics_contract(compensated,clipped),
+        **c['context'],initial_clip=_initial_clip(clipped),isolation=_isolation(compensated),
         font_policy='explicit-paragraph-style-providers')
     if compensated is not None:value['ctm_compensation']=compensated
+    if clipped is not None:value['clip_constraint']=clipped
     return value
 
 
 def _isolation(compensated):
     return 'q-BT-ET-Q' if compensated is None else 'q-cm-BT-ET-Q'
+
+
+def _initial_clip(clipped):
+    return 'page-crop-box' if clipped is None else CLIP
+
+
+def _graphics_contract(compensated, clipped):
+    steps=(['cancels the witnessed CTM with the recorded inverse'] if compensated is not None else [])+(
+        ['draws inside the witnessed rectangular clip, which it inherits and never changes']
+        if clipped is not None else [])
+    return ('witnessed page-level state; the block '+', '.join(steps+['sets its own font, text state and fill'])
+            +' and restores every parameter with its own q ... Q')
 
 
 def _boundary_value(content, data, sha, d, generated, legacy, location):
@@ -325,14 +485,22 @@ def _boundary_value(content, data, sha, d, generated, legacy, location):
     if _nesting_refusals(data):
         raise PdfError('confirmed page-program boundary is in a program whose operators do not nest')
     scope,state=_scope(b),_state(b)
-    # The CTM is part of the state: another CTM is another authority. The
-    # compensation is re-derived from the witnessed CTM, never read back.
-    exact=source_ctms(data)[b.ordinal] if state['ctm']!=list(IDENTITY) else None
-    expected,reason=_compensation(state,exact,auth)
-    if scope!=confirmed['scope'] or state!=auth['graphics_state'] or _refusals(scope,state,reason):
+    # The CTM and the clip are part of the state: another CTM or clip is
+    # another authority. The compensation and the clip rectangle are
+    # re-derived from the witnessed state and program, never read back.
+    ctms=source_ctms(data) if state['ctm']!=list(IDENTITY) or state['clip'] else None
+    expected,reason=_compensation(state,ctms[b.ordinal] if ctms else None,auth)
+    clipped,clip_reasons=clip_constraint(b.state.clip,data,list(operators(data)) if state['clip'] else [],ctms,
+                                         -content.page.xref,auth['page_transform'])
+    if (scope!=confirmed['scope'] or state!=auth['graphics_state']
+            or _refusals(scope,state,reason,clip_reasons)):
         raise PdfError('confirmed page-program boundary state or scope differs from its authority')
     if compensated!=expected or auth['isolation']!=_isolation(expected):
         raise PdfError('confirmed page-program boundary CTM compensation differs from its authority')
+    if auth.get('clip_constraint')!=clipped or auth['initial_clip']!=_initial_clip(clipped):
+        raise PdfError('confirmed page-program boundary clip constraint differs from its authority')
+    if auth['graphics_state_contract']!=_graphics_contract(expected,clipped):
+        raise PdfError('confirmed page-program boundary graphics-state contract differs from its authority')
     value['boundary']=dict(offset=offset,previous=dict(start=previous['start'],end=previous['end']),
                            next=dict(start=following['start'],end=following['end']))
     if generated:
@@ -352,9 +520,11 @@ def inspect_continuation_boundaries(source, page, *, include_refused=False):
     Each boundary lies between two complete top-level operators of the merged
     /Contents program: never offset 0 (the page entry), never after the last
     operator. A ``safe`` candidate satisfies every condition of the module
-    docstring; a caller may confirm it with its ``boundary_id``. The witnesses
-    come from the same interpretation that edits the page. Nothing here
-    chooses a boundary from destination geometry.
+    docstring; a caller may confirm it with its ``boundary_id``. A candidate
+    under a clip carries its ``clip_constraint``: a destination confirmed
+    there must lie inside its rectangle. The witnesses come from the same
+    interpretation that edits the page. Nothing here chooses a boundary from
+    destination geometry.
     """
     content=ContentPage(source,page)
     try:
@@ -368,19 +538,28 @@ def _inspect(content, page, *, include_refused=False):
     items=content.boundaries;invalid=_nesting_refusals(data)
     paints=[b.ordinal for b in items if b.operator.name in PAINT]
     candidates,refused,counts=[],[],defaultdict(int)
-    exact=source_ctms(data) if any(b.state.ctm!=IDENTITY for b in items[:-1]) else None
+    clipped=any(b.state.clip for b in items[:-1])
+    exact=source_ctms(data) if clipped or any(b.state.ctm!=IDENTITY for b in items[:-1]) else None
+    ops=list(operators(data)) if clipped else [];clips={}
     for index,b in enumerate(items[:-1]):
         previous=_operator(data,b.operator,b.ordinal)
         following=_operator(data,items[index+1].operator,items[index+1].ordinal)
         scope,state=_scope(b),_state(b)
         compensated,reason=_compensation(state,exact[b.ordinal] if exact else None,page_context)
-        reasons=invalid+_refusals(scope,state,reason)
+        # Boundaries after the same clip operators share their clip entries.
+        key=tuple(id(c) for c in b.state.clip)
+        if key not in clips:
+            clips[key]=clip_constraint(b.state.clip,data,ops,exact,-content.page.xref,page_context['page_transform'])
+        constraint,clip_reasons=clips[key]
+        reasons=invalid+_refusals(scope,state,reason,clip_reasons)
         value=dict(page=page,boundary_id=boundary_id(page,sha,previous,following),program_sha256=sha,
             offset=b.operator.end,ordinal=b.ordinal,previous=previous,next=following,scope=scope,graphics_state=state,
             z_order=dict(semantics=Z_ORDER,prefix_paint_operators=sum(p<=b.ordinal for p in paints),
                          suffix_paint_operators=sum(p>b.ordinal for p in paints)),
             context=page_context,status='refused' if reasons else 'safe',reasons=reasons)
         if compensated is not None:value['ctm_compensation']=compensated
+        # The candidate carries the constraint its destination must satisfy.
+        if constraint is not None:value['clip_constraint']=constraint
         if reasons:
             refused.append(value)
             for reason in reasons:counts[reason]+=1
@@ -425,7 +604,8 @@ def confirm_continuation_destination(source, *, destination_id, paragraph_id, re
     graphics_state='confirmed-boundary-state' and ``boundary``, the
     ``boundary_id`` of a safe candidate from inspect_continuation_boundaries
     for this exact source program. The block then paints after all paint of
-    the confirmed prefix and before all paint of the confirmed suffix.
+    the confirmed prefix and before all paint of the confirmed suffix. At a
+    candidate under a clip, ``bounds`` must lie inside its clip rectangle.
 
     No PDF font is borrowed.
     """
@@ -442,6 +622,7 @@ def confirm_continuation_destination(source, *, destination_id, paragraph_id, re
     content=ContentPage(source,page)
     try:
         witness=context(content) if insertion==PAGE_ENTRY else _boundary_authority(content,page,boundary)
+        require_inside_clip(dict(authority=witness,bounds=bounds))
         require_empty(content,bounds)
         value=dict(destination_id=destination_id,paragraph_id=paragraph_id,region_id=region_id,page=page,
             bounds=list(bounds),provenance='explicitly_confirmed',authority=witness,
@@ -693,8 +874,10 @@ def _validate_destination(content,state,d,binding,current,fonts,records):
     if binding!=current:raise PdfError('continuation program witness is stale')
     generated=state['slots'].get(sid)
     owned=set(generated['binding']['paragraph']['selection']['glyph_ids']) if generated else set()
+    require_inside_clip(d)
     # Only this destination's own generated glyphs are exempt; every other
     # glyph, including another destination's generated text, is an obstacle.
+    # Paint the clip hides is still paint.
     require_empty(content,d['bounds'],owned)
     if not generated:return
     if any(generated.get(k)!=v for k,v in dict(paragraph_id=pid,region_id=rid,destination_id=ident,
@@ -718,18 +901,30 @@ def _validate_destination(content,state,d,binding,current,fonts,records):
     # Page entry: nothing but the initial state. A confirmed boundary: its
     # witnessed stroke-only parameters, and no open marked content (scope);
     # its CTM is the identity or the witnessed CTM cancelled by the recorded
-    # inverse, exactly as the interpreter composes them.
+    # inverse, exactly as the interpreter composes them; its clip is the
+    # witnessed one, which the recorded inverse does not change.
     expected=d['authority']['graphics_state']['other'] if is_boundary(d) else {}
+    clip=d['authority']['graphics_state']['clip'] if is_boundary(d) else []
     ctm=block_ctm(d) if is_boundary(d) else IDENTITY
     for e in events:
         s=e.state
         other={k:v for k,v in s.other.items() if k!='marked_content'} if is_boundary(d) else s.other
-        if (s.ctm!=ctm or s.clip or json.loads(json.dumps(other))!=expected
+        if (s.ctm!=ctm or clip_state(s.clip)!=clip or json.loads(json.dumps(other))!=expected
                 or s.opacity!=1 or s.stroke_opacity!=1 or s.tr!=0):
             raise PdfError('generated continuation graphics state differs from its confirmed authority')
     if any(set(c.source_orders)-owned for e in content.events if not e.invocation and start<=e.operator.start<stop
            for c in e.chars):
         raise PdfError('generated block contains text owned by another slot')
+    constraint=d['authority'].get('clip_constraint')
+    if constraint is not None:
+        # The renderer's own envelope of each generated text paint in this
+        # revision, not only the planned ink, lies inside the clip rectangle.
+        # An empty envelope (a blank glyph) paints nothing.
+        paints=content.page.get_bboxlog()
+        for seqno in sorted({content.actual[i]['span']['seqno'] for i in owned}):
+            kind,(x0,y0,x1,y1)=paints[seqno]
+            if kind!='fill-text' or not (x0>x1 or y0>y1 or clip_contains(constraint,(x0,y0,x1,y1))):
+                raise PdfError('saved generated text paint extends beyond its inherited rectangular clip')
     if records is not None:
         own={a for a,r in records.get(str(d['page']),{}).items() if r.get('slot_id')==sid}
         if fonts-own:raise PdfError('generated block selects a font it does not own')
@@ -775,6 +970,7 @@ class ContinuationParagraph:
                 if witness(self.content,snapshot['destination'])!=snapshot['destination_binding']:
                     raise PdfError('continuation insertion program changed')
                 self.entry=verify_entry(self.content,snapshot['destination'],snapshot['page_entry'])
+            require_inside_clip(snapshot['destination'])
             require_empty(self.content,snapshot['destination']['bounds'])
             self.events=[];self.observations=_observations(self.content.page);self.styles={};self.units=[]
             self.text='';self.logical=None;self.line_joiner='';self.default_style_id=snapshot['typing_style_id']

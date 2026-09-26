@@ -402,8 +402,11 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
         restore = (matrix_operator(first.line_matrix)
                    + b'[' + number(-delta[4] / (state.size * state.tz / 100) * 1000) + b'] TJ ')
         if getattr(paragraph,'creation',False):
-            from .continuation import CREATE, markers
+            from .continuation import CREATE, markers, require_inside_clip
             if not units:raise PdfError('an unused continuation destination creates no physical slot')
+            # A boundary under a clip: the block inherits it, so the
+            # destination and every glyph it draws must lie inside it.
+            require_inside_clip(snapshot['destination'],inks)
             begin,end=markers(snapshot['destination'])
             # A boundary under a nonidentity CTM first cancels it with the
             # inverse its authority records, outside the text object.

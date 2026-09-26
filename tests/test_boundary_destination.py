@@ -150,7 +150,9 @@ def first_operator(data):
     (b'q 2 0 0 2 0 0 cm 0 0 5 5 re f Q 0 g', b'0 0 5 5 re f', ['inside-graphics-state-save']),
     (b'1 2 2 4 0 0 cm 0 0 5 5 re f 0 g', b'0 0 5 5 re f', ['singular-ctm']),
     (b'1000 999 999 998 0 0 cm 0 0 5 5 re f 0 g', b'0 0 5 5 re f', ['numerically-unstable-ctm']),
-    (b'0 0 320 260 re W n 0 0 5 5 re f 0 g', b'0 0 5 5 re f', ['active-clip']),
+    # A clip proven to be one page rectangle is inherited; see test_clip_boundary.
+    (b'0 0 320 260 re W n 0 0 5 5 re f 0 g', b'0 0 5 5 re f', []),
+    (b'0 0 5 5 re 9 9 5 5 re W n 0 0 5 5 re f 0 g', b'0 0 5 5 re f', ['nonrectangular-clip']),
     (b'/GS0 gs 0 0 5 5 re f 0 g', b'0 0 5 5 re f', ['transparency', 'extgstate']),
     (b'/Perceptual ri 0 0 5 5 re f 0 g', b'0 0 5 5 re f', ['graphics-state-side-effect']),
     (b'3 Tr 0 0 5 5 re f 0 g', b'0 0 5 5 re f', ['text-rendering-mode']),
@@ -414,13 +416,17 @@ def test_same_offset_with_another_state_is_not_the_same_authority(tmp_path, pref
         content.close()
     assert open_shared_flow(tampered, tmp_path / 'grow.json')['status'] == 'needs_confirmation'
     # The unused boundary of a changed source is not the confirmed one either:
-    # it is refused, or (a CTM the block can cancel) another authority.
+    # it is refused, or (a CTM the block can cancel, a clip proven to be one
+    # page rectangle) another authority.
     source = build(tmp_path / reason, SOURCE_PAGE,
                    DESTINATION_PAGE.replace(PREFIX_SLOT, prefix.ljust(len(PREFIX_SLOT)))
                    .replace(SUFFIX_SLOT, suffix.ljust(len(SUFFIX_SLOT))))
     found = [c for c in inspect_continuation_boundaries(source, 2)['candidates'] if c['offset'] == chosen['offset']]
-    assert [c['graphics_state']['ctm'] for c in found] == ([[1, 0, 0, 1, 5, 5]] if reason == 'ctm' else [])
-    assert all(c['boundary_id'] != chosen['boundary_id'] and 'ctm_compensation' in c for c in found)
+    relaxed = {'ctm': 'ctm_compensation', 'clip': 'clip_constraint'}
+    assert len(found) == (reason in relaxed)
+    assert [c['graphics_state']['ctm'] for c in found] == ([[1, 0, 0, 1, 5, 5]] if reason == 'ctm'
+                                                         else [[1, 0, 0, 1, 0, 0]] if reason == 'clip' else [])
+    assert all(c['boundary_id'] != chosen['boundary_id'] and relaxed[reason] in c for c in found)
 
 
 @pytest.mark.parametrize('prefix,suffix', [(b'BT BT ET', b''), (b'ET', b''), (b'', b'BT')],

@@ -13,6 +13,8 @@
 
 その後、page levelの確認済み境界に残る制約のうち、CTMだけを1段緩めた（[下記](#identity以外のctmの相殺)）。clip等の他の条件が安全で、境界のCTMを安全に逆変換できる場合に限り、生成blockをpage座標へ相殺して描く。合成PDFの回帰だけで確認しており、外部原本での評価はしていない。LibreOffice原本で確認済みの境界はCTM identityで、この変更の対象ではない。
 
+さらに、有効なclipを1段緩めた（[下記](#矩形clipの継承)）。境界のclipを1つのpage矩形として証明でき、destination全体と生成glyphのinkがその矩形の内側に完全に収まる場合に限り、生成blockは既存のclipをそのまま継承して描く。clipを解除・再構築・拡大することはない。これも合成PDFの回帰だけで確認している。LibreOffice原本の有効なclipの下の境界は、どれも`q`の内側にあるため、この変更だけでは候補にならない。
+
 現行の結果は[評価](../evaluations/continuation/README.md)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
 
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
@@ -187,7 +189,7 @@ destination = confirm_continuation_destination(
 
 - **programの入れ子**: page program全体が、[operator nesting](#pdf-1xのoperator-nesting)の`audit`で違反なしである。違反の例は、入れ子の`BT ... BT ... ET`、`BT`のない`ET`、閉じていない`BT`、対応しない`q`/`Q`やmarked content、text object内のpage記述レベルのoperatorである。違反が1つでもあれば、scopeを信用できないので、そのページのどの境界も候補にしない（fail closed）。scopeの判定は、入れ子が正しいことを前提にしている。
 - **scope**: `q`の深さ0（page levelの状態が閉じている）。text object、marked-content sequence、`BX ... EX`の外で、組み立て中のpathや未適用の`W`/`W*`がない。
-- **graphics state**: 有効なclipがない（page entryと同じくCropBoxだけ）、不透明度とstroke不透明度が1、text描画モードが0。ExtGStateと`ri`・`i`の設定はない。CTMはidentityか、blockが逆行列で相殺できることを証明できるもの（[下記](#identity以外のctmの相殺)）。
+- **graphics state**: 不透明度とstroke不透明度が1、text描画モードが0。ExtGStateと`ri`・`i`の設定はない。CTMはidentityか、blockが逆行列で相殺できることを証明できるもの（[下記](#identity以外のctmの相殺)）。clipはない（page entryと同じくCropBoxだけ）か、1つのpage矩形であることを証明できるもの（[下記](#矩形clipの継承)）。
 - **stroke専用の値は許す**: `w`・`J`・`j`・`M`・`d`はstrokeにしか効かない。blockはTr 0の塗りの文字だけを描くので、既定値でなくてよい。
 - **blockが自分で設定する値**: font・size・Tz・Tc・Tw・Ts・fill（`g`/`rg`/`k`で色空間ごと）は、blockが自分で設定し、外側の`q ... Q`で元に戻す。そのため境界での値は問わない。strokeの色やTLは、blockが使わない。
 - **拒否**: 迷う状態は拒否する。拒否理由は次のとおりである。
@@ -195,7 +197,8 @@ destination = confirm_continuation_destination(
   - `inside-graphics-state-save`、`inside-text-object`、`inside-marked-content`、`inside-compatibility-section`
   - `pending-path`、`pending-clip`
   - `nonfinite-ctm`、`singular-ctm`、`numerically-unstable-ctm`（相殺を証明できないCTM）
-  - `active-clip`、`transparency`、`text-rendering-mode`、`extgstate`、`graphics-state-side-effect`
+  - `nonrectangular-clip`、`rotated-clip`、`text-clip`、`empty-clip`、`unproven-clip`（矩形と証明できないclip。以前は一律に`active-clip`だった）
+  - `transparency`、`text-rendering-mode`、`extgstate`、`graphics-state-side-effect`
 
 ### authorityとz-order
 
@@ -205,6 +208,7 @@ destination = confirm_continuation_destination(
   - `graphics_state`: 境界の状態の証跡。
   - `graphics_state_contract`、`z_order`、pageのcontext、`initial_clip = page-crop-box`、`isolation = q-BT-ET-Q`、font policy。
   - CTMがidentity以外の境界だけ、`ctm_compensation`を持ち、`isolation = q-cm-BT-ET-Q`になる（[下記](#identity以外のctmの相殺)）。identityの境界のauthorityはPR #11と同じである。
+  - clipのある境界だけ、`clip_constraint`を持ち、`initial_clip = inherited-rectangular-clip`になる（[下記](#矩形clipの継承)）。clipのない境界のauthorityは、PR #11・#12と同じである。
 - **z-order**: `z_order.semantics = after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix`。確認時のprefixとsuffixの描画operator数も記録する。前面・背面ではなく、callerが選んだ境界そのものが描画順序の契約である。
 - **空き判定**: page entryと同じ`require_empty()`を使う。prefix・suffixの描画との重なりも許さない。重なりを使ったlayer編集ではなく、挿入順序だけをoffset 0以外へ広げる。
 - **1境界1destination**: 1つの境界は1つのdestinationだけが持つ。page-entry orderは持たない。同じ境界への複数の順序付き挿入は、まだ扱わない。
@@ -237,7 +241,7 @@ destination = confirm_continuation_destination(
 
 ### identity以外のCTMの相殺
 
-**範囲**: page levelの確認済み境界で、clip等の他の条件が安全で、CTMを安全に逆変換できる場合に限り、生成blockをpage座標へ相殺して描く。identity以外のCTMを一般に扱えるようにしたものではない。`q`の内側・有効なclip・ExtGStateは、CTMにかかわらず従来どおり拒否する。
+**範囲**: page levelの確認済み境界で、clip等の他の条件が安全で、CTMを安全に逆変換できる場合に限り、生成blockをpage座標へ相殺して描く。identity以外のCTMを一般に扱えるようにしたものではない。`q`の内側・ExtGStateは、CTMにかかわらず従来どおり拒否する。clipは、矩形と証明できるものだけを継承する（[下記](#矩形clipの継承)）。
 
 ```text
 confirmed prefix                     CTM = M
@@ -276,6 +280,73 @@ confirmed suffix                     CTM = M（blockのQが戻す）
 - block内の文字は、MにNを合成したCTM（interpreterの値）で描かれていること。blockの`q ... Q`は末尾でだけ閉じる（`_block`）ので、`Q`の直後はCTMがM、`q`の深さが0に戻る。これは試験でも直接確かめる。
 - bindingとrebind（marker、mutation map、作成mutationのanchor）は変えていない。
 
+### 矩形clipの継承
+
+**範囲**: page levelの確認済み境界で、有効なclipを1つのpage矩形として証明でき、destination全体と生成glyphのinkがその内側に収まる場合に限り、生成blockは既存のclipを継承して描く。任意のpath clipを扱えるようにしたものではない。`q`の内側・ExtGState等は、clipにかかわらず従来どおり拒否する。
+
+```text
+confirmed prefix                       clip = C（page levelで確定済み）、CTM = M
+marker q [N cm] BT ... ET Q marker     clip = Cのまま。blockはW・W*・nを書かない
+confirmed suffix                       clip = C、CTM = M
+```
+
+- **継承する理由**: page levelのclipは、blockの`q ... Q`では外せない。clipのない状態へ戻す先が、blockの外にないためである。blockはclipを解除・再構築・拡大せず、そのまま継承する。
+- **blockの形**: 変えていない。`q BT ... ET Q`か、相殺があれば`q N cm BT ... ET Q`である。`W`・`W*`・`n`・pathはblockの許可operatorにないので、`_block`が`foreign operator`として拒否する。
+
+**矩形の証明**（`clip_constraint()`）
+
+- **対象**: 境界で有効なclipの各要素が、次をすべて満たすこと。複数の要素はintersectionをとる。
+  - `W`または`W*`のpath clipで、pathが`x y w h re`の1 subpathだけ。1つの矩形では、nonzeroとeven-oddは同じ領域になる。
+  - page levelの連続した3つのoperator（`re`、`W`/`W*`、`n`）で設定されている。間に`cm`や別のpathはない。
+  - `re`の時点のCTMに回転・skewがない（b = c = 0）。interpreterのCTM（binary32）と、operandから厳密に合成したCTMの両方で確かめる。
+  - operandとCTMの成分が有限である。0でない値は、binary32の正規数で、PDFの整数の範囲に収まる（CTMの相殺と同じ）。
+- **矩形**: 各clipについて、2つのCTMそれぞれで、page座標（page transform込み）の矩形を有理数で厳密に求める。そのintersectionを、binary32の丸めの上界だけ各辺で内側へ縮め、binary64へ内向きに丸める。
+  - 丸めの上界: γ·((|x|+|w|)·(|t_a|+|t_b|) + (|y|+|h|)·(|t_c|+|t_d|) + |t_e| + |t_f|)。tはCTMとpage transformの合成、γはCTMの相殺と同じ8段（u = 2^−24）である。
+  - 得た矩形（certified rectangle）は、どの描画系のclipにも含まれる。320×260ptの合成ページでは、上界は約0.0003ptである。
+- **拒否**:
+  - `nonrectangular-clip`: 複数のsubpath、`m`/`l`/`h`の多角形（形が矩形でも）、曲線。
+  - `rotated-clip`: 回転・skew・90°回転の下の`re`。境界のCTM自体は相殺できても拒否する。
+  - `text-clip`: text描画モード4〜7によるclip。
+  - `empty-clip`: 面積のない矩形や、交わらない複数の矩形。
+  - `unproven-clip`: 連続した`re W n`の形でないもの（pathより前の`W`、`re W f`など）、非有限・範囲外の値。
+
+**authorityの記録**（`clip_constraint`）
+
+- `policy = inherited-rectangular-clip`と、`rectangle`（certified rectangle、page座標）。
+- `clips`: clipごとに次を持つ。
+  - rule、`re`のoperand、interpreterのCTMとoperandから合成したCTM。
+  - clipを設定したoperator（`re`・`W`/`W*`・`n`）の名前と、bytesのSHA-256。
+  - 2つのCTMでの厳密な矩形と、丸めの上界。
+- `proof`: 方式（`intersection-of-single-re-clips-under-ctms-without-rotation-or-skew`）、page transform、丸めのモデル（binary32・u・段数）、上界。
+- `containment`: destinationとinkの包含の規則と、inkの余白（下記）。
+- **関連する記録**:
+  - `graphics_state.clip`には、各clipのruleとpath（operandとCTM）を記録する。どの位置のoperatorで設定したかは記録しない。位置はprefixの編集で動くためで、設定したoperatorはbytesで証跡する。
+  - `initial_clip = inherited-rectangular-clip`。`graphics_state_contract`は、blockが確認済みの矩形clipを継承して変えないことを明記する。
+- **候補**: candidateの時点で`clip_constraint`を持つ。destinationがその矩形内に収まることは、確認時の明示的な制約である。境界はgeometryから選ばない。
+
+**destinationとinkの包含**
+
+- **確認時**（`confirm_continuation_destination`）: destination bounds ⊆ certified rectangle。有理数で厳密に比べ、許容値は置かない。辺に接するのは内側で、外へ1 ulpでも出れば拒否する。
+- **生成時・再編集時**（shared flowの計画と、作成blockのwriter）: 生成glyphごとの輪郭のink box（page座標）を、各辺で`INK_MARGIN` = 1.002pt広げても、certified rectangleの内側にあること。
+  - 1pt: 描画系のpaint envelope。MuPDFのbbox logは、文字のpaint範囲を、glyphの輪郭のboxから72dpiのdeviceの1単位（1pt）広げて記録する（glyph cacheの位置精度の余裕）。`require_empty()`が既存のpaintを読むのも、このenvelopeである。
+  - 0.002pt: 保存したrevisionで、生成glyphの原点を検証する許容値。CTMの相殺の上界も、これ以下である。
+  - 計画の段階で拒否するので、何も書かない。再編集なら前のrevisionがそのまま残る。
+- **保存後**（open・保存のたびの`_validate_destination`）: 保存したrevisionで、生成slotの各文字のpaint envelope（MuPDFのbbox log）が、certified rectangleの内側にあること。空のenvelope（空白のglyph）は何も描かない。計画の判定は、この保存後の判定を予測したものである。
+- **空き判定**: `require_empty()`は緩めていない。clipに隠れて見えない既存のpaintも、障害物のままである。bbox log・`get_drawings()`・text traceは、clipで隠れたpaintも記録する。
+
+**CTMの相殺との共存**
+
+- clipは、設定した時点のCTMでpage空間に固定される。blockの`N cm`はCTMだけを相殺し、確定済みのclipは変えない。
+- clipを`cm`より前（identityのCTM）で設定した場合は、境界のCTMが回転・skewでも、clipを矩形として証明できる。clipを`cm`の後で設定した場合は、そのCTMに回転・skewがないことが必要である。
+- block内の文字のCTMは`block_ctm()`で、clipは確認済みのものと同じ。blockの`Q`の直後とsuffixの文字では、CTMとclipが元のままである。試験ではinterpreterで直接確かめる。
+
+**再検証**
+
+- open・保存のたびに、境界のclipとprogramから`clip_constraint`全体を再導出し、記録と比べる。`initial_clip`と`graphics_state_contract`も、再導出した値と比べる。記録を読み戻して使うことはしない。
+- clipのrule・geometry・CTM・数、設定したoperatorのbytesのどれかが変われば、offsetと前後のoperatorが同じでも同じauthorityではない。
+- 位置だけが動く場合は、同じauthorityである。例えば、同じページのpage-entry blockやprefixの編集で、clipのoperatorの位置が変わる場合である。
+- block内の文字は、確認済みのclipの下で描かれていること（`clip_state`で比べる）。
+
 ### 対応範囲
 
 | 状態 | 対応 |
@@ -283,8 +354,10 @@ confirmed suffix                     CTM = M（blockのQが戻す）
 | page entry（`before-page-program`） | 対応 |
 | 確認済みの安全なpage level境界（CTM identity） | 対応 |
 | 同上で、CTMがidentity以外だが、逆行列での相殺を証明できるもの | 対応（`q N cm BT ... ET Q`、合成PDFのみで確認） |
+| 同上で、有効なclipを1つのpage矩形と証明でき、destinationと生成inkがその内側に収まるもの（CTMはidentityか相殺できるもの） | 対応（clipを継承、合成PDFのみで確認） |
 | 特異・非有限・数値的に不安定なCTM | 未対応（拒否） |
-| `q`の内側、有効なclipの下、任意のExtGState | 未対応（拒否） |
+| 多角形・曲線・複数subpath・回転やskewの下の矩形・text clip・面積のないclip | 未対応（拒否） |
+| `q`の内側、任意のExtGState | 未対応（拒否） |
 | text object・marked content・`BX ... EX`・Form XObjectの内側 | 未対応（拒否） |
 | operatorの入れ子が崩れたpage program | 未対応（ページ全体を拒否） |
 
@@ -299,10 +372,17 @@ confirmed suffix                     CTM = M（blockのQが戻す）
   - page entryと境界で同じ文字・同じ画素になること。
 - **CTMの相殺**: [tests/test_ctm_compensation.py](../tests/test_ctm_compensation.py)で次を確認する。
   - translation・scale・回転・skew・反転の証明と、特異・非有限・不安定なCTMの拒否。
-  - 同じCTMでも、有効なclip・`q`・ExtGState・marked contentの境界は従来どおり拒否すること。
+  - 同じCTMでも、矩形と証明できないclip・`q`・ExtGState・marked contentの境界は従来どおり拒否すること。
   - 生成glyphのpage座標・画素がpage-entry版と一致すること。suffixの既存の描画（文字・path・画素）が元のCTMのまま変わらないこと。逆行列がsuffixへ漏れた場合に検出できること（対照）。
   - reopen・second・shorten・regrow・no-op 3回、生成fontの所有、operator nestingの違反0。
   - CTM・逆行列・証明の改ざん（sidecarとprogram）の拒否。page entry・identityの境界との共存。late failureのrollback。
+- **矩形clipの継承**: [tests/test_clip_boundary.py](../tests/test_clip_boundary.py)で次を確認する。
+  - 候補と`clip_constraint`の記録。1つの矩形・`W*`・複数の矩形のintersection・scaleの下の矩形は候補になる。複数subpath・多角形・曲線・回転/skew/90°回転・text clip・面積なし・`re W f`などは拒否する。`q`・ExtGState・marked content・`BX`・組み立て中のpath/clipは、clipが矩形でも従来どおり拒否する。
+  - destinationの包含。certified rectangleの辺は内側、外へ1 ulp・clip自体の辺・1ptは拒否する。boundsを変えてもauthorityは同じ。clipに隠れた既存paintも障害物のままである。
+  - lifecycle（identity、clipの後の回転、scaleの下のclip）: fits → grow → second → shorten → regrow → no-op 3回。reopen、authority・作成証跡の不変、blockに`W`・`W*`・`n`・pathがないこと、block内・blockの`Q`の直後・suffixの文字のCTMとclip、生成文字のpaint envelopeの包含、生成fontの所有、入れ子の違反0、no-opの画素・glyph plan・font再利用。
+  - 6種のCTMの配置で、生成glyphのplan・page座標・画素がpage-entry版と一致すること。clipが同じpage矩形のままで、suffixの描画と領域外の画素が元PDFと同じであること。対照として、clipを外すと領域外の画素が変わり、境界の証跡も拒否すること。
+  - inkの包含: 辺上と余白内のinkは計画・保存とも拒否して何も公開しないこと。余白の外なら書けること。計画の判定を外してもwriterが拒否すること。再編集で辺に達するinkの拒否。保存後のpaint envelopeが外へ出た場合の拒否（対照）。
+  - sidecarの14種・programの5種の改ざんの拒否。page-entry blockや、clipより前のsource slotの書き直しがclipのoperatorの位置を動かしても、同じauthorityであること。late failureのrollback。clipのない境界のauthority・binding・blockが以前と同じ形であること。
 - **外部評価**: [評価コード](../evaluations/continuation/boundary_destination.py)は、LibreOffice原本の6ページで評価者が確認した境界を使う。この境界は、本文の`q ... Q`とCC-BY-SAロゴの`q ... Q`の間にある。結果は[評価README](../evaluations/continuation/README.md#確認済みpage-program境界の評価)にある。
 
 ## 生成fontの寿命
@@ -360,4 +440,4 @@ pdfengineが書くcontent streamは、出力PDFのversionのoperator nesting規�
 
 回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。外部原本では、regrowが同じ生成slotへ戻り、final no-opで全10ページがMuPDF・Popplerとも全画素一致した。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
 
-同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺は上記で扱った。次の最小の構造障壁は、有効なclipの下の境界である。page levelのclipは、blockの`q ... Q`では外せない（戻す先の状態がblockの外にない）。そのため、destinationと生成glyphがclipの内側に収まることを証明する必要がある。ExtGState（不透明度・blend・soft mask）と`q`の内側は、その後である。新規ページの自動生成ではない。
+同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺と矩形clipの継承は上記で扱った。次の最小の構造障壁は、`q`の内側の境界である。LibreOffice原本の有効なclipの下の境界は、どれも`q ... Q`の内側にある。そこでは、境界の状態を決める外側の`q`と、それを閉じる`Q`の組を証跡として固定する必要がある。blockがその`Q`より前で閉じることも示す必要がある。ExtGState（不透明度・blend・soft mask）は、その後である。新規ページの自動生成ではない。

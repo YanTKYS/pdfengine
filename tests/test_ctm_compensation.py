@@ -3,8 +3,9 @@
 The block cancels the witnessed CTM M with the inverse N its authority
 records, ``q N cm BT ... ET Q``: its glyphs land where a page-entry block
 draws them, and its Q restores M, so every paint of the suffix keeps M. Only
-the CTM is relaxed: a q scope, an active clip or an ExtGState still refuses
-the boundary, and a singular or numerically unstable CTM has no inverse.
+the CTM is relaxed here: a q scope, a clip not proven to be one page
+rectangle (see test_clip_boundary) or an ExtGState still refuses the
+boundary, and a singular or numerically unstable CTM has no inverse.
 """
 from copy import deepcopy
 from fractions import Fraction
@@ -250,7 +251,7 @@ def test_a_boundary_under_an_invertible_ctm_is_a_candidate_with_its_inverse(tmp_
 @pytest.mark.parametrize('ctm,wrap,reasons', [
     (b'1 2 2 4 0 0', None, ['singular-ctm']),
     (b'1000 999 999 998 0 0', None, ['numerically-unstable-ctm']),
-    (b'1 0 0 1 30 -20', (b'0 0 320 260 re W n ', b''), ['active-clip']),
+    (b'1 0 0 1 30 -20', (b'0 0 100 100 re 150 150 100 100 re W n ', b''), ['nonrectangular-clip']),
     (b'1 0 0 1 30 -20', (b'q ', b' Q'), ['inside-graphics-state-save']),
     (b'1 0 0 1 30 -20', (b'/GS0 gs ', b''), ['transparency', 'extgstate']),
     (b'1 0 0 1 30 -20', (b'/P BMC ', b' EMC'), ['inside-marked-content']),

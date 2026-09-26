@@ -654,6 +654,106 @@ engine・評価コードは変更していない。3本の外部評価と全suit
 
 PR #12と同じく、有効なclipの下の境界である。原本の1ページ・10ページには、identity以外のCTMを持つ境界がある。どれも`q`の内側で、有効なclipの下にある。
 
+## page level境界での矩形clipの継承 — 2026-09-26（`399d4f6`）
+
+起点はPR #13のmerge commit `399d4f6`。サブエージェントは使用していない。confirmed page-program boundaryに残る制約のうち、有効なclipだけを1段緩めた。有効なclipを1つのpage矩形として証明でき、destination全体と生成glyphのinkがその矩形の内側に完全に収まる場合に限り、continuation destinationとして許可する。`q`の深さ0、text object・marked content・`BX ... EX`の外、組み立て中のpath/clipなし、ExtGStateなし、不透明度1、operator nestingの違反なしは維持した。契約は[矩形clipの継承](confirmed-continuation.md#矩形clipの継承)にある。clipを一般に扱えるようにしたものではない。
+
+### 開始時の確認
+
+| 項目 | 結果 |
+|---|---|
+| HEAD | `399d4f63dafaee87ae34ffa1dcaee15899cc166c`（PR #13のmerge）。作業ツリーはclean |
+| engine digest（開始時） | `383bbd49fddacba074b54d676f468d032c9f27a249af47af56c07a653bb55262`（45ファイル）。PR #12・#13の値と一致 |
+| 環境 | Linux（クラウド環境）、Python 3.12.3、lockfileの版（PyMuPDF 1.27.2.3、pypdf 6.10.0、fontTools 4.64.0ほか） |
+
+### 方式
+
+```text
+existing prefix                  clip = C（page levelで確定済み）、CTM = M
+q
+  [N cm]                         PR #12の逆行列（Mがidentity以外のときだけ）
+  BT ... generated text ... ET   clip = Cのまま
+Q
+existing suffix                  clip = C、CTM = M
+```
+
+- **継承**: blockは既存のclipを変えない。`W`・`W*`・`n`・pathを書かず、clipの解除・再構築・拡大をしない。blockの形はPR #12と同じで、`_block`の許可operatorも変えていない。
+- **証明**（`clip_constraint()`）: 各clipが、連続した`re`・`W`/`W*`・`n`による1つの`re` subpathで、そのCTMに回転・skewがないこと。interpreterのCTM（binary32）とoperandから厳密に合成したCTMの両方で、page座標の矩形を有理数で求める。全clipのintersectionをbinary32の丸めの上界だけ縮め、binary64へ内向きに丸めたものがcertified rectangleである。
+- **拒否**: `nonrectangular-clip`・`rotated-clip`・`text-clip`・`empty-clip`・`unproven-clip`。従来の一律の`active-clip`はなくなった。
+- **包含**:
+  - 確認時: destination bounds ⊆ certified rectangle（厳密、許容値なし）。
+  - 生成時・再編集時: 計画した各glyphの輪郭のink boxを1.002pt広げたものが内側にあること。1ptは描画系のpaint envelope（MuPDFのbbox logは輪郭のboxを72dpiで1単位広げる）、0.002ptは保存したglyph原点の許容値である。
+  - 保存後: 生成文字のpaint envelope（bbox log）が内側にあること。
+- **authority**: `clip_constraint`に、certified rectangle、clipごとのrule・operand・2つのCTM・設定したoperatorのbytesのSHA-256・厳密な矩形・丸めの上界、証明の方式とモデル、包含の規則と余白を記録する。`initial_clip = inherited-rectangular-clip`。`graphics_state.clip`は、ruleとpathだけを持ち、位置（`at`）を持たない。
+- **再検証**: open・保存のたびに`clip_constraint`・`initial_clip`・`graphics_state_contract`を再導出して記録と比べる。block内の文字のclipは、確認済みのclipと同じでなければならない。
+
+### 変更
+
+- **`pdfeditor/continuation.py`**:
+  - `clip_state()`・`clip_constraint()`・`clip_contains()`・`require_inside_clip()`を加えた。
+  - 候補の列挙（`_inspect`）と確認（`_boundary_authority`）で、証明できたclipの境界に`clip_constraint`を付ける。証明できない場合は拒否理由にする。
+  - `confirm_continuation_destination`でdestination boundsの包含を求める。
+  - revisionごとの検証（`_boundary_value`）でclipの制約を再導出する。`_validate_destination`は、destinationの包含、文字のclip、保存した文字のpaint envelopeを検証する。
+- **`pdfeditor/shared_flow.py`**: 計画（`_plan`）で、生成slotの各glyphのinkの包含を求める。作成でも再編集でも適用する。
+- **`pdfeditor/paragraph.py`**: 作成blockのwriterでも、同じinkの包含を求める。
+- **変えていないもの**: `content_stream.py`（interpreter）、`mutation.py`、`transaction.py`、blockの形と`_block`、page-entryの検証・binding形式、marker・rebind、生成fontの寿命、`require_empty()`。
+- **engine digest**: `e8998aa927707ecb1f7292ffec85dde1a315992c64e500b5c5c3caba2b313803`（45ファイル）。
+
+### 検証（Linux、Python 3.12.3）
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_clip_boundary.py`（新規） | 46 passed |
+| `tests/test_boundary_destination.py` | 37 passed（PR #12の36件と、拒否例の追加1件） |
+| `tests/test_ctm_compensation.py` | 39 passed（件数は同じ。拒否例1件を差し替え） |
+| 全suite `python -m pytest -q`（`01186d4`） | 802 passed, 18 skipped, 0 failed（2,477.78秒、単一process） |
+
+- **全suiteの件数**: PR #13までの773件に、新規47件（`test_clip_boundary.py`の46件と拒否例1件）を加えた820件である。開始時のmain（`399d4f6`）の全suiteは、同じ環境で755 passed, 18 skipped, 0 failed（2,049.30秒）だった。skip 18件はmainと同じで、すべて環境によるもの（Windowsのfont、外部corpus、AES provider）である。continuation関連の試験にはない。
+- **新しい試験**（`tests/test_clip_boundary.py`、46件）:
+  - 候補: 矩形clipの境界が`clip_constraint`を持つ候補になること。記録（rule・operand・CTM・operatorのbytes・厳密な矩形・丸めの上界・certified rectangle・余白）と、`graphics_state.clip`が位置を持たないこと。19種の境界で、証明できるclip・拒否するclip（複数subpath・多角形・曲線・回転・skew・90°回転・交わらない矩形・幅0・`re W f`・pathより前の`W`・text clip）と、clipが矩形でも従来どおり拒否する状態（`q`・ExtGState・marked content・`BX`）。矩形clipの下の組み立て中のpath/clip。
+  - 確認: certified rectangleの4辺上は受け付け、外へ1 ulp、clip自体の辺、1pt外はすべて拒否すること。boundsを変えてもauthorityが同じこと。clipで隠れて見えない既存paint（画素は同じ）も障害物のままであること。
+  - lifecycle（identity、clipの後の回転、scaleの下のclip）: fits → grow → second → shorten → regrow → no-op 3回。reopen、authority・`clip_constraint`・作成証跡の不変、prefix/block/suffix、blockに`W`・`W*`・`n`・`re`がないこと、入れ子の違反0。block内の文字（CTMが`block_ctm()`、clipが確認済みのもの）、blockの`Q`の直後とsuffixの文字（元のCTMとclip、`q`深さ0）、生成文字のpaint envelopeの包含、生成fontの所有、no-opの画素・glyph plan・font再利用。
+  - 配置（identity、translation・reflection・scaleの下のclip、clipの後の回転・skew）: 生成glyphのplan・page座標・画素が、同じページのpage-entry版と一致すること。clipが同じpage矩形のままで、clipの後に回転・skewするページでは制約全体がidentityのページと同じこと。prefix・suffixの文字・path・領域外の画素が元PDFと同じこと。対照として、clipを外したPDFでは領域外の画素が変わり、境界の証跡も拒否すること。
+  - ink: 包含判定が厳密で、余白1.002ptを使うこと（単体）。LSBが0の`A`で始まる行が、certified rectangleの辺上または1pt内側にあると、計画・保存とも拒否し何も公開しないこと。1.01pt内側なら書け、保存後のpaint envelopeが辺から0.01ptに収まること。計画の判定を外してもwriterが拒否すること。再編集で辺に達する場合の拒否と、前のrevisionの維持。保存後のpaint envelopeが外へ出た場合の拒否（bbox logを差し替えた対照。clipのない境界では拒否しない）。
+  - 改ざん: sidecarの14種（rectangle・rule・operand・CTM・operatorのbytes・証明・余白・policy・制約の削除・`initial_clip`・contract・`graphics_state.clip`のrule・path・削除）と、programの5種（`W`→`W*`、geometry、2つ目のclip、clipの削除、block内の`re W n`）の拒否。
+  - 位置の移動: 同じページのpage-entry destinationのblockがclipのoperatorの位置を動かしても、clipの境界は同じauthorityで、文字は確認済みのclipの下にあること（grow・shorten・regrow・no-op）。同じページのsource slotをclipより前で書き直す場合も同じで、blockはprefixの伸びに合わせて動くこと（grow・second・no-op）。
+  - rollback: rebind・commitの遅い失敗で何も公開しないこと。
+  - clipのない境界: identityと相殺の境界で、authorityの鍵・`initial_clip`・contractの文言・binding・blockの形がPR #11・#12と同じであること。
+- **既存試験の変更**: 意図した挙動の変化に合わせて3件を直した。
+  - `test_boundary_destination.py`の候補の列挙: `0 0 320 260 re W n`の境界は候補になる（従来は`active-clip`）。複数subpathの拒否例を加えた。
+  - 同じoffsetでの状態の改ざん: clipを加えた元PDFでは、その境界は候補になるが、boundary IDが違う別のauthorityで、`clip_constraint`を持つことを確かめる。生成済みrevisionでの拒否は変わらない。
+  - `test_ctm_compensation.py`の「CTM以外は拒否」: 矩形clipの例を、複数subpathのclip（`nonrectangular-clip`）に差し替えた。
+- **clipのない境界の出力**: 評価コード外の一時スクリプト（commitしていない）で、PR #13のengineと今回のengineの出力を比べた。identityと相殺（回転）の境界で、確認 → grow → second → shorten → regrow → no-opを保存し、3ページの`inspect_continuation_boundaries(..., include_refused=True)`の記録も比べた。PDF 15件・sidecar 10件ほか計28ファイルが、byte単位で一致した。
+- **mutationによる確認**: engineに欠陥を1つずつ入れ、新しい試験が失敗することを確かめた（commitしていない）。10種すべてで失敗した。
+  - 確認時の包含を外す、計画のinkの判定を外す、writerのinkの判定を外す、描画系の余白1ptを外す。
+  - 再導出の照合を外す、回転の下の矩形を受け付ける、保存後のpaint envelopeの判定を外す。
+  - 丸めの上界で縮めない、`re W n`の連続を確かめない、複数subpathを受け付ける。
+- **実行方法**: 検証用のvenvに入れた`pytest-xdist`（repoの依存にはない）は、個別の試験の4並列実行にだけ使った。全suiteは`python -m pytest -q`を単一processで実行した。
+
+### 外部評価
+
+今回は実施していない。完了条件にもしていない。
+
+- **原本の境界**: PR #13で確認したLibreOffice原本の有効なclipの下の境界は、`q`の内側にある。
+  - 6ページ: 公開集計では、拒否した1,638境界のすべてが`q`の内側（`inside-graphics-state-save` 1,638）で、`active-clip`の1,632境界もその中にある。候補2つはclipを持たない。
+  - 1ページ・10ページ: PR #13の検査で違いが出た境界は、どれも`q`の内側・有効なclipの下だった。
+  - 少なくとも6ページでは、`q`の内側を許可しない限り、新機能の対象になる境界はない。これは公開集計の値から言えることで、今回のengineで原本を検査してはいない。他のページは確かめていない。
+- **原本の加工**: 評価用の候補を作るために原本を書き換えることはしていない。
+- **環境**: クラウド環境には、評価が使うWindowsのfont（`C:/Windows/Fonts/msmincho.ttc`・`times.ttf`）とPoppler（`pdftoppm`）がない。
+- **既存の外部経路への影響の見込み**: 確認済みの境界（`boundary-b848698b464255ff0b2b6f90`）はclipを持たないので、authority・blockは変わらない。上の一時スクリプトで確かめたように、clipのない境界の出力はbyte単位で同じである。境界の検査を原本でやり直すと、拒否理由の`active-clip`は新しい理由に分かれる。証明できた矩形clipの境界では、clipの理由が消えて`inside-graphics-state-save`等だけが残る。候補は変わらないと見込む。これも原本では確かめていない。公開集計はPR #13のrunのまま更新していない。
+
+### 残る未対応の状態
+
+- `q`の内側、ExtGState（不透明度・blend・soft mask）
+- 多角形・曲線・複数subpath・回転やskewの下のclip、text clip
+- 特異・非有限・数値的に不安定なCTM
+- text object・marked content・`BX ... EX`・Form XObjectの内側
+- 1つの境界への複数destination
+
+### 次の最小の構造障壁
+
+`q`の内側の境界である。LibreOffice原本の有効なclipの下の境界は、どれも`q ... Q`の内側にある。そこでは、境界の状態（CTM・clip）を決める外側の`q`と、それを閉じる`Q`の組を証跡として固定する必要がある。blockがその`Q`より前で自分の状態を閉じること、scopeの`Q`がblockの後もsuffixの状態を戻すことも示す必要がある。CTMの相殺と矩形clipの継承は、その内側でもそのまま使える見込みである。
+
 ## 再評価の手順
 
 Windows検証環境で[評価README](../evaluations/continuation/README.md)の手順を実行する。
