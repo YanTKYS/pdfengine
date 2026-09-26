@@ -706,8 +706,9 @@ existing suffix                  clip = C、CTM = M
 | `tests/test_clip_boundary.py`（新規） | 46 passed |
 | `tests/test_boundary_destination.py` | 37 passed（PR #12の36件と、拒否例の追加1件） |
 | `tests/test_ctm_compensation.py` | 39 passed（件数は同じ。拒否例1件を差し替え） |
+| 全suite `python -m pytest -q`（`01186d4`） | 802 passed, 18 skipped, 0 failed（2,477.78秒、単一process） |
 
-- **全suiteの件数**: PR #13までの773件に、新規47件（`test_clip_boundary.py`の46件と拒否例1件）を加えた820件である。開始時のmain（`399d4f6`）の全suiteは、同じ環境で755 passed, 18 skipped, 0 failed（2,049.30秒）だった。
+- **全suiteの件数**: PR #13までの773件に、新規47件（`test_clip_boundary.py`の46件と拒否例1件）を加えた820件である。開始時のmain（`399d4f6`）の全suiteは、同じ環境で755 passed, 18 skipped, 0 failed（2,049.30秒）だった。skip 18件はmainと同じで、すべて環境によるもの（Windowsのfont、外部corpus、AES provider）である。continuation関連の試験にはない。
 - **新しい試験**（`tests/test_clip_boundary.py`、46件）:
   - 候補: 矩形clipの境界が`clip_constraint`を持つ候補になること。記録（rule・operand・CTM・operatorのbytes・厳密な矩形・丸めの上界・certified rectangle・余白）と、`graphics_state.clip`が位置を持たないこと。19種の境界で、証明できるclip・拒否するclip（複数subpath・多角形・曲線・回転・skew・90°回転・交わらない矩形・幅0・`re W f`・pathより前の`W`・text clip）と、clipが矩形でも従来どおり拒否する状態（`q`・ExtGState・marked content・`BX`）。矩形clipの下の組み立て中のpath/clip。
   - 確認: certified rectangleの4辺上は受け付け、外へ1 ulp、clip自体の辺、1pt外はすべて拒否すること。boundsを変えてもauthorityが同じこと。clipで隠れて見えない既存paint（画素は同じ）も障害物のままであること。
