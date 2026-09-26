@@ -431,6 +431,11 @@ def _plan(source,state,changes):
             if not _close(measured['lines'],lines):raise PdfError('local writer differs from final shared paragraph layout')
             ink=[list(Rect(g.ink.x0,g.ink.y0+baseline,g.ink.x1,g.ink.y1+baseline).tuple())
                  for line in fitting for g in line.glyphs if g.ink is not None]
+            # A generated slot under an inherited clip, created or re-edited:
+            # every planned glyph lies inside the clip rectangle.
+            slot=working['slots'][sid]
+            if slot.get('creation_provenance')==destinations.PROVENANCE:
+                destinations.require_inside_clip(state['continuation_destinations'][slot['destination_id']],ink)
             occupancy=dict(paragraph_id=pid,region_id=rid,baseline=baseline,
                 last_baseline=lines[-1]['baseline'] if lines else baseline,
                 ascent=lines[0]['ascent'] if lines else policy['empty']['ascent'],
