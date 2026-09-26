@@ -1,12 +1,21 @@
 # 確認済み空き領域へのcontinuation評価
 
+**PR #15 engineでの`q ... Q` scope境界の評価（2026-09-26）**。PR #13〜#15は、confirmed page-program boundaryの条件を順に緩めた（CTMの相殺、矩形clipの継承、1つの`q ... Q` scopeの内側）。そのengine（digest `454686cef09460f76c3daaa064d2765748b74e83c8e6963d323a00cd905b71c5`）で、加工していないLibreOffice原本の1ページ・10ページを`inspect_continuation_boundaries()`で調べ、10ページの新しい候補で系列評価を行った。同じWindows検証環境で、既存の3本も再実行した。engineは変更していない。
+
+- **検査**: PR #15で新しく安全な候補になった境界は、1ページ126、10ページ86である。どれも`q`の深さ1・CTM identityで、ほとんどは証明済みの矩形clipの下にある。identity以外のCTMの境界（1ページ2、10ページ18）はすべて`q`の深さ2にある。CTMの相殺と矩形clipは証明されるが、`nested-graphics-state-save`で拒否される。「深さ1 + CTMの相殺 + 矩形clip」を満たす境界は、原本にはない。
+- **10ページのscope境界**（run `scope-pr15-windows-2`）: 本文の`q 0 0.1 595.2 841.8 re W* n ... Q`の内側で、最後の行の`Q`の後、scopeの対応する`Q`の直前にある境界へ、確認済みの空き領域`[55,80,385,120]`のdestinationを置いた。全段階と容量拒否が通った。bindingの`q`・`Q`の改ざんも拒否された。[公開集計](scope-destination-summary.json)はこのrunの集計である。
+- **page entryの対照**（run `scope-entry-pr15-windows-2`）: 同じ10ページの領域・編集をpage entryへ入れた。全段階と容量拒否が通り、scope境界と全段階で計画glyph・保存後のglyph・MuPDF画素・Poppler画像が一致した。[対照の公開集計](scope-entry-summary.json)はこのrunの集計である。
+- **既存3本の回帰**（run `pr15-regression-windows`・`boundary-pr15-boundary-regression-windows`・`multi-pr15-multi-regression-windows`）: 全段階と容量拒否が通った。PR #12 engineでのrunと、成果物がそれぞれ129件・129件・177件ともbyte単位で一致した。[公開集計](summary.json)・[境界の公開集計](boundary-destination-summary.json)・[2 destinationの公開集計](multi-destination-summary.json)は、これら3 runの集計に置き換えた。
+
+結果は[PR #15 engineでの`q ... Q` scope境界の評価](#pr-15-engineでのq--q-scope境界の評価)にある。単一原本の1ページの1境界と、評価者が確認した1つの空き領域の範囲であり、任意のPDFで`q`の内側へ挿入できることを示すものではない。
+
 **PR #12 engineでの回帰評価（2026-09-26）**。PR #12は、identity以外のCTMを持つ境界で、生成blockを`q N cm BT ... ET Q`として相殺できるようにした。そのengine（digest `383bbd49fddacba074b54d676f468d032c9f27a249af47af56c07a653bb55262`）で、次の3本を同じWindows検証環境で実行した。LibreOffice原本の確認済み境界はCTM identityなので、これは新機能の外部証明ではない。PR #11まで成立していた外部経路をPR #12が壊していないことを確かめる回帰評価である。原本・provider・Poppler・独立pypdf・評価コードはPR #11の評価と同じである。
 
-- **単一destination**（run `ctm-regression-windows`）: 全段階と容量拒否が通った。成果物129件（PDF・sidecar・記録・画像）が、PR #11のrun `failclosed-single-windows`とbyte単位で一致した。[公開集計](summary.json)はこのrunの集計である。
-- **確認済み境界**（run `boundary-ctm-boundary-regression-windows`）: 全段階と容量拒否が通った。page entryのrun `ctm-regression-windows`と、生成glyphと画素が一致した。成果物129件が、run `boundary-failclosed-windows`とbyte単位で一致した。[境界の公開集計](boundary-destination-summary.json)はこのrunの集計である。
-- **同一ページ2 destination**（run `multi-ctm-multi-regression-windows`）: 逐次生成・同時生成・容量拒否が通った。成果物177件が、run `multi-failclosed-windows`とbyte単位で一致した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+- **単一destination**（run `ctm-regression-windows`）: 全段階と容量拒否が通った。成果物129件（PDF・sidecar・記録・画像）が、PR #11のrun `failclosed-single-windows`とbyte単位で一致した。
+- **確認済み境界**（run `boundary-ctm-boundary-regression-windows`）: 全段階と容量拒否が通った。page entryのrun `ctm-regression-windows`と、生成glyphと画素が一致した。成果物129件が、run `boundary-failclosed-windows`とbyte単位で一致した。
+- **同一ページ2 destination**（run `multi-ctm-multi-regression-windows`）: 逐次生成・同時生成・容量拒否が通った。成果物177件が、run `multi-failclosed-windows`とbyte単位で一致した。
 
-集計がPR #11と違うのは、engine digestと`continuation.py`・`paragraph.py`のhashだけである。境界の集計では、比較したpage-entry runの名前とengine digestも違う。結果は[PR #12 engineでの回帰評価](#pr-12-engineでの回帰評価)にある。
+3本の集計は、PR #15 engineでの回帰の集計に置き換えた。集計がPR #11と違うのは、engine digestと`continuation.py`・`paragraph.py`のhashだけである。境界の集計では、比較したpage-entry runの名前とengine digestも違う。結果は[PR #12 engineでの回帰評価](#pr-12-engineでの回帰評価)にある。
 
 **確認済みpage-program境界（2026-09-25）**。PR #11の最終engine（digest `59fe6125948d44a732da8c22a18cd619cdc3a34f7d6599c6141250144e481bfd`）で、次の外部評価を行った。このengineは、operatorの入れ子が崩れたpage programで境界候補を出さない（fail closed）。3本の集計は、上記の回帰評価の集計に置き換えた。
 
@@ -71,6 +80,186 @@
   - 計画glyphのUnicode・GID・origin・size・advance・code・CID・`W`幅が直前の保存と一致する。
   - font/resource数（`/Font`数、生成font数、Type0数、生成graph object数）が変わらず、全aliasが`reused`（新しいfont objectを書かない）で、生成font記録が変わらない。
 - 容量不足: 最終状態へ160字を加えると確認済み容量（約271字）を超え、最終PDF/sidecarを公開せずに拒否する。拒否されたことだけでなく、理由が確認済みregionを使い切ったこと（`paragraphs exceed all explicitly confirmed shared regions`）まで照合する。
+
+## PR #15 engineでの`q ... Q` scope境界の評価
+
+起点は`4ce4689`（PR #15のmerge）。サブエージェントは使用していない。engineは変更していない。原本は加工しておらず、安全条件も緩めていない。
+
+| 項目 | 内容 |
+|---|---|
+| engine | digest `454686ce…71c5`（45ファイル）。PR #12 engine（`383bbd49…5262`）から変わったのは`continuation.py`・`paragraph.py`・`shared_flow.py`だけ |
+| 評価コード | 新規[scope_destination.py](scope_destination.py)（SHA-256 `3c2aa0a976aaba4feda1e7a58da1289bf8680abb5e6a4ece28dcaec5799ba1fc`）。既存の評価コードと依存ファイルは変更していない（hashはPR #12の評価と同じ） |
+| 環境 | Windows 11 x64（10.0.26200）、Python 3.12.14、PyMuPDF 1.27.2.3、pypdf 6.10.0 |
+| 独立tool | Poppler `pdftoppm` 26.07.0、独立pypdf 6.10.0（Python 3.12.14）。既定pathのまま |
+| 原本 | SHA-256 `13665875…a5f3`で一致 |
+| provider | body `msmincho.ttc` face 1（`ceb8d745…44c2`）、latin `times.ttf` face 0（`931c5de5…58c5`）。[story_styles公開集計](../story_styles/summary.json)（`c2329afa…c7c2`）と一致 |
+| 実行 | 5本と全suiteを並行して実行した。時間は並行実行でのもの |
+
+### 原本の検査（1ページ・10ページ）
+
+LibreOfficeの各ページのprogramは、次の形をしている。
+
+```text
+0.1 w
+q 0 0.1 595.2 841.8 re W* n        本文group（深さ1、ページ全体の矩形clip）
+  q ... BT ... ET Q                 各行の文字（深さ2）
+  q 1 0 0 1 x y cm ... S Q          linkの下線（深さ2、平行移動のCTM）
+Q
+q <図版の矩形> re W* n ... Q        図版group（深さ1、図版の矩形clip）
+```
+
+1ページの図版groupは`q 58.4 734.7 202.1 60 re W* n q 202.1 0 0 60 58.5 734.7 cm /Im4 Do Q Q`で、画像は深さ2で、scaleのCTMの下に描かれる。10ページの図版group（CC-BY-SAロゴ）は、深さ1のpathで描かれる。
+
+`inspect_continuation_boundaries(..., include_refused=True)`の結果は次のとおりである。評価コードが公開集計の`inspection`に記録する（候補ごとの序数・offset・前後のoperator・深さ・scope・clip・CTM・相殺・prefix/suffixの描画数を含む）。
+
+| | 1ページ | 10ページ |
+|---|---|---|
+| 境界（operator数） | 979（980） | 996（997） |
+| 安全な候補 | 128（深さ0が2、深さ1が126） | 88（深さ0が2、深さ1が86） |
+| 候補のscope（開く`q`〜対応する`Q`の序数） | 本文1〜970が123、図版971〜979が3、scopeなし2 | 本文1〜659が62、ロゴ660〜996が24、scopeなし2 |
+| 候補のclip | ページ全体の矩形122、図版の矩形2、なし4 | ページ全体の矩形61、ロゴの矩形23、なし4 |
+| 候補のCTM | すべてidentity（`ctm_compensation`を持つ候補は0） | 同左 |
+| prefix・suffixの両方に描画がある候補 | 124 | 84 |
+| 拒否 | 851（深さ1が10、深さ2が841） | 908（深さ1が314、深さ2が594） |
+| 拒否理由（重複あり） | `nested-graphics-state-save` 841、`inside-text-object` 480、`text-rendering-mode` 24、`pending-path` 10、`pending-clip` 2 | `nested-graphics-state-save` 594、`inside-text-object` 401、`pending-path` 320、`text-rendering-mode` 6、`pending-clip` 2 |
+
+- **clip**: 両ページのclipは、どれも1つの矩形と証明された。certified rectangleは、ページ全体が`[0.00109, 0.10109, 595.19891, 841.89891]`（丸めの上界0.00109pt）、1ページの図版が`[58.40090, 47.30090, 260.49910, 107.29910]`、10ページのロゴが`[400.10103, 60.80103, 535.89897, 108.19897]`である。
+- **深さ1の拒否**: どれも組み立て中のpath/clip（`pending-path`・`pending-clip`）である。本文・図版groupの`re W*`の途中（各ページ4）と、1ページの脚注の区切り線（6）・10ページのロゴ（310）のpathの途中にある。
+- **identity以外のCTM**: どれも深さ2にある。原本には「深さ1・CTMの相殺・矩形clip」を同時に満たす境界がない。
+
+| ページ | 境界 | CTM | 証明されるもの | 拒否理由 |
+|---|---|---|---|---|
+| 1 | 図版の`cm`の後、`Do`の後（2） | `[202.1 0 0 60 58.5 734.7]` | 相殺`0.00494804537259 0 0 0.0166666666667 -0.289460654296 -12.2450002035 cm`、図版の矩形clip | `nested-graphics-state-save`だけ |
+| 10 | 3本の下線の`q 1 0 0 1 x y cm ... S Q`の中（各6、計18） | 平行移動（158.2, 662.8）・（188, 535.3）・（291.2, 484.9） | 相殺`1 0 0 1 -x -y cm`、ページ全体の矩形clip | 12は`nested-graphics-state-save`だけ。`m`・`l`の後の6は`pending-path`も |
+
+**PR #13・#14との比較**（評価コード外の一時スクリプト。commitしていない）: 同じ原本の1ページ・10ページを、PR #13のengine（`399d4f6`、digest `383bbd49…5262`）とPR #14のengine（`2f26666`、digest `e8998aa9…3803`）でも検査し、序数ごとに比べた。
+
+- **PR #13**: 候補は各ページ2つ（深さ0の、先頭の`0.1 w`の後と、本文groupの`Q`と図版groupの`q`の間）。`active-clip`は1ページ971、10ページ988。
+- **PR #14**: 候補は同じ2つ。両ページのclipがすべて矩形と証明され、`active-clip`は0になり、clipの新しい拒否理由も出なかった。残る理由は`inside-graphics-state-save`（977・994）である。
+- **PR #15**: 新しく安全になった境界は1ページ126、10ページ86で、どれも深さ1・CTM identityである。
+  - PR #13での拒否理由は、`inside-graphics-state-save`と`active-clip`（124・84）か、`inside-graphics-state-save`だけ（各2。開く`q`の直後で、clipを設定する前）である。PR #14での拒否理由は、どれも`inside-graphics-state-save`だけだった。
+  - 安全でなくなった境界はない。以前の2候補は同じIDのまま残る。
+  - 深さ1の境界のIDはscopeの証跡を含むため、同じ位置でもPR #13・#14のIDと異なる（評価した境界は、PR #13・#14では`boundary-b5a70e99266f96b467d4a8ad`）。
+- **6ページ**: 境界の回帰（下記）の集計で、候補は2 → 116、拒否は1,638 → 1,524、prefix・suffixの両方に描画がある候補は1 → 112になった。確認済みの境界`boundary-b848698b464255ff0b2b6f90`（深さ0）は変わらない。
+
+### 10ページのscope境界の評価者の指定
+
+[評価コード](scope_destination.py)に固定した。
+
+- **境界**: `boundary-1cb2d3bbed6f7b8618f3d4b1`。offset 10026（序数658）。
+  - 直前: 本文の最後の行のgroup（`q 0 0 0 rg BT 155.7 244.1 Td ... ET Q`）の`Q`（[10025,10026)）。直後: 本文scopeの対応する`Q`（[10027,10028)、序数659）。直前・直後のoperatorは、bytesのSHA-256でも固定した。
+  - scope: 開く`q`は序数1（[6,7)）、対応する`Q`は序数659。対応する`Q`が戻す状態は、ページの初期状態（CTM identity・clipなし・`w 0.1`）である。
+  - clip: 序数2〜4の`0 0.1 595.2 841.8 re W* n`。certified rectangleは`[0.0010867600854683331, 0.10108676008551382, 595.1989132399145, 841.8989132399145]`。`re`・`W*`・`n`のbytesのSHA-256も固定した。
+  - CTM: identity。authorityは`ctm_compensation`を持たず、`isolation = q-BT-ET-Q`、`initial_clip = inherited-rectangular-clip`である。
+  - 描画: prefixの描画operatorは117、suffixは15（ロゴ）。suffixは文字を描かない。
+  - 意味: 6ページで確認済みの境界（本文groupの`Q`とロゴgroupの`q`の間）と同じ位置の、1段内側にあたる。blockは本文の全描画の後、本文scopeの`Q`の前、ロゴの前に描かれる。
+- **領域**: `[55,80,385,120]`（x 56.8、幅326、先頭baseline 92）。6ページの確認済み領域と同じgeometryである。10ページでは、ロゴ（bbox x ≥ 400.2）の左、見出し（y ≥ 141.07）の上にあり、MuPDFのbbox logに描画がない。ページ全体のclipの内側である。描画と画像で確かめたうえで評価者が固定した。engineが推定したものではない。
+- **保護**: 4・5・10ページのロゴ領域`[398,58,540,111]`。
+- **paragraph・provider・編集**: 単一destination評価と同じである。flow順はA（4ページ）→ B（5ページ）→ 10ページ。明示契約による配置であり、文書の読み順として自然な再レイアウトであることは示さない。
+- **検出順では選ばない**: 評価コードは、engineがこの境界を同じ証跡・scope・clip・CTMの安全な候補として列挙することを最初に確かめ、違えば停止する。
+
+### 自動照合
+
+単一destination評価の照合を、編集ページを4・5・10ページとして行う（10ページのUnicodeは、境界では本来の文字の後、page entryでは前に生成文字が続く）。次を加える。
+
+- **検査の記録**: 1ページ・10ページの`inspection`（上記）。
+- **確認時の拒否**: 次の2つは`confirm_continuation_destination`が拒否する。確認は何も書かない。
+  - 10ページの深さ2の境界`boundary-0089cd9553278f1b208a1b8f`（下線`q 1 0 0 1 158.2 662.8 cm ... S`の後、`Q`の前）。相殺とclipは証明済みで、拒否理由が`nested-graphics-state-save`だけであることを先に確かめる。
+  - ロゴscopeの候補`boundary-2bdd693036e24d7f4e293546`（序数663、深さ1、ロゴの矩形clip）。同じ領域は`continuation destination extends beyond its inherited rectangular clip`で拒否される。
+- **各保存**:
+  - destinationの記録全体が確認時と同じ。生成slotの作成mutationは、offset 10026の順序なしzero-length insertion（page entryでは0）である。
+  - prefix・block・suffix: prefixとsuffixを連結すると原本の10ページprogramになる。blockの直前・直後のoperatorが、確認した`Q`・対応する`Q`（同じbytes）である。
+  - scope: engineのscopeの導出を使わず、評価コード自身の`q`/`Q`のstackで、blockの後の`Q`が開く`q`（[6,7)）を閉じることを確かめる。bindingの`scope`がその2つを指し、開く`q`の終端 ≤ block ≤ 対応する`Q`の先頭であること。
+  - 状態（interpreter）: blockの最後の`Q`以外の全operatorが、境界より深く、CTM identity・確認済みのclipの下にあること。blockの`Q`の直後は深さ1で境界と同じ状態、対応する`Q`の直後は深さ0で`restored_state`であること。page entryでは、blockが初期状態で描き、深さ0へ戻ること。
+- **改ざん**: 最終保存のsidecarで、bindingの`scope.matching`を内側の`Q`（同じbytes）へ、`scope.opening`を最後の行の`q`へ移し、checksumを付け直してopenする。どちらも`confirmed page-program boundary is not in its confirmed q ... Q scope`で拒否されること。付け直しただけの対照は復元されること。
+- **page entryとの比較**（`--page-entry-run`）: 全段階で次が一致すること。
+  - 計画glyphの全field。
+  - 10ページの保存後のglyph（MuPDFのtext traceの文字・glyph・原点・box）。
+  - 10ページのMuPDF 144dpi全画素、Poppler監査画像（編集段階は4・5・10ページ、no-opは全10ページ）。
+
+### 実行
+
+```powershell
+.\.venv\Scripts\python.exe -m evaluations.continuation.scope_destination --authority page-entry --run-name <未使用のrun名>
+.\.venv\Scripts\python.exe -m evaluations.continuation.scope_destination --run-name <未使用のrun名> --page-entry-run scope-entry-<上のrun名>
+```
+
+成果物は`runs/scope-entry-<run名>/`・`runs/scope-<run名>/`に保存する。境界のrunは、page entryのrunが実行中なら完了を待って比べる。必要なもの（原本・provider・Poppler・独立pypdf）は単一destination評価と同じである。
+
+### 結果
+
+| run | 結果 | 時間 |
+|---|---|---|
+| `scope-pr15-windows-2`（scope境界） | 全段階・no-op 3回・容量拒否・改ざん2件の拒否が通過。page entryの対照と、全段階で計画glyph・保存後のglyph・画素が一致 | 6,264秒 |
+| `scope-entry-pr15-windows-2`（page entryの対照） | 全段階・no-op 3回・容量拒否が通過 | 5,770秒 |
+
+| 保存 | block（10ページ、byte範囲） | 対応する`Q` | block内の`q`の深さ | text object（4/5/10ページ） | PDF byte（scope境界 / page entry） |
+|---|---|---|---|---|---|
+| 原本 | — | [10027,10028) | — | 56 / 83 / 57 | 369,912 |
+| overflow | [10026,13070) | [13071,13072) | 2 | 58 / 85 / 58 | 371,059 / 371,051 |
+| second | [10026,16338) | [16339,16340) | 2〜3 | 60 / 87 / 60 | 374,294 / 374,280 |
+| shorten | [10026,16626) | [16627,16628) | 2〜4 | 62 / 90 / 63 | 365,530 / 365,514 |
+| regrow | [10026,19618) | [19619,19620) | 2〜4 | 64 / 92 / 65 | 374,295 / 374,274 |
+| no-op 1 | [10026,22706) | [22707,22708) | 2〜5 | 66 / 94 / 67 | 374,526 / 374,509 |
+| no-op 2 | [10026,25794) | [25795,25796) | 2〜6 | 68 / 96 / 69 | 374,843 / 374,821 |
+| no-op 3 | [10026,28882) | [28883,28884) | 2〜7 | 70 / 98 / 71 | 375,123 / 375,108 |
+
+- **境界とscope**: 全保存で、blockは確認したoffset 10026にある。
+  - 直前は確認した`Q`、直後は1 byteの空白を挟んで本文scopeの対応する`Q`である。開く`q`は[6,7)のまま、対応する`Q`はblockの長さだけ後ろへ動く。bindingの`scope`はその2つを指す。
+  - prefix（117描画operator）とsuffix（15）を連結すると、原本の10ページprogramとbyte単位で一致した。
+  - authorityの`boundary_id`・`graphics_state_scope`・`clip_constraint`は変わらず、`ctm_compensation`はない。作成mutationは、offset 10026の順序なしzero-length insertionである。
+- **状態**: blockの`Q`の直後は深さ1で境界と同じ状態（CTM identity・ページ全体のclip）、対応する`Q`の直後は深さ0でページの初期状態だった。block内の全operatorはCTM identity・確認済みのclipの下にある。
+- **allocation・slot**: 既存slot 209字（51+158）、生成slot 36字・2行（baseline 92 → 113.6）で、6ページの評価と同じである。生成slotを作るのはoverflowだけで、以後は同じslot・作成証跡を使う。shortenでは生成slotが`occupancy=None`になり、blockは同じ位置に残って文字を描かない。
+- **生成glyph**: 全段階で、計画glyphの全fieldがpage entryの対照と一致した。10ページの保存後のglyph（36・38・0・36・36・36・36字）も一致した。
+- **画素**: 全段階で、10ページのMuPDF全画素と、Poppler監査画像（編集段階は4・5・10ページ、no-opは全10ページ）がpage entryの対照と一致した。
+  - 各保存で、Poppler差分は確認済み領域（1pt余白込み）の外で0画素だった。
+  - 編集ページ以外はMuPDF全画素が一致した。
+- **font/resource**: 全保存でType0 4、所有する生成font 4（graph object 24）、4/5/10ページの`/Font` 8/9/8である。no-opでは全aliasが`reused`で、生成fontの記録も変わらない。
+  - 6ページの評価（`pr15-regression-windows`）の6ページを10ページに読み替えると、全段階でaliasごとの結果（added / replaced / reused）、ページごとの`/Font`数と生成font数、生成block byte数、生成slotの範囲が同じだった。
+- **no-op 3回**: 全10ページでMuPDF・Popplerの全画素が一致した。計画glyph 245個の全fieldも一致した。
+- **その他の監査**: 各保存で次が通った。
+  - 独立pypdfの全ページUnicode、CID/GID/`W`、元font resource、text以外のpaint、画像、annotation。
+  - operator nestingの違反0、PDF version `%PDF-1.4`。
+- **拒否**:
+  - 容量不足は`paragraphs exceed all explicitly confirmed shared regions`で拒否された。`capacity.pdf` / `capacity.json`は作られていない。
+  - 確認時の拒否2件と、bindingの`q`・`Q`の改ざん2件は、上記の理由で拒否された。
+- **block内の`q`の入れ子**: 再編集したblockは、以前の内容（置き換えた文字の非描画operator）を内側の`q ... Q`に残す。そのため、block内の最大の深さは保存ごとにおおむね1段増える（scope境界で2〜7、page entryで1〜6）。
+  - どれもblockの`Q`の前で閉じ、scopeの外へは出ない。
+  - これは既存writerの性質で、scope境界は基底の深さを1段加えるだけである。page entryのblockの本体（marker以外）は、6ページの評価のblockとbyte単位で同じだった（下記）。
+
+補助確認として、保存済みの成果物を一時スクリプトで読み直した。これは評価コード外の確認で、スクリプトはcommitしていない。
+
+- **独立な分解器**: pypdfの`ContentStream`で、各保存の10ページを分解した。
+  - 先頭の659 operatorと末尾は原本と同じである。blockの最初の`q`はblockの最後の`Q`で閉じ、blockの直後の`Q`は序数1の`q`を閉じて深さ0へ戻る。
+- **6ページとの一致**: 全段階の計画glyphの全fieldが、6ページのpage-entry run（`pr15-regression-windows`）と一致した。4・5ページのPoppler監査画像も32枚すべて一致した。
+  - blockの本体（markerを除く）は、scope境界・page entryの対照・6ページのrunの3つでbyte単位で同じだった。
+- **変化の範囲**: 10ページのPoppler差分の外接矩形は、`[57, 83, 382.5, 115]`pt以内だった。
+
+**目視**: 10ページの上部（`[40,50,550,175]`を300dpi）と、4・5・10ページ全体（100dpi）の切出しを、全段階について確認した。
+- scope境界とpage entryの対照の切出し28組は、PNGのbytesまで同じだった。
+- 生成の2行は確認済み領域内で、ロゴの左、見出し「LibreOfficeを入手する」の上にある。ロゴ・見出し・本文に変化はない。
+- secondは「追加編集」の文面、shortenでは領域に文字がない。regrowとno-op 3はoverflowと同じである。
+- 4・5ページの再組版とshortenの`確認。`は、6ページの評価と同じ見た目である。
+
+**最初の試行**（run `scope-pr15-windows`・`scope-entry-pr15-windows`）: 2本ともsecondで評価コードの照合が停止した。
+- 原因は評価コード側にあった。blockの文字operatorがすべてblockの最初の深さ（境界で2、page entryで1）にあると仮定していたが、再編集したblockは内側に`q ... Q`を持つ（上記）。
+- engineの検証（`_block`）はこの形を認めており、engineの誤りではない。
+- 照合を「blockの最後の`Q`以外は境界より深く、CTM・clipが境界と同じ」に直した。保存済みのoverflow・secondで照合が通ることを確かめ、新しいrun名で全系列をやり直した。上記の評価コードのhashは修正後のものである。
+
+### 既存3本の回帰
+
+評価コードは変更していない。
+
+| run | 結果 | 時間 | PR #12 engineのrunとのbyte一致 |
+|---|---|---|---|
+| `pr15-regression-windows` | 全段階・no-op 3回・容量拒否が通過 | 4,505秒 | `ctm-regression-windows`と129/129件（PDF 9・JSON 32・PNG 88） |
+| `boundary-pr15-boundary-regression-windows` | 全段階・no-op 3回・容量拒否が通過。page-entry runと、全段階の計画glyph・Poppler画像が一致 | 4,511秒 | `boundary-ctm-boundary-regression-windows`と129/129件 |
+| `multi-pr15-multi-regression-windows` | 逐次8段階・同時2段階・容量拒否が通過。`simultaneous_equals_sequential = true` | 7,133秒 | `multi-ctm-multi-regression-windows`と177/177件（PDF 12・JSON 45・PNG 120） |
+
+- **集計の違い**: PR #12の公開集計との違いは、engine digestと`continuation.py`・`paragraph.py`・`shared_flow.py`のhashである。
+  - 境界の集計では、比較したpage-entry runの名前・engine digestと、6ページの検査結果（上記）も違う。
+  - それ以外（各段階の検査結果、allocation、境界ID、font/resource量、容量拒否の理由）は同じである。
+- **深さ0の経路**: `q`の深さ0の境界とpage entryの出力が、PR #13〜#15で変わっていないことを外部原本で確かめたことになる。
 
 ## PR #12 engineでの回帰評価
 

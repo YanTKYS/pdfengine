@@ -847,6 +847,88 @@ matching Q                             scopeの前の状態を戻す
 
 外部原本での確認が先である。1ページ・10ページの`q`の内側で有効なclipの下の境界が、深さ1・矩形clip・相殺できるCTMの条件を満たして候補になるかを、Windows環境で評価する。構造の障壁としては、`q`の深さ2以上（入れ子のscopeの連なりを、各段の`q`と対応する`Q`の証跡として固定する）と、ExtGStateが残る。
 
+## PR #15後のWindows実PDF評価 — 2026-09-26（`4ce4689`）
+
+起点はPR #15のmerge commit `4ce468939892d452e91420ff61baa331988a2923`。サブエージェントは使用していない。engineの機能は追加していない。PR #13〜#15で緩めた条件（CTMの相殺、矩形clipの継承、深さ1の`q ... Q` scope）について、加工していないLibreOffice原本の1ページ・10ページで安全な候補が実際に生まれるかを`inspect_continuation_boundaries()`で調べた。10ページに新しい候補と明確な空き領域があったので、そこで系列評価を行った。安全条件は緩めていない。
+
+### 開始時の確認
+
+| 項目 | 結果 |
+|---|---|
+| HEAD | `4ce468939892d452e91420ff61baa331988a2923`（PR #15のmerge）。作業ツリーはclean |
+| engine digest | `454686cef09460f76c3daaa064d2765748b74e83c8e6963d323a00cd905b71c5`（45ファイル）。PR #15の値と一致 |
+| 環境 | Windows 11 x64（10.0.26200）、Python 3.12.14、PyMuPDF 1.27.2.3、pypdf 6.10.0 |
+| 独立tool | Poppler `pdftoppm` 26.07.0、独立pypdf 6.10.0（Python 3.12.14）。既定pathのまま |
+| 原本 | `lo_migration_ja.pdf` SHA-256 `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`で一致 |
+| provider | `msmincho.ttc` face 1 `ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2`、`times.ttf` face 0 `931c5de5c70401d9324d5014c123802b4fb753000360ceb2f56c589403cd58c5`。story_styles公開集計（`c2329afa…c7c2`）と一致 |
+
+### 原本の検査
+
+詳細は[評価README](../evaluations/continuation/README.md#原本の検査1ページ10ページ)にある。
+
+| | 1ページ | 10ページ |
+|---|---|---|
+| 安全な候補（PR #13 → #14 → #15） | 2 → 2 → 128 | 2 → 2 → 88 |
+| PR #15で新しく安全になった境界 | 126（深さ1・CTM identity。矩形clipの下124、clipの設定前2） | 86（同。矩形clipの下84、clipの設定前2） |
+| `ctm_compensation`を持つ候補 | 0 | 0 |
+| identity以外のCTMの境界 | 2（深さ2、`nested-graphics-state-save`） | 18（深さ2。12は`nested-graphics-state-save`だけ、6は`pending-path`も） |
+
+- **CTMの相殺・矩形clip**: identity以外のCTMの20境界すべてで、相殺と矩形clipは証明される。残る拒否理由は`q`の深さ2である。
+  - LibreOfficeは、各行・下線・画像をそれぞれの`q`で囲み、その`q`を本文・図版groupの`q`（ページ全体または図版の矩形clip）の中に置く。平行移動・scaleの`cm`は内側の`q`にしかない。
+  - そのため、原本には「深さ1・CTMの相殺・矩形clip」を同時に満たす境界がない。
+- **PR #14の効果**: 両ページのclipは、どれも1つの矩形と証明された（`active-clip`は1ページ971・10ページ988 → 0）。それでも候補が増えなかったのは、clipの下の境界がすべて`q`の内側にあったためである。
+- **PR #15の効果**: 深さ1の境界が候補になった。安全でなくなった境界はない。以前の2候補（深さ0）は同じIDのまま残る。
+
+### 10ページの系列評価
+
+新しい評価コード[scope_destination.py](../evaluations/continuation/scope_destination.py)を加えた。評価者が固定したのは次のとおりである。
+
+- **境界**: `boundary-1cb2d3bbed6f7b8618f3d4b1`（offset 10026）。本文の`q 0 0.1 595.2 841.8 re W* n ... Q`の内側で、最後の行のgroupの`Q`の後、対応する`Q`の直前にある。
+  - scope: 開く`q`は序数1、対応する`Q`は序数659。
+  - clip: certified rectangle `[0.0010867600854683331, 0.10108676008551382, 595.1989132399145, 841.8989132399145]`。
+  - CTM: identity（相殺なし）。
+- **領域**: `[55,80,385,120]`。6ページの確認済み領域と同じgeometryで、10ページのロゴの左、見出しの上の空き領域である。bbox logと描画で確かめた。
+- **対照**: 同じ領域・編集をpage entryへ入れるrun。
+
+| 検証 | 結果 |
+|---|---|
+| scope境界（run `scope-pr15-windows-2`） | overflow → reopen → second → shorten → regrow → no-op 3回 → 容量拒否が通過（6,264秒）。bindingの`q`・`Q`の改ざん2件も拒否された |
+| page entryの対照（run `scope-entry-pr15-windows-2`） | 同じ系列が通過（5,770秒）。scope境界と、全段階で計画glyph・保存後のglyph・MuPDF画素・Poppler画像が一致 |
+| 確認時の拒否 | 10ページの深さ2の境界（相殺・clipは証明済み）は`nested-graphics-state-save`、ロゴscopeの候補は`continuation destination extends beyond its inherited rectangular clip` |
+| 単一destination（run `pr15-regression-windows`） | 通過（4,505秒）。成果物129件がPR #12 engineのrun `ctm-regression-windows`とbyte単位で一致 |
+| 確認済み境界（run `boundary-pr15-boundary-regression-windows`） | 通過（4,511秒）。成果物129件がrun `boundary-ctm-boundary-regression-windows`とbyte単位で一致。6ページの候補は2 → 116 |
+| 同一ページ2 destination（run `multi-pr15-multi-regression-windows`） | 通過（7,133秒）。成果物177件がrun `multi-ctm-multi-regression-windows`とbyte単位で一致 |
+| 全suite `python -m pytest -q` | 849 passed, 7 skipped, 0 failed（12,427.08秒、外部評価と並行）。856件はPR #15の件数と同じ。skip 7件は外部corpus 5件とAES provider 2件で、どれも環境によるもの |
+
+- **scopeの追跡**: 全保存で、blockは確認したoffset 10026にある。直前は確認した`Q`、直後は対応する`Q`である。
+  - 開く`q`は[6,7)のまま、対応する`Q`はblockの長さだけ動き（[13071,13072) → [28883,28884)）、bindingの`scope`がその2つを指す。
+  - blockの`Q`の直後は深さ1で境界と同じ状態、対応する`Q`の直後は深さ0でページの初期状態だった。
+- **その他**: 詳細は[評価README](../evaluations/continuation/README.md#pr-15-engineでのq--q-scope境界の評価)にある。
+  - allocation・生成glyph・font/resource量・生成block byte数は、6ページの評価と同じだった。
+  - operator nestingの違反は0、PDF versionは`%PDF-1.4`、region外のPoppler差分は0画素、容量拒否で成果物は作られなかった。
+- **目視**: 10ページの上部（300dpi）と4・5・10ページ（100dpi）を全段階で確認した。生成の2行はロゴの左・見出しの上の確認済み領域内にあり、図版・見出し・本文に変化はない。shortenでは領域が空白である。scope境界とpage entryの切出しは28組すべてPNGのbytesまで同じだった。
+- **最初の試行**: 評価コードの照合の誤り（再編集したblockの内側の`q ... Q`を想定していなかった）で、2本ともsecondで停止した。engineの誤りではない。照合を直し、新しいrun名で全系列をやり直した。
+- **全suiteの実行条件**: sandboxから既定のpytest一時directoryを読めなかった。最初の実行は、全件がfixtureの準備でerrorになった（227 passed、629 errors、失敗した試験はない）。`--basetemp`をrepo内の`tmp/`へ移し、同じsuiteを最初から実行した。`--junitxml`と`-p no:cacheprovider`を加えた。
+
+### 変更
+
+- engine: 変更なし。engineの不具合は見つからなかった。
+- 評価コード: [scope_destination.py](../evaluations/continuation/scope_destination.py)を追加した。既存の評価コードは変更していない。
+- 公開集計: `scope-destination-summary.json`・`scope-entry-summary.json`を追加した。`summary.json`・`boundary-destination-summary.json`・`multi-destination-summary.json`は、今回の回帰の3 runの集計に置き換えた。
+- 資料: 評価README、[確認済みcontinuation](confirmed-continuation.md)、README本体の記述を、深さ1のscopeと矩形clipが外部原本でも確かめられたこと、CTMの相殺は合成PDFのみで確認したままであることに合わせた。
+
+### 残る問題
+
+- **CTMの相殺は外部原本で未確認**: 原本のidentity以外のCTMは、どれも`q`の深さ2にある。
+- **block内の`q`の入れ子**: 再編集のたびに、block内の最大の深さがおおむね1段増える（10ページのscope境界で2〜7、page entryで1〜6、6ページも同じ）。
+  - 置き換えた文字の非描画operatorを内側の`q ... Q`に残す、既存writerの累積と同じ原因である。
+  - PDF 1.xの実装上の目安（`q`の入れ子28段）に、再保存を20数回重ねると近づく。scope境界は基底を1段深くする。
+  - 今回の範囲ではengineを変更していない。
+
+### 次の最小の構造障壁
+
+外部原本でCTMの相殺を使うには、`q`の深さ2の境界が必要である。本文・図版groupの`q`と、各行・下線・画像の`q`という、入れ子のscopeの連なりを、各段の`q`と対応する`Q`の証跡として固定することになる。ExtGState（不透明度・blend・soft mask）も残る。
+
 ## 再評価の手順
 
 Windows検証環境で[評価README](../evaluations/continuation/README.md)の手順を実行する。
