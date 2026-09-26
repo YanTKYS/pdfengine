@@ -1,6 +1,6 @@
 # Continuation開発の再開地点 — 2026-09-24
 
-**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。その後、writerがtext object内に`q`/`Q`を出していた問題を直し、出力のPDF versionを元PDFと同じにして、両方の外部評価をやり直した。さらに、callerが確認したpage levelの安全なoperator境界を、2つ目の挿入authorityにした。レビュー指摘を受けて、operatorの入れ子が崩れたpage programでは境界候補を出さないようにした（fail closed）。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」「PDF operator nestingの正規化」「確認済みpage-program境界」の節を参照。以下の各節は、その時点の記録として残す。
+**現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。その後、writerがtext object内に`q`/`Q`を出していた問題を直し、出力のPDF versionを元PDFと同じにして、両方の外部評価をやり直した。さらに、callerが確認したpage levelの安全なoperator境界を、2つ目の挿入authorityにした。レビュー指摘を受けて、operatorの入れ子が崩れたpage programでは境界候補を出さないようにした（fail closed）。その後、page levelの確認済み境界でCTMだけを1段緩め、逆行列で相殺できるCTMの境界に限りblockをpage座標で描くようにした（合成PDFのみで確認。外部原本の評価はしていない）。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」「PDF operator nestingの正規化」「確認済みpage-program境界」「page level境界でのCTMの相殺」の節を参照。以下の各節は、その時点の記録として残す。
 
 利用者の「最短の区切りでコミット」指示による途中保存。起点は`02a526ff2781ae80551f2ad4367f6f8d50c2b430`。サブエージェントは使用していない。
 
@@ -510,6 +510,91 @@ page entryと同じ状態を証明できない境界である。identity以外�
 
 - **公開集計**: 3つのrunの集計を`summary.json`・`boundary-destination-summary.json`・`multi-destination-summary.json`として公開した。
 - **外部評価の結果**: 修正前と変わらない。LibreOffice原本は入れ子の監査に違反がなく、確認済み境界もそのまま候補に残るためである。
+
+## page level境界でのCTMの相殺 — 2026-09-25（`c2a62e2`）
+
+起点はPR #11のmerge commit `c2a62e2`。サブエージェントは使用していない。confirmed page-program boundaryに残る制約のうち、CTMだけを1段緩めた。`q`の深さ0・clipなし・ExtGStateなし等の条件は維持したまま、境界のCTMが有限で、逆行列で安全に相殺できることを証明できる場合に限り、continuation destinationを許可する。契約は[identity以外のCTMの相殺](confirmed-continuation.md#identity以外のctmの相殺)にある。identity以外のCTMを一般に扱えるようにしたものではない。
+
+### 開始時の確認
+
+| 項目 | 結果 |
+|---|---|
+| HEAD | `c2a62e268978b95a3a6c092307b29fa0b0e1130e`（PR #11のmerge）。作業ツリーはclean |
+| engine digest（開始時） | `59fe6125…81bfd`（45ファイル）。PR #11の最終engineと一致 |
+| 環境 | Linux（クラウド環境）、Python 3.12.3、lockfileの版（PyMuPDF 1.27.2.3、pypdf 6.10.0ほか） |
+
+### 方式
+
+```text
+existing prefix              CTM = M
+q
+  N cm                       N = Mの逆行列（authorityに記録した値）
+  BT ... generated text ... ET
+Q
+existing suffix              CTM = M
+```
+
+- **相殺**: blockの`q`の直後、text objectの外に`N cm`を1回だけ置く。block内はpage entryと同じ座標になり、writerはpage-entryと同じglyph位置・Tmを書く。blockの`Q`がMを戻すので、suffixへ相殺は漏れない。
+- **identityの境界**: 従来どおり`q BT ... ET Q`。authority（`ctm_compensation`を持たない）もblockも変えていない。
+- **証明**（`compensation()`）: Mが有限で、行列式が0でない（有理数で厳密に計算）。Nは厳密な逆行列を有効数字12桁に丸め、指数表記なしで書く。page box（CropBox）の4隅で、pとp·N·Mの距離の上界（厳密な残差と、binary32で8段の丸めの上界）が0.002以下。Mには、interpreterのCTM（MuPDFと同じbinary32合成）と、operandから厳密に合成したCTMの両方を使う。
+- **拒否**: `nonfinite-ctm`、`singular-ctm`、`numerically-unstable-ctm`（値の範囲外か上界超過）。従来の`nonidentity-ctm`はなくなった。
+- **authority**: `ctm_compensation`に、confirmed CTM・逆行列（書くoperandと`N cm`のbytes）・policy（`inverse-ctm-inside-block-save`）・証明を記録する。`isolation = q-cm-BT-ET-Q`。boundary ID・前後operatorの証跡・scope・state・source program・mutation mapによるrebindは従来どおり。
+- **再検証**: open・保存のたびに、境界のCTMとprogramのoperandから`ctm_compensation`全体を再導出して記録と比べる。blockの`cm`は、記録した`operator`とbytesが同じものが1つだけ。block内の文字のCTMは、MにNを合成した値。blockの`q ... Q`は末尾でだけ閉じるので、`Q`の直後はCTMがM、`q`の深さ0に戻る（試験でも直接確かめる）。
+
+### 変更
+
+- **`pdfeditor/continuation.py`**:
+  - `compensation()`・`source_ctms()`・`block_ctm()`を加えた。
+  - 候補の列挙（`_inspect`）と確認（`_boundary_authority`）で、identity以外のCTMの境界に`ctm_compensation`を付ける。相殺を証明できない場合は拒否理由にする。
+  - revisionごとの検証（`_boundary_value`）で相殺を再導出する。`_block`は、記録した`N cm`だけを`q`の直後に認める。`_validate_destination`は、文字のCTMを`block_ctm()`と比べる。
+- **`pdfeditor/paragraph.py`**: 作成blockの先頭を、相殺があるときだけ`q N cm BT`にする。
+- **変えていないもの**: `content_stream.py`（interpreter）、`mutation.py`、`shared_flow.py`、page-entryの検証・binding形式、生成fontの寿命。
+- **engine digest**: `383bbd49fddacba074b54d676f468d032c9f27a249af47af56c07a653bb55262`（45ファイル）。
+
+### 検証（Linux、Python 3.12.3）
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_ctm_compensation.py`（新規） | 39 passed |
+| `tests/test_boundary_destination.py` | 36 passed。PR #11の33件と、拒否例の追加3件 |
+| `test_continuation.py`・`test_multi_destination.py`・`test_operator_nesting.py`・`test_mutation.py`・`test_generated_fonts.py` | 87 passed（PR #11と同数） |
+| 全suite `python -m pytest -q` | 755 passed, 18 skipped, 0 failed（2,379.63秒、単一プロセス） |
+
+- **全suiteの件数**: PR #11のWindowsでの731件（724 passed・7 skipped）に、新規42件（39件と拒否例3件）を加えた773件である。
+- **skip**: 18件はすべて環境によるもので、continuation関連の試験にはない。Windowsの Arial（9件）、Noto Sans JP（2件）、外部corpus（5件）、AES provider（2件）である。
+- **実行方法**: 検証用のvenvに入れた`pytest-xdist`（repoの依存にはない）は、全suiteでは`-p no:xdist`で無効にした。個別の試験は4並列で実行した。
+
+- **新しい試験**（`tests/test_ctm_compensation.py`、39件）:
+  - 証明: translation・異方scale・30°回転・skew・y反転で、逆行列が1つの`cm`として書け、厳密な残差が1e-9未満、上界が許容値の半分以下であること。特異（3例）・非有限（2例）・不安定（ill-conditioned・大きなtranslation・範囲外の逆行列）の拒否。binary32で同じ値になるoperandの違いも、証明で区別すること。
+  - 候補: 5種のCTMの境界が候補になり、`ctm_compensation`を持つこと。identityの境界は持たないこと。同じCTMでも、有効なclip・`q`の内側・ExtGState・marked contentは従来どおり拒否すること。
+  - 座標と画素: 5種のCTMで、生成glyphのplan・page座標・画素が、同じページのpage-entry版と一致すること。別ページのidentity境界版とも、glyphのpage座標が一致すること。
+  - suffix: 相殺blockの`Q`の直後がCTM M・`q`深さ0で、suffixの文字のCTMもMであること。suffixとprefixの文字・path・領域外の画素が元PDFと同じであること。対照として、逆行列を`q`/`Q`なしで境界に置くと、suffixの文字とpathが動くこと。
+  - lifecycle（translation・scale・回転）: fits → grow → second → shorten → regrow → no-op 3回。各保存でreopen、authority・作成証跡の不変、prefix/block/suffix、blockの`cm`が1つであること、入れ子の違反0、block内とblock直後のCTM、生成fontの所有、no-opの画素・glyph plan・font再利用を確かめる。
+  - 改ざん: sidecarの10種（confirmed CTM、記録したCTM・行列・operator・証明・source CTM・policy・isolation、相殺の削除、別CTMの一貫した偽造）と、programの5種（逆行列のoperand、逆行列の削除、2つ目の`cm`、binary32未満のsource operandの変更、sourceのCTM変更）を拒否すること。identityのblockに`cm`を入れた改ざんも拒否すること。block検証器の単体試験。
+  - 共存: 同じページで、page-entry destinationまたはidentityの境界と、相殺した境界が独立に動くこと（grow・shorten・regrow・no-op）。
+  - rollback: rebind・commitの遅い失敗で何も公開しないこと。
+- **既存試験の変更**（`tests/test_boundary_destination.py`）: 意図した挙動の変化に合わせて2件を直した。
+  - 候補の列挙: `2 0 0 2 0 0 cm`の境界は候補になる（従来は`nonidentity-ctm`）。`q`の内側・特異・ill-conditionedの例を加えた。
+  - 同じoffsetでの状態の改ざん: `1 0 0 1 5 5 cm`に変えた元PDFでは、その境界は候補になるが、boundary IDが違う別のauthorityで、`ctm_compensation`を持つことを確かめる（従来は候補にならないことを確かめていた）。生成済みrevisionでの拒否は変わらない。
+- **mutationによる確認**: engineに欠陥を1つずつ入れ、新しい試験が失敗することを確かめた（commitしていない）。相殺の再導出を外す、blockの`cm`のbytesを照合しない、writerが逆行列を`q`の外に置く、の3つである。
+
+### 外部評価
+
+今回は実施していない。LibreOffice原本で確認済みの有用な境界はCTM identityで、今回の変更の対象外である。identity以外のCTMを示すために原本を書き換えたり、不自然な候補を作ったりはしていない。クラウド環境には、評価が使うWindowsのfont（`C:/Windows/Fonts/msmincho.ttc`・`times.ttf`）とPoppler（`pdftoppm`）がない。代替fontや代替PDFでの評価もしていない。既存のsingle・boundary・multiの回帰評価は、必要ならWindows環境で別に行う。
+
+- identity CTMの境界では、候補・authority・block・bindingの形はPR #11と同じである。
+- 6ページの公開集計（`boundary-destination-summary.json`）の拒否理由には`nonidentity-ctm`が含まれていない。つまり、そのページにはidentity以外のCTMの境界がなく、候補と拒否理由の集計は変わらないと見込む。これは公開集計からの推論で、原本では確かめていない。
+
+### 残る未対応の状態
+
+- `q`の内側、有効なclipの下、ExtGState（不透明度・blend・soft mask）
+- 特異・非有限・数値的に不安定なCTM
+- text object・marked content・`BX ... EX`・Form XObjectの内側
+- 1つの境界への複数destination
+
+### 次の最小の構造障壁
+
+有効なclipの下の境界である。page levelのclipは、blockの`q ... Q`では外せない（戻す先の状態がblockの外にない）。そのため、destinationと生成glyphのinkがclipの内側に収まることを、clipのpathとCTMから証明する必要がある。矩形clipから始めるのが最小である。
 
 ## 再評価の手順
 
