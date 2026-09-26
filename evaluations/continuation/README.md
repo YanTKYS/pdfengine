@@ -1,10 +1,18 @@
 # 確認済み空き領域へのcontinuation評価
 
-**確認済みpage-program境界（2026-09-25）**。最終engine（digest `59fe6125948d44a732da8c22a18cd619cdc3a34f7d6599c6141250144e481bfd`）で、次の外部評価を行った。このengineは、operatorの入れ子が崩れたpage programで境界候補を出さない（fail closed）。
+**PR #12 engineでの回帰評価（2026-09-26）**。PR #12は、identity以外のCTMを持つ境界で、生成blockを`q N cm BT ... ET Q`として相殺できるようにした。そのengine（digest `383bbd49fddacba074b54d676f468d032c9f27a249af47af56c07a653bb55262`）で、次の3本を同じWindows検証環境で実行した。LibreOffice原本の確認済み境界はCTM identityなので、これは新機能の外部証明ではない。PR #11まで成立していた外部経路をPR #12が壊していないことを確かめる回帰評価である。原本・provider・Poppler・独立pypdf・評価コードはPR #11の評価と同じである。
 
-- **単一destination**（run `failclosed-single-windows`）: 全段階と容量拒否が通った。成果物129件（PDF・sidecar・記録・画像）が、run `boundary-single-windows`とbyte単位で一致した。[公開集計](summary.json)はこのrunの集計である。
-- **確認済み境界**（run `boundary-failclosed-windows`）: 全段階と容量拒否が通った。page entryのrun `failclosed-single-windows`と、生成glyphと画素が一致した。成果物129件が、run `boundary-windows`とbyte単位で一致した。[境界の公開集計](boundary-destination-summary.json)はこのrunの集計である。結果は[下記](#確認済みpage-program境界の評価)にある。
-- **同一ページ2 destination**（run `multi-failclosed-windows`）: 逐次生成・同時生成・容量拒否が通った。成果物177件（PDF・sidecar・記録・画像）が、run `multi-boundary-windows`とbyte単位で一致した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+- **単一destination**（run `ctm-regression-windows`）: 全段階と容量拒否が通った。成果物129件（PDF・sidecar・記録・画像）が、PR #11のrun `failclosed-single-windows`とbyte単位で一致した。[公開集計](summary.json)はこのrunの集計である。
+- **確認済み境界**（run `boundary-ctm-boundary-regression-windows`）: 全段階と容量拒否が通った。page entryのrun `ctm-regression-windows`と、生成glyphと画素が一致した。成果物129件が、run `boundary-failclosed-windows`とbyte単位で一致した。[境界の公開集計](boundary-destination-summary.json)はこのrunの集計である。
+- **同一ページ2 destination**（run `multi-ctm-multi-regression-windows`）: 逐次生成・同時生成・容量拒否が通った。成果物177件が、run `multi-failclosed-windows`とbyte単位で一致した。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+
+集計がPR #11と違うのは、engine digestと`continuation.py`・`paragraph.py`のhashだけである。境界の集計では、比較したpage-entry runの名前とengine digestも違う。結果は[PR #12 engineでの回帰評価](#pr-12-engineでの回帰評価)にある。
+
+**確認済みpage-program境界（2026-09-25）**。PR #11の最終engine（digest `59fe6125948d44a732da8c22a18cd619cdc3a34f7d6599c6141250144e481bfd`）で、次の外部評価を行った。このengineは、operatorの入れ子が崩れたpage programで境界候補を出さない（fail closed）。3本の集計は、上記の回帰評価の集計に置き換えた。
+
+- **単一destination**（run `failclosed-single-windows`）: 全段階と容量拒否が通った。成果物129件（PDF・sidecar・記録・画像）が、run `boundary-single-windows`とbyte単位で一致した。
+- **確認済み境界**（run `boundary-failclosed-windows`）: 全段階と容量拒否が通った。page entryのrun `failclosed-single-windows`と、生成glyphと画素が一致した。成果物129件が、run `boundary-windows`とbyte単位で一致した。結果は[下記](#確認済みpage-program境界の評価)にある。
+- **同一ページ2 destination**（run `multi-failclosed-windows`）: 逐次生成・同時生成・容量拒否が通った。成果物177件（PDF・sidecar・記録・画像）が、run `multi-boundary-windows`とbyte単位で一致した。
 
 その前のengine（digest `fca1e014164c93c6c62b1aad4344d1184760bd5e8f98404b44a453674ee0a731`、入れ子の監査なし）では、run `boundary-single-windows`・`boundary-windows`・`multi-boundary-windows`が通った。`boundary-single-windows`の7保存のPDF・sidecarは、下記のrun `nesting-single-windows`と、`multi-boundary-windows`のPDF・sidecar・記録57件は、run `multi-nesting-windows`とbyte単位で一致した。
 
@@ -64,6 +72,50 @@
   - font/resource数（`/Font`数、生成font数、Type0数、生成graph object数）が変わらず、全aliasが`reused`（新しいfont objectを書かない）で、生成font記録が変わらない。
 - 容量不足: 最終状態へ160字を加えると確認済み容量（約271字）を超え、最終PDF/sidecarを公開せずに拒否する。拒否されたことだけでなく、理由が確認済みregionを使い切ったこと（`paragraphs exceed all explicitly confirmed shared regions`）まで照合する。
 
+## PR #12 engineでの回帰評価
+
+起点は`44e547b`（PR #12のmerge）。サブエージェントは使用していない。engine・評価コードは変更していない。LibreOffice原本を加工してidentity以外のCTMの境界を作ることはしていない。相殺の機能そのものは、PR #12の合成PDFの試験で確かめたものである。
+
+| 項目 | 内容 |
+|---|---|
+| engine | digest `383bbd49…5262`（45ファイル）。PR #11の最終engine（`59fe6125…1bfd`）から変わったのは`continuation.py`・`paragraph.py`だけ |
+| 評価コード | `evaluate.py` `468f658e…ce3b`、`boundary_destination.py` `5d9a5bf8…bbce`、`multi_destination.py` `a9c65e1b…d701`。依存ファイルのhashも含め、PR #11と同じ |
+| 環境 | Windows 11 x64（10.0.26200）、Python 3.12.14、PyMuPDF 1.27.2.3、pypdf 6.10.0 |
+| 独立tool | Poppler `pdftoppm` 26.07.0、独立pypdf 6.10.0（Python 3.12.14）。既定pathのまま |
+| 原本 | SHA-256 `13665875…a5f3`で一致 |
+| provider | body `msmincho.ttc` face 1（`ceb8d745…44c2`）、latin `times.ttf` face 0（`931c5de5…58c5`）。[story_styles公開集計](../story_styles/summary.json)（`c2329afa…c7c2`）と一致 |
+| 実行 | 3本と全suiteを並行して実行した。境界は`--page-entry-run ctm-regression-windows`で、同じengineのpage-entry runと比べた |
+
+| run | 結果 | 時間 | PR #11 runとのbyte一致 |
+|---|---|---|---|
+| `ctm-regression-windows` | 全段階・no-op 3回・容量拒否が通過 | 3,205秒 | `failclosed-single-windows`と129/129件（PDF 9・JSON 32・PNG 88） |
+| `boundary-ctm-boundary-regression-windows` | 全段階・no-op 3回・容量拒否が通過。page-entry runと、全段階の計画glyph・Poppler画像が一致 | 3,225秒 | `boundary-failclosed-windows`と129/129件（PDF 9・JSON 32・PNG 88） |
+| `multi-ctm-multi-regression-windows` | 逐次8段階・同時2段階・容量拒否が通過。`simultaneous_equals_sequential = true` | 4,376秒 | `multi-failclosed-windows`と177/177件（PDF 12・JSON 45・PNG 120） |
+
+- **集計**: PR #11の公開集計との違いは、engine digestと`continuation.py`・`paragraph.py`のhashだけだった。境界の集計では、比較したpage-entry runの名前とengine digestも違う。次の値はすべてPR #11と同じである。
+  - 各段階の検査結果と容量拒否の理由（`paragraphs exceed all explicitly confirmed shared regions`）。
+  - allocation（既存slot 209字、生成slot 36字・2行）、slot ID・作成証跡、境界ID `boundary-b848698b464255ff0b2b6f90`（offset 17602）、2 destinationのchain。
+  - font/resource量、operator nesting（違反0）、`%PDF-1.4`、region外のPoppler差分0画素。
+  - 境界の検査結果（候補2、拒否1,638と理由の内訳）。
+- **byte一致**: PDF・sidecar・plan・report・監査画像・抽出文字が、PR #11のrunとbyte単位で同じである。上記の[単一destination](#単一destinationrun-nesting-single-windows)・[2 destination](#同一ページ2-destinationrun-multi-nesting-windows)・[境界](#結果run-boundary-windows2026-09-25)の表の値は、このrunにもそのまま当てはまる。
+- **identity経路の形**: 3本の全sidecar（計24）で、destinationのauthorityに`ctm_compensation`はなく、`isolation = q-BT-ET-Q`のままである。6ページのblockはどれも`q BT`で始まり、`cm`を含まない。
+
+補助確認として、評価コード外の一時スクリプト（commitしていない）で、原本の10ページを`inspect_continuation_boundaries(..., include_refused=True)`で調べた。PR #11のengine（`c2a62e2`）とPR #12のengineの結果を比べた。
+
+- **候補**: 全ページで同じ（各2つ）。6ページを含む2〜9ページは、拒否した境界も含めて記録全体が同じだった。
+- **違い**: 1ページの2境界と10ページの18境界だけが違った。
+  - どれも`q`の内側・有効なclipの下にある。10ページのうち6つは、組み立て中のpathも持つ。
+  - PR #11では拒否理由に`nonidentity-ctm`も含んでいた。PR #12ではこれが消え、証明済みの`ctm_compensation`が付く。残る理由で拒否されることは変わらない。
+  - CTMは、1ページが`[202.1 0 0 60 58.5 734.7]`、10ページが3種の平行移動である。
+- **6ページ**: identity以外のCTMの境界はない。PR #12の資料では公開集計からの推論だったが、原本で確かめた。
+
+**目視**: 次の切出しを作り、PR #11のrunのPDFから同じ条件で作った切出しと比べた。計62枚が、PNGのbytesまで同じだった。
+
+- 単一destination・境界: overflow・second・shorten・regrow・no-op 3の、6ページ領域（300dpi）と4・5ページ（100dpi）。
+- 2 destination: 逐次6段階と同時2段階の、6ページ領域（300dpi）、4・5ページ（300dpi）、region間（600dpi）。
+
+6ページの2行は確認済み領域内にあり、ロゴ・本文に変化はなかった。shortenでは5ページのslotと生成先に文字が残っていない。2 destinationでは、`page6-a`・`page6-b`の行がそれぞれのregionにあり、dormantの`page6-b`は空白で、region間の隙間に文字は入らない。
+
 ## operator nesting正規化後の再評価
 
 起点は`c4ea5fb`（PR #9のmerge）。サブエージェントは使用していない。
@@ -75,7 +127,7 @@
 
 ### 単一destination（run `nesting-single-windows`）
 
-全段階と容量拒否が通った（4,222.67秒）。[公開集計](summary.json)はこのrunの集計である。
+全段階と容量拒否が通った（4,222.67秒）。このrunの集計は、その後の再評価の集計に置き換えた（現行は[冒頭](#確認済み空き領域へのcontinuation評価)）。
 
 - **allocation・生成slot**: allocation（既存slot 209字、生成slot 36字・2行）と生成slot IDは前回と同じである。
   - 作成証跡のdestination契約・owner・kind・offset 0（順序なし）も同じである。
@@ -110,7 +162,7 @@
 
 ### 同一ページ2 destination（run `multi-nesting-windows`）
 
-単一destinationの再評価が通った後に実行した。全段階・同時生成・容量拒否が通り、`status = passed`、`simultaneous_equals_sequential = true`になった（4,515.36秒）。[2 destinationの公開集計](multi-destination-summary.json)はこのrunの集計である。
+単一destinationの再評価が通った後に実行した。全段階・同時生成・容量拒否が通り、`status = passed`、`simultaneous_equals_sequential = true`になった（4,515.36秒）。このrunの集計は、その後の再評価の集計に置き換えた（現行は[冒頭](#確認済み空き領域へのcontinuation評価)）。
 
 - **前回と同じもの**: 各段階の有効destination・新block・allocation・aliasごとのfont出力（added / replaced / reused）・Type0数（4、b-added以降5）。
   - `page6-b`の作成位置は、直前revisionの`page6-a` blockの終端（1,414）である。chainは全保存でorder 10 → 20だった。
@@ -418,7 +470,7 @@ run `multi-pr8-windows`（2026-09-25）。単一destinationの再評価（run `p
 
 engine digest `fca1e014…a731`、評価コード`boundary_destination.py`（SHA-256 `5d9a5bf8…bbce`）。原本・provider・Poppler 26.07.0・独立pypdf 6.10.0は単一destination評価と同じで、照合も一致した。全段階と容量拒否が通った（2,940.79秒）。
 
-入れ子の監査を加えた最終engine（digest `59fe6125…1bfd`）で、run `boundary-failclosed-windows`として再実行した（5,609.44秒）。他の評価と並行して実行したため、時間は長い。集計の違いは、engine digest・`continuation.py`のhash・比較したpage-entry runの名前とengine digestだけだった。成果物129件（PDF・sidecar・記録・画像）が、このrunとbyte単位で一致した。[公開集計](boundary-destination-summary.json)は再実行の集計である。下の値は両方のrunに当てはまる。
+入れ子の監査を加えた最終engine（digest `59fe6125…1bfd`）で、run `boundary-failclosed-windows`として再実行した（5,609.44秒）。他の評価と並行して実行したため、時間は長い。集計の違いは、engine digest・`continuation.py`のhash・比較したpage-entry runの名前とengine digestだけだった。成果物129件（PDF・sidecar・記録・画像）が、このrunとbyte単位で一致した。PR #12 engineでの回帰評価（run `boundary-ctm-boundary-regression-windows`）でも、成果物129件が再実行とbyte単位で一致した。[公開集計](boundary-destination-summary.json)は回帰評価の集計である。下の値は3つのrunに当てはまる。
 
 | 保存 | block（6ページ、byte範囲） | text object（4/5/6ページ） | 違反 | PDF byte |
 |---|---|---|---|---|

@@ -585,6 +585,8 @@ existing suffix              CTM = M
 - identity CTMの境界では、候補・authority・block・bindingの形はPR #11と同じである。
 - 6ページの公開集計（`boundary-destination-summary.json`）の拒否理由には`nonidentity-ctm`が含まれていない。つまり、そのページにはidentity以外のCTMの境界がなく、候補と拒否理由の集計は変わらないと見込む。これは公開集計からの推論で、原本では確かめていない。
 
+その後、Windows環境で3本の回帰評価を行い、両方の見込みを原本で確かめた（[下記](#pr-12後のwindows外部回帰--2026-09-2644e547b)）。
+
 ### 残る未対応の状態
 
 - `q`の内側、有効なclipの下、ExtGState（不透明度・blend・soft mask）
@@ -595,6 +597,62 @@ existing suffix              CTM = M
 ### 次の最小の構造障壁
 
 有効なclipの下の境界である。page levelのclipは、blockの`q ... Q`では外せない（戻す先の状態がblockの外にない）。そのため、destinationと生成glyphのinkがclipの内側に収まることを、clipのpathとCTMから証明する必要がある。矩形clipから始めるのが最小である。
+
+## PR #12後のWindows外部回帰 — 2026-09-26（`44e547b`）
+
+起点はPR #12のmerge commit `44e547b`。サブエージェントは使用していない。PR #12はidentity以外のCTMの相殺を加えたが、LibreOffice原本の確認済み境界はCTM identityである。そのため、これは新機能の外部証明ではない。PR #11まで成立していた外部経路をPR #12が壊していないことを、Windows環境で確かめた。原本を加工してidentity以外のCTMの境界を作ることはしていない。
+
+### 開始時の確認
+
+| 項目 | 結果 |
+|---|---|
+| HEAD | `44e547bbce121fb52445130e7f33c2a29bbff175`（PR #12のmerge）。作業ツリーはclean |
+| engine digest | `383bbd49fddacba074b54d676f468d032c9f27a249af47af56c07a653bb55262`（45ファイル）。PR #12の値と一致。PR #11の最終engine（`59fe6125…1bfd`）との違いは`continuation.py`・`paragraph.py`だけ |
+| 環境 | Windows 11 x64（10.0.26200）、Python 3.12.14、PyMuPDF 1.27.2.3、pypdf 6.10.0、uharfbuzz 0.55.0、fontTools 4.64.0 |
+| 独立tool | Poppler `pdftoppm` 26.07.0、独立pypdf 6.10.0（Python 3.12.14）。既定pathのまま |
+| 原本 | `lo_migration_ja.pdf` SHA-256 `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`で一致 |
+| provider | `msmincho.ttc` face 1 `ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2`、`times.ttf` face 0 `931c5de5c70401d9324d5014c123802b4fb753000360ceb2f56c589403cd58c5`。story_styles公開集計（`c2329afa…c7c2`）と一致 |
+| 評価コード | PR #11から変更なし（runner・依存ファイルのhashが公開集計と同じ） |
+
+### 結果
+
+engine・評価コードは変更していない。3本の外部評価と全suiteを並行して実行した。
+
+| 検証 | 結果 |
+|---|---|
+| 全suite `python -m pytest -q` | 766 passed, 7 skipped, 0 failed（5,109.32秒、外部評価と並行）。PR #11の731件にPR #12の新規42件を加えた773件。skipは7件でPR #11と同数 |
+| 外部原本 単一destination（run `ctm-regression-windows`） | 全段階・no-op 3回・容量拒否が通過（3,205秒）。成果物129件がPR #11のrun `failclosed-single-windows`とbyte単位で一致 |
+| 外部原本 確認済み境界（run `boundary-ctm-boundary-regression-windows`） | 全段階・no-op 3回・容量拒否が通過（3,225秒）。page-entry run `ctm-regression-windows`と、全段階の計画glyph・Poppler画像が一致。成果物129件がrun `boundary-failclosed-windows`とbyte単位で一致 |
+| 外部原本 同一ページ2 destination（run `multi-ctm-multi-regression-windows`） | 逐次8段階・同時2段階・容量拒否が通過（4,376秒）。`simultaneous_equals_sequential = true`。成果物177件がrun `multi-failclosed-windows`とbyte単位で一致 |
+
+- **PR #11評価との差分**: 3つの集計の違いは、engine digestと`continuation.py`・`paragraph.py`のhashだけだった。境界の集計では、比較したpage-entry runの名前とengine digestも違う。次はすべて同じである。
+  - lifecycle全段階とno-op 3回、容量拒否とその理由。
+  - allocation、slot identity、境界identity（`boundary-b848698b464255ff0b2b6f90`、offset 17602）、page-entry chain。
+  - 生成font/resourceの量とaliasごとの結果、operator nesting（違反0）、PDF version（`%PDF-1.4`）。
+  - MuPDF・Popplerの照合、region外のPoppler差分0画素、独立pypdfのUnicode、CID/GID/`W`。
+  - source paint・画像・annotation・元font、reopen。
+- **byte一致**: PDF・sidecar・plan・report・監査画像・抽出文字の計435件が、PR #11の最終runとbyte単位で一致した。一致しない成果物はなかった。
+  - identity CTMの経路でPR #12が出力形式を変えていないことと合う。authorityは`ctm_compensation`を持たず（全sidecar 24件）、`isolation = q-BT-ET-Q`のままである。blockは`q BT`で始まり、`cm`を含まない。
+  - 置き換える前の公開集計3件は、それぞれPR #11の最終runの`summary.json`とbyte単位で同じだった。そのため、この比較は公開集計との比較でもある。
+- **境界の検査**: 評価コード外の一時スクリプト（commitしていない）で、原本の10ページについて、`inspect_continuation_boundaries(..., include_refused=True)`の全記録をPR #11のengineとPR #12のengineで比べた。
+  - 候補は全ページで同じだった。6ページを含む2〜9ページは、拒否した境界も含めて記録全体が同じだった。
+  - 違いは、1ページの2境界と10ページの18境界だけである。どれも`q`の内側・有効なclipの下にある。PR #11の`nonidentity-ctm`が拒否理由から消え、証明済みの`ctm_compensation`が付いた。どれも残る理由で拒否される。PR #12の意図どおりの変化である。
+  - 6ページにはidentity以外のCTMの境界がない。PR #12で公開集計から推論したことを、原本で確かめた。
+- **目視**: 次の切出しを確認した。計62枚が、PR #11のrunのPDFから作った切出しとPNGのbytesまで同じだった。
+  - 単一destinationと境界の各段階の、4〜6ページ。
+  - 2 destinationの逐次・同時の各段階の、4〜6ページと6ページのregion間（600dpi）。
+  - 6ページの生成行は確認済み領域内にあり、ロゴ・本文・図版に変化はなかった。shortenとdormantの領域は空白だった。
+- **環境上の注意**: sandboxから既定のpytest一時directory（`%TEMP%\pytest-of-<user>`）を読めなかった。最初の全suiteは、fixtureの準備でerrorになったため中断した。一時directoryだけを作業用directoryへ移し（`--basetemp`）、同じsuiteを最初から実行した。試験・engineは変えていない。
+
+### 変更
+
+- engineと評価コード: 変更なし。不具合は見つからなかった。
+- 公開集計: `summary.json`・`boundary-destination-summary.json`・`multi-destination-summary.json`を、今回の3 runの集計に置き換えた。
+- 資料: [評価README](../evaluations/continuation/README.md#pr-12-engineでの回帰評価)と、この資料。README本体は変えていない。記述（CTMの相殺は合成PDFのみで確認）がそのまま正しいためである。
+
+### 次の最小の構造障壁
+
+PR #12と同じく、有効なclipの下の境界である。原本の1ページ・10ページには、identity以外のCTMを持つ境界がある。どれも`q`の内側で、有効なclipの下にある。
 
 ## 再評価の手順
 
