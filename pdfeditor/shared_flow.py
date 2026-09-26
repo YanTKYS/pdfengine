@@ -574,9 +574,14 @@ def edit_shared_flow(source,model,output,model_output,changes):
                     locations={d['destination_id']:program.map_offset(
                                    initial['destination_bindings'][d['destination_id']]['boundary']['offset'])
                                for d in group if destinations.is_boundary(d) and d['destination_id'] not in generated}
+                    # A boundary inside a q ... Q scope stays in the same one: its
+                    # q and Q move with this save's own mutations, never across them.
+                    scopes={d['destination_id']:destinations.carried_scope(
+                                program,initial['destination_bindings'][d['destination_id']]['scope'])
+                            for d in group if 'scope' in initial['destination_bindings'][d['destination_id']]}
                     content=ContentPage(target,number)
                     try:
-                        current,_=destinations.page_witness(content,group,generated,locations=locations)
+                        current,_=destinations.page_witness(content,group,generated,locations=locations,scopes=scopes)
                     finally:content.close()
                     for d in group:
                         ident=d['destination_id'];sid=destinations.slot_id(d)

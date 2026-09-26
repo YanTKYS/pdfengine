@@ -140,14 +140,16 @@ def first_operator(data):
 @pytest.mark.parametrize('data,after,reasons', [
     (b'0.5 w 1 0 0 rg 0 0 5 5 re f 0 g', b'0 0 5 5 re f', []),
     (b'BT /Regular 12 Tf 20 200 Td (A) Tj (B) Tj ET 0 g', b'(A) Tj', ['inside-text-object']),
-    (b'q 0 0 5 5 re f Q 0 g', b'0 0 5 5 re f', ['inside-graphics-state-save']),
+    # One enclosing q ... Q scope is no longer a reason; see test_scope_boundary.
+    (b'q 0 0 5 5 re f Q 0 g', b'0 0 5 5 re f', []),
+    (b'q q 0 0 5 5 re f Q Q 0 g', b'0 0 5 5 re f', ['nested-graphics-state-save']),
     (b'/P BMC 0 0 5 5 re f EMC 0 g', b'0 0 5 5 re f', ['inside-marked-content']),
     (b'BX 0 0 5 5 re f EX 0 g', b'0 0 5 5 re f', ['inside-compatibility-section']),
     (b'0 0 5 5 re f 0 g', b'0 0 5 5 re', ['pending-path']),
     (b'0 0 5 5 re W n 0 g', b'0 0 5 5 re W', ['pending-path', 'pending-clip']),
     # A CTM the block can cancel is no longer a reason; see test_ctm_compensation.
     (b'2 0 0 2 0 0 cm 0 0 5 5 re f 0 g', b'0 0 5 5 re f', []),
-    (b'q 2 0 0 2 0 0 cm 0 0 5 5 re f Q 0 g', b'0 0 5 5 re f', ['inside-graphics-state-save']),
+    (b'q 2 0 0 2 0 0 cm 0 0 5 5 re f Q 0 g', b'0 0 5 5 re f', []),
     (b'1 2 2 4 0 0 cm 0 0 5 5 re f 0 g', b'0 0 5 5 re f', ['singular-ctm']),
     (b'1000 999 999 998 0 0 cm 0 0 5 5 re f 0 g', b'0 0 5 5 re f', ['numerically-unstable-ctm']),
     # A clip proven to be one page rectangle is inherited; see test_clip_boundary.
@@ -417,15 +419,15 @@ def test_same_offset_with_another_state_is_not_the_same_authority(tmp_path, pref
     assert open_shared_flow(tampered, tmp_path / 'grow.json')['status'] == 'needs_confirmation'
     # The unused boundary of a changed source is not the confirmed one either:
     # it is refused, or (a CTM the block can cancel, a clip proven to be one
-    # page rectangle) another authority.
+    # page rectangle, one enclosing q ... Q scope) another authority.
     source = build(tmp_path / reason, SOURCE_PAGE,
                    DESTINATION_PAGE.replace(PREFIX_SLOT, prefix.ljust(len(PREFIX_SLOT)))
                    .replace(SUFFIX_SLOT, suffix.ljust(len(SUFFIX_SLOT))))
     found = [c for c in inspect_continuation_boundaries(source, 2)['candidates'] if c['offset'] == chosen['offset']]
-    relaxed = {'ctm': 'ctm_compensation', 'clip': 'clip_constraint'}
+    relaxed = {'ctm': 'ctm_compensation', 'clip': 'clip_constraint', 'graphics-state-save': 'graphics_state_scope'}
     assert len(found) == (reason in relaxed)
     assert [c['graphics_state']['ctm'] for c in found] == ([[1, 0, 0, 1, 5, 5]] if reason == 'ctm'
-                                                         else [[1, 0, 0, 1, 0, 0]] if reason == 'clip' else [])
+                                                         else [[1, 0, 0, 1, 0, 0]] if reason in relaxed else [])
     assert all(c['boundary_id'] != chosen['boundary_id'] and relaxed[reason] in c for c in found)
 
 

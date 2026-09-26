@@ -76,9 +76,9 @@ def clipped(ctm=None, *, order='clip-cm', prefix=b''):
 
 
 def pick(source, page=2):
-    """The caller's explicit choice: the one candidate under the clip right after a paint."""
+    """The caller's explicit choice: the one page-level candidate under the clip right after a paint."""
     found = [c for c in inspect_continuation_boundaries(source, page)['candidates']
-             if c['previous']['operator'] == 'f' and 'clip_constraint' in c]
+             if c['previous']['operator'] == 'f' and 'clip_constraint' in c and 'graphics_state_scope' not in c]
     assert len(found) == 1, found
     return found[0]
 
@@ -189,7 +189,7 @@ CLIP_CASES = [
     (b'W 10 10 50 50 re n', b'', ['unproven-clip'], None),
     (b'BT /Regular 12 Tf 7 Tr 20 200 Td (A) Tj ET 0 Tr', b'', ['text-clip'], None),
     # Everything else still refuses, whatever the clip.
-    (b'q 10 10 50 50 re W n', b' Q', ['inside-graphics-state-save'], [10, 200, 60, 250]),
+    (b'q q 10 10 50 50 re W n', b' Q Q', ['nested-graphics-state-save'], [10, 200, 60, 250]),
     (b'10 10 50 50 re W n /GS0 gs', b'', ['transparency', 'extgstate'], [10, 200, 60, 250]),
     (b'/P BMC 10 10 50 50 re W n', b' EMC', ['inside-marked-content'], [10, 200, 60, 250]),
     (b'BX 10 10 50 50 re W n', b' EX', ['inside-compatibility-section'], [10, 200, 60, 250]),
