@@ -17,6 +17,13 @@
 
 続いて、`q ... Q` scopeの内側の境界を1段緩めた（[下記](#1つのq--q-scopeの内側)）。`q`の深さ1で、1つの明確なscopeの内側にあり、境界の状態がCTMの相殺・矩形clip等の既存の契約で扱える場合に限る。生成blockは、そのscopeの対応する`Q`より前で必ず閉じる。`q`の深さ2以上は拒否する。これも合成PDFの回帰だけで確認している。
 
+**外部原本での確認（2026-09-26）**。その後、加工していないLibreOffice原本の1ページ・10ページを、PR #15のengineの`inspect_continuation_boundaries()`で調べた（[評価](../evaluations/continuation/README.md#pr-15-engineでのq--q-scope境界の評価)）。
+- **新しい候補**: 1ページ126、10ページ86。どれも`q`の深さ1・CTM identityで、ほとんどは証明済みの矩形clip（ページ全体の`0 0.1 595.2 841.8 re W* n`、または図版の矩形）の下にある。
+- **identity以外のCTM**: 1ページ2、10ページ18の境界がある。どれも相殺と矩形clipは証明されるが、`q`の深さ2にあり、`nested-graphics-state-save`で拒否される。原本には「深さ1・CTMの相殺・矩形clip」を同時に満たす境界はない。
+- **系列評価**: 10ページの新しい候補の1つ（本文scopeの対応する`Q`の直前、ページ全体の矩形clipの下）で、確認済みの空き領域へ系列評価を行い、page entryの対照と生成glyph・画素が一致した。
+
+深さ1の`q ... Q` scopeと矩形clipの継承は、外部原本でも確かめたことになる。CTMの相殺は、合成PDFでのみ確認したままである。
+
 現行の結果は[評価](../evaluations/continuation/README.md)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
 
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
@@ -420,8 +427,8 @@ existing suffix
 | page entry（`before-page-program`） | 対応 |
 | 確認済みの安全なpage level境界（CTM identity） | 対応 |
 | 同上で、CTMがidentity以外だが、逆行列での相殺を証明できるもの | 対応（`q N cm BT ... ET Q`、合成PDFのみで確認） |
-| 同上で、有効なclipを1つのpage矩形と証明でき、destinationと生成inkがその内側に収まるもの（CTMはidentityか相殺できるもの） | 対応（clipを継承、合成PDFのみで確認） |
-| 1つの明確な`q ... Q` scopeの内側（深さ1）で、状態が上の条件を満たすもの | 対応（blockはscopeの`Q`より前で閉じる、合成PDFのみで確認） |
+| 同上で、有効なclipを1つのpage矩形と証明でき、destinationと生成inkがその内側に収まるもの（CTMはidentityか相殺できるもの） | 対応（clipを継承。外部原本ではCTM identityの境界で確認、相殺との組合せは合成PDFのみ） |
+| 1つの明確な`q ... Q` scopeの内側（深さ1）で、状態が上の条件を満たすもの | 対応（blockはscopeの`Q`より前で閉じる。外部原本の10ページで、矩形clip・CTM identityの境界を確認） |
 | 特異・非有限・数値的に不安定なCTM | 未対応（拒否） |
 | 多角形・曲線・複数subpath・回転やskewの下の矩形・text clip・面積のないclip | 未対応（拒否） |
 | `q`の深さ2以上、marked content等と交差するscope、任意のExtGState | 未対応（拒否） |
@@ -456,6 +463,7 @@ existing suffix
   - 改ざん: sidecarの13種（scopeの記録・boundaryの深さ・contract・bindingの位置）と、programの8種（別の`q`・別の`Q`・`Q q`による対応や所属の変更・深さ2・深さ0・釣り合わない`Q`・対応する`Q`の後ろへのblockの移動）の拒否。
   - source slotがscopeの前・prefix・suffix・後にある場合の、同じtransactionでの書き直し。scopeの端を消費するmutationの拒否（単体）。late failureのrollback。scopeの外の境界の形の維持。
 - **外部評価**: [評価コード](../evaluations/continuation/boundary_destination.py)は、LibreOffice原本の6ページで評価者が確認した境界を使う。この境界は、本文の`q ... Q`とCC-BY-SAロゴの`q ... Q`の間にある。結果は[評価README](../evaluations/continuation/README.md#確認済みpage-program境界の評価)にある。
+- **外部評価（scope・clip）**: [評価コード](../evaluations/continuation/scope_destination.py)は、同じ原本の10ページで評価者が確認した深さ1の境界を使う。本文の`q 0 0.1 595.2 841.8 re W* n ... Q`の内側で、最後の行の`Q`の後、対応する`Q`の直前にあり、ページ全体の矩形clipを継承する。1ページ・10ページの検査結果、確認時の拒否（深さ2・図版のclip）、bindingの`q`・`Q`の改ざんの拒否、page entryの対照との比較も記録する。結果は[評価README](../evaluations/continuation/README.md#pr-15-engineでのq--q-scope境界の評価)にある。
 
 ## 生成fontの寿命
 
@@ -512,4 +520,4 @@ pdfengineが書くcontent streamは、出力PDFのversionのoperator nesting規�
 
 回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。外部原本では、regrowが同じ生成slotへ戻り、final no-opで全10ページがMuPDF・Popplerとも全画素一致した。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
 
-同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺と矩形clipの継承、1つの`q ... Q` scopeの内側の境界は上記で扱った。次は、LibreOffice原本の1ページ・10ページにある`q`の内側・有効なclipの下の境界が、実際に安全な候補になるかを外部原本で評価することである。構造の障壁としては、`q`の深さ2以上（入れ子のscopeの連なりを証跡にする）とExtGState（不透明度・blend・soft mask）が残る。新規ページの自動生成ではない。
+同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺と矩形clipの継承、1つの`q ... Q` scopeの内側の境界は上記で扱った。LibreOffice原本の1ページ・10ページでは、深さ1・矩形clipの境界が候補になり、10ページで系列評価を行った。原本でidentity以外のCTMを持つ境界は、どれも各行・下線・画像の`q`が本文や図版の`q`の中にある深さ2で、残る拒否理由は`nested-graphics-state-save`だけである（10ページの6つは組み立て中のpathも持つ）。原本でCTMの相殺を使うための次の最小の構造障壁は、`q`の深さ2（入れ子のscopeの連なりを、各段の`q`と対応する`Q`の証跡として固定する）である。ExtGState（不透明度・blend・soft mask）も残る。新規ページの自動生成ではない。

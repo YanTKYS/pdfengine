@@ -32,3 +32,5 @@ tmp/
 !/evaluations/continuation/summary.json
 !/evaluations/continuation/multi-destination-summary.json
 !/evaluations/continuation/boundary-destination-summary.json
+!/evaluations/continuation/scope-destination-summary.json
+!/evaluations/continuation/scope-entry-summary.json
