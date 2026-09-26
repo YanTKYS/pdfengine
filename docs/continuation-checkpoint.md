@@ -754,6 +754,99 @@ existing suffix                  clip = C、CTM = M
 
 `q`の内側の境界である。LibreOffice原本の有効なclipの下の境界は、どれも`q ... Q`の内側にある。そこでは、境界の状態（CTM・clip）を決める外側の`q`と、それを閉じる`Q`の組を証跡として固定する必要がある。blockがその`Q`より前で自分の状態を閉じること、scopeの`Q`がblockの後もsuffixの状態を戻すことも示す必要がある。CTMの相殺と矩形clipの継承は、その内側でもそのまま使える見込みである。
 
+## 1つの`q ... Q` scope内の確認済み境界 — 2026-09-26（`2f26666`）
+
+起点はPR #14のmerge commit `2f26666`。サブエージェントは使用していない。confirmed page-program boundaryに残る制約のうち、`q ... Q` scopeの内側を最小範囲で1段緩めた。`q`の深さ1で、1つの明確なscopeの内側にあり、境界の状態がCTMの相殺・矩形clip等の既存の契約で扱え、生成blockがそのscopeの対応する`Q`より前で必ず閉じる場合だけ許可する。`q`の深さ2以上は拒否する。契約は[1つの`q ... Q` scopeの内側](confirmed-continuation.md#1つのq--q-scopeの内側)にある。任意のgraphics-state stackを扱えるようにしたものではない。
+
+### 開始時の確認
+
+| 項目 | 結果 |
+|---|---|
+| HEAD | `2f26666`（PR #14のmerge）。前回のブランチはmerge済みの履歴だけだったので、同じ名前のブランチをmainから作り直した |
+| engine digest（開始時） | `e8998aa927707ecb1f7292ffec85dde1a315992c64e500b5c5c3caba2b313803`（45ファイル）。PR #14の値と一致 |
+| 環境 | Linux（クラウド環境）、Python 3.12.3、lockfileの版 |
+
+### 方式
+
+```text
+opening q                              page level
+  ...                                  scopeのprefix
+  confirmed boundary                   q depth 1
+  marker q [N cm] BT ... ET Q marker   境界の状態だけを保存・復元する
+  ...                                  scopeのsuffix（境界と同じ状態）
+matching Q                             scopeの前の状態を戻す
+```
+
+- **証明**（`enclosing_scope()`）: top-level operatorの`q`/`Q`の入れ子（`graphics_scopes()`）で、境界の後に開いている`q`が1つだけ（interpreterの深さとも一致）で、対応する`Q`が境界の後にあること。開く`q`・その直前・対応する`Q`がtext object・marked content・`BX ... EX`・組み立て中のpath/clipの外にあること（scopeが交差しない）。対応する`Q`の直後の状態が、`q`の直前の状態（`restored_state`）と同じであること。
+- **拒否**: `nested-graphics-state-save`（深さ2以上）、`unproven-graphics-state-scope`（交差・不整合）。従来の一律の`inside-graphics-state-save`はなくなった。境界の状態の条件（CTM・clip・ExtGState・不透明度・描画モード・text object・marked content・`BX ... EX`・組み立て中のpath/clip・入れ子）は変えていない。
+- **authority**: `graphics_state_scope`に、policy（`one-enclosing-graphics-state-save`）、深さ1、開く`q`と対応する`Q`の確認時の序数・範囲・bytesのSHA-256、`restored_state`、contractを記録する。scope内の境界の`boundary_id`は、開く`q`・対応する`Q`の序数・終端・SHA-256も含めて作る。`graphics_state_contract`は、scope内の状態であることと、blockがscopeの`Q`より前で閉じることを明記する。`q`の深さ0の境界のauthority・ID・bindingは変えていない。
+- **binding**: revisionごとに、そのrevisionでの開く`q`・対応する`Q`の範囲（`scope`）を記録する。
+- **同じscopeの判定**: `q`・`Q`のbytesはどのscopeでも同じなので、bytesや現在のoffsetだけでは判定しない。
+  - 保存では、前のbindingの`q`・`Q`の位置をその保存のmutation mapで写し（`carried_scope()`）、新しいrevisionの構造が境界の周りに置く`q`・`Q`と一致させる。mutationが`q`か`Q`を消費すれば、写し先がないので拒否する。
+  - openでは、bindingの位置と構造を一致させる。確認時のprogramでは、authorityの記録とも一致させる。
+  - 記録（位置を除く）と再導出も、毎回比べる。
+- **scopeを越えない保証**: blockの検証は自己完結した1つの`q ... Q`だけを認め、scopeはblockの開始位置で終わるoperatorから求めるので、対応する`Q`は入れ子の上で必ずblockの後ろにある。さらに、開く`q`の終端 ≤ block ≤ 対応する`Q`の先頭を、revisionごとに明示的に確かめる。
+- **CTMの相殺・矩形clipとの共存**: scope内の`cm`・`re W n`は、境界の状態として既存の証明をそのまま使う。blockの`Q`がscope内の状態を戻し、scopeの`Q`がscopeの前の状態を戻す。
+
+### 変更
+
+- **`pdfeditor/continuation.py`**:
+  - `graphics_scopes()`・`enclosing_scope()`・`carried_scope()`を加えた。
+  - 候補の列挙と確認で、scope内の境界に`graphics_state_scope`を付ける。証明できない場合は拒否理由にする。`boundary_id`・`graphics_state_contract`にscopeを反映する。
+  - revisionごとの検証（`_boundary_value`）で、scopeを再導出して記録・位置と比べ、blockがscopeの内側にあることを確かめる。bindingに`scope`を加える。
+  - `page_witness`・`witness`・`validate_destinations`・`ContinuationParagraph`で、scopeの位置を受け渡す。
+- **`pdfeditor/shared_flow.py`**: 保存後の再bindingで、前のbindingのscopeの位置をmutation mapで写す。
+- **変えていないもの**: `content_stream.py`（interpreter）、`mutation.py`（`MutationProgram`の規則）、`operator_nesting.py`、`paragraph.py`（writer）、blockの形と`_block`、CTMの相殺と矩形clipの証明、page-entryの検証・binding、生成fontの寿命、`require_empty()`。
+- **engine digest**: `454686cef09460f76c3daaa064d2765748b74e83c8e6963d323a00cd905b71c5`（45ファイル）。
+
+### 検証（Linux、Python 3.12.3）
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_scope_boundary.py`（新規） | 35 passed |
+| `tests/test_boundary_destination.py` | 38 passed（深さ2の拒否例を追加） |
+| `tests/test_ctm_compensation.py`・`tests/test_clip_boundary.py` | 39 passed・46 passed（件数は同じ。拒否例を深さ2に差し替え） |
+| continuation・multi・nesting・generated fonts・mutationを含む関連8ファイル | 210 passed |
+| 全suite `python -m pytest -q`（`fdc5917`） | 838 passed, 18 skipped, 0 failed（3,072.70秒、単一process） |
+
+- **全suiteの件数**: PR #14までの820件に、新規36件（`test_scope_boundary.py`の35件と拒否例1件）を加えた856件である。skip 18件はPR #14と同じで、すべて環境によるもの（Windowsのfont、外部corpus、AES provider）である。
+- **新しい試験**（`tests/test_scope_boundary.py`、35件）:
+  - 候補: 深さ1の境界が`graphics_state_scope`を持つ候補になること。開く`q`・対応する`Q`の位置とbytes、`restored_state`。scope内の境界がすべて同じ記録を持ち、scopeの外の境界は持たないこと。
+  - 11種の境界: 証明できるscope（1つ、閉じた兄弟scopeの後、scope内で閉じたmarked content・`BX`）、拒否するscope（深さ2、marked content・`BX`との交差）、scope内でも拒否する状態（ExtGState、特異なCTM、多角形のclip、描画モード）。`q`/`Q`が釣り合わないページ（閉じない`q`、`q`のない`Q`）は扱わないこと。
+  - authority: scope・相殺・矩形clipの記録とcontractの文言。scopeの前の境界はPR #11の形のままであること。
+  - lifecycle（identity、相殺、矩形clip、相殺と矩形clip）: fits → grow → second → shorten → regrow → no-op 3回。reopen、authority・作成証跡の不変、bindingの`q`・`Q`がprogramの`q`・`Q`で、互いに対応し、blockがその間にあること。対応する`Q`はblockの伸びだけ動くこと。blockに`W`・`W*`・`n`・`re`がないこと、入れ子の違反0。block内（`block_ctm()`と確認済みのclip）、blockの`Q`の直後（深さ1、境界と同じ状態）、scope内のsuffixの文字、対応する`Q`の直後（深さ0、`restored_state`）、scopeの後の文字（identityのCTM・clipなし・scopeの前の色）。生成fontの所有、no-opの画素・glyph plan・font再利用。
+  - 配置: 4種とも、生成glyphのplan・page座標・画素がpage-entry版と一致し、scopeの内外の既存の描画と領域外の画素が元PDFと同じこと。scopeの最後の境界（次が対応する`Q`）では、blockの直後が対応する`Q`になり、その後の状態が戻ること。
+  - 改ざん: sidecarの13種（開く`q`の序数・bytes、対応する`Q`の終端、深さ、`restored_state`、policy、contract、scopeの記録の削除、`graphics_state_contract`、boundaryの深さ、bindingの`q`・`Q`の位置、bindingのscopeの削除）。programの8種（別の`q`、別の`Q`、境界の後の`Q q`による対応の変更、境界の前の`Q q`による別のscope、深さ2、深さ0、釣り合わない`Q`、対応する`Q`の後ろへのblockの移動）。対照として、手を加えないrevisionは同じbindingになること。
+  - 再binding: paragraph Aのsource slotがscopeの前・prefix・suffix・後にある場合の、grow・second・no-op。`q`はscopeの前の書き直しでだけ動き、blockと対応する`Q`の間はsuffixの書き直しでだけ広がること。scopeの端（`q`か`Q`、単独でも前後を含めても）を消費するmutationは写し先がなく拒否すること（単体）。
+  - rollback: rebind・commitの遅い失敗で何も公開しないこと。
+- **既存試験の変更**: 意図した挙動の変化に合わせた。`test_boundary_destination.py`の候補の列挙（深さ1の2例は候補になる、深さ2の拒否例を追加）と、同じoffsetでの状態の改ざん（`q ... Q`で囲んだ元PDFの境界は別のboundary IDと`graphics_state_scope`を持つ別authority）。`test_ctm_compensation.py`・`test_clip_boundary.py`のscope内の拒否例を深さ2に差し替えた。`test_clip_boundary.py`の候補の選択を、scopeの外の境界に限った（隠れたpaintのscope内にも候補ができたため）。
+- **`q`の深さ0の経路の出力**: 評価コード外の一時スクリプト（commitしていない）で、PR #14のengineと今回のengineの出力を比べた。identity・相殺・矩形clip・矩形clipと相殺の4種の境界で、確認 → grow → second → shorten → regrow → no-opを保存した。5ページの`inspect_continuation_boundaries(..., include_refused=True)`の記録も比べた。PDF 29件・sidecar 20件ほか計54ファイルが、byte単位で一致した。
+- **mutationによる確認**: engineに欠陥を1つずつ入れた（commitしていない）。9種のうち8種で新しい試験が失敗した。
+  - 失敗したもの: bindingの位置の照合を外す、mutation mapで写さない、深さ2を受け付ける、交差を受け付ける、記録の照合を外す、IDからscopeを外す、scopeの拒否理由を落とす、深さ0の境界にもscopeを記録する。
+  - 失敗しなかったもの: 開く`q`の終端 ≤ block ≤ 対応する`Q`の先頭の明示的な確認だけである。blockの検証とscopeの導出が同じことを既に保証するため、到達できない防御として残した。
+- **実行方法**: 検証用のvenvに入れた`pytest-xdist`（repoの依存にはない）は、個別の試験の並列実行にだけ使った。全suiteは`python -m pytest -q`を単一processで実行した。
+
+### 外部評価
+
+今回は実施していない。完了条件にもしていない。
+
+- **次の評価の対象**: PR #13・#14で確認したLibreOffice原本の1ページ・10ページには、`q`の内側で有効なclipの下の境界がある。今回の実装で、これらが実際に安全な候補になるかは、次のWindows環境での作業で評価する。
+- **原本の加工**: クラウド環境で原本を加工した代替評価はしていない。
+- **既存の外部経路**: 確認済みの境界（`boundary-b848698b464255ff0b2b6f90`）は、`Q`と`q`の間の`q`の深さ0の境界である。authority・ID・blockは変わらない。上の比較のとおり、深さ0の経路の出力はbyte単位で同じである。境界の検査を原本でやり直すと、`inside-graphics-state-save`は新しい理由に分かれ、深さ1で他の条件も満たす境界は候補になりうる。原本では確かめていない。公開集計は更新していない。
+
+### 残る未対応の状態
+
+- `q`の深さ2以上、marked content・`BX ... EX`と交差するscope
+- ExtGState（不透明度・blend・soft mask）
+- 多角形・曲線・複数subpath・回転やskewの下のclip、text clip
+- 特異・非有限・数値的に不安定なCTM
+- text object・marked content・`BX ... EX`・Form XObjectの内側
+- 1つの境界への複数destination
+
+### 次の構造障壁
+
+外部原本での確認が先である。1ページ・10ページの`q`の内側で有効なclipの下の境界が、深さ1・矩形clip・相殺できるCTMの条件を満たして候補になるかを、Windows環境で評価する。構造の障壁としては、`q`の深さ2以上（入れ子のscopeの連なりを、各段の`q`と対応する`Q`の証跡として固定する）と、ExtGStateが残る。
+
 ## 再評価の手順
 
 Windows検証環境で[評価README](../evaluations/continuation/README.md)の手順を実行する。

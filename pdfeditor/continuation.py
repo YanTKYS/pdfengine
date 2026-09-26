@@ -8,15 +8,16 @@ creation or activation order.
 
 A confirmed page-program boundary places a block between two top-level
 operators that the caller selected from the candidates this module lists.
-A candidate is a page-level boundary (no open q, text object, marked-content
-or compatibility scope, path or pending clip) of a program whose operators
-nest (see operator_nesting; otherwise no scope is trusted and no boundary is
-a candidate), and whose state is the page-entry state for what a block
-draws: full opacity, fill-only text rendering, no ExtGState, an identity CTM
-or one the block can cancel (see compensation), and no clip or one proven to
-be a single page rectangle (see clip_constraint). The block paints after all
-paint of the confirmed prefix and before all paint of the confirmed suffix.
-One destination owns one exact boundary.
+A candidate is a boundary outside any text object, marked-content or
+compatibility scope, path or pending clip, either at page level or inside
+exactly one q ... Q scope (see enclosing_scope), of a program whose
+operators nest (see operator_nesting; otherwise no scope is trusted and no
+boundary is a candidate), and whose state is the page-entry state for what
+a block draws: full opacity, fill-only text rendering, no ExtGState, an
+identity CTM or one the block can cancel (see compensation), and no clip or
+one proven to be a single page rectangle (see clip_constraint). The block
+paints after all paint of the confirmed prefix and before all paint of the
+confirmed suffix. One destination owns one exact boundary.
 
 Each generated block starts from that state, not another paragraph's text
 context, and closes its own state again. Each destination's entire rectangle
@@ -39,6 +40,15 @@ clip proven to be one rectangle in page coordinates is inherited; the
 destination bounds and every generated glyph's ink, grown by INK_MARGIN, must
 lie inside that rectangle. The block's own cm cancels the CTM, never the
 clip, which was fixed in page space when it was set.
+
+Enclosing q ... Q scope. A boundary at q depth 1 lies between one opening q
+and its matching Q, both at page level. The block's own q ... Q saves and
+restores only the boundary state and closes before that matching Q; the
+block never restores the state the matching Q restores. The scope is
+identified by its structure (the q open at the boundary and the Q that
+closes it), its recorded witnesses, and, from one revision to the next, the
+positions of that q and Q carried through the byte mutation map; a q or Q
+with the same bytes elsewhere is another scope.
 """
 from collections import defaultdict
 from copy import deepcopy
@@ -108,6 +118,9 @@ PAINT_PADDING = 1.0
 # tolerance its saved origin is verified with (which also bounds a
 # compensated block's displacement), must lie inside the clip rectangle.
 INK_MARGIN = PAINT_PADDING + COMPENSATION_TOLERANCE
+SCOPE = 'one-enclosing-graphics-state-save'
+SCOPE_CONTRACT = ('the boundary lies between the opening q and its matching Q; the block closes its own q ... Q '
+                  'before that Q and never saves, restores or ends the enclosing scope')
 
 
 def program(content):
@@ -151,10 +164,14 @@ def _operator(data, op, ordinal):
 
 
 def _state(boundary):
-    value=json.loads(json.dumps(boundary.state.report()))
+    return _state_value(boundary.state)
+
+
+def _state_value(state):
+    value=json.loads(json.dumps(state.report()))
     # Object numbers are not state; the marked-content depth is scope.
     value.pop('font_xref',None)
-    value['clip']=clip_state(boundary.state.clip)
+    value['clip']=clip_state(state.clip)
     return value
 
 
@@ -172,6 +189,70 @@ def _scope(boundary):
                 marked_content_depth=boundary.marked_content_depth,
                 compatibility_depth=boundary.compatibility_depth,
                 pending_path=boundary.pending_path, pending_clip=boundary.pending_clip)
+
+
+def graphics_scopes(ops):
+    """The q ... Q structure of a page program: the q ordinals open after each
+    operator, innermost last, and the matching Q of each q."""
+    stack,open_after,matching=[],[],{}
+    for index,op in enumerate(ops):
+        if op.name=='q':stack.append(index)
+        elif op.name=='Q' and stack:matching[stack.pop()]=index
+        open_after.append(tuple(stack))
+    return open_after,matching
+
+
+def enclosing_scope(data, ops, structure, boundaries, ordinal):
+    """The one q ... Q scope around the boundary after operator ``ordinal``, with its witnesses.
+
+    Returns ``(None, None)`` at page level, ``(value, None)`` inside exactly
+    one scope, else ``(None, reason)``. ``structure`` is graphics_scopes(ops)
+    and ``boundaries`` the interpreted state after each operator. The
+    opening q and its matching Q must themselves be at page level: outside
+    text objects, marked content, compatibility sections and path
+    construction, so the scope is not interleaved with any of them. The
+    value records both operators (position and bytes), the depth, and the
+    state before the q, which the interpreter shows the matching Q restores.
+    """
+    open_after,matching=structure;stack=open_after[ordinal]
+    if len(stack)!=boundaries[ordinal].q_depth:return None,'unproven-graphics-state-scope'
+    if not stack:return None,None
+    if len(stack)>1:return None,'nested-graphics-state-save'
+    q=stack[0];closing=matching.get(q)
+    if closing is None or not q<=ordinal<closing:return None,'unproven-graphics-state-scope'
+    around=[boundaries[q],boundaries[closing]]+([boundaries[q-1]] if q else [])
+    if any(b.text_object or b.marked_content_depth or b.compatibility_depth or b.pending_path or b.pending_clip
+           for b in around):
+        return None,'unproven-graphics-state-scope'
+    restored=_state(boundaries[q-1]) if q else _state_value(State())
+    if _state(boundaries[closing])!=restored:return None,'unproven-graphics-state-scope'
+    return dict(policy=SCOPE,depth=1,opening=_operator(data,ops[q],q),matching=_operator(data,ops[closing],closing),
+                restored_state=restored,contract=SCOPE_CONTRACT),None
+
+
+def _scope_witness(scope):
+    """A scope's witnesses without its program positions, which move with edits before them."""
+    if scope is None:return None
+    return dict(scope,**{k:{f:scope[k][f] for f in ('operator','sha256')} for k in ('opening','matching')})
+
+
+def _scope_location(scope):
+    """Where a scope's opening q and matching Q are in its revision, for a binding."""
+    return {k:dict(start=scope[k]['start'],end=scope[k]['end']) for k in ('opening','matching')}
+
+
+def carried_scope(program_map, location):
+    """A binding's scope location carried through one save's byte mutation map.
+
+    The opening q and the matching Q each move with the mutations before
+    them; a mutation that consumes either one (one that crosses the scope's
+    edge) leaves no successor and is refused.
+    """
+    result={}
+    for key,value in location.items():
+        start=program_map.map_offset(value['start'])
+        result[key]=dict(start=start,end=start+value['end']-value['start'])
+    return result
 
 
 def _compose(first, then):
@@ -384,13 +465,16 @@ def require_inside_clip(destination, inks=()):
             raise PdfError('generated glyph ink may extend beyond its inherited rectangular clip')
 
 
-def _refusals(scope, state, ctm_reason=None, clip_reasons=None):
+def _refusals(scope, state, ctm_reason=None, clip_reasons=None, scope_reasons=None):
     """Why a block drawn at this boundary would not look like one drawn at page entry.
 
-    ``clip_reasons`` are clip_constraint()'s; a clip that was not analyzed is refused.
+    ``clip_reasons`` are clip_constraint()'s and ``scope_reasons`` the reason
+    enclosing_scope() gives, if any; a clip or a q scope that was not
+    analyzed is refused.
     """
     reasons=[]
-    if scope['q_depth']:reasons.append('inside-graphics-state-save')
+    if scope_reasons is None:scope_reasons=['unproven-graphics-state-scope'] if scope['q_depth'] else []
+    reasons.extend(scope_reasons)
     if scope['text_object']:reasons.append('inside-text-object')
     if scope['marked_content_depth']:reasons.append('inside-marked-content')
     if scope['compatibility_depth']:reasons.append('inside-compatibility-section')
@@ -420,14 +504,16 @@ def _boundary_authority(content, page, ident):
         raise PdfError('the confirmed boundary is not a safe page-level candidate of this page program'
                        +(': '+', '.join(reasons[0]) if reasons else ''))
     c=found[0];compensated=c.get('ctm_compensation');clipped=c.get('clip_constraint')
+    enclosed=c.get('graphics_state_scope')
     value=dict(position=BOUNDARY,boundary_id=ident,source_program_sha256=c['program_sha256'],
         boundary=dict(offset=c['offset'],ordinal=c['ordinal'],previous=c['previous'],next=c['next'],scope=c['scope']),
         z_order=c['z_order'],graphics_state=c['graphics_state'],
-        graphics_state_contract=_graphics_contract(compensated,clipped),
+        graphics_state_contract=_graphics_contract(compensated,clipped,enclosed),
         **c['context'],initial_clip=_initial_clip(clipped),isolation=_isolation(compensated),
         font_policy='explicit-paragraph-style-providers')
     if compensated is not None:value['ctm_compensation']=compensated
     if clipped is not None:value['clip_constraint']=clipped
+    if enclosed is not None:value['graphics_state_scope']=enclosed
     return value
 
 
@@ -439,15 +525,18 @@ def _initial_clip(clipped):
     return 'page-crop-box' if clipped is None else CLIP
 
 
-def _graphics_contract(compensated, clipped):
+def _graphics_contract(compensated, clipped, enclosed=None):
     steps=(['cancels the witnessed CTM with the recorded inverse'] if compensated is not None else [])+(
         ['draws inside the witnessed rectangular clip, which it inherits and never changes']
         if clipped is not None else [])
-    return ('witnessed page-level state; the block '+', '.join(steps+['sets its own font, text state and fill'])
-            +' and restores every parameter with its own q ... Q')
+    return (('witnessed page-level state' if enclosed is None else
+             'witnessed state inside one confirmed q ... Q scope')+'; the block '
+            +', '.join(steps+['sets its own font, text state and fill'])
+            +' and restores every parameter with its own q ... Q'
+            +('' if enclosed is None else ', which closes before the scope\'s matching Q'))
 
 
-def _boundary_value(content, data, sha, d, generated, legacy, location):
+def _boundary_value(content, data, sha, d, generated, legacy, location, scope_location=None):
     """Verify one confirmed page-program boundary in this revision.
 
     The block is found by its own unique markers; an unused boundary by the
@@ -455,10 +544,18 @@ def _boundary_value(content, data, sha, d, generated, legacy, location):
     ending exactly there and the next source operator must be the confirmed
     ones (same operator, same bytes), and the scope and state there must be
     the confirmed, still safe, ones. An offset alone never identifies it.
+
+    A boundary inside a q ... Q scope must still be inside exactly one: the
+    one this revision's structure puts around it must have the confirmed
+    witnesses (bytes, depth, restored state), its opening q and matching Q
+    must be where ``scope_location`` says the previous revision's ones are
+    now (or, in the confirmed program, the confirmed ones), and the block or
+    unused boundary must lie between them.
     """
     auth=d['authority'];confirmed=auth['boundary'];sid=slot_id(d);begin,end=_markers(sid)
     compensated=auth.get('ctm_compensation')
-    if auth['boundary_id']!=boundary_id(d['page'],auth['source_program_sha256'],confirmed['previous'],confirmed['next']):
+    if auth['boundary_id']!=boundary_id(d['page'],auth['source_program_sha256'],confirmed['previous'],confirmed['next'],
+                                        auth.get('graphics_state_scope')):
         raise PdfError('confirmed page-program boundary ID differs from its own source witnesses')
     fonts=None;value=dict(program_sha256=sha)
     if generated:
@@ -485,33 +582,56 @@ def _boundary_value(content, data, sha, d, generated, legacy, location):
     if _nesting_refusals(data):
         raise PdfError('confirmed page-program boundary is in a program whose operators do not nest')
     scope,state=_scope(b),_state(b)
-    # The CTM and the clip are part of the state: another CTM or clip is
-    # another authority. The compensation and the clip rectangle are
-    # re-derived from the witnessed state and program, never read back.
+    # The CTM, the clip and the enclosing q ... Q scope are part of the
+    # authority: another one is another authority. The compensation, the
+    # clip rectangle and the scope are re-derived from this revision's
+    # state and program, never read back.
+    enclosing=auth.get('graphics_state_scope')
+    ops=list(operators(data)) if state['clip'] or b.q_depth or enclosing is not None else []
     ctms=source_ctms(data) if state['ctm']!=list(IDENTITY) or state['clip'] else None
     expected,reason=_compensation(state,ctms[b.ordinal] if ctms else None,auth)
-    clipped,clip_reasons=clip_constraint(b.state.clip,data,list(operators(data)) if state['clip'] else [],ctms,
-                                         -content.page.xref,auth['page_transform'])
+    clipped,clip_reasons=clip_constraint(b.state.clip,data,ops,ctms,-content.page.xref,auth['page_transform'])
+    derived,scope_reason=enclosing_scope(data,ops,graphics_scopes(ops),items,b.ordinal) if ops else (None,None)
     if (scope!=confirmed['scope'] or state!=auth['graphics_state']
-            or _refusals(scope,state,reason,clip_reasons)):
+            or _refusals(scope,state,reason,clip_reasons,[scope_reason] if scope_reason else [])):
         raise PdfError('confirmed page-program boundary state or scope differs from its authority')
     if compensated!=expected or auth['isolation']!=_isolation(expected):
         raise PdfError('confirmed page-program boundary CTM compensation differs from its authority')
     if auth.get('clip_constraint')!=clipped or auth['initial_clip']!=_initial_clip(clipped):
         raise PdfError('confirmed page-program boundary clip constraint differs from its authority')
-    if auth['graphics_state_contract']!=_graphics_contract(expected,clipped):
+    if _scope_witness(enclosing)!=_scope_witness(derived):
+        raise PdfError('confirmed page-program boundary q ... Q scope differs from its authority')
+    if derived is not None:
+        # Which q and Q: the ones carried from the previous revision, or in
+        # the confirmed program the confirmed ones. Equal bytes elsewhere are
+        # another scope.
+        confirmed_program=sha==auth['source_program_sha256']
+        carried=scope_location if scope_location is not None else _scope_location(enclosing) if confirmed_program else None
+        if carried is None:
+            raise PdfError('a confirmed page-program boundary inside a q ... Q scope needs its scope location in this revision')
+        if (_scope_location(derived)!=carried or confirmed_program and scope_location is None
+                and (derived['opening'],derived['matching'])!=(enclosing['opening'],enclosing['matching'])):
+            raise PdfError('confirmed page-program boundary is not in its confirmed q ... Q scope')
+        # The block, or the unused boundary, never leaves the scope.
+        if not derived['opening']['end']<=offset<=after<=derived['matching']['start']:
+            raise PdfError('generated continuation block is not inside its confirmed q ... Q scope')
+    if auth['graphics_state_contract']!=_graphics_contract(expected,clipped,derived):
         raise PdfError('confirmed page-program boundary graphics-state contract differs from its authority')
     value['boundary']=dict(offset=offset,previous=dict(start=previous['start'],end=previous['end']),
                            next=dict(start=following['start'],end=following['end']))
+    if derived is not None:value['scope']=_scope_location(derived)
     if generated:
         value.update(start=offset,end=stop,block_sha256=hashlib.sha256(data[offset:stop]).hexdigest())
         if not legacy:value['operator_nesting']=OPERATOR_NESTING
     return value,fonts
 
 
-def boundary_id(page, program_sha256, previous, following):
-    return 'boundary-'+digest([page,program_sha256,previous['ordinal'],previous['end'],
-                               previous['sha256'],following['sha256']])[:24]
+def boundary_id(page, program_sha256, previous, following, scope=None):
+    """A boundary's ID from its source witnesses, and its q ... Q scope's if it has one."""
+    witnesses=[page,program_sha256,previous['ordinal'],previous['end'],previous['sha256'],following['sha256']]
+    if scope is not None:
+        witnesses+=[scope[k][f] for k in ('opening','matching') for f in ('ordinal','end','sha256')]
+    return 'boundary-'+digest(witnesses)[:24]
 
 
 def inspect_continuation_boundaries(source, page, *, include_refused=False):
@@ -522,7 +642,8 @@ def inspect_continuation_boundaries(source, page, *, include_refused=False):
     operator. A ``safe`` candidate satisfies every condition of the module
     docstring; a caller may confirm it with its ``boundary_id``. A candidate
     under a clip carries its ``clip_constraint``: a destination confirmed
-    there must lie inside its rectangle. The witnesses come from the same
+    there must lie inside its rectangle. A candidate inside a q ... Q scope
+    carries its ``graphics_state_scope``. The witnesses come from the same
     interpretation that edits the page. Nothing here chooses a boundary from
     destination geometry.
     """
@@ -540,7 +661,9 @@ def _inspect(content, page, *, include_refused=False):
     candidates,refused,counts=[],[],defaultdict(int)
     clipped=any(b.state.clip for b in items[:-1])
     exact=source_ctms(data) if clipped or any(b.state.ctm!=IDENTITY for b in items[:-1]) else None
-    ops=list(operators(data)) if clipped else [];clips={}
+    saved=any(b.operator.name=='q' for b in items)
+    ops=list(operators(data)) if clipped or saved else [];clips={}
+    structure=graphics_scopes(ops) if saved else None
     for index,b in enumerate(items[:-1]):
         previous=_operator(data,b.operator,b.ordinal)
         following=_operator(data,items[index+1].operator,items[index+1].ordinal)
@@ -551,8 +674,9 @@ def _inspect(content, page, *, include_refused=False):
         if key not in clips:
             clips[key]=clip_constraint(b.state.clip,data,ops,exact,-content.page.xref,page_context['page_transform'])
         constraint,clip_reasons=clips[key]
-        reasons=invalid+_refusals(scope,state,reason,clip_reasons)
-        value=dict(page=page,boundary_id=boundary_id(page,sha,previous,following),program_sha256=sha,
+        enclosed,scope_reason=enclosing_scope(data,ops,structure,items,b.ordinal) if saved else (None,None)
+        reasons=invalid+_refusals(scope,state,reason,clip_reasons,[scope_reason] if scope_reason else [])
+        value=dict(page=page,boundary_id=boundary_id(page,sha,previous,following,enclosed),program_sha256=sha,
             offset=b.operator.end,ordinal=b.ordinal,previous=previous,next=following,scope=scope,graphics_state=state,
             z_order=dict(semantics=Z_ORDER,prefix_paint_operators=sum(p<=b.ordinal for p in paints),
                          suffix_paint_operators=sum(p>b.ordinal for p in paints)),
@@ -560,6 +684,7 @@ def _inspect(content, page, *, include_refused=False):
         if compensated is not None:value['ctm_compensation']=compensated
         # The candidate carries the constraint its destination must satisfy.
         if constraint is not None:value['clip_constraint']=constraint
+        if enclosed is not None:value['graphics_state_scope']=enclosed
         if reasons:
             refused.append(value)
             for reason in reasons:counts[reason]+=1
@@ -715,7 +840,7 @@ def _block(data, sid, start, *, legacy=False, compensation=None):
     return stop,fonts
 
 
-def page_witness(content, destinations, generated, legacy=frozenset(), locations=None):
+def page_witness(content, destinations, generated, legacy=frozenset(), locations=None, scopes=None):
     """Witness every confirmed destination of one page against its own authority.
 
     ``generated`` names the destinations whose block must exist. Page-entry
@@ -726,8 +851,11 @@ def page_witness(content, destinations, generated, legacy=frozenset(), locations
     boundary, its offset carried into this revision, and defaults to the
     confirmed offset in the confirmed program. Destinations without a block
     have no marker. ``legacy`` names blocks whose stored binding predates
-    OPERATOR_NESTING. Returns each destination's witness and the font aliases
-    its block selects.
+    OPERATOR_NESTING. ``scopes`` gives, for a boundary inside a q ... Q
+    scope, where that scope's q and Q are in this revision (the previous
+    binding's, carried; see carried_scope), and defaults to the confirmed
+    ones in the confirmed program. Returns each destination's witness and
+    the font aliases its block selects.
     """
     ordered=chain(destinations)
     entries=[d for d in ordered if not is_boundary(d)]
@@ -742,7 +870,8 @@ def page_witness(content, destinations, generated, legacy=frozenset(), locations
                 if sha!=d['authority']['source_program_sha256']:
                     raise PdfError('an unused page-program boundary needs its location in this revision')
                 location=d['authority']['boundary']['offset']
-            result[ident],own=_boundary_value(content,data,sha,d,ident in generated,ident in legacy,location)
+            result[ident],own=_boundary_value(content,data,sha,d,ident in generated,ident in legacy,location,
+                                              (scopes or {}).get(ident))
             if own is not None:fonts[ident]=own
     authority=context(content) if entries else None
     for d in entries:
@@ -761,11 +890,11 @@ def page_witness(content, destinations, generated, legacy=frozenset(), locations
     return result,fonts
 
 
-def witness(content, destination, location=None):
+def witness(content, destination, location=None, scope=None):
     """Witness of a destination that has no generated block yet."""
     ident=destination['destination_id']
-    return page_witness(content,[destination],set(),
-                        locations=None if location is None else {ident:location})[0][ident]
+    return page_witness(content,[destination],set(),locations=None if location is None else {ident:location},
+                        scopes=None if scope is None else {ident:scope})[0][ident]
 
 
 def entry(destination, destinations, bindings):
@@ -861,9 +990,13 @@ def validate_destinations(source,state):
                    for d in ordered if is_boundary(d) and d['destination_id'] not in generated}
         if any(type(v) is not int for v in locations.values()):
             raise PdfError('an unused page-program boundary binding has no location')
+        # A boundary inside a q ... Q scope: the scope is verified where this
+        # revision's binding says its q and Q are.
+        scopes={d['destination_id']:bindings[d['destination_id']]['scope'] for d in ordered
+                if is_boundary(d) and 'scope' in bindings[d['destination_id']]}
         content=ContentPage(source,page)
         try:
-            current,fonts=page_witness(content,ordered,generated,legacy,locations)
+            current,fonts=page_witness(content,ordered,generated,legacy,locations,scopes)
             for d in ordered:_validate_destination(content,state,d,bindings[d['destination_id']],
                 current[d['destination_id']],fonts.get(d['destination_id']),records)
         finally:content.close()
@@ -963,7 +1096,8 @@ class ContinuationParagraph:
                 # Re-verify the boundary where this revision's binding locates it.
                 location=snapshot['destination_binding']['boundary']['offset']
                 if (snapshot['boundary']!=dict(boundary_id=snapshot['destination']['authority']['boundary_id'],offset=location)
-                        or witness(self.content,snapshot['destination'],location)!=snapshot['destination_binding']):
+                        or witness(self.content,snapshot['destination'],location,
+                                   snapshot['destination_binding'].get('scope'))!=snapshot['destination_binding']):
                     raise PdfError('continuation insertion program changed')
                 self.entry=location
             else:
