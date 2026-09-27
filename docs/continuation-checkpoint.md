@@ -929,6 +929,129 @@ matching Q                             scopeの前の状態を戻す
 
 外部原本でCTMの相殺を使うには、`q`の深さ2の境界が必要である。本文・図版groupの`q`と、各行・下線・画像の`q`という、入れ子のscopeの連なりを、各段の`q`と対応する`Q`の証跡として固定することになる。ExtGState（不透明度・blend・soft mask）も残る。
 
+## 2段の`q ... Q` scope chain内の確認済み境界 — 2026-09-27（`b21380c`）
+
+起点はPR #16のmerge commit `b21380cf82c319a710701b05bce3d4096f2418ef`。サブエージェントは使用していない。confirmed page-program boundaryの`q ... Q` scope対応を、深さ1から深さ2へ最小範囲で1段だけ広げた。最大2段の明確に証明された`q ... Q` scope chainの内側で、既存のCTM・clip等の安全条件を満たす境界だけを扱う。任意のgraphics-state stackを扱えるようにしたものではない。契約は[2段の`q ... Q` scope chainの内側](confirmed-continuation.md#2段のq--q-scope-chainの内側)にある。
+
+### 開始時の確認
+
+| 項目 | 結果 |
+|---|---|
+| HEAD | `b21380cf82c319a710701b05bce3d4096f2418ef`（PR #16のmerge）。作業ツリーはclean |
+| engine digest（開始時） | `454686cef09460f76c3daaa064d2765748b74e83c8e6963d323a00cd905b71c5`（45ファイル）。PR #15・#16の値と一致 |
+| 環境 | Windows 11 x64（10.0.26200）、Python 3.12.14、PyMuPDF 1.27.2.3、pypdf 6.10.0 |
+
+### 背景
+
+PR #16の外部原本の検査で、LibreOffice原本のidentity以外のCTMの境界（1ページ2、10ページ18）は、どれも`q`の深さ2にあった。相殺と矩形clipは証明されるが、`nested-graphics-state-save`で拒否されていた。今回はこの理由だけを1段緩めた。ExtGState等へは広げていない。
+
+### 方式
+
+```text
+outer q
+  ...
+  inner q
+    ...
+    confirmed boundary                 q depth 2
+    marker q [N cm] BT ... ET Q marker blockは境界の状態だけを保存・復元する
+    ...
+  inner matching Q                     外側のscopeの中の状態へ戻す
+  ...
+outer matching Q                       chainの前の状態へ戻す
+```
+
+- **証跡**（`enclosing_scope()`）:
+  - top-level operatorの`q`/`Q` stack（`graphics_scopes()`）で、境界の後に開いている`q`がちょうど2つであること（interpreterの深さとも一致）。
+  - 外側の`q` < 内側の`q` ≤ 境界 < 内側の`Q` < 外側の`Q`であること。各`q`の対応する`Q`はstackから求める。
+  - 各段の`q`（とその直前）・`Q`がtext object・marked content・`BX ... EX`・組み立て中のpath/clipの外にあること。
+  - 各段の`Q`の直後の状態が、その`q`の直前の状態（`restored_state`）と同じであること。
+  - 深さ3以上は`nested-graphics-state-save`、段の交差などは`unproven-graphics-state-scope`で拒否する。
+- **authority**: 深さ2の`graphics_state_scope`は、`policy = two-nested-graphics-state-saves`、`depth = 2`、`outer`・`inner`（それぞれ`opening`・`matching`の序数・範囲・bytesのSHA-256と`restored_state`）、`contract`を持つ。
+- **boundary ID**: source境界の証跡に、policyと、外側・内側の順に開く`q`・対応する`Q`の序数・終端・SHA-256を加えて作る。内側だけ・外側だけ違う場合も、`q`と`Q`の対応が違う場合も、別のIDになる。
+- **revisionごとのbinding**: bindingの`scope`は`{outer: {opening, matching}, inner: {opening, matching}}`で、そのrevisionでの4つの位置を持つ。
+  - 保存では、前のbindingの4つの位置を、その保存のmutation mapでそれぞれ写す（`carried_scope()`）。新しいrevisionの構造が置く4つの位置と一致しなければならない。
+  - 4つのどれかをmutationが消費すれば、写し先がないので拒否する。別のscopeへ乗り換えない。
+  - openでは、bindingの位置と構造、確認時のprogramではauthorityの記録と比べる。位置を除く証跡（bytes・深さ・戻す状態・policy・contract）も毎回再導出して比べる。
+  - blockがchainの外へ出ないことを、revisionごとに明示的に確かめる（外側の`q`の終端 ≤ 内側の`q`の先頭、内側の`q`の終端 ≤ block ≤ 内側の`Q`の先頭、内側の`Q`の終端 ≤ 外側の`Q`の先頭）。
+- **記録の形の選択**: `outer`・`inner`を持つ記録だけを2段として読む。記録の`depth`で形を選ばない。深さは他の証跡と同じく、再導出した値と比べる。
+- **CTM・clip**: どちらの段で設定されたCTM・clipも、境界の状態としてPR #12の相殺・PR #14の矩形clipの証明でそのまま扱う。新しい処理は加えていない。
+
+### 変更
+
+- **`pdfeditor/continuation.py`**:
+  - `enclosing_scope()`を最大2段へ広げた。`MAX_SCOPE_DEPTH`・`SCOPE_CHAIN`・`SCOPE_CHAIN_CONTRACT`を加えた。
+  - `_scope_levels()`・`_scope_operators()`・`_within()`を加え、`_scope_witness()`・`_scope_location()`・`carried_scope()`・`boundary_id()`・`_graphics_contract()`・`_boundary_value()`を2段に対応させた。
+- **変えていないもの**: `content_stream.py`（interpreter）、`mutation.py`、`operator_nesting.py`、`paragraph.py`（writer）、`shared_flow.py`、blockの形と`_block`、CTMの相殺と矩形clipの証明、page-entryの検証・binding、生成fontの寿命、`require_empty()`。
+- **engine digest**: `f68d40dde550db069158863c65f61171d3787d67a5c784cd3d2e43d09f211c6a`（45ファイル）。
+
+### 深さ0・1との互換
+
+- **形**: 深さ1の記録（`opening`・`matching`・`restored_state`を直接持つ形）、ID、binding、contractの文言は変えていない。`outer`・`inner`の形を使うのは深さ2だけで、既存の深さ1のsidecarを変換することはない。
+- **byte比較**（評価コード外の一時スクリプト。commitしていない）: 同じ試験fixtureから、深さ0（identity・相殺・矩形clip・相殺と矩形clip）、深さ1（4種と、scopeの最後の境界）、page entryの計10系列を作った。各系列で確認 → grow → second → shorten → regrow → no-opを保存し、PR #16のmain（`b21380c`）のengineと今回のengineの出力を、同じ出力先で比べた。
+  - 計210ファイルがbyte単位で一致した。PDF 60件（元PDF 10・保存50）、sidecar 50件、report 50件、確認時のflow記録10件、選んだ候補の記録10件、検査記録20件、font 10件である。
+  - sidecarは出力先のpathを含むので、2つのengineの出力は同じ出力先で作って比べた。
+- **外部原本の検査記録**: LibreOffice原本の1・6・10ページの`inspect_continuation_boundaries(..., include_refused=True)`で、深さ0・1の境界の記録（計976）はPR #16のmainとすべて同じだった。
+  - 深さ2の境界は、1ページ357、6ページ255、10ページ186が新しく候補になった。
+  - identity以外のCTMの境界は、1ページの2と10ページの12が候補になり、10ページの6は`pending-path`で拒否されたままである。
+  - これは検査の記録の比較で、外部原本での系列評価ではない。
+
+### 検証（Windows 11、Python 3.12.14）
+
+| 検証 | 結果 |
+|---|---|
+| `tests/test_scope_chain_boundary.py`（新規） | 38 passed（下の関連7ファイルの実行に含む） |
+| 関連7ファイル（新規、scope、boundary、CTM、clip、continuation、multi destination）、最終engine | 239 passed, 0 failed（4,865.31秒、単一process） |
+| 全suite `python -m pytest -q --basetemp=tmp/pytest`（最終engine） | 最終engineで1回実行する。結果は次のcommitで記録する |
+
+- **新しい試験**（`tests/test_scope_chain_boundary.py`、38件）:
+  - 候補と記録: 深さ2の境界が`outer`・`inner`の両段を持つ候補になること。各段の`q`・`Q`の位置・bytes・stack上の対応、`restored_state`（内側の`Q`は外側のscopeの状態、外側の`Q`はpage levelの状態）。内側のscopeの深さ2の境界がすべて同じchainを持ち、外側のscopeの境界は深さ1の形、page levelの境界はscopeの記録を持たないこと。
+  - 13種の境界: 証明できるchain（2段、外側に閉じた兄弟scope、外側で閉じたmarked content・`BX`）、拒否するもの（深さ3、marked content・`BX`と交差する段）、chain内でも拒否する状態（ExtGStateを外側・内側で設定、特異なCTM、多角形のclip、描画モード、text clip）。
+  - boundary ID: 基準のchainと、内側の`q`・内側の`Q`・外側の`q`・外側の`Q`・`Q`の対応のどれか1つだけが違う5つのchain、同じ位置の深さ1・page levelの記録が、すべて別のIDになること。
+  - authorityとbinding: `graphics_state_scope`・contractの文言・bindingの`{outer, inner}`。
+  - lifecycle（identity、相殺、矩形clip、外側の矩形clipと内側の相殺）: fits → grow → second → shorten → regrow → no-op 3回。reopen、authority・作成証跡の不変、2つの`q`は動かず2つの`Q`はblockの伸びだけ動くこと、4つの位置の順序とstack上の対応、blockに`W`・`W*`・`n`・`re`（相殺がなければ`cm`も）がないこと、入れ子の違反0、生成fontの所有、no-opの画素・glyph plan・font再利用。
+  - 状態の復元（ContentPageの状態で直接確かめる）: blockの`Q`の直後は深さ2で境界の状態、内側のsuffixの文字も同じCTM・clip。内側の`Q`の直後は深さ1で外側のscopeの状態（fill・stroke・線幅、CTM identity、外側のclip）、外側のsuffixの文字も同じ。外側の`Q`の直後は深さ0でpage levelの状態、その後の文字はidentity・clipなし・pageのfill。
+  - 配置（上の4種と、LibreOffice原本と同じ形の外側の矩形clip・内側の平行移動）: 生成glyphの計画のpage座標、保存後のglyph原点、画素が、同じgeometryのpage-entry版と一致すること。chainの内外の既存の描画と領域外の画素が元PDFと同じこと。
+  - 内側のscopeの最後の境界: blockの直後が内側の対応する`Q`になり、その後の状態が戻ること。
+  - 改ざん: sidecarのauthorityの16種（4つの`q`・`Q`の序数・bytes・終端、段の入れ替え、各段の`restored_state`、policy、contract、深さ1・3、段の削除、記録の削除、`graphics_state_contract`、boundaryの深さ）と、bindingの8種（4つの位置、段の入れ替え、深さ1の形、削除、再封印だけの対照）。programの13種（内側・外側の`q`・`Q`の移動、`Q q`による内側・外側の対応の変更、`Q q`による別の内側・外側のscope、深さ3・深さ1、釣り合わない`Q`、内側・外側の対応する`Q`の後ろへのblockの移動）。
+  - 再binding: source slotがchainの前・外側のprefix・内側のprefix・内側のsuffix・外側のsuffix・chainの後にある場合の、grow・no-op。4つの位置のうち、書き直したslotより後ろのものだけが動き、同じchainへbindingすること。4つのどれかを消費するmutationは写し先がなく拒否すること（単体）。
+  - rollback: rebind・commitの遅い失敗で何も公開しないこと。
+- **既存試験の変更**: 意図した挙動の変化に合わせて4件を直した。`q q ... Q Q`（深さ2）は候補になるので、拒否例を深さ3（`q q q ... Q Q Q`）に差し替えた（`test_boundary_destination.py`・`test_clip_boundary.py`・`test_ctm_compensation.py`・`test_scope_boundary.py`）。`test_boundary_destination.py`には深さ2が候補になる例を加えた。
+- **mutationによる確認**（評価コード外の一時スクリプト。engineのfileは変えず、process内で差し替えた）: 5種の欠陥で、新しい試験が失敗した。
+  - 深さ3を受け付ける、IDから外側の段を外す、外側の段をmutation mapで写さない、bindingから外側の段を外す、内側の`restored_state`を比べない。
+  - 最後の1つでは、改ざんしたsidecarは作成証跡のdigestでも拒否されるが、試験は拒否の理由まで照合するので、scopeの照合が欠けたことを検出した。
+- **実行方法**: 開発中は新しい試験と関連試験だけを実行した。全suiteは、engineが最終形になった後に1回だけ実行した。`pytest-xdist`は使っていない。
+
+### 外部評価
+
+今回は実施していない（指示どおり）。既存の単一destination・境界・2 destination・scopeの外部評価も再実行していない。PR #16の原本の深さ2の境界は、実装の目標を決める根拠として使った。上の検査記録の比較は、互換の確認のためのもので、系列評価ではない。
+
+### 検証の所要時間
+
+開発中の検証は、最終engineの関連7ファイルを1回と、途中の部分実行だけにした。時間はどれも実測である（並行は最大2 process）。
+
+| 作業 | 時間 | 結果 |
+|---|---|---|
+| mainのengineでの互換用の出力 | 10.6分 | 10系列と、LibreOffice原本3ページの検査記録 |
+| 既存のscope・boundaryの試験（変更途中） | 21.5分 | 1件失敗。深さ1の改ざんの拒否理由の文言が変わっていた。記録の形を`outer`・`inner`の有無で選ぶよう直した |
+| 新しい試験（変更途中） | 15.5分 | 37 passed・1 failed。試験の誤り（保存のループで元PDFを進めていなかった）を直した |
+| 失敗した試験の再実行・mutationによる確認 | 約3分 | 該当試験とmutation 5種 |
+| 新しいengineでの互換用の出力と、同じ出力先でのmainの出力 | 14.2分・13.9分 | 210ファイルがbyte一致 |
+| 関連7ファイル（最終engine） | 81.1分 | 239 passed |
+| 全suite（最終engine、1回） | 次のcommitで記録する | |
+
+### 残る未対応の状態
+
+- `q`の深さ3以上、marked content・`BX ... EX`と交差するscope
+- ExtGState（不透明度・blend・soft mask）
+- 多角形・曲線・複数subpath・回転やskewの下のclip、text clip
+- 特異・非有限・数値的に不安定なCTM
+- text object・marked content・`BX ... EX`・Form XObjectの内側、組み立て中のpath/clip
+- 1つの境界への複数destination
+
+### 次の作業と構造障壁
+
+次は、Windows環境でPR #16の原本の深さ2の境界を直接評価することである。候補になった1ページ・10ページのidentity以外のCTMの境界（深さ2・相殺・矩形clip）で、同じページの確認済みの空き領域へ系列評価を行う。構造の障壁としては、`q`の深さ3以上とExtGStateが残る。10ページの下線の`m`・`l`の後の6境界は、組み立て中のpathの途中なので候補にならない（挿入位置として不適切で、緩める対象ではない）。
+
 ## 再評価の手順
 
 Windows検証環境で[評価README](../evaluations/continuation/README.md)の手順を実行する。
