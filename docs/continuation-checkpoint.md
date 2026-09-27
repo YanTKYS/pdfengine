@@ -1001,7 +1001,7 @@ outer matching Q                       chainの前の状態へ戻す
 |---|---|
 | `tests/test_scope_chain_boundary.py`（新規） | 38 passed（下の関連7ファイルの実行に含む） |
 | 関連7ファイル（新規、scope、boundary、CTM、clip、continuation、multi destination）、最終engine | 239 passed, 0 failed（4,865.31秒、単一process） |
-| 全suite `python -m pytest -q --basetemp=tmp/pytest`（最終engine） | 最終engineで1回実行する。結果は次のcommitで記録する |
+| 全suite `python -m pytest -q --basetemp=tmp/pytest`（最終engine、`e7f399e`のcode） | 888 passed, 7 skipped, 0 failed（4,981.12秒、単一process、他の実行と並行しない）。895件はPR #16までの856件に、新規38件と`test_boundary_destination.py`の深さ2の例1件を加えたもの。skip 7件は外部corpus 5件とAES provider 2件で、PR #16のWindows実行と同じ |
 
 - **新しい試験**（`tests/test_scope_chain_boundary.py`、38件）:
   - 候補と記録: 深さ2の境界が`outer`・`inner`の両段を持つ候補になること。各段の`q`・`Q`の位置・bytes・stack上の対応、`restored_state`（内側の`Q`は外側のscopeの状態、外側の`Q`はpage levelの状態）。内側のscopeの深さ2の境界がすべて同じchainを持ち、外側のscopeの境界は深さ1の形、page levelの境界はscopeの記録を持たないこと。
@@ -1037,7 +1037,7 @@ outer matching Q                       chainの前の状態へ戻す
 | 失敗した試験の再実行・mutationによる確認 | 約3分 | 該当試験とmutation 5種 |
 | 新しいengineでの互換用の出力と、同じ出力先でのmainの出力 | 14.2分・13.9分 | 210ファイルがbyte一致 |
 | 関連7ファイル（最終engine） | 81.1分 | 239 passed |
-| 全suite（最終engine、1回） | 次のcommitで記録する | |
+| 全suite（最終engine、1回） | 83.0分 | 888 passed, 7 skipped |
 
 ### 残る未対応の状態
 
