@@ -482,16 +482,22 @@ existing suffix
 - blockの`N cm`はblockの`q`の直後にだけある。blockの`Q`は境界の状態（CTM M・clip C）を、内側の`Q`は外側のscopeの中の状態を、外側の`Q`はchainの前の状態を戻す。
 - 試験では、この3つの`Q`の直後の状態と、各位置の文字の状態を、interpreterで直接確かめる。
 
+### 実原本で確認した範囲と残る描画差
+
+2026-09-27、PR #17のengineを変更せず、LibreOffice原本10ページのordinal62（下線`S`直後、inner `Q`直前）で、depth 2・CTM相殺・矩形clipの系列を実行した。全5保存とreopen、4つのbinding、生成Q/inner Q/outer Q後の全比較可能状態、glyph座標・clip内ink・font所有・nesting・領域外画素は通った。
+
+一方、同じpage-entry overflowとの比較は、glyph plan・保存origin・MuPDF画素が一致したものの、Poppler 144dpiで生成1行目の5,868画素が不一致だった。binary32 CTMの逆を原本の十進operandに合成した微小残差が原因で、0.002ptの幾何上界はrasterの完全一致を保証しない。保存済み出力だけの診断で原本operandの逆に変えると差は0になったが、engine修正や一般化した証明は行っていない。[評価詳細](../evaluations/continuation/README.md#pr-17-engineの深さ2実境界評価--2026-09-27)・[失敗を含む集計](../evaluations/continuation/scope-chain-destination-summary.json)を参照。
+
 ### 対応範囲
 
 | 状態 | 対応 |
 |---|---|
 | page entry（`before-page-program`） | 対応 |
 | 確認済みの安全なpage level境界（CTM identity） | 対応 |
-| 同上で、CTMがidentity以外だが、逆行列での相殺を証明できるもの | 対応（`q N cm BT ... ET Q`、合成PDFのみで確認） |
-| 同上で、有効なclipを1つのpage矩形と証明でき、destinationと生成inkがその内側に収まるもの（CTMはidentityか相殺できるもの） | 対応（clipを継承。外部原本ではCTM identityの境界で確認、相殺との組合せは合成PDFのみ） |
+| 同上で、CTMがidentity以外だが、逆行列での相殺を証明できるもの | 対応（`q N cm BT ... ET Q`。外部原本のglyph座標・系列は確認、page-entryとのPoppler画素同値は未達） |
+| 同上で、有効なclipを1つのpage矩形と証明でき、destinationと生成inkがその内側に収まるもの（CTMはidentityか相殺できるもの） | 対応（clipを継承。外部原本でも相殺との組合せの系列・包含は確認、Poppler同値は未達） |
 | 1つの明確な`q ... Q` scopeの内側（深さ1）で、状態が上の条件を満たすもの | 対応（blockはscopeの`Q`より前で閉じる。外部原本の10ページで、矩形clip・CTM identityの境界を確認） |
-| 最大2段の明確に証明された`q ... Q` scope chainの内側（深さ2）で、状態が上の条件を満たすもの | 対応（blockは内側の`Q`より前で閉じる。合成PDFのみで確認） |
+| 最大2段の明確に証明された`q ... Q` scope chainの内側（深さ2）で、状態が上の条件を満たすもの | 対応（blockは内側の`Q`より前で閉じる。外部原本でも系列・全状態復帰を確認、Poppler同値は未達） |
 | 特異・非有限・数値的に不安定なCTM | 未対応（拒否） |
 | 多角形・曲線・複数subpath・回転やskewの下の矩形・text clip・面積のないclip | 未対応（拒否） |
 | `q`の深さ3以上、marked content等と交差するscope、任意のExtGState | 未対応（拒否） |

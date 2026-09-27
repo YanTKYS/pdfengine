@@ -52,7 +52,7 @@ from evaluations.continuation import evaluate as single
 from evaluations.continuation.resources import generated_block_bytes, inventory
 from evaluations.elements.evaluate import audit_render, extraction
 from evaluations.flow_transaction.evaluate import normalize, refuse
-from evaluations.realpdf.evaluate import image_fingerprints
+from evaluations.realpdf.evaluate import image_fingerprints, pix_image, pixel_diff
 from evaluations.story_flow.evaluate import annotation_fingerprint
 
 
@@ -233,7 +233,7 @@ def refused_confirmations():
     return result
 
 
-def prepare(authority):
+def prepare(authority, *, boundary_id=None):
     """evaluate.prepare(), with the reviewed area on page 10 at page entry or at the reviewed boundary."""
     if source_sha(single.SOURCE) != single.SOURCE_SHA:
         raise ValueError('reviewed source differs')
@@ -245,7 +245,7 @@ def prepare(authority):
     if authority == 'boundary':
         destination = confirm_continuation_destination(single.SOURCE, destination_id='reviewed-page10-scope-boundary',
             paragraph_id=pid, region_id='page10', page=PAGE, bounds=REGION['bounds'], insertion=BOUNDARY,
-            graphics_state=BOUNDARY_STATE, boundary=REVIEWED_BOUNDARY['boundary_id'])
+            graphics_state=BOUNDARY_STATE, boundary=boundary_id or REVIEWED_BOUNDARY['boundary_id'])
     else:
         destination = confirm_continuation_destination(single.SOURCE, destination_id='reviewed-page10-space',
             paragraph_id=pid, region_id='page10', page=PAGE, bounds=REGION['bounds'], insertion=PAGE_ENTRY,
@@ -360,7 +360,8 @@ def order(pdf, state, destination, authority, source_program):
                 **depths, after_matching_q_depth=after.q_depth)
 
 
-def audit(before, after, state, initial, report, directory, original_text, authority, *, noop=False, owned=None):
+def audit(before, after, state, initial, report, directory, original_text, authority, *, noop=False, owned=None,
+          expected_page_text=None, exact_bounds=False):
     """evaluate.audit() for pages 4, 5 and 10; page 10's text in content-stream order."""
     directory.mkdir()
     visual, edited = {}, set(map(int, EDITED))
@@ -371,6 +372,17 @@ def audit(before, after, state, initial, report, directory, original_text, autho
                              noop=noop or page not in edited, edited_pages=edited)
             visual[str(page)] = dict(mupdf_equal=v['mupdf_page_pixels'], poppler_changed_pixels=v['poppler_diff']['all_changed_pixels'],
                                      poppler_outside_changed_pixels=v['poppler_diff_with_1pt_margin']['outside_changed_pixels'])
+            if exact_bounds:
+                outside = v['poppler_diff']['outside_changed_pixels']
+                if outside:
+                    raise ValueError('Poppler pixels changed outside the exact confirmed region')
+                visual[str(page)]['poppler_outside_exact_bounds_changed_pixels'] = outside
+                with pymupdf.open(before) as a, pymupdf.open(after) as b:
+                    difference = pixel_diff(pix_image(a[page - 1], dpi=144), pix_image(b[page - 1], dpi=144),
+                                            mask=r['bounds'] if r else (0, 0, 0, 0), dpi=144)
+                if difference['size_changed'] or difference['outside_changed_pixels']:
+                    raise ValueError('MuPDF pixels changed outside the exact confirmed region')
+                visual[str(page)]['mupdf_outside_exact_bounds_changed_pixels'] = difference['outside_changed_pixels']
     for step in report['steps']:
         font_mapping_audit(after, step['report'])
     extracted = extraction(after, directory, 'saved')['pages']
@@ -388,6 +400,8 @@ def audit(before, after, state, initial, report, directory, original_text, autho
             # At the boundary the block paints after the prefix and the reviewed
             # suffix shows no text; at page entry it paints first.
             text = text + generated if authority == 'boundary' else generated + text
+        if expected_page_text and page in expected_page_text:
+            text = normalize(expected_page_text[page])
         if normalize(extracted[page - 1]) != text:
             raise ValueError(f'complete-page Unicode differs on {page}')
     old, new = PdfReader(before), PdfReader(after)

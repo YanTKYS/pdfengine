@@ -1,0 +1,3085 @@
+{
+  "schema": "pdfengine-scope-chain-destination-evaluation-1",
+  "status": "failed",
+  "source_url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf",
+  "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+  "environment": {
+    "started": "2026-09-27T13:23:36+0900",
+    "git_status": "## codex/scope-chain-realpdf...origin/main",
+    "head": "1e53672eb9042b8386cfd4ce798ebc00f9a0ed0a",
+    "engine_digest": "f68d40dde550db069158863c65f61171d3787d67a5c784cd3d2e43d09f211c6a",
+    "engine_sha256": {
+      "__init__.py": "0268b74fc98f41877c1ae94b3bed07f27f749e7da28c8b88094603a2c8c371dc",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "alignment.py": "e1d67a5194a5a90fff1b70c286f602d5483619752bea99cecd6678df73950efd",
+      "anchors.py": "f721d5dc4d05e0140b6879ac36a978c791558e4c50b70b21640d99a0484ad030",
+      "attributed.py": "bd1612558a8da9296ef90f6fdc7b50a78ad53d7329667241a6b7809880e84696",
+      "backend.py": "42dbedb4912623e3c9d5e650982c4efc631530a89216438aab5bc951e56ac4c9",
+      "cli.py": "9e88f31e1724c6938207c17f911dc205ab554012d138298585956784435fbf92",
+      "composition.py": "61791f593714ad4529f851e413b48590c22ad87dde45acfbd083f445111f430a",
+      "content_stream.py": "d83784b9afce8ae50a37b990d207577d1963dcc3c29eeca06d1dbf5a5bfe93d1",
+      "continuation.py": "fcacbb7bb2f61dcd53e4e2c15c23d326d45e9680be37e5d8b3179fc76b0da706",
+      "destination_style.py": "2e47cf2507045d9eb93c465acf0abb942d3a69702bb85805af80524f74b41d09",
+      "document_flow.py": "bf3b6149039337dd3481e7402a8ab187665cadf59abbfea8088de9761e30de17",
+      "editable.py": "d153f340a81050e6113c909b1aefb9b55bdffde4019d25f22d0915e5d796acba",
+      "elements.py": "8f29198de4043efff9f8c099ad796b8cd27b4404fc7df79a7446934702ba0011",
+      "engine.py": "73fd6d5ce0f0e18dc28ca338ac4d2eddd61067ebc846b65c0f0d74984e8de2fa",
+      "explicit_reflow.py": "845c910e8c31a76f8c6e3b33efa0fc50f548888874b25d22a8916ca4a55a2c7b",
+      "flow_transaction.py": "2a334c2b0688f7ac9eb444c0d18fccc1bacf60b418190b1c4b4638f2073ca957",
+      "fonts.py": "675205cc4c027409589c246f29a43b374f067ce84db08f80242ce530413b6212",
+      "inference.py": "9c3d0fd5dc9761436502e3a29d4a5f32b783979c103fbf7487dfdba68699cf17",
+      "ink_collision.py": "7bb130b008390c29b21956964a167f608c73967b272bae15a119439bf27e4984",
+      "layout.py": "5bd4a3fbee066d33f58c9397ab96a71269b5c259adfc08e8f38b2f8d07e80211",
+      "logical_element.py": "e9ddbc789e77e33c9774db1877b57bc643acb8f75187dc050ae71f2caed990f1",
+      "marked_content.py": "57bb4f7e948ecbae7c8c421f0b460a4034a13b7038aced8bd0d42526a61ef451",
+      "model.py": "ceb4beabc9abd59cd3a801890ab5fe1e5f8faed655b756ff447fa9dd346c7d89",
+      "mutation.py": "13e0c537b88054f414f4d5b46db22d94141c469090c2361c1d7aee46b56948aa",
+      "operator_nesting.py": "18bda9e2d394fb3484592e719bc3dc81a6228a586d2a80c757203b320f73b7b6",
+      "paint_geometry.py": "c259a0a16448262e8cc3758f3bc68e23af7d01ffd7133c16f76637aaa3c65246",
+      "paint_provenance.py": "c45bba3313eee3eefd9d8d6e5a2978e40344e829c342e49859574d2356c68977",
+      "paint_resize.py": "b9bcb8a8da13f3317c37c54c3fa83f74f6de5fe97f89439f25559b78fc0e68f8",
+      "paragraph.py": "caec658909aea2f99fd54343f87b681a5839953a07560e4808765236388d1eee",
+      "pdf_primitives.py": "af06814db07392e11a9fe611fcfa42c39a4762f482436ccf041b1b0a11c3aa66",
+      "pdf_save.py": "e31772d2f1487abdc1063dd587d60702a48fe60f6285aaea2f8a2bfb3197c114",
+      "proof_session.py": "205a27a5c630679e1b48296e3f37e001e5c41999aba448c95c0d4503b27cba3a",
+      "replay.py": "3a74aec3bdd8e317c7a73b2a60b767e2430cb8a65fcf9c7efaa09e2514cd26a1",
+      "rich_layout.py": "d8c9e52d184e3f75e1ac50f853e8a71c2053e0791bff27bfb24eff7a4f9bea70",
+      "selection.py": "b5bb1849cf5e1dd8d990990f2dcf74a73ad5c47bb8933f36f11d9915d187cb46",
+      "shaped_font.py": "59bca6d2db19db2cd6602f6badfc7ae8d5d60e3bec4dee3d7d41ff51fe276f83",
+      "shared_flow.py": "b54e671eddb46c7738154fba2e0a4905334168a781ef869bf45d9876a50afbdc",
+      "slot_edit.py": "154c83f9fdcd85a2a08a580f4b6ecc2635447802951b50a185cd4de711d9f25e",
+      "spacing.py": "e44fab983055b373c1473e41846545135880753ba32be8a460748437a2769526",
+      "story_flow.py": "00de2b47fa3862584955da4b59bc9b8347b09887c146ee7cd49a6382af554764",
+      "story_styles.py": "f9d5d425b37f3ea94939e413432969cbb672e726cf9ad0396bb3cb702d544358",
+      "style_confirmation.py": "5beabff6b423d908c3cce192b1b4ddffb8e4876dff438a9548aa8267d11064bd",
+      "transaction.py": "ab1c88ee731d97bc65f15502669c483fdcde351166f319babd535656c1f2b597",
+      "variable_container.py": "5c4e3336aa2187a37adf6d36bd2ccd3fb33c01e4ef7fbd4f24fe50708b98df82"
+    },
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pymupdf": "1.27.2.3",
+    "pypdf": "6.10.0",
+    "poppler": "pdftoppm version 26.07.0",
+    "independent_pypdf": "6.10.0",
+    "independent_python": "3.12.14",
+    "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+    "providers": {
+      "body": {
+        "filename": "msmincho.ttc",
+        "font_index": 1,
+        "sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+        "variations": null
+      },
+      "latin": {
+        "filename": "times.ttf",
+        "font_index": 0,
+        "sha256": "931c5de5c70401d9324d5014c123802b4fb753000360ceb2f56c589403cd58c5",
+        "variations": null
+      }
+    },
+    "provider_evidence_source": {
+      "path": "evaluations/story_styles/summary.json",
+      "sha256": "c2329afaefcfcb93ff4d57920d0a3e081dd2b0743bc41bf805bddf9168b6c7c2"
+    },
+    "runner_sha256": "dfb4aeb03e9eb66818f3dc7f07a7cf0a840bea9a4b91f96866571dd9952090e9",
+    "evaluation_dependencies_sha256": {
+      "evaluations/story_flow/evaluate.py": "4fc0d79e9a8de23ec3de916fdb6c32831669969894ce66bcf2899a842a5274f9",
+      "evaluations/story_styles/evaluate.py": "51f5d1a048b46536286abfa6e5216e9958d9963bd315aac08616e32de2ee884c",
+      "evaluations/elements/evaluate.py": "d6b0022a975c0082b7de5ffa82220ff71e604225267902287e2215f39f908f74",
+      "evaluations/flow_transaction/evaluate.py": "28f660161b2b478740762848bdefefbe1bd49bbfc03bfec631e128c7e49fbf39",
+      "evaluations/attributed/evaluate.py": "6023d19e5b0c57d231a0d8f54d3ea931a52364b91c34cd84150e0269e77ccbb1",
+      "evaluations/backend/followup.py": "2a70ddd88402083b64af75dd749dc144a3eb8c671b9bacad74d3642b41e2267d",
+      "evaluations/realpdf/evaluate.py": "7f4754523b1849b4f744ba9a11841a9be1c6bc2d2fdcdee3c7e4706beb908a18",
+      "evaluations/realpdf/independent_extract.py": "435766089686f927c6bc72aa8da4463ab48c3ef1b305c7cc08442a10dd3bacdb",
+      "evaluations/continuation/resources.py": "4c55b9fa04584064f1ffdb65f074f0f2c8ff152538461d07580f9618196d0f93",
+      "evaluations/continuation/evaluate.py": "468f658ef540a7df4d0be18eff8c5321ba763bdf330d3086a1eebb10375cce3b",
+      "evaluations/continuation/scope_destination.py": "5d9a1bb2989d026854f98bb7e2b1c4d044c6cb01345663e9535c1e0b68a29671",
+      "evaluations/continuation/scope_chain_candidates.py": "16ddc900ade013ba3efa53e44b05c57b0db5576b040f3fb8855ee5f8e29d69cd",
+      "evaluations/continuation/scope_chain_checks.py": "bc7f387cf0495f1b5f4e1cf54a7b086f4f56229062d3a725da918cb44327ff59",
+      "evaluations/continuation/scope_chain_region.py": "1716196a3306c7c0d8cf422df996cd8bf166545429984792381ed2fff88e4a09"
+    },
+    "capture": "Captured from unchanged evaluator files after its terminal page-entry comparison exception; evaluator amended subsequently to preserve failed comparisons.",
+    "final_evaluator_sha256": "da2771e34f175549dcac5f51f9c95d39ab1ecabb171cff97bfad047e35628a7f",
+    "final_evaluation_dependencies_sha256": {
+      "evaluations/story_flow/evaluate.py": "4fc0d79e9a8de23ec3de916fdb6c32831669969894ce66bcf2899a842a5274f9",
+      "evaluations/story_styles/evaluate.py": "51f5d1a048b46536286abfa6e5216e9958d9963bd315aac08616e32de2ee884c",
+      "evaluations/elements/evaluate.py": "d6b0022a975c0082b7de5ffa82220ff71e604225267902287e2215f39f908f74",
+      "evaluations/flow_transaction/evaluate.py": "28f660161b2b478740762848bdefefbe1bd49bbfc03bfec631e128c7e49fbf39",
+      "evaluations/attributed/evaluate.py": "6023d19e5b0c57d231a0d8f54d3ea931a52364b91c34cd84150e0269e77ccbb1",
+      "evaluations/backend/followup.py": "2a70ddd88402083b64af75dd749dc144a3eb8c671b9bacad74d3642b41e2267d",
+      "evaluations/realpdf/evaluate.py": "7f4754523b1849b4f744ba9a11841a9be1c6bc2d2fdcdee3c7e4706beb908a18",
+      "evaluations/realpdf/independent_extract.py": "435766089686f927c6bc72aa8da4463ab48c3ef1b305c7cc08442a10dd3bacdb",
+      "evaluations/continuation/resources.py": "4c55b9fa04584064f1ffdb65f074f0f2c8ff152538461d07580f9618196d0f93",
+      "evaluations/continuation/evaluate.py": "468f658ef540a7df4d0be18eff8c5321ba763bdf330d3086a1eebb10375cce3b",
+      "evaluations/continuation/scope_destination.py": "e1c57e9a9bc48d2ce893ab16531c50af0812e4263fa7a09d302cd907c407256e",
+      "evaluations/continuation/scope_chain_candidates.py": "16ddc900ade013ba3efa53e44b05c57b0db5576b040f3fb8855ee5f8e29d69cd",
+      "evaluations/continuation/scope_chain_checks.py": "bc7f387cf0495f1b5f4e1cf54a7b086f4f56229062d3a725da918cb44327ff59",
+      "evaluations/continuation/scope_chain_region.py": "1716196a3306c7c0d8cf422df996cd8bf166545429984792381ed2fff88e4a09"
+    },
+    "engine_unchanged_after_evaluation": true
+  },
+  "run": "scope-chain-pr17-windows",
+  "inspection": {
+    "pages": {
+      "1": {
+        "program_sha256": "5e72e303e0ea66c8a39bb2e10fe918086fd4d1abcc069bffd6e81f18b6b046b3",
+        "operators": 980,
+        "q_depth": 2,
+        "safe_compensated_clipped": 2,
+        "pending_path_refused": 0,
+        "all_pr16_structural_correspondence": true,
+        "columns": [
+          "ordinal",
+          "offset",
+          "boundary_id",
+          "pr16_boundary_id",
+          "previous",
+          "next",
+          "status",
+          "reasons",
+          "ctm",
+          "compensation",
+          "outer_q_Q_inner_q_Q",
+          "clip_rectangle",
+          "prefix_paints",
+          "suffix_paints"
+        ],
+        "rows": [
+          [
+            976,
+            13093,
+            "boundary-2e77e8bd10c225b9112005d7",
+            "boundary-f7352b39616fcca041451dd0",
+            "cm",
+            "Do",
+            "safe",
+            [],
+            [
+              202.10000610351562,
+              0.0,
+              0.0,
+              60.0,
+              58.5,
+              734.7000122070312
+            ],
+            "0.00494804537259 0 0 0.0166666666667 -0.289460654296 -12.2450002035 cm",
+            [
+              971,
+              979,
+              975,
+              978
+            ],
+            [
+              58.40090465588792,
+              47.30090465588788,
+              260.49909534411205,
+              107.29909534411203
+            ],
+            119,
+            1
+          ],
+          [
+            977,
+            13101,
+            "boundary-0f14287dcc1d1aef9d5e662b",
+            "boundary-4fe8d32e9fd85f7a3c342673",
+            "Do",
+            "Q",
+            "safe",
+            [],
+            [
+              202.10000610351562,
+              0.0,
+              0.0,
+              60.0,
+              58.5,
+              734.7000122070312
+            ],
+            "0.00494804537259 0 0 0.0166666666667 -0.289460654296 -12.2450002035 cm",
+            [
+              971,
+              979,
+              975,
+              978
+            ],
+            [
+              58.40090465588792,
+              47.30090465588788,
+              260.49909534411205,
+              107.29909534411203
+            ],
+            120,
+            0
+          ]
+        ]
+      },
+      "10": {
+        "program_sha256": "a7220825594cabbb752694f12eb153e98f45e1eb22eda558eeff909d6981440d",
+        "operators": 997,
+        "q_depth": 2,
+        "safe_compensated_clipped": 12,
+        "pending_path_refused": 6,
+        "all_pr16_structural_correspondence": true,
+        "columns": [
+          "ordinal",
+          "offset",
+          "boundary_id",
+          "pr16_boundary_id",
+          "previous",
+          "next",
+          "status",
+          "reasons",
+          "ctm",
+          "compensation",
+          "outer_q_Q_inner_q_Q",
+          "clip_rectangle",
+          "prefix_paints",
+          "suffix_paints"
+        ],
+        "rows": [
+          [
+            57,
+            656,
+            "boundary-2ca4dd3d2f0c7c9e796e7279",
+            "boundary-66874f0bf353a676dd48e443",
+            "cm",
+            "w",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              158.1999969482422,
+              662.7999877929688
+            ],
+            "1 0 0 1 -158.199996948 -662.799987793 cm",
+            [
+              1,
+              659,
+              56,
+              63
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            6,
+            126
+          ],
+          [
+            58,
+            662,
+            "boundary-bf4a396cb546abe6899fb2a3",
+            "boundary-aa793e324a0ea31bfd30d7cf",
+            "w",
+            "RG",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              158.1999969482422,
+              662.7999877929688
+            ],
+            "1 0 0 1 -158.199996948 -662.799987793 cm",
+            [
+              1,
+              659,
+              56,
+              63
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            6,
+            126
+          ],
+          [
+            59,
+            677,
+            "boundary-c0057734d0bfe87498cc34e5",
+            "boundary-5ed640f0975a9833ec7879c6",
+            "RG",
+            "m",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              158.1999969482422,
+              662.7999877929688
+            ],
+            "1 0 0 1 -158.199996948 -662.799987793 cm",
+            [
+              1,
+              659,
+              56,
+              63
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            6,
+            126
+          ],
+          [
+            60,
+            686,
+            "boundary-5af5df74284e26764464f7a6",
+            "boundary-5c15914830ada527277af578",
+            "m",
+            "l",
+            "refused",
+            [
+              "pending-path"
+            ],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              158.1999969482422,
+              662.7999877929688
+            ],
+            "1 0 0 1 -158.199996948 -662.799987793 cm",
+            [
+              1,
+              659,
+              56,
+              63
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            6,
+            126
+          ],
+          [
+            61,
+            699,
+            "boundary-0d444284789354cd30358596",
+            "boundary-a56cff5f777c4600abec987d",
+            "l",
+            "S",
+            "refused",
+            [
+              "pending-path"
+            ],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              158.1999969482422,
+              662.7999877929688
+            ],
+            "1 0 0 1 -158.199996948 -662.799987793 cm",
+            [
+              1,
+              659,
+              56,
+              63
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            6,
+            126
+          ],
+          [
+            62,
+            701,
+            "boundary-54efad3408573ff6b8cd7f08",
+            "boundary-0089cd9553278f1b208a1b8f",
+            "S",
+            "Q",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              158.1999969482422,
+              662.7999877929688
+            ],
+            "1 0 0 1 -158.199996948 -662.799987793 cm",
+            [
+              1,
+              659,
+              56,
+              63
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            7,
+            125
+          ],
+          [
+            337,
+            3860,
+            "boundary-a8d544aaf3c32799b854cb5c",
+            "boundary-7377d2d01f88371d55440e11",
+            "cm",
+            "w",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              188.0,
+              535.2999877929688
+            ],
+            "1 0 0 1 -188 -535.299987793 cm",
+            [
+              1,
+              659,
+              336,
+              343
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            56,
+            76
+          ],
+          [
+            338,
+            3866,
+            "boundary-e110ec30d45b497dd1a7deff",
+            "boundary-33c178fa2c2bec882fb1fc80",
+            "w",
+            "RG",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              188.0,
+              535.2999877929688
+            ],
+            "1 0 0 1 -188 -535.299987793 cm",
+            [
+              1,
+              659,
+              336,
+              343
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            56,
+            76
+          ],
+          [
+            339,
+            3881,
+            "boundary-5d8fb88f69cf5d892fc9c0e4",
+            "boundary-426f3b1344179ba5323972bc",
+            "RG",
+            "m",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              188.0,
+              535.2999877929688
+            ],
+            "1 0 0 1 -188 -535.299987793 cm",
+            [
+              1,
+              659,
+              336,
+              343
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            56,
+            76
+          ],
+          [
+            340,
+            3890,
+            "boundary-476612e5c3435263f2b27616",
+            "boundary-abfda271c15ed85098c02b5d",
+            "m",
+            "l",
+            "refused",
+            [
+              "pending-path"
+            ],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              188.0,
+              535.2999877929688
+            ],
+            "1 0 0 1 -188 -535.299987793 cm",
+            [
+              1,
+              659,
+              336,
+              343
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            56,
+            76
+          ],
+          [
+            341,
+            3901,
+            "boundary-c89302731f9a04506f464661",
+            "boundary-c4533276825611611013b6f6",
+            "l",
+            "S",
+            "refused",
+            [
+              "pending-path"
+            ],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              188.0,
+              535.2999877929688
+            ],
+            "1 0 0 1 -188 -535.299987793 cm",
+            [
+              1,
+              659,
+              336,
+              343
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            56,
+            76
+          ],
+          [
+            342,
+            3903,
+            "boundary-8111046121b05d7cebfe65a7",
+            "boundary-dae934b65de42c938a7004a8",
+            "S",
+            "Q",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              188.0,
+              535.2999877929688
+            ],
+            "1 0 0 1 -188 -535.299987793 cm",
+            [
+              1,
+              659,
+              336,
+              343
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            57,
+            75
+          ],
+          [
+            426,
+            5226,
+            "boundary-a5544b8d31c78c86179cc412",
+            "boundary-68d7d985d06a888b24359ea6",
+            "cm",
+            "w",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              291.20001220703125,
+              484.8999938964844
+            ],
+            "1 0 0 1 -291.200012207 -484.899993896 cm",
+            [
+              1,
+              659,
+              425,
+              432
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            74,
+            58
+          ],
+          [
+            427,
+            5232,
+            "boundary-eb9695b35141f9c9347bbcf3",
+            "boundary-c5b71da83792ab11e66c8e4e",
+            "w",
+            "RG",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              291.20001220703125,
+              484.8999938964844
+            ],
+            "1 0 0 1 -291.200012207 -484.899993896 cm",
+            [
+              1,
+              659,
+              425,
+              432
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            74,
+            58
+          ],
+          [
+            428,
+            5247,
+            "boundary-fa5a59dfb16df7a8e340951c",
+            "boundary-15a5fdd317aef1bd1b5c7c12",
+            "RG",
+            "m",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              291.20001220703125,
+              484.8999938964844
+            ],
+            "1 0 0 1 -291.200012207 -484.899993896 cm",
+            [
+              1,
+              659,
+              425,
+              432
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            74,
+            58
+          ],
+          [
+            429,
+            5256,
+            "boundary-f5e9b17c9b923f5ebfa15aa6",
+            "boundary-e2b2b6fea5acf6d0415bd251",
+            "m",
+            "l",
+            "refused",
+            [
+              "pending-path"
+            ],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              291.20001220703125,
+              484.8999938964844
+            ],
+            "1 0 0 1 -291.200012207 -484.899993896 cm",
+            [
+              1,
+              659,
+              425,
+              432
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            74,
+            58
+          ],
+          [
+            430,
+            5269,
+            "boundary-2ba9c933e9a92f175ba994c3",
+            "boundary-3a13bdcb4ca0139c3d4b49fa",
+            "l",
+            "S",
+            "refused",
+            [
+              "pending-path"
+            ],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              291.20001220703125,
+              484.8999938964844
+            ],
+            "1 0 0 1 -291.200012207 -484.899993896 cm",
+            [
+              1,
+              659,
+              425,
+              432
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            74,
+            58
+          ],
+          [
+            431,
+            5271,
+            "boundary-ce0a5dc798e92cfc55aa1d30",
+            "boundary-4d8a38bc0b9cabb6ae8e6c5f",
+            "S",
+            "Q",
+            "safe",
+            [],
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              291.20001220703125,
+              484.8999938964844
+            ],
+            "1 0 0 1 -291.200012207 -484.899993896 cm",
+            [
+              1,
+              659,
+              425,
+              432
+            ],
+            [
+              0.0010867600854683331,
+              0.10108676008551382,
+              595.1989132399145,
+              841.8989132399145
+            ],
+            75,
+            57
+          ]
+        ]
+      }
+    },
+    "selection_reason": "After the first completed underline stroke S, before its inner matching Q: the path is complete while the translated inner scope, blue stroke and 0.7 pt line width remain live. Seven original paints precede it and 125 follow it. The inner restoration returns to black and 0.1 pt with the outer clip retained; the outer restoration removes that clip.",
+    "comparison_summary": "evaluations/continuation/scope-destination-summary.json",
+    "comparison_summary_sha256": "49f86b10e3c7f6a8454abf3651ac7502ed57b570058a4d7250792894a03dc1d0"
+  },
+  "reviewed_boundary": {
+    "page": 10,
+    "boundary_id": "boundary-54efad3408573ff6b8cd7f08",
+    "offset": 701,
+    "ordinal": 62,
+    "previous": {
+      "ordinal": 62,
+      "operator": "S",
+      "start": 700,
+      "end": 701,
+      "sha256": "8de0b3c47f112c59745f717a626932264c422a7563954872e237b223af4ad643"
+    },
+    "next": {
+      "ordinal": 63,
+      "operator": "Q",
+      "start": 702,
+      "end": 703,
+      "sha256": "4ae81572f06e1b88fd5ced7a1a000945432e83e1551e6f721ee9c00b8cc33260"
+    },
+    "scope": {
+      "q_depth": 2,
+      "text_object": false,
+      "marked_content_depth": 0,
+      "compatibility_depth": 0,
+      "pending_path": false,
+      "pending_clip": false
+    },
+    "z_order": {
+      "semantics": "after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix",
+      "prefix_paint_operators": 7,
+      "suffix_paint_operators": 125
+    },
+    "selection_reason": "After the first completed underline stroke S, before its inner matching Q: the path is complete while the translated inner scope, blue stroke and 0.7 pt line width remain live. Seven original paints precede it and 125 follow it. The inner restoration returns to black and 0.1 pt with the outer clip retained; the outer restoration removes that clip."
+  },
+  "destination": {
+    "destination_id": "reviewed-page10-scope-boundary",
+    "paragraph_id": "reviewed-mixed-training-paragraph",
+    "region_id": "page10",
+    "page": 10,
+    "bounds": [
+      55,
+      80,
+      385,
+      120
+    ],
+    "provenance": "explicitly_confirmed",
+    "authority": {
+      "position": "confirmed-page-program-boundary",
+      "boundary_id": "boundary-54efad3408573ff6b8cd7f08",
+      "source_program_sha256": "a7220825594cabbb752694f12eb153e98f45e1eb22eda558eeff909d6981440d",
+      "boundary": {
+        "offset": 701,
+        "ordinal": 62,
+        "previous": {
+          "ordinal": 62,
+          "operator": "S",
+          "start": 700,
+          "end": 701,
+          "sha256": "8de0b3c47f112c59745f717a626932264c422a7563954872e237b223af4ad643"
+        },
+        "next": {
+          "ordinal": 63,
+          "operator": "Q",
+          "start": 702,
+          "end": 703,
+          "sha256": "4ae81572f06e1b88fd5ced7a1a000945432e83e1551e6f721ee9c00b8cc33260"
+        },
+        "scope": {
+          "q_depth": 2,
+          "text_object": false,
+          "marked_content_depth": 0,
+          "compatibility_depth": 0,
+          "pending_path": false,
+          "pending_clip": false
+        }
+      },
+      "z_order": {
+        "semantics": "after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix",
+        "prefix_paint_operators": 7,
+        "suffix_paint_operators": 125
+      },
+      "graphics_state": {
+        "ctm": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          158.1999969482422,
+          662.7999877929688
+        ],
+        "font_resource": null,
+        "font_size": 0,
+        "character_spacing": 0,
+        "word_spacing": 0,
+        "horizontal_scale": 100,
+        "leading": 0,
+        "rise": 0,
+        "rendering_mode": 0,
+        "fill": [
+          "g",
+          [
+            0
+          ]
+        ],
+        "stroke": [
+          "RG",
+          [
+            "0",
+            "0",
+            "0.50196"
+          ]
+        ],
+        "opacity": 1,
+        "stroke_opacity": 1,
+        "clip": [
+          {
+            "rule": "W*",
+            "path": [
+              {
+                "operator": "re",
+                "args": [
+                  0.0,
+                  0.1,
+                  595.2,
+                  841.8
+                ],
+                "ctm": [
+                  1,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        ],
+        "other": {
+          "w": "[0.7]"
+        }
+      },
+      "graphics_state_contract": "witnessed state inside a confirmed chain of two nested q ... Q scopes; the block cancels the witnessed CTM with the recorded inverse, draws inside the witnessed rectangular clip, which it inherits and never changes, sets its own font, text state and fill and restores every parameter with its own q ... Q, which closes before the inner scope's matching Q",
+      "page_group": {
+        "/S": "/Transparency",
+        "/CS": "/DeviceRGB",
+        "/I": "True"
+      },
+      "page_transform": [
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        842.0
+      ],
+      "page_bounds": [
+        0.0,
+        0.0,
+        595.0,
+        842.0
+      ],
+      "initial_clip": "inherited-rectangular-clip",
+      "isolation": "q-cm-BT-ET-Q",
+      "font_policy": "explicit-paragraph-style-providers",
+      "ctm_compensation": {
+        "policy": "inverse-ctm-inside-block-save",
+        "confirmed_ctm": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          158.1999969482422,
+          662.7999877929688
+        ],
+        "matrix": [
+          "1",
+          "0",
+          "0",
+          "1",
+          "-158.199996948",
+          "-662.799987793"
+        ],
+        "operator": "1 0 0 1 -158.199996948 -662.799987793 cm",
+        "proof": {
+          "source_ctm": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            158.2,
+            662.8
+          ],
+          "page_box": [
+            0.0,
+            0.0,
+            595.0,
+            842.0
+          ],
+          "residual": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            2.421875e-10,
+            -3.125e-11
+          ],
+          "arithmetic": "binary32",
+          "unit_roundoff": 5.960464477539063e-08,
+          "rounding_steps": 8,
+          "displacement_bound": 0.0011336786134465843,
+          "tolerance": 0.002
+        }
+      },
+      "clip_constraint": {
+        "policy": "inherited-rectangular-clip",
+        "rectangle": [
+          0.0010867600854683331,
+          0.10108676008551382,
+          595.1989132399145,
+          841.8989132399145
+        ],
+        "clips": [
+          {
+            "rule": "W*",
+            "operands": [
+              0.0,
+              0.1,
+              595.2,
+              841.8
+            ],
+            "ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "source_ctm": [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            "operators": [
+              {
+                "operator": "re",
+                "sha256": "5aad4d2124810762a8ea0bb38381d408cf8b3c8a056ce2f79138d4a6c95b6292"
+              },
+              {
+                "operator": "W*",
+                "sha256": "88964bf0b073f1dab9443b3554705c882b1b642e49fb43ae42e37a10e68d3fbb"
+              },
+              {
+                "operator": "n",
+                "sha256": "1b16b1df538ba12dc3f97edbb85caa7050d46c148134290feba80f8236c83db9"
+              }
+            ],
+            "rectangle": [
+              0.0,
+              0.10000000000004547,
+              595.2,
+              841.9
+            ],
+            "source_rectangle": [
+              0.0,
+              0.10000000000004547,
+              595.2,
+              841.9
+            ],
+            "rounding_bound": 0.0010867600854683331
+          }
+        ],
+        "proof": {
+          "method": "intersection-of-single-re-clips-under-ctms-without-rotation-or-skew",
+          "page_transform": [
+            1.0,
+            0.0,
+            0.0,
+            -1.0,
+            0.0,
+            842.0
+          ],
+          "arithmetic": "binary32",
+          "unit_roundoff": 5.960464477539063e-08,
+          "rounding_steps": 8,
+          "rounding_bound": 0.0010867600854683331
+        },
+        "containment": {
+          "policy": "destination-bounds-and-generated-ink-inside-the-clip-rectangle",
+          "destination": "bounds-inside-rectangle",
+          "ink": "each-planned-glyph-ink-grown-by-the-margin-inside-rectangle",
+          "ink_margin": 1.002,
+          "paint_padding": 1.0,
+          "origin_tolerance": 0.002,
+          "saved_paint": "each-generated-text-paint-envelope-inside-rectangle"
+        }
+      },
+      "graphics_state_scope": {
+        "policy": "two-nested-graphics-state-saves",
+        "depth": 2,
+        "outer": {
+          "opening": {
+            "ordinal": 1,
+            "operator": "q",
+            "start": 6,
+            "end": 7,
+            "sha256": "8e35c2cd3bf6641bdb0e2050b76932cbb2e6034a0ddacc1d9bea82a6ba57f7cf"
+          },
+          "matching": {
+            "ordinal": 659,
+            "operator": "Q",
+            "start": 10027,
+            "end": 10028,
+            "sha256": "4ae81572f06e1b88fd5ced7a1a000945432e83e1551e6f721ee9c00b8cc33260"
+          },
+          "restored_state": {
+            "ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "font_resource": null,
+            "font_size": 0,
+            "character_spacing": 0,
+            "word_spacing": 0,
+            "horizontal_scale": 100,
+            "leading": 0,
+            "rise": 0,
+            "rendering_mode": 0,
+            "fill": [
+              "g",
+              [
+                0
+              ]
+            ],
+            "stroke": [
+              "G",
+              [
+                0
+              ]
+            ],
+            "opacity": 1,
+            "stroke_opacity": 1,
+            "clip": [],
+            "other": {
+              "w": "[0.1]"
+            }
+          }
+        },
+        "inner": {
+          "opening": {
+            "ordinal": 56,
+            "operator": "q",
+            "start": 632,
+            "end": 633,
+            "sha256": "8e35c2cd3bf6641bdb0e2050b76932cbb2e6034a0ddacc1d9bea82a6ba57f7cf"
+          },
+          "matching": {
+            "ordinal": 63,
+            "operator": "Q",
+            "start": 702,
+            "end": 703,
+            "sha256": "4ae81572f06e1b88fd5ced7a1a000945432e83e1551e6f721ee9c00b8cc33260"
+          },
+          "restored_state": {
+            "ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "font_resource": null,
+            "font_size": 0,
+            "character_spacing": 0,
+            "word_spacing": 0,
+            "horizontal_scale": 100,
+            "leading": 0,
+            "rise": 0,
+            "rendering_mode": 0,
+            "fill": [
+              "g",
+              [
+                0
+              ]
+            ],
+            "stroke": [
+              "G",
+              [
+                0
+              ]
+            ],
+            "opacity": 1,
+            "stroke_opacity": 1,
+            "clip": [
+              {
+                "rule": "W*",
+                "path": [
+                  {
+                    "operator": "re",
+                    "args": [
+                      0.0,
+                      0.1,
+                      595.2,
+                      841.8
+                    ],
+                    "ctm": [
+                      1,
+                      0,
+                      0,
+                      1,
+                      0,
+                      0
+                    ]
+                  }
+                ]
+              }
+            ],
+            "other": {
+              "w": "[0.1]"
+            }
+          }
+        },
+        "contract": "the boundary lies between the inner opening q and its matching Q, which lie between the outer opening q and its matching Q; the block closes its own q ... Q before the inner matching Q and never saves, restores or ends either enclosing scope"
+      }
+    },
+    "source_pdf_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+    "source_program_sha256": "a7220825594cabbb752694f12eb153e98f45e1eb22eda558eeff909d6981440d"
+  },
+  "region_preflight": {
+    "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+    "page": 10,
+    "page_rectangle": [
+      0.0,
+      0.0,
+      595.0,
+      842.0
+    ],
+    "boundary_id": "boundary-54efad3408573ff6b8cd7f08",
+    "ordinal": 62,
+    "destination_bounds": [
+      55,
+      80,
+      385,
+      120
+    ],
+    "require_empty": "passed",
+    "content_errors": [],
+    "bboxlog_paints": 76,
+    "fixed_paint_intersections": [],
+    "clip_rectangle": [
+      0.0010867600854683331,
+      0.10108676008551382,
+      595.1989132399145,
+      841.8989132399145
+    ],
+    "bounds_inside_clip": true,
+    "region_rasters": {
+      "mupdf": {
+        "file": "source-region-mupdf-300.png",
+        "dpi": 300,
+        "pixel_size": [
+          1376,
+          167
+        ],
+        "nonwhite_pixels": 0
+      },
+      "poppler": {
+        "file": "source-region-poppler-300.png",
+        "dpi": 300,
+        "pixel_size": [
+          1376,
+          168
+        ],
+        "nonwhite_pixels": 0
+      }
+    },
+    "full_page_rasters": [
+      "source-page10-mupdf-144.png",
+      "source-page10-poppler-144.png"
+    ],
+    "elapsed_seconds": 1.109
+  },
+  "stages": [
+    {
+      "stage": "overflow",
+      "status": "passed",
+      "restored": true,
+      "destination_authority_unchanged": true,
+      "creation_binding_unchanged": true,
+      "slot_id": "continuation-ca8fd936ea22a4161bfe1a72",
+      "generated_lines": 2,
+      "new_slots": [
+        "continuation-ca8fd936ea22a4161bfe1a72"
+      ],
+      "insertion": {
+        "block": true,
+        "start": 701,
+        "end": 3786,
+        "block_bytes": 3085,
+        "prefix_bytes": 701,
+        "suffix_bytes": 18041,
+        "prefix_paint_operators": 7,
+        "suffix_paint_operators": 125,
+        "prefix_and_suffix_are_the_source_program": true,
+        "scope": {
+          "outer": {
+            "opening": {
+              "start": 6,
+              "end": 7
+            },
+            "matching": {
+              "start": 13112,
+              "end": 13113
+            }
+          },
+          "inner": {
+            "opening": {
+              "start": 632,
+              "end": 633
+            },
+            "matching": {
+              "start": 3787,
+              "end": 3788
+            }
+          }
+        },
+        "block_before_inner_matching_q": true,
+        "inner_matching_q_offset_from_block_end": 1,
+        "block_q_depth": [
+          3,
+          3
+        ],
+        "compensation_operator": "1 0 0 1 -158.199996948 -662.799987793 cm",
+        "compensation_exact_bytes": true,
+        "compensated_ctm": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "inherited_clip_unchanged": true,
+        "restoration": {
+          "checkpoints": {
+            "generated": {
+              "q_depth": 2,
+              "complete_state_equal": true,
+              "state_sha256": "a7a293cf1a17b74222e70fabff85c10ba06362f40cc4611032da9908ffbd0bfa"
+            },
+            "inner": {
+              "q_depth": 1,
+              "complete_state_equal": true,
+              "state_sha256": "3d0c782e32fdbe531b006ee5b9e7d5dd217a534fa3d55c6aca0749276961faa2"
+            },
+            "outer": {
+              "q_depth": 0,
+              "complete_state_equal": true,
+              "state_sha256": "4337e602a9aeedb0b0321906d658838918d09b81919ff83976beef40487d02ce"
+            }
+          },
+          "compared_fields": [
+            "character_spacing",
+            "clip",
+            "ctm",
+            "fill",
+            "font_resource",
+            "font_size",
+            "horizontal_scale",
+            "leading",
+            "opacity",
+            "other",
+            "rendering_mode",
+            "rise",
+            "stroke",
+            "stroke_opacity",
+            "word_spacing"
+          ],
+          "normalization": "font object numbers and clip source positions omitted"
+        }
+      },
+      "glyph_coordinates": {
+        "glyphs": 36,
+        "planned_ink_boxes": 36,
+        "saved_paint_envelopes": {
+          "count": 36,
+          "bounds": [
+            56.25117111206055,
+            82.345703125,
+            381.98748779296875,
+            115.6663818359375
+          ],
+          "sha256": "68f2f3791a606d5afe0e0a90989bf19211840b48dd35101943fee9bd157f88b5"
+        },
+        "planned_ink_with_margin_inside_clip": true,
+        "saved_paint_inside_clip": true,
+        "planned_ink_margin": 1.002,
+        "planned_to_interpreted_max_coordinate_error": 2.4414062494315658e-05,
+        "planned_to_saved_max_coordinate_error": 2.4414062494315658e-05,
+        "origin_tolerance": 0.002,
+        "saved_glyph_origins_sha256": "cd672065a3624de26b7e849f05bc9bf943058004b59e8578a0186a3921e4d212",
+        "planned_origin_samples": [
+          {
+            "unicode": "空",
+            "glyph_id": 10037,
+            "origin": [
+              56.8,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              75.954296875,
+              113.6
+            ]
+          }
+        ],
+        "saved_origin_samples": [
+          {
+            "unicode": "空",
+            "glyph_id": 10037,
+            "origin": [
+              56.79999923706055,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              75.95429992675781,
+              113.5999755859375
+            ]
+          }
+        ]
+      },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 58,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 85,
+          "violations": 0
+        },
+        "10": {
+          "text_objects": 58,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
+      "renderers": {
+        "4": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 530,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 25008,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "10": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5227,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-ca8fd936ea22a4161bfe1a72": {
+          "range": [
+            209,
+            245
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page10",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "resources": {
+        "pdf_bytes": 371084,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "10": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "10": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 3085,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "added"
+          },
+          "5": {
+            "/PRF1": "added",
+            "/PRF2": "added"
+          },
+          "10": {
+            "/PRF1": "added"
+          }
+        }
+      },
+      "seconds": {
+        "plan": 57.94,
+        "edit": 121.38,
+        "reopen_and_audit": 61.47,
+        "total": 240.78
+      }
+    },
+    {
+      "stage": "second",
+      "status": "passed",
+      "restored": true,
+      "destination_authority_unchanged": true,
+      "creation_binding_unchanged": true,
+      "slot_id": "continuation-ca8fd936ea22a4161bfe1a72",
+      "generated_lines": 2,
+      "new_slots": [],
+      "insertion": {
+        "block": true,
+        "start": 701,
+        "end": 7054,
+        "block_bytes": 6353,
+        "prefix_bytes": 701,
+        "suffix_bytes": 18041,
+        "prefix_paint_operators": 7,
+        "suffix_paint_operators": 125,
+        "prefix_and_suffix_are_the_source_program": true,
+        "scope": {
+          "outer": {
+            "opening": {
+              "start": 6,
+              "end": 7
+            },
+            "matching": {
+              "start": 16380,
+              "end": 16381
+            }
+          },
+          "inner": {
+            "opening": {
+              "start": 632,
+              "end": 633
+            },
+            "matching": {
+              "start": 7055,
+              "end": 7056
+            }
+          }
+        },
+        "block_before_inner_matching_q": true,
+        "inner_matching_q_offset_from_block_end": 1,
+        "block_q_depth": [
+          3,
+          4
+        ],
+        "compensation_operator": "1 0 0 1 -158.199996948 -662.799987793 cm",
+        "compensation_exact_bytes": true,
+        "compensated_ctm": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "inherited_clip_unchanged": true,
+        "restoration": {
+          "checkpoints": {
+            "generated": {
+              "q_depth": 2,
+              "complete_state_equal": true,
+              "state_sha256": "a7a293cf1a17b74222e70fabff85c10ba06362f40cc4611032da9908ffbd0bfa"
+            },
+            "inner": {
+              "q_depth": 1,
+              "complete_state_equal": true,
+              "state_sha256": "3d0c782e32fdbe531b006ee5b9e7d5dd217a534fa3d55c6aca0749276961faa2"
+            },
+            "outer": {
+              "q_depth": 0,
+              "complete_state_equal": true,
+              "state_sha256": "4337e602a9aeedb0b0321906d658838918d09b81919ff83976beef40487d02ce"
+            }
+          },
+          "compared_fields": [
+            "character_spacing",
+            "clip",
+            "ctm",
+            "fill",
+            "font_resource",
+            "font_size",
+            "horizontal_scale",
+            "leading",
+            "opacity",
+            "other",
+            "rendering_mode",
+            "rise",
+            "stroke",
+            "stroke_opacity",
+            "word_spacing"
+          ],
+          "normalization": "font object numbers and clip source positions omitted"
+        }
+      },
+      "glyph_coordinates": {
+        "glyphs": 38,
+        "planned_ink_boxes": 38,
+        "saved_paint_envelopes": {
+          "count": 38,
+          "bounds": [
+            56.04609298706055,
+            82.345703125,
+            383.38201904296875,
+            115.7894287109375
+          ],
+          "sha256": "8975c4ad10afbf71fc4eed110cb743ddecbe593bb0008aa0498187c6990eed4c"
+        },
+        "planned_ink_with_margin_inside_clip": true,
+        "saved_paint_inside_clip": true,
+        "planned_ink_margin": 1.002,
+        "planned_to_interpreted_max_coordinate_error": 2.4414062494315658e-05,
+        "planned_to_saved_max_coordinate_error": 2.4414062494315658e-05,
+        "origin_tolerance": 0.002,
+        "saved_glyph_origins_sha256": "cbd81a58de4feb5cbd33e08ea08c8cda8a9c6537ccf5edb1b11b6efc2327bc85",
+        "planned_origin_samples": [
+          {
+            "unicode": "た",
+            "glyph_id": 18159,
+            "origin": [
+              56.8,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              94.61640625,
+              113.6
+            ]
+          }
+        ],
+        "saved_origin_samples": [
+          {
+            "unicode": "た",
+            "glyph_id": 18159,
+            "origin": [
+              56.79999923706055,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              94.61640930175781,
+              113.5999755859375
+            ]
+          }
+        ]
+      },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 60,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 87,
+          "violations": 0
+        },
+        "10": {
+          "text_objects": 60,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
+      "renderers": {
+        "4": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5427,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "10": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 8555,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-ca8fd936ea22a4161bfe1a72": {
+          "range": [
+            209,
+            247
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page10",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "resources": {
+        "pdf_bytes": 374322,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "10": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "10": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 6353,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "reused"
+          },
+          "5": {
+            "/PRF1": "replaced",
+            "/PRF2": "reused"
+          },
+          "10": {
+            "/PRF1": "replaced"
+          }
+        }
+      },
+      "seconds": {
+        "plan": 65.95,
+        "edit": 148.05,
+        "reopen_and_audit": 65.55,
+        "total": 279.55
+      }
+    },
+    {
+      "stage": "shorten",
+      "status": "passed",
+      "restored": true,
+      "destination_authority_unchanged": true,
+      "creation_binding_unchanged": true,
+      "slot_id": "continuation-ca8fd936ea22a4161bfe1a72",
+      "generated_lines": 0,
+      "new_slots": [],
+      "insertion": {
+        "block": true,
+        "start": 701,
+        "end": 7342,
+        "block_bytes": 6641,
+        "prefix_bytes": 701,
+        "suffix_bytes": 18041,
+        "prefix_paint_operators": 7,
+        "suffix_paint_operators": 125,
+        "prefix_and_suffix_are_the_source_program": true,
+        "scope": {
+          "outer": {
+            "opening": {
+              "start": 6,
+              "end": 7
+            },
+            "matching": {
+              "start": 16668,
+              "end": 16669
+            }
+          },
+          "inner": {
+            "opening": {
+              "start": 632,
+              "end": 633
+            },
+            "matching": {
+              "start": 7343,
+              "end": 7344
+            }
+          }
+        },
+        "block_before_inner_matching_q": true,
+        "inner_matching_q_offset_from_block_end": 1,
+        "block_q_depth": [
+          3,
+          5
+        ],
+        "compensation_operator": "1 0 0 1 -158.199996948 -662.799987793 cm",
+        "compensation_exact_bytes": true,
+        "compensated_ctm": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "inherited_clip_unchanged": true,
+        "restoration": {
+          "checkpoints": {
+            "generated": {
+              "q_depth": 2,
+              "complete_state_equal": true,
+              "state_sha256": "a7a293cf1a17b74222e70fabff85c10ba06362f40cc4611032da9908ffbd0bfa"
+            },
+            "inner": {
+              "q_depth": 1,
+              "complete_state_equal": true,
+              "state_sha256": "3d0c782e32fdbe531b006ee5b9e7d5dd217a534fa3d55c6aca0749276961faa2"
+            },
+            "outer": {
+              "q_depth": 0,
+              "complete_state_equal": true,
+              "state_sha256": "4337e602a9aeedb0b0321906d658838918d09b81919ff83976beef40487d02ce"
+            }
+          },
+          "compared_fields": [
+            "character_spacing",
+            "clip",
+            "ctm",
+            "fill",
+            "font_resource",
+            "font_size",
+            "horizontal_scale",
+            "leading",
+            "opacity",
+            "other",
+            "rendering_mode",
+            "rise",
+            "stroke",
+            "stroke_opacity",
+            "word_spacing"
+          ],
+          "normalization": "font object numbers and clip source positions omitted"
+        }
+      },
+      "glyph_coordinates": {
+        "glyphs": 0,
+        "planned_ink_boxes": 0,
+        "saved_paint_envelopes": {
+          "count": 0,
+          "bounds": null,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "planned_ink_with_margin_inside_clip": true,
+        "saved_paint_inside_clip": true,
+        "planned_ink_margin": 1.002,
+        "planned_to_interpreted_max_coordinate_error": 0.0,
+        "planned_to_saved_max_coordinate_error": 0.0,
+        "origin_tolerance": 0.002,
+        "saved_glyph_origins_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "planned_origin_samples": [],
+        "saved_origin_samples": []
+      },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 62,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 90,
+          "violations": 0
+        },
+        "10": {
+          "text_objects": 63,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
+      "renderers": {
+        "4": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5443,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 18081,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "10": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5494,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            3
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            3,
+            3
+          ],
+          "occupancy": null
+        },
+        "continuation-ca8fd936ea22a4161bfe1a72": {
+          "range": [
+            3,
+            3
+          ],
+          "occupancy": null
+        }
+      },
+      "resources": {
+        "pdf_bytes": 365559,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "10": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "10": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 6641,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "replaced"
+          }
+        }
+      },
+      "seconds": {
+        "plan": 52.42,
+        "edit": 112.78,
+        "reopen_and_audit": 59.2,
+        "total": 224.41
+      }
+    },
+    {
+      "stage": "regrow",
+      "status": "passed",
+      "restored": true,
+      "destination_authority_unchanged": true,
+      "creation_binding_unchanged": true,
+      "slot_id": "continuation-ca8fd936ea22a4161bfe1a72",
+      "generated_lines": 2,
+      "new_slots": [],
+      "insertion": {
+        "block": true,
+        "start": 701,
+        "end": 10334,
+        "block_bytes": 9633,
+        "prefix_bytes": 701,
+        "suffix_bytes": 18041,
+        "prefix_paint_operators": 7,
+        "suffix_paint_operators": 125,
+        "prefix_and_suffix_are_the_source_program": true,
+        "scope": {
+          "outer": {
+            "opening": {
+              "start": 6,
+              "end": 7
+            },
+            "matching": {
+              "start": 19660,
+              "end": 19661
+            }
+          },
+          "inner": {
+            "opening": {
+              "start": 632,
+              "end": 633
+            },
+            "matching": {
+              "start": 10335,
+              "end": 10336
+            }
+          }
+        },
+        "block_before_inner_matching_q": true,
+        "inner_matching_q_offset_from_block_end": 1,
+        "block_q_depth": [
+          3,
+          5
+        ],
+        "compensation_operator": "1 0 0 1 -158.199996948 -662.799987793 cm",
+        "compensation_exact_bytes": true,
+        "compensated_ctm": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "inherited_clip_unchanged": true,
+        "restoration": {
+          "checkpoints": {
+            "generated": {
+              "q_depth": 2,
+              "complete_state_equal": true,
+              "state_sha256": "a7a293cf1a17b74222e70fabff85c10ba06362f40cc4611032da9908ffbd0bfa"
+            },
+            "inner": {
+              "q_depth": 1,
+              "complete_state_equal": true,
+              "state_sha256": "3d0c782e32fdbe531b006ee5b9e7d5dd217a534fa3d55c6aca0749276961faa2"
+            },
+            "outer": {
+              "q_depth": 0,
+              "complete_state_equal": true,
+              "state_sha256": "4337e602a9aeedb0b0321906d658838918d09b81919ff83976beef40487d02ce"
+            }
+          },
+          "compared_fields": [
+            "character_spacing",
+            "clip",
+            "ctm",
+            "fill",
+            "font_resource",
+            "font_size",
+            "horizontal_scale",
+            "leading",
+            "opacity",
+            "other",
+            "rendering_mode",
+            "rise",
+            "stroke",
+            "stroke_opacity",
+            "word_spacing"
+          ],
+          "normalization": "font object numbers and clip source positions omitted"
+        }
+      },
+      "glyph_coordinates": {
+        "glyphs": 36,
+        "planned_ink_boxes": 36,
+        "saved_paint_envelopes": {
+          "count": 36,
+          "bounds": [
+            56.25117111206055,
+            82.345703125,
+            381.98748779296875,
+            115.6663818359375
+          ],
+          "sha256": "68f2f3791a606d5afe0e0a90989bf19211840b48dd35101943fee9bd157f88b5"
+        },
+        "planned_ink_with_margin_inside_clip": true,
+        "saved_paint_inside_clip": true,
+        "planned_ink_margin": 1.002,
+        "planned_to_interpreted_max_coordinate_error": 2.4414062494315658e-05,
+        "planned_to_saved_max_coordinate_error": 2.4414062494315658e-05,
+        "origin_tolerance": 0.002,
+        "saved_glyph_origins_sha256": "cd672065a3624de26b7e849f05bc9bf943058004b59e8578a0186a3921e4d212",
+        "planned_origin_samples": [
+          {
+            "unicode": "空",
+            "glyph_id": 10037,
+            "origin": [
+              56.8,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              75.954296875,
+              113.6
+            ]
+          }
+        ],
+        "saved_origin_samples": [
+          {
+            "unicode": "空",
+            "glyph_id": 10037,
+            "origin": [
+              56.79999923706055,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              75.95429992675781,
+              113.5999755859375
+            ]
+          }
+        ]
+      },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 64,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 92,
+          "violations": 0
+        },
+        "10": {
+          "text_objects": 65,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
+      "renderers": {
+        "4": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5443,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 18037,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "10": {
+          "mupdf_equal": false,
+          "poppler_changed_pixels": 5227,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-ca8fd936ea22a4161bfe1a72": {
+          "range": [
+            209,
+            245
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page10",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "resources": {
+        "pdf_bytes": 374329,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "10": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "10": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 9633,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "replaced"
+          },
+          "5": {
+            "/PRF1": "replaced",
+            "/PRF2": "reused"
+          },
+          "10": {
+            "/PRF1": "replaced"
+          }
+        }
+      },
+      "seconds": {
+        "plan": 55.95,
+        "edit": 135.66,
+        "reopen_and_audit": 64.12,
+        "total": 255.73
+      }
+    },
+    {
+      "stage": "noop",
+      "status": "passed",
+      "restored": true,
+      "destination_authority_unchanged": true,
+      "creation_binding_unchanged": true,
+      "slot_id": "continuation-ca8fd936ea22a4161bfe1a72",
+      "generated_lines": 2,
+      "new_slots": [],
+      "insertion": {
+        "block": true,
+        "start": 701,
+        "end": 13422,
+        "block_bytes": 12721,
+        "prefix_bytes": 701,
+        "suffix_bytes": 18041,
+        "prefix_paint_operators": 7,
+        "suffix_paint_operators": 125,
+        "prefix_and_suffix_are_the_source_program": true,
+        "scope": {
+          "outer": {
+            "opening": {
+              "start": 6,
+              "end": 7
+            },
+            "matching": {
+              "start": 22748,
+              "end": 22749
+            }
+          },
+          "inner": {
+            "opening": {
+              "start": 632,
+              "end": 633
+            },
+            "matching": {
+              "start": 13423,
+              "end": 13424
+            }
+          }
+        },
+        "block_before_inner_matching_q": true,
+        "inner_matching_q_offset_from_block_end": 1,
+        "block_q_depth": [
+          3,
+          6
+        ],
+        "compensation_operator": "1 0 0 1 -158.199996948 -662.799987793 cm",
+        "compensation_exact_bytes": true,
+        "compensated_ctm": [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "inherited_clip_unchanged": true,
+        "restoration": {
+          "checkpoints": {
+            "generated": {
+              "q_depth": 2,
+              "complete_state_equal": true,
+              "state_sha256": "a7a293cf1a17b74222e70fabff85c10ba06362f40cc4611032da9908ffbd0bfa"
+            },
+            "inner": {
+              "q_depth": 1,
+              "complete_state_equal": true,
+              "state_sha256": "3d0c782e32fdbe531b006ee5b9e7d5dd217a534fa3d55c6aca0749276961faa2"
+            },
+            "outer": {
+              "q_depth": 0,
+              "complete_state_equal": true,
+              "state_sha256": "4337e602a9aeedb0b0321906d658838918d09b81919ff83976beef40487d02ce"
+            }
+          },
+          "compared_fields": [
+            "character_spacing",
+            "clip",
+            "ctm",
+            "fill",
+            "font_resource",
+            "font_size",
+            "horizontal_scale",
+            "leading",
+            "opacity",
+            "other",
+            "rendering_mode",
+            "rise",
+            "stroke",
+            "stroke_opacity",
+            "word_spacing"
+          ],
+          "normalization": "font object numbers and clip source positions omitted"
+        }
+      },
+      "glyph_coordinates": {
+        "glyphs": 36,
+        "planned_ink_boxes": 36,
+        "saved_paint_envelopes": {
+          "count": 36,
+          "bounds": [
+            56.25117111206055,
+            82.345703125,
+            381.98748779296875,
+            115.6663818359375
+          ],
+          "sha256": "68f2f3791a606d5afe0e0a90989bf19211840b48dd35101943fee9bd157f88b5"
+        },
+        "planned_ink_with_margin_inside_clip": true,
+        "saved_paint_inside_clip": true,
+        "planned_ink_margin": 1.002,
+        "planned_to_interpreted_max_coordinate_error": 2.4414062494315658e-05,
+        "planned_to_saved_max_coordinate_error": 2.4414062494315658e-05,
+        "origin_tolerance": 0.002,
+        "saved_glyph_origins_sha256": "cd672065a3624de26b7e849f05bc9bf943058004b59e8578a0186a3921e4d212",
+        "planned_origin_samples": [
+          {
+            "unicode": "空",
+            "glyph_id": 10037,
+            "origin": [
+              56.8,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              75.954296875,
+              113.6
+            ]
+          }
+        ],
+        "saved_origin_samples": [
+          {
+            "unicode": "空",
+            "glyph_id": 10037,
+            "origin": [
+              56.79999923706055,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              75.95429992675781,
+              113.5999755859375
+            ]
+          }
+        ]
+      },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 66,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 94,
+          "violations": 0
+        },
+        "10": {
+          "text_objects": 67,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
+      "renderers": {
+        "1": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "2": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "3": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "4": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "5": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "6": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "7": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "8": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "9": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        },
+        "10": {
+          "mupdf_equal": true,
+          "poppler_changed_pixels": 0,
+          "poppler_outside_changed_pixels": 0,
+          "poppler_outside_exact_bounds_changed_pixels": 0,
+          "mupdf_outside_exact_bounds_changed_pixels": 0
+        }
+      },
+      "all_page_unicode": true,
+      "all_nontext_paint_images_annotations_original_fonts": true,
+      "cid_gid_w": true,
+      "allocation": {
+        "slot-0": {
+          "range": [
+            0,
+            51
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "A",
+            "baseline": 769.5,
+            "last_baseline": 769.5,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "slot-1": {
+          "range": [
+            51,
+            209
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "B",
+            "baseline": 142.0,
+            "last_baseline": 185.2,
+            "ascent": 10.693359375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        },
+        "continuation-ca8fd936ea22a4161bfe1a72": {
+          "range": [
+            209,
+            245
+          ],
+          "occupancy": {
+            "paragraph_id": "reviewed-mixed-training-paragraph",
+            "region_id": "page10",
+            "baseline": 92,
+            "last_baseline": 113.6,
+            "ascent": 9.0234375,
+            "descent": 1.4765625,
+            "empty": false
+          }
+        }
+      },
+      "resources": {
+        "pdf_bytes": 374566,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "10": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "10": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 12721,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "reused"
+          },
+          "5": {
+            "/PRF1": "reused",
+            "/PRF2": "reused"
+          },
+          "10": {
+            "/PRF1": "reused"
+          }
+        }
+      },
+      "seconds": {
+        "plan": 65.14,
+        "edit": 144.81,
+        "reopen_and_audit": 78.64,
+        "total": 288.59
+      }
+    }
+  ],
+  "negative_controls": [
+    {
+      "case": "capacity",
+      "status": "safely_refused",
+      "reason": "paragraphs exceed all explicitly confirmed shared regions",
+      "output_created": false,
+      "evidence": "The executed evaluator asserted this exact reason before entering the page-entry control; no capacity artifacts exist.",
+      "seconds_estimated_from_artifact_times": 80.88
+    },
+    {
+      "case": "depth-2-pending-path",
+      "page": 10,
+      "boundary_id": "boundary-5af5df74284e26764464f7a6",
+      "ordinal": 60,
+      "offset": 686,
+      "previous": "m",
+      "next": "l",
+      "status": "safely_refused",
+      "reason": "the confirmed boundary is not a safe page-level candidate of this page program: pending-path",
+      "q_depth": 2,
+      "ctm_compensation_proven": true,
+      "rectangular_clip_proven": true
+    },
+    {
+      "case": "inner-Q-binding-to-identical-bytes-outer-Q",
+      "status": "needs_confirmation",
+      "reason": "confirmed page-program boundary is not in its confirmed q ... Q scope",
+      "resealed_unchanged_control": "restored",
+      "identical_operator_bytes": "Q",
+      "moved": "inner.matching",
+      "original": {
+        "start": 13423,
+        "end": 13424
+      },
+      "replacement": {
+        "start": 22748,
+        "end": 22749
+      }
+    }
+  ],
+  "page_entry_comparison": {
+    "status": "failed",
+    "planned_glyph_fields_equal": [
+      "unicode",
+      "glyph_id",
+      "origin",
+      "size",
+      "advance",
+      "code",
+      "cid",
+      "nominal_pdf_width"
+    ],
+    "saved_page10_glyph_origins_equal": true,
+    "pages": {
+      "4": {
+        "mupdf_pixels_equal": true,
+        "poppler_pixels_equal": true,
+        "poppler_diff": {
+          "size_changed": false,
+          "all_changed_pixels": 0,
+          "all_gt8_pixels": 0,
+          "all_bbox_px": null,
+          "outside_changed_pixels": 0,
+          "outside_gt8_pixels": 0,
+          "outside_bbox_px": null
+        },
+        "poppler_png_bytes_equal": true
+      },
+      "5": {
+        "mupdf_pixels_equal": true,
+        "poppler_pixels_equal": true,
+        "poppler_diff": {
+          "size_changed": false,
+          "all_changed_pixels": 0,
+          "all_gt8_pixels": 0,
+          "all_bbox_px": null,
+          "outside_changed_pixels": 0,
+          "outside_gt8_pixels": 0,
+          "outside_bbox_px": null
+        },
+        "poppler_png_bytes_equal": true
+      },
+      "10": {
+        "mupdf_pixels_equal": true,
+        "poppler_pixels_equal": false,
+        "poppler_diff": {
+          "size_changed": false,
+          "all_changed_pixels": 5868,
+          "all_gt8_pixels": 5308,
+          "all_bbox_px": [
+            114,
+            165,
+            762,
+            187
+          ],
+          "outside_changed_pixels": 0,
+          "outside_gt8_pixels": 0,
+          "outside_bbox_px": null
+        },
+        "poppler_png_bytes_equal": false
+      }
+    },
+    "stage": "overflow",
+    "saves": 1,
+    "same_page_bounds_paragraph_text": true,
+    "checks": {
+      "stage": "overflow",
+      "status": "passed",
+      "restored": true,
+      "destination_authority_unchanged": true,
+      "creation_binding_unchanged": true,
+      "slot_id": "continuation-fa53c11fdae22531ebdc1675",
+      "generated_lines": 2,
+      "new_slots": [
+        "continuation-fa53c11fdae22531ebdc1675"
+      ],
+      "insertion": {
+        "block": true,
+        "start": 0,
+        "end": 3044,
+        "block_bytes": 3044,
+        "prefix_bytes": 0,
+        "suffix_bytes": 18742,
+        "prefix_paint_operators": 0,
+        "suffix_paint_operators": 132,
+        "prefix_and_suffix_are_the_source_program": true,
+        "text_operators": 36,
+        "block_q_depth": [
+          1,
+          1
+        ],
+        "after_block_q_depth": 0
+      },
+      "glyph_coordinates": {
+        "glyphs": 36,
+        "planned_ink_boxes": 36,
+        "saved_paint_envelopes": {
+          "count": 36,
+          "bounds": [
+            56.25117111206055,
+            82.345703125,
+            381.98748779296875,
+            115.6663818359375
+          ],
+          "sha256": "68f2f3791a606d5afe0e0a90989bf19211840b48dd35101943fee9bd157f88b5"
+        },
+        "planned_ink_with_margin_inside_clip": null,
+        "saved_paint_inside_clip": null,
+        "planned_ink_margin": null,
+        "planned_to_interpreted_max_coordinate_error": 2.4414062494315658e-05,
+        "planned_to_saved_max_coordinate_error": 2.4414062494315658e-05,
+        "origin_tolerance": 0.002,
+        "saved_glyph_origins_sha256": "cd672065a3624de26b7e849f05bc9bf943058004b59e8578a0186a3921e4d212",
+        "planned_origin_samples": [
+          {
+            "unicode": "空",
+            "glyph_id": 10037,
+            "origin": [
+              56.8,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              75.954296875,
+              113.6
+            ]
+          }
+        ],
+        "saved_origin_samples": [
+          {
+            "unicode": "空",
+            "glyph_id": 10037,
+            "origin": [
+              56.79999923706055,
+              92.0
+            ]
+          },
+          {
+            "unicode": "。",
+            "glyph_id": 18105,
+            "origin": [
+              75.95429992675781,
+              113.5999755859375
+            ]
+          }
+        ]
+      },
+      "operator_nesting": {
+        "4": {
+          "text_objects": 58,
+          "violations": 0
+        },
+        "5": {
+          "text_objects": 85,
+          "violations": 0
+        },
+        "10": {
+          "text_objects": 58,
+          "violations": 0
+        }
+      },
+      "pdf_header": "%PDF-1.4",
+      "resources": {
+        "pdf_bytes": 371051,
+        "page_font_resources": {
+          "4": 8,
+          "5": 9,
+          "10": 8
+        },
+        "generated_fonts_by_page": {
+          "4": 1,
+          "5": 2,
+          "10": 1
+        },
+        "type0_fonts": 4,
+        "generated_fonts": 4,
+        "generated_font_graph_objects": 24,
+        "generated_block_bytes": 3044,
+        "font_outcome": {
+          "4": {
+            "/PRF1": "added"
+          },
+          "5": {
+            "/PRF1": "added",
+            "/PRF2": "added"
+          },
+          "10": {
+            "/PRF1": "added"
+          }
+        }
+      },
+      "seconds": {
+        "plan": 41.5,
+        "edit": 111.83,
+        "reopen_and_audit": 48.59,
+        "total": 201.92
+      }
+    },
+    "seconds_estimated_from_artifact_times": 324.34
+  },
+  "visual_review": {
+    "status": "reviewed-with-renderer-disagreement",
+    "reviewed": [
+      "overflow-audit/page-10/after.png",
+      "visual-review/boundary-overflow.png",
+      "visual-review/boundary-shorten.png",
+      "diagnostic/boundary-area.png",
+      "diagnostic/entry-area.png"
+    ],
+    "whole_page_dpi": 144,
+    "generated_region_dpi": 300,
+    "shorten_region_blank": true,
+    "observations": [
+      "Generated area has no overlap, missing glyphs or clipping; the paragraph is two lines.",
+      "Logo, body and underlines remain intact; both renderers have zero changes outside the exact region.",
+      "Shorten has no remaining generated ink. Poppler first-line raster differences prevent equivalence to page entry."
+    ]
+  },
+  "failure": {
+    "classification": "page-entry-poppler-equivalence-failure",
+    "engine_modified": false,
+    "reproduction": "Unmodified source page 10, ordinal 62, bounds [55,80,385,120], overflow versus one page-entry overflow; Poppler 26.07.0 at 144 dpi.",
+    "diagnosis": {
+      "scope": "Diagnostic derivatives of saved overflow only; original corpus and engine untouched",
+      "original_compensation": "1 0 0 1 -158.199996948 -662.799987793 cm",
+      "diagnostic_compensation": "1 0 0 1 -158.2 -662.8 cm",
+      "source_operand_residual": [
+        "0.000003052",
+        "0.000012207"
+      ],
+      "cases": {
+        "unchanged-resave": {
+          "versus_entry": {
+            "size_changed": false,
+            "all_changed_pixels": 5868,
+            "all_gt8_pixels": 5308,
+            "all_bbox_px": [
+              114,
+              165,
+              762,
+              187
+            ],
+            "outside_changed_pixels": 0,
+            "outside_gt8_pixels": 0,
+            "outside_bbox_px": null
+          },
+          "versus_original_boundary": {
+            "size_changed": false,
+            "all_changed_pixels": 0,
+            "all_gt8_pixels": 0,
+            "all_bbox_px": null,
+            "outside_changed_pixels": 0,
+            "outside_gt8_pixels": 0,
+            "outside_bbox_px": null
+          }
+        },
+        "source-decimal-inverse": {
+          "versus_entry": {
+            "size_changed": false,
+            "all_changed_pixels": 0,
+            "all_gt8_pixels": 0,
+            "all_bbox_px": null,
+            "outside_changed_pixels": 0,
+            "outside_gt8_pixels": 0,
+            "outside_bbox_px": null
+          },
+          "versus_original_boundary": {
+            "size_changed": false,
+            "all_changed_pixels": 5868,
+            "all_gt8_pixels": 5308,
+            "all_bbox_px": [
+              114,
+              165,
+              762,
+              187
+            ],
+            "outside_changed_pixels": 0,
+            "outside_gt8_pixels": 0,
+            "outside_bbox_px": null
+          }
+        }
+      }
+    },
+    "cause": "The inverse is serialized from the binary32 interpreted CTM. Against source decimal operands its translation residual is (0.000003052,0.000012207) pt. It is within the geometry tolerance but changes Poppler rasterization.",
+    "synthetic_gap": "Scope-chain comparisons import the MuPDF-only pixels() helper; the translated fixture uses exactly representable (30,-20). No Poppler equality gate covered this decimal translation.",
+    "candidate_fix": "Investigate an inverse derived from the exact source-operand CTM, retaining proof against both source and binary32 CTMs; add a targeted fractional-translation Poppler regression. The diagnostic change is not a validated engine fix.",
+    "remaining_barriers": [
+      "Poppler equality under fractional CTM compensation",
+      "pending path (6 page-10 boundaries)",
+      "q depth >= 3",
+      "ExtGState",
+      "unproven/nonrectangular clips"
+    ]
+  },
+  "recovery": "All five boundary saves and the sole page-entry save completed once. Original evaluator raised at final Poppler comparison. Summary assembled from saved stage checks and read-only comparison; no lifecycle was rerun.",
+  "lifecycle_seconds": 1289.06,
+  "scope": "One unmodified LibreOffice page-10 boundary; lifecycle passes but the requested full renderer equivalence does not.",
+  "omitted": [
+    "full pytest suite",
+    "single external evaluation",
+    "depth-0 external evaluation",
+    "multi-destination external evaluation",
+    "depth-1 external evaluation",
+    "source replay",
+    "repeated noop",
+    "page-entry full lifecycle"
+  ],
+  "source_operator_nesting": {
+    "4": {
+      "text_objects": 56,
+      "violations": 0
+    },
+    "5": {
+      "text_objects": 83,
+      "violations": 0
+    },
+    "10": {
+      "text_objects": 57,
+      "violations": 0
+    }
+  },
+  "source_pdf_header": "%PDF-1.4"
+}
