@@ -1,5 +1,44 @@
 # 確認済み空き領域へのcontinuation評価
 
+## PR #17 engineの深さ2実境界評価 — 2026-09-27
+
+**総合結果は未達（`failed`）**。加工していないLibreOffice原本で「深さ2 + nonidentity CTM compensation + inherited rectangular clip」のlifecycleは通ったが、代表page-entry controlとの**Poppler画素一致が失敗**した。engineの修正は行わず、原因と修正候補を記録した。[公開集計](scope-chain-destination-summary.json)は成功扱いにしていない。
+
+- 起点 `1e53672eb9042b8386cfd4ce798ebc00f9a0ed0a`、engine digest `f68d40dde550db069158863c65f61171d3787d67a5c784cd3d2e43d09f211c6a`。Windows 11 / Python 3.12.14 / PyMuPDF 1.27.2.3 / pypdf 6.10.0 / Poppler 26.07.0。source・reviewed providerは従来のSHA-256と一致し、開始時git statusはclean。
+- 最新のinspectionでは1ページ2件、10ページ12件が、深さ2・相殺・矩形clip・pending-pathなしのsafe candidate。PR #16の全20境界と、ordinal・前後operator・CTM・補償・clip・paint数が一致する。10ページの残り6件は`pending-path`で拒否された。古いboundary IDは選択に使用しない。
+- 選択は10ページの最初の下線を描き終えた`S`の直後、`boundary-54efad3408573ff6b8cd7f08`、ordinal **62**、offset **701**。直後はinner `Q`。outer q/Qは**1/659**、inner q/Qは**56/63**、prefix/suffix paint数は**7/125**。選択理由は、pathを完了しつつ平行移動・青stroke・0.7pt幅が残る位置で、両scopeの状態復帰を観察できること。
+- CTMは `[1,0,0,1,158.1999969482422,662.7999877929688]`。補償は `1 0 0 1 -158.199996948 -662.799987793 cm`。継承clipは `[0.0010867600854683331,0.10108676008551382,595.1989132399145,841.8989132399145]`。
+- destination `[55,80,385,120]` はclip内、`require_empty`通過、固定paintとの交差0。MuPDF・Popplerの300dpi cropは非白画素0。原本を加工して空きを作っていない。
+- overflow → reopen → second → shorten → regrow → noop **1回**が通過。全保存で同じauthority/chainと4つのq/Q binding、inner Qより前のblock、補償bytes、継承clip、生成font所有を確認した。生成36glyph・2行、shortenは0glyph。計画／保存originの最大差は約0.0000244141pt（許容0.002pt）。no-opはfontを再利用し、両rendererで全ページ同一。
+- 各保存で生成Q後は深さ2・confirmed state、inner Q後は深さ1・innerに入る前、outer Q後は深さ0・outerに入る前へ復帰。CTM/clipに加え、fill/stroke、線幅を含む`other`、opacity、font/text state等、ContentPageで比較可能な全15fieldを照合した。operator nesting違反0、PDF 1.4維持。両rendererの**確認region外の差分は0画素**（1pt余白に依存しない）。
+- negativeは、ordinal60（`m`→`l`）を`pending-path`だけで拒否、inner Q bindingを同一bytesのouter Qへ偽装すると`needs_confirmation`。再封印だけの対照は`restored`。容量超過も既定の理由で拒否し、PDF/sidecarを公開しなかった。
+
+### page-entry不一致と原因
+
+同じ10ページ・bounds・paragraph・textのoverflowをpage entryへ**1回だけ**保存した。planned glyph fields、保存後origin、4/5/10ページのMuPDF全画素、および4/5ページのPoppler全画素は一致した。**10ページのPoppler 144dpiでは5,868画素が異なる**（差が8を超える画素5,308、最大channel差252）。差分bboxはpixel `[114,165,762,187]`、生成1行目の中だけで、region外は0。したがって外部原本上での完全なrenderer同値性は証明できていない。
+
+`compensation()`はbinary32の確認CTMから逆行列を作る。原本operandの平行移動 `(158.2,662.8)` と、実際に書かれた補償の合成には `(0.000003052,0.000012207)` ptの残差がある。これは0.002ptの幾何許容値内でも、Popplerのrasterizationを変える。
+
+原因の切分けは**保存済みoverflowの診断コピーのみ**で行った。同じ内容の再保存では5,868画素差が再現し、補償だけを原本operandの逆 `1 0 0 1 -158.2 -662.8 cm` に変更した診断コピーではpage-entryとの差が0になった。原本・engine・評価系列の成果物は変更していない。この診断コピーを外部評価の成功結果に置き換えていない。
+
+syntheticの比較が取り込む`tests/test_ctm_compensation.py::pixels()`はMuPDFのみを使い、scope-chainの平行移動fixtureもbinary32で正確に表せる `(30,-20)` である。そのため今回のPoppler差は捕捉されなかった。修正候補は原本operandから合成したCTMの逆を検討し、原本・binary32双方に対する既存の上界証明を維持することと、端数平行移動・pixel境界上のbaselineを含むPoppler比較を追加すること。**一般のCTMに対して検証済みの修正ではないため、engine修正は別作業とする**。
+
+### 実行・証拠の範囲
+
+```powershell
+.\.venv\Scripts\python.exe -m evaluations.continuation.scope_chain_destination --run-name <未使用名>
+```
+
+[専用evaluator](scope_chain_destination.py)は既存のparagraph/provider・paint・resource監査を再利用する。candidateの固定とPR #16照合、状態/座標検査、空き領域検査は小さな専用helperに分けた。比較が異なる場合も`status=failed`のsummaryを残して非0で終了する。
+
+run `scope-chain-pr17-windows` のPDF・PNG・全文/glyph JSONは`runs/`にのみ置いた。初回evaluatorは最後のPoppler比較で例外終了したため、保存済みstage checksから集計を復元した。全5段階とpage-entryは各1回だけで、系列の再実行はない。公開集計は実行時と集計改善後のevaluator hashを区別する。capacityはcontrol到達前に正しい理由で拒否されたことを実行済みコード経路と出力不在から記録した。
+
+所要時間はoverflow 241秒、second 280秒、shorten 224秒、regrow 256秒、noop 289秒（系列計約21.5分）。容量拒否は約81秒、page-entryの準備＋保存は約5.4分（両者はartifact時刻からの概算、page-entry保存自体202秒）。独立した重い系列を並列実行していない。
+
+生成領域300dpi、10ページ全体144dpi、shortenの空白cropを目視した。文字欠落・clip切れ・ロゴへの侵入はなく、本文・ロゴ・下線は維持されるが、上記Poppler不一致は残る。full pytest、既存single/depth0/multi/depth1外部評価、source replay、追加noop、page-entry全lifecycleは再実行していない。次の課題はこのrenderer差の解消であり、構造上はpending path、深さ3以上、ExtGState、証明できないclip等が引き続き拒否される。
+
+以下は各過去engineでの評価記録であり、今回の成功結果ではない。
+
 **PR #15 engineでの`q ... Q` scope境界の評価（2026-09-26）**。PR #13〜#15は、confirmed page-program boundaryの条件を順に緩めた（CTMの相殺、矩形clipの継承、1つの`q ... Q` scopeの内側）。そのengine（digest `454686cef09460f76c3daaa064d2765748b74e83c8e6963d323a00cd905b71c5`）で、加工していないLibreOffice原本の1ページ・10ページを`inspect_continuation_boundaries()`で調べ、10ページの新しい候補で系列評価を行った。同じWindows検証環境で、既存の3本も再実行した。engineは変更していない。
 
 - **検査**: PR #15で新しく安全な候補になった境界は、1ページ126、10ページ86である。どれも`q`の深さ1・CTM identityで、ほとんどは証明済みの矩形clipの下にある。identity以外のCTMの境界（1ページ2、10ページ18）はすべて`q`の深さ2にある。CTMの相殺と矩形clipは証明されるが、`nested-graphics-state-save`で拒否される。「深さ1 + CTMの相殺 + 矩形clip」を満たす境界は、原本にはない。

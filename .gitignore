@@ -34,3 +34,5 @@ tmp/
 !/evaluations/continuation/boundary-destination-summary.json
 !/evaluations/continuation/scope-destination-summary.json
 !/evaluations/continuation/scope-entry-summary.json
+!/evaluations/continuation/scope-chain-destination-summary.json
+/evaluations/continuation/runs/
