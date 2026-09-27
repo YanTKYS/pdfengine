@@ -24,6 +24,8 @@
 
 深さ1の`q ... Q` scopeと矩形clipの継承は、外部原本でも確かめたことになる。CTMの相殺は、合成PDFでのみ確認したままである。
 
+その後、`q`の深さ2を1段だけ緩めた（[下記](#2段のq--q-scope-chainの内側)）。最大2段の明確に証明された`q ... Q` scope chain（外側のscopeの中に内側のscopeが1つ）の内側で、既存のCTM・clip等の安全条件を満たす境界を扱う。外側・内側の両方の`q`と対応する`Q`、各`Q`が戻す状態をauthorityとし、4つの`q`/`Q`をrevisionごとにmutation mapで追跡する。`q`の深さ3以上は拒否する。上記の原本の深さ2の境界が理由だが、合成PDFの回帰だけで確認しており、外部原本の系列評価はしていない。
+
 現行の結果は[評価](../evaluations/continuation/README.md)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
 
 `confirm_shared_flow`は、元glyphを持つsource slotと別に、callerが確認した空き領域への生成権限を受け取る。配置計画が実際にそこへ到達した場合だけ、同じparagraphのgenerated slotを作る。source slotの所有者を付け替えず、既存のshaper、line breaker、tracking/rise、alignment、font provider、CID/GID/`W` writerを共用する。
@@ -197,13 +199,13 @@ destination = confirm_continuation_destination(
 境界で次をすべて満たすものだけが候補になる。生成blockがpage entryと同じpage座標・同じ見た目で描けることを証明できる場合に限る。
 
 - **programの入れ子**: page program全体が、[operator nesting](#pdf-1xのoperator-nesting)の`audit`で違反なしである。違反の例は、入れ子の`BT ... BT ... ET`、`BT`のない`ET`、閉じていない`BT`、対応しない`q`/`Q`やmarked content、text object内のpage記述レベルのoperatorである。違反が1つでもあれば、scopeを信用できないので、そのページのどの境界も候補にしない（fail closed）。scopeの判定は、入れ子が正しいことを前提にしている。
-- **scope**: `q`の深さ0（page levelの状態が閉じている）か、深さ1で、1つの明確な`q ... Q` scopeの内側にある（[下記](#1つのq--q-scopeの内側)）。text object、marked-content sequence、`BX ... EX`の外で、組み立て中のpathや未適用の`W`/`W*`がない。
+- **scope**: `q`の深さ0（page levelの状態が閉じている）、深さ1で1つの明確な`q ... Q` scopeの内側（[下記](#1つのq--q-scopeの内側)）、または深さ2で2段の明確に証明されたscope chainの内側（[下記](#2段のq--q-scope-chainの内側)）にある。text object、marked-content sequence、`BX ... EX`の外で、組み立て中のpathや未適用の`W`/`W*`がない。
 - **graphics state**: 不透明度とstroke不透明度が1、text描画モードが0。ExtGStateと`ri`・`i`の設定はない。CTMはidentityか、blockが逆行列で相殺できることを証明できるもの（[下記](#identity以外のctmの相殺)）。clipはない（page entryと同じくCropBoxだけ）か、1つのpage矩形であることを証明できるもの（[下記](#矩形clipの継承)）。
 - **stroke専用の値は許す**: `w`・`J`・`j`・`M`・`d`はstrokeにしか効かない。blockはTr 0の塗りの文字だけを描くので、既定値でなくてよい。
 - **blockが自分で設定する値**: font・size・Tz・Tc・Tw・Ts・fill（`g`/`rg`/`k`で色空間ごと）は、blockが自分で設定し、外側の`q ... Q`で元に戻す。そのため境界での値は問わない。strokeの色やTLは、blockが使わない。
 - **拒否**: 迷う状態は拒否する。拒否理由は次のとおりである。
   - `invalid-operator-nesting`（ページのすべての境界に付く）
-  - `nested-graphics-state-save`（`q`の深さ2以上）、`unproven-graphics-state-scope`（scopeがmarked content等と交差する）。以前は`q`の深さ1以上を一律に`inside-graphics-state-save`としていた
+  - `nested-graphics-state-save`（`q`の深さ3以上。PR #15から深さ2を扱うまでは深さ2以上）、`unproven-graphics-state-scope`（scopeがmarked content等と交差する）。PR #15までは`q`の深さ1以上を一律に`inside-graphics-state-save`としていた
   - `inside-text-object`、`inside-marked-content`、`inside-compatibility-section`
   - `pending-path`、`pending-clip`
   - `nonfinite-ctm`、`singular-ctm`、`numerically-unstable-ctm`（相殺を証明できないCTM）
@@ -220,6 +222,7 @@ destination = confirm_continuation_destination(
   - CTMがidentity以外の境界だけ、`ctm_compensation`を持ち、`isolation = q-cm-BT-ET-Q`になる（[下記](#identity以外のctmの相殺)）。identityの境界のauthorityはPR #11と同じである。
   - clipのある境界だけ、`clip_constraint`を持ち、`initial_clip = inherited-rectangular-clip`になる（[下記](#矩形clipの継承)）。clipのない境界のauthorityは、PR #11・#12と同じである。
   - `q ... Q` scopeの内側の境界だけ、`graphics_state_scope`を持つ（[下記](#1つのq--q-scopeの内側)）。`q`の深さ0の境界のauthority・bindingは、PR #14と同じである。
+  - 深さ2の境界の`graphics_state_scope`は、`outer`・`inner`の2段を持つ（[下記](#2段のq--q-scope-chainの内側)）。深さ0・1の境界のauthority・binding・IDは、PR #15と同じである。
 - **z-order**: `z_order.semantics = after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix`。確認時のprefixとsuffixの描画operator数も記録する。前面・背面ではなく、callerが選んだ境界そのものが描画順序の契約である。
 - **空き判定**: page entryと同じ`require_empty()`を使う。prefix・suffixの描画との重なりも許さない。重なりを使ったlayer編集ではなく、挿入順序だけをoffset 0以外へ広げる。
 - **1境界1destination**: 1つの境界は1つのdestinationだけが持つ。page-entry orderは持たない。同じ境界への複数の順序付き挿入は、まだ扱わない。
@@ -252,7 +255,7 @@ destination = confirm_continuation_destination(
 
 ### identity以外のCTMの相殺
 
-**範囲**: page levelの確認済み境界で、clip等の他の条件が安全で、CTMを安全に逆変換できる場合に限り、生成blockをpage座標へ相殺して描く。identity以外のCTMを一般に扱えるようにしたものではない。ExtGStateは、CTMにかかわらず従来どおり拒否する。clipは矩形と証明できるものだけを継承し（[下記](#矩形clipの継承)）、`q`の内側は1つの明確なscopeだけを扱う（[下記](#1つのq--q-scopeの内側)）。
+**範囲**: page levelの確認済み境界で、clip等の他の条件が安全で、CTMを安全に逆変換できる場合に限り、生成blockをpage座標へ相殺して描く。identity以外のCTMを一般に扱えるようにしたものではない。ExtGStateは、CTMにかかわらず従来どおり拒否する。clipは矩形と証明できるものだけを継承し（[下記](#矩形clipの継承)）、`q`の内側は最大2段の明確なscope chainだけを扱う（[下記](#1つのq--q-scopeの内側)、[2段](#2段のq--q-scope-chainの内側)）。
 
 ```text
 confirmed prefix                     CTM = M
@@ -293,7 +296,7 @@ confirmed suffix                     CTM = M（blockのQが戻す）
 
 ### 矩形clipの継承
 
-**範囲**: page levelの確認済み境界で、有効なclipを1つのpage矩形として証明でき、destination全体と生成glyphのinkがその内側に収まる場合に限り、生成blockは既存のclipを継承して描く。任意のpath clipを扱えるようにしたものではない。ExtGState等は、clipにかかわらず従来どおり拒否する。`q`の内側は、1つの明確なscopeだけを扱う（[下記](#1つのq--q-scopeの内側)）。
+**範囲**: page levelの確認済み境界で、有効なclipを1つのpage矩形として証明でき、destination全体と生成glyphのinkがその内側に収まる場合に限り、生成blockは既存のclipを継承して描く。任意のpath clipを扱えるようにしたものではない。ExtGState等は、clipにかかわらず従来どおり拒否する。`q`の内側は、最大2段の明確なscope chainだけを扱う（[下記](#1つのq--q-scopeの内側)、[2段](#2段のq--q-scope-chainの内側)）。
 
 ```text
 confirmed prefix                       clip = C（page levelで確定済み）、CTM = M
@@ -360,7 +363,7 @@ confirmed suffix                       clip = C、CTM = M
 
 ### 1つの`q ... Q` scopeの内側
 
-**範囲**: `q`の深さ1で、1つの明確な`q ... Q` scopeの内側にある境界に限り、確認済み境界として扱う。境界の状態には、CTMの相殺・矩形clip等のこれまでの契約をそのまま使う。任意のgraphics-state stackを扱えるようにしたものではない。`q`の深さ2以上は拒否する。
+**範囲**: `q`の深さ1で、1つの明確な`q ... Q` scopeの内側にある境界に限り、確認済み境界として扱う。境界の状態には、CTMの相殺・矩形clip等のこれまでの契約をそのまま使う。任意のgraphics-state stackを扱えるようにしたものではない。深さ2は[2段のscope chain](#2段のq--q-scope-chainの内側)として別に扱い、`q`の深さ3以上は拒否する。
 
 ```text
 opening q                              scopeを開く（page level）
@@ -380,7 +383,7 @@ existing suffix
 - **構造**: page programのtop-level operatorを`q`/`Q`の入れ子で読み（`graphics_scopes()`）、境界の直前のoperatorの後で開いている`q`を求める。1つだけであること（深さ1）、その`q`に対応する`Q`があること、境界がその間にあること。interpreterの`q`の深さとも一致すること。
 - **page levelのscope**: 開く`q`（とその直前）と対応する`Q`で、text object・marked content・`BX ... EX`・組み立て中のpath/clipがないこと。scopeがmarked contentなどと交差しないことを示す。
 - **戻す状態**: `q`の直前の状態（`restored_state`）を記録し、対応する`Q`の直後の状態がそれと同じであることを、interpreterで確かめる。
-- **拒否**: `nested-graphics-state-save`（深さ2以上）、`unproven-graphics-state-scope`（scopeがmarked content・`BX ... EX`と交差する、構造とinterpreterの深さが合わないなど）。`q`/`Q`が釣り合わないページは、従来どおりページ全体を扱わない。
+- **拒否**: `nested-graphics-state-save`（深さ3以上。深さ2は[下記](#2段のq--q-scope-chainの内側)）、`unproven-graphics-state-scope`（scopeがmarked content・`BX ... EX`と交差する、構造とinterpreterの深さが合わないなど）。`q`/`Q`が釣り合わないページは、従来どおりページ全体を扱わない。
 
 **authorityの記録**（`graphics_state_scope`）
 
@@ -420,6 +423,65 @@ existing suffix
   - blockの`Q`の直後は`q`の深さ1で、境界と同じ状態。scope内のsuffixの文字も同じCTM・clip。
   - 対応する`Q`の直後は深さ0で、`restored_state`と同じ状態。scopeの後の文字はidentityのCTM・clipなし・scopeの前の色。
 
+### 2段の`q ... Q` scope chainの内側
+
+**範囲**: `q`の深さ2で、最大2段の明確に証明された`q ... Q` scope chain（外側のscopeの中に内側のscopeが1つ）の内側にあり、既存のCTM・clip等の安全条件を満たす境界に限り、確認済み境界として扱う。任意のgraphics-state stackを扱えるようにしたものではない。`q`の深さ3以上は拒否する。CTMはPR #12の相殺、clipはPR #14の矩形clipの契約をそのまま使う。新しいCTM・clipの処理は加えていない。
+
+```text
+outer q                                外側のscopeを開く（page level）
+  ...                                  外側のprefix（例: fill・stroke・clipの変更）
+  inner q                              内側のscopeを開く
+    ...                                内側のprefix（例: CTM・clipの変更）
+    confirmed boundary                 q depth 2
+    marker q [N cm] BT ... ET Q marker blockは境界の状態だけを保存・復元する
+    ...                                内側のsuffix（境界と同じ状態）
+  inner matching Q                     外側のscopeの中の状態へ戻す
+  ...                                  外側のsuffix
+outer matching Q                       chainの前（page level）の状態へ戻す
+existing suffix
+```
+
+- **理由**: PR #16の外部原本の検査で、LibreOffice原本のidentity以外のCTMの境界（1ページ2、10ページ18）は、どれも深さ2にあった。相殺と矩形clipは証明されるが、`nested-graphics-state-save`で拒否されていた。LibreOfficeは、clipを持つ本文・図版groupの`q`の中で、各行・下線・画像を`q [cm] ... Q`で囲むためである。
+- **blockの形**: 変えていない。blockの`q ... Q`は境界の状態だけを保存・復元し、内側の対応する`Q`より前で閉じる。chainのどの`q`・`Q`も、blockが開く・閉じる・保存することはない。
+- **状態**: 深さ0・1の境界と同じ条件を、境界の状態に課す。CTMやclipを設定したのが外側の段でも内側の段でも、境界の状態として既存の証明（`compensation()`・`clip_constraint()`）で扱う。
+
+**chainの証明**（`enclosing_scope()`）
+
+- **構造**: 境界の直前のoperatorの後で開いている`q`がちょうど2つで、interpreterの`q`の深さとも一致すること。それぞれに対応する`Q`があること。
+  - 外側の`q` < 内側の`q` ≤ 境界 < 内側の`Q` < 外側の`Q`であること。
+  - 各`q`と対応する`Q`は、programの`q`/`Q` stack（`graphics_scopes()`）で対応を求める。bytesや位置の一致で対応させることはしない。
+- **各段**: 開く`q`（とその直前）と対応する`Q`で、text object・marked content・`BX ... EX`・組み立て中のpath/clipがないこと。どの段もmarked contentなどと交差しないことを示す。
+- **戻す状態**: 各段の`q`の直前の状態（`restored_state`）を記録し、対応する`Q`の直後の状態がそれと同じであることをinterpreterで確かめる。内側の`Q`は外側のscopeの中の状態を、外側の`Q`はchainの前の状態を戻す。
+- **拒否**: `nested-graphics-state-save`（深さ3以上）、`unproven-graphics-state-scope`（どちらかの段がmarked content・`BX ... EX`と交差するなど）。
+
+**authorityの記録**（深さ2の`graphics_state_scope`）
+
+- `policy = two-nested-graphics-state-saves`、`depth = 2`、`outer`・`inner`、`contract`（blockが内側の`Q`より前で閉じ、どちらのscopeも保存・復元・終了しないこと）。
+- `outer`・`inner`は、それぞれ`opening`・`matching`（確認時の序数・範囲・bytesのSHA-256）と`restored_state`を持つ。
+- `boundary_id`は、source境界の証跡に加えて、policyと、外側・内側の順に開く`q`・対応する`Q`の序数・終端・SHA-256を含めて作る。内側だけ・外側だけが違う場合も、`q`と`Q`の対応が違う場合も、別のIDになる。
+- `graphics_state_contract`は、2段のchainの内側の状態であることと、blockが内側のscopeの`Q`より前で閉じることを明記する。
+- **深さ0・1との互換**: 深さ1の記録（`opening`・`matching`・`restored_state`を直接持つ形）、ID、binding（`scope`が`opening`・`matching`を直接持つ形）、contractの文言は変えていない。`outer`・`inner`の形を使うのは深さ2だけである。既存の深さ1のsidecarを変換することはない。
+
+**同じchainの追跡**
+
+- **binding**: revisionごとのbindingの`scope`に、`outer`・`inner`それぞれの開く`q`と対応する`Q`の範囲を記録する。
+- **保存**: 前のrevisionの4つの位置を、その保存のmutation mapでそれぞれ写す（`carried_scope()`）。新しいrevisionの構造が境界の周りに置く4つの位置と、すべて一致しなければならない。
+  - mutationが4つのどれかを消費する場合は、写し先がないので保存を拒否する。別のscopeへ乗り換えることはない。
+- **open**: bindingの4つの位置と構造が一致すること。確認時のprogramでは、authorityの記録（序数・範囲・bytes）とも一致すること。
+- **証跡**: 構造から再導出したchainが、位置を除いて記録と同じであること（bytes・深さ・戻す状態・policy・contract）。
+- **chainの外へ出ない保証**: 外側の`q`の終端 ≤ 内側の`q`の先頭、内側の`q`の終端 ≤ block ≤ 内側の`Q`の先頭、内側の`Q`の終端 ≤ 外側の`Q`の先頭を、revisionごとに確かめる。
+- **例**: 次の場合は、同じauthorityではない。
+  - 内側・外側の`q`か`Q`が、同じbytesの別のものに替わる。
+  - `Q q`で、どちらかの段の対応が変わる、または境界が別の段へ移る。
+  - 深さが1か3になる、`Q`が消えて入れ子が崩れる、blockが内側・外側の対応する`Q`の後ろへ移る。
+- **動いてよい場合**: chainの前、外側のprefix、内側のprefix・suffix、外側のsuffix、chainの後にあるsource slotを同じtransactionで書き直すと、4つの位置は動く。それでも同じchainへbindingする。
+
+**CTMの相殺・矩形clipとの共存**
+
+- chain内の`cm`・`re W n`は、どちらの段にあっても、境界の状態のCTM・clipとして既存の証明でそのまま扱う。LibreOffice原本と同じく、外側の段で矩形clip、内側の段で`cm`を設定する形も含む。
+- blockの`N cm`はblockの`q`の直後にだけある。blockの`Q`は境界の状態（CTM M・clip C）を、内側の`Q`は外側のscopeの中の状態を、外側の`Q`はchainの前の状態を戻す。
+- 試験では、この3つの`Q`の直後の状態と、各位置の文字の状態を、interpreterで直接確かめる。
+
 ### 対応範囲
 
 | 状態 | 対応 |
@@ -429,9 +491,10 @@ existing suffix
 | 同上で、CTMがidentity以外だが、逆行列での相殺を証明できるもの | 対応（`q N cm BT ... ET Q`、合成PDFのみで確認） |
 | 同上で、有効なclipを1つのpage矩形と証明でき、destinationと生成inkがその内側に収まるもの（CTMはidentityか相殺できるもの） | 対応（clipを継承。外部原本ではCTM identityの境界で確認、相殺との組合せは合成PDFのみ） |
 | 1つの明確な`q ... Q` scopeの内側（深さ1）で、状態が上の条件を満たすもの | 対応（blockはscopeの`Q`より前で閉じる。外部原本の10ページで、矩形clip・CTM identityの境界を確認） |
+| 最大2段の明確に証明された`q ... Q` scope chainの内側（深さ2）で、状態が上の条件を満たすもの | 対応（blockは内側の`Q`より前で閉じる。合成PDFのみで確認） |
 | 特異・非有限・数値的に不安定なCTM | 未対応（拒否） |
 | 多角形・曲線・複数subpath・回転やskewの下の矩形・text clip・面積のないclip | 未対応（拒否） |
-| `q`の深さ2以上、marked content等と交差するscope、任意のExtGState | 未対応（拒否） |
+| `q`の深さ3以上、marked content等と交差するscope、任意のExtGState | 未対応（拒否） |
 | text object・marked content・`BX ... EX`・Form XObjectの内側 | 未対応（拒否） |
 | operatorの入れ子が崩れたpage program | 未対応（ページ全体を拒否） |
 
@@ -458,10 +521,17 @@ existing suffix
   - inkの包含: 辺上と余白内のinkは計画・保存とも拒否して何も公開しないこと。余白の外なら書けること。計画の判定を外してもwriterが拒否すること。再編集で辺に達するinkの拒否。保存後のpaint envelopeが外へ出た場合の拒否（対照）。
   - sidecarの14種・programの5種の改ざんの拒否。page-entry blockや、clipより前のsource slotの書き直しがclipのoperatorの位置を動かしても、同じauthorityであること。late failureのrollback。clipのない境界のauthority・binding・blockが以前と同じ形であること。
 - **`q ... Q` scopeの内側**: [tests/test_scope_boundary.py](../tests/test_scope_boundary.py)で次を確認する。
-  - 候補と`graphics_state_scope`の記録。深さ1のscope・閉じた兄弟scopeの後・scope内で閉じたmarked contentは候補になる。深さ2、marked content・`BX`と交差するscopeは拒否する。ExtGState・特異なCTM・多角形のclip・描画モードはscope内でも拒否する。`q`/`Q`が釣り合わないページは扱わない。
+  - 候補と`graphics_state_scope`の記録。深さ1のscope・閉じた兄弟scopeの後・scope内で閉じたmarked contentは候補になる。深さ3、marked content・`BX`と交差するscopeは拒否する（深さ2は下記）。ExtGState・特異なCTM・多角形のclip・描画モードはscope内でも拒否する。`q`/`Q`が釣り合わないページは扱わない。
   - lifecycle（identity、相殺、矩形clip、相殺と矩形clip）: fits → grow → second → shorten → regrow → no-op 3回。reopen、authority・作成証跡の不変、`q`と対応する`Q`の間のblock、blockの`Q`の直後・scope内のsuffix・対応する`Q`の直後・scopeの後の状態、入れ子の違反0、生成fontの所有、no-opの画素・glyph plan・font再利用。4種とも、生成glyphのplan・page座標・画素がpage-entry版と一致する。scopeの最後の境界では、blockの直後が対応する`Q`になる。
   - 改ざん: sidecarの13種（scopeの記録・boundaryの深さ・contract・bindingの位置）と、programの8種（別の`q`・別の`Q`・`Q q`による対応や所属の変更・深さ2・深さ0・釣り合わない`Q`・対応する`Q`の後ろへのblockの移動）の拒否。
   - source slotがscopeの前・prefix・suffix・後にある場合の、同じtransactionでの書き直し。scopeの端を消費するmutationの拒否（単体）。late failureのrollback。scopeの外の境界の形の維持。
+- **2段の`q ... Q` scope chain**: [tests/test_scope_chain_boundary.py](../tests/test_scope_chain_boundary.py)で次を確認する。
+  - 候補と記録（`outer`・`inner`、各段の`q`・`Q`とstack上の対応、`restored_state`）。証明できるchainと、拒否するもの（深さ3、marked content・`BX`と交差する段）。ExtGState・特異なCTM・多角形のclip・描画モード・text clipは、chain内でも拒否する。
+  - boundary IDが、内側・外側の段と`q`/`Q`の対応を含むこと。
+  - lifecycle（identity、相殺、矩形clip、外側の矩形clipと内側の相殺）: fits → grow → second → shorten → regrow → no-op 3回。4つの`q`/`Q`の位置と対応、blockの`Q`・内側の`Q`・外側の`Q`の直後の状態、入れ子の違反0、生成fontの所有、no-opの画素・glyph plan・font再利用。
+  - 配置: 上の4種と、LibreOffice原本と同じ形（外側の矩形clip・内側の平行移動）で、生成glyphの計画のpage座標・保存後の原点・画素がpage-entry版と一致すること。
+  - 改ざん: sidecarのauthority 16種・bindingの7種と、programの13種の拒否。
+  - source slotがchainの前後や各段のprefix・suffixにある場合の再binding。4つのどれかを消費するmutationの拒否（単体）。late failureのrollback。chainの外の境界の形の維持。
 - **外部評価**: [評価コード](../evaluations/continuation/boundary_destination.py)は、LibreOffice原本の6ページで評価者が確認した境界を使う。この境界は、本文の`q ... Q`とCC-BY-SAロゴの`q ... Q`の間にある。結果は[評価README](../evaluations/continuation/README.md#確認済みpage-program境界の評価)にある。
 - **外部評価（scope・clip）**: [評価コード](../evaluations/continuation/scope_destination.py)は、同じ原本の10ページで評価者が確認した深さ1の境界を使う。本文の`q 0 0.1 595.2 841.8 re W* n ... Q`の内側で、最後の行の`Q`の後、対応する`Q`の直前にあり、ページ全体の矩形clipを継承する。1ページ・10ページの検査結果、確認時の拒否（深さ2・図版のclip）、bindingの`q`・`Q`の改ざんの拒否、page entryの対照との比較も記録する。結果は[評価README](../evaluations/continuation/README.md#pr-15-engineでのq--q-scope境界の評価)にある。
 
@@ -520,4 +590,4 @@ pdfengineが書くcontent streamは、出力PDFのversionのoperator nesting規�
 
 回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。外部原本では、regrowが同じ生成slotへ戻り、final no-opで全10ページがMuPDF・Popplerとも全画素一致した。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
 
-同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺と矩形clipの継承、1つの`q ... Q` scopeの内側の境界は上記で扱った。LibreOffice原本の1ページ・10ページでは、深さ1・矩形clipの境界が候補になり、10ページで系列評価を行った。原本でidentity以外のCTMを持つ境界は、どれも各行・下線・画像の`q`が本文や図版の`q`の中にある深さ2で、残る拒否理由は`nested-graphics-state-save`だけである（10ページの6つは組み立て中のpathも持つ）。原本でCTMの相殺を使うための次の最小の構造障壁は、`q`の深さ2（入れ子のscopeの連なりを、各段の`q`と対応する`Q`の証跡として固定する）である。ExtGState（不透明度・blend・soft mask）も残る。新規ページの自動生成ではない。
+同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺と矩形clipの継承、1つの`q ... Q` scopeの内側の境界は上記で扱った。LibreOffice原本の1ページ・10ページでは、深さ1・矩形clipの境界が候補になり、10ページで系列評価を行った。原本でidentity以外のCTMを持つ境界は、どれも各行・下線・画像の`q`が本文や図版の`q`の中にある深さ2で、残る拒否理由は`nested-graphics-state-save`だけである（10ページの6つは組み立て中のpathも持つ）。その後、この深さ2を、最大2段の明確に証明されたscope chainとして1段だけ緩めた（[上記](#2段のq--q-scope-chainの内側)。合成PDFのみで確認）。次は、Windows環境でPR #16の原本の深さ2の境界（identity以外のCTM・矩形clip）を直接評価することである。構造の障壁としては、`q`の深さ3以上とExtGState（不透明度・blend・soft mask）が残る。新規ページの自動生成ではない。
