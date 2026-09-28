@@ -26,13 +26,13 @@ must be empty, including paint which will be moved/removed by another flow
 plan; only its own generated glyphs are exempt.
 
 CTM compensation. At a boundary whose CTM M is not the identity, the block
-is ``q N cm BT ... ET Q``: N is the inverse of M, written once, right after
-the block's own q and outside its text object. The block's glyphs are then
+is ``q N cm BT ... ET Q``: N is the inverse of the source-operand CTM S,
+written once, right after the block's own q and outside its text object. The block's glyphs are then
 placed in page-entry coordinates, and its Q restores M for the suffix. N is
-derived from the confirmed CTM alone and recorded in the authority with its
-proof; a block's ``cm`` must be exactly that N. M is refused when it is not
-finite, is singular, or N·M cannot be proven to stay close enough to the
-identity (see compensation).
+derived from exact decimal cm operands and recorded in the authority with its
+proof against both S and the interpreted M; a block's ``cm`` must be exactly
+that N. A CTM is refused when it is not finite, is singular, or either N·S or
+N·M cannot be proven to stay close enough to the identity (see compensation).
 
 Inherited clip. A clip set at page level cannot be ended by the block's own
 q ... Q: there is no saved state without it. The block therefore inherits
@@ -71,6 +71,7 @@ import hashlib
 from itertools import combinations
 import json
 import math
+import re
 
 from .attributed import digest
 from .backend import PdfError
@@ -344,62 +345,93 @@ def _written(value):
     return '0' if text in ('0','-0') else text
 
 
-def source_ctms(data):
-    """The CTM after each top-level operator, exactly, from the operands as parsed.
-
-    The interpreter composes in binary32, like MuPDF; a renderer composing in
-    binary64 sees these. Only q, Q and cm change the page-level CTM. None
-    stands for a CTM with a nonfinite operand.
-    """
+def _source_ctms(data, cm_values):
+    """Compose one source model, sharing the existing operator walk and q/Q stack."""
     ctm=tuple(map(Fraction,IDENTITY));stack=[];result=[]
     for op in operators(data):
         if op.name=='q':stack.append(ctm)
         elif op.name=='Q' and stack:ctm=stack.pop()
         elif op.name=='cm':
-            values=[float(v) for v in op.args]
-            ctm=(_compose(tuple(map(Fraction,values)),ctm)
-                 if ctm is not None and len(values)==6 and all(map(math.isfinite,values)) else None)
+            values=cm_values(data,op)
+            ctm=_compose(values,ctm) if ctm is not None and values is not None else None
         result.append(ctm)
     return result
+
+
+def _decimal_cm(data, op):
+    """Read only the six decimal operands in an already-parsed cm's byte span.
+
+    pypdf FloatObject stores binary64, not the original decimal token. Do not
+    reconstruct it from str/float(op.args). No strings, arrays or other PDF
+    syntax are parsed here: operators() already supplied this cm's bounds.
+    Unsupported number spellings fail closed; PDF numbers have no exponent.
+    """
+    raw=re.sub(rb'%[^\r\n]*',b' ',data[op.start:op.end-2])
+    tokens=re.findall(rb'[^\x00\t\n\x0c\r ]+',raw)
+    if len(op.args)!=6 or len(tokens)!=6 or any(
+            re.fullmatch(rb'[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)',t) is None for t in tokens):return None
+    try:return tuple(Fraction(t.decode('ascii')) for t in tokens)
+    except (ValueError,OverflowError):return None
+
+
+def source_ctms(data):
+    """Exact rational CTMs S from the PDF's decimal cm bytes, for compensation.
+
+    Only q, Q and cm change this model. None denotes an unproven operand;
+    Q can restore a previously proven CTM. The clip model is kept separate.
+    """
+    return _source_ctms(data,_decimal_cm)
+
+
+def _clip_source_ctms(data):
+    """Preserve the existing clip authority: rational composition of parsed binary64 operands."""
+    def parsed(data,op):
+        values=[float(v) for v in op.args]
+        return tuple(map(Fraction,values)) if len(values)==6 and all(map(math.isfinite,values)) else None
+    return _source_ctms(data,parsed)
 
 
 def compensation(ctm, source_ctm, page_transform, page_bounds):
     """N for a nonidentity boundary CTM, with its proof; or why no N is proven.
 
     ``ctm`` is the confirmed (interpreted, binary32) CTM M and ``source_ctm``
-    the same CTM composed exactly from the parsed operands. N is the exact
-    inverse of M rounded to COMPENSATION_DIGITS significant digits; the proof
+    the exact rational source-operand CTM S. N is the exact inverse of S
+    rounded to COMPENSATION_DIGITS significant digits; the proof
     uses exactly those written operands. For each of the two CTMs and each
     corner p of the page box (user space) it bounds the distance between p
-    and p·N·M: the exact residual plus, per coordinate, γ·(|p|·|N|·|M|) with
+    and p·N·T, for T in (S,M): the exact residual plus, per coordinate,
+    γ·(|p|·|N|·|T|) with
     γ = ROUNDING_STEPS·u/(1-ROUNDING_STEPS·u), u the binary32 unit roundoff,
     the standard bound on the rounding of those products and sums. A
-    bound over COMPENSATION_TOLERANCE refuses M as numerically unstable.
+    bound over COMPENSATION_TOLERANCE in either model refuses the candidate.
     Returns ``(value, None)`` or ``(None, reason)``.
     """
     if source_ctm is None or not all(map(math.isfinite,ctm)):return None,'nonfinite-ctm'
-    m=tuple(map(Fraction,ctm))
-    if m[0]*m[3]-m[1]*m[2]==0:return None,'singular-ctm'
-    operands=[_written(v) for v in _inverse(m)]
+    m=tuple(map(Fraction,ctm));s=tuple(map(Fraction,source_ctm))
+    if any(v[0]*v[3]-v[1]*v[2]==0 for v in (m,s)):return None,'singular-ctm'
+    operands=[_written(v) for v in _inverse(s)]
     n=tuple(Fraction(Decimal(v)) for v in operands)
-    if any(v and not MAGNITUDE[0]<=abs(v)<=MAGNITUDE[1] for v in (*n,*m,*source_ctm)):
+    if any(v and not MAGNITUDE[0]<=abs(v)<=MAGNITUDE[1] for v in (*n,*m,*s)):
         return None,'numerically-unstable-ctm'
     x0,y0,x1,y1=page_bounds
     user=_inverse(tuple(map(Fraction,page_transform)))
     corners=[_compose((0,0,0,0,Fraction(x),Fraction(y)),user)[4:] for x in (x0,x1) for y in (y0,y1)]
     gamma=ROUNDING_STEPS*UNIT_ROUNDOFF/(1-ROUNDING_STEPS*UNIT_ROUNDOFF)
-    bound=0.0
-    for matrix in (m,source_ctm):
-        r=_compose(n,matrix);s=_compose(tuple(map(abs,n)),tuple(map(abs,matrix)))
+    models={}
+    for name,matrix in (('source',s),('interpreted',m)):
+        r=_compose(n,matrix);absolute=_compose(tuple(map(abs,n)),tuple(map(abs,matrix)));bound=0.0
         for x,y in corners:
-            dx=float(abs(x*(r[0]-1)+y*r[2]+r[4]))+gamma*float(abs(x)*s[0]+abs(y)*s[2]+s[4])
-            dy=float(abs(x*r[1]+y*(r[3]-1)+r[5]))+gamma*float(abs(x)*s[1]+abs(y)*s[3]+s[5])
+            dx=float(abs(x*(r[0]-1)+y*r[2]+r[4]))+gamma*float(abs(x)*absolute[0]+abs(y)*absolute[2]+absolute[4])
+            dy=float(abs(x*r[1]+y*(r[3]-1)+r[5]))+gamma*float(abs(x)*absolute[1]+abs(y)*absolute[3]+absolute[5])
             bound=max(bound,math.sqrt(dx*dx+dy*dy))
+        models[name]=dict(residual=[float(v) for v in r],displacement_bound=bound)
+    bound=max(v['displacement_bound'] for v in models.values())
     if not bound<=COMPENSATION_TOLERANCE:return None,'numerically-unstable-ctm'
     xs,ys=[float(x) for x,_ in corners],[float(y) for _,y in corners]
-    return dict(policy=COMPENSATION,confirmed_ctm=list(ctm),matrix=operands,operator=' '.join(operands)+' cm',
-        proof=dict(source_ctm=[float(v) for v in source_ctm],page_box=[min(xs),min(ys),max(xs),max(ys)],
-                   residual=[float(v) for v in _compose(n,m)],arithmetic='binary32',unit_roundoff=UNIT_ROUNDOFF,
+    return dict(policy=COMPENSATION,inverse_basis='source-decimal-operands',
+        confirmed_ctm=list(ctm),matrix=operands,operator=' '.join(operands)+' cm',
+        proof=dict(source_ctm=[str(v) for v in s],page_box=[min(xs),min(ys),max(xs),max(ys)],
+                   models=models,arithmetic='binary32',unit_roundoff=UNIT_ROUNDOFF,
                    rounding_steps=ROUNDING_STEPS,displacement_bound=bound,tolerance=COMPENSATION_TOLERANCE)),None
 
 
@@ -472,7 +504,7 @@ def clip_constraint(clip, data, ops, ctms, xref, page_transform):
 
     ``clip`` is the interpreted clip at a boundary of the page program
     ``data`` (virtual stream ``xref``), ``ops`` its operators and ``ctms`` the
-    exact CTM after each (source_ctms). Only an intersection of path clips is
+    parsed-operand CTM after each (_clip_source_ctms). Only an intersection of path clips is
     proven, each one ``x y w h re`` subpath set by the consecutive operators
     ``re W n`` or ``re W* n`` under a CTM without rotation or skew; for one
     rectangle both rules clip the same area. For each clip and each of its
@@ -662,9 +694,10 @@ def _boundary_value(content, data, sha, d, generated, legacy, location, scope_lo
     # state and program, never read back.
     enclosing=auth.get('graphics_state_scope')
     ops=list(operators(data)) if state['clip'] or b.q_depth or enclosing is not None else []
-    ctms=source_ctms(data) if state['ctm']!=list(IDENTITY) or state['clip'] else None
+    ctms=source_ctms(data) if state['ctm']!=list(IDENTITY) else None
     expected,reason=_compensation(state,ctms[b.ordinal] if ctms else None,auth)
-    clipped,clip_reasons=clip_constraint(b.state.clip,data,ops,ctms,-content.page.xref,auth['page_transform'])
+    clip_ctms=_clip_source_ctms(data) if state['clip'] else None
+    clipped,clip_reasons=clip_constraint(b.state.clip,data,ops,clip_ctms,-content.page.xref,auth['page_transform'])
     derived,scope_reason=enclosing_scope(data,ops,graphics_scopes(ops),items,b.ordinal) if ops else (None,None)
     if (scope!=confirmed['scope'] or state!=auth['graphics_state']
             or _refusals(scope,state,reason,clip_reasons,[scope_reason] if scope_reason else [])):
@@ -742,7 +775,8 @@ def _inspect(content, page, *, include_refused=False):
     paints=[b.ordinal for b in items if b.operator.name in PAINT]
     candidates,refused,counts=[],[],defaultdict(int)
     clipped=any(b.state.clip for b in items[:-1])
-    exact=source_ctms(data) if clipped or any(b.state.ctm!=IDENTITY for b in items[:-1]) else None
+    exact=source_ctms(data) if any(b.state.ctm!=IDENTITY for b in items[:-1]) else None
+    clip_ctms=_clip_source_ctms(data) if clipped else None
     saved=any(b.operator.name=='q' for b in items)
     ops=list(operators(data)) if clipped or saved else [];clips={}
     structure=graphics_scopes(ops) if saved else None
@@ -754,7 +788,7 @@ def _inspect(content, page, *, include_refused=False):
         # Boundaries after the same clip operators share their clip entries.
         key=tuple(id(c) for c in b.state.clip)
         if key not in clips:
-            clips[key]=clip_constraint(b.state.clip,data,ops,exact,-content.page.xref,page_context['page_transform'])
+            clips[key]=clip_constraint(b.state.clip,data,ops,clip_ctms,-content.page.xref,page_context['page_transform'])
         constraint,clip_reasons=clips[key]
         enclosed,scope_reason=enclosing_scope(data,ops,structure,items,b.ordinal) if saved else (None,None)
         reasons=invalid+_refusals(scope,state,reason,clip_reasons,[scope_reason] if scope_reason else [])

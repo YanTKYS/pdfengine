@@ -1,6 +1,8 @@
 # Continuation開発の再開地点 — 2026-09-24
 
-**最新の追加評価（2026-09-27）**: PR #17 engineの深さ2・CTM相殺・矩形clipを加工していないLibreOffice原本で評価した。系列と全状態復帰は通過したが、page-entry対照とのPoppler画素一致は未達（生成1行目5,868画素差）。engineは未変更。[結果・再現条件・原因・修正候補](../evaluations/continuation/README.md#pr-17-engineの深さ2実境界評価--2026-09-27)。以下は各時点の履歴である。
+**最新のengine修正（PR #18後）**: 十進source operandのexact CTM Sからinverse Nを作り、N×S・N×Mを従来の0.002pt上界で個別に証明する方式へ修正した。端数平行移動の深さ0・1・2でMuPDF・Poppler回帰を確認し、同じLibreOffice実境界のfocused評価でPoppler差は**5,868→0画素**となった。scope/clipの契約は維持し、旧compensated authorityは`needs_confirmation`とする。[数値モデル・修正・新しい評価](../evaluations/continuation/README.md#source-ctm-compensation)。
+
+**PR #18の追加評価（2026-09-27）**: PR #17 engineの深さ2・CTM相殺・矩形clipを加工していないLibreOffice原本で評価した。系列と全状態復帰は通過したが、page-entry対照とのPoppler画素一致は未達（生成1行目5,868画素差）。engineは未変更。[結果・再現条件・原因・修正候補](../evaluations/continuation/README.md#pr-17-engineの深さ2実境界評価--2026-09-27)。以下は各時点の履歴である。
 
 **現状**: 外部原本の系列評価まで完了した。その後、再保存で生成fontが累積する問題を修正し、再評価した。さらに同一ページの複数destinationへ拡張し、その最終engineで、単一destinationの再評価と同一ページ2 destinationの評価を外部原本で完了した（2026-09-25）。その後、writerがtext object内に`q`/`Q`を出していた問題を直し、出力のPDF versionを元PDFと同じにして、両方の外部評価をやり直した。さらに、callerが確認したpage levelの安全なoperator境界を、2つ目の挿入authorityにした。レビュー指摘を受けて、operatorの入れ子が崩れたpage programでは境界候補を出さないようにした（fail closed）。その後、page levelの確認済み境界でCTMだけを1段緩め、逆行列で相殺できるCTMの境界に限りblockをpage座標で描くようにした（合成PDFのみで確認。外部原本の評価はしていない）。結果は「外部原本評価の完了」「生成fontの寿命」「同一ページの複数destination」「PR #8の外部原本評価」「PDF operator nestingの正規化」「確認済みpage-program境界」「page level境界でのCTMの相殺」の節を参照。以下の各節は、その時点の記録として残す。
 
@@ -1066,3 +1068,22 @@ Windows検証環境で[評価README](../evaluations/continuation/README.md)の�
 6. 同一ページ2 destinationの評価は、未使用のrun名で`python -m evaluations.continuation.multi_destination --run-name <name>`を実行する。`a-only`で`page6-a`だけ、`b-added`で`page6-b`が加わることと、page-entry順序を確認し、画像を目視する。すべて通った場合だけ`multi-destination-summary.json`として公開する。単一destinationの評価を先に通してから実行する（2026-09-25の評価はこの順で行った）。
 
 外部PDF・派生PDF/PNG・font・本文/glyphログは引き続き公開しない。
+
+## Source CTM basisによるPR #18描画差の修正 — 2026-09-28
+
+起点は`d33b3bf899a0958643b2c975403cd638e8774a3c`。pypdfのparsed binary64値と、ContentPageが合成したbinary32 CTM Mを区別し、既存operator spanから十進`cm`だけをexact rationalへ復元するSモデルを追加した。NはSの逆を既存12桁でserializedし、N×S・N×Mの両方を従来の0.002pt上界で証明する。clipの旧モデルと境界IDは維持し、旧compensated authorityは`needs_confirmation`となる。
+
+engine digestは`fd346b9a1fe37aec8e8c8246e7ed5dbc0a858bdb5bf18c524019261e76878b88`。
+
+| 検証 | 結果・所要時間 |
+|---|---|
+| 開発中のCTM＋新規回帰 | 51 passed / 1 fixture failure、991.20秒。深さ1の選択対象が2つになるfixtureを修正 |
+| 修正後のfractional translation 3件＋scope-chain描画5組合せ | 8 passed、206.06秒。新NはMuPDF・Poppler一致、旧N対照はPoppler各3,499画素差 |
+| focused実原本評価 | 567.03秒。boundary overflow＋reopenとpage-entry overflowを各1回。Poppler 5,868→0画素、4 binding・全状態復帰・glyph・領域外差分を確認 |
+| 最終full suiteの1回の試行 | 480 passed後に実行プロセスが消失。最終成功結果まで約58.1分。最終summary・JUnitなし |
+| 未完了分だけの続行 | 426 passed / 2 skipped、2,600.02秒。同じengineで残り428件を確認し、成功済み480件は再実行しなかった |
+| 全908件の集計 | **906 passed / 2 skipped / 0 failed**。単一processでの全suite完走ではない。skipはAES provider不在2件。CTM＋新規52件、Poppler回帰は実行・成功 |
+
+[原因・数値契約・検証の詳細](../evaluations/continuation/README.md#source-ctm-compensation)と[新しい公開集計](../evaluations/continuation/ctm-source-destination-summary.json)を参照。PR #18のfailed summaryは変更していない。実PDFのpage-entry PDF・sidecarは旧出力とbyte一致した。全suiteの初回と続行を含め、重い処理を並列実行していない。
+
+証明しているのはpage-space displacementの上界であり、任意rendererの画素一致ではない。深さ3以上、ExtGState、証明できないclip、pending path等の拒否は維持する。非描画operatorの累積整理にも進んでいない。
