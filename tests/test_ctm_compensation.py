@@ -189,14 +189,19 @@ def test_an_invertible_ctm_has_a_written_inverse_proven_close_to_the_identity(na
     assert value['operator'] == ' '.join(value['matrix']) + ' cm' and not any('e' in v for v in value['matrix'])
     # Exact residual of the written inverse, the bound, and binary32 as this engine composes.
     proof = value['proof']
-    assert proof['page_box'] == [0, 0, 320, 260] and proof['source_ctm'] == [float(v) for v in source]
-    assert max(abs(a - b) for a, b in zip(proof['residual'], IDENTITY)) < 1e-9
+    assert value['inverse_basis'] == 'source-decimal-operands'
+    assert proof['page_box'] == [0, 0, 320, 260] and proof['source_ctm'] == [str(v) for v in source]
+    assert max(abs(a - b) for a, b in zip(proof['models']['source']['residual'], IDENTITY)) < 1e-9
+    assert set(proof['models']) == {'source', 'interpreted'}
+    for model in proof['models'].values():
+        assert displacement(model['residual'], proof['page_box']) <= model['displacement_bound']
+    assert proof['displacement_bound'] == max(v['displacement_bound'] for v in proof['models'].values())
     assert 0 < proof['displacement_bound'] <= proof['tolerance'] == COMPENSATION_TOLERANCE
     # On this 320 x 260 pt page every example stays within half the tolerance.
     assert proof['displacement_bound'] <= COMPENSATION_TOLERANCE / 2
     composed = multiply(tuple(map(float, value['matrix'])), tuple(ctm))
     assert displacement(composed, proof['page_box']) <= proof['displacement_bound']
-    # Nothing but the confirmed CTM and the page decides the value.
+    # The source operands, confirmed CTM and page deterministically decide the value.
     assert compensation(ctm, source, page_transform, page_bounds) == (value, None)
 
 
@@ -225,7 +230,7 @@ def test_a_boundary_ctm_is_proven_against_the_source_operands_too():
     assert same[0] == same[1]
     values = [compensation(same[0], source_ctms(t + b' cm')[0], [1, 0, 0, -1, 0, 260], [0, 0, 320, 260])[0]
               for t in (CTMS['rotation'], near)]
-    assert values[0]['matrix'] == values[1]['matrix'] and values[0]['proof'] != values[1]['proof']
+    assert values[0]['matrix'] != values[1]['matrix'] and values[0]['proof'] != values[1]['proof']
 
 
 # -- inspection: only the CTM is relaxed (5, 6) ------------------------------------

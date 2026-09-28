@@ -1,5 +1,53 @@
 # 確認済み空き領域へのcontinuation評価
 
+## Source CTM compensation
+
+PR #18の描画差をsource operand基準の逆行列で修正し、同じ実境界をfocused評価した。**Poppler 144dpiの差は5,868 → 0画素**。新しい[公開集計](ctm-source-destination-summary.json)は`passed`である。下記のPR #18時点の`failed`記録と[旧集計](scope-chain-destination-summary.json)はそのまま残す。
+
+### 数値モデルと修正
+
+旧`source_ctms()`は、pypdfがparsedしたoperandを`float()`にしてから`Fraction`にしていた。pypdf 6.10.0の`FloatObject`自体がbinary64であり、十進lexemeのexact値ではない。例えば`158.2`は`2783083832226611/17592186044416`、`662.8`は`2915025227559731/4398046511104`になっていた。一方、ContentPageの`multiply()`はPyMuPDF Matrixでbinary32合成する。旧Nは後者Mの逆を有効数字12桁でserializedしていたため、原本の十進operandには微小残差が残った。
+
+- **S**: 既存`operators()`のbyte spanから`cm`の6数値だけを復元し、十進operandをexact rationalとして合成する。`158.2 = 791/5`、`662.8 = 3314/5`。他のPDF構文を解釈するparserは追加しない。
+- **M**: ContentPageが確認したbinary32 CTM。解釈方法は変更しない。
+- **N**: Sの逆を既存`_written()`の12桁でserializedした値。同じ入力から同じbytesを生成する。原本のこの境界では`1 0 0 1 -158.2 -662.8 cm`。
+- **proof**: 実際に書くNについてN×SとN×Mを個別に評価し、page-boxの既存変位上界がどちらも0.002pt以内であることを要求する。authorityにbasis、exact S、M、N、各residual・上界を記録する。今回の上界はsource **0.001121241285pt**、interpreted **0.001133678549pt**。N×Sの残差は0、N×Mの平行移動残差は約`(-0.000003051758,-0.000012207031)`pt。
+- **互換性**: clip用のparsed-binary64モデルを分離して維持する。旧compensated authorityは新しい証跡と一致せず`needs_confirmation`となり、自動migrationしない。identity・compensationなし・page-entry、境界IDの計算は変更しない。
+
+証明するのはpage-space displacementの上界である。任意rendererの完全な画素一致を保証するものではなく、以下のMuPDF・Poppler一致は今回の回帰実証である。
+
+### 回帰と実PDFの結果
+
+| 比較 | MuPDF | Poppler 144dpi |
+|---|---|---|
+| fractional translationの新方式（q depth 0・1・2）対page-entry | 全画素一致 | 各0画素差 |
+| 同じsynthetic保存出力でNだけを旧方式へ戻す対照 | 全画素一致 | 各3,499画素差を検出 |
+| LibreOffice実PDFの新方式対page-entry（4・5・10ページ） | 全画素一致 | 各0画素差、PNG bytesも一致 |
+
+- syntheticは計画glyph・保存originも一致する。depth 2ではfractional translation＋outer rectangular clipの4 bindingと、生成Q・inner Q・outer Q後の状態復帰を確認した。source側だけ／interpreted側だけが0.002を超える場合の個別拒否、同じMでもSが異なればNが異なること、旧authorityの拒否も試験する。
+- 実PDFはPR #18と同じ10ページ・ordinal **62**・offset **701**・bounds **[55,80,385,120]**・boundary ID `boundary-54efad3408573ff6b8cd7f08`。boundary overflow **1回＋reopen**と、page-entry overflow **1回**だけを実施した。
+- scope/clip authority、4 binding、全15fieldの状態復帰、prefix/suffix、生成36glyph・2行、font所有、PDF 1.4、nesting違反0を確認した。計画／保存originの最大誤差は約0.0000244141pt。双方のglyph planと保存originは一致し、両rendererの確認region外差分も厳密なboundsで0画素。
+- page-entryの`overflow.pdf`と`overflow.json`はPR #18の保存済み対照とbyte単位で同一。原本1・10ページの全1,975境界の比較でも、compensation以外のinspection fields、ID、clip authority、identity候補は変わらなかった。
+- Popplerの10ページ画像を目視し、生成2行の欠落・clip切れ・ロゴへの侵入がないことを確認した。
+
+開発中のCTM＋新規試験は51 passed / 1 failed（991.20秒）。失敗はdepth 1 fixtureに末尾Qを追加したことで明示選択対象の`f`が2つになった試験側の問題で、末尾の矩形paintを等価な`f*`にして修正した。修正した3つのrenderer試験と既存scope-chainの5組合せは**8 passed（206.06秒）**。それ以前の数値単体試験は23 passed / 29 deselected（1.97秒）。engineの数値契約を変えて通したものではない。
+
+**最終suiteの確認（2026-09-27〜28）**: 指定された`python -m pytest -q --basetemp=tmp/pytest`を、JUnit出力付きで**1回だけ**起動した。480件成功後に実行プロセスが消失し、最終summary・JUnitは残らなかった。実行順を908件のcollectionと照合し、最後に成功したケースと次のfixtureを確認したうえで、**未完了428件だけ**を同じengineで続行した。成功済み480件は再実行していない。続行分は**426 passed / 2 skipped / 0 failed（2,600.02秒）**、全件の集計は**906 passed / 2 skipped / 0 failed**。単一processで全suiteを完走した結果ではない。skipはAES-128・AES-256のprovider不在2件で、CTM＋新規52件とPoppler回帰はすべて実行・成功した。
+
+初回の最終成功結果まで約58.1分、続行分43.3分、合計約101.4分（中断期間を含めない）。engine digestは両実行・focused評価で同じ。続行では各testの完了IDも逐次記録した。元logのSHA-256は`c9214ee3d3ac6e4670bba6b36978315393f355b06b2cb08d51f1e51dc1e78d1d`、続行JUnitは`874e28babeca6867edb99b3afc7340c91286fcf90d53bcd3d9494e6d70120f41`。集計とmanifestは`tmp/ctm-source-basis/`、最終syntheticのPNGと旧／新Nの画素数は`runs/source-ctm-windows/synthetic-regression/`に保持した。
+
+### 実行条件と証跡
+
+起点はPR #18 merge `d33b3bf899a0958643b2c975403cd638e8774a3c`。Windows 11 / Python 3.12.14 / PyMuPDF 1.27.2.3 / pypdf 6.10.0 / Poppler 26.07.0、原本・reviewed font providerは旧評価と同じ。engine digestは`fd346b9a1fe37aec8e8c8246e7ed5dbc0a858bdb5bf18c524019261e76878b88`。
+
+```powershell
+.\.venv\Scripts\python.exe -m evaluations.continuation.ctm_source_destination --run-name <未使用名>
+```
+
+[focused evaluator](ctm_source_destination.py)は既存のsave・state・glyph・paint・resource・renderer監査を再利用する。run `source-ctm-windows`の所要時間は**567.03秒（約9.5分）**、うちboundary保存＋監査227.28秒、page-entry保存＋監査201.09秒（page-entry準備と比較を含め268.48秒）。PR #18のfull lifecycle、既存single/depth0/multi/depth1 external評価は再実行せず、重い処理も並列実行していない。raw PDF・PNG・全文JSONは`runs/`に置き、公開集計には原本・engine・provider・evaluatorのhashを残す。
+
+以下はPR #18以前の履歴であり、新方式の結果と置き換えない。
+
 ## PR #17 engineの深さ2実境界評価 — 2026-09-27
 
 **総合結果は未達（`failed`）**。加工していないLibreOffice原本で「深さ2 + nonidentity CTM compensation + inherited rectangular clip」のlifecycleは通ったが、代表page-entry controlとの**Poppler画素一致が失敗**した。engineの修正は行わず、原因と修正候補を記録した。[公開集計](scope-chain-destination-summary.json)は成功扱いにしていない。

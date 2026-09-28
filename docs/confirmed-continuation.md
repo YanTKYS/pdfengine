@@ -24,7 +24,7 @@
 
 深さ1の`q ... Q` scopeと矩形clipの継承は、外部原本でも確かめたことになる。CTMの相殺は、合成PDFでのみ確認したままである。
 
-その後、`q`の深さ2を1段だけ緩めた（[下記](#2段のq--q-scope-chainの内側)）。最大2段の明確に証明された`q ... Q` scope chain（外側のscopeの中に内側のscopeが1つ）の内側で、既存のCTM・clip等の安全条件を満たす境界を扱う。外側・内側の両方の`q`と対応する`Q`、各`Q`が戻す状態をauthorityとし、4つの`q`/`Q`をrevisionごとにmutation mapで追跡する。`q`の深さ3以上は拒否する。上記の原本の深さ2の境界が理由だが、合成PDFの回帰だけで確認しており、外部原本の系列評価はしていない。
+その後、`q`の深さ2を1段だけ緩めた（[下記](#2段のq--q-scope-chainの内側)）。最大2段の明確に証明された`q ... Q` scope chain（外側のscopeの中に内側のscopeが1つ）の内側で、既存のCTM・clip等の安全条件を満たす境界を扱う。外側・内側の両方の`q`と対応する`Q`、各`Q`が戻す状態をauthorityとし、4つの`q`/`Q`をrevisionごとにmutation mapで追跡する。`q`の深さ3以上は拒否する。実装時点では合成PDFだけで確認した。その後、PR #18で外部原本の系列と状態復帰を確認し、残ったPoppler差をsource operand基準の相殺で解消した（[下記](#実原本で確認した範囲と残る描画差)）。
 
 現行の結果は[評価](../evaluations/continuation/README.md)、[公開集計](../evaluations/continuation/summary.json)、[2 destinationの公開集計](../evaluations/continuation/multi-destination-summary.json)にある。示したのは確認済みの1つの外部LibreOffice PDF、確認済みの1つの空き領域の範囲であり、任意のPDFで複数destinationが動くことは示していない。
 
@@ -259,7 +259,7 @@ destination = confirm_continuation_destination(
 
 ```text
 confirmed prefix                     CTM = M
-marker q N cm BT ... ET Q marker     N = Mの逆行列。block内はpage entryと同じ座標
+marker q N cm BT ... ET Q marker     N = source operand CTM Sの逆をserializedした値
 confirmed suffix                     CTM = M（blockのQが戻す）
 ```
 
@@ -269,29 +269,31 @@ confirmed suffix                     CTM = M（blockのQが戻す）
 **逆行列と証明**（`compensation()`）
 
 - **M**: 境界の確認済みCTM（authorityの`graphics_state.ctm`）。interpreterは、MuPDFと同じくbinary32で行列を合成する。
-- **有限・可逆**: Mの成分がすべて有限であること。行列式を有理数で厳密に計算し、0でないこと。
-- **N**: Mの厳密な逆行列を、有効数字12桁に丸める。PDFの数値には指数表記がないので、固定小数表記で書く。証明には、書いたoperandそのものを使う。
-- **値の範囲**: NとMの0でない成分は、binary32の正規数で、PDFの整数の範囲（2^31−1以下）に収まること。
-- **identityへ戻ることの証明**: page box（CropBox、user space）の4隅pについて、pとp·N·Mの距離の上界を求める。
-  - 厳密な残差: 有理数で計算した|p·(N·M − I)|。
-  - 丸めの上界: γ·(|p|·|N|·|M|)（成分ごとの絶対値）。γ = 8u/(1−8u)、u = 2^−24。binary32での合成（operand・積・和）と、合成したCTMを点に適用するときの丸め、計8段を含む。
-  - Mとして、interpreterのCTMと、`cm`のoperandから厳密に合成したCTM（binary64で合成する描画系が見る値）の両方を使う。
-  - 上界が0.002を超えれば拒否する。0.002は、保存したrevisionで生成glyphの原点を検証する許容値と同じである。
+- **S**: PDFが記述した十進`cm` operandを有理数にして合成したCTM。pypdf 6.10.0の`FloatObject`はbinary64なので、`float()`・`str()`を経由して復元しない。既存`operators()`が確定したbyte spanから`cm`の6数値だけを読み、例えば`158.2`を`791/5`として保持する。PDFの符号・小数点・空白・commentを扱い、数値として証明できないtokenは拒否する。汎用parserやclipの数値解釈は追加・変更しない。
+- **有限・可逆**: S・Mの成分が有限で、両方の行列式を有理数で厳密に計算し、0でないこと。
+- **N**: Sの厳密な逆行列を、既存`_written()`で有効数字12桁に丸める。PDFの数値には指数表記がないので、固定小数表記で書く。証明には、実際に書くoperandそのものを使う。同じ入力は同じoperator bytesになる。
+- **値の範囲**: N・S・Mの0でない成分は、binary32の正規数で、PDFの整数の範囲（2^31−1以下）に収まること。
+- **identityへ戻ることの証明**: TをS・Mのそれぞれとして、page box（CropBox、user space）の4隅pについて、pとp·N·Tの距離の上界を個別に求める。
+  - 厳密な残差: 有理数で計算した|p·(N·T − I)|。
+  - 丸めの上界: γ·(|p|·|N|·|T|)（成分ごとの絶対値）。γ = 8u/(1−8u)、u = 2^−24。既存のbinary32の保守的な丸め上界を両モデルに適用する。合成（operand・積・和）と、合成したCTMを点に適用するときの丸め、計8段を含む。
+  - **どちらか一方でも**上界が0.002を超えれば拒否する。最大値も記録する。0.002は変更せず、保存したrevisionで生成glyphの原点を検証する許容値と同じである。
+  - これはpage-space displacementの証明であり、任意rendererでの画素一致の数学的保証ではない。MuPDF・Poppler一致は個別の回帰実証で確認する。
 - **上界の目安**: 上界はページの大きさにほぼ比例する。合成試験の320×260ptページでは、translation・異方scale・30°回転・skew・反転のいずれも0.001以下である。A0程度の大きなページでは、回転を含むCTMが上界を超えて拒否されうる（保守的な上界のため）。
 - **拒否**: 成分が有限でない（`nonfinite-ctm`）、特異（`singular-ctm`）、値の範囲外か上界超過（`numerically-unstable-ctm`）。
 
 **authorityの記録**（`ctm_compensation`）
 
-- `policy = inverse-ctm-inside-block-save`、`confirmed_ctm`（M）、`matrix`（Nとして書くoperand）、`operator`（`N cm`のbytes）。
-- `proof`: operandから合成したCTM、page box、厳密な残差、丸めのモデル（binary32・u・段数）、上界、許容値。
+- `policy = inverse-ctm-inside-block-save`、`inverse_basis = source-decimal-operands`、`confirmed_ctm`（M）、`matrix`（Nとして書くoperand）、`operator`（`N cm`のbytes）。
+- `proof.source_ctm`: Sの6成分を整数または`numerator/denominator`の文字列で正確に保存する。`models.source`と`models.interpreted`に、書かれたNと各CTMの合成結果（`residual`、6成分）と個別の`displacement_bound`を持つ。page box、丸めのモデル（binary32・u・段数）、最大上界、許容値も記録する。
 - `graphics_state_contract`は、blockが記録した逆行列でCTMを相殺することを明記する。
 
 **再検証**
 
 - open・保存のたびに、境界の確認済みCTMとprogramのoperandから`ctm_compensation`全体を再導出し、記録と一致しなければ拒否する。記録を読み戻して使うことはしない。
+- binary32 CTMの逆を使った過去のcompensated authorityは、operatorが偶然同じでも新しい証跡と異なるため`needs_confirmation`となる。黙ってmigrationしない。identity・compensationなし・page-entryのauthorityと境界IDの計算は変更しない。
 - CTMが変わった境界は、offset・前後のoperatorが同じでも同じauthorityではない。binary32で同じ値になる変更でも、operandが変われば証明が変わるので拒否する。
 - blockは`q N cm BT`で始まる。`cm`は、authorityの`operator`とbytesが同じものが1つだけで、ほかの`cm`は許さない。identityのblockは`cm`を持たない。PDF 1.xの入れ子以前の形式（legacy）のbindingでは、相殺を認めない。
-- block内の文字は、MにNを合成したCTM（interpreterの値）で描かれていること。blockの`q ... Q`は末尾でだけ閉じる（`_block`）ので、`Q`の直後はCTMがM、`q`の深さが0に戻る。これは試験でも直接確かめる。
+- block内の文字は、MにNを合成したCTM（interpreterの値）で描かれていること。blockの`q ... Q`は末尾でだけ閉じる（`_block`）ので、`Q`の直後はCTMがM、`q`の深さが挿入前の値（page levelなら0）に戻る。これは試験でも直接確かめる。
 - bindingとrebind（marker、mutation map、作成mutationのanchor）は変えていない。
 
 ### 矩形clipの継承
@@ -308,6 +310,8 @@ confirmed suffix                       clip = C、CTM = M
 - **blockの形**: 変えていない。`q BT ... ET Q`か、相殺があれば`q N cm BT ... ET Q`である。`W`・`W*`・`n`・pathはblockの許可operatorにないので、`_block`が`foreign operator`として拒否する。
 
 **矩形の証明**（`clip_constraint()`）
+
+clip authorityは従来どおり、pypdfでbinary64に読み込んだoperandの有理数合成（`_clip_source_ctms()`）を使う。compensation専用の十進source modelと分離し、今回の修正だけで既存clip authorityを変えない。
 
 - **対象**: 境界で有効なclipの各要素が、次をすべて満たすこと。複数の要素はintersectionをとる。
   - `W`または`W*`のpath clipで、pathが`x y w h re`の1 subpathだけ。1つの矩形では、nonzeroとeven-oddは同じ領域になる。
@@ -488,16 +492,18 @@ existing suffix
 
 一方、同じpage-entry overflowとの比較は、glyph plan・保存origin・MuPDF画素が一致したものの、Poppler 144dpiで生成1行目の5,868画素が不一致だった。binary32 CTMの逆を原本の十進operandに合成した微小残差が原因で、0.002ptの幾何上界はrasterの完全一致を保証しない。保存済み出力だけの診断で原本operandの逆に変えると差は0になったが、engine修正や一般化した証明は行っていない。[評価詳細](../evaluations/continuation/README.md#pr-17-engineの深さ2実境界評価--2026-09-27)・[失敗を含む集計](../evaluations/continuation/scope-chain-destination-summary.json)を参照。
 
+**PR #18後の修正と再評価**: 上記の失敗記録を保持したうえで、[source operand基準の相殺](#identity以外のctmの相殺)へ変更した。同じ原本・境界・領域でboundary overflow＋reopenとpage-entry overflowを各1回だけ実施し、計画glyph・保存origin・MuPDF全画素・Poppler全画素が一致した。10ページのPoppler差は**5,868→0画素**、領域外差分も0。4 binding・全状態復帰・clip authorityを維持し、page-entryのPDFとsidecarは旧出力とbyte一致した。fractional translationの深さ0・1・2では新Nで両rendererが一致し、旧Nに戻す対照でPoppler差を検出する。[新しい集計](../evaluations/continuation/ctm-source-destination-summary.json)・[原因と検証条件](../evaluations/continuation/README.md#source-ctm-compensation)を参照。これは対象caseでの描画回帰実証であり、任意rendererでの画素一致の証明ではない。
+
 ### 対応範囲
 
 | 状態 | 対応 |
 |---|---|
 | page entry（`before-page-program`） | 対応 |
 | 確認済みの安全なpage level境界（CTM identity） | 対応 |
-| 同上で、CTMがidentity以外だが、逆行列での相殺を証明できるもの | 対応（`q N cm BT ... ET Q`。外部原本のglyph座標・系列は確認、page-entryとのPoppler画素同値は未達） |
-| 同上で、有効なclipを1つのpage矩形と証明でき、destinationと生成inkがその内側に収まるもの（CTMはidentityか相殺できるもの） | 対応（clipを継承。外部原本でも相殺との組合せの系列・包含は確認、Poppler同値は未達） |
+| 同上で、CTMがidentity以外だが、逆行列での相殺を証明できるもの | 対応（`q N cm BT ... ET Q`。source CTMの逆と両モデルの上界を証明。PR #18後のfocused実原本評価でPoppler差0） |
+| 同上で、有効なclipを1つのpage矩形と証明でき、destinationと生成inkがその内側に収まるもの（CTMはidentityか相殺できるもの） | 対応（clipを継承。実原本で相殺との組合せの系列・包含を確認し、source CTM基準のfocused評価でPoppler差0） |
 | 1つの明確な`q ... Q` scopeの内側（深さ1）で、状態が上の条件を満たすもの | 対応（blockはscopeの`Q`より前で閉じる。外部原本の10ページで、矩形clip・CTM identityの境界を確認） |
-| 最大2段の明確に証明された`q ... Q` scope chainの内側（深さ2）で、状態が上の条件を満たすもの | 対応（blockは内側の`Q`より前で閉じる。外部原本でも系列・全状態復帰を確認、Poppler同値は未達） |
+| 最大2段の明確に証明された`q ... Q` scope chainの内側（深さ2）で、状態が上の条件を満たすもの | 対応（blockは内側の`Q`より前で閉じる。実原本で系列・全状態復帰を確認し、source CTM基準のfocused評価でPoppler差0） |
 | 特異・非有限・数値的に不安定なCTM | 未対応（拒否） |
 | 多角形・曲線・複数subpath・回転やskewの下の矩形・text clip・面積のないclip | 未対応（拒否） |
 | `q`の深さ3以上、marked content等と交差するscope、任意のExtGState | 未対応（拒否） |
@@ -596,4 +602,4 @@ pdfengineが書くcontent streamは、出力PDFのversionのoperator nesting規�
 
 回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。外部原本では、regrowが同じ生成slotへ戻り、final no-opで全10ページがMuPDF・Popplerとも全画素一致した。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
 
-同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺と矩形clipの継承、1つの`q ... Q` scopeの内側の境界は上記で扱った。LibreOffice原本の1ページ・10ページでは、深さ1・矩形clipの境界が候補になり、10ページで系列評価を行った。原本でidentity以外のCTMを持つ境界は、どれも各行・下線・画像の`q`が本文や図版の`q`の中にある深さ2で、残る拒否理由は`nested-graphics-state-save`だけである（10ページの6つは組み立て中のpathも持つ）。その後、この深さ2を、最大2段の明確に証明されたscope chainとして1段だけ緩めた（[上記](#2段のq--q-scope-chainの内側)。合成PDFのみで確認）。次は、Windows環境でPR #16の原本の深さ2の境界（identity以外のCTM・矩形clip）を直接評価することである。構造の障壁としては、`q`の深さ3以上とExtGState（不透明度・blend・soft mask）が残る。新規ページの自動生成ではない。
+同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺と矩形clipの継承、1つの`q ... Q` scopeの内側の境界は上記で扱った。LibreOffice原本の1ページ・10ページでは、深さ1・矩形clipの境界が候補になり、10ページで系列評価を行った。原本でidentity以外のCTMを持つ境界は、どれも各行・下線・画像の`q`が本文や図版の`q`の中にある深さ2で、残る拒否理由は`nested-graphics-state-save`だけである（10ページの6つは組み立て中のpathも持つ）。その後、この深さ2を、最大2段の明確に証明されたscope chainとして1段だけ緩めた（[上記](#2段のq--q-scope-chainの内側)。実装時は合成PDFで確認）。PR #18で原本10ページの系列・状態復帰を確認し、その後、source operandを基準にした逆行列と両モデルの上界証明で、残ったPoppler差をfocused評価の0画素まで解消した。構造の障壁としては、`q`の深さ3以上とExtGState（不透明度・blend・soft mask）が残る。新規ページの自動生成ではない。
