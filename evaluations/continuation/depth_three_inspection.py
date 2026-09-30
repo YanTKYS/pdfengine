@@ -27,6 +27,7 @@ CATEGORIES = {
     'unproven_or_nonrectangular_clip': {'unproven-clip', 'nonrectangular-clip'},
     'marked_content': {'inside-marked-content'},
     'text_object': {'inside-text-object'},
+    'text_rendering_mode': {'text-rendering-mode'},
     'bx_ex': {'inside-compatibility-section'},
     'transparency': {'transparency'},
     'ctm_proof_failure': {'singular-ctm', 'nonfinite-ctm', 'numerically-unstable-ctm',

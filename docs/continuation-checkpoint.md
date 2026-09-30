@@ -1,5 +1,10 @@
 # Continuation開発の再開地点 — 2026-09-24
 
+**最新の候補整理（PR #21後、2026-09-30）**: `b2f437a399f2a42d4bb31125ad7c388dc12055a3`から、engineを変更せずread-only grouping prototypeを追加した。同一page・z-order semantics・prefix/suffix paint数で、未加工原本の3,016 safe候補を834 groupへ整理（初期レビュー単位72.35%減、全候補保持）。singleton 81、複数候補753、最大6件。clipなし→compensationなし→浅いq depthの明示比較では776 groupが1件、58 groupは同率を複数保持する。同じpaint positionでもauthorityは交換可能ではなく、安全性順位・自動選択・confirmではない。次段階の読み取り専用group/presentation API候補と判断したが、人のレビュー時間・geometryは未評価。safeはempty確認済みを意味しない。[統計・実例・次のAPI範囲](../evaluations/continuation/README.md#safe-boundaryの描画位置別レビュー--2026-09-30) / [機械可読summary](../evaluations/continuation/boundary-review-summary.json)。
+
+原本・reviewed provider・engine digest `24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a`を照合し、全10ページを各1回走査（inspection計11.798秒、検証・raw保存込み22.406秒）。pure helper tests **40 passed / 1.14秒**。`pdfeditor/`未変更、full suite・external lifecycle・renderer評価は未実行、PDF出力0。PR #21 helperの今後の集計は`text_rendering_mode: 84 / other: 0`とし、historical summaryは変更していない。
+
+
 **最新の原本調査（PR #20後、2026-09-30）**: 未加工LibreOffice原本の全10ページは最大q depth 2で、自然なdepth 3・depth 4以上の境界は0件だった。focused評価は実施していない。主な拒否はtext object内部・pending pathで、次の検討候補を[全ページ調査](#pr-20後の原本全ページ調査)に記録した。depth 4を自動的な次課題にはしない。
 
 **現行の最大scope depthは3**。PR #19 merge `d5234fe68264adc44918756325746982ab251c5b`から、専用のouter/middle/inner authorityと6 operatorの追跡を追加した。depth 0・1・2の形式、CTM・clip proofは維持する。depth 4以上は拒否し、今回は外部実PDF評価を実施しない。[今回の実装と検証](#depth-3専用scopeの追加)。

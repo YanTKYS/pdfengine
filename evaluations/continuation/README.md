@@ -1,5 +1,43 @@
 # 確認済み空き領域へのcontinuation評価
 
+## safe boundaryの描画位置別レビュー — 2026-09-30
+
+PR #21 merge `b2f437a399f2a42d4bb31125ad7c388dc12055a3`を起点に、[pure helper](boundary_review.py)と[read-only測定コード](boundary_review_evaluate.py)を追加した。[公開summary](boundary-review-summary.json)は統計と代表2グループだけを持ち、全候補・全グループはGit管理外の`runs/boundary-review-windows/`に保存する。
+
+**3,016 safe候補 → 834グループ**。`page / z_order.semantics / prefix_paint_operators / suffix_paint_operators`の完全一致でまとめ、初めに確認する描画位置の数は2,182件（72.35%）減った。全3,016候補と既存boundary IDは保持する。同じグループは「同じ既存paintの間」を意味するだけで、authority・graphics state・scope・clip・CTMの同一性や交換可能性を意味しない。group IDは入力revision内の表示用であり、confirm用IDではない。
+
+| page | safe候補 | group |
+|---|---:|---:|
+| 1 | 485 | 121 |
+| 2 | 283 | 80 |
+| 3 | 396 | 108 |
+| 4 | 252 | 72 |
+| 5 | 363 | 100 |
+| 6 | 371 | 102 |
+| 7 | 228 | 66 |
+| 8 | 212 | 62 |
+| 9 | 152 | 47 |
+| 10 | 274 | 76 |
+
+size→group数は **1→81、2→55、3→12、4→653、5→21、6→12**。singletonは81、複数候補は753、最大sizeは6。
+
+`least_constrained_candidates`は「clipなし → compensationなし → q depthが浅い」の辞書式比較で同率をすべて残す。clipなしなら継承矩形への包含条件、compensationなしなら逆行列とsource/interpreted CTMのproof、浅いscopeなら追跡するq/Q bindingと復帰状態の確認が減る。この順序を実装前に説明した。安全性の点数・順位や推奨選択ではない。集合が1件のgroupは776（うち元からsingletonは81、複数候補から1件になるものは695）、複数残るgroupは58、集合内の候補総数は896。ほかの候補を削除しない。
+
+代表例はともにpage 1。paint数0/120の`paint-group-29f35d789ad9a15e3d870083`はordinal 0..7のsafe 6件で、page-level、q depth 1、depth 2、clipの有無、RG/rg後のstate差が同居する。paint数119/1の`paint-group-64ced8954786f9a0bcc2bacc`もsafe 6件で、旧scope q/Q=1/970、page-level、新scope 971/979とinner 975/978が同居し、clipも異なる。ordinal 976（cm → boundary → Do）だけCTM相殺がある。summaryは各ID・前後operator・scopeの組・authority witnessの差を保持する。同率の実例ではpaint数118/2のordinal 960/961/962がすべて残り、stroke/fillのgraphics stateは互いに異なる。
+
+**次段階の正式API候補にする価値がある**。753の複数候補groupが得られ、1候補1groupに近い結果ではない。ただし1原本での構造的削減であり、人のレビュー時間は未測定、834位置と58の同率groupはなお確認が必要。次は既存inspector出力を受ける読み取り専用のgroup/presentation API（全候補・既存ID・authority差・operator contextと、任意の明示的な同率保持比較）を検討する。今回engine/public APIには追加していない。safe数は空き領域の確認済み数ではない。geometry、require_empty、選択、confirmとは結合しない。
+
+Windows 11 / Python 3.12.14で未加工原本10ページを**各1回だけ**inspection。原本SHA-256 `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`、既存reviewed provider（msmincho.ttc face 1 / times.ttf face 0）とengine digest `24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a`は一致した。14,465境界・11,449 refusedと全page program/countもPR #21と一致。inspection計**11.798秒**、group化**0.484秒**、検証・raw保存込み**22.406秒**。pure helper testsは**40 passed（1.14秒）**、うち新規grouping 32件。`pdfeditor/`・engine契約・inspector schema/ID/authority/confirmは未変更。full suite、external lifecycle、renderer評価は未実行、PDF出力0、サブエージェント不使用。
+
+再利用したPR #21 helperのcategoryに`text_rendering_mode`を追加し、今回の集計は84件・`other: 0`。historical summaryの`other: 84`は元のbytesのまま保持した。
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_boundary_review.py tests/test_depth_three_inspection.py
+# 再測定が必要な場合のみ、未使用run名を指定する。今回の測定は完了済み。
+.\.venv\Scripts\python.exe -m evaluations.continuation.boundary_review_evaluate --run <未使用名>
+```
+
+
 ## PR #20後の自然なdepth 3境界の調査
 
 2026-09-30、未加工の同じLibreOffice原本を全10ページ調査した。[機械可読summary](depth-three-inspection-summary.json)に環境・原本/provider hash・各ページのoperator数、depth別safe/refused数、拒否理由を記録した。**全ページの最大q depthは2で、depth 3・depth 4以上は0件**。PR #20のdepth 3対応はsyntheticで成立しているが、この外部原本には自然なdepth 3境界が存在しない。focused評価は実施せず、PDFは生成・加工していない。
