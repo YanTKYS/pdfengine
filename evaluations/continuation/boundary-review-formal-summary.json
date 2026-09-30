@@ -1,0 +1,284 @@
+{
+  "schema": "pdfengine-boundary-review-formal-summary-1",
+  "status": "complete",
+  "purpose": "Formal external validation of the PR #23 read-only review API on the unmodified PR #22 real PDF. No engine change.",
+  "start": {
+    "date": "2026-09-30",
+    "branch_base": "origin/main",
+    "git_status": "clean",
+    "head": "562093a7d9715a777bc0963bdd095fa8f3b9aace",
+    "expected_head": "562093a7d9715a777bc0963bdd095fa8f3b9aace",
+    "engine_digest": "74d61f36c74ed1593c17812cb66b025799fc0b6c2a76e70eab4ae2e658088c4f",
+    "expected_engine_digest": "74d61f36c74ed1593c17812cb66b025799fc0b6c2a76e70eab4ae2e658088c4f",
+    "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+    "expected_source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3"
+  },
+  "head": "562093a7d9715a777bc0963bdd095fa8f3b9aace",
+  "engine_digest": "74d61f36c74ed1593c17812cb66b025799fc0b6c2a76e70eab4ae2e658088c4f",
+  "source": "evaluations/realpdf/corpus/lo_migration_ja.pdf",
+  "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pymupdf": "1.27.2.3",
+    "pypdf": "6.10.0",
+    "engine_digest": "74d61f36c74ed1593c17812cb66b025799fc0b6c2a76e70eab4ae2e658088c4f",
+    "pr22_files_digest": "24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a",
+    "continuation_py_sha256": "f640432a6dea69e4bdf94db9caaa9a6c7cacdb018ee97f0a8129e5c693649548",
+    "continuation_review_py_sha256": "009815aeaefae1be4ee6ef1ab6c6b9cea5c42efb2a0cf46900e5793d9558457c"
+  },
+  "api": [
+    "pdfeditor.continuation_review.review_continuation_boundaries",
+    "pdfeditor.continuation_review.group_continuation_boundary_candidates"
+  ],
+  "command": ".\\.venv\\Scripts\\python.exe -m evaluations.continuation.boundary_review_formal --run boundary-review-formal-windows",
+  "totals": {
+    "candidates": 3016,
+    "groups": 834,
+    "singleton_groups": 81,
+    "multiple_candidate_groups": 753,
+    "maximum_group_size": 6,
+    "minimal_authority_review_candidates": 896,
+    "groups_with_one_minimal_candidate": 776
+  },
+  "pr22_totals": {
+    "candidates": 3016,
+    "groups": 834,
+    "singleton_groups": 81,
+    "multiple_candidate_groups": 753,
+    "maximum_group_size": 6,
+    "least_constrained_candidates": 896
+  },
+  "pages": [
+    {
+      "page": 1,
+      "program_sha256": "5e72e303e0ea66c8a39bb2e10fe918086fd4d1abcc069bffd6e81f18b6b046b3",
+      "safe_candidates": 485,
+      "refused_boundaries": 494,
+      "groups": 121,
+      "pr22_groups": 121,
+      "inspector_record_sha256": "996e002187fc596974958679f04056a3851f258e03fc313b803bd279d2632b54",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    },
+    {
+      "page": 2,
+      "program_sha256": "a87161d2eb82292e7092d3069fdba32e2dbf529bdb8c8ac3797f258f0b4ed04b",
+      "safe_candidates": 283,
+      "refused_boundaries": 1109,
+      "groups": 80,
+      "pr22_groups": 80,
+      "inspector_record_sha256": "b3fc1b667762e58c0a70e0797c1ea8a3eec9b94338dd039bf5abc8e99858caab",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    },
+    {
+      "page": 3,
+      "program_sha256": "f86bbf28a50f973c50e9ec3866f03fc2880b787cd9506354098786473100d6c1",
+      "safe_candidates": 396,
+      "refused_boundaries": 1303,
+      "groups": 108,
+      "pr22_groups": 108,
+      "inspector_record_sha256": "301bbc38ada622eeaeea6a66f720cbe44043c814d1336229422b23f6d879eb50",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    },
+    {
+      "page": 4,
+      "program_sha256": "49ce21514a0a8ea4b2fe00bc912fe3add70d7c8445e219727d357dc2a4d90194",
+      "safe_candidates": 252,
+      "refused_boundaries": 1300,
+      "groups": 72,
+      "pr22_groups": 72,
+      "inspector_record_sha256": "9408bc192807161e6e6a8537133976e7f0fe506ec35cd397b5eab52ccf0a6d1a",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    },
+    {
+      "page": 5,
+      "program_sha256": "17c26cc365a42e685a658e3229247d3bf12116425a377a66dc34b7967237b64c",
+      "safe_candidates": 363,
+      "refused_boundaries": 1306,
+      "groups": 100,
+      "pr22_groups": 100,
+      "inspector_record_sha256": "e461adabd3075fb082ce7d0da97f7d8b6b715bc7a38c0c72908425b5437d671f",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    },
+    {
+      "page": 6,
+      "program_sha256": "823166585f1387c3aa1844145795623125df2d211b4b24a2b9c59589e800fcd7",
+      "safe_candidates": 371,
+      "refused_boundaries": 1269,
+      "groups": 102,
+      "pr22_groups": 102,
+      "inspector_record_sha256": "a25f376debb8eff6818448dcbc66c194f09e91d7a3763c46cc5ed24cd102bb15",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    },
+    {
+      "page": 7,
+      "program_sha256": "9d608ceee8a8c15738846b4c3021d42a050812c259f88a1fb7929b724283d304",
+      "safe_candidates": 228,
+      "refused_boundaries": 1402,
+      "groups": 66,
+      "pr22_groups": 66,
+      "inspector_record_sha256": "ce24012d37a456ba2f87bdb33eacd6eea1446744afcee960a34cd2c6544d49bd",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    },
+    {
+      "page": 8,
+      "program_sha256": "498b54923251e69ae891a49279c5f50fb6625b520f2440a2aafe5e0e5b3b4989",
+      "safe_candidates": 212,
+      "refused_boundaries": 1218,
+      "groups": 62,
+      "pr22_groups": 62,
+      "inspector_record_sha256": "20c08c77e7498f17cead7a1fa5e367531030afd866276ffb1a549823007d1125",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    },
+    {
+      "page": 9,
+      "program_sha256": "3884c43869584396fda504365a987b1a829b067e8e3ae66f38fed05a602d76b2",
+      "safe_candidates": 152,
+      "refused_boundaries": 1326,
+      "groups": 47,
+      "pr22_groups": 47,
+      "inspector_record_sha256": "1f9d995436e51ac36c94c79740d7c780ff93b2733fdbfb457da579ea2748aec8",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    },
+    {
+      "page": 10,
+      "program_sha256": "a7220825594cabbb752694f12eb153e98f45e1eb22eda558eeff909d6981440d",
+      "safe_candidates": 274,
+      "refused_boundaries": 722,
+      "groups": 76,
+      "pr22_groups": 76,
+      "inspector_record_sha256": "297c474ca4e180864d5285542331a99d37493f54c9e0eabdf1c68654b18326fe",
+      "inspector_record_matches_pr22": true,
+      "counts_match_pr22": true
+    }
+  ],
+  "pages_match_pr22": true,
+  "checks": {
+    "inspector_records_match_pr22": true,
+    "prototype_groups_match_published_groups_json": true,
+    "historical_wrapper_bytes_match_prototype": true,
+    "pooled_pure_helper_matches_per_page_reviews": true,
+    "formal_membership_attributes_and_minimal_match_prototype": true,
+    "expected_totals": true,
+    "prototype_totals_match_published": true,
+    "minimal_candidates_match_published": true,
+    "group_ids_unique_and_revision_scoped": true,
+    "source_unchanged": true,
+    "engine_unchanged_during_scan": true
+  },
+  "group_ids": {
+    "groups": 834,
+    "unique": 834,
+    "review_group_prefix": true,
+    "recomputed_from_page_program_and_paint_position": 834,
+    "distinct_paint_positions": 834,
+    "all_within_their_page_program": true,
+    "overlap_with_boundary_ids": 0,
+    "boundary_ids_in_groups": 3016,
+    "pr22_prototype_ids_compared": false,
+    "note": "Formal IDs hash page, program SHA-256 and paint position; PR #22 paint-group IDs did not include the program SHA-256, so they differ by design."
+  },
+  "compared_with": {
+    "summary": "evaluations/continuation/boundary-review-summary.json",
+    "summary_sha256": "214e6e42b7e5e764a7f34c6411e7b8e70e4439e5d0199c5ea8ed27666b21382d",
+    "prototype": "e82a9ccbbef56487dcb19b957b841a876ba2897b:evaluations/continuation/boundary_review.py",
+    "compared": [
+      "group membership",
+      "candidate IDs",
+      "paint position",
+      "review attributes",
+      "minimal set"
+    ],
+    "not_compared": "group IDs: formal IDs cover the program SHA-256, PR #22 IDs did not"
+  },
+  "timings": {
+    "inspection": 14.499,
+    "review": 1.22,
+    "pooled_grouping": 0.953,
+    "total": 31.531
+  },
+  "validation": {
+    "inspection_calls": 10,
+    "pdfs_written": 0,
+    "renderer_evaluation": false,
+    "confirmations": 0,
+    "formal_runs": 1,
+    "reruns": 0,
+    "full_suite_rerun": false,
+    "targeted_tests_rerun": false,
+    "engine_changed": false,
+    "evaluator_changed": false,
+    "subagents_used": false,
+    "not_rerun": [
+      "continuation lifecycle",
+      "depth 0/1/2 external evaluation",
+      "CTM external evaluation",
+      "Poppler renderer comparison",
+      "PDF generation",
+      "confirm operations"
+    ]
+  },
+  "raw_evidence": {
+    "directory": "evaluations/continuation/runs/boundary-review-formal-windows",
+    "tracked": false,
+    "files": [
+      {
+        "path": "formal-review-summary.json",
+        "sha256": "46acbe069577d33fe48c044c1fd7ccb68ee6efeb9ed65b0fa2f6cdc77103f443"
+      },
+      {
+        "path": "review-page-01.json",
+        "sha256": "06f8ca63b8f569c32920b696fbac1fbca4797e17d0263bca18d5df01403ca356"
+      },
+      {
+        "path": "review-page-02.json",
+        "sha256": "892a4671af322a227833fc663a3242690259b83edde97e86e5559624f55c3ebe"
+      },
+      {
+        "path": "review-page-03.json",
+        "sha256": "fcc11cf84e262318de94271a1fd02825c6594cd2943cfe25f6c32ecda1ffe24a"
+      },
+      {
+        "path": "review-page-04.json",
+        "sha256": "6219588c95e2c84ab89e4726aa5bdfa3bba129a06dce6e85e27da25db809d0fd"
+      },
+      {
+        "path": "review-page-05.json",
+        "sha256": "dc7c3f0b1dd3085f711232714173d0f5309a131b40e22729df2029d74744a583"
+      },
+      {
+        "path": "review-page-06.json",
+        "sha256": "75dca187f9ad814cc65fb3fc3aea7b0bc1fc73211760747deff614e42444538d"
+      },
+      {
+        "path": "review-page-07.json",
+        "sha256": "1fdfcf6ab9071d40f8d79fb17a88f3114982eeab0e20d99d30b325113612648d"
+      },
+      {
+        "path": "review-page-08.json",
+        "sha256": "37a59bc8be9d4415657d70f878d32726c04ff6bc54c4003a121edca69110eb6f"
+      },
+      {
+        "path": "review-page-09.json",
+        "sha256": "ec56341fe882f38f396b553d1913a0e3e6a76cdcd77a1640d650c911eccb5806"
+      },
+      {
+        "path": "review-page-10.json",
+        "sha256": "6e7bd751f21a51b9f681862a5fca548fc87b463ace33291a8ac4ec4f80273539"
+      }
+    ]
+  },
+  "publication": {
+    "basis": "Compact copy of the completed scan formal-review-summary.json plus read-back checks of its raw review records. No rescan.",
+    "scan_summary_sha256": "46acbe069577d33fe48c044c1fd7ccb68ee6efeb9ed65b0fa2f6cdc77103f443"
+  }
+}
