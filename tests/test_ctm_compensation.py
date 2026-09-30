@@ -258,7 +258,7 @@ def test_a_boundary_under_an_invertible_ctm_is_a_candidate_with_its_inverse(tmp_
     (b'1 2 2 4 0 0', None, ['singular-ctm']),
     (b'1000 999 999 998 0 0', None, ['numerically-unstable-ctm']),
     (b'1 0 0 1 30 -20', (b'0 0 100 100 re 150 150 100 100 re W n ', b''), ['nonrectangular-clip']),
-    (b'1 0 0 1 30 -20', (b'q q q ', b' Q Q Q'), ['nested-graphics-state-save']),
+    (b'1 0 0 1 30 -20', (b'q q q q ', b' Q Q Q Q'), ['nested-graphics-state-save']),
     (b'1 0 0 1 30 -20', (b'/GS0 gs ', b''), ['transparency', 'extgstate']),
     (b'1 0 0 1 30 -20', (b'/P BMC ', b' EMC'), ['inside-marked-content']),
 ])

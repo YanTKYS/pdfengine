@@ -1,0 +1,295 @@
+{
+  "status": "passed",
+  "base_commit": "d5234fe68264adc44918756325746982ab251c5b",
+  "verified_at": "2026-09-30T19:07:12+0900",
+  "engine_digest": "24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a",
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pymupdf": "1.27.2.3",
+    "pypdf": "6.10.0"
+  },
+  "contract_comparison": {
+    "changed_functions": [
+      "enclosing_scope",
+      "_scope_levels",
+      "_scope_witness",
+      "_scope_location",
+      "carried_scope",
+      "_graphics_contract",
+      "_boundary_value",
+      "boundary_id"
+    ],
+    "changed_engine_files": [
+      "continuation.py"
+    ],
+    "unchanged_ctm_source": true,
+    "base_engine_digest": "fd346b9a1fe37aec8e8c8246e7ed5dbc0a858bdb5bf18c524019261e76878b88",
+    "engine_digest": "24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a",
+    "ctm_clip_and_refusal_source_sha256": "a492f64b2871907b55ef0a15698692c7192edcb6b0cd77292640918e5c13756c"
+  },
+  "compatibility": {
+    "depths": [
+      0,
+      1,
+      2
+    ],
+    "all_bytes_equal": true,
+    "series": [
+      "confirmed",
+      "grow",
+      "second",
+      "noop"
+    ],
+    "saved_pdf_sidecar_pairs": 9,
+    "confirmed_pdf_snapshot_pairs": 3,
+    "checks": [
+      "authority",
+      "boundary_id",
+      "binding",
+      "sidecar",
+      "generated_pdf",
+      "page_program",
+      "generated_block",
+      "old_saved_sidecar_reopens_with_new_engine"
+    ],
+    "before_seconds": 126.09,
+    "after_seconds": 146.44,
+    "records": {
+      "0": [
+        {
+          "step": "confirmed",
+          "source_pdf": "c8bcfeaaea89cddfd5ed936ad97bb6ae2fe917cca1250fcb83f94973777c17f0",
+          "sidecar": "32ceb9785a993dd722529ffad5d177a0c101615ab1f0572210aee1a86d492693",
+          "authority": "3582f59a1dfddbba16fdeb09034aad649cbd6bf07c22a4015c7615703165b531",
+          "boundary_id": "boundary-224778063f32bd25f3a84b18",
+          "binding": "7c9f2ef271d00861ca30486604669ed5e7ce619573e2d250c984051b26239f34",
+          "program": "428658a0feaa5b788d32c46e477f17f8e9b80a991a41119c5fd804ca1fd54bc4",
+          "generated_block": null
+        },
+        {
+          "step": "grow",
+          "source_pdf": "900ff2a6395e1fc17c2b9d7963526958fd19428b86cd4726b72add5beb913be9",
+          "sidecar": "09b615b5063968138da738204ff73590a9c23aa1b04e4384e390438fcc20fa04",
+          "authority": "3582f59a1dfddbba16fdeb09034aad649cbd6bf07c22a4015c7615703165b531",
+          "boundary_id": "boundary-224778063f32bd25f3a84b18",
+          "binding": "f1352e9c8318869446b71ef9048dc6439fa124567fff4b1db0a62000654c329f",
+          "program": "bf4426a4d8c1825bef04f3ef59382a224cd9db30438e1839c8ce133125faff6e",
+          "generated_block": "aa518ba64bd7ec1ea76870c4f41c075c8df98996408c7b66e408a87655f8d26d"
+        },
+        {
+          "step": "second",
+          "source_pdf": "ff790609d47d86e7b99e95088836f4750471381d0589e06f6416e9ee2436e7c2",
+          "sidecar": "9cafef8dd729f9cf787766171df02fd49f1770c8aee8d8a100ef9bc5c3683590",
+          "authority": "3582f59a1dfddbba16fdeb09034aad649cbd6bf07c22a4015c7615703165b531",
+          "boundary_id": "boundary-224778063f32bd25f3a84b18",
+          "binding": "72f92c67c38efcb719037b79fc60a8cab85830685107f01e04a00e62b3a42c8c",
+          "program": "086a34a81acc9ae7b8ea8ccc0f3869cf5eee5c8b9a3d87af3b142242e7351aa0",
+          "generated_block": "fa658c82d7725c191480c8aad864c1d377dca3f48c3513484c2bd76098e29414"
+        },
+        {
+          "step": "noop",
+          "source_pdf": "5cb4e299fdfa6ed709cb12ea35c44e1d3c2c127d178eb2a466bb9520a6e8083f",
+          "sidecar": "10497fbd33fd3346603a2a9352e8aee2eea1a8df4c95e3251e0ff5e9e2daa29c",
+          "authority": "3582f59a1dfddbba16fdeb09034aad649cbd6bf07c22a4015c7615703165b531",
+          "boundary_id": "boundary-224778063f32bd25f3a84b18",
+          "binding": "382c827af13f898641759238e00f9ed7ff55e3d8a45ff4e71e10e6841d001535",
+          "program": "7139cf632e63e8a0c81ec36470887b2f6494798c226d087622eea0e648c15f76",
+          "generated_block": "21a572c13bcf3b3565b079e3ebb7445b62121f1047572a5010ed14f623baa986"
+        }
+      ],
+      "1": [
+        {
+          "step": "confirmed",
+          "source_pdf": "4f1afb3cb645fae351cc472e32cfbbadf886524d9caaa5175a062b2ff2ffd2e2",
+          "sidecar": "ff592858e407221ca959f4fcb88ad0fc83eba4f39a5ad7ffe18c63f527f29fe1",
+          "authority": "fc830b23088d0e8f73eb1c11e4fcd6f0205ec8e5666e3a1ae438c920336d52c3",
+          "boundary_id": "boundary-6a28e87aeab48167b766016f",
+          "binding": "0c742128a480518f4995a752a67913460c86727ebb475fab1d939fe5e4c974c9",
+          "program": "eb1d4866606bc17a9c682b13b8f45d5305fe56ea9a57abfbb437095b314e0aa2",
+          "generated_block": null
+        },
+        {
+          "step": "grow",
+          "source_pdf": "c07cb9c1e5aca3712f6208f9426344a238722bab9f3bf39963938fd34e9eff2c",
+          "sidecar": "b9be24831cdcc2677fcbcdbc64d7e2132657192eb277d4422817bfdf2217ed4a",
+          "authority": "fc830b23088d0e8f73eb1c11e4fcd6f0205ec8e5666e3a1ae438c920336d52c3",
+          "boundary_id": "boundary-6a28e87aeab48167b766016f",
+          "binding": "fecb2c52a02556e39982d64c22f9c0dc6d5aa3c5aeb7d2a9dd00bdac92f40460",
+          "program": "0f894d4154baab3b5e111fe171116edd23d7e3bac24fa5f6ea9f17acd02ff2e7",
+          "generated_block": "120fbf5d9ed66b7ba311db80ea61d2beb7fce7b22b6b403c67b8e58d79f22d7a"
+        },
+        {
+          "step": "second",
+          "source_pdf": "c72fa93a39e83b2b8469dfe99970cc0587751aaec3b32ff4a2a9058f2fc97c61",
+          "sidecar": "0f6531f0c3a453d3dc36a92a5174bee0dcf922846d97d503778f4bcebcbc2ac2",
+          "authority": "fc830b23088d0e8f73eb1c11e4fcd6f0205ec8e5666e3a1ae438c920336d52c3",
+          "boundary_id": "boundary-6a28e87aeab48167b766016f",
+          "binding": "37ee8732a5f622824b17bb190ff3104d4cb006d487adcbf598c32a764a5a93ae",
+          "program": "cabb0957fdc9e16fc38c6a9d73f3e3b1550a7798cd2ad029326dc47f0287c678",
+          "generated_block": "1777659b91e4b7a59c0abf351d7c99c569c711c128dd540824b2362de228a6d1"
+        },
+        {
+          "step": "noop",
+          "source_pdf": "81bf205fbcaf6beb1fa161a4171676f43b0a1f5d6a92d8d0bed6f9d0180de2a3",
+          "sidecar": "638c8d3b91591f4e6bfb288fa3d6b8543a3d50c564f75dfa5fe4bd9742bd260c",
+          "authority": "fc830b23088d0e8f73eb1c11e4fcd6f0205ec8e5666e3a1ae438c920336d52c3",
+          "boundary_id": "boundary-6a28e87aeab48167b766016f",
+          "binding": "3686fa4ca11e73a91990b911f52eead3616a946927a30c4f65323c3e3f2abb7e",
+          "program": "a447b2e7c823353e5a4675c31ba185dbdbb575b75c4dff32fa0cac2e9dcdf76f",
+          "generated_block": "61c1a8245424ec594b38e0fec2326c144f4781119133d8d388f7bb1af8872bea"
+        }
+      ],
+      "2": [
+        {
+          "step": "confirmed",
+          "source_pdf": "eb54163a6a42a2aa2a1f93ca7db741df884fd75d724c7c88f728514161b72cf3",
+          "sidecar": "b2a27d351bbb159dd303aca34e1487c12cebd7bfde46f3d9bf9779953f23d784",
+          "authority": "203f5d9ae0feec3a5144c6d76967a5ed6fc205d8bb2f0f30f989cbb449693a84",
+          "boundary_id": "boundary-0183a9b817693b22565ac982",
+          "binding": "e3ada5ba88cc1a82786a38bbd533fcd79f6726d2014be726841283e99a68dffa",
+          "program": "ab83856a47349a3e3eba2ede804eb8d11aba9b8d7b904e7758538fbf454c9626",
+          "generated_block": null
+        },
+        {
+          "step": "grow",
+          "source_pdf": "8fa4ee7900f9e43d6310164d66dde35b600f12ae940129c374ddf8b4b080adcd",
+          "sidecar": "9ec5da1ecef768ed90fe286a58b85fe5e1aa684ece8e6c76023321101a65afc8",
+          "authority": "203f5d9ae0feec3a5144c6d76967a5ed6fc205d8bb2f0f30f989cbb449693a84",
+          "boundary_id": "boundary-0183a9b817693b22565ac982",
+          "binding": "09de94b3535fb291f5f85ae314646b0097a94cb4836a6fdf2f1f48af0a871558",
+          "program": "0958524d6e08be222e19fe434c0b77d776199edeaacf2c48aef92ec448148a78",
+          "generated_block": "b192c775a201fe7095b32077c0745b9197a8ea897bd09479896ae45323891835"
+        },
+        {
+          "step": "second",
+          "source_pdf": "fb10b4d8f0bc0b229635e716125bb045addb253177e0f5bf845f1fd9bd00bcb2",
+          "sidecar": "5af25c79dd519bd00ec9a4f07ec95f18c3fb45abe5d677c9bd368ccad0a0da80",
+          "authority": "203f5d9ae0feec3a5144c6d76967a5ed6fc205d8bb2f0f30f989cbb449693a84",
+          "boundary_id": "boundary-0183a9b817693b22565ac982",
+          "binding": "eeaadd001200b410465ce492a7a61c90254328507d44cbf8d687319adcd574be",
+          "program": "bdbe365f822e62fe3eb82a289dfa63237f9368352411d7ae0bd79471175a7c39",
+          "generated_block": "9a2ab90fc3d7b04e4cd6604d56aecdef986c7f397b00f152aaa7729e818d4c55"
+        },
+        {
+          "step": "noop",
+          "source_pdf": "c6b5435ed1cf74d95a9a14862b679b68afc2dc16f220eaf01f6bf54e16594fe7",
+          "sidecar": "f5672e8ba6359d97a36a4582a5d4a8f86a3c4c021630ddf5b5fd50f69980c0cb",
+          "authority": "203f5d9ae0feec3a5144c6d76967a5ed6fc205d8bb2f0f30f989cbb449693a84",
+          "boundary_id": "boundary-0183a9b817693b22565ac982",
+          "binding": "45092cf480a1ffce6960925d6b3cdf23b476e4d1f9a7738b6ece1620ae498717",
+          "program": "d8cf9a1225493adef81d5dcc3cd196adf662f6a41eedde075a0041025e0357fb",
+          "generated_block": "1cdedf96b1648548f99f8aea03280f1219b535972a927ae6b0eeeb8c674d3453"
+        }
+      ]
+    }
+  },
+  "relevant": {
+    "tests": 249,
+    "passed": 249,
+    "skipped": 0,
+    "failed": 0,
+    "uninterrupted": false,
+    "initial_interruption": {
+      "status": "interrupted",
+      "observed_at": "2026-09-29T18:41:20+0900",
+      "returncode": null,
+      "final_junit_exists": false,
+      "last_completed": {
+        "kind": "test_report",
+        "time": 1790608588.444598,
+        "pid": 37988,
+        "nodeid": "tests/test_scope_boundary.py::test_the_block_in_a_scope_draws_where_page_entry_does[clip]",
+        "when": "teardown",
+        "outcome": "passed",
+        "duration": 0.000571400043554604
+      },
+      "last_event": {
+        "kind": "test_report",
+        "time": 1790608588.4493034,
+        "pid": 37988,
+        "nodeid": "tests/test_scope_boundary.py::test_the_block_in_a_scope_draws_where_page_entry_does[compensated-clip]",
+        "when": "setup",
+        "outcome": "passed",
+        "duration": 0.0024178000167012215
+      },
+      "seconds_to_last_event": 1080.27,
+      "successful": 53,
+      "fixture_failures": 8,
+      "remaining": 196,
+      "process_observation": "No python/pytest/monitor process remained at 2026-09-29 18:39 JST.",
+      "system_observation": "Windows logoff and sleep recorded shortly after the last event; no matching Python/pytest/Codex Application Error found. Exit status unavailable; exact cause not established.",
+      "full_suite_started": false
+    },
+    "continuation": {
+      "command": [
+        "D:\\codex\\pdfengine\\.venv\\Scripts\\python.exe",
+        "-u",
+        "tmp/depth-three/resume.py"
+      ],
+      "started": "2026-09-29T18:42:14+0900",
+      "ended": "2026-09-29T19:48:47+0900",
+      "seconds": 3992.17,
+      "engine_digest": "24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a",
+      "returncode": 0,
+      "engine_unchanged": true,
+      "tests": 196,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 196,
+      "skip_details": [],
+      "junit_sha256": "3dff437bdc9fa67d9852f7e1dd7b5c766664f6c2625bdfde11df6e7d07b6294d",
+      "log_sha256": "5dc87c969f1ee93ff778dac87194e1967acc2aa2114fc6f669da3a0ebcae8329"
+    },
+    "fixture_corrections": [
+      "Catch malformed q/Q at ContentPage construction as well as at witness validation.",
+      "Isolate editable source inline state from intentionally varied surrounding font/text state."
+    ]
+  },
+  "final_full_suite": {
+    "attempts": 1,
+    "uninterrupted": true,
+    "command": [
+      "D:\\codex\\pdfengine\\.venv\\Scripts\\python.exe",
+      "-m",
+      "pytest",
+      "-q",
+      "--basetemp=tmp/pytest",
+      "--junitxml=tmp/depth-three/full.xml"
+    ],
+    "started": "2026-09-29T19:51:17+0900",
+    "ended": "2026-09-29T22:01:52+0900",
+    "seconds": 7833.89,
+    "engine_digest": "24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a",
+    "returncode": 0,
+    "engine_unchanged": true,
+    "tests": 947,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2,
+    "passed": 945,
+    "skip_details": [
+      {
+        "name": "tests.test_pdf_save::test_empty_user_password_and_original_owner_password_are_preserved[AES-128]",
+        "reason": "AES provider unavailable: pypdf needs cryptography or pycryptodome"
+      },
+      {
+        "name": "tests.test_pdf_save::test_empty_user_password_and_original_owner_password_are_preserved[AES-256]",
+        "reason": "AES provider unavailable: pypdf needs cryptography or pycryptodome"
+      }
+    ],
+    "junit_sha256": "ff3e253d01499750366a6443d0bb59a4b030d2c32b0b18fd88d5283f7067ebe7",
+    "log_sha256": "64061208233721407e3b542113b7fe565b75a1bd2c1593e49ae5fa81aca2035b"
+  },
+  "external_evaluation": {
+    "performed": false,
+    "source_modified": false,
+    "preserved_summary_sha256": {
+      "scope-chain-destination-summary.json": "1efca04d310b14fdb739bf89a42ff08b9fa3977ca0d049e5dbc88f31fce5d6cb",
+      "ctm-source-destination-summary.json": "996ba0cc21f20d34c9a5c29b29868bdabc3dc7a516282421d2b76b78b64f0d83"
+    }
+  },
+  "local_evidence": "tmp/depth-three/",
+  "next_structural_barrier": "q depth 4; ExtGState, unproven clips, pending paths and inner text/marked/compatibility/Form contexts remain refused"
+}

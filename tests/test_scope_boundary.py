@@ -172,9 +172,9 @@ SCOPE_CASES = [
     (b'q', b' Q', [], True),
     (b'q q Q', b' Q', [], True),
     (b'q /P BMC EMC BX EX', b' Q', [], True),
-    # Deeper than a chain of two (see test_scope_chain_boundary for two), or a
+    # Deeper than a chain of three (see the chain/three tests), or a
     # scope interleaved with marked content or a compatibility section.
-    (b'q q q', b' Q Q Q', ['nested-graphics-state-save'], False),
+    (b'q q q q', b' Q Q Q Q', ['nested-graphics-state-save'], False),
     (b'/P BMC q EMC', b' Q', ['unproven-graphics-state-scope'], False),
     (b'q /P BMC', b' Q EMC', ['unproven-graphics-state-scope', 'inside-marked-content'], False),
     (b'BX q EX', b' Q', ['unproven-graphics-state-scope'], False),
