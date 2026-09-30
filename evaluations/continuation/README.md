@@ -1,5 +1,30 @@
 # 確認済み空き領域へのcontinuation評価
 
+## 正式read-only APIでの再確認
+
+PR #22の考え方を`pdfeditor/continuation_review.py`（`review_continuation_boundaries`・`group_continuation_boundary_candidates`）として正式API化した（[契約](../../docs/confirmed-continuation.md#読み取り専用のboundary-review)）。group条件はPR #22と同じ完全一致のまま、group IDにprogram SHA-256を加えて`review-group-...`とした。`least_constrained_candidates`は`minimal_authority_review_candidates`へ改名し、比較属性を`review_attributes`として残す。
+
+- **prototypeの扱い**: [boundary_review.py](boundary_review.py)は正式APIのthin wrapperになり、PR #22の出力形式（`paint-group-...`・`least_constrained_candidates`・`distinct_witness_counts`）へ名前を移すだけである。ロジックは二重に保守しない。PR #22時点のbytesはcommit `e82a9cc`にあり、[公開summary](boundary-review-summary.json)の`helper_sha256`と一致する。summaryは変更していない。
+- **historical acquisition code**: [boundary_review_evaluate.py](boundary_review_evaluate.py)はPR #22の取得記録として固定する。PR #22のengine digestを要求するため、新moduleを加えた現行engineでは実行を拒否する。今後の測定は下記の正式API用scriptを使う。
+- **既存engine**: 既存`pdfeditor/*.py`はPR #22と同一（新module以外のdigestは`24b7dfb3...`で一致）。新moduleを含むengine digestは`74d61f36c74ed1593c17812cb66b025799fc0b6c2a76e70eab4ae2e658088c4f`。
+- **synthetic互換確認**: 深さ0〜3・CTM相殺・矩形clipを含む合成7ページの255 safe候補で、commit `e82a9cc`のprototypeとwrapperのgroup出力がbyte一致し、正式APIのmembership・候補ID・paint位置・review属性・minimal集合もprototypeと一致した。
+
+### 10ページscan（[boundary_review_formal.py](boundary_review_formal.py)）
+
+各ページを1回だけinspection（`include_refused=True`）し、次を照合する。PDF出力・geometry・confirm・renderer比較はしない。
+
+- inspector recordをPR #22と同じ形式で直列化したSHA-256が、公開summaryの`raw_evidence`（`page-01.json`〜`page-10.json`）と一致すること。候補内容・boundary ID・順序・authority・拒否理由が不変であることの確認になる。
+- 同じsafe候補について、commit `e82a9cc`から読み込み`helper_sha256`で照合したprototypeのgroupが、公開`groups.json`のSHA-256を再現すること。wrapperの出力がそれとbyte一致すること。
+- 正式API（`review_continuation_boundaries`のinspection後と同じ経路）のgroup membership・候補ID・paint位置・review属性・minimal集合がprototypeと一致すること。全ページをまとめたpure helperの結果とも一致すること。
+- 3,016候補・834 group・singleton 81・複数候補753・最大6、minimal集合896件。group IDは一意で、PR #22のIDとは一致しなくてよい（program SHA-256を含むため）。
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_continuation_review.py
+.\.venv\Scripts\python.exe -m evaluations.continuation.boundary_review_formal --run <未使用名>
+```
+
+**状態（2026-09-30）**: 今回の作業環境（Linux / Python 3.12）はネットワーク方針で原本の取得元へ接続できず、PR #22のraw evidenceもないため、実原本の10ページscanは**未実行**である。3,016→834の維持は、このscriptを原本のある環境で実行して確認する。scriptの流れは合成10ページで実行し、原本に依存しない照合（wrapperとprototypeのbyte一致、pure helperとページ別reviewの一致、正式APIとprototypeの一致）が通ることを確認した。
+
 ## safe boundaryの描画位置別レビュー — 2026-09-30
 
 PR #21 merge `b2f437a399f2a42d4bb31125ad7c388dc12055a3`を起点に、[pure helper](boundary_review.py)と[read-only測定コード](boundary_review_evaluate.py)を追加した。[公開summary](boundary-review-summary.json)は統計と代表2グループだけを持ち、全候補・全グループはGit管理外の`runs/boundary-review-windows/`に保存する。
@@ -36,6 +61,8 @@ Windows 11 / Python 3.12.14で未加工原本10ページを**各1回だけ**insp
 # 再測定が必要な場合のみ、未使用run名を指定する。今回の測定は完了済み。
 .\.venv\Scripts\python.exe -m evaluations.continuation.boundary_review_evaluate --run <未使用名>
 ```
+
+PR #22時点のcommandである。`tests/test_boundary_review.py`のcaseは正式APIの`tests/test_continuation_review.py`へ移した。`boundary_review_evaluate.py`は現行engineでは実行を拒否する（[正式read-only APIでの再確認](#正式read-only-apiでの再確認)）。
 
 
 ## PR #20後の自然なdepth 3境界の調査
