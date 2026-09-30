@@ -538,7 +538,16 @@ def edit_shared_flow(source,model,output,model_output,changes):
                     plans[sid]=plan_editable(page,slot['binding']['paragraph'],edits,**options)
                     plans[sid].document_context=dict(fonts=options['fonts'],
                         options={k:v for k,v in options.items() if k!='fonts'},previous_state=None)
-                else:plans[sid]=plan_document_edit(page,slot['binding'],edits,**options)
+                else:
+                    # An existing generated slot owns its whole marked block, proven by
+                    # this revision's verified binding: rewrite it canonically rather
+                    # than keep superseded operators. A legacy binding keeps its form.
+                    ident=slot.get('destination_id')
+                    bound=initial['destination_bindings'].get(ident) if ident is not None else None
+                    if bound is not None and 'operator_nesting' in bound:
+                        options['_generated_block']=dict(destination=initial['continuation_destinations'][ident],
+                                                         binding=bound)
+                    plans[sid]=plan_document_edit(page,slot['binding'],edits,**options)
             result=transaction.commit(target)
             try:
                 for sid in plan['schedule']:

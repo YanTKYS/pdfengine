@@ -31,6 +31,62 @@ def _name(value):
     return stream.getvalue()
 
 
+def _style_witness(style, writer_spacing, inverse_ctm):
+    """Text state of one style for a nonpainting ``[] TJ``: font, size, Tz, Tc, Ts and matrix."""
+    tc, ts, _ = writer_spacing(style)
+    body = b' ' + _name(style.event.state.font.name) + b' ' + number(style.event.state.size) + b' Tf '
+    body += number(style.event.state.tz) + b' Tz ' + number(tc) + b' Tc ' + number(ts) + b' Ts '
+    return body + matrix_operator(multiply(style.matrix, inverse_ctm))
+
+
+def _rewrite_generated_block(result, content, paragraph, selected, owner, generated, commands, glyph_offsets,
+                             witnesses, slot_style, writer_spacing, inverse_ctm):
+    """Replace the body of a proven, owned generated continuation block by its canonical form.
+
+    The body between the block's own markers becomes exactly what a creation
+    writes for the current fragment (``q [N cm] BT`` glyph commands ``ET Q``);
+    a dormant slot holds its nonpainting insertion slot in the typing style
+    ``slot_style`` and its style witnesses instead. Nothing superseded is
+    kept. The markers are not part of the mutation, so the block keeps its
+    identity; ownership is re-proven on this revision's bytes first.
+    """
+    from .continuation import REWRITE, owned_block, slot_id
+    destination = generated['destination']
+    if getattr(paragraph, 'creation', False) or owner != slot_id(destination):
+        raise PdfError('only the owning slot rewrites its generated continuation block')
+    start, end, inverse_cm = owned_block(content.streams.get(-content.page.xref, b''), destination,
+                                         generated['binding'])
+    inside = [e for e in content.events if not e.invocation and start <= e.operator.start < end]
+    if (any(not start <= e.operator.start < end for e in paragraph.events)
+            or any(set(c.source_orders) - selected for e in inside for c in e.chars)):
+        raise PdfError('generated continuation block holds text its slot does not own')
+    head = b'q' + (b' ' + inverse_cm if inverse_cm is not None else b'') + b' BT'
+    anchors = {}
+    if glyph_offsets:
+        data = head + b''.join(commands)
+        anchors.update((f'glyph:{n}', len(head) + offset) for n, offset in enumerate(glyph_offsets))
+        result.glyph_names = list(anchors)
+    else:
+        data = head + commands[0]
+        if slot_style is not None:
+            data += _style_witness(paragraph.styles[slot_style], writer_spacing, inverse_ctm)[1:]
+            anchors['slot'] = len(data)
+            data += b'[] TJ'
+            result.slot = True
+    data += b' ET'
+    for ident, body in witnesses:
+        name = 'empty-style:' + ident
+        anchors[name] = len(data) + len(b' q BT') + len(body)
+        data += b' q BT' + body + b'[] TJ ET Q'
+        result.empty_style_names[ident] = name
+    data += b' Q\n'
+    mutation = Mutation(start, end, data, kind=REWRITE, anchors=anchors, owner=owner)
+    result.mutations.append(mutation)
+    result.first_mutation = mutation
+    result.removal_mutations.append(Mutation(start, end, head + commands[0] + b' ET Q\n', kind='text-remove',
+                                             owner=owner))
+
+
 class ParagraphShaper:
     def __init__(self, paragraph, units, fonts, *, alignment='left'):
         self.paragraph, self.units, self.specs = paragraph, units, fonts
@@ -256,8 +312,14 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                         max_bottom=None, min_line_height=None, element_snapshot=None, element_relations=None,
                         anchor_spec=None, baseline=None, preserve_empty=False, empty_style_id=None,
                         render_styles=None, paragraph_style=None, paragraph_layout=None, _paragraph_continues=False,
-                        _allow_empty_style_witnesses=False, owner=None):
-    """Prove source facts and plan every byte mutation of one paragraph edit."""
+                        _allow_empty_style_witnesses=False, owner=None, _generated_block=None):
+    """Prove source facts and plan every byte mutation of one paragraph edit.
+
+    ``_generated_block`` (shared flow only) names the continuation destination
+    and verified binding of the generated block this slot re-edits. Its body
+    is then replaced by the current fragment's canonical block, the one a
+    creation would write, instead of keeping superseded operators.
+    """
     from .logical_element import paragraph_from_snapshot, style_recipes
     from .destination_style import bind_destination_styles
     source, content = page.source, page.content
@@ -428,7 +490,17 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             mutation=Mutation(offset,offset,data,kind=CREATE,anchors=anchors,owner=owner,
                               insertion_order=snapshot.get('page_entry',{}).get('order'))
             result.mutations.append(mutation);result.first_mutation=mutation
-        for event in paragraph.events:
+        # Nonpainting Tc/Ts witnesses of dormant styles: (style ID, body before its [] TJ).
+        witnesses = []
+        if empty_typing_style is not None and _allow_empty_style_witnesses:
+            for ident,style in paragraph.styles.items():
+                if render_styles is not None and ident not in render_styles:continue
+                witnesses.append((ident,_style_witness(style,writer_spacing,inverse_ctm)))
+        if _generated_block is not None:
+            _rewrite_generated_block(result, content, paragraph, selected, owner, _generated_block, commands,
+                                     glyph_offsets, witnesses, empty_typing_style if preserve_empty and not units
+                                     else None, writer_spacing, inverse_ctm)
+        for event in ([] if _generated_block is not None else paragraph.events):
             data, op_offset, chars = rewritten_event(event, selected, remove=True)
             anchors = {'rewritten': op_offset}
             if event is first:
@@ -442,17 +514,10 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                 if glyph_offsets:
                     groups.append((b''.join(commands), {f'glyph:{n}': offset for n, offset in enumerate(glyph_offsets)}))
                     result.glyph_names.extend(f'glyph:{n}' for n in range(len(glyph_offsets)))
-                if empty_typing_style is not None and _allow_empty_style_witnesses:
-                    for ident,style in paragraph.styles.items():
-                        if render_styles is not None and ident not in render_styles:continue
-                        tc,ts,_=writer_spacing(style)
-                        # A nonpainting Tc/Ts witness of a dormant style.
-                        body=b' '+_name(style.event.state.font.name)+b' '+number(style.event.state.size)+b' Tf '
-                        body+=number(style.event.state.tz)+b' Tz '+number(tc)+b' Tc '+number(ts)+b' Ts '
-                        body+=matrix_operator(multiply(style.matrix,inverse_ctm))
-                        name='empty-style:'+ident
-                        groups.append((body+b'[] TJ',{name:len(body)}))
-                        result.empty_style_names[ident]=name
+                for ident,body in witnesses:
+                    name='empty-style:'+ident
+                    groups.append((body+b'[] TJ',{name:len(body)}))
+                    result.empty_style_names[ident]=name
                 if groups:
                     # Close the source text object after the rewritten operator,
                     # isolate each group at the page description level, then

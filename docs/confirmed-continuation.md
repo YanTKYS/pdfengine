@@ -753,6 +753,11 @@ PR #19のS/N/M・N×S/N×M・0.002pt上界と、PR #14のclip proofは変更し�
 - **元resourceの保護**: 記録のないfontは候補にならない。元PDFのfont、別producerのfont、`/PRF`で始まっても記録のないfont、旧版sidecarで作られたfontが該当する。aliasは削除しない。共有・継承されたresource辞書も直接は変更せず、page-localの複製だけを変える。元fontの指紋が変われば、Transactionが保存を拒否する。
 - **aliasを削除しない理由**: 生成aliasは非描画operatorから参照され続けるため、resource辞書から外すと未定義resourceの参照になる。dormant slotのaliasは直前のsubsetを保持したまま残る。残るのはaliasごとに1つで、保存回数には比例しない。次に文字を描く保存で置き換わる。glyphを持たないsubsetへの差し替えは行っていない。これは容量の最適化であり、寿命の正しさとは別である。
 - **残る累積**: 生成block内の非描画operator（旧glyphの`Tf … Tm [-n] TJ`）は、保存ごとに増える。fontとは独立した課題である。marker・mutation map・rebindingに関わるため、今回は変更していない。
+- **その後の解消（generated continuation blockのみ）**: 原因は、既存generated slotを通常のparagraph再編集として扱い、旧glyphを非描画化してtext objectに残したうえで、新しいglyph groupを差し込んでいたことである（合成PDFでno-op 1回ごとに+3,912 byte）。現在は、所有を証明できるgenerated continuation blockに限り、再編集ごとにmarker間のbodyを現在のfragmentのcanonical blockへ置き換える。canonical blockは、creationと同じ`q [N cm] BT` glyph commands `ET Q`である。dormant slotでは、typing styleの非描画`[] TJ` slotとstyle witnessだけにする。
+  - 所有の証拠は、現在revisionの検証済みdestination bindingである。program SHA-256・block SHA-256・`operator_nesting`記録を使い、markerとauthorityの逆CTMを持つblock構造を、このrevisionのbytesで再証明する（`owned_block`）。owner slotも一致しなければならない。
+  - 置き換えは同じtransaction内の1つのmutation（`confirmed-continuation-rewrite`）である。markerを消費しないため、slot・destination・creation binding・markerによるrebind・境界位置は変わらない。
+  - 合成PDFでは、page entryと確認済み境界で、no-op 3回のblockがgrowとbyte単位で同じだった（3,682 byte）。CTM相殺（逆`cm`は1つ）とclipを持つscopeでも、no-op 2回のblockが同じだった。dormantのno-opもshorten直後のblockと同じで、regrowはgrowと同じblockに戻った（[tests/test_generated_block_canonical.py](../tests/test_generated_block_canonical.py)）。
+  - legacy binding（`operator_nesting`なし）とsource slotは対象外で、従来の書き換えのままである。**source slot側の非描画operatorは、引き続き保存ごとに増える。**
 
 記録を持たない他の保存経路（単独paragraph編集、editable、story flow）は、従来どおり空いているaliasへ追加する。
 

@@ -87,6 +87,8 @@ from .selection import ResolvedSelection, source_sha
 
 PROVENANCE = 'generated-from-confirmed-continuation-destination'
 CREATE = 'confirmed-continuation-create'
+# A re-edit of an owned block: its body, between its unchanged markers, becomes the current canonical block.
+REWRITE = 'confirmed-continuation-rewrite'
 # A generated block is one graphics-state save around text objects in the
 # initial graphics state: no CTM, clip, ExtGState, XObject, path or
 # rendering-mode operator.
@@ -994,6 +996,30 @@ def _block(data, sid, start, *, legacy=False, compensation=None):
         elif op.name=='Tf':fonts.add(str(op.args[0]))
     if depth or text:raise PdfError('generated continuation block does not close its own graphics and text state')
     return stop,fonts
+
+
+def owned_block(data, destination, binding):
+    """The body of ``destination``'s own current-form generated block: (start, end, inverse cm or None).
+
+    ``binding`` is the destination binding this revision's validation produced;
+    it is the ownership evidence. The page program must be the one it
+    witnessed, the bytes between its offsets must hash to its block SHA-256,
+    and they must still be exactly that slot's marked, isolated block with
+    the inverse CTM its authority records. A binding without the
+    OPERATOR_NESTING record (a legacy block) proves nothing here. The body is
+    everything between the two markers, which stay untouched.
+    """
+    sid=slot_id(destination);begin,end=_markers(sid)
+    start,stop=binding.get('start'),binding.get('end')
+    if (binding.get('operator_nesting')!=OPERATOR_NESTING or type(start) is not int or type(stop) is not int
+            or binding.get('program_sha256')!=hashlib.sha256(data).hexdigest()
+            or binding.get('block_sha256')!=hashlib.sha256(data[start:stop]).hexdigest()):
+        raise PdfError('generated continuation block ownership is not proven for this revision')
+    compensated=destination['authority'].get('ctm_compensation') if is_boundary(destination) else None
+    inverse=None if compensated is None else compensated['operator'].encode('ascii')
+    if _block(data,sid,start,compensation=inverse)[0]!=stop:
+        raise PdfError('generated continuation block differs from its verified binding')
+    return start+len(begin),stop-len(end),inverse
 
 
 def page_witness(content, destinations, generated, legacy=frozenset(), locations=None, scopes=None):
