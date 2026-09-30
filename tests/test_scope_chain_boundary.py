@@ -7,7 +7,7 @@ before the inner matching Q; the inner Q restores the outer scope's state
 and the outer Q the page-level state, as they always did. All four
 operators are carried from revision to revision on their own. PR #12's
 compensation and PR #14's rectangular clip apply unchanged, whichever level
-set the CTM or the clip; nothing else is relaxed, and depth 3 still refuses.
+set the CTM or the clip. Depth 3 has its own contract (test_scope_three_boundary).
 """
 from copy import deepcopy
 
@@ -210,8 +210,8 @@ CHAIN_CASES = [
     (b'q q', b' Q Q', [], 2),
     (b'q q Q q', b' Q Q', [], 2),
     (b'q /P BMC EMC BX EX q', b' Q Q', [], 2),
-    # Three levels, or a chain interleaved with marked content or a compatibility section.
-    (b'q q q', b' Q Q Q', ['nested-graphics-state-save'], None),
+    # Four levels, or a chain interleaved with marked content or a compatibility section.
+    (b'q q q q', b' Q Q Q Q', ['nested-graphics-state-save'], None),
     (b'q /P BMC q EMC', b' Q Q', ['unproven-graphics-state-scope'], None),
     (b'q BX q EX', b' Q Q', ['unproven-graphics-state-scope'], None),
     (b'/P BMC q EMC q', b' Q Q', ['unproven-graphics-state-scope'], None),

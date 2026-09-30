@@ -10,7 +10,7 @@ A confirmed page-program boundary places a block between two top-level
 operators that the caller selected from the candidates this module lists.
 A candidate is a boundary outside any text object, marked-content or
 compatibility scope, path or pending clip, either at page level, inside
-exactly one q ... Q scope or inside a chain of two nested ones (see
+exactly one q ... Q scope or inside a chain of two or three nested ones (see
 enclosing_scope), of a program whose
 operators nest (see operator_nesting; otherwise no scope is trusted and no
 boundary is a candidate), and whose state is the page-entry state for what
@@ -60,8 +60,11 @@ the inner matching Q; the inner Q restores the outer scope's state, the
 outer Q the state before the chain. All four operators are carried from
 revision to revision on their own; a mutation that consumes one of them is
 refused, never rebound to another scope. A depth-1 scope keeps its own
-record and binding form. Deeper boundaries are refused. The boundary's CTM
-and clip are proven exactly as at depth 0 or 1, whichever level set them.
+record and binding form. Depth 3 adds a middle level, with its own policy
+and contract, between outer and inner; all six operators are carried and
+each Q restores the state before its q. Depth 0, 1 and 2 keep their forms.
+Depth 4 and above are refused. The boundary's CTM and clip are proven
+exactly as at depth 0 or 1, whichever level set them.
 """
 from collections import defaultdict
 from copy import deepcopy
@@ -135,12 +138,17 @@ INK_MARGIN = PAINT_PADDING + COMPENSATION_TOLERANCE
 SCOPE = 'one-enclosing-graphics-state-save'
 SCOPE_CONTRACT = ('the boundary lies between the opening q and its matching Q; the block closes its own q ... Q '
                   'before that Q and never saves, restores or ends the enclosing scope')
-# At most a chain of two proven scopes: an outer q ... Q and an inner one in it.
-MAX_SCOPE_DEPTH = 2
+# Three explicit forms; deeper scopes are not continuation authorities.
+MAX_SCOPE_DEPTH = 3
 SCOPE_CHAIN = 'two-nested-graphics-state-saves'
 SCOPE_CHAIN_CONTRACT = ('the boundary lies between the inner opening q and its matching Q, which lie between the '
                         'outer opening q and its matching Q; the block closes its own q ... Q before the inner '
                         'matching Q and never saves, restores or ends either enclosing scope')
+SCOPE_THREE = 'three-nested-graphics-state-saves'
+SCOPE_THREE_CONTRACT = ('the boundary lies between the inner opening q and its matching Q, which lie between the '
+                        'middle opening q and its matching Q, which lie between the outer opening q and its matching Q; '
+                        'the block closes its own q ... Q before the inner matching Q and never saves, restores or '
+                        'ends any of the three enclosing scopes')
 
 
 def program(content):
@@ -223,20 +231,19 @@ def graphics_scopes(ops):
 
 
 def enclosing_scope(data, ops, structure, boundaries, ordinal):
-    """The q ... Q scope, or chain of two, around the boundary after operator ``ordinal``, with its witnesses.
+    """The one, two or three q ... Q scopes around the boundary after ``ordinal``, with their witnesses.
 
     Returns ``(None, None)`` at page level, ``(value, None)`` inside exactly
-    one scope or a chain of exactly two nested ones, else ``(None, reason)``.
+    one scope or a chain of exactly two or three, else ``(None, reason)``.
     ``structure`` is graphics_scopes(ops) and ``boundaries`` the interpreted
     state after each operator. Each opening q and its matching Q, and the
     operator before the q, must be outside text objects, marked content,
     compatibility sections and path construction, so no scope is
     interleaved with any of them. Each level records both operators
     (position and bytes) and the state before its q, which the interpreter
-    shows its matching Q restores. Two levels must nest: outer q < inner q
-    <= boundary < inner Q < outer Q. One level keeps the depth-1 form (policy
-    SCOPE); two are recorded as ``outer`` and ``inner`` (policy SCOPE_CHAIN).
-    A deeper boundary is refused.
+    shows its matching Q restores. Adjacent levels must strictly nest on
+    the actual stack. Depth 1 keeps SCOPE; depth 2 keeps outer/inner and
+    SCOPE_CHAIN; depth 3 adds middle and uses SCOPE_THREE. No deeper form.
     """
     open_after,matching=structure;stack=open_after[ordinal]
     if len(stack)!=boundaries[ordinal].q_depth:return None,'unproven-graphics-state-scope'
@@ -255,23 +262,36 @@ def enclosing_scope(data, ops, structure, boundaries, ordinal):
         levels.append(dict(opening=_operator(data,ops[q],q),matching=_operator(data,ops[closing],closing),
                            restored_state=restored))
     if len(levels)==1:return dict(policy=SCOPE,depth=1,**levels[0],contract=SCOPE_CONTRACT),None
-    outer,inner=stack
-    if not outer<inner<=ordinal<matching[inner]<matching[outer]:return None,'unproven-graphics-state-scope'
-    return dict(policy=SCOPE_CHAIN,depth=2,outer=levels[0],inner=levels[1],contract=SCOPE_CHAIN_CONTRACT),None
+    if any(not outer<inner<=ordinal<matching[inner]<matching[outer] for outer,inner in zip(stack,stack[1:])):
+        return None,'unproven-graphics-state-scope'
+    if len(levels)==2:
+        return dict(policy=SCOPE_CHAIN,depth=2,outer=levels[0],inner=levels[1],contract=SCOPE_CHAIN_CONTRACT),None
+    return dict(policy=SCOPE_THREE,depth=3,outer=levels[0],middle=levels[1],inner=levels[2],
+                contract=SCOPE_THREE_CONTRACT),None
 
 
 def _scope_levels(scope):
-    """A scope record's levels, outermost first: ``outer`` and ``inner`` for a chain, else the record itself.
-
-    The form, not the recorded depth, selects them; the depth, like every
-    other witness, is compared with the one re-derived from the program.
-    """
+    """Validate one of the three exact authority forms; return levels outermost first."""
     try:
-        levels=[scope['outer'],scope['inner']] if 'outer' in scope or 'inner' in scope else [scope]
-        if any(not isinstance(level[k],dict) for level in levels for k in ('opening','matching')):
-            raise PdfError('q ... Q scope record is malformed')
-    except (KeyError,TypeError) as exc:
-        raise PdfError('q ... Q scope record is malformed') from exc
+        depth=scope['depth']
+        if type(depth) is not int or depth not in (1,2,3):raise ValueError
+        names=() if depth==1 else ('outer','inner') if depth==2 else ('outer','middle','inner')
+        policy,contract=((SCOPE,SCOPE_CONTRACT),(SCOPE_CHAIN,SCOPE_CHAIN_CONTRACT),
+                         (SCOPE_THREE,SCOPE_THREE_CONTRACT))[depth-1]
+        fields={'opening','matching','restored_state'}
+        if (set(scope)!={'policy','depth','contract'} | (set(names) if names else fields)
+                or scope['policy']!=policy or scope['contract']!=contract):raise ValueError
+        levels=[scope[name] for name in names] if names else [scope]
+        for level in levels:
+            if names and set(level)!=fields:raise ValueError
+            if not isinstance(level['restored_state'],dict):raise ValueError
+            for key,operator in (('opening','q'),('matching','Q')):
+                op=level[key]
+                if (set(op)!={'ordinal','operator','start','end','sha256'} or op['operator']!=operator
+                        or any(type(op[k]) is not int or op[k]<0 for k in ('ordinal','start','end'))
+                        or op['start']>=op['end'] or not isinstance(op['sha256'],str)):raise ValueError
+    except (KeyError,TypeError,ValueError) as exc:
+        raise PdfError('q ... Q scope differs from its authority: malformed record') from exc
     return levels
 
 
@@ -280,14 +300,18 @@ def _scope_witness(scope):
     if scope is None:return None
     strip=lambda level:dict(level,**{k:{f:level[k][f] for f in ('operator','sha256')} for k in ('opening','matching')})
     levels=_scope_levels(scope)
-    return strip(scope) if len(levels)==1 else dict(scope,outer=strip(levels[0]),inner=strip(levels[1]))
+    if len(levels)==1:return strip(scope)
+    names=('outer','inner') if len(levels)==2 else ('outer','middle','inner')
+    return dict(scope,**{name:strip(level) for name,level in zip(names,levels)})
 
 
 def _scope_location(scope):
-    """Where a scope's opening q and matching Q are in its revision, for a binding; per level at depth 2."""
+    """Where each opening q and matching Q is in its revision, preserving each depth's binding form."""
     where=lambda level:{k:dict(start=level[k]['start'],end=level[k]['end']) for k in ('opening','matching')}
     levels=_scope_levels(scope)
-    return where(scope) if len(levels)==1 else dict(outer=where(levels[0]),inner=where(levels[1]))
+    if len(levels)==1:return where(scope)
+    names=('outer','inner') if len(levels)==2 else ('outer','middle','inner')
+    return {name:where(level) for name,level in zip(names,levels)}
 
 
 def _scope_operators(scope):
@@ -313,13 +337,25 @@ def carried_scope(program_map, location):
 
     The opening q and the matching Q each move with the mutations before
     them; a mutation that consumes either one (one that crosses the scope's
-    edge) leaves no successor and is refused. At depth 2 each of the four
-    operators of the chain is carried on its own.
+    edge) leaves no successor, even through a replacement's operator anchor.
+    Each of the two, four or six operators is carried on its own.
     """
-    if set(location)=={'outer','inner'}:
-        return {k:carried_scope(program_map,location[k]) for k in ('outer','inner')}
+    if not isinstance(location,dict):raise PdfError('q ... Q scope binding is malformed')
+    names=(('outer','inner') if set(location)=={'outer','inner'} else
+           ('outer','middle','inner') if set(location)=={'outer','middle','inner'} else ())
+    if names:
+        if any(not isinstance(location[k],dict) or set(location[k])!={'opening','matching'} for k in names):
+            raise PdfError('q ... Q scope binding is malformed')
+        return {k:carried_scope(program_map,location[k]) for k in names}
+    if set(location)!={'opening','matching'}:raise PdfError('q ... Q scope binding is malformed')
     result={}
     for key,value in location.items():
+        if (not isinstance(value,dict) or set(value)!={'start','end'}
+                or any(type(value[k]) is not int for k in ('start','end'))
+                or not 0<=value['start']<value['end']<=len(program_map.source)):
+            raise PdfError('q ... Q scope binding is malformed')
+        if any(m.start<value['end'] and value['start']<m.end for m in program_map.mutations if m.start<m.end):
+            raise PdfError('scope operator was consumed by a mutation')
         start=program_map.map_offset(value['start'])
         result[key]=dict(start=start,end=start+value['end']-value['start'])
     return result
@@ -630,9 +666,11 @@ def _graphics_contract(compensated, clipped, enclosed=None):
     steps=(['cancels the witnessed CTM with the recorded inverse'] if compensated is not None else [])+(
         ['draws inside the witnessed rectangular clip, which it inherits and never changes']
         if clipped is not None else [])
-    chain=enclosed is not None and enclosed.get('depth')==2
+    depth=0 if enclosed is None else len(_scope_levels(enclosed))
+    chain=depth in (2,3)
     return (('witnessed page-level state' if enclosed is None else
-             'witnessed state inside a confirmed chain of two nested q ... Q scopes' if chain else
+             'witnessed state inside a confirmed chain of three nested q ... Q scopes' if depth==3 else
+             'witnessed state inside a confirmed chain of two nested q ... Q scopes' if depth==2 else
              'witnessed state inside one confirmed q ... Q scope')+'; the block '
             +', '.join(steps+['sets its own font, text state and fill'])
             +' and restores every parameter with its own q ... Q'
@@ -650,7 +688,7 @@ def _boundary_value(content, data, sha, d, generated, legacy, location, scope_lo
     ones (same operator, same bytes), and the scope and state there must be
     the confirmed, still safe, ones. An offset alone never identifies it.
 
-    A boundary inside a q ... Q scope, or a chain of two, must still be
+    A boundary inside a q ... Q scope, or a chain of two or three, must still be
     inside the same one: the scope or chain this revision's structure puts
     around it must have the confirmed witnesses (bytes, depth, restored
     states), each opening q and matching Q must be where ``scope_location``
@@ -693,6 +731,8 @@ def _boundary_value(content, data, sha, d, generated, legacy, location, scope_lo
     # clip rectangle and the scope are re-derived from this revision's
     # state and program, never read back.
     enclosing=auth.get('graphics_state_scope')
+    if enclosing is not None and not _within(enclosing,confirmed['offset'],confirmed['offset']):
+        raise PdfError('confirmed page-program boundary q ... Q scope has malformed level order')
     ops=list(operators(data)) if state['clip'] or b.q_depth or enclosing is not None else []
     ctms=source_ctms(data) if state['ctm']!=list(IDENTITY) else None
     expected,reason=_compensation(state,ctms[b.ordinal] if ctms else None,auth)
@@ -716,11 +756,11 @@ def _boundary_value(content, data, sha, d, generated, legacy, location, scope_lo
         carried=scope_location if scope_location is not None else _scope_location(enclosing) if confirmed_program else None
         if carried is None:
             raise PdfError('a confirmed page-program boundary inside a q ... Q scope needs its scope location in this revision')
-        if (_scope_location(derived)!=carried or confirmed_program and scope_location is None
+        if (_scope_location(derived)!=carried or confirmed_program
                 and _scope_operators(derived)!=_scope_operators(enclosing)):
             raise PdfError('confirmed page-program boundary is not in its confirmed q ... Q scope')
-        # The block, or the unused boundary, never leaves the scope (at depth
-        # 2, the inner scope, which never leaves the outer one).
+        # The block, or the unused boundary, stays inside the innermost scope;
+        # each level stays inside its parent.
         if not _within(derived,offset,after):
             raise PdfError('generated continuation block is not inside its confirmed q ... Q scope')
     if auth['graphics_state_contract']!=_graphics_contract(expected,clipped,derived):
@@ -737,14 +777,14 @@ def _boundary_value(content, data, sha, d, generated, legacy, location, scope_lo
 def boundary_id(page, program_sha256, previous, following, scope=None):
     """A boundary's ID from its source witnesses, and its q ... Q scope's if it has one.
 
-    A depth-2 ID also covers the chain: the policy, then the outer and the
-    inner level's opening q and matching Q (ordinal, end, bytes). Changing
-    either level, or which q matches which Q, is another boundary.
+    At depth 2/3 the ID covers the depth-specific policy, then each level's
+    q and Q (ordinal, end, bytes), outermost first. Changing any level or
+    pairing is another boundary. Depth 0/1/2 retain their original inputs.
     """
     witnesses=[page,program_sha256,previous['ordinal'],previous['end'],previous['sha256'],following['sha256']]
     if scope is not None:
         levels=_scope_levels(scope)
-        witnesses+=([] if len(levels)==1 else [SCOPE_CHAIN])+[
+        witnesses+=([] if len(levels)==1 else [scope['policy']])+[
             level[k][f] for level in levels for k in ('opening','matching') for f in ('ordinal','end','sha256')]
     return 'boundary-'+digest(witnesses)[:24]
 

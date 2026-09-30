@@ -1,6 +1,8 @@
 # Continuation開発の再開地点 — 2026-09-24
 
-**最新のengine修正（PR #18後）**: 十進source operandのexact CTM Sからinverse Nを作り、N×S・N×Mを従来の0.002pt上界で個別に証明する方式へ修正した。端数平行移動の深さ0・1・2でMuPDF・Poppler回帰を確認し、同じLibreOffice実境界のfocused評価でPoppler差は**5,868→0画素**となった。scope/clipの契約は維持し、旧compensated authorityは`needs_confirmation`とする。[数値モデル・修正・新しい評価](../evaluations/continuation/README.md#source-ctm-compensation)。
+**現行の最大scope depthは3**。PR #19 merge `d5234fe68264adc44918756325746982ab251c5b`から、専用のouter/middle/inner authorityと6 operatorの追跡を追加した。depth 0・1・2の形式、CTM・clip proofは維持する。depth 4以上は拒否し、今回は外部実PDF評価を実施しない。[今回の実装と検証](#depth-3専用scopeの追加)。
+
+**PR #19で解消済みのCTM renderer差**: 十進source operandのexact CTM Sからinverse Nを作り、N×S・N×Mを従来の0.002pt上界で個別に証明する方式へ修正した。端数平行移動の深さ0・1・2でMuPDF・Poppler回帰を確認し、同じLibreOffice実境界のfocused評価でPoppler差は**5,868→0画素**となった。scope/clipの契約は維持し、旧compensated authorityは`needs_confirmation`とする。[数値モデル・修正・新しい評価](../evaluations/continuation/README.md#source-ctm-compensation)。
 
 **PR #18の追加評価（2026-09-27）**: PR #17 engineの深さ2・CTM相殺・矩形clipを加工していないLibreOffice原本で評価した。系列と全状態復帰は通過したが、page-entry対照とのPoppler画素一致は未達（生成1行目5,868画素差）。engineは未変更。[結果・再現条件・原因・修正候補](../evaluations/continuation/README.md#pr-17-engineの深さ2実境界評価--2026-09-27)。以下は各時点の履歴である。
 
@@ -1087,3 +1089,38 @@ engine digestは`fd346b9a1fe37aec8e8c8246e7ed5dbc0a858bdb5bf18c524019261e76878b8
 [原因・数値契約・検証の詳細](../evaluations/continuation/README.md#source-ctm-compensation)と[新しい公開集計](../evaluations/continuation/ctm-source-destination-summary.json)を参照。PR #18のfailed summaryは変更していない。実PDFのpage-entry PDF・sidecarは旧出力とbyte一致した。全suiteの初回と続行を含め、重い処理を並列実行していない。
 
 証明しているのはpage-space displacementの上界であり、任意rendererの画素一致ではない。深さ3以上、ExtGState、証明できないclip、pending path等の拒否は維持する。非描画operatorの累積整理にも進んでいない。
+
+## Depth 3専用scopeの追加
+
+起点はPR #19 merge `d5234fe68264adc44918756325746982ab251c5b`。最大scope depthを2から3へ1段だけ拡張した。depth 4以上は`nested-graphics-state-save`で拒否する。上の「次はCTM renderer差」という記述はPR #18時点の履歴であり、その差はPR #19で解消済みである。
+
+engineの変更は`pdfeditor/continuation.py`のscope関連に限定した。CTMのsource operand復元、Nのserialization、N×S/N×Mの上界、clip proof、安全条件の関数群はPR #19と同じsource bytesである。他のengineファイル・writerは変更していない。
+
+- **専用authority**: `policy = three-nested-graphics-state-saves`、`depth = 3`、`outer`・`middle`・`inner`。各levelにopening q・matching Q（ordinal、start/end、bytesのSHA-256）とrestored_stateを持つ。contractもdepth 3専用。depth 1の直接形、depth 2のouter/inner形は維持する。
+- **identityとbinding**: IDに専用policyと6 operatorのidentityを順番に入れる。bindingもouter/middle/innerの各opening/matchingを持つ。確認元のoperator identity、各revisionの実stackの対応・順序・状態、直前bindingからMutationProgramで写した6範囲を照合する。operatorを消費するmutationは、同一bytes・op anchorのある置換でも拒否する。
+- **不正な形**: depth/policy/contractとlevel集合の不一致、middle欠落、depth 2へのmiddle追加、levelやmatching Qの入れ替え、depth 2への偽装を拒否する。確認元の順序も検査し、全levelの状態とbytesが同一で、IDを再計算した改ざんでも拒否する。
+- **状態復帰**: generated Q → depth 3のconfirmed state、inner Q → depth 2、middle Q → depth 1、outer Q → depth 0。`_state()`の全15field（CTM/clip、fill/stroke、other、opacity、font/text state）を比較する。
+- **組合せ**: identity、fractional translation、rectangular clip、fractional translation＋clip。middleでclip、innerで`1 0 0 1 158.2 662.8 cm`を設定する。NはPR #19の`1 0 0 1 -158.2 -662.8 cm`、toleranceは0.002ptのまま。
+- **synthetic系列**: reopen、second、shorten、regrow、no-op 1回、font所有と再利用、nesting違反0、rollback。source slotをouter q前・各3段のprefix/suffix・outer Q後の8箇所に置き、source編集でずれる6 operatorを追跡する。4組合せでpage-entryとの計画glyph・保存origin・MuPDF画素を比較する。
+- **外部評価**: 今回は実施していない。Windows LibreOffice、single、depth 0・1・2の外部系列も再実行せず、自然なdepth 3候補の調査や原本の加工もしていない。PR #18のfailed summaryとPR #19のfocused summaryを保持する。
+
+検証のraw log・JUnit・test開始/完了ID・process exit・engine digestは`tmp/depth-three/`に保存する。full suiteはengine最終形で1回だけ起動し、異常終了した場合は最後のtestとprocess/system情報を記録する。pytest-xdistとサブエージェントは使用しない。
+
+関連テストの初回は2026-09-29 00:16 JST頃に記録が途切れた。最後の完了は`test_the_block_in_a_scope_draws_where_page_entry_does[clip]`、次の`[compensated-clip]`はsetup完了までである。再開時にはpytest・監視processとも残っておらず、exit code・最終JUnitは取得できなかった。Windowsは00:16:39にlogoffとsleepを記録しているが、対応するPython/pytestのApplication Errorは見つからず、終了原因は確定できない。この時点でfull suiteは未起動だった。
+
+初回の成功53件は繰り返さず、fixture不備で失敗したsource編集8件と未完了分だけの計196件を続行した。sourceの8位置のfixtureは、editable sourceのinline stateをローカルな`q ... Q`内で既定値に戻し、各scopeに設定した異なるfont/text stateと分離して修正した。engineの安全条件は緩和していない。開発初期の別のfixture修正では、壊したq/Qがwitness検証より前のContentPage構築で拒否される場合も期待した例外として確認するようにした。
+
+最終検証は2026-09-29に完了した。集計・入力系列のhash・実行環境・中断時の情報は[depth-three-validation.json](depth-three-validation.json)に保存した。
+
+| 検証 | 結果・所要時間 |
+| --- | --- |
+| 新しいdepth 3 synthetic regression | 38件成功。4組合せの描画と全状態復帰、8位置のsource編集、6 operatorのidentity・改ざん・消費拒否、系列・rollbackを確認 |
+| 関連7ファイル | 249 passed / 0 skipped。初回成功53件＋未完了分196 passed（3,991.13秒）。初回記録は約18分時点で途切れ、続行は約66.5分 |
+| PR #19とのdepth 0・1・2互換比較 | confirmed → grow → second → no-op。9組の保存PDF/sidecarと3組の確認時PDF/状態snapshotがbyte一致。authority・boundary ID・binding・page program・generated blockも一致し、旧sidecarを新engineでreopenできた。比較元生成126.09秒、変更後生成・比較146.44秒 |
+| 最終full suiteの1回の実行 | **945 passed / 2 skipped / 0 failed**、7,832.78秒（約130.5分）。2026-09-29 19:51〜22:01 JST、中断なし、exit code 0。947件を1回のsessionで収集・実行し、開始時と終了時のengine digestは一致 |
+
+full suiteは`.venv\Scripts\python.exe -m pytest -q --basetemp=tmp/pytest --junitxml=tmp/depth-three/full.xml`で実行した。skip 2件はAES-128・AES-256のprovider不足によるもので、今回のscope回帰はskipしていない。既存source CTMのPoppler回帰も関連実行・全件実行の両方で通過した。外部評価の再実行は行っていない。
+
+最終engine digest（`pdfeditor/*.py`のファイル名別SHA-256をsortしたJSONのSHA-256）は`24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a`。Python 3.12.14、PyMuPDF 1.27.2.3、pypdf 6.10.0、Windows 11で検証した。重い検証は関連テストの続行 → byte比較 → full suiteの順に実行し、full suiteは再実行していない。
+
+次の最小の構造障壁はdepth 4。ExtGState、未証明clip、pending path、text object・marked content・BX/EX・Form XObject内も未対応のままである。非描画operatorの累積整理には進んでいない。

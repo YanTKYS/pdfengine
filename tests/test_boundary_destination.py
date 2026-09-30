@@ -144,7 +144,8 @@ def first_operator(data):
     (b'q 0 0 5 5 re f Q 0 g', b'0 0 5 5 re f', []),
     # A chain of two proven scopes is no longer one; see test_scope_chain_boundary.
     (b'q q 0 0 5 5 re f Q Q 0 g', b'0 0 5 5 re f', []),
-    (b'q q q 0 0 5 5 re f Q Q Q 0 g', b'0 0 5 5 re f', ['nested-graphics-state-save']),
+    (b'q q q 0 0 5 5 re f Q Q Q 0 g', b'0 0 5 5 re f', []),
+    (b'q q q q 0 0 5 5 re f Q Q Q Q 0 g', b'0 0 5 5 re f', ['nested-graphics-state-save']),
     (b'/P BMC 0 0 5 5 re f EMC 0 g', b'0 0 5 5 re f', ['inside-marked-content']),
     (b'BX 0 0 5 5 re f EX 0 g', b'0 0 5 5 re f', ['inside-compatibility-section']),
     (b'0 0 5 5 re f 0 g', b'0 0 5 5 re', ['pending-path']),
