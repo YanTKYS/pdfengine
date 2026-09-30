@@ -1,5 +1,53 @@
 # 既存ページ上の確認済みcontinuation destination
 
+## caller workflow
+
+既存ページの空き領域へparagraphのcontinuationを置く場合、callerは次の6段階でdestinationを確認する。段階ごとに別のmodule APIを使う。engineはboundaryを選ばない。
+
+```
+inspection → structural review → geometry review → caller decision → confirmation request → explicit confirmation
+```
+
+| # | 段階 | 入力 → 出力 | 誰が決めるか | 保証しないこと |
+|---|---|---|---|---|
+| 1 | inspection `inspect_continuation_boundaries(source, page)` | source・page → safe候補（authority付き）と、refused境界の件数・理由の集計。個々のrefused境界が必要なら`include_refused=True` | engineが安全条件を判定する | destinationの空き・geometry。選択 |
+| 2 | structural review `review_continuation_boundaries(source, page)` | source・page → safe候補を同じpaint位置ごとにまとめたgroup | engineが完全一致でまとめるだけ | 選択・順位・authorityの同一性。geometry |
+| 3 | geometry review `review_continuation_geometry(source, page, bounds)` | source・page・callerのbounds → 2と同じgroupに、空きと候補ごとの継承clip適合の注記 | boundsはcallerが決める。engineは既存の検査結果を表示する | 生成glyph inkの包含・layout・容量。選択（候補を削除・並べ替えしない） |
+| 4 | caller decision（callerのコード） | 2・3の結果 → boundary ID 1件 | **caller**。minimal集合・通過候補・並び順から自動では決まらない | — |
+| 5 | confirmation request `build_continuation_boundary_confirmation_request(geometry, boundary_id=..., destination_id=..., paragraph_id=..., region_id=...)` | 3のrecord・4のboundary ID・identities → `confirm_kwargs` | callerの選択をそのまま運ぶ。選んだ候補のgeometryが不成立なら拒否する | sourceの再検証（`source_revalidated: false`）。confirm |
+| 6 | explicit confirmation `confirm_continuation_destination(source, **request["confirm_kwargs"])` | current source・`confirm_kwargs` → confirmed destination | callerが呼ぶ。engineがcurrent sourceでauthority・clip・空きを再検証する | 生成する文章が収まること（容量・ink・layoutは`confirm_shared_flow`以降の計画と保存時の検査） |
+
+- **review ≠ selection**: 1〜3は観測・整理・注記だけである。どのboundaryを使うかは4でcallerが決める。
+- **request ≠ confirmation**: 5はconfirmの引数を作るだけで、sourceを読まない。確認済みdestinationを返すのは6だけである。古いreviewから作ったrequestは、sourceが変わっていれば6で拒否される。
+- **confirm ≠ generated text fits**: 6はboundsとboundary authorityを確認する。生成する文章の容量・ink・layoutは、その後の`confirm_shared_flow`・計画・保存の各段階がそれぞれ検査する。
+
+page・boundsは、3の結果から5の`confirm_kwargs`へbuilderが運ぶので、callerが書き写す必要はない。sourceはgeometry reviewにもrequestにも入らない。callerが保持し、6でcurrent sourceとして明示的に渡す。confirm引数への変換は5が行い、current sourceの再検証は6だけが行う（requestの`source_revalidated: false`と同じ分担）。group IDとboundary IDはprefixが異なり、5と6はどちらもgroup IDを拒否する。この分担でgapがないため、6段階をまとめるwrapperは設けていない。page entry（`before-page-program`）へのdestinationは、1〜5を使わずに6を直接呼ぶ（[契約](#契約)）。
+
+### public API
+
+| module | API | 位置付け |
+|---|---|---|
+| `pdfeditor.continuation` | `inspect_continuation_boundaries(source, page, *, include_refused=False)` | 1. inspection |
+| `pdfeditor.continuation` | `confirm_continuation_destination(source, *, destination_id, paragraph_id, region_id, page, bounds, insertion, graphics_state, page_entry_order=None, boundary=None)` | 6. explicit confirmation（page entryにも使う） |
+| `pdfeditor.continuation_review` | `review_continuation_boundaries(source, page)` | 2. structural review |
+| `pdfeditor.continuation_review` | `review_continuation_geometry(source, page, bounds)` | 3. geometry review |
+| `pdfeditor.continuation_review` | `build_continuation_boundary_confirmation_request(geometry_review, *, boundary_id, destination_id, paragraph_id, region_id)` | 5. confirmation request |
+| `pdfeditor.continuation_review` | `group_continuation_boundary_candidates(candidates)` | advanced pure API。手元のinspector safe候補（複数ページ可）を2と同じ規則でまとめる。通常のcallerは2を使えばよい。公開済みの契約として維持する |
+
+`pdfeditor`パッケージ直下からの再exportはしない。他のflow系と同じく、module単位で使う。
+
+### schema
+
+| record | 識別 | 性質 |
+|---|---|---|
+| boundary inspection record | 1の返却（`schema`欄なし） | current programのread-only観測。boundary IDはそのprogram固有。永続保存形式ではなく、6が同じ判定をやり直す |
+| structural review | `pdfengine-continuation-boundary-review-1` | read-only presentation。group IDはそのprogram revisionの中だけで有効。永続でもconfirm可能でもない |
+| geometry review | `pdfengine-continuation-boundary-geometry-review-1` | read-only presentation（callerのbounds付き）。永続保存形式ではない |
+| confirmation request | `pdfengine-continuation-boundary-confirmation-request-1` | confirmへのhandoff。authorityではなく、sourceも再検証していない |
+| confirmed destination | 6の返却（`schema`欄なし） | current source authority。確認時のPDF・page programのSHA-256に固定される。`confirm_shared_flow`へ渡され、flowのstateとsidecarに保存される（永続） |
+
+以下は、各段階の技術契約と拡張の履歴である。
+
 **現行scope上限はdepth 3**。PR #19のsource-decimal CTM契約を維持し、depth 3専用のouter/middle/inner形を追加した。depth 0・1・2のserialized形式は維持する。詳細は[3段の契約](#3段のq--q-scope-chainの内側)。以下の冒頭は各拡張時点の履歴である。
 
 **外部PDF評価済み（2026-09-24）**。Windows環境で、対象の外部LibreOffice PDFの1 paragraphについて系列評価を完了した。内容は、確認済みの6ページdestinationを使った`overflow → reopen → re-edit → shorten → regrow → no-op`と、容量拒否である。その後、再保存で生成fontが累積する問題を修正し（[下記](#生成fontの寿命)）、同じ系列をno-op 3回まで拡げて再評価した。そのengineでの全suiteは642 passed / 7 skipped / 0 failed（Windows）である。確認したのは単一原本・単一destinationの範囲であり、任意のPDFで自然な再レイアウトができることは示していない。経緯は[再開地点と検証状況](continuation-checkpoint.md)を参照。
