@@ -45,6 +45,8 @@ def test_overlapping_reasons_are_not_added_as_distinct_boundaries():
     assert report['outside_text_object_reason_counts'] == {'pending-path': 2, 'pending-clip': 1}
     assert sum(row['boundaries'] for row in report['reason_combinations']) == 3
     assert report['categories']['extgstate'] == report['categories']['transparency'] == 0
+    assert report['categories']['text_rendering_mode'] == 1
+    assert report['categories']['other'] == 0
 
 
 @pytest.mark.parametrize('change', ['count', 'ordinal', 'depth', 'reason', 'partition', 'raw_ops'])

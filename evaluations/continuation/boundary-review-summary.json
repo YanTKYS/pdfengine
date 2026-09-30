@@ -1,0 +1,827 @@
+{
+  "schema": "pdfengine-boundary-review-1",
+  "status": "measurement_complete",
+  "environment": {
+    "started": "2026-09-30T20:21:25+0900",
+    "git_status": "## codex/boundary-review...origin/main",
+    "head": "b2f437a399f2a42d4bb31125ad7c388dc12055a3",
+    "engine_digest": "24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a",
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pymupdf": "1.27.2.3",
+    "pypdf": "6.10.0",
+    "poppler": "pdftoppm version 26.07.0",
+    "independent_pypdf": "6.10.0",
+    "independent_python": "3.12.14",
+    "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+    "providers": {
+      "body": {
+        "filename": "msmincho.ttc",
+        "font_index": 1,
+        "sha256": "ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2",
+        "variations": null
+      },
+      "latin": {
+        "filename": "times.ttf",
+        "font_index": 0,
+        "sha256": "931c5de5c70401d9324d5014c123802b4fb753000360ceb2f56c589403cd58c5",
+        "variations": null
+      }
+    },
+    "provider_evidence_source": {
+      "path": "evaluations/story_styles/summary.json",
+      "sha256": "c2329afaefcfcb93ff4d57920d0a3e081dd2b0743bc41bf805bddf9168b6c7c2"
+    }
+  },
+  "source": "evaluations/realpdf/corpus/lo_migration_ja.pdf",
+  "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+  "engine_digest": "24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a",
+  "contract": {
+    "group_key": [
+      "page",
+      "z_order.semantics",
+      "z_order.prefix_paint_operators",
+      "z_order.suffix_paint_operators"
+    ],
+    "meaning": "Same existing paint position only; no authority, state, scope, clip or CTM equivalence is inferred.",
+    "group_identity": "SHA-256 of the canonical grouping key (first 24 hex digits), local to this inspected input revision; never a confirmation ID.",
+    "least_constrained_criteria": [
+      "has_rectangular_clip_constraint",
+      "has_ctm_compensation",
+      "q_depth"
+    ],
+    "criteria_meaning": [
+      "Absent clip: no inherited rectangular containment constraint to review.",
+      "Absent compensation: no inverse and source/interpreted CTM proof to review.",
+      "Shallower q depth: fewer enclosing q/Q bindings and restored states to review."
+    ],
+    "comparison": "Lexicographic ascending (false before true, shallower depth first); every exact tie retained.",
+    "safety_ranking": false,
+    "automatic_selection": false,
+    "automatic_confirmation": false,
+    "geometry_used": false,
+    "limitation": "A safe candidate has not thereby been reviewed as an empty destination."
+  },
+  "totals": {
+    "candidates": 3016,
+    "groups": 834,
+    "group_size_distribution": {
+      "1": 81,
+      "2": 55,
+      "3": 12,
+      "4": 653,
+      "5": 21,
+      "6": 12
+    },
+    "singleton_groups": 81,
+    "multiple_candidate_groups": 753,
+    "maximum_group_size": 6,
+    "least_constrained_singleton_groups": 776,
+    "least_constrained_tied_groups": 58,
+    "least_constrained_candidates": 896,
+    "multiple_candidate_groups_with_single_least": 695,
+    "operators": 14475,
+    "boundaries": 14465,
+    "refused_boundaries": 11449
+  },
+  "pages": [
+    {
+      "page": 1,
+      "program_sha256": "5e72e303e0ea66c8a39bb2e10fe918086fd4d1abcc069bffd6e81f18b6b046b3",
+      "operators": 980,
+      "boundaries": 979,
+      "refused_boundaries": 494,
+      "inspection_seconds": 0.797,
+      "candidates": 485,
+      "groups": 121,
+      "group_size_distribution": {
+        "2": 1,
+        "3": 2,
+        "4": 115,
+        "5": 1,
+        "6": 2
+      },
+      "singleton_groups": 0,
+      "multiple_candidate_groups": 121,
+      "maximum_group_size": 6,
+      "least_constrained_singleton_groups": 120,
+      "least_constrained_tied_groups": 1,
+      "least_constrained_candidates": 123,
+      "multiple_candidate_groups_with_single_least": 120,
+      "review_unit_reduction_percent": 75.0515
+    },
+    {
+      "page": 2,
+      "program_sha256": "a87161d2eb82292e7092d3069fdba32e2dbf529bdb8c8ac3797f258f0b4ed04b",
+      "operators": 1393,
+      "boundaries": 1392,
+      "refused_boundaries": 1109,
+      "inspection_seconds": 1.031,
+      "candidates": 283,
+      "groups": 80,
+      "group_size_distribution": {
+        "1": 9,
+        "2": 6,
+        "3": 2,
+        "4": 59,
+        "5": 4
+      },
+      "singleton_groups": 9,
+      "multiple_candidate_groups": 71,
+      "maximum_group_size": 5,
+      "least_constrained_singleton_groups": 73,
+      "least_constrained_tied_groups": 7,
+      "least_constrained_candidates": 88,
+      "multiple_candidate_groups_with_single_least": 64,
+      "review_unit_reduction_percent": 71.7314
+    },
+    {
+      "page": 3,
+      "program_sha256": "f86bbf28a50f973c50e9ec3866f03fc2880b787cd9506354098786473100d6c1",
+      "operators": 1700,
+      "boundaries": 1699,
+      "refused_boundaries": 1303,
+      "inspection_seconds": 1.515,
+      "candidates": 396,
+      "groups": 108,
+      "group_size_distribution": {
+        "1": 9,
+        "2": 6,
+        "4": 91,
+        "5": 1,
+        "6": 1
+      },
+      "singleton_groups": 9,
+      "multiple_candidate_groups": 99,
+      "maximum_group_size": 6,
+      "least_constrained_singleton_groups": 102,
+      "least_constrained_tied_groups": 6,
+      "least_constrained_candidates": 114,
+      "multiple_candidate_groups_with_single_least": 93,
+      "review_unit_reduction_percent": 72.7273
+    },
+    {
+      "page": 4,
+      "program_sha256": "49ce21514a0a8ea4b2fe00bc912fe3add70d7c8445e219727d357dc2a4d90194",
+      "operators": 1553,
+      "boundaries": 1552,
+      "refused_boundaries": 1300,
+      "inspection_seconds": 1.235,
+      "candidates": 252,
+      "groups": 72,
+      "group_size_distribution": {
+        "1": 9,
+        "2": 6,
+        "3": 2,
+        "4": 51,
+        "5": 3,
+        "6": 1
+      },
+      "singleton_groups": 9,
+      "multiple_candidate_groups": 63,
+      "maximum_group_size": 6,
+      "least_constrained_singleton_groups": 66,
+      "least_constrained_tied_groups": 6,
+      "least_constrained_candidates": 78,
+      "multiple_candidate_groups_with_single_least": 57,
+      "review_unit_reduction_percent": 71.4286
+    },
+    {
+      "page": 5,
+      "program_sha256": "17c26cc365a42e685a658e3229247d3bf12116425a377a66dc34b7967237b64c",
+      "operators": 1670,
+      "boundaries": 1669,
+      "refused_boundaries": 1306,
+      "inspection_seconds": 1.281,
+      "candidates": 363,
+      "groups": 100,
+      "group_size_distribution": {
+        "1": 9,
+        "2": 6,
+        "3": 1,
+        "4": 81,
+        "5": 3
+      },
+      "singleton_groups": 9,
+      "multiple_candidate_groups": 91,
+      "maximum_group_size": 5,
+      "least_constrained_singleton_groups": 93,
+      "least_constrained_tied_groups": 7,
+      "least_constrained_candidates": 108,
+      "multiple_candidate_groups_with_single_least": 84,
+      "review_unit_reduction_percent": 72.4518
+    },
+    {
+      "page": 6,
+      "program_sha256": "823166585f1387c3aa1844145795623125df2d211b4b24a2b9c59589e800fcd7",
+      "operators": 1641,
+      "boundaries": 1640,
+      "refused_boundaries": 1269,
+      "inspection_seconds": 1.282,
+      "candidates": 371,
+      "groups": 102,
+      "group_size_distribution": {
+        "1": 9,
+        "2": 6,
+        "3": 3,
+        "4": 79,
+        "5": 5
+      },
+      "singleton_groups": 9,
+      "multiple_candidate_groups": 93,
+      "maximum_group_size": 5,
+      "least_constrained_singleton_groups": 95,
+      "least_constrained_tied_groups": 7,
+      "least_constrained_candidates": 110,
+      "multiple_candidate_groups_with_single_least": 86,
+      "review_unit_reduction_percent": 72.5067
+    },
+    {
+      "page": 7,
+      "program_sha256": "9d608ceee8a8c15738846b4c3021d42a050812c259f88a1fb7929b724283d304",
+      "operators": 1631,
+      "boundaries": 1630,
+      "refused_boundaries": 1402,
+      "inspection_seconds": 1.297,
+      "candidates": 228,
+      "groups": 66,
+      "group_size_distribution": {
+        "1": 9,
+        "2": 6,
+        "4": 49,
+        "5": 1,
+        "6": 1
+      },
+      "singleton_groups": 9,
+      "multiple_candidate_groups": 57,
+      "maximum_group_size": 6,
+      "least_constrained_singleton_groups": 60,
+      "least_constrained_tied_groups": 6,
+      "least_constrained_candidates": 72,
+      "multiple_candidate_groups_with_single_least": 51,
+      "review_unit_reduction_percent": 71.0526
+    },
+    {
+      "page": 8,
+      "program_sha256": "498b54923251e69ae891a49279c5f50fb6625b520f2440a2aafe5e0e5b3b4989",
+      "operators": 1431,
+      "boundaries": 1430,
+      "refused_boundaries": 1218,
+      "inspection_seconds": 1.235,
+      "candidates": 212,
+      "groups": 62,
+      "group_size_distribution": {
+        "1": 9,
+        "2": 6,
+        "3": 1,
+        "4": 44,
+        "6": 2
+      },
+      "singleton_groups": 9,
+      "multiple_candidate_groups": 53,
+      "maximum_group_size": 6,
+      "least_constrained_singleton_groups": 56,
+      "least_constrained_tied_groups": 6,
+      "least_constrained_candidates": 68,
+      "multiple_candidate_groups_with_single_least": 47,
+      "review_unit_reduction_percent": 70.7547
+    },
+    {
+      "page": 9,
+      "program_sha256": "3884c43869584396fda504365a987b1a829b067e8e3ae66f38fed05a602d76b2",
+      "operators": 1479,
+      "boundaries": 1478,
+      "refused_boundaries": 1326,
+      "inspection_seconds": 1.078,
+      "candidates": 152,
+      "groups": 47,
+      "group_size_distribution": {
+        "1": 9,
+        "2": 6,
+        "4": 30,
+        "5": 1,
+        "6": 1
+      },
+      "singleton_groups": 9,
+      "multiple_candidate_groups": 38,
+      "maximum_group_size": 6,
+      "least_constrained_singleton_groups": 41,
+      "least_constrained_tied_groups": 6,
+      "least_constrained_candidates": 53,
+      "multiple_candidate_groups_with_single_least": 32,
+      "review_unit_reduction_percent": 69.0789
+    },
+    {
+      "page": 10,
+      "program_sha256": "a7220825594cabbb752694f12eb153e98f45e1eb22eda558eeff909d6981440d",
+      "operators": 997,
+      "boundaries": 996,
+      "refused_boundaries": 722,
+      "inspection_seconds": 1.047,
+      "candidates": 274,
+      "groups": 76,
+      "group_size_distribution": {
+        "1": 9,
+        "2": 6,
+        "3": 1,
+        "4": 54,
+        "5": 2,
+        "6": 4
+      },
+      "singleton_groups": 9,
+      "multiple_candidate_groups": 67,
+      "maximum_group_size": 6,
+      "least_constrained_singleton_groups": 70,
+      "least_constrained_tied_groups": 6,
+      "least_constrained_candidates": 82,
+      "multiple_candidate_groups_with_single_least": 61,
+      "review_unit_reduction_percent": 72.2628
+    }
+  ],
+  "examples": {
+    "selection": "One group per present attribute, preferring mixed values, then page/paint-position order; duplicate groups combined. These are coverage examples, not recommended choices.",
+    "variant_meaning": "Local labels compare exact witness hashes within each example only; full witnesses remain in raw inspector records. Equal review attributes do not establish authority equivalence.",
+    "absent_types": [],
+    "groups": [
+      {
+        "covers": [
+          "page_level",
+          "depth_1",
+          "depth_2",
+          "rectangular_clip"
+        ],
+        "page": 1,
+        "group_id": "paint-group-29f35d789ad9a15e3d870083",
+        "program_sha256": "5e72e303e0ea66c8a39bb2e10fe918086fd4d1abcc069bffd6e81f18b6b046b3",
+        "z_order": {
+          "semantics": "after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix",
+          "prefix_paint_operators": 0,
+          "suffix_paint_operators": 120
+        },
+        "candidate_count": 6,
+        "ordinal_min": 0,
+        "ordinal_max": 7,
+        "least_constrained_candidates": [
+          "boundary-1b64f01b8e3898b7a71b96d0"
+        ],
+        "distinct_witness_counts": {
+          "graphics_state_sha256": 4,
+          "scope_sha256": 3,
+          "compensation_sha256": 1,
+          "clip_constraint_sha256": 2
+        },
+        "candidate_columns": [
+          "boundary_id",
+          "ordinal",
+          "previous_operator",
+          "next_operator",
+          "q_depth",
+          "scope_policy",
+          "has_scope_binding",
+          "has_ctm_compensation",
+          "has_rectangular_clip_constraint",
+          "scope_q_Q_ordinals_outermost_first",
+          "graphics_state_variant",
+          "scope_variant",
+          "compensation_variant",
+          "clip_variant"
+        ],
+        "candidates": [
+          [
+            "boundary-1b64f01b8e3898b7a71b96d0",
+            0,
+            "w",
+            "q",
+            0,
+            null,
+            false,
+            false,
+            false,
+            [],
+            1,
+            null,
+            null,
+            null
+          ],
+          [
+            "boundary-66a438bbd0d5c54cc43e4cfe",
+            1,
+            "q",
+            "re",
+            1,
+            "one-enclosing-graphics-state-save",
+            true,
+            false,
+            false,
+            [
+              [
+                1,
+                970
+              ]
+            ],
+            1,
+            1,
+            null,
+            null
+          ],
+          [
+            "boundary-39eb5f28f1c908204491aac2",
+            4,
+            "n",
+            "q",
+            1,
+            "one-enclosing-graphics-state-save",
+            true,
+            false,
+            true,
+            [
+              [
+                1,
+                970
+              ]
+            ],
+            2,
+            1,
+            null,
+            1
+          ],
+          [
+            "boundary-dbbe063f7af612a1284b441e",
+            5,
+            "q",
+            "RG",
+            2,
+            "two-nested-graphics-state-saves",
+            true,
+            false,
+            true,
+            [
+              [
+                1,
+                970
+              ],
+              [
+                5,
+                15
+              ]
+            ],
+            2,
+            2,
+            null,
+            1
+          ],
+          [
+            "boundary-9d22448938c97c0f168761e2",
+            6,
+            "RG",
+            "rg",
+            2,
+            "two-nested-graphics-state-saves",
+            true,
+            false,
+            true,
+            [
+              [
+                1,
+                970
+              ],
+              [
+                5,
+                15
+              ]
+            ],
+            3,
+            2,
+            null,
+            1
+          ],
+          [
+            "boundary-f07f78a0100788c6a8977638",
+            7,
+            "rg",
+            "BT",
+            2,
+            "two-nested-graphics-state-saves",
+            true,
+            false,
+            true,
+            [
+              [
+                1,
+                970
+              ],
+              [
+                5,
+                15
+              ]
+            ],
+            4,
+            2,
+            null,
+            1
+          ]
+        ]
+      },
+      {
+        "covers": [
+          "ctm_compensation"
+        ],
+        "page": 1,
+        "group_id": "paint-group-64ced8954786f9a0bcc2bacc",
+        "program_sha256": "5e72e303e0ea66c8a39bb2e10fe918086fd4d1abcc069bffd6e81f18b6b046b3",
+        "z_order": {
+          "semantics": "after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix",
+          "prefix_paint_operators": 119,
+          "suffix_paint_operators": 1
+        },
+        "candidate_count": 6,
+        "ordinal_min": 969,
+        "ordinal_max": 976,
+        "least_constrained_candidates": [
+          "boundary-2863fa8924d0c26f9317f319"
+        ],
+        "distinct_witness_counts": {
+          "graphics_state_sha256": 4,
+          "scope_sha256": 4,
+          "compensation_sha256": 2,
+          "clip_constraint_sha256": 3
+        },
+        "candidate_columns": [
+          "boundary_id",
+          "ordinal",
+          "previous_operator",
+          "next_operator",
+          "q_depth",
+          "scope_policy",
+          "has_scope_binding",
+          "has_ctm_compensation",
+          "has_rectangular_clip_constraint",
+          "scope_q_Q_ordinals_outermost_first",
+          "graphics_state_variant",
+          "scope_variant",
+          "compensation_variant",
+          "clip_variant"
+        ],
+        "candidates": [
+          [
+            "boundary-b9e94077952d662de405dc64",
+            969,
+            "B*",
+            "Q",
+            1,
+            "one-enclosing-graphics-state-save",
+            true,
+            false,
+            true,
+            [
+              [
+                1,
+                970
+              ]
+            ],
+            1,
+            1,
+            null,
+            1
+          ],
+          [
+            "boundary-2863fa8924d0c26f9317f319",
+            970,
+            "Q",
+            "q",
+            0,
+            null,
+            false,
+            false,
+            false,
+            [],
+            2,
+            null,
+            null,
+            null
+          ],
+          [
+            "boundary-1568af751b3b6d57d957cbce",
+            971,
+            "q",
+            "re",
+            1,
+            "one-enclosing-graphics-state-save",
+            true,
+            false,
+            false,
+            [
+              [
+                971,
+                979
+              ]
+            ],
+            2,
+            2,
+            null,
+            null
+          ],
+          [
+            "boundary-de5c292685040c3e4591cff9",
+            974,
+            "n",
+            "q",
+            1,
+            "one-enclosing-graphics-state-save",
+            true,
+            false,
+            true,
+            [
+              [
+                971,
+                979
+              ]
+            ],
+            3,
+            2,
+            null,
+            2
+          ],
+          [
+            "boundary-3c723bce39e35c338aac6d7e",
+            975,
+            "q",
+            "cm",
+            2,
+            "two-nested-graphics-state-saves",
+            true,
+            false,
+            true,
+            [
+              [
+                971,
+                979
+              ],
+              [
+                975,
+                978
+              ]
+            ],
+            3,
+            3,
+            null,
+            2
+          ],
+          [
+            "boundary-2e77e8bd10c225b9112005d7",
+            976,
+            "cm",
+            "Do",
+            2,
+            "two-nested-graphics-state-saves",
+            true,
+            true,
+            true,
+            [
+              [
+                971,
+                979
+              ],
+              [
+                975,
+                978
+              ]
+            ],
+            4,
+            3,
+            1,
+            2
+          ]
+        ]
+      }
+    ]
+  },
+  "current_refusal_categories": {
+    "extgstate": 0,
+    "pending_path": 2860,
+    "pending_clip": 20,
+    "unproven_or_nonrectangular_clip": 0,
+    "marked_content": 0,
+    "text_object": 8575,
+    "text_rendering_mode": 84,
+    "bx_ex": 0,
+    "transparency": 0,
+    "ctm_proof_failure": 0,
+    "q_depth_4_plus": 0,
+    "other": 0
+  },
+  "historical_summary": {
+    "path": "evaluations/continuation/depth-three-inspection-summary.json",
+    "sha256": "ff03138de993108c8d77c3d1a88f983e114bf9923cf97f9723f1139b4caa2b67",
+    "note": "PR #21 historical other:84 is preserved; new tallies explicitly label text_rendering_mode:84 and other:0."
+  },
+  "integrity": {
+    "engine_unchanged": true,
+    "source_unchanged": true,
+    "providers_unchanged": true,
+    "historical_summary_unchanged": true,
+    "all_page_programs_and_counts_match_pr21": true
+  },
+  "seconds": {
+    "inspection": 11.798,
+    "grouping": 0.484,
+    "scan_and_artifacts": 22.406
+  },
+  "validation": {
+    "full_suite_rerun": false,
+    "external_lifecycle_rerun": false,
+    "renderer_evaluation_rerun": false,
+    "pdfs_written": 0,
+    "inspection_calls": 10,
+    "subagents_used": false,
+    "helper_tests": {
+      "command": ".venv\\Scripts\\python.exe -m pytest -q tests/test_boundary_review.py tests/test_depth_three_inspection.py --basetemp=tmp/boundary-review-tests --junitxml=evaluations/continuation/runs/boundary-review-windows/helper-tests.xml",
+      "passed": 40,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "new_grouping_cases": 32,
+      "existing_inspection_helper_cases": 8,
+      "pytest_reported_seconds": 1.14,
+      "junit_suite_seconds": 1.059,
+      "junit_sha256": "9beac322591694e7ef9f2a6382b673c822940d1c093aa4316f962abe7b888156"
+    }
+  },
+  "helper_sha256": {
+    "boundary_review.py": "6d1a3370bdf6bbcd41e21e5c4b91bef34da708a33aac0725686a4ede931002cb",
+    "boundary_review_evaluate.py": "450fcec0c2544bcfcecf7899c63ba3de97d47c256918885957a8255ef9143b17",
+    "depth_three_inspection.py": "af584659cc350a5b3de2e69cfabdc3c0bcf6d436327f40833b45455d06d8dd2e"
+  },
+  "raw_evidence": {
+    "directory": "evaluations/continuation/runs/boundary-review-windows",
+    "files": [
+      {
+        "path": "page-01.json",
+        "sha256": "996e002187fc596974958679f04056a3851f258e03fc313b803bd279d2632b54"
+      },
+      {
+        "path": "page-02.json",
+        "sha256": "b3fc1b667762e58c0a70e0797c1ea8a3eec9b94338dd039bf5abc8e99858caab"
+      },
+      {
+        "path": "page-03.json",
+        "sha256": "301bbc38ada622eeaeea6a66f720cbe44043c814d1336229422b23f6d879eb50"
+      },
+      {
+        "path": "page-04.json",
+        "sha256": "9408bc192807161e6e6a8537133976e7f0fe506ec35cd397b5eab52ccf0a6d1a"
+      },
+      {
+        "path": "page-05.json",
+        "sha256": "e461adabd3075fb082ce7d0da97f7d8b6b715bc7a38c0c72908425b5437d671f"
+      },
+      {
+        "path": "page-06.json",
+        "sha256": "a25f376debb8eff6818448dcbc66c194f09e91d7a3763c46cc5ed24cd102bb15"
+      },
+      {
+        "path": "page-07.json",
+        "sha256": "ce24012d37a456ba2f87bdb33eacd6eea1446744afcee960a34cd2c6544d49bd"
+      },
+      {
+        "path": "page-08.json",
+        "sha256": "20c08c77e7498f17cead7a1fa5e367531030afd866276ffb1a549823007d1125"
+      },
+      {
+        "path": "page-09.json",
+        "sha256": "1f9d995436e51ac36c94c79740d7c780ff93b2733fdbfb457da579ea2748aec8"
+      },
+      {
+        "path": "page-10.json",
+        "sha256": "297c474ca4e180864d5285542331a99d37493f54c9e0eabdf1c68654b18326fe"
+      },
+      {
+        "path": "groups.json",
+        "sha256": "b100c3471a0c4fadfc0677be97159cfbfd5ea48c27e16f98df02f01feea9d62c"
+      }
+    ]
+  },
+  "compression": {
+    "candidate_count": 3016,
+    "paint_position_review_units": 834,
+    "fewer_initial_review_units": 2182,
+    "reduction_percent": 72.3475,
+    "candidates_per_group": 3.6163,
+    "meaning": "Counts initial paint-position review units, not eliminated candidates or measured human review time. All 3016 alternatives are retained."
+  },
+  "assessment": {
+    "public_api_candidate": true,
+    "basis": "3016 safe candidates form 834 paint positions, with 753 multi-candidate groups and 2182 fewer initial review units (72.3475%). This is a substantial structural reduction on this corpus without discarding alternatives. No arbitrary pass threshold was used.",
+    "limitations": [
+      "One ten-page corpus; no human usability or review-time study.",
+      "834 positions still require review; 58 groups retain multiple least-constrained alternatives.",
+      "Matching paint counts or review attributes never establishes authority interchangeability.",
+      "Safe does not mean an empty destination; geometry was not evaluated."
+    ],
+    "proposed_next_scope": "Consider a read-only grouping/presentation API over existing inspector output, with revision-local group identity, unchanged boundary IDs, all alternatives and authority distinctions, operator context, and an explicit optional tie-preserving review criterion. No automatic selection, confirmation, geometry integration or safety-contract expansion."
+  },
+  "publication": {
+    "basis": "Copied from the completed single scan; assessment and test evidence added afterwards. No rescan.",
+    "scan_summary_sha256": "91d811d6eed9e1db5037c443f01bbb61bcef5bc5562ee1d4877b53ef9fcd82bc"
+  }
+}
