@@ -37,6 +37,15 @@ PR #22の考え方を`pdfeditor/continuation_review.py`（`review_continuation_b
 
 callerが指定したboundsの空き（`require_empty`、1 review 1回）と各候補の継承clip適合（`clip_contains`）を、上のreviewに注記する読み取り専用API `review_continuation_geometry(source, page, bounds)`を追加した（[契約](../../docs/confirmed-continuation.md#読み取り専用のgeometry-review)）。`review_continuation_boundaries`の出力は変えていない。確認は合成pageのtestsだけで行った。**未加工LibreOffice原本でのgeometry外部検証は未実施**で、次のWindows専用PRで行う。
 
+**Windows実原本でのgeometry外部検証（2026-09-30、PR #25 merge後）**: 上の未実施分を[geometry_review_external.py](geometry_review_external.py)で**1回だけ**実行し、完了した（status `complete`、run `geometry-review-external-windows`）。起点はHEAD `4890f94081f0fd2b2cf9f84598c64c6e06852835`（clean）、engine digest `d3a995b05b7dff246875ebbaa849159675926657f699a9a38304f487b95dec29`、原本SHA-256 `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`。Windows 11 / Python 3.12.14 / PyMuPDF 1.27.2.3 / pypdf 6.10.0。`pdfeditor/`は未変更。evaluatorは公開API `review_continuation_geometry()`だけを呼び、geometry判定を再実装しない。[公開summary](geometry-review-external-summary.json)はrun summaryのbyte一致コピーで、raw reviewはGit管理外の`runs/`にある。
+
+- **structural baseline**: [PR #24 summary](boundary-review-formal-summary.json)の10ページ（program SHA-256一致、safe 274・group 76）と照合した。両Scenarioでcandidate/group数、group ID・boundary ID・候補順序・`minimal_authority_review_candidates`は`review_continuation_boundaries()`（比較用に1回）と一致した。Scenario Aではgeometry注記を除いたgroupがstructural reviewと完全一致した。structural contractのSHA-256はPR #23の`23f1a00f...`のままで、`geometry_used: false`。3,016→834の既存契約は変わっていない。
+- **Scenario A（既知の空き領域）**: 10ページ`[55,80,385,120]`。PR #15以降の評価で評価者が固定し、`require_empty`通過・clip内と記録済みの領域である（上記「10ページのscope境界」・PR #18の記録）。`destination_empty: true`、`empty_check_error: null`。safe 274件のうちclip constraintを持つのは270件で、そのうち247件（ページ全体clip）がclip内、23件（ロゴclip `[400.1,60.8,535.9,108.2]`）がclip外だった。clipなしは4件。`checks_passed` 251件・不成立23件。groupは全通過60・混在1・全不成立15で、不成立候補も削除されていない。
+- **Scenario B（固定paintのnegative control）**: 10ページ`[520,70,530,80]`。ロゴの灰色背景fill path（bbox `[400.8,61.2,535.8,107.2]`）と黒の外形fill（`[400.2,60.7,536.1,108.2]`）の内側にある。bbox log・drawingsで確認し、imageはない。`destination_empty: false`、`empty_check_error`は「composed text intersects a filled vector」、`checks_passed` 0件（全76 groupが全不成立）。候補数・順序・minimal集合は不変。
+- **Scenario C（候補固有のclip差）**: 自然なケースがあった（`natural_clip_differential_case: true`）。座標探索や2回目のgeometry呼び出しはせず、Scenario Aの1回の結果から読んだ。同じbounds・同じpageで、clipなし4件とページ全体clipの247件が通過し、ロゴclipの23件だけがclip外で不成立になった。
+- **呼び出し回数とread-only**: 各geometry reviewで`_inspect` 1回・`require_empty` 1回、`clip_contains`はclip候補の270回。confirm・PDF書き込み・render・lifecycleはいずれも0回。原本とengineは実行前後で不変。生成glyph ink・INK_MARGIN・layout・容量・font・rendererは評価・推論していない（contractの`generated_ink_evaluated: false`も確認）。
+- 所要時間は全体**4.484秒**（clip調査のinspection 0.781秒、structural review 0.906秒、Scenario A 1.093秒、Scenario B 1.109秒）。full suite・targeted testsは再実行していない（PR #25で148 passed済み）。
+
 ## safe boundaryの描画位置別レビュー — 2026-09-30
 
 PR #21 merge `b2f437a399f2a42d4bb31125ad7c388dc12055a3`を起点に、[pure helper](boundary_review.py)と[read-only測定コード](boundary_review_evaluate.py)を追加した。[公開summary](boundary-review-summary.json)は統計と代表2グループだけを持ち、全候補・全グループはGit管理外の`runs/boundary-review-windows/`に保存する。

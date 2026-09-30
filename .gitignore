@@ -39,4 +39,5 @@ tmp/
 !/evaluations/continuation/depth-three-inspection-summary.json
 !/evaluations/continuation/boundary-review-summary.json
 !/evaluations/continuation/boundary-review-formal-summary.json
+!/evaluations/continuation/geometry-review-external-summary.json
 /evaluations/continuation/runs/

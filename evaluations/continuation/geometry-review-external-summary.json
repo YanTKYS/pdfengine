@@ -1,0 +1,294 @@
+{
+  "schema": "pdfengine-geometry-review-external-1",
+  "status": "complete",
+  "head": "4890f94081f0fd2b2cf9f84598c64c6e06852835",
+  "engine_digest": "d3a995b05b7dff246875ebbaa849159675926657f699a9a38304f487b95dec29",
+  "source": "evaluations/realpdf/corpus/lo_migration_ja.pdf",
+  "source_sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pymupdf": "1.27.2.3",
+    "pypdf": "6.10.0",
+    "engine_digest": "d3a995b05b7dff246875ebbaa849159675926657f699a9a38304f487b95dec29",
+    "continuation_review_py_sha256": "3601d9d21b459b2be62700ef43ee8b5c6f301a20a9cc4d89ecd506c80eef1769",
+    "continuation_py_sha256": "f640432a6dea69e4bdf94db9caaa9a6c7cacdb018ee97f0a8129e5c693649548"
+  },
+  "start": {
+    "head": "4890f94081f0fd2b2cf9f84598c64c6e06852835",
+    "git_status_clean_except_evaluator": true,
+    "head_matches": true,
+    "engine_matches": true,
+    "source_matches": true
+  },
+  "api": "pdfeditor.continuation_review.review_continuation_geometry",
+  "pr24_structural_baseline": {
+    "summary": "evaluations/continuation/boundary-review-formal-summary.json",
+    "summary_sha256": "e5da08923e8ab9e343b7040c4babdb8dd1bad7dba15357341f3395d550597dd5",
+    "status": "complete",
+    "totals": {
+      "candidates": 3016,
+      "groups": 834
+    },
+    "page": {
+      "page": 10,
+      "program_sha256": "a7220825594cabbb752694f12eb153e98f45e1eb22eda558eeff909d6981440d",
+      "safe_candidates": 274,
+      "groups": 76
+    },
+    "structural_contract": {
+      "schema": "pdfengine-continuation-boundary-review-1",
+      "contract_sha256": "23f1a00f6ba901357229ae55190c4778849ef5e3e62ba238c857f52bfccb3320",
+      "matches_pr23": true,
+      "geometry_used": false
+    },
+    "note": "Geometry review adds a separate API; the formal structural review (3016 -> 834) is unchanged."
+  },
+  "scenario_a": {
+    "page": 10,
+    "bounds": [
+      55,
+      80,
+      385,
+      120
+    ],
+    "bounds_provenance": "Evaluator-fixed empty area of page 10 used since the PR #15 scope evaluation: README \"10ページのscope境界\" and region description (left of the logo, x >= 400.2; above the heading, y >= 141.07; no MuPDF bbox-log paint), scope_destination.py / scope_chain_candidates.py REGION page 10, and the PR #18 depth-2 record (\"require_empty passed, inside the clip\"). Not derived here.",
+    "candidate_count": 274,
+    "group_count": 76,
+    "destination_empty": true,
+    "empty_check_error": null,
+    "clip_checked_candidates": 270,
+    "clip_inside_candidates": 247,
+    "clip_outside_candidates": 23,
+    "clip_free_candidates": 4,
+    "checks_passed_candidates": 251,
+    "checks_failed_candidates": 23,
+    "groups_all_pass": 60,
+    "groups_mixed": 1,
+    "groups_all_fail": 15,
+    "engine_calls": {
+      "require_empty": 1,
+      "inspect": 1,
+      "clip_contains": 270,
+      "confirmation": 0,
+      "pdf_writes": 0,
+      "renders": 0
+    },
+    "seconds": 1.093
+  },
+  "scenario_b": {
+    "page": 10,
+    "bounds": [
+      520,
+      70,
+      530,
+      80
+    ],
+    "bounds_provenance": "Negative control: a 10 x 10 pt box inside the bbox of the logo's gray background fill path [400.8,61.2,535.8,107.2] (and of its black outline fill [400.2,60.7,536.1,108.2]) on page 10. Chosen by hand from the bbox log and drawings recorded below; not a destination.",
+    "candidate_count": 274,
+    "group_count": 76,
+    "destination_empty": false,
+    "empty_check_error": "composed text intersects a filled vector",
+    "clip_checked_candidates": 270,
+    "clip_inside_candidates": 270,
+    "clip_outside_candidates": 0,
+    "clip_free_candidates": 4,
+    "checks_passed_candidates": 0,
+    "checks_failed_candidates": 274,
+    "groups_all_pass": 0,
+    "groups_mixed": 0,
+    "groups_all_fail": 76,
+    "engine_calls": {
+      "require_empty": 1,
+      "inspect": 1,
+      "clip_contains": 270,
+      "confirmation": 0,
+      "pdf_writes": 0,
+      "renders": 0
+    },
+    "seconds": 1.109,
+    "paint_evidence": {
+      "bbox_log": [
+        {
+          "kind": "fill-path",
+          "bbox": [
+            400.8,
+            61.2,
+            535.8,
+            107.2
+          ]
+        },
+        {
+          "kind": "fill-path",
+          "bbox": [
+            400.2,
+            60.7,
+            536.1,
+            108.2
+          ]
+        }
+      ],
+      "drawings": [
+        {
+          "type": "f",
+          "rect": [
+            400.8,
+            61.2,
+            535.8,
+            107.2
+          ],
+          "fill": [
+            0.6667,
+            0.698,
+            0.6706
+          ],
+          "items": 6
+        },
+        {
+          "type": "f",
+          "rect": [
+            400.2,
+            60.7,
+            536.1,
+            108.2
+          ],
+          "fill": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "items": 17
+        }
+      ],
+      "images": []
+    }
+  },
+  "scenario_c": {
+    "natural_clip_differential_case": true,
+    "executed": true,
+    "method": "read from the single Scenario A review (same page, same bounds); no second geometry call and no coordinate search",
+    "page": 10,
+    "bounds": [
+      55,
+      80,
+      385,
+      120
+    ],
+    "bounds_provenance": "Scenario A",
+    "clip_rectangles": [
+      {
+        "rectangle": null,
+        "candidates": 4,
+        "checks_passed": 4,
+        "bounds_inside_inherited_clip": 4
+      },
+      {
+        "rectangle": [
+          0.0010867600854683331,
+          0.10108676008551382,
+          595.1989132399145,
+          841.8989132399145
+        ],
+        "candidates": 247,
+        "checks_passed": 247,
+        "bounds_inside_inherited_clip": 247
+      },
+      {
+        "rectangle": [
+          400.10102953959927,
+          60.80102953959925,
+          535.8989704604007,
+          108.19897046040084
+        ],
+        "candidates": 23,
+        "checks_passed": 0,
+        "bounds_inside_inherited_clip": 0
+      }
+    ],
+    "clip_free_passing": 4,
+    "clipped_passing": 247,
+    "clipped_failing_outside_clip": 23,
+    "groups_mixed": 1
+  },
+  "checks": {
+    "scenario_a": {
+      "program_matches_pr24": true,
+      "counts_match_pr24": true,
+      "counts_match_structural": true,
+      "membership_order_and_minimal_match_structural": true,
+      "no_candidate_removed": true,
+      "row_geometry_is_exactly_the_contract": true,
+      "checks_passed_is_empty_and_clip": true,
+      "emptiness_common_to_every_candidate": true,
+      "clip_check_only_with_clip_constraint": true,
+      "clip_free_never_refused_by_clip": true,
+      "group_counts_consistent": true,
+      "totals_consistent": true,
+      "one_inspection_one_emptiness_check": true,
+      "clip_contains_only_for_clip_candidates": true,
+      "read_only_calls": true,
+      "contract_flags": true,
+      "no_selection_fields": true,
+      "destination_empty": true,
+      "stripped_groups_equal_structural_review": true
+    },
+    "scenario_b": {
+      "program_matches_pr24": true,
+      "counts_match_pr24": true,
+      "counts_match_structural": true,
+      "membership_order_and_minimal_match_structural": true,
+      "no_candidate_removed": true,
+      "row_geometry_is_exactly_the_contract": true,
+      "checks_passed_is_empty_and_clip": true,
+      "emptiness_common_to_every_candidate": true,
+      "clip_check_only_with_clip_constraint": true,
+      "clip_free_never_refused_by_clip": true,
+      "group_counts_consistent": true,
+      "totals_consistent": true,
+      "one_inspection_one_emptiness_check": true,
+      "clip_contains_only_for_clip_candidates": true,
+      "read_only_calls": true,
+      "contract_flags": true,
+      "no_selection_fields": true,
+      "destination_not_empty": true,
+      "no_candidate_passes": true,
+      "paint_evidence_present": true
+    },
+    "scenario_c": {
+      "inspected_program_matches": true,
+      "every_candidate_joined": true,
+      "clip_rectangle_presence_matches_clip_check": true
+    },
+    "structural": {
+      "pr23_contract_unchanged": true,
+      "pr24_totals_are_3016_to_834": true,
+      "pr24_status_complete": true
+    },
+    "source_unchanged": true,
+    "engine_unchanged": true
+  },
+  "source_unchanged": true,
+  "engine_unchanged": true,
+  "validation": {
+    "geometry_review_calls": 2,
+    "structural_review_calls": 1,
+    "inspection_calls": 1,
+    "pages": [
+      10
+    ],
+    "pdf_writes": 0,
+    "confirmations": 0,
+    "renderer_evaluations": 0,
+    "lifecycle_executions": 0,
+    "page_wide_geometry_scan": false,
+    "full_suite_run": false,
+    "engine_changed": false
+  },
+  "seconds": {
+    "clip_inspection": 0.781,
+    "structural_review": 0.906,
+    "scenario_a": 1.093,
+    "scenario_b": 1.109,
+    "total": 4.484
+  }
+}
