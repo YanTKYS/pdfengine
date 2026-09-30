@@ -25,6 +25,14 @@ PR #22の考え方を`pdfeditor/continuation_review.py`（`review_continuation_b
 
 **状態（2026-09-30）**: 今回の作業環境（Linux / Python 3.12）はネットワーク方針で原本の取得元へ接続できず、PR #22のraw evidenceもないため、実原本の10ページscanは**未実行**である。3,016→834の維持は、このscriptを原本のある環境で実行して確認する。scriptの流れは合成10ページで実行し、原本に依存しない照合（wrapperとprototypeのbyte一致、pure helperとページ別reviewの一致、正式APIとprototypeの一致）が通ることを確認した。
 
+**Windows実原本formal validation（2026-09-30、PR #23 merge後）**: 上の未実行分を、Windows 11 / Python 3.12.14 / PyMuPDF 1.27.2.3 / pypdf 6.10.0で**1回だけ**実行し、完了した（status `complete`）。起点はHEAD `562093a7d9715a777bc0963bdd095fa8f3b9aace`（clean）、engine digest `74d61f36c74ed1593c17812cb66b025799fc0b6c2a76e70eab4ae2e658088c4f`、原本SHA-256 `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`で、すべて期待値と一致した。`pdfeditor/`・evaluatorは未変更。[公開summary](boundary-review-formal-summary.json)、raw evidenceはGit管理外の`runs/boundary-review-formal-windows/`。
+
+- **正式APIでPR #22を完全再現**: 3,016候補 → 834 group、singleton 81・複数候補753・最大6、minimal集合896件（1件のgroup 776）。page別safe候補・group数・refused数・program SHA-256は10ページすべてPR #22と一致した。
+- **inspector不変**: 10ページすべてで、新しいinspector recordの直列化SHA-256がPR #22の`page-XX.json`と一致した。
+- **prototype互換**: commit `e82a9cc`のprototype（`helper_sha256`照合済み）が公開`groups.json`を再現し、wrapperとbyte一致。正式APIのmembership・候補ID・paint位置・review属性・minimal集合もprototypeと一致した。全ページまとめたpure helperもページ別reviewと一致。
+- **group ID**: 834件すべて一意で`review-group-`、page・program SHA-256・paint位置から再計算して834/834一致、boundary IDとの重複0。PR #22のIDとは比較しない（設計上異なる）。
+- 11 checksはすべてtrue。inspection計**14.499秒**、review計**1.22秒**、pooled grouping **0.953秒**、全体**31.531秒**。PDF出力0、confirm 0、renderer比較なし。full suite・targeted testsは再実行していない（PR #23で81 passed済み）。
+
 ## safe boundaryの描画位置別レビュー — 2026-09-30
 
 PR #21 merge `b2f437a399f2a42d4bb31125ad7c388dc12055a3`を起点に、[pure helper](boundary_review.py)と[read-only測定コード](boundary_review_evaluate.py)を追加した。[公開summary](boundary-review-summary.json)は統計と代表2グループだけを持ち、全候補・全グループはGit管理外の`runs/boundary-review-windows/`に保存する。
