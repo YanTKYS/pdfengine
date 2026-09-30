@@ -1,5 +1,15 @@
 # 確認済み空き領域へのcontinuation評価
 
+## PR #20後の自然なdepth 3境界の調査
+
+2026-09-30、未加工の同じLibreOffice原本を全10ページ調査した。[機械可読summary](depth-three-inspection-summary.json)に環境・原本/provider hash・各ページのoperator数、depth別safe/refused数、拒否理由を記録した。**全ページの最大q depthは2で、depth 3・depth 4以上は0件**。PR #20のdepth 3対応はsyntheticで成立しているが、この外部原本には自然なdepth 3境界が存在しない。focused評価は実施せず、PDFは生成・加工していない。
+
+全14,465境界のうちsafeは3,016、refusedは11,449。拒否理由はtext object内部8,575、pending path 2,860、pending clip 20、text rendering mode 84（全てTr 2）で、重複を含む。ExtGState、transparency、未証明/非矩形clip、marked content、BX/EX、CTM proof failureは0件だった。pending pathは162の連続区間にまとまり、全て完了直後にsafe境界がある。rendering modeだけで拒否される14件も直後のQ後がsafeで、prefix/suffix paint数は変わらない。ただしsafeは状態・構造の適格性であり、empty destinationの確認済みという意味ではない。
+
+次の検討候補は既存safe境界の選択支援、必要性を確認した上でのpending-path契約の調査、Tr 2の隔離契約の調査。path描画を越える移動ではz-orderと領域の再確認が必要であり、自動でrebindする提案ではない。この原本からdepth 4対応を優先する根拠は得られなかった。
+
+[調査helper](depth_three_inspection.py)は`python -m evaluations.continuation.depth_three_inspection --run <新しいrun名>`で原本を読み取る。生の全境界記録はGit対象外の`runs/`へ保存し、既存runへの上書き・再実行は拒否する。今回の全ページ走査は26.8秒、辞書だけを使うhelper単体確認8件は1.46秒。engineは未変更で、full suiteと従来の外部評価は再実行していない。[checkpoint](../../docs/continuation-checkpoint.md#pr-20後の原本全ページ調査)も参照。
+
 ## Source CTM compensation
 
 PR #18の描画差をsource operand基準の逆行列で修正し、同じ実境界をfocused評価した。**Poppler 144dpiの差は5,868 → 0画素**。新しい[公開集計](ctm-source-destination-summary.json)は`passed`である。下記のPR #18時点の`failed`記録と[旧集計](scope-chain-destination-summary.json)はそのまま残す。
