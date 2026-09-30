@@ -13,6 +13,13 @@ confirm_continuation_destination applies to the bounds. It annotates the
 same review; it removes, reorders, selects and confirms nothing, and it
 evaluates no generated glyph ink, layout or capacity.
 
+build_continuation_boundary_confirmation_request turns one geometry review
+and the boundary ID a caller chose from it into the keyword arguments of
+confirm_continuation_destination. It is pure: it checks the review record,
+never the source, and it never inspects, measures or confirms. Building a
+request is not a confirmation; confirm_continuation_destination re-checks
+the current source and returns the only confirmed destination.
+
 A review group is every safe candidate of one page program that lies between
 the same existing paint: equal page, program SHA-256, z-order semantics and
 prefix/suffix paint counts, exactly. Nothing else is grouped: not near
@@ -49,8 +56,9 @@ import re
 
 from .backend import PdfError
 from .content_stream import ContentPage
-from .continuation import (CLIP, COMPENSATION, IDENTITY, MAX_SCOPE_DEPTH, SCOPE, SCOPE_CHAIN, SCOPE_THREE,
-                           _inspect, _scope_levels, clip_contains, inspect_continuation_boundaries, require_empty)
+from .continuation import (BOUNDARY, BOUNDARY_STATE, CLIP, COMPENSATION, IDENTITY, MAX_SCOPE_DEPTH, SCOPE,
+                           SCOPE_CHAIN, SCOPE_THREE, _inspect, _scope_levels, clip_contains,
+                           inspect_continuation_boundaries, require_empty)
 
 
 REVIEW_SCHEMA = 'pdfengine-continuation-boundary-review-1'
@@ -124,6 +132,33 @@ GEOMETRY_CONTRACT = dict(
     automatic_selection=False, safety_ranking=False, recommendation=False, automatic_confirmation=False,
     confirmation='only a caller-chosen boundary_id with caller-chosen bounds is confirmed, by '
                  'confirm_continuation_destination, which repeats its own checks')
+REQUEST_SCHEMA = 'pdfengine-continuation-boundary-confirmation-request-1'
+GEOMETRY_KEYS = ('schema', 'page', 'program_sha256', 'bounds', 'candidate_count', 'group_count', 'groups', 'geometry',
+                 'contract')
+GEOMETRY_SUMMARY_KEYS = ('bounds', 'destination_empty', 'empty_check_error', 'clip_checked_candidates',
+                         'checks_passed_candidates', 'checks_failed_candidates')
+CANDIDATE_GEOMETRY_KEYS = ('destination_empty', 'clip_check_required', 'bounds_inside_inherited_clip', 'checks_passed')
+REQUEST_CONTRACT = dict(
+    schema=REQUEST_SCHEMA, read_only=True, caller_selected_boundary=True,
+    input=f'one {GEOMETRY_SCHEMA} record and the boundary_id the caller chose from it; the record is checked as a '
+          'record only (no source, inspection, emptiness or clip check is run)',
+    boundary_id='required and chosen by the caller; never taken from a group, the minimal set, the geometry result '
+                'or any order; a group ID is refused',
+    geometry_precondition="the chosen candidate's checks_passed must be true, else no request is built (PdfError): "
+                          'a known unmet confirmation precondition for the one chosen candidate, not a filter',
+    minimal_authority_review='membership is not required; the minimal set is not a recommendation',
+    confirm_kwargs='the keyword arguments of confirm_continuation_destination(source, **confirm_kwargs) for a '
+                   'confirmed page-program boundary; no page_entry_order',
+    review_program_sha256='the program SHA-256 the geometry review saw; for presentation and stale-review '
+                          'diagnosis only, never compared with the current source here',
+    source_revalidated=False,
+    request_meaning='request generation is not confirmation: confirm_continuation_destination re-inspects the '
+                    'current source, re-checks the boundary authority, clip and emptiness, and returns the only '
+                    'confirmed destination',
+    generated_ink_evaluated=False, not_evaluated=list(NOT_EVALUATED),
+    limitation='A request promises no generated ink containment, layout, capacity, font, writer, renderer or '
+               'lifecycle outcome, and not that confirmation will accept it.',
+    automatic_selection=False, recommendation=False, safety_ranking=False, automatic_confirmation=False)
 
 
 def _canonical(value):
@@ -386,3 +421,139 @@ def review_continuation_geometry(source, page, bounds):
             clip_checked_candidates=sum(row['clip_check_required'] for row in rows),
             checks_passed_candidates=passed, checks_failed_candidates=len(rows) - passed),
         contract=deepcopy(GEOMETRY_CONTRACT))
+
+
+def _flag(value):
+    if type(value) is not bool:
+        raise ValueError('expected a boolean')
+    return value
+
+
+def _geometry_record(review):
+    """The rows of a well-formed review_continuation_geometry record, keyed by boundary ID, with their group IDs.
+
+    Checks the record's own consistency only; it never reads a source or
+    repeats the emptiness or clip checks.
+    """
+    if not isinstance(review, dict) or set(review) != set(GEOMETRY_KEYS) or review['schema'] != GEOMETRY_SCHEMA:
+        raise ValueError(f'expected a {GEOMETRY_SCHEMA} record')
+    if review['contract'] != GEOMETRY_CONTRACT:
+        raise ValueError('geometry review contract differs (selection, confirmation, read-only or ink flags)')
+    page, program = _integer(review['page'], 1), _text(review['program_sha256'], SHA256)
+    bounds = review['bounds']
+    if not isinstance(bounds, list) or _bounds(bounds) != bounds:
+        raise ValueError('malformed bounds')
+    summary = review['geometry']
+    if not isinstance(summary, dict) or set(summary) != set(GEOMETRY_SUMMARY_KEYS) or summary['bounds'] != bounds:
+        raise ValueError('geometry summary differs from the reviewed bounds')
+    empty, error = _flag(summary['destination_empty']), summary['empty_check_error']
+    if (error is not None) if empty else not (isinstance(error, str) and error):
+        raise ValueError('page-level emptiness and its check error disagree')
+    groups = review['groups']
+    if not isinstance(groups, list) or _integer(review['group_count']) != len(groups):
+        raise ValueError('group count differs from the groups')
+    found, group_ids, positions = {}, set(), []
+    for group in groups:
+        z = group['z_order']
+        if group['page'] != page or group['program_sha256'] != program or not isinstance(z, dict):
+            raise ValueError('group of another page or program')
+        key = (page, program, _text(z['semantics']), _integer(z['prefix_paint_operators']),
+               _integer(z['suffix_paint_operators']))
+        if group['group_id'] != _group_id(*key) or group['group_id'] in group_ids:
+            raise ValueError('group ID differs from its paint position or repeats')
+        group_ids.add(group['group_id'])
+        positions.append(key)
+        rows = group['candidates']
+        if not isinstance(rows, list) or not rows or _integer(group['candidate_count'], 1) != len(rows):
+            raise ValueError('group candidate count differs from its candidates')
+        if group['boundary_ids'] != [row['boundary_id'] for row in rows]:
+            raise ValueError('group boundary_ids differ from its candidate rows')
+        ordinals = [_integer(row['ordinal']) for row in rows]
+        if ordinals != sorted(set(ordinals)):
+            raise ValueError('candidate rows are not in ordinal order')
+        minimal = group['minimal_authority_review_candidates']
+        if not isinstance(minimal, list) or not minimal or not set(minimal) <= set(group['boundary_ids']):
+            raise ValueError('minimal set is not part of its group')
+        passed = 0
+        for row in rows:
+            ident = _text(row['boundary_id'], BOUNDARY_ID)
+            if ident in found:
+                raise ValueError('duplicate boundary ID')
+            value = row['geometry']
+            if not isinstance(value, dict) or set(value) != set(CANDIDATE_GEOMETRY_KEYS):
+                raise ValueError('candidate geometry missing or malformed')
+            flags = {name: _flag(value[name]) for name in CANDIDATE_GEOMETRY_KEYS}
+            clipped = _flag(row['has_rectangular_clip_constraint'])
+            if (flags['destination_empty'] is not empty or flags['clip_check_required'] is not clipped
+                    or row['review_attributes']['rectangular_clip'] is not clipped
+                    or not (clipped or flags['bounds_inside_inherited_clip'])
+                    or flags['checks_passed'] is not (flags['destination_empty']
+                                                      and flags['bounds_inside_inherited_clip'])):
+                raise ValueError('candidate geometry contradicts the page-level result or its own checks')
+            passed += flags['checks_passed']
+            found[ident] = (group['group_id'], row)
+        if (group['geometry_checks_passed_count'], group['geometry_checks_failed_count']) != (passed, len(rows) - passed):
+            raise ValueError('group geometry counts differ from its candidates')
+    if positions != sorted(positions):
+        raise ValueError('groups are not in paint-position order')
+    rows = [row for _, row in found.values()]
+    passed = sum(row['geometry']['checks_passed'] for row in rows)
+    if (_integer(review['candidate_count']) != len(rows)
+            or (summary['clip_checked_candidates'], summary['checks_passed_candidates'],
+                summary['checks_failed_candidates'])
+            != (sum(row['geometry']['clip_check_required'] for row in rows), passed, len(rows) - passed)):
+        raise ValueError('candidate totals differ from the candidates')
+    return page, program, bounds, found
+
+
+def build_continuation_boundary_confirmation_request(geometry_review, *, boundary_id=None, destination_id=None,
+                                                     paragraph_id=None, region_id=None):
+    """Hand a caller-chosen boundary of a geometry review to confirm_continuation_destination; never confirm it.
+
+    ``geometry_review`` is a review_continuation_geometry record and
+    ``boundary_id`` the one candidate the caller chose from it: required,
+    never chosen here (not from a group, the minimal set, the geometry result
+    or any order); a group ID is refused. The chosen candidate's geometry
+    ``checks_passed`` must be true, else no request is built. The identities
+    are non-empty strings, as confirm requires. Returns the request: the
+    reviewed page, bounds and program SHA-256, the chosen group and boundary,
+    a compact candidate review and ``confirm_kwargs`` for
+    ``confirm_continuation_destination(source, **confirm_kwargs)``.
+
+    Pure: no source is read, nothing is inspected, measured or confirmed. The
+    request is not a confirmation and does not revalidate the source;
+    confirm_continuation_destination does that. Malformed input: PdfError.
+    """
+    if boundary_id is None:
+        raise PdfError('the caller must select a boundary_id explicitly; none is chosen for it')
+    if isinstance(boundary_id, str) and boundary_id.startswith(GROUP_PREFIX):
+        raise PdfError('a review group ID is not a boundary ID; select one boundary_id of the group')
+    if not isinstance(boundary_id, str) or not BOUNDARY_ID.fullmatch(boundary_id):
+        raise PdfError('the selected boundary_id is not a boundary ID')
+    if any(not isinstance(v, str) or not v for v in (destination_id, paragraph_id, region_id)):
+        raise PdfError('continuation destination and owner identities are required')
+    try:
+        _canonical(geometry_review)
+        page, program, bounds, found = _geometry_record(geometry_review)
+    except PdfError as exc:
+        raise PdfError(f'malformed continuation geometry review record: {exc}') from exc
+    except (KeyError, TypeError, ValueError, OverflowError) as exc:
+        raise PdfError(f'malformed continuation geometry review record: {exc}') from exc
+    if boundary_id not in found:
+        raise PdfError('the selected boundary_id is not a candidate of this geometry review')
+    group_id, row = found[boundary_id]
+    geometry = row['geometry']
+    if not geometry['destination_empty']:
+        raise PdfError('the selected boundary cannot be requested: the reviewed bounds are not empty page space '
+                       '(destination_empty false)')
+    if not geometry['bounds_inside_inherited_clip']:
+        raise PdfError('the selected boundary cannot be requested: the reviewed bounds lie outside its inherited '
+                       'clip (bounds_inside_inherited_clip false)')
+    return dict(schema=REQUEST_SCHEMA, page=page, bounds=list(bounds), review_program_sha256=program,
+        group_id=group_id, boundary_id=boundary_id,
+        candidate_review=deepcopy(dict(ordinal=row['ordinal'], operator_context=row['operator_context'],
+            q_depth=row['q_depth'], review_requirements=row['review_requirements'],
+            review_attributes=row['review_attributes'], geometry=geometry)),
+        confirm_kwargs=dict(destination_id=destination_id, paragraph_id=paragraph_id, region_id=region_id,
+            page=page, bounds=list(bounds), insertion=BOUNDARY, graphics_state=BOUNDARY_STATE, boundary=boundary_id),
+        contract=deepcopy(REQUEST_CONTRACT))
