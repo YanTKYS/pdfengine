@@ -10,7 +10,7 @@ inspection → structural review → geometry review → caller decision → con
 
 | # | 段階 | 入力 → 出力 | 誰が決めるか | 保証しないこと |
 |---|---|---|---|---|
-| 1 | inspection `inspect_continuation_boundaries(source, page)` | source・page → 各boundaryのsafe/refusedとauthority | engineが安全条件を判定する | destinationの空き・geometry。選択 |
+| 1 | inspection `inspect_continuation_boundaries(source, page)` | source・page → safe候補（authority付き）と、refused境界の件数・理由の集計。個々のrefused境界が必要なら`include_refused=True` | engineが安全条件を判定する | destinationの空き・geometry。選択 |
 | 2 | structural review `review_continuation_boundaries(source, page)` | source・page → safe候補を同じpaint位置ごとにまとめたgroup | engineが完全一致でまとめるだけ | 選択・順位・authorityの同一性。geometry |
 | 3 | geometry review `review_continuation_geometry(source, page, bounds)` | source・page・callerのbounds → 2と同じgroupに、空きと候補ごとの継承clip適合の注記 | boundsはcallerが決める。engineは既存の検査結果を表示する | 生成glyph inkの包含・layout・容量。選択（候補を削除・並べ替えしない） |
 | 4 | caller decision（callerのコード） | 2・3の結果 → boundary ID 1件 | **caller**。minimal集合・通過候補・並び順から自動では決まらない | — |
@@ -21,7 +21,7 @@ inspection → structural review → geometry review → caller decision → con
 - **request ≠ confirmation**: 5はconfirmの引数を作るだけで、sourceを読まない。確認済みdestinationを返すのは6だけである。古いreviewから作ったrequestは、sourceが変わっていれば6で拒否される。
 - **confirm ≠ generated text fits**: 6はboundsとboundary authorityを確認する。生成する文章の容量・ink・layoutは、その後の`confirm_shared_flow`・計画・保存の各段階がそれぞれ検査する。
 
-source・page・boundsは、3の結果から5の`confirm_kwargs`へそのまま運ばれるので、callerが書き写す必要はない。変換は5が行い、current sourceの再検証は6だけが行う。group IDとboundary IDはprefixが異なり、5と6はどちらもgroup IDを拒否する。この分担でgapがないため、6段階をまとめるwrapperは設けていない。page entry（`before-page-program`）へのdestinationは、1〜5を使わずに6を直接呼ぶ（[契約](#契約)）。
+page・boundsは、3の結果から5の`confirm_kwargs`へbuilderが運ぶので、callerが書き写す必要はない。sourceはgeometry reviewにもrequestにも入らない。callerが保持し、6でcurrent sourceとして明示的に渡す。confirm引数への変換は5が行い、current sourceの再検証は6だけが行う（requestの`source_revalidated: false`と同じ分担）。group IDとboundary IDはprefixが異なり、5と6はどちらもgroup IDを拒否する。この分担でgapがないため、6段階をまとめるwrapperは設けていない。page entry（`before-page-program`）へのdestinationは、1〜5を使わずに6を直接呼ぶ（[契約](#契約)）。
 
 ### public API
 
