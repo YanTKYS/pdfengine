@@ -1,5 +1,7 @@
 # Continuation開発の再開地点 — 2026-09-24
 
+**最新の原本調査（PR #20後、2026-09-30）**: 未加工LibreOffice原本の全10ページは最大q depth 2で、自然なdepth 3・depth 4以上の境界は0件だった。focused評価は実施していない。主な拒否はtext object内部・pending pathで、次の検討候補を[全ページ調査](#pr-20後の原本全ページ調査)に記録した。depth 4を自動的な次課題にはしない。
+
 **現行の最大scope depthは3**。PR #19 merge `d5234fe68264adc44918756325746982ab251c5b`から、専用のouter/middle/inner authorityと6 operatorの追跡を追加した。depth 0・1・2の形式、CTM・clip proofは維持する。depth 4以上は拒否し、今回は外部実PDF評価を実施しない。[今回の実装と検証](#depth-3専用scopeの追加)。
 
 **PR #19で解消済みのCTM renderer差**: 十進source operandのexact CTM Sからinverse Nを作り、N×S・N×Mを従来の0.002pt上界で個別に証明する方式へ修正した。端数平行移動の深さ0・1・2でMuPDF・Poppler回帰を確認し、同じLibreOffice実境界のfocused評価でPoppler差は**5,868→0画素**となった。scope/clipの契約は維持し、旧compensated authorityは`needs_confirmation`とする。[数値モデル・修正・新しい評価](../evaluations/continuation/README.md#source-ctm-compensation)。
@@ -1124,3 +1126,26 @@ full suiteは`.venv\Scripts\python.exe -m pytest -q --basetemp=tmp/pytest --juni
 最終engine digest（`pdfeditor/*.py`のファイル名別SHA-256をsortしたJSONのSHA-256）は`24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a`。Python 3.12.14、PyMuPDF 1.27.2.3、pypdf 6.10.0、Windows 11で検証した。重い検証は関連テストの続行 → byte比較 → full suiteの順に実行し、full suiteは再実行していない。
 
 次の最小の構造障壁はdepth 4。ExtGState、未証明clip、pending path、text object・marked content・BX/EX・Form XObject内も未対応のままである。非描画operatorの累積整理には進んでいない。
+
+
+## PR #20後の原本全ページ調査
+
+起点は`44c4ac991dd841c6231a9e24ea891747fa471bfb`。engine digestはPR #20と同じ`24b7dfb30a79b25e1c0ee7c5bb16a16aedd4de35722d2bf3c738e678648a196a`で、`pdfeditor/`は変更していない。原本SHAは`13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`、reviewed providerのMS明朝・Timesも既存評価と同じhashだった。
+
+`inspect_continuation_boundaries(..., include_refused=True)`を各ページ1回だけ実行した。元のdecoded /ContentsのSHAとpypdfが独立に数えた各operator後のq depthも一致した。全10ページとも最大depthは2。14,475 operators間の14,465境界はdepth 0が20、depth 1が3,789、depth 2が10,656で、depth 3・4以上は0件。safeは3,016、refusedは11,449だった。
+
+**PR #20のdepth 3対応はsyntheticで成立しているが、この外部原本には自然なdepth 3境界が存在しない。** 条件Aで完了し、focused評価・destination選定・MuPDF/Poppler比較・4段階の状態復帰・negative controlは対象なし。疑似PDFや加工原本は作っていない。page /Contents境界の調査であり、Form XObject内部へ契約を広げるものでもない。
+
+| 拒否理由 | 境界数（重複あり） | その理由だけの境界数 |
+| --- | ---: | ---: |
+| text object内部 | 8,575 | 8,505 |
+| pending path | 2,860 | 2,840 |
+| pending clip | 20 | 0（全てpending pathと重複） |
+| text rendering mode（全てTr 2） | 84 | 14（残り70はtext object内部と重複） |
+| ExtGState・transparency・未証明/非矩形clip・marked content・BX/EX・CTM proof failure・depth 4以上 | 各0 | 各0 |
+
+pending pathの2,860件は162の連続区間で、全てpath完了直後にsafe境界があった。Tr 2だけが理由の14件は全てET直後・Q直前で、Q後は同じprefix/suffix paint数のsafe境界になる。境界数は独立した描画object数ではなく、safe candidateも空き領域の承認ではない。
+
+今後の候補は、(1) 完了済みpath・text・scopeの既存safe境界を選ぶ支援、(2) 完了前の挿入が本当に必要な場合のpending-path契約調査、(3) 既存Q後の代替境界と比較したTr 2隔離契約の必要性調査。path描画を越えればz-orderが変わるので、領域と境界の明示確認が必要である。今回は実装しない。この原本ではdepth 4やExtGStateの頻度は0であり、上のPR #20時点の「次の最小構造障壁」を、そのまま次の開発優先度とはしない。
+
+全ページ走査26.8秒、helper単体確認8 passed（1.46秒）。full pytest suiteは再実行せず、PR #20の945 passed / 2 skippedは過去の結果として保持する。single/depth 0/1/2の外部系列も再実行していない。[公開summary](../evaluations/continuation/depth-three-inspection-summary.json)に全ページhistogram・環境・input hash・重複集計・scope上限とfocused評価未実施を記録し、全境界dumpは`evaluations/continuation/runs/depth-three-inspection-windows/`へ置いた。
