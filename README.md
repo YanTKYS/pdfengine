@@ -19,6 +19,7 @@
 | `edit-paragraph --editable-state` → `edit-document` | 確認した文章・改行・装飾範囲・領域を保存し、同じ意味で再編集 | 通常のPDFとSHA-256で結び付いたsidecar。生成した折返しを論理改行へ変換しない |
 | `confirm_document` → `edit_flow`（Python API） | 複数の段落IDと明示した追従関係を保持して編集 | 固定コンテナ内で、確認した子孫とその所有paintだけを平行移動。空の段落でもIDと関係を保持 |
 | `Transaction` / `IdentityMap`（Python API） | 複数の編集を1回の保存・1回の検証で適用し、revisionをまたぐ要素の対応を byte mutation で追跡 | [stable-identity-transaction.md](docs/stable-identity-transaction.md)。flow系の中間PDF保存を廃止 |
+| `inspect` / `review` continuation boundary → `confirm_continuation_destination`（Python API） | 既存ページの明示した空き領域へparagraphの続きを置くため、安全な描画境界を観測・整理し、callerが選んだ境界とboundsを明示確認する | 境界の自動選択・自動ページ追加なし。[caller workflow](docs/confirmed-continuation.md#caller-workflow) |
 
 書式を保持する経路では、LibreOffice本文の英字12pt・日本語10.5ptを残した2行→1行、元の68文字を残して66文字を追加する2行→3行、仮想プリンタPDFの通常体・斜体を残す部分置換を確認しました。[書式付き編集の評価と境界](docs/attributed-editing.md)を参照してください。全文font代替経路でのWord・Chrome等の結果は [composition.md](docs/composition.md) にあります。指定fontで描く部分は、元書体と同一とは限りません。
 
@@ -306,7 +307,7 @@ paragraphの行揃えは `paragraph_layout={"alignment": "justify", "justify_pol
 - `story_styles.py` / `destination_style.py`: logical style registry・書式範囲の投影、配置先contextへのinline書式binding、style別font provider
 - `shared_flow.py`: paragraphごとのUnicode・書式・境界を保つ共有領域の最終配置、確認済みspacing/break policy、source slotごとの検証付き書込
 - `continuation.py` / `mutation.py`: 確認済みcontinuation destinationとpage-entry chain（明示順序・block単位のmarkerと証跡）、byte mutation mapによるsource identity（順序付きpage-entry insertionを含む）
-- `continuation_review.py`: safe境界を同じpaint位置ごとに表示する読み取り専用review（選択・順位付け・確認はしない。[boundary review](docs/confirmed-continuation.md#読み取り専用のboundary-review)）
+- `continuation_review.py`: safe境界を同じpaint位置ごとに表示する読み取り専用review、callerのboundsの空き・clip適合の注記、callerが選んだ境界のconfirm引数への受け渡し（選択・順位付け・確認はしない。[caller workflow](docs/confirmed-continuation.md#caller-workflow)）
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot
