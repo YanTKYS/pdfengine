@@ -20,6 +20,7 @@ inspection → structural review → geometry review → caller decision → con
 - **review ≠ selection**: 1〜3は観測・整理・注記だけである。どのboundaryを使うかは4でcallerが決める。
 - **request ≠ confirmation**: 5はconfirmの引数を作るだけで、sourceを読まない。確認済みdestinationを返すのは6だけである。古いreviewから作ったrequestは、sourceが変わっていれば6で拒否される。
 - **confirm ≠ generated text fits**: 6はboundsとboundary authorityを確認する。生成する文章の容量・ink・layoutは、その後の`confirm_shared_flow`・計画・保存の各段階がそれぞれ検査する。
+- **confirmed destination ≠ generated slot**: 6で得たdestinationは、必要に応じてそのまま`confirm_shared_flow(..., continuation_destinations={destination["destination_id"]: destination})`へ渡せる。渡した時点ではauthorityとして保持されるだけである。generated slotと生成blockは、paragraphの配置が実際にそのregionを必要とした計画（overflow）でだけ作られる。収まる変更では何も生成しない（[tests/test_continuation_caller_to_shared_flow.py](../tests/test_continuation_caller_to_shared_flow.py)）。
 
 page・boundsは、3の結果から5の`confirm_kwargs`へbuilderが運ぶので、callerが書き写す必要はない。sourceはgeometry reviewにもrequestにも入らない。callerが保持し、6でcurrent sourceとして明示的に渡す。confirm引数への変換は5が行い、current sourceの再検証は6だけが行う（requestの`source_revalidated: false`と同じ分担）。group IDとboundary IDはprefixが異なり、5と6はどちらもgroup IDを拒否する。この分担でgapがないため、6段階をまとめるwrapperは設けていない。page entry（`before-page-program`）へのdestinationは、1〜5を使わずに6を直接呼ぶ（[契約](#契約)）。
 
