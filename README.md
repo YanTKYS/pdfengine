@@ -306,6 +306,7 @@ paragraphの行揃えは `paragraph_layout={"alignment": "justify", "justify_pol
 - `story_styles.py` / `destination_style.py`: logical style registry・書式範囲の投影、配置先contextへのinline書式binding、style別font provider
 - `shared_flow.py`: paragraphごとのUnicode・書式・境界を保つ共有領域の最終配置、確認済みspacing/break policy、source slotごとの検証付き書込
 - `continuation.py` / `mutation.py`: 確認済みcontinuation destinationとpage-entry chain（明示順序・block単位のmarkerと証跡）、byte mutation mapによるsource identity（順序付きpage-entry insertionを含む）
+- `continuation_review.py`: safe境界を同じpaint位置ごとに表示する読み取り専用review（選択・順位付け・確認はしない。[boundary review](docs/confirmed-continuation.md#読み取り専用のboundary-review)）
 - `anchors.py`: 確認したUnicode範囲の編集後への投影、行単位の装飾計画、source paintの局所置換と照合
 - `editable.py`: 物理glyphへの検証済みbindingと論理文書のsidecar、改行・領域・装飾関係の保持、失効時の確認用fallback
 - `logical_element.py`: glyphが0のparagraph、独立したstyle recipe、元graphics stateで描くための非描画slot

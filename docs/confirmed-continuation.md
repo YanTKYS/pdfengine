@@ -196,6 +196,45 @@ destination = confirm_continuation_destination(
 - **`boundary_id`**: page、program SHA-256、直前operatorの序数・終端・SHA-256、直後operatorのSHA-256から作る。確認時のsource programに固有で、以後はauthorityに固定される。
 - **geometryからは選ばない**: callerが候補を1つ選ぶ。engineはdestinationの位置から境界を推定しない。
 
+### 読み取り専用のboundary review
+
+safe候補は1ページに数百あることがある。`pdfeditor.continuation_review`は、それを**同じ既存paintの間**ごとにまとめて表示する読み取り専用APIである。境界を選ばない。順位を付けない。確認もしない。
+
+```python
+from pdfeditor.continuation import (
+    confirm_continuation_destination, inspect_continuation_boundaries)
+from pdfeditor.continuation_review import review_continuation_boundaries
+
+inspection = inspect_continuation_boundaries(source, page=6)  # 1. 個々のsafe境界とauthority
+review = review_continuation_boundaries(source, page=6)       # 2. 同じpaint位置ごとの表示
+# 3. callerが自分でboundary_idを1つ選び、明示的に確認する（group IDは渡せない）
+destination = confirm_continuation_destination(
+    source, destination_id="reviewed-boundary", paragraph_id="paragraph-A",
+    region_id="next-region", page=6, bounds=reviewed_bounds,
+    insertion="confirmed-page-program-boundary",
+    graphics_state="confirmed-boundary-state",
+    boundary=reviewed_boundary_id)
+```
+
+| 段階 | 役割 |
+|---|---|
+| inspection | 安全な個々の境界と、そのauthority（state・scope・CTM相殺・clip）を列挙する |
+| review | inspectionのsafe境界だけを、同じpaint位置ごとに表示用に整理する。refused境界は含めない |
+| confirm | callerがboundary IDを明示的に選んだ後だけ行う |
+
+- **API**: `review_continuation_boundaries(source, page)`は内部で`inspect_continuation_boundaries(source, page)`を1回呼び、safe候補だけを使う。`group_continuation_boundary_candidates(candidates)`は、すでに持っているinspectorのsafe候補（複数ページ可、1ページ1 program）を整理するpure関数で、入力を変更・参照共有しない。入力順に依存しない。`inspect_continuation_boundaries()`の返却schema・boundary ID・順序・authority・拒否理由・confirmは変わらない。
+- **返却**: `schema`、`page`、`program_sha256`、`candidate_count`、`group_count`、`groups`、`contract`。
+- **group**: page・program SHA-256・`z_order.semantics`・prefix/suffixの描画operator数が**完全一致**する候補だけをまとめる。近いordinal・似たoperator・似たstateではまとめない。groupは「同じ既存paintの間」を意味するだけで、authorityの同一性や候補の交換可能性を意味しない。同じgroupでもgraphics state・`q ... Q` scope・CTM相殺・継承clipは異なり得る。各groupは`group_id`、paint位置、`candidate_count`、ordinalの範囲、全`boundary_ids`、各候補、`minimal_authority_review_candidates`、`distinct_authority_variants`を持つ。
+- **group ID**: `review-group-`＋page・program SHA-256・z-orderの意味・2つのpaint数（とschema用のdomain文字列）のSHA-256先頭24桁。同じprogram・同じpaint位置なら常に同じIDになる。別revisionでpaint数が偶然同じでも、programが違えば別IDになる。**boundary IDではなく、confirmに渡せず、revisionをまたぐ永続IDでもない**。そのprogramのreview表示の中でだけ使う。
+- **候補の表示**: inspector recordを複写せず、`boundary_id`、ordinal、直前・直後のoperator、`operator_context`（例: `cm -> boundary -> BT`）、`q_depth`、`scope_policy`、scope bindingの有無と各段の`q`/`Q`のordinal、CTM相殺・矩形clip constraintの有無を持つ。完全なauthorityはinspector recordにある。
+- **`review_requirements`**: callerがauthorityを確認するときに追加で読む証跡。`scope-binding`（各段の`q`・対応する`Q`・復帰状態）、`ctm-compensation`（逆行列とsource/interpretedの変位証明）、`rectangular-clip`（継承矩形への包含条件）の順に、該当するものを並べる。例: `[]`、`["scope-binding", "rectangular-clip"]`。安全性の段階ではない。ここにある候補はすべてsafeである。
+- **authorityの差**: 各候補の`authority_digests`は、graphics state・scope・CTM相殺・clip constraintそれぞれのcanonical JSONのSHA-256（ないものは`null`）。groupの`distinct_authority_variants`は、その種類数（「なし」も1種と数える）。hashは表示上の差の識別用で、authority identityやsecurity tokenではない。
+- **`minimal_authority_review_candidates`**: groupの中で、`review_attributes`（`rectangular_clip`・`ctm_compensation`・`q_depth`）を、clipなし→相殺なし→浅いq depthの辞書式で比べた最小の候補。整数scoreには変換せず、属性そのものを各候補と`minimal_authority_review_attributes`に残す。**同率はすべて残し、他の候補は削除しない**。追加で確認するauthority証跡が少ない候補というだけで、安全性の点数・推奨・自動選択ではない。
+- **contract**: `contract`は上の意味を記録し、`automatic_selection`・`safety_ranking`・`recommendation`・`automatic_confirmation`・`geometry_used`がいずれも`false`である。safe候補は、それだけでは空き領域として確認されていない。
+- **fail closed**: safe以外・理由付き・z-orderの不正・boundary IDやpage/ordinalの重複・1ページに異なるprogram・ページ内でpaint総数の不一致・q深さ4以上・inspectorと異なるscope形式・`q`/`Q`の対応や入れ子の破綻・clip stateとclip constraintの不一致・CTMと相殺の不一致や不正な相殺・NaNなどcanonical JSONにできない値は`PdfError`で拒否する。
+- **実原本**: PR #22の[prototype](../evaluations/continuation/README.md#safe-boundaryの描画位置別レビュー--2026-09-30)は、この正式APIのthin wrapperになった。未加工LibreOffice原本10ページの3,016 safe候補→834 groupの再確認手順は[評価README](../evaluations/continuation/README.md#正式read-only-apiでの再確認)にある。
+- **回帰**: [tests/test_continuation_review.py](../tests/test_continuation_review.py)。
+
 ### 安全な境界の条件
 
 境界で次をすべて満たすものだけが候補になる。生成blockがpage entryと同じpage座標・同じ見た目で描けることを証明できる場合に限る。
