@@ -2,8 +2,16 @@
 
 inspect_continuation_boundaries (pdfeditor.continuation) lists each safe
 page-program boundary with its own authority. This module arranges those
-already-safe candidates for review; it never inspects, selects, ranks or
-confirms a boundary, and it never reads destination geometry.
+already-safe candidates for review; it never selects, ranks or confirms a
+boundary. review_continuation_boundaries never reads destination geometry.
+
+review_continuation_geometry adds, for bounds the caller states, whether
+those bounds are empty page space (require_empty, once per page and bounds,
+common to every candidate) and whether they lie inside each candidate's
+inherited rectangular clip (clip_contains, per candidate): the same checks
+confirm_continuation_destination applies to the bounds. It annotates the
+same review; it removes, reorders, selects and confirms nothing, and it
+evaluates no generated glyph ink, layout or capacity.
 
 A review group is every safe candidate of one page program that lies between
 the same existing paint: equal page, program SHA-256, z-order semantics and
@@ -40,8 +48,9 @@ import math
 import re
 
 from .backend import PdfError
+from .content_stream import ContentPage
 from .continuation import (CLIP, COMPENSATION, IDENTITY, MAX_SCOPE_DEPTH, SCOPE, SCOPE_CHAIN, SCOPE_THREE,
-                           _scope_levels, inspect_continuation_boundaries)
+                           _inspect, _scope_levels, clip_contains, inspect_continuation_boundaries, require_empty)
 
 
 REVIEW_SCHEMA = 'pdfengine-continuation-boundary-review-1'
@@ -82,6 +91,39 @@ REVIEW_CONTRACT = dict(
     geometry_used=False,
     confirmation='only a caller-chosen boundary_id is confirmed; a group ID is never passed to confirmation',
     limitation='A safe candidate has not thereby been reviewed as an empty destination.')
+GEOMETRY_SCHEMA = 'pdfengine-continuation-boundary-geometry-review-1'
+NOT_EVALUATED = ('paragraph layout', 'generated glyphs', 'planned glyph ink', 'glyph ink containment with INK_MARGIN',
+                 'capacity', 'font', 'writer', 'renderer', 'lifecycle')
+GEOMETRY_CONTRACT = dict(
+    schema=GEOMETRY_SCHEMA, read_only=True,
+    structural_review=dict(schema=REVIEW_SCHEMA,
+        meaning='groups, their candidates, order, presentation rows and minimal_authority_review_candidates are '
+                'exactly those of review_continuation_boundaries for the same inspection; geometry is only added'),
+    bounds='caller-provided page-space [x0, y0, x1, y1]: four finite numbers (not bool), x0 < x1 and y0 < y1; '
+           'malformed bounds are refused (PdfError). No bounds and no boundary are derived from geometry.',
+    destination_empty=dict(
+        check='pdfeditor.continuation.require_empty(content, bounds), as confirm_continuation_destination applies it',
+        calls_per_review=1, scope='the page and bounds; one result common to every candidate',
+        owned_glyph_exemption=False,
+        failure='its PdfError (outside the page, intersecting fixed paint) is reported as destination_empty false '
+                'with the message as empty_check_error, not raised'),
+    inherited_clip=dict(
+        check="pdfeditor.continuation.clip_contains(candidate['clip_constraint'], bounds), as require_inside_clip "
+              'applies it to the bounds', scope='each candidate, with the inspector\'s own clip constraint',
+        without_clip='nothing is required: clip_check_required false, bounds_inside_inherited_clip true',
+        edge='bounds on the certified rectangle edge are inside; beyond it by any amount they are not'),
+    checks_passed='destination_empty AND bounds_inside_inherited_clip, nothing else',
+    candidates='every group and candidate is kept, in review order; a failing candidate is annotated, never removed',
+    minimal_authority_review='not recomputed from geometry; a candidate failing geometry stays in it',
+    geometry_used=True,
+    geometry_meaning='shows whether the caller-provided bounds fit; never chooses, derives or filters a boundary '
+                     'from bounds',
+    generated_ink_evaluated=False, not_evaluated=list(NOT_EVALUATED),
+    limitation='Bounds inside the clip do not mean generated ink stays inside it; checks_passed does not promise '
+               'that a final layout fits or succeeds.',
+    automatic_selection=False, safety_ranking=False, recommendation=False, automatic_confirmation=False,
+    confirmation='only a caller-chosen boundary_id with caller-chosen bounds is confirmed, by '
+                 'confirm_continuation_destination, which repeats its own checks')
 
 
 def _canonical(value):
@@ -286,3 +328,61 @@ def review_continuation_boundaries(source, page):
     ``boundary_id`` it chose, never a group ID.
     """
     return _review(page, inspect_continuation_boundaries(source, page))
+
+
+def _bounds(bounds):
+    try:
+        if not isinstance(bounds, (list, tuple)) or len(bounds) != 4:
+            raise ValueError('expected four numbers')
+        x0, y0, x1, y1 = map(_number, bounds)
+        if not (x0 < x1 and y0 < y1):
+            raise ValueError('expected x0 < x1 and y0 < y1')
+    except (TypeError, ValueError) as exc:
+        raise PdfError(f'malformed continuation geometry review bounds: {exc}') from exc
+    return [x0, y0, x1, y1]
+
+
+def review_continuation_geometry(source, page, bounds):
+    """Read-only geometry review of caller-provided ``bounds`` against every safe boundary of one page.
+
+    Returns the review of review_continuation_boundaries (same groups,
+    candidates, order and minimal sets) with each candidate annotated: whether
+    ``bounds`` are empty page space (require_empty, evaluated once for the
+    page and bounds and shared by every candidate) and whether they lie inside
+    the candidate's inherited rectangular clip (clip_contains; nothing is
+    required without a clip). ``checks_passed`` is exactly the conjunction of
+    the two. The page is inspected once. Generated glyph ink, layout and
+    capacity are not evaluated. Nothing is removed, reordered, selected,
+    recommended or confirmed; a caller still confirms a ``boundary_id`` and
+    ``bounds`` it chose. Malformed bounds are refused (PdfError).
+    """
+    box = _bounds(bounds)
+    content = ContentPage(source, page)
+    try:
+        inspection = _inspect(content, page)
+        try:
+            require_empty(content, box)
+            empty, error = True, None
+        except PdfError as exc:
+            empty, error = False, str(exc)
+    finally:
+        content.close()
+    review = _review(page, inspection)
+    clips = {c['boundary_id']: c.get('clip_constraint') for c in inspection['candidates']}
+    for group in review['groups']:
+        for row in group['candidates']:
+            clip = clips[row['boundary_id']]
+            inside = True if clip is None else clip_contains(clip, box)
+            row['geometry'] = dict(destination_empty=empty, clip_check_required=clip is not None,
+                                   bounds_inside_inherited_clip=inside, checks_passed=empty and inside)
+        passed = sum(row['geometry']['checks_passed'] for row in group['candidates'])
+        group['geometry_checks_passed_count'] = passed
+        group['geometry_checks_failed_count'] = group['candidate_count'] - passed
+    rows = [row['geometry'] for group in review['groups'] for row in group['candidates']]
+    passed = sum(row['checks_passed'] for row in rows)
+    return dict(schema=GEOMETRY_SCHEMA, page=page, program_sha256=review['program_sha256'], bounds=box,
+        candidate_count=review['candidate_count'], group_count=review['group_count'], groups=review['groups'],
+        geometry=dict(bounds=list(box), destination_empty=empty, empty_check_error=error,
+            clip_checked_candidates=sum(row['clip_check_required'] for row in rows),
+            checks_passed_candidates=passed, checks_failed_candidates=len(rows) - passed),
+        contract=deepcopy(GEOMETRY_CONTRACT))

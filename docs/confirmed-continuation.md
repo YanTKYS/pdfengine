@@ -222,6 +222,8 @@ destination = confirm_continuation_destination(
 | review | inspectionのsafe境界だけを、同じpaint位置ごとに表示用に整理する。refused境界は含めない |
 | confirm | callerがboundary IDを明示的に選んだ後だけ行う |
 
+callerが指定したboundsの空き・clip適合を併記する場合は、下の[geometry review](#読み取り専用のgeometry-review)を使う。このreviewの出力は変わらない。
+
 - **API**: `review_continuation_boundaries(source, page)`は内部で`inspect_continuation_boundaries(source, page)`を1回呼び、safe候補だけを使う。`group_continuation_boundary_candidates(candidates)`は、すでに持っているinspectorのsafe候補（複数ページ可、1ページ1 program）を整理するpure関数で、入力を変更・参照共有しない。入力順に依存しない。`inspect_continuation_boundaries()`の返却schema・boundary ID・順序・authority・拒否理由・confirmは変わらない。
 - **返却**: `schema`、`page`、`program_sha256`、`candidate_count`、`group_count`、`groups`、`contract`。
 - **group**: page・program SHA-256・`z_order.semantics`・prefix/suffixの描画operator数が**完全一致**する候補だけをまとめる。近いordinal・似たoperator・似たstateではまとめない。groupは「同じ既存paintの間」を意味するだけで、authorityの同一性や候補の交換可能性を意味しない。同じgroupでもgraphics state・`q ... Q` scope・CTM相殺・継承clipは異なり得る。各groupは`group_id`、paint位置、`candidate_count`、ordinalの範囲、全`boundary_ids`、各候補、`minimal_authority_review_candidates`、`distinct_authority_variants`を持つ。
@@ -234,6 +236,36 @@ destination = confirm_continuation_destination(
 - **fail closed**: safe以外・理由付き・z-orderの不正・boundary IDやpage/ordinalの重複・1ページに異なるprogram・ページ内でpaint総数の不一致・q深さ4以上・inspectorと異なるscope形式・`q`/`Q`の対応や入れ子の破綻・clip stateとclip constraintの不一致・CTMと相殺の不一致や不正な相殺・NaNなどcanonical JSONにできない値は`PdfError`で拒否する。
 - **実原本**: PR #22の[prototype](../evaluations/continuation/README.md#safe-boundaryの描画位置別レビュー--2026-09-30)は、この正式APIのthin wrapperになった。未加工LibreOffice原本10ページの3,016 safe候補→834 groupの再確認手順は[評価README](../evaluations/continuation/README.md#正式read-only-apiでの再確認)にある。
 - **回帰**: [tests/test_continuation_review.py](../tests/test_continuation_review.py)。
+
+### 読み取り専用のgeometry review
+
+callerが**自分で決めたbounds**について、「pageとして空いているか」と「各safe候補が継承するclipに収まるか」を、上のreviewに併記するだけの読み取り専用APIである。boundsから境界を選ばない・推定しない。順位を付けない。候補を絞らない。確認もしない。
+
+```python
+from pdfeditor.continuation_review import review_continuation_geometry
+
+geometry = review_continuation_geometry(source, page=6, bounds=[x0, y0, x1, y1])  # 3. callerのboundsの適合表示
+# 4. callerが自分でboundary_idとboundsを選び、confirm_continuation_destinationで明示的に確認する
+```
+
+| 段階 | 役割 |
+|---|---|
+| inspection | 安全な個々の境界と、そのauthorityを列挙する |
+| structural review | safe境界を同じpaint位置ごとに整理する（`review_continuation_boundaries`、geometryは使わない） |
+| geometry review | callerが指定したboundsについて、空きとclip適合を各候補に注記する（`review_continuation_geometry`） |
+| caller confirmation | callerがboundary IDとboundsを明示的に選んだ後だけ行う。geometry reviewから自動では進まない |
+
+- **API**: `review_continuation_geometry(source, page, bounds)`は1つの`ContentPage`でpageを**1回だけ**inspectionし（`review_continuation_boundaries`を経由した二重scanはしない）、同じinspectionから既存のstructural reviewを作り、geometryを加えて返す。`review_continuation_boundaries()`の返却・schema・contract（`geometry_used: false`を含む）は変わらない。
+- **bounds**: page空間の`[x0, y0, x1, y1]`。4要素、有限の数（boolは不可）、`x0 < x1`、`y0 < y1`でなければ`PdfError`で拒否する（pageは開かない）。形式が正しいboundsがpage外・固定paintと交差する場合は例外にせず、`destination_empty: false`として返す。
+- **空き判定はpage・bounds共通**: `pdfeditor.continuation.require_empty(content, bounds)`を**1回だけ**呼ぶ。confirmと同じ判定で、新しい規則は作らない。owned glyphの除外は渡さない（既存の生成destinationの再編集は対象外）。結果は全候補で共通である。失敗時は`require_empty`の`PdfError`のmessageを`geometry.empty_check_error`に残す。
+- **clip適合だけが候補固有**: 候補のinspector recordに`clip_constraint`があるときだけ、その正式なconstraintで`clip_contains(clip_constraint, bounds)`を呼ぶ。authority digestからclipを作り直したり、constraintを変更・再証明したりしない。clipのない候補はclipで拒否されない（`clip_check_required: false`、`bounds_inside_inherited_clip: true`）。矩形の辺ちょうどは内側で、少しでも越えれば外側になる（既存契約どおり）。
+- **候補ごとの`geometry`**: `destination_empty`、`clip_check_required`、`bounds_inside_inherited_clip`、`checks_passed`。`checks_passed`は正確に`destination_empty AND bounds_inside_inherited_clip`だけを意味する。推奨・選択・確認・最終layout成功の保証ではない。
+- **候補を削除しない**: geometryが不成立の候補もgroupと`boundary_ids`に残し、groupと候補の順序も変えない。geometryは注記であり、filterではない。groupには`geometry_checks_passed_count`・`geometry_checks_failed_count`の集計だけを加える。通過候補だけのgroup、再順位付け、1件の自動選択は作らない。
+- **`minimal_authority_review_candidates`は不変**: authority確認量の比較でありgeometryとは別の軸なので、geometryで再計算しない。geometry不成立の候補が含まれていても残す。callerは両方の情報を見られる。
+- **返却**: `schema`（`pdfengine-continuation-boundary-geometry-review-1`）、`page`、`program_sha256`、`bounds`、`candidate_count`、`group_count`、`groups`、`geometry`（`bounds`、`destination_empty`、`empty_check_error`と候補数の集計）、`contract`。
+- **contract**: `read_only`・`geometry_used`が`true`、`automatic_selection`・`safety_ranking`・`recommendation`・`automatic_confirmation`・`generated_ink_evaluated`が`false`。`geometry_used: true`は「callerが指定したboundsの適合を表示する」という意味で、「boundsから境界を選ぶ」という意味ではない。
+- **評価しないもの**: 生成glyphのink、`INK_MARGIN`を含むglyphのclip包含、paragraph layout、容量、font、writer、renderer、lifecycle。**boundsがclip内でも、生成inkがclip内に収まるとは限らない**。最終的なlayout・容量・ink包含は、confirmと、その後のplanがそれぞれの検査で判定する。
+- **回帰**: [tests/test_continuation_geometry_review.py](../tests/test_continuation_geometry_review.py)。深さ0〜3・CTM相殺・矩形clipを含む合成pageで、実際の`require_empty`・`clip_contains`を通す。未加工LibreOffice原本での外部検証は、次のWindows専用PRで行う。
 
 ### 安全な境界の条件
 

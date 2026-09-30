@@ -33,6 +33,10 @@ PR #22の考え方を`pdfeditor/continuation_review.py`（`review_continuation_b
 - **group ID**: 834件すべて一意で`review-group-`、page・program SHA-256・paint位置から再計算して834/834一致、boundary IDとの重複0。PR #22のIDとは比較しない（設計上異なる）。
 - 11 checksはすべてtrue。inspection計**14.499秒**、review計**1.22秒**、pooled grouping **0.953秒**、全体**31.531秒**。PDF出力0、confirm 0、renderer比較なし。full suite・targeted testsは再実行していない（PR #23で81 passed済み）。
 
+### geometry review（PR #24後）
+
+callerが指定したboundsの空き（`require_empty`、1 review 1回）と各候補の継承clip適合（`clip_contains`）を、上のreviewに注記する読み取り専用API `review_continuation_geometry(source, page, bounds)`を追加した（[契約](../../docs/confirmed-continuation.md#読み取り専用のgeometry-review)）。`review_continuation_boundaries`の出力は変えていない。確認は合成pageのtestsだけで行った。**未加工LibreOffice原本でのgeometry外部検証は未実施**で、次のWindows専用PRで行う。
+
 ## safe boundaryの描画位置別レビュー — 2026-09-30
 
 PR #21 merge `b2f437a399f2a42d4bb31125ad7c388dc12055a3`を起点に、[pure helper](boundary_review.py)と[read-only測定コード](boundary_review_evaluate.py)を追加した。[公開summary](boundary-review-summary.json)は統計と代表2グループだけを持ち、全候補・全グループはGit管理外の`runs/boundary-review-windows/`に保存する。
