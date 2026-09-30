@@ -242,10 +242,28 @@ callerが指定したboundsの空き・clip適合を併記する場合は、下�
 callerが**自分で決めたbounds**について、「pageとして空いているか」と「各safe候補が継承するclipに収まるか」を、上のreviewに併記するだけの読み取り専用APIである。boundsから境界を選ばない・推定しない。順位を付けない。候補を絞らない。確認もしない。
 
 ```python
-from pdfeditor.continuation_review import review_continuation_geometry
+from pdfeditor.continuation import (
+    confirm_continuation_destination, inspect_continuation_boundaries)
+from pdfeditor.continuation_review import (
+    build_continuation_boundary_confirmation_request,
+    review_continuation_boundaries, review_continuation_geometry)
 
-geometry = review_continuation_geometry(source, page=6, bounds=[x0, y0, x1, y1])  # 3. callerのboundsの適合表示
-# 4. callerが自分でboundary_idとboundsを選び、confirm_continuation_destinationで明示的に確認する
+inspection = inspect_continuation_boundaries(source, page=6)   # 1. inspection
+review = review_continuation_boundaries(source, page=6)        # 2. structural review
+geometry = review_continuation_geometry(                       # 3. geometry review
+    source, page=6, bounds=caller_bounds)
+
+# 4. caller decision: callerがreviewを読み、boundary_idを自分で1つ決める。
+#    engineは決めない（minimal集合・通過候補・並び順からの自動選択はしない）。
+chosen_boundary_id = ...
+
+request = build_continuation_boundary_confirmation_request(   # 5. confirm引数への受け渡し
+    geometry, boundary_id=chosen_boundary_id,
+    destination_id="reviewed-boundary", paragraph_id="paragraph-A",
+    region_id="next-region")
+
+destination = confirm_continuation_destination(                # 6. 明示的なconfirm
+    source, **request["confirm_kwargs"])
 ```
 
 | 段階 | 役割 |
@@ -253,7 +271,9 @@ geometry = review_continuation_geometry(source, page=6, bounds=[x0, y0, x1, y1])
 | inspection | 安全な個々の境界と、そのauthorityを列挙する |
 | structural review | safe境界を同じpaint位置ごとに整理する（`review_continuation_boundaries`、geometryは使わない） |
 | geometry review | callerが指定したboundsについて、空きとclip適合を各候補に注記する（`review_continuation_geometry`） |
-| caller confirmation | callerがboundary IDとboundsを明示的に選んだ後だけ行う。geometry reviewから自動では進まない |
+| caller decision | callerがboundary IDを自分で選ぶ。engineのどのAPIも選ばない |
+| confirmation request | 選ばれた1件を`confirm_continuation_destination`の引数にするだけ（下の[confirmation request](#callerが選んだboundaryのconfirmation-request)）。confirmはしない |
+| caller confirmation | callerが`confirm_continuation_destination`を明示的に呼ぶ。current sourceを再検証し、確認済みdestinationを返す唯一の段階 |
 
 - **API**: `review_continuation_geometry(source, page, bounds)`は1つの`ContentPage`でpageを**1回だけ**inspectionし（`review_continuation_boundaries`を経由した二重scanはしない）、同じinspectionから既存のstructural reviewを作り、geometryを加えて返す。`review_continuation_boundaries()`の返却・schema・contract（`geometry_used: false`を含む）は変わらない。
 - **bounds**: page空間の`[x0, y0, x1, y1]`。4要素、有限の数（boolは不可）、`x0 < x1`、`y0 < y1`でなければ`PdfError`で拒否する（pageは開かない）。形式が正しいboundsがpage外・固定paintと交差する場合は例外にせず、`destination_empty: false`として返す。
@@ -266,6 +286,21 @@ geometry = review_continuation_geometry(source, page=6, bounds=[x0, y0, x1, y1])
 - **contract**: `read_only`・`geometry_used`が`true`、`automatic_selection`・`safety_ranking`・`recommendation`・`automatic_confirmation`・`generated_ink_evaluated`が`false`。`geometry_used: true`は「callerが指定したboundsの適合を表示する」という意味で、「boundsから境界を選ぶ」という意味ではない。
 - **評価しないもの**: 生成glyphのink、`INK_MARGIN`を含むglyphのclip包含、paragraph layout、容量、font、writer、renderer、lifecycle。**boundsがclip内でも、生成inkがclip内に収まるとは限らない**。最終的なlayout・容量・ink包含は、confirmと、その後のplanがそれぞれの検査で判定する。
 - **回帰**: [tests/test_continuation_geometry_review.py](../tests/test_continuation_geometry_review.py)。深さ0〜3・CTM相殺・矩形clipを含む合成pageで、実際の`require_empty`・`clip_contains`を通す。未加工LibreOffice原本での外部検証は、次のWindows専用PRで行う。
+
+### callerが選んだboundaryのconfirmation request
+
+`build_continuation_boundary_confirmation_request(geometry_review, *, boundary_id, destination_id, paragraph_id, region_id)`は、geometry reviewのrecordと、callerがそこから選んだboundary IDを、`confirm_continuation_destination(source, **request["confirm_kwargs"])`の引数へ変換するだけのpure APIである。sourceを受け取らない。inspection・`require_empty`・`clip_contains`・confirmのいずれも呼ばない。**requestの生成はconfirmではない**。確認済みdestinationを返すのは`confirm_continuation_destination()`だけである。
+
+- **caller選択が必須**: `boundary_id`を省略すると`PdfError`になる。group ID（`review-group-...`）・boundary ID形式でない値・reviewにない値も拒否する。builderはminimal集合・geometry通過候補・groupの代表・q depth・並び順のいずれからも選ばない。scoreも作らない。
+- **minimal集合とは独立**: 選ばれた候補が`minimal_authority_review_candidates`に含まれている必要はない。minimal集合は推奨候補ではない。
+- **geometryの前提**: 選ばれた1件の`geometry.checks_passed`がfalseなら、requestを作らず`PdfError`にする。messageでは、page-levelの空き（`destination_empty`）の不成立か、継承clip（`bounds_inside_inherited_clip`）の不成立かを区別する。これは、callerが選んだ1件について既知のconfirm前提が満たされていないためのfail closedであり、候補のfilterや推薦ではない。
+- **reviewの検証**: 入力をそのまま信用しない。schema、contract（geometry reviewの`GEOMETRY_CONTRACT`と完全一致。selection・confirmation・read-only・`generated_ink_evaluated`の改ざんを拒否）、page、program SHA-256、bounds、geometry summaryとboundsの一致、空き判定とerrorの整合、candidate/group数、group ID（page・program・paint位置から再計算して照合）、groupの並び、`boundary_ids`と候補行の一致、候補の順序、boundary IDの重複、minimal集合がgroup内にあること、各候補の`geometry`のkeyと型、`checks_passed = destination_empty AND bounds_inside_inherited_clip`、page-levelの空きとの整合、clipのない候補がclipで不成立になっていないこと、groupと全体の集計、を確認する。recordとしての整合を見るだけで、geometryを再計算しない。
+- **identities**: `destination_id`・`paragraph_id`・`region_id`は、confirmと同じく空でない文字列である。IDを自動生成しない。
+- **返却**: `schema`（`pdfengine-continuation-boundary-confirmation-request-1`）、`page`、`bounds`、`review_program_sha256`、`group_id`（選ばれた候補のgroup）、`boundary_id`、`candidate_review`（ordinal・operator context・`q_depth`・`review_requirements`・`review_attributes`・`geometry`）、`confirm_kwargs`、`contract`。完全なauthorityは複写しない。
+- **`confirm_kwargs`**: `destination_id`、`paragraph_id`、`region_id`、`page`、`bounds`、`insertion`（既存定数`BOUNDARY` = `confirmed-page-program-boundary`）、`graphics_state`（`BOUNDARY_STATE` = `confirmed-boundary-state`）、`boundary`（callerが選んだboundary ID）。`page_entry_order`は含めない。
+- **`review_program_sha256`と`source_revalidated: false`**: geometry reviewが見たprogramのSHA-256を、表示と古いreviewの診断のためにだけ残す。builderはcurrent sourceと照合しない。sourceがreview後に変わっていても、requestは組み立てられる。そのboundary authorityが今も成立するかは、confirmがcurrent sourceを再inspectionして判定し、成立しなければ既存契約どおり拒否する。
+- **contract**: `read_only`・`caller_selected_boundary`が`true`。`automatic_selection`・`recommendation`・`safety_ranking`・`automatic_confirmation`・`source_revalidated`・`generated_ink_evaluated`が`false`。requestが作れても、生成glyph ink・`INK_MARGIN`・paragraph layout・容量・font・writer・renderer・lifecycleの成功や、confirmが受理することは保証しない。
+- **回帰**: [tests/test_continuation_confirmation_request.py](../tests/test_continuation_confirmation_request.py)。合成pageで、requestをtest側が明示的にconfirmへ渡すと受理されること、minimal集合外の候補も受理されること、sourceを変えるとconfirmが拒否すること、builderがconfirm・inspection・geometry検査を呼ばずPDFを変えないこと、改ざんされたreviewを拒否することを確認する。
 
 ### 安全な境界の条件
 

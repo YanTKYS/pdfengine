@@ -46,6 +46,10 @@ callerが指定したboundsの空き（`require_empty`、1 review 1回）と各�
 - **呼び出し回数とread-only**: 各geometry reviewで`_inspect` 1回・`require_empty` 1回、`clip_contains`はclip候補の270回。confirm・PDF書き込み・render・lifecycleはいずれも0回。原本とengineは実行前後で不変。生成glyph ink・INK_MARGIN・layout・容量・font・rendererは評価・推論していない（contractの`generated_ink_evaluated: false`も確認）。
 - 所要時間は全体**4.484秒**（clip調査のinspection 0.781秒、structural review 0.906秒、Scenario A 1.093秒、Scenario B 1.109秒）。full suite・targeted testsは再実行していない（PR #25で148 passed済み）。
 
+### confirmation request（PR #26後）
+
+callerがgeometry reviewを見て自分で選んだboundary IDを、`confirm_continuation_destination()`の引数へ変換するpure API `build_continuation_boundary_confirmation_request()`を追加した（[契約](../../docs/confirmed-continuation.md#callerが選んだboundaryのconfirmation-request)）。PDF geometryを新たに解釈しないため、実原本での追加検証は行っていない。
+
 ## safe boundaryの描画位置別レビュー — 2026-09-30
 
 PR #21 merge `b2f437a399f2a42d4bb31125ad7c388dc12055a3`を起点に、[pure helper](boundary_review.py)と[read-only測定コード](boundary_review_evaluate.py)を追加した。[公開summary](boundary-review-summary.json)は統計と代表2グループだけを持ち、全候補・全グループはGit管理外の`runs/boundary-review-windows/`に保存する。
