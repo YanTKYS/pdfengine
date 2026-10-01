@@ -778,7 +778,7 @@ pdfengineが書くcontent streamは、出力PDFのversionのoperator nesting規�
 - **分割できない場合**: text objectを閉じて開き直せないときは拒否し、出力は作らない。
   - 編集位置で、そのtext object内で開いた`q`・marked-content sequence・`BX`が閉じていない場合。閉じると交差する。
   - そのtext objectにclipping描画モード（Tr 4〜7）の文字がある場合。clipは`ET`でまとめて適用されるためである。
-- **生成block**: `marker q BT ... ET Q marker`で、text object内に`q`/`Q`はない。再編集では上と同じ分割がblockの`q ... Q`の内側で起き、block内に複数のtext objectができる。
+- **生成block**: creationは`marker q [N cm] BT ... ET Q marker`で、text object内に`q`/`Q`はない。当初は、再編集でも上と同じ分割がblockの`q ... Q`の内側で起き、block内に複数のtext objectができていた。現在は、所有を証明したcurrent-formの生成blockに限り、再編集時もmarker間を現在のfragmentのcanonical bodyへ置き換える（[生成fontの寿命](#生成fontの寿命)の「その後の解消」）。そのため、過去revisionのtext objectは累積しない。文字を描くblockはcreationと同じ1つの`q [N cm] BT ... ET Q`になる。dormantでは、typing styleの非描画slotと、必要なstyle witnessのtext objectだけを持つ。legacy binding（`operator_nesting`なし）のblockは従来の書き換えのままである。
 - **同じ原因の他のwriter**:
   - `compose_selected`は同じ分割で隔離する。
   - `edit_reflow`の`q`/`Q`は、状態を変えない`Tm`・`Tj`だけを囲んでいたため取り除いた。
