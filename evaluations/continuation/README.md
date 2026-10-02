@@ -959,7 +959,7 @@ PR #30 merge `8178462d84ade7241b536a533756149a5fb39754`、engine digest `dddbdc1
 | 6 | 0 | 0 | 0 | 0 | 0 |
 | 他7ページ | 0 | 0 | 0 | 0 | 0 |
 
-source合計は**+18,732 bytes / +1,485 operators / no-op**。`report.mutation_map`のowner・kindと各置換のlength−消費bytesを集計し、各ページの実際のdecoded bytes差分に一致させた。source slotの絶対spanを新しく推定した値ではない。regrow→noop3で4ページは40,379→53,639 bytes、5ページは70,109→113,045 bytes、6ページは29,360 bytesのまま。generated部分の解消から、source累積も解決したとは言えない。
+source合計は**+18,732 bytes / +1,485 operators / no-op**。`report.mutation_map`のowner・kindと各置換のlength−消費bytesを集計し、mutation owner別のlength deltaをpage単位のdecoded program length deltaと照合した。source slotの絶対spanを新しく推定した値や、span全体のbyte-by-byte attributionではない。regrow→noop3で4ページは40,379→53,639 bytes、5ページは70,109→113,045 bytes、6ページは29,360 bytesのまま。generated部分の解消から、source累積も解決したとは言えない。
 
 page-entryは`reviewed-page6-space`、boundaryは`reviewed-page6-boundary`。後者は既存`boundary-b848698b464255ff0b2b6f90`（offset 17,602、ordinal 1,303）を維持し、prefix 17,602 bytesとsuffix 8,714 bytesは原本と完全一致する。destination authority、slot ID、creation binding、marker pairを保持し、page-entryへの移動や再bindingはない。
 
@@ -989,4 +989,4 @@ runnerは上記起点HEADとengine/input hashを固定し、不一致を拒否�
 
 `--collect`は完了済み追加no-opのinput/output hashを照合して再利用し、正式系列を再実行しない。未完了の追加no-opを上書きして続行する機能はない。
 
-Claude Opus 5.5の独立レビューは未実施。この環境では指定モデルを呼び出せないため、PRはdraftとして作成し、独立レビューの完了を待つ。
+Claude Opus 5.5の[独立レビュー](https://github.com/YanTKYS/pdfengine/pull/31#pullrequestreview-5391061158)はhead `946a94adeb74fbccf6f801a247ebf886d0388fe2`に対して**PASS**。evaluatorの判定ロジック・公開summaryの数値・既存helperとの整合・主張範囲を確認し、generated no-op stabilityとsource累積の切り分け、renderer/glyph/font/authorityの証拠、historical comparisonの制限を妥当とした。engine contractの再実装はなく、Draft → Readyは可との結論。レビューではWindows raw評価・helper testを再実行していない。

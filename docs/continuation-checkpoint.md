@@ -1175,10 +1175,12 @@ pending pathの2,860件は162の連続区間で、全てpath完了直後にsafe�
 
 page-entryと既存のconfirmed page-program boundaryの正式7段階を通過。各系列で**grow = regrow = noop1 = noop2 = noop3のgenerated block bytesが完全一致**した。activeは3,044 bytes /259 operators /36 painting shows、secondは3,224 /273 /38、dormantは310 /33 /0。activeのtext objectは1つ、dormantはtyping slot＋body/latin witnessの3つで、nesting違反0。slot/destination/creation binding/markerを保持し、boundaryのprefix 17,602 bytes・suffix 8,714 bytesも原本のままである。
 
-**source slot側は未解決**。no-opごとに4ページ+4,420 bytes/+368 operators、5ページ+14,312 bytes/+1,117 operators、合計+18,732 bytes/+1,485 operatorsが残る。6ページgenerated分とその他は0。各mutationのownerによる増分と実際のdecoded page program差分を突合しており、圧縮PDF sizeや単なる残差から分類していない。
+**source slot側は未解決**。no-opごとに4ページ+4,420 bytes/+368 operators、5ページ+14,312 bytes/+1,117 operators、合計+18,732 bytes/+1,485 operatorsが残る。6ページgenerated分とその他は0。mutation owner別のlength deltaをpage単位のdecoded program length deltaと照合しており、span全体のbyte-by-byte attributionではない。圧縮PDF sizeや単なる残差から分類していない。
 
 両系列のno-op 3回は全10ページでMuPDF/Poppler pixel diff 0。独立Unicode・glyph plan/CID/GID/W・source paint/画像/annotation/元fontを既存監査で照合し、Type0 4・所有root 4・font graph 24・ページ別所有alias 1/2/1を維持した。公開historical evidenceは書き換えず、PR本文との数値差の原因を未検証のまま断定しない。
 
 grow直後・dormant中の追加no-opも両系列でbytes不変・全ページ画素一致。保存glyph原点の直接照合は最大約0.0000244141ptで、no-op間と2 destination間のdigestも一致した。残っていた旧growの部分rawとの全10ページ比較も両rendererで一致するが、その旧rawにはengine digest・完了summary・所有font記録がない。旧page-entryとboundaryの抽出順差に関する比較設定の初回失敗と修正は、summaryの`evaluation_attempts`に記録した。
 
-正式系列の所要時間はpage-entry 1,937.078秒、boundary 2,462.328秒。helper小test 4 passed（最終確認4.71秒）、full suiteは実行していない。追加監査は10月1〜2日に実施した。詳細・追加no-op・過去rawとの比較・環境hashは[評価README](../evaluations/continuation/README.md#pr-30-generated-block-canonicalizationのwindows実原本検証--2026-10-01)と[公開summary](../evaluations/continuation/generated-block-canonical-summary.json)を参照。Claude Opus 5.5の独立レビューは利用できる呼出手段がないため未実施。PRはdraftとして作成し、独立レビューの完了を待つ。
+正式系列の所要時間はpage-entry 1,937.078秒、boundary 2,462.328秒。helper小test 4 passed（最終確認4.71秒）、full suiteは実行していない。追加監査は10月1〜2日に実施した。詳細・追加no-op・過去rawとの比較・環境hashは[評価README](../evaluations/continuation/README.md#pr-30-generated-block-canonicalizationのwindows実原本検証--2026-10-01)と[公開summary](../evaluations/continuation/generated-block-canonical-summary.json)を参照。
+
+Claude Opus 5.5の[独立レビュー](https://github.com/YanTKYS/pdfengine/pull/31#pullrequestreview-5391061158)はhead `946a94adeb74fbccf6f801a247ebf886d0388fe2`に対して**PASS**。evaluation code・公開summary・既存helperとの整合、generated/source累積の解釈、renderer/glyph/font/authorityの証拠とhistorical comparisonの制限を確認した。engine contractの再実装はなく、Draft → Readyは可との結論。Windows raw評価・helper testはレビューで再実行していない。
