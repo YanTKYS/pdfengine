@@ -1,0 +1,3470 @@
+{
+  "schema_version": 1,
+  "base_head": "8c4e904d1e7d51e4ba1d8c7e693eaad816059f0f",
+  "environment": {
+    "system": "Windows",
+    "python": "3.12.14",
+    "pymupdf": "1.27.2.3",
+    "pypdf": "6.10.0"
+  },
+  "runtime_digest": {
+    "algorithm": "SHA256(sorted filename + NUL + file bytes, pdfeditor/*.py)",
+    "value": "2e0ad53bdd617280ec390679559113f41a227be9b91cfab02d705f4f08cf2c45"
+  },
+  "scope": "synthetic current-runtime observation; no candidate implementation or real-PDF rerun",
+  "attribution": "explicit mutation owner and byte-exact untouched gaps; no absolute source-owned span inferred",
+  "painting_count_limit": "nonempty Tj/TJ string operand in these fill-only fixtures; not general visibility",
+  "reopen_inputs": "current PDF + current sidecar + configured font assets; no previous report or revision input",
+  "cases": {
+    "shared": {
+      "fixture": "tests/test_shared_flow.py::prepared",
+      "stages": {
+        "initial": {
+          "pages": {
+            "1": {
+              "bytes": 175,
+              "operators": 19,
+              "Tf": 4,
+              "Tm": 0,
+              "Tj": 4,
+              "TJ": 0,
+              "painting_show": 4,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "933eac2da114e1f134373027f9d443c0e08dce9aa7853d999f0f01bcb67abadf",
+              "nesting_violations": 0
+            },
+            "2": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "First BLUE",
+              "paragraph_id": "A",
+              "selected_glyphs": 10,
+              "events": [
+            {"start":28,"end":39,"operator":"Tj","selected_glyphs":6,"foreign_glyphs":0},
+            {"start":61,"end":70,"operator":"Tj","selected_glyphs":4,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Bold",
+                "/Regular"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": []
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "Second ",
+              "paragraph_id": "B",
+              "selected_glyphs": 7,
+              "events": [
+            {"start":112,"end":124,"operator":"Tj","selected_glyphs":7,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Regular"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": []
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 4,
+              "events": [
+            {"start":34,"end":43,"operator":"Tj","selected_glyphs":4,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Bold"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": []
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [],
+            "insertion_binding": [],
+            "style_slot_bindings": [],
+            "binding_provenance": [],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          }
+        },
+        "grow": {
+          "pages": {
+            "1": {
+              "bytes": 2258,
+              "operators": 234,
+              "Tf": 33,
+              "Tm": 30,
+              "Tj": 30,
+              "TJ": 5,
+              "painting_show": 30,
+              "nonpainting_numeric_TJ": 4,
+              "empty_TJ": 1,
+              "sha256": "6f8fae7b48e362bf36d7920b13425defe13ddb062e7bacc841b52e2ff6c27243",
+              "nesting_violations": 0,
+              "delta_bytes": 2083,
+              "delta_operators": 215,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-0","start":28,"end":39,"output_start":28,"replacement_length":2045,"consumed_length":11,"delta":2034,"operator_delta":214,"glyph_anchor_count":29,"consumed":{"bytes":11,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":2045,"operators":215,"Tf":29,"Tm":30,"Tj":29,"TJ":2,"painting_show":29,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"61acc6b8192aea6876852aff11177dba31244a0e8a6d15f96e0cc6c761f8e901","replacement_sha256":"e52d9df4a32f532c139c80fd937d2e9e09a796eb780454f619a93a2c32d287b6","consumed_example":"(First ) Tj","replacement_prefix":"[-600 -600 -600 -600 -600 -600] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <0001> Tj /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 25.90625 200 Tm <0"},
+            {"kind":"text-edit","owner":"slot-0","start":61,"end":70,"output_start":2095,"replacement_length":24,"consumed_length":9,"delta":15,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":112,"end":124,"output_start":2161,"replacement_length":46,"consumed_length":12,"delta":34,"operator_delta":1,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-0": {
+                  "mutations": 2,
+                  "delta_bytes": 2049,
+                  "delta_operators": 214,
+                  "consumed_counts": {
+                    "bytes": 20,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 2,
+                    "TJ": 0,
+                    "painting_show": 2,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 2069,
+                    "operators": 216,
+                    "Tf": 29,
+                    "Tm": 30,
+                    "Tj": 29,
+                    "TJ": 3,
+                    "painting_show": 29,
+                    "nonpainting_numeric_TJ": 3,
+                    "empty_TJ": 0
+                  }
+                },
+                "slot-1": {
+                  "mutations": 1,
+                  "delta_bytes": 34,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 12,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 1,
+                    "TJ": 0,
+                    "painting_show": 1,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 46,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 2,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 1,
+                    "empty_TJ": 1
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 961,
+              "operators": 94,
+              "Tf": 12,
+              "Tm": 12,
+              "Tj": 11,
+              "TJ": 2,
+              "painting_show": 11,
+              "nonpainting_numeric_TJ": 2,
+              "empty_TJ": 0,
+              "sha256": "96fbe330429f0d37ffd2a385863692f7ac0f391e1834b562e61c723d7af54604",
+              "nesting_violations": 0,
+              "delta_bytes": 915,
+              "delta_operators": 88,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-2","start":34,"end":43,"output_start":34,"replacement_length":924,"consumed_length":9,"delta":915,"operator_delta":88,"glyph_anchor_count":11,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":924,"operators":89,"Tf":11,"Tm":12,"Tj":11,"TJ":2,"painting_show":11,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"fed18be2c9f9aa9931ac41d750478e96668bed62c439b28dd46ae65788001482","replacement_sha256":"c10319e39b0f2597db51fa80f30a7150e049fb3fdfa22d492546bec57594f7d5","consumed_example":"(tail) Tj","replacement_prefix":"[-600 -600 -600 -600] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 20 200 Tm <0001> Tj /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 25.71484375 20"}
+          ],
+              "by_owner": {
+                "slot-2": {
+                  "mutations": 1,
+                  "delta_bytes": 915,
+                  "delta_operators": 88,
+                  "consumed_counts": {
+                    "bytes": 9,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 1,
+                    "TJ": 0,
+                    "painting_show": 1,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 924,
+                    "operators": 89,
+                    "Tf": 11,
+                    "Tm": 12,
+                    "Tj": 11,
+                    "TJ": 2,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 2,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "Line one\nLine two\nLine three\nEnd",
+              "paragraph_id": "A",
+              "selected_glyphs": 29,
+              "events": [
+            {"start":138,"end":147,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":206,"end":215,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":268,"end":277,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":337,"end":346,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":401,"end":410,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":470,"end":479,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":539,"end":548,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":607,"end":616,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":669,"end":678,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":737,"end":746,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":799,"end":808,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":868,"end":877,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":932,"end":941,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1001,"end":1010,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1069,"end":1078,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1138,"end":1147,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1200,"end":1209,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1268,"end":1277,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1330,"end":1339,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1399,"end":1408,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1463,"end":1472,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1532,"end":1541,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1600,"end":1609,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1669,"end":1678,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1738,"end":1747,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1800,"end":1809,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1867,"end":1876,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1942,"end":1951,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2016,"end":2025,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "",
+              "paragraph_id": "B",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":2201,"end":2206,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Regular"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "Second tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 11,
+              "events": [
+            {"start":141,"end":150,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":219,"end":228,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":296,"end":305,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":374,"end":383,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":452,"end":461,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":526,"end":535,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":603,"end":612,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":679,"end":688,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":754,"end":763,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":829,"end":838,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":901,"end":910,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [
+              "/generated_fonts"
+            ],
+            "insertion_binding": [
+              "/slots/slot-1/binding/paragraph/insertion_binding"
+            ],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/slots/slot-0/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-1/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-2/binding/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0
+        },
+        "noop1": {
+          "pages": {
+            "1": {
+              "bytes": 4433,
+              "operators": 449,
+              "Tf": 62,
+              "Tm": 60,
+              "Tj": 30,
+              "TJ": 36,
+              "painting_show": 30,
+              "nonpainting_numeric_TJ": 34,
+              "empty_TJ": 2,
+              "sha256": "a09f0ac3f5711cb69ec2b10bcd37fff16fbbd3b8403e55e8640830ada37c4a77",
+              "nesting_violations": 0,
+              "delta_bytes": 2175,
+              "delta_operators": 215,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-0","start":138,"end":147,"output_start":138,"replacement_length":2020,"consumed_length":9,"delta":2011,"operator_delta":214,"glyph_anchor_count":29,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":2020,"operators":215,"Tf":29,"Tm":30,"Tj":29,"TJ":2,"painting_show":29,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"1c8b8f0878b2640557c33dafd85d99e3b754f99ff296b8931249b2298c89878f","consumed_example":"<0001> Tj","replacement_prefix":"[-492.1875] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <0001> Tj /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 25.90625 200 Tm <0002> Tj /PRF1 12 Tf "},
+            {"kind":"text-edit","owner":"slot-0","start":206,"end":215,"output_start":2217,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":268,"end":277,"output_start":2284,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":337,"end":346,"output_start":2359,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":401,"end":410,"output_start":2429,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":470,"end":479,"output_start":2504,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":539,"end":548,"output_start":2577,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":607,"end":616,"output_start":2651,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":669,"end":678,"output_start":2719,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":737,"end":746,"output_start":2792,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":799,"end":808,"output_start":2859,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":868,"end":877,"output_start":2934,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":932,"end":941,"output_start":3004,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1001,"end":1010,"output_start":3079,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1069,"end":1078,"output_start":3153,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1138,"end":1147,"output_start":3228,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1200,"end":1209,"output_start":3294,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1268,"end":1277,"output_start":3367,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1330,"end":1339,"output_start":3434,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1399,"end":1408,"output_start":3509,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1463,"end":1472,"output_start":3579,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1532,"end":1541,"output_start":3654,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1600,"end":1609,"output_start":3728,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1669,"end":1678,"output_start":3803,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1738,"end":1747,"output_start":3877,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1800,"end":1809,"output_start":3945,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1867,"end":1876,"output_start":4018,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1942,"end":1951,"output_start":4099,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2016,"end":2025,"output_start":4179,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":2201,"end":2206,"output_start":4369,"replacement_length":12,"consumed_length":5,"delta":7,"operator_delta":1,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-0": {
+                  "mutations": 29,
+                  "delta_bytes": 2168,
+                  "delta_operators": 214,
+                  "consumed_counts": {
+                    "bytes": 261,
+                    "operators": 29,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 29,
+                    "TJ": 0,
+                    "painting_show": 29,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 2429,
+                    "operators": 243,
+                    "Tf": 29,
+                    "Tm": 30,
+                    "Tj": 29,
+                    "TJ": 30,
+                    "painting_show": 29,
+                    "nonpainting_numeric_TJ": 30,
+                    "empty_TJ": 0
+                  }
+                },
+                "slot-1": {
+                  "mutations": 1,
+                  "delta_bytes": 7,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 12,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 2,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 2
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 1915,
+              "operators": 182,
+              "Tf": 23,
+              "Tm": 24,
+              "Tj": 11,
+              "TJ": 14,
+              "painting_show": 11,
+              "nonpainting_numeric_TJ": 14,
+              "empty_TJ": 0,
+              "sha256": "28c55de9c3b296cab4acc88b8ff6fcd9b4e109aad885a62df3f8681234a9507e",
+              "nesting_violations": 0,
+              "delta_bytes": 954,
+              "delta_operators": 88,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-2","start":141,"end":150,"output_start":141,"replacement_length":911,"consumed_length":9,"delta":902,"operator_delta":88,"glyph_anchor_count":11,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":911,"operators":89,"Tf":11,"Tm":12,"Tj":11,"TJ":2,"painting_show":11,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"b06afef13ed2bcbe5fd87e41c51cd2b32b52c2a1e329287ef85058fbcb8050fd","consumed_example":"<0001> Tj","replacement_prefix":"[-519.53125] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 20 200 Tm <0001> Tj /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 25.71484375 200 Tm <000"},
+            {"kind":"text-edit","owner":"slot-2","start":219,"end":228,"output_start":1121,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":296,"end":305,"output_start":1204,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":374,"end":383,"output_start":1288,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":452,"end":461,"output_start":1370,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":526,"end":535,"output_start":1450,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":603,"end":612,"output_start":1532,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":679,"end":688,"output_start":1614,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":754,"end":763,"output_start":1695,"replacement_length":12,"consumed_length":9,"delta":3,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":829,"end":838,"output_start":1773,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":901,"end":910,"output_start":1850,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-2": {
+                  "mutations": 11,
+                  "delta_bytes": 954,
+                  "delta_operators": 88,
+                  "consumed_counts": {
+                    "bytes": 99,
+                    "operators": 11,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 11,
+                    "TJ": 0,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 1053,
+                    "operators": 99,
+                    "Tf": 11,
+                    "Tm": 12,
+                    "Tj": 11,
+                    "TJ": 12,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 12,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "Line one\nLine two\nLine three\nEnd",
+              "paragraph_id": "A",
+              "selected_glyphs": 29,
+              "events": [
+            {"start":228,"end":237,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":296,"end":305,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":358,"end":367,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":427,"end":436,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":491,"end":500,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":560,"end":569,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":629,"end":638,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":697,"end":706,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":759,"end":768,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":827,"end":836,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":889,"end":898,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":958,"end":967,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1022,"end":1031,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1091,"end":1100,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1159,"end":1168,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1228,"end":1237,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1290,"end":1299,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1358,"end":1367,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1420,"end":1429,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1489,"end":1498,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1553,"end":1562,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1622,"end":1631,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1690,"end":1699,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1759,"end":1768,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1828,"end":1837,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1890,"end":1899,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1957,"end":1966,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2032,"end":2041,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2106,"end":2115,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "",
+              "paragraph_id": "B",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":4375,"end":4380,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Regular"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "Second tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 11,
+              "events": [
+            {"start":239,"end":248,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":317,"end":326,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":394,"end":403,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":472,"end":481,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":550,"end":559,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":624,"end":633,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":701,"end":710,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":777,"end":786,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":852,"end":861,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":927,"end":936,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":999,"end":1008,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [
+              "/generated_fonts"
+            ],
+            "insertion_binding": [
+              "/slots/slot-1/binding/paragraph/insertion_binding"
+            ],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/slots/slot-0/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-1/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-2/binding/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0,
+          "noop_pixels_equal": true
+        },
+        "noop2": {
+          "pages": {
+            "1": {
+              "bytes": 6608,
+              "operators": 664,
+              "Tf": 91,
+              "Tm": 90,
+              "Tj": 30,
+              "TJ": 67,
+              "painting_show": 30,
+              "nonpainting_numeric_TJ": 64,
+              "empty_TJ": 3,
+              "sha256": "5e1b81007037ff8ea3ceb9b4f165b66d11a56c95c1ad29b2b372091f704428e5",
+              "nesting_violations": 0,
+              "delta_bytes": 2175,
+              "delta_operators": 215,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-0","start":228,"end":237,"output_start":228,"replacement_length":2020,"consumed_length":9,"delta":2011,"operator_delta":214,"glyph_anchor_count":29,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":2020,"operators":215,"Tf":29,"Tm":30,"Tj":29,"TJ":2,"painting_show":29,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"1c8b8f0878b2640557c33dafd85d99e3b754f99ff296b8931249b2298c89878f","consumed_example":"<0001> Tj","replacement_prefix":"[-492.1875] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <0001> Tj /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 25.90625 200 Tm <0002> Tj /PRF1 12 Tf "},
+            {"kind":"text-edit","owner":"slot-0","start":296,"end":305,"output_start":2307,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":358,"end":367,"output_start":2374,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":427,"end":436,"output_start":2449,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":491,"end":500,"output_start":2519,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":560,"end":569,"output_start":2594,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":629,"end":638,"output_start":2667,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":697,"end":706,"output_start":2741,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":759,"end":768,"output_start":2809,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":827,"end":836,"output_start":2882,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":889,"end":898,"output_start":2949,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":958,"end":967,"output_start":3024,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1022,"end":1031,"output_start":3094,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1091,"end":1100,"output_start":3169,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1159,"end":1168,"output_start":3243,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1228,"end":1237,"output_start":3318,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1290,"end":1299,"output_start":3384,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1358,"end":1367,"output_start":3457,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1420,"end":1429,"output_start":3524,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1489,"end":1498,"output_start":3599,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1553,"end":1562,"output_start":3669,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1622,"end":1631,"output_start":3744,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1690,"end":1699,"output_start":3818,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1759,"end":1768,"output_start":3893,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1828,"end":1837,"output_start":3967,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1890,"end":1899,"output_start":4035,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1957,"end":1966,"output_start":4108,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2032,"end":2041,"output_start":4189,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2106,"end":2115,"output_start":4269,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":4375,"end":4380,"output_start":6543,"replacement_length":12,"consumed_length":5,"delta":7,"operator_delta":1,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-0": {
+                  "mutations": 29,
+                  "delta_bytes": 2168,
+                  "delta_operators": 214,
+                  "consumed_counts": {
+                    "bytes": 261,
+                    "operators": 29,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 29,
+                    "TJ": 0,
+                    "painting_show": 29,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 2429,
+                    "operators": 243,
+                    "Tf": 29,
+                    "Tm": 30,
+                    "Tj": 29,
+                    "TJ": 30,
+                    "painting_show": 29,
+                    "nonpainting_numeric_TJ": 30,
+                    "empty_TJ": 0
+                  }
+                },
+                "slot-1": {
+                  "mutations": 1,
+                  "delta_bytes": 7,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 12,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 2,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 2
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 2869,
+              "operators": 270,
+              "Tf": 34,
+              "Tm": 36,
+              "Tj": 11,
+              "TJ": 26,
+              "painting_show": 11,
+              "nonpainting_numeric_TJ": 26,
+              "empty_TJ": 0,
+              "sha256": "1884a64e11fbd7441c31904984e83f541eb996cc8ffe39fb71a90ecd064c9ee9",
+              "nesting_violations": 0,
+              "delta_bytes": 954,
+              "delta_operators": 88,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-2","start":239,"end":248,"output_start":239,"replacement_length":911,"consumed_length":9,"delta":902,"operator_delta":88,"glyph_anchor_count":11,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":911,"operators":89,"Tf":11,"Tm":12,"Tj":11,"TJ":2,"painting_show":11,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"b06afef13ed2bcbe5fd87e41c51cd2b32b52c2a1e329287ef85058fbcb8050fd","consumed_example":"<0001> Tj","replacement_prefix":"[-519.53125] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 20 200 Tm <0001> Tj /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 25.71484375 200 Tm <000"},
+            {"kind":"text-edit","owner":"slot-2","start":317,"end":326,"output_start":1219,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":394,"end":403,"output_start":1302,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":472,"end":481,"output_start":1386,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":550,"end":559,"output_start":1468,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":624,"end":633,"output_start":1548,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":701,"end":710,"output_start":1630,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":777,"end":786,"output_start":1712,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":852,"end":861,"output_start":1793,"replacement_length":12,"consumed_length":9,"delta":3,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":927,"end":936,"output_start":1871,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":999,"end":1008,"output_start":1948,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-2": {
+                  "mutations": 11,
+                  "delta_bytes": 954,
+                  "delta_operators": 88,
+                  "consumed_counts": {
+                    "bytes": 99,
+                    "operators": 11,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 11,
+                    "TJ": 0,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 1053,
+                    "operators": 99,
+                    "Tf": 11,
+                    "Tm": 12,
+                    "Tj": 11,
+                    "TJ": 12,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 12,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "Line one\nLine two\nLine three\nEnd",
+              "paragraph_id": "A",
+              "selected_glyphs": 29,
+              "events": [
+            {"start":318,"end":327,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":386,"end":395,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":448,"end":457,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":517,"end":526,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":581,"end":590,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":650,"end":659,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":719,"end":728,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":787,"end":796,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":849,"end":858,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":917,"end":926,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":979,"end":988,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1048,"end":1057,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1112,"end":1121,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1181,"end":1190,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1249,"end":1258,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1318,"end":1327,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1380,"end":1389,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1448,"end":1457,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1510,"end":1519,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1579,"end":1588,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1643,"end":1652,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1712,"end":1721,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1780,"end":1789,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1849,"end":1858,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1918,"end":1927,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1980,"end":1989,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2047,"end":2056,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2122,"end":2131,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2196,"end":2205,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "",
+              "paragraph_id": "B",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":6549,"end":6554,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Regular"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "Second tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 11,
+              "events": [
+            {"start":337,"end":346,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":415,"end":424,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":492,"end":501,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":570,"end":579,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":648,"end":657,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":722,"end":731,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":799,"end":808,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":875,"end":884,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":950,"end":959,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1025,"end":1034,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1097,"end":1106,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [
+              "/generated_fonts"
+            ],
+            "insertion_binding": [
+              "/slots/slot-1/binding/paragraph/insertion_binding"
+            ],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/slots/slot-0/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-1/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-2/binding/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0,
+          "noop_pixels_equal": true
+        },
+        "noop3": {
+          "pages": {
+            "1": {
+              "bytes": 8783,
+              "operators": 879,
+              "Tf": 120,
+              "Tm": 120,
+              "Tj": 30,
+              "TJ": 98,
+              "painting_show": 30,
+              "nonpainting_numeric_TJ": 94,
+              "empty_TJ": 4,
+              "sha256": "cb90860d147ffeee40d7524a88e6d980042492167b3777bc4ae3dbcc49a715ad",
+              "nesting_violations": 0,
+              "delta_bytes": 2175,
+              "delta_operators": 215,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-0","start":318,"end":327,"output_start":318,"replacement_length":2020,"consumed_length":9,"delta":2011,"operator_delta":214,"glyph_anchor_count":29,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":2020,"operators":215,"Tf":29,"Tm":30,"Tj":29,"TJ":2,"painting_show":29,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"1c8b8f0878b2640557c33dafd85d99e3b754f99ff296b8931249b2298c89878f","consumed_example":"<0001> Tj","replacement_prefix":"[-492.1875] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <0001> Tj /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 25.90625 200 Tm <0002> Tj /PRF1 12 Tf "},
+            {"kind":"text-edit","owner":"slot-0","start":386,"end":395,"output_start":2397,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":448,"end":457,"output_start":2464,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":517,"end":526,"output_start":2539,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":581,"end":590,"output_start":2609,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":650,"end":659,"output_start":2684,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":719,"end":728,"output_start":2757,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":787,"end":796,"output_start":2831,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":849,"end":858,"output_start":2899,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":917,"end":926,"output_start":2972,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":979,"end":988,"output_start":3039,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1048,"end":1057,"output_start":3114,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1112,"end":1121,"output_start":3184,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1181,"end":1190,"output_start":3259,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1249,"end":1258,"output_start":3333,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1318,"end":1327,"output_start":3408,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1380,"end":1389,"output_start":3474,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1448,"end":1457,"output_start":3547,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1510,"end":1519,"output_start":3614,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1579,"end":1588,"output_start":3689,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1643,"end":1652,"output_start":3759,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1712,"end":1721,"output_start":3834,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1780,"end":1789,"output_start":3908,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1849,"end":1858,"output_start":3983,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1918,"end":1927,"output_start":4057,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1980,"end":1989,"output_start":4125,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2047,"end":2056,"output_start":4198,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2122,"end":2131,"output_start":4279,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2196,"end":2205,"output_start":4359,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":6549,"end":6554,"output_start":8717,"replacement_length":12,"consumed_length":5,"delta":7,"operator_delta":1,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-0": {
+                  "mutations": 29,
+                  "delta_bytes": 2168,
+                  "delta_operators": 214,
+                  "consumed_counts": {
+                    "bytes": 261,
+                    "operators": 29,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 29,
+                    "TJ": 0,
+                    "painting_show": 29,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 2429,
+                    "operators": 243,
+                    "Tf": 29,
+                    "Tm": 30,
+                    "Tj": 29,
+                    "TJ": 30,
+                    "painting_show": 29,
+                    "nonpainting_numeric_TJ": 30,
+                    "empty_TJ": 0
+                  }
+                },
+                "slot-1": {
+                  "mutations": 1,
+                  "delta_bytes": 7,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 12,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 2,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 2
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 3823,
+              "operators": 358,
+              "Tf": 45,
+              "Tm": 48,
+              "Tj": 11,
+              "TJ": 38,
+              "painting_show": 11,
+              "nonpainting_numeric_TJ": 38,
+              "empty_TJ": 0,
+              "sha256": "820429905c27381bea4e9004bfac76cf1048f7fb5ebcc8425dae8a596fcfae75",
+              "nesting_violations": 0,
+              "delta_bytes": 954,
+              "delta_operators": 88,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-2","start":337,"end":346,"output_start":337,"replacement_length":911,"consumed_length":9,"delta":902,"operator_delta":88,"glyph_anchor_count":11,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":911,"operators":89,"Tf":11,"Tm":12,"Tj":11,"TJ":2,"painting_show":11,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"b06afef13ed2bcbe5fd87e41c51cd2b32b52c2a1e329287ef85058fbcb8050fd","consumed_example":"<0001> Tj","replacement_prefix":"[-519.53125] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 20 200 Tm <0001> Tj /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 25.71484375 200 Tm <000"},
+            {"kind":"text-edit","owner":"slot-2","start":415,"end":424,"output_start":1317,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":492,"end":501,"output_start":1400,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":570,"end":579,"output_start":1484,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":648,"end":657,"output_start":1566,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":722,"end":731,"output_start":1646,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":799,"end":808,"output_start":1728,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":875,"end":884,"output_start":1810,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":950,"end":959,"output_start":1891,"replacement_length":12,"consumed_length":9,"delta":3,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":1025,"end":1034,"output_start":1969,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":1097,"end":1106,"output_start":2046,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-2": {
+                  "mutations": 11,
+                  "delta_bytes": 954,
+                  "delta_operators": 88,
+                  "consumed_counts": {
+                    "bytes": 99,
+                    "operators": 11,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 11,
+                    "TJ": 0,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 1053,
+                    "operators": 99,
+                    "Tf": 11,
+                    "Tm": 12,
+                    "Tj": 11,
+                    "TJ": 12,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 12,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "Line one\nLine two\nLine three\nEnd",
+              "paragraph_id": "A",
+              "selected_glyphs": 29,
+              "events": [
+            {"start":408,"end":417,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":476,"end":485,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":538,"end":547,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":607,"end":616,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":671,"end":680,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":740,"end":749,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":809,"end":818,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":877,"end":886,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":939,"end":948,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1007,"end":1016,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1069,"end":1078,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1138,"end":1147,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1202,"end":1211,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1271,"end":1280,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1339,"end":1348,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1408,"end":1417,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1470,"end":1479,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1538,"end":1547,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1600,"end":1609,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1669,"end":1678,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1733,"end":1742,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1802,"end":1811,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1870,"end":1879,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1939,"end":1948,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2008,"end":2017,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2070,"end":2079,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2137,"end":2146,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2212,"end":2221,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2286,"end":2295,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "",
+              "paragraph_id": "B",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":8723,"end":8728,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Regular"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "Second tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 11,
+              "events": [
+            {"start":435,"end":444,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":513,"end":522,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":590,"end":599,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":668,"end":677,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":746,"end":755,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":820,"end":829,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":897,"end":906,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":973,"end":982,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1048,"end":1057,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1123,"end":1132,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1195,"end":1204,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [
+              "/generated_fonts"
+            ],
+            "insertion_binding": [
+              "/slots/slot-1/binding/paragraph/insertion_binding"
+            ],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/slots/slot-0/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-1/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-2/binding/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0,
+          "noop_pixels_equal": true
+        },
+        "second": {
+          "pages": {
+            "1": {
+              "bytes": 10182,
+              "operators": 1006,
+              "Tf": 135,
+              "Tm": 137,
+              "Tj": 16,
+              "TJ": 129,
+              "painting_show": 16,
+              "nonpainting_numeric_TJ": 125,
+              "empty_TJ": 4,
+              "sha256": "65c5c315e61656f455d9725b9a30dce27d11c8fe989c3d14dbc9ce8c8e3eba2b",
+              "nesting_violations": 0,
+              "delta_bytes": 1399,
+              "delta_operators": 127,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-0","start":408,"end":417,"output_start":408,"replacement_length":351,"consumed_length":9,"delta":342,"operator_delta":39,"glyph_anchor_count":4,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":351,"operators":40,"Tf":4,"Tm":5,"Tj":4,"TJ":2,"painting_show":4,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"8e31ddb3efcb510dc8e7e50cf767d9a5f1a9b80b3a784810448cc79fb9a62193","consumed_example":"<0001> Tj","replacement_prefix":"[-492.1875] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <0001> Tj /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 28.4375 200 Tm <0002> Tj /PRF1 12 Tf 1"},
+            {"kind":"text-edit","owner":"slot-0","start":476,"end":485,"output_start":818,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":538,"end":547,"output_start":885,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":607,"end":616,"output_start":960,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":671,"end":680,"output_start":1030,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":740,"end":749,"output_start":1105,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":809,"end":818,"output_start":1178,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":877,"end":886,"output_start":1252,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":939,"end":948,"output_start":1320,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1007,"end":1016,"output_start":1393,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1069,"end":1078,"output_start":1460,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1138,"end":1147,"output_start":1535,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1202,"end":1211,"output_start":1605,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1271,"end":1280,"output_start":1680,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1339,"end":1348,"output_start":1754,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1408,"end":1417,"output_start":1829,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1470,"end":1479,"output_start":1895,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1538,"end":1547,"output_start":1968,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1600,"end":1609,"output_start":2035,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1669,"end":1678,"output_start":2110,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1733,"end":1742,"output_start":2180,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1802,"end":1811,"output_start":2255,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1870,"end":1879,"output_start":2329,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":1939,"end":1948,"output_start":2404,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2008,"end":2017,"output_start":2478,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2070,"end":2079,"output_start":2546,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2137,"end":2146,"output_start":2619,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2212,"end":2221,"output_start":2700,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":2286,"end":2295,"output_start":2780,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":8723,"end":8728,"output_start":9222,"replacement_length":905,"consumed_length":5,"delta":900,"operator_delta":88,"glyph_anchor_count":11}
+          ],
+              "by_owner": {
+                "slot-0": {
+                  "mutations": 29,
+                  "delta_bytes": 499,
+                  "delta_operators": 39,
+                  "consumed_counts": {
+                    "bytes": 261,
+                    "operators": 29,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 29,
+                    "TJ": 0,
+                    "painting_show": 29,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 760,
+                    "operators": 68,
+                    "Tf": 4,
+                    "Tm": 5,
+                    "Tj": 4,
+                    "TJ": 30,
+                    "painting_show": 4,
+                    "nonpainting_numeric_TJ": 30,
+                    "empty_TJ": 0
+                  }
+                },
+                "slot-1": {
+                  "mutations": 1,
+                  "delta_bytes": 900,
+                  "delta_operators": 88,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 905,
+                    "operators": 89,
+                    "Tf": 11,
+                    "Tm": 12,
+                    "Tj": 11,
+                    "TJ": 2,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 1,
+                    "empty_TJ": 1
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 3888,
+              "operators": 359,
+              "Tf": 45,
+              "Tm": 48,
+              "Tj": 0,
+              "TJ": 50,
+              "painting_show": 0,
+              "nonpainting_numeric_TJ": 49,
+              "empty_TJ": 1,
+              "sha256": "3ed81d859b3e7210af6c042d795bd717eb2dd9d1c29157b22e27c44d775ef292",
+              "nesting_violations": 0,
+              "delta_bytes": 65,
+              "delta_operators": 1,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-2","start":435,"end":444,"output_start":435,"replacement_length":22,"consumed_length":9,"delta":13,"operator_delta":1,"glyph_anchor_count":0,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":22,"operators":2,"Tf":0,"Tm":0,"Tj":0,"TJ":2,"painting_show":0,"nonpainting_numeric_TJ":1,"empty_TJ":1},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"30c60c961e3a4f9d239a2350a902d241bdcfa883a8e2272512c1794e257c62c6","consumed_example":"<0001> Tj","replacement_prefix":"[-519.53125] TJ [] TJ "},
+            {"kind":"text-edit","owner":"slot-2","start":513,"end":522,"output_start":526,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":590,"end":599,"output_start":609,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":668,"end":677,"output_start":693,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":746,"end":755,"output_start":775,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":820,"end":829,"output_start":855,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":897,"end":906,"output_start":937,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":973,"end":982,"output_start":1019,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":1048,"end":1057,"output_start":1100,"replacement_length":12,"consumed_length":9,"delta":3,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":1123,"end":1132,"output_start":1178,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-2","start":1195,"end":1204,"output_start":1255,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-2": {
+                  "mutations": 11,
+                  "delta_bytes": 65,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 99,
+                    "operators": 11,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 11,
+                    "TJ": 0,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 164,
+                    "operators": 12,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 12,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 11,
+                    "empty_TJ": 1
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "Hi B",
+              "paragraph_id": "A",
+              "selected_glyphs": 4,
+              "events": [
+            {"start":498,"end":507,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":565,"end":574,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":633,"end":642,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":707,"end":716,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "Second tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 11,
+              "events": [
+            {"start":9310,"end":9319,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9388,"end":9397,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9465,"end":9474,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9543,"end":9552,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9621,"end":9630,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9695,"end":9704,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9772,"end":9781,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9848,"end":9857,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9923,"end":9932,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9998,"end":10007,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10070,"end":10079,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF3",
+                "/PRF4"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "",
+              "paragraph_id": "B",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":451,"end":456,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [
+              "/generated_fonts"
+            ],
+            "insertion_binding": [
+              "/slots/slot-2/binding/paragraph/insertion_binding"
+            ],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/slots/slot-0/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-1/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-2/binding/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0
+        },
+        "second_noop": {
+          "pages": {
+            "1": {
+              "bytes": 11493,
+              "operators": 1133,
+              "Tf": 150,
+              "Tm": 154,
+              "Tj": 16,
+              "TJ": 146,
+              "painting_show": 16,
+              "nonpainting_numeric_TJ": 142,
+              "empty_TJ": 4,
+              "sha256": "4ff51e54b67caa9483fc625845ccb176d458f36a8e78d306a023979cbc326dc5",
+              "nesting_violations": 0,
+              "delta_bytes": 1311,
+              "delta_operators": 127,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-0","start":498,"end":507,"output_start":498,"replacement_length":349,"consumed_length":9,"delta":340,"operator_delta":39,"glyph_anchor_count":4,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":349,"operators":40,"Tf":4,"Tm":5,"Tj":4,"TJ":2,"painting_show":4,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"30e3082e1810388e90d7970b4044888d119fd641bab53eebc734177835f83025","consumed_example":"<0001> Tj","replacement_prefix":"[-703.125] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <0001> Tj /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 28.4375 200 Tm <0002> Tj /PRF1 12 Tf 10"},
+            {"kind":"text-edit","owner":"slot-0","start":565,"end":574,"output_start":905,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":633,"end":642,"output_start":978,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":707,"end":716,"output_start":1058,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9310,"end":9319,"output_start":9667,"replacement_length":911,"consumed_length":9,"delta":902,"operator_delta":88,"glyph_anchor_count":11},
+            {"kind":"text-edit","owner":"slot-1","start":9388,"end":9397,"output_start":10647,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9465,"end":9474,"output_start":10730,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9543,"end":9552,"output_start":10814,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9621,"end":9630,"output_start":10896,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9695,"end":9704,"output_start":10976,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9772,"end":9781,"output_start":11058,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9848,"end":9857,"output_start":11140,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9923,"end":9932,"output_start":11221,"replacement_length":12,"consumed_length":9,"delta":3,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9998,"end":10007,"output_start":11299,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10070,"end":10079,"output_start":11376,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-0": {
+                  "mutations": 4,
+                  "delta_bytes": 357,
+                  "delta_operators": 39,
+                  "consumed_counts": {
+                    "bytes": 36,
+                    "operators": 4,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 4,
+                    "TJ": 0,
+                    "painting_show": 4,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 393,
+                    "operators": 43,
+                    "Tf": 4,
+                    "Tm": 5,
+                    "Tj": 4,
+                    "TJ": 5,
+                    "painting_show": 4,
+                    "nonpainting_numeric_TJ": 5,
+                    "empty_TJ": 0
+                  }
+                },
+                "slot-1": {
+                  "mutations": 11,
+                  "delta_bytes": 954,
+                  "delta_operators": 88,
+                  "consumed_counts": {
+                    "bytes": 99,
+                    "operators": 11,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 11,
+                    "TJ": 0,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 1053,
+                    "operators": 99,
+                    "Tf": 11,
+                    "Tm": 12,
+                    "Tj": 11,
+                    "TJ": 12,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 12,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 3895,
+              "operators": 360,
+              "Tf": 45,
+              "Tm": 48,
+              "Tj": 0,
+              "TJ": 51,
+              "painting_show": 0,
+              "nonpainting_numeric_TJ": 49,
+              "empty_TJ": 2,
+              "sha256": "aae6048700ce3776c092f24667843c4c647c3e2af304f01f31d981f489e6c112",
+              "nesting_violations": 0,
+              "delta_bytes": 7,
+              "delta_operators": 1,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-2","start":451,"end":456,"output_start":451,"replacement_length":12,"consumed_length":5,"delta":7,"operator_delta":1,"glyph_anchor_count":0,"consumed":{"bytes":5,"operators":1,"Tf":0,"Tm":0,"Tj":0,"TJ":1,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":1},"replacement":{"bytes":12,"operators":2,"Tf":0,"Tm":0,"Tj":0,"TJ":2,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":2},"consumed_sha256":"6128879e30a4d43846d57b5b5b02bba69b216264c888c6dfcb745fbdc45c9891","replacement_sha256":"6cff92548c95ee0c5eccb6aba8cbdada6189780bb9a86a627ecf3055aa9b2511","consumed_example":"[] TJ","replacement_prefix":"[] TJ [] TJ "}
+          ],
+              "by_owner": {
+                "slot-2": {
+                  "mutations": 1,
+                  "delta_bytes": 7,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 12,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 2,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 2
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "Hi B",
+              "paragraph_id": "A",
+              "selected_glyphs": 4,
+              "events": [
+            {"start":587,"end":596,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":654,"end":663,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":722,"end":731,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":796,"end":805,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "Second tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 11,
+              "events": [
+            {"start":9765,"end":9774,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9843,"end":9852,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9920,"end":9929,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9998,"end":10007,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10076,"end":10085,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10150,"end":10159,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10227,"end":10236,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10303,"end":10312,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10378,"end":10387,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10453,"end":10462,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10525,"end":10534,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF3",
+                "/PRF4"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "",
+              "paragraph_id": "B",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":457,"end":462,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [
+              "/generated_fonts"
+            ],
+            "insertion_binding": [
+              "/slots/slot-2/binding/paragraph/insertion_binding"
+            ],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/slots/slot-0/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-1/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-2/binding/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0,
+          "noop_pixels_equal": true
+        },
+        "empty": {
+          "pages": {
+            "1": {
+              "bytes": 12475,
+              "operators": 1222,
+              "Tf": 161,
+              "Tm": 166,
+              "Tj": 12,
+              "TJ": 163,
+              "painting_show": 12,
+              "nonpainting_numeric_TJ": 158,
+              "empty_TJ": 5,
+              "sha256": "b372c1dcc9ef901ccf796af7542ab773cafc6fdd5212e2f2e3f68ba958ffa2f3",
+              "nesting_violations": 0,
+              "delta_bytes": 982,
+              "delta_operators": 89,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-0","start":587,"end":596,"output_start":587,"replacement_length":20,"consumed_length":9,"delta":11,"operator_delta":1,"glyph_anchor_count":0,"consumed":{"bytes":9,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":20,"operators":2,"Tf":0,"Tm":0,"Tj":0,"TJ":2,"painting_show":0,"nonpainting_numeric_TJ":1,"empty_TJ":1},"consumed_sha256":"8d66699b4e946926cefb44aed1837a95e622b259de9a9c3c0c16e834c17d2531","replacement_sha256":"77e5cd40b8920b2b37768aed86e4763fb3328a0250428d7cac88a1bbb2cf478e","consumed_example":"<0001> Tj","replacement_prefix":"[-703.125] TJ [] TJ "},
+            {"kind":"text-edit","owner":"slot-0","start":654,"end":663,"output_start":665,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":722,"end":731,"output_start":738,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-0","start":796,"end":805,"output_start":818,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9765,"end":9774,"output_start":9793,"replacement_length":911,"consumed_length":9,"delta":902,"operator_delta":88,"glyph_anchor_count":11},
+            {"kind":"text-edit","owner":"slot-1","start":9843,"end":9852,"output_start":10773,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9920,"end":9929,"output_start":10856,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":9998,"end":10007,"output_start":10940,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10076,"end":10085,"output_start":11022,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10150,"end":10159,"output_start":11102,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10227,"end":10236,"output_start":11184,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10303,"end":10312,"output_start":11266,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10378,"end":10387,"output_start":11347,"replacement_length":12,"consumed_length":9,"delta":3,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10453,"end":10462,"output_start":11425,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10525,"end":10534,"output_start":11502,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-0": {
+                  "mutations": 4,
+                  "delta_bytes": 28,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 36,
+                    "operators": 4,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 4,
+                    "TJ": 0,
+                    "painting_show": 4,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 64,
+                    "operators": 5,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 5,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 4,
+                    "empty_TJ": 1
+                  }
+                },
+                "slot-1": {
+                  "mutations": 11,
+                  "delta_bytes": 954,
+                  "delta_operators": 88,
+                  "consumed_counts": {
+                    "bytes": 99,
+                    "operators": 11,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 11,
+                    "TJ": 0,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 1053,
+                    "operators": 99,
+                    "Tf": 11,
+                    "Tm": 12,
+                    "Tj": 11,
+                    "TJ": 12,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 12,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 3902,
+              "operators": 361,
+              "Tf": 45,
+              "Tm": 48,
+              "Tj": 0,
+              "TJ": 52,
+              "painting_show": 0,
+              "nonpainting_numeric_TJ": 49,
+              "empty_TJ": 3,
+              "sha256": "9242c668573579f675add3bb55c6f28f91135bc3ec1e51f3a88c887dd3962e1e",
+              "nesting_violations": 0,
+              "delta_bytes": 7,
+              "delta_operators": 1,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-2","start":457,"end":462,"output_start":457,"replacement_length":12,"consumed_length":5,"delta":7,"operator_delta":1,"glyph_anchor_count":0,"consumed":{"bytes":5,"operators":1,"Tf":0,"Tm":0,"Tj":0,"TJ":1,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":1},"replacement":{"bytes":12,"operators":2,"Tf":0,"Tm":0,"Tj":0,"TJ":2,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":2},"consumed_sha256":"6128879e30a4d43846d57b5b5b02bba69b216264c888c6dfcb745fbdc45c9891","replacement_sha256":"6cff92548c95ee0c5eccb6aba8cbdada6189780bb9a86a627ecf3055aa9b2511","consumed_example":"[] TJ","replacement_prefix":"[] TJ [] TJ "}
+          ],
+              "by_owner": {
+                "slot-2": {
+                  "mutations": 1,
+                  "delta_bytes": 7,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 12,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 2,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 2
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "",
+              "paragraph_id": "A",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":601,"end":606,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "Second tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 11,
+              "events": [
+            {"start":9891,"end":9900,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":9969,"end":9978,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10046,"end":10055,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10124,"end":10133,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10202,"end":10211,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10276,"end":10285,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10353,"end":10362,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10429,"end":10438,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10504,"end":10513,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10579,"end":10588,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10651,"end":10660,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF3",
+                "/PRF4"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "",
+              "paragraph_id": "B",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":463,"end":468,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [
+              "/generated_fonts"
+            ],
+            "insertion_binding": [
+              "/slots/slot-0/binding/paragraph/insertion_binding",
+              "/slots/slot-2/binding/paragraph/insertion_binding"
+            ],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/slots/slot-0/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-1/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-2/binding/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0
+        },
+        "empty_noop": {
+          "pages": {
+            "1": {
+              "bytes": 13436,
+              "operators": 1311,
+              "Tf": 172,
+              "Tm": 178,
+              "Tj": 12,
+              "TJ": 176,
+              "painting_show": 12,
+              "nonpainting_numeric_TJ": 170,
+              "empty_TJ": 6,
+              "sha256": "c751d289c93e5ab6abf16f9a43d85401ccdc3d84d4dc75cd08b3923606e6c45c",
+              "nesting_violations": 0,
+              "delta_bytes": 961,
+              "delta_operators": 89,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-0","start":601,"end":606,"output_start":601,"replacement_length":12,"consumed_length":5,"delta":7,"operator_delta":1,"glyph_anchor_count":0,"consumed":{"bytes":5,"operators":1,"Tf":0,"Tm":0,"Tj":0,"TJ":1,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":1},"replacement":{"bytes":12,"operators":2,"Tf":0,"Tm":0,"Tj":0,"TJ":2,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":2},"consumed_sha256":"6128879e30a4d43846d57b5b5b02bba69b216264c888c6dfcb745fbdc45c9891","replacement_sha256":"6cff92548c95ee0c5eccb6aba8cbdada6189780bb9a86a627ecf3055aa9b2511","consumed_example":"[] TJ","replacement_prefix":"[] TJ [] TJ "},
+            {"kind":"text-edit","owner":"slot-1","start":9891,"end":9900,"output_start":9898,"replacement_length":911,"consumed_length":9,"delta":902,"operator_delta":88,"glyph_anchor_count":11},
+            {"kind":"text-edit","owner":"slot-1","start":9969,"end":9978,"output_start":10878,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10046,"end":10055,"output_start":10961,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10124,"end":10133,"output_start":11045,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10202,"end":10211,"output_start":11127,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10276,"end":10285,"output_start":11207,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10353,"end":10362,"output_start":11289,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10429,"end":10438,"output_start":11371,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10504,"end":10513,"output_start":11452,"replacement_length":12,"consumed_length":9,"delta":3,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10579,"end":10588,"output_start":11530,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10651,"end":10660,"output_start":11607,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-0": {
+                  "mutations": 1,
+                  "delta_bytes": 7,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 12,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 2,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 2
+                  }
+                },
+                "slot-1": {
+                  "mutations": 11,
+                  "delta_bytes": 954,
+                  "delta_operators": 88,
+                  "consumed_counts": {
+                    "bytes": 99,
+                    "operators": 11,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 11,
+                    "TJ": 0,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 1053,
+                    "operators": 99,
+                    "Tf": 11,
+                    "Tm": 12,
+                    "Tj": 11,
+                    "TJ": 12,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 12,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 3909,
+              "operators": 362,
+              "Tf": 45,
+              "Tm": 48,
+              "Tj": 0,
+              "TJ": 53,
+              "painting_show": 0,
+              "nonpainting_numeric_TJ": 49,
+              "empty_TJ": 4,
+              "sha256": "f6221fe580fb181cf8b4ffe50396646b04d9f726482c995d94a66e60e728bf65",
+              "nesting_violations": 0,
+              "delta_bytes": 7,
+              "delta_operators": 1,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-2","start":463,"end":468,"output_start":463,"replacement_length":12,"consumed_length":5,"delta":7,"operator_delta":1,"glyph_anchor_count":0,"consumed":{"bytes":5,"operators":1,"Tf":0,"Tm":0,"Tj":0,"TJ":1,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":1},"replacement":{"bytes":12,"operators":2,"Tf":0,"Tm":0,"Tj":0,"TJ":2,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":2},"consumed_sha256":"6128879e30a4d43846d57b5b5b02bba69b216264c888c6dfcb745fbdc45c9891","replacement_sha256":"6cff92548c95ee0c5eccb6aba8cbdada6189780bb9a86a627ecf3055aa9b2511","consumed_example":"[] TJ","replacement_prefix":"[] TJ [] TJ "}
+          ],
+              "by_owner": {
+                "slot-2": {
+                  "mutations": 1,
+                  "delta_bytes": 7,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 12,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 2,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 2
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "",
+              "paragraph_id": "A",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":607,"end":612,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "Second tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 11,
+              "events": [
+            {"start":9996,"end":10005,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10074,"end":10083,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10151,"end":10160,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10229,"end":10238,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10307,"end":10316,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10381,"end":10390,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10458,"end":10467,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10534,"end":10543,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10609,"end":10618,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10684,"end":10693,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":10756,"end":10765,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF3",
+                "/PRF4"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "",
+              "paragraph_id": "B",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":469,"end":474,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [
+              "/generated_fonts"
+            ],
+            "insertion_binding": [
+              "/slots/slot-0/binding/paragraph/insertion_binding",
+              "/slots/slot-2/binding/paragraph/insertion_binding"
+            ],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/slots/slot-0/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-1/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-2/binding/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0,
+          "noop_pixels_equal": true
+        },
+        "regrow": {
+          "pages": {
+            "1": {
+              "bytes": 15506,
+              "operators": 1526,
+              "Tf": 201,
+              "Tm": 208,
+              "Tj": 30,
+              "TJ": 189,
+              "painting_show": 30,
+              "nonpainting_numeric_TJ": 182,
+              "empty_TJ": 7,
+              "sha256": "84b4fc7dbb597b4449512f7423ad1fc8295b4c242090f6e2524eff6a71569d0e",
+              "nesting_violations": 0,
+              "delta_bytes": 2070,
+              "delta_operators": 215,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-0","start":607,"end":612,"output_start":607,"replacement_length":2010,"consumed_length":5,"delta":2005,"operator_delta":214,"glyph_anchor_count":29,"consumed":{"bytes":5,"operators":1,"Tf":0,"Tm":0,"Tj":0,"TJ":1,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":1},"replacement":{"bytes":2010,"operators":215,"Tf":29,"Tm":30,"Tj":29,"TJ":2,"painting_show":29,"nonpainting_numeric_TJ":1,"empty_TJ":1},"consumed_sha256":"6128879e30a4d43846d57b5b5b02bba69b216264c888c6dfcb745fbdc45c9891","replacement_sha256":"6107372c82e5cfb623c0d8826498a4221d8adab10121d3e245fa25c245b89000","consumed_example":"[] TJ","replacement_prefix":"[] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <0001> Tj /PRF1 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 25.90625 200 Tm <0002> Tj /PRF1 12 Tf 100 Tz 0 "},
+            {"kind":"text-edit","owner":"slot-1","start":9996,"end":10005,"output_start":12001,"replacement_length":22,"consumed_length":9,"delta":13,"operator_delta":1,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10074,"end":10083,"output_start":12092,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10151,"end":10160,"output_start":12175,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10229,"end":10238,"output_start":12259,"replacement_length":13,"consumed_length":9,"delta":4,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10307,"end":10316,"output_start":12341,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10381,"end":10390,"output_start":12421,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10458,"end":10467,"output_start":12503,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10534,"end":10543,"output_start":12585,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10609,"end":10618,"output_start":12666,"replacement_length":12,"consumed_length":9,"delta":3,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10684,"end":10693,"output_start":12744,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":"slot-1","start":10756,"end":10765,"output_start":12821,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "slot-0": {
+                  "mutations": 1,
+                  "delta_bytes": 2005,
+                  "delta_operators": 214,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 2010,
+                    "operators": 215,
+                    "Tf": 29,
+                    "Tm": 30,
+                    "Tj": 29,
+                    "TJ": 2,
+                    "painting_show": 29,
+                    "nonpainting_numeric_TJ": 1,
+                    "empty_TJ": 1
+                  }
+                },
+                "slot-1": {
+                  "mutations": 11,
+                  "delta_bytes": 65,
+                  "delta_operators": 1,
+                  "consumed_counts": {
+                    "bytes": 99,
+                    "operators": 11,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 11,
+                    "TJ": 0,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 164,
+                    "operators": 12,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 12,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 11,
+                    "empty_TJ": 1
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 4805,
+              "operators": 450,
+              "Tf": 56,
+              "Tm": 60,
+              "Tj": 11,
+              "TJ": 54,
+              "painting_show": 11,
+              "nonpainting_numeric_TJ": 50,
+              "empty_TJ": 4,
+              "sha256": "12d2079f62f93419350b7e2aa9a25e18cdbd0814e5d59bfe737c594b74ccfaa1",
+              "nesting_violations": 0,
+              "delta_bytes": 896,
+              "delta_operators": 88,
+              "mutations": [
+            {"kind":"text-edit","owner":"slot-2","start":469,"end":474,"output_start":469,"replacement_length":901,"consumed_length":5,"delta":896,"operator_delta":88,"glyph_anchor_count":11,"consumed":{"bytes":5,"operators":1,"Tf":0,"Tm":0,"Tj":0,"TJ":1,"painting_show":0,"nonpainting_numeric_TJ":0,"empty_TJ":1},"replacement":{"bytes":901,"operators":89,"Tf":11,"Tm":12,"Tj":11,"TJ":2,"painting_show":11,"nonpainting_numeric_TJ":1,"empty_TJ":1},"consumed_sha256":"6128879e30a4d43846d57b5b5b02bba69b216264c888c6dfcb745fbdc45c9891","replacement_sha256":"84c0cb3bbd1470cd659d62f03d367d456988319e8ecf23f9c2075934206d3f6f","consumed_example":"[] TJ","replacement_prefix":"[] TJ ET q BT 0 Tc 0 Tw 0 Ts /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 20 200 Tm <0001> Tj /PRF1 11 Tf 100 Tz 0 Tc -0 Ts 0 0.5 0 rg 1 0 0 1 25.71484375 200 Tm <0002> Tj /PRF"}
+          ],
+              "by_owner": {
+                "slot-2": {
+                  "mutations": 1,
+                  "delta_bytes": 896,
+                  "delta_operators": 88,
+                  "consumed_counts": {
+                    "bytes": 5,
+                    "operators": 1,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 0,
+                    "TJ": 1,
+                    "painting_show": 0,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 1
+                  },
+                  "replacement_counts": {
+                    "bytes": 901,
+                    "operators": 89,
+                    "Tf": 11,
+                    "Tm": 12,
+                    "Tj": 11,
+                    "TJ": 2,
+                    "painting_show": 11,
+                    "nonpainting_numeric_TJ": 1,
+                    "empty_TJ": 1
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "3": {
+              "bytes": 46,
+              "operators": 6,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "60d267dca8582fc4bc0cd65e84f72dea36c152743b34619ff2760d38ac85decc",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "slot-0": {
+              "page": 1,
+              "text": "Line one\nLine two\nLine three\nEnd",
+              "paragraph_id": "A",
+              "selected_glyphs": 29,
+              "events": [
+            {"start":688,"end":697,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":756,"end":765,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":818,"end":827,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":887,"end":896,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":951,"end":960,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1020,"end":1029,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1089,"end":1098,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1157,"end":1166,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1219,"end":1228,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1287,"end":1296,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1349,"end":1358,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1418,"end":1427,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1482,"end":1491,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1551,"end":1560,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1619,"end":1628,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1688,"end":1697,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1750,"end":1759,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1818,"end":1827,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1880,"end":1889,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1949,"end":1958,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2013,"end":2022,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2082,"end":2091,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2150,"end":2159,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2219,"end":2228,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2288,"end":2297,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2350,"end":2359,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2417,"end":2426,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2492,"end":2501,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":2566,"end":2575,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            },
+            "slot-1": {
+              "page": 1,
+              "text": "",
+              "paragraph_id": "B",
+              "selected_glyphs": 0,
+              "events": [
+            {"start":12017,"end":12022,"operator":"TJ","selected_glyphs":0,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF3"
+              ],
+              "typing_style_id": "logical:body",
+              "insertion_binding": true,
+              "style_slot_bindings": []
+            },
+            "slot-2": {
+              "page": 2,
+              "text": "Second tail",
+              "paragraph_id": "B",
+              "selected_glyphs": 11,
+              "events": [
+            {"start":557,"end":566,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":635,"end":644,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":712,"end":721,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":790,"end":799,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":868,"end":877,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":942,"end":951,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1019,"end":1028,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1095,"end":1104,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1170,"end":1179,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1245,"end":1254,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1317,"end":1326,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/PRF2"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/slots/slot-0/binding/previous_model_sha256",
+              "/slots/slot-1/binding/previous_model_sha256",
+              "/slots/slot-2/binding/previous_model_sha256",
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [
+              "/generated_fonts"
+            ],
+            "insertion_binding": [
+              "/slots/slot-1/binding/paragraph/insertion_binding"
+            ],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/slots/slot-0/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-1/binding/paragraph/logical/binding_provenance",
+              "/slots/slot-2/binding/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/slots/slot-0/binding/anchors",
+              "/slots/slot-1/binding/anchors",
+              "/slots/slot-2/binding/anchors"
+            ],
+            "relations": [
+              "/slots/slot-0/binding/relations",
+              "/slots/slot-1/binding/relations",
+              "/slots/slot-2/binding/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0
+        }
+      }
+    },
+    "retained_partial_multievent": {
+      "fixture": "tests/test_attributed.py::source_pdf",
+      "stages": {
+        "initial": {
+          "pages": {
+            "1": {
+              "bytes": 130,
+              "operators": 15,
+              "Tf": 3,
+              "Tm": 0,
+              "Tj": 3,
+              "TJ": 0,
+              "painting_show": 3,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "271228a28d4d9e2f7739856816ce0263248f3af4872f616f86dc99b19d376968",
+              "nesting_violations": 0
+            },
+            "2": {
+              "bytes": 46,
+              "operators": 5,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "2b428a0dec121db91c3cf4b2fd64b8eaeaa68881a3acc3fc80b4bd77a2182536",
+              "nesting_violations": 0
+            }
+          },
+          "slots": {
+            "editable": {
+              "page": 1,
+              "text": "ABCDEF",
+              "paragraph_id": "probe",
+              "selected_glyphs": 6,
+              "events": [
+            {"start":28,"end":45,"operator":"Tj","selected_glyphs":3,"foreign_glyphs":9},
+            {"start":77,"end":85,"operator":"Tj","selected_glyphs":3,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Regular"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": []
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [],
+            "generated_fonts": [],
+            "insertion_binding": [],
+            "style_slot_bindings": [],
+            "binding_provenance": [],
+            "anchors": [],
+            "relations": [],
+            "owned_paints": []
+          }
+        },
+        "first": {
+          "pages": {
+            "1": {
+              "bytes": 703,
+              "operators": 68,
+              "Tf": 9,
+              "Tm": 7,
+              "Tj": 7,
+              "TJ": 3,
+              "painting_show": 8,
+              "nonpainting_numeric_TJ": 2,
+              "empty_TJ": 0,
+              "sha256": "3ce9bd64e11b9ac09ff26312775a95d2cc00f0c60b04809c2f86ec7bac646c0d",
+              "nesting_violations": 0,
+              "delta_bytes": 573,
+              "delta_operators": 53,
+              "mutations": [
+            {"kind":"text-edit","owner":null,"start":28,"end":45,"output_start":28,"replacement_length":579,"consumed_length":17,"delta":562,"operator_delta":53,"glyph_anchor_count":6,"consumed":{"bytes":17,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":579,"operators":54,"Tf":6,"Tm":7,"Tj":6,"TJ":2,"painting_show":7,"nonpainting_numeric_TJ":1,"empty_TJ":0},"consumed_sha256":"f04cd742b952a8e3d897baa1f0004e02ea01abb043cb041b1bc4e550935b537e","replacement_sha256":"db60b90757557874fe654317637af1f2d44defd8864d90c0f35056a41dd3ef05","consumed_example":"(PRE ABC POST) Tj","replacement_prefix":"[<50> <52> <45> <20> -600 -600 -600 <20> <50> <4f> <53> <54>] TJ ET q BT 0 Tc 0 Tw 0 Ts /Regular 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 48.8000030518 150 Tm <41> Tj /Regular 12 Tf 100"},
+            {"kind":"text-edit","owner":null,"start":77,"end":85,"output_start":639,"replacement_length":19,"consumed_length":8,"delta":11,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "None": {
+                  "mutations": 2,
+                  "delta_bytes": 573,
+                  "delta_operators": 53,
+                  "consumed_counts": {
+                    "bytes": 25,
+                    "operators": 2,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 2,
+                    "TJ": 0,
+                    "painting_show": 2,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 598,
+                    "operators": 55,
+                    "Tf": 6,
+                    "Tm": 7,
+                    "Tj": 6,
+                    "TJ": 3,
+                    "painting_show": 7,
+                    "nonpainting_numeric_TJ": 2,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 46,
+              "operators": 5,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "2b428a0dec121db91c3cf4b2fd64b8eaeaa68881a3acc3fc80b4bd77a2182536",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "editable": {
+              "page": 1,
+              "text": "ABCDEF",
+              "paragraph_id": "paragraph-1",
+              "selected_glyphs": 6,
+              "events": [
+            {"start":182,"end":189,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":256,"end":263,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":330,"end":337,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":404,"end":411,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":478,"end":485,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":552,"end":559,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Regular"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [],
+            "insertion_binding": [],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/anchors"
+            ],
+            "relations": [
+              "/relations"
+            ],
+            "owned_paints": []
+          },
+          "reused_code_glyph_count": 0
+        },
+        "noop": {
+          "pages": {
+            "1": {
+              "bytes": 1241,
+              "operators": 121,
+              "Tf": 15,
+              "Tm": 14,
+              "Tj": 7,
+              "TJ": 10,
+              "painting_show": 8,
+              "nonpainting_numeric_TJ": 9,
+              "empty_TJ": 0,
+              "sha256": "a9f2c110a5cec57fc3ec878a688cc63c0d3b655287210fccd9a715962b31c563",
+              "nesting_violations": 0,
+              "delta_bytes": 538,
+              "delta_operators": 53,
+              "mutations": [
+            {"kind":"text-edit","owner":null,"start":182,"end":189,"output_start":182,"replacement_length":535,"consumed_length":7,"delta":528,"operator_delta":53,"glyph_anchor_count":6,"consumed":{"bytes":7,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":535,"operators":54,"Tf":6,"Tm":7,"Tj":6,"TJ":2,"painting_show":6,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"73db0bdf8e0ea93b01df0daa26c6838c512fd8fa4259ec6bdbbac9e649a811eb","replacement_sha256":"77e8d93d4a6b726d4ae73459d776764d6edf93a174e0fa83eece9cc6d7fee550","consumed_example":"<41> Tj","replacement_prefix":"[-600] TJ ET q BT 0 Tc 0 Tw 0 Ts /Regular 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 48.8000030518 150 Tm <41> Tj /Regular 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 56.0000038147 150 Tm <42> Tj"},
+            {"kind":"text-edit","owner":null,"start":256,"end":263,"output_start":784,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":330,"end":337,"output_start":860,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":404,"end":411,"output_start":936,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":478,"end":485,"output_start":1012,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":552,"end":559,"output_start":1088,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "None": {
+                  "mutations": 6,
+                  "delta_bytes": 538,
+                  "delta_operators": 53,
+                  "consumed_counts": {
+                    "bytes": 42,
+                    "operators": 6,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 6,
+                    "TJ": 0,
+                    "painting_show": 6,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 580,
+                    "operators": 59,
+                    "Tf": 6,
+                    "Tm": 7,
+                    "Tj": 6,
+                    "TJ": 7,
+                    "painting_show": 6,
+                    "nonpainting_numeric_TJ": 7,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 46,
+              "operators": 5,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "2b428a0dec121db91c3cf4b2fd64b8eaeaa68881a3acc3fc80b4bd77a2182536",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "editable": {
+              "page": 1,
+              "text": "ABCDEF",
+              "paragraph_id": "paragraph-1",
+              "selected_glyphs": 6,
+              "events": [
+            {"start":281,"end":288,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":355,"end":362,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":429,"end":436,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":503,"end":510,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":577,"end":584,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":651,"end":658,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/Regular"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [],
+            "insertion_binding": [],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/anchors"
+            ],
+            "relations": [
+              "/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0,
+          "noop_pixels_equal": true
+        }
+      }
+    },
+    "anchored": {
+      "fixture": "tests/test_editable.py::first (test_anchors.prepared)",
+      "stages": {
+        "first": {
+          "pages": {
+            "1": {
+              "bytes": 2225,
+              "operators": 215,
+              "Tf": 26,
+              "Tm": 24,
+              "Tj": 24,
+              "TJ": 3,
+              "painting_show": 24,
+              "nonpainting_numeric_TJ": 3,
+              "empty_TJ": 0,
+              "sha256": "8121ff8114fd1e0af332b9bed17cad746c94a6577e816416105783ea45488156",
+              "nesting_violations": 0,
+              "delta_bytes": 2025,
+              "delta_operators": 192,
+              "mutations": [
+            {"kind":"text-edit","owner":null,"start":57,"end":70,"output_start":57,"replacement_length":1747,"consumed_length":13,"delta":1734,"operator_delta":172,"glyph_anchor_count":23,"consumed":{"bytes":13,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":1747,"operators":173,"Tf":23,"Tm":24,"Tj":23,"TJ":2,"painting_show":23,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"4375c57a3d1fca75b2dbf1b04b8adf47299b7d0c50326ed1f63e6bfc2f3c0da0","replacement_sha256":"4318d4a4236f31fe110118374dc5e7d16fac00f0c834a38b830220dfa946f952","consumed_example":"(ONE TWO ) Tj","replacement_prefix":"[-600 -600 -600 -600 -600 -600 -600 -600] TJ ET q BT 0 Tc 0 Tw 0 Ts /Regular 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <4f> Tj /Regular 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 27.2"},
+            {"kind":"decoration","owner":null,"start":92,"end":93,"output_start":1826,"replacement_length":253,"consumed_length":1,"delta":252,"operator_delta":20,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":122,"end":137,"output_start":2108,"replacement_length":54,"consumed_length":15,"delta":39,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"decoration","owner":null,"start":157,"end":158,"output_start":2182,"replacement_length":1,"consumed_length":1,"delta":0,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "None": {
+                  "mutations": 4,
+                  "delta_bytes": 2025,
+                  "delta_operators": 192,
+                  "consumed_counts": {
+                    "bytes": 30,
+                    "operators": 4,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 2,
+                    "TJ": 0,
+                    "painting_show": 2,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 2055,
+                    "operators": 196,
+                    "Tf": 23,
+                    "Tm": 24,
+                    "Tj": 23,
+                    "TJ": 3,
+                    "painting_show": 23,
+                    "nonpainting_numeric_TJ": 3,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 46,
+              "operators": 5,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "2b428a0dec121db91c3cf4b2fd64b8eaeaa68881a3acc3fc80b4bd77a2182536",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "editable": {
+              "page": 1,
+              "text": "ONE FIVE SEVEN THREE FOUR",
+              "paragraph_id": "paragraph-1",
+              "selected_glyphs": 23,
+              "events": [
+            {"start":180,"end":187,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":254,"end":261,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":328,"end":335,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":402,"end":409,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":473,"end":482,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":546,"end":555,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":619,"end":628,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":692,"end":701,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":754,"end":763,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":823,"end":832,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":890,"end":899,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":959,"end":968,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1026,"end":1035,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1098,"end":1105,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1172,"end":1179,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1246,"end":1253,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1320,"end":1327,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1394,"end":1401,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1464,"end":1471,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1527,"end":1534,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1601,"end":1608,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1675,"end":1682,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1749,"end":1756,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/Regular"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [],
+            "insertion_binding": [],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/anchors"
+            ],
+            "relations": [
+              "/relations"
+            ],
+            "owned_paints": []
+          }
+        },
+        "noop1": {
+          "pages": {
+            "1": {
+              "bytes": 4253,
+              "operators": 407,
+              "Tf": 49,
+              "Tm": 48,
+              "Tj": 24,
+              "TJ": 27,
+              "painting_show": 24,
+              "nonpainting_numeric_TJ": 27,
+              "empty_TJ": 0,
+              "sha256": "24d4f0d3516c55b9178fad849983e7077c08f4b34b2d505d6a75627ea1ea7bf2",
+              "nesting_violations": 0,
+              "delta_bytes": 2028,
+              "delta_operators": 192,
+              "mutations": [
+            {"kind":"text-edit","owner":null,"start":180,"end":187,"output_start":180,"replacement_length":1712,"consumed_length":7,"delta":1705,"operator_delta":172,"glyph_anchor_count":23,"consumed":{"bytes":7,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":1712,"operators":173,"Tf":23,"Tm":24,"Tj":23,"TJ":2,"painting_show":23,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"5e9ae29db3c14b64d9aee59ce290578d659dba43ca1afccd2efeb7c3f1d89bbe","replacement_sha256":"3c4e4bcf6d31883c5020cff7160d650807ec7c951f162adb35bc1da98412ba0d","consumed_example":"<4f> Tj","replacement_prefix":"[-600] TJ ET q BT 0 Tc 0 Tw 0 Ts /Regular 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <4f> Tj /Regular 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 27.2000007629 200 Tm <4e> Tj /Regular 1"},
+            {"kind":"text-edit","owner":null,"start":254,"end":261,"output_start":1959,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":328,"end":335,"output_start":2035,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":402,"end":409,"output_start":2111,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":473,"end":482,"output_start":2184,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":546,"end":555,"output_start":2262,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":619,"end":628,"output_start":2341,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":692,"end":701,"output_start":2420,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":754,"end":763,"output_start":2488,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":823,"end":832,"output_start":2563,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":890,"end":899,"output_start":2636,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":959,"end":968,"output_start":2711,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1026,"end":1035,"output_start":2784,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1098,"end":1105,"output_start":2862,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1172,"end":1179,"output_start":2938,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1246,"end":1253,"output_start":3014,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1320,"end":1327,"output_start":3090,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1394,"end":1401,"output_start":3166,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1464,"end":1471,"output_start":3238,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1527,"end":1534,"output_start":3303,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1601,"end":1608,"output_start":3379,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1675,"end":1682,"output_start":3455,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1749,"end":1756,"output_start":3531,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"decoration","owner":null,"start":1910,"end":1911,"output_start":3694,"replacement_length":245,"consumed_length":1,"delta":244,"operator_delta":20,"glyph_anchor_count":0},
+            {"kind":"decoration","owner":null,"start":1992,"end":1993,"output_start":4020,"replacement_length":1,"consumed_length":1,"delta":0,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"decoration","owner":null,"start":2074,"end":2075,"output_start":4102,"replacement_length":1,"consumed_length":1,"delta":0,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "None": {
+                  "mutations": 26,
+                  "delta_bytes": 2028,
+                  "delta_operators": 192,
+                  "consumed_counts": {
+                    "bytes": 182,
+                    "operators": 26,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 23,
+                    "TJ": 0,
+                    "painting_show": 23,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 2210,
+                    "operators": 218,
+                    "Tf": 23,
+                    "Tm": 24,
+                    "Tj": 23,
+                    "TJ": 24,
+                    "painting_show": 23,
+                    "nonpainting_numeric_TJ": 24,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 46,
+              "operators": 5,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "2b428a0dec121db91c3cf4b2fd64b8eaeaa68881a3acc3fc80b4bd77a2182536",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "editable": {
+              "page": 1,
+              "text": "ONE FIVE SEVEN THREE FOUR",
+              "paragraph_id": "paragraph-1",
+              "selected_glyphs": 23,
+              "events": [
+            {"start":268,"end":275,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":342,"end":349,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":416,"end":423,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":490,"end":497,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":561,"end":570,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":634,"end":643,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":707,"end":716,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":780,"end":789,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":842,"end":851,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":911,"end":920,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":978,"end":987,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1047,"end":1056,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1114,"end":1123,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1186,"end":1193,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1260,"end":1267,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1334,"end":1341,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1408,"end":1415,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1482,"end":1489,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1552,"end":1559,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1615,"end":1622,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1689,"end":1696,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1763,"end":1770,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1837,"end":1844,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/Regular"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [],
+            "insertion_binding": [],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/anchors"
+            ],
+            "relations": [
+              "/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0,
+          "noop_pixels_equal": true
+        },
+        "noop2": {
+          "pages": {
+            "1": {
+              "bytes": 6281,
+              "operators": 599,
+              "Tf": 72,
+              "Tm": 72,
+              "Tj": 24,
+              "TJ": 51,
+              "painting_show": 24,
+              "nonpainting_numeric_TJ": 51,
+              "empty_TJ": 0,
+              "sha256": "8e3c7ed7bc1573ad47fc32a17227f0740301fe60da37d6d6ecb2a4a00a37373b",
+              "nesting_violations": 0,
+              "delta_bytes": 2028,
+              "delta_operators": 192,
+              "mutations": [
+            {"kind":"text-edit","owner":null,"start":268,"end":275,"output_start":268,"replacement_length":1712,"consumed_length":7,"delta":1705,"operator_delta":172,"glyph_anchor_count":23,"consumed":{"bytes":7,"operators":1,"Tf":0,"Tm":0,"Tj":1,"TJ":0,"painting_show":1,"nonpainting_numeric_TJ":0,"empty_TJ":0},"replacement":{"bytes":1712,"operators":173,"Tf":23,"Tm":24,"Tj":23,"TJ":2,"painting_show":23,"nonpainting_numeric_TJ":2,"empty_TJ":0},"consumed_sha256":"5e9ae29db3c14b64d9aee59ce290578d659dba43ca1afccd2efeb7c3f1d89bbe","replacement_sha256":"3c4e4bcf6d31883c5020cff7160d650807ec7c951f162adb35bc1da98412ba0d","consumed_example":"<4f> Tj","replacement_prefix":"[-600] TJ ET q BT 0 Tc 0 Tw 0 Ts /Regular 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 20 200 Tm <4f> Tj /Regular 12 Tf 100 Tz 0 Tc -0 Ts 0 g 1 0 0 1 27.2000007629 200 Tm <4e> Tj /Regular 1"},
+            {"kind":"text-edit","owner":null,"start":342,"end":349,"output_start":2047,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":416,"end":423,"output_start":2123,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":490,"end":497,"output_start":2199,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":561,"end":570,"output_start":2272,"replacement_length":14,"consumed_length":9,"delta":5,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":634,"end":643,"output_start":2350,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":707,"end":716,"output_start":2429,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":780,"end":789,"output_start":2508,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":842,"end":851,"output_start":2576,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":911,"end":920,"output_start":2651,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":978,"end":987,"output_start":2724,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1047,"end":1056,"output_start":2799,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1114,"end":1123,"output_start":2872,"replacement_length":15,"consumed_length":9,"delta":6,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1186,"end":1193,"output_start":2950,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1260,"end":1267,"output_start":3026,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1334,"end":1341,"output_start":3102,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1408,"end":1415,"output_start":3178,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1482,"end":1489,"output_start":3254,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1552,"end":1559,"output_start":3326,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1615,"end":1622,"output_start":3391,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1689,"end":1696,"output_start":3467,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1763,"end":1770,"output_start":3543,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"text-edit","owner":null,"start":1837,"end":1844,"output_start":3619,"replacement_length":9,"consumed_length":7,"delta":2,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"decoration","owner":null,"start":3778,"end":3779,"output_start":5562,"replacement_length":245,"consumed_length":1,"delta":244,"operator_delta":20,"glyph_anchor_count":0},
+            {"kind":"decoration","owner":null,"start":3852,"end":3853,"output_start":5880,"replacement_length":1,"consumed_length":1,"delta":0,"operator_delta":0,"glyph_anchor_count":0},
+            {"kind":"decoration","owner":null,"start":3934,"end":3935,"output_start":5962,"replacement_length":1,"consumed_length":1,"delta":0,"operator_delta":0,"glyph_anchor_count":0}
+          ],
+              "by_owner": {
+                "None": {
+                  "mutations": 26,
+                  "delta_bytes": 2028,
+                  "delta_operators": 192,
+                  "consumed_counts": {
+                    "bytes": 182,
+                    "operators": 26,
+                    "Tf": 0,
+                    "Tm": 0,
+                    "Tj": 23,
+                    "TJ": 0,
+                    "painting_show": 23,
+                    "nonpainting_numeric_TJ": 0,
+                    "empty_TJ": 0
+                  },
+                  "replacement_counts": {
+                    "bytes": 2210,
+                    "operators": 218,
+                    "Tf": 23,
+                    "Tm": 24,
+                    "Tj": 23,
+                    "TJ": 24,
+                    "painting_show": 23,
+                    "nonpainting_numeric_TJ": 24,
+                    "empty_TJ": 0
+                  }
+                }
+              },
+              "untouched_gaps_identical": true
+            },
+            "2": {
+              "bytes": 46,
+              "operators": 5,
+              "Tf": 1,
+              "Tm": 0,
+              "Tj": 1,
+              "TJ": 0,
+              "painting_show": 1,
+              "nonpainting_numeric_TJ": 0,
+              "empty_TJ": 0,
+              "sha256": "2b428a0dec121db91c3cf4b2fd64b8eaeaa68881a3acc3fc80b4bd77a2182536",
+              "nesting_violations": 0,
+              "delta_bytes": 0,
+              "delta_operators": 0,
+              "mutations": [
+
+          ],
+              "by_owner": {},
+              "untouched_gaps_identical": true
+            }
+          },
+          "slots": {
+            "editable": {
+              "page": 1,
+              "text": "ONE FIVE SEVEN THREE FOUR",
+              "paragraph_id": "paragraph-1",
+              "selected_glyphs": 23,
+              "events": [
+            {"start":356,"end":363,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":430,"end":437,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":504,"end":511,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":578,"end":585,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":649,"end":658,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":722,"end":731,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":795,"end":804,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":868,"end":877,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":930,"end":939,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":999,"end":1008,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1066,"end":1075,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1135,"end":1144,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1202,"end":1211,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1274,"end":1281,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1348,"end":1355,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1422,"end":1429,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1496,"end":1503,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1570,"end":1577,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1640,"end":1647,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1703,"end":1710,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1777,"end":1784,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1851,"end":1858,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0},
+            {"start":1925,"end":1932,"operator":"Tj","selected_glyphs":1,"foreign_glyphs":0}
+          ],
+              "font_aliases": [
+                "/PRF1",
+                "/Regular"
+              ],
+              "typing_style_id": null,
+              "insertion_binding": false,
+              "style_slot_bindings": [],
+              "all_current_events_at_emitted_glyph_anchors": true
+            }
+          },
+          "sidecar_evidence": {
+            "mutation_map": [],
+            "byte_edits": [],
+            "creation_binding": [],
+            "previous_model_sha256": [
+              "/previous_model_sha256"
+            ],
+            "generated_fonts": [],
+            "insertion_binding": [],
+            "style_slot_bindings": [],
+            "binding_provenance": [
+              "/paragraph/logical/binding_provenance"
+            ],
+            "anchors": [
+              "/anchors"
+            ],
+            "relations": [
+              "/relations"
+            ],
+            "owned_paints": []
+          },
+          "reopened_in_fresh_process_without_previous_report": true,
+          "reused_code_glyph_count": 0,
+          "noop_pixels_equal": true
+        }
+      }
+    }
+  }
+}
