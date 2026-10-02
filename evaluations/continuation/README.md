@@ -1035,3 +1035,9 @@ MutationProgram、public APIには変更なし。synthetic no-opのgrowthが0に
 anchor再描画を含むgeneral editableは対象外・NOT READY。
 [設計contract・legacy/fail-closed・acceptance matrix](../../docs/source-slot-rewrite-ownership.md)と
 [公開summary](source-slot-ownership-summary.json)に根拠と独立レビューの論点を記載した。
+
+Claude Opus 5.5の独立レビューはhead `bd56485075bd5f55c08380ae23658c4807fec426`に対して
+**PASS — IMPLEMENTATION READY (shared-flow text source slotに限定)**。evaluationがowner・未変更gap・deltaだけを
+測り、所有spanを推定していないこと、`painting_show`の限定、summaryと本文の数値一致を確認した。
+レビューではhelper 4 passed、上記focused 12 passedを再実行した。raw評価・full suite・実PDFは再実行していない。
+実装PRで固定するnon-blocking事項は[設計§10](../../docs/source-slot-rewrite-ownership.md#10-独立レビュー結果)を参照。

@@ -347,8 +347,32 @@ full suite、PR #31 Windows実PDF評価、新形式runtimeの実装/検証は行
 Opus 5.5には次を独立レビューさせる: numeric TJ/restoreの因果とmutation集計、current glyph bindingと
 非描画bytes ownershipの区別、初回split bridgeを固定する安全性、context digestの正規化とresource検証の分離、
 empty/style witnessの完全包含、legacyの非自動upgrade、anchor拒否を含む実装scopeの妥当性。
-**このPRにOpusレビュー済みという主張はない。**
-
 shared-flow text限定の実装契約には未決の設計選択を残していない。実装後のacceptance matrixを通るまで
 no-op growth解消を実測済みと表現してはならない。general anchored編集は別paint ownership/dormant契約が
 未証明で、上記4点を検証する独立evaluationが必要である。
+
+## 10. 独立レビュー結果
+
+Claude Opus 5.5の独立レビューはhead `bd56485075bd5f55c08380ae23658c4807fec426`に対して
+**PASS — IMPLEMENTATION READY (shared-flow text source slotに限定)**。runtime/PR内容の修正なし。
+reopen時のownershipはcurrent PDF/program/block SHA、body grammar、current glyph/witness包含だけで
+再証明でき、offset/markerは位置特定であって権限ではないと確認した。固定bridgeはbody末尾`ET Q`、
+外側BT＋line Tm＋numeric TJによりislandの内容に依存せずTm/Tlmを戻し、同一text object内の複数slotでも
+合成できる。同一pageの複数islandは一つの`MutationProgram`上でoffsetだけにより順序非依存。
+同一source showの二重consumeは既存の一operator一owner規則でも拒否される。font ownershipは
+`generated_fonts`/Transactionの別経路のまま、`_validate`のanchor拒否とscope限定もコードと一致した。
+summaryの数値を再計算して本文と一致を確認し、helper 4 passed、focused 12 passed。full suite・実PDFは未実行。
+
+実装PRで仕様として固定するnon-blocking事項:
+
+1. marker認識: 既存`operators()`はcommentを捨てるため、ID入りmarkerの出現数1と、marker行が
+   既存operator span間のgapにあることで確認する。body内の`%`は拒否。regex parserを追加しない。
+2. body grammar: `continuation.BLOCK_OPERATORS`同等 (q Q BT ET Tf Tz Tc Tw Ts Tm Tj TJ g rg k) に固定。
+   `cm`、`cs/sc/scn`、`gs`を拒否する。`State.fill`は`cs`を`sc`で上書きし文字列operandで持つため、
+   entry digestは色空間を証明しない。
+3. `entry_context_sha256`は`current`内でも不変量: save入力/出力とreopenで記録値と再計算値の一致を要求し、
+   上書きだけにしない。fill/stroke/otherは文字列のまま、負のzero正規化は数値fieldに限る。
+4. acceptance matrix: first rewrite→noop1のbody一致を明示する。計画順入替えの期待は
+   `reserve_font_alias`の`/PRF{n}`割当が順序依存なため、ownership/binding/semanticsの同一性とする。
+5. v1はactive marked contentを拒否するため、page levelで`BDC`に包まれたtagged PDFは対象外になり得る。
+   PR #31実原本page 4/5がv1範囲内かは未検証で、そのKPIを約束しない。
