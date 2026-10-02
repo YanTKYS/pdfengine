@@ -1181,4 +1181,4 @@ page-entryと既存のconfirmed page-program boundaryの正式7段階を通過�
 
 grow直後・dormant中の追加no-opも両系列でbytes不変・全ページ画素一致。保存glyph原点の直接照合は最大約0.0000244141ptで、no-op間と2 destination間のdigestも一致した。残っていた旧growの部分rawとの全10ページ比較も両rendererで一致するが、その旧rawにはengine digest・完了summary・所有font記録がない。旧page-entryとboundaryの抽出順差に関する比較設定の初回失敗と修正は、summaryの`evaluation_attempts`に記録した。
 
-正式系列の所要時間はpage-entry 1,937.078秒、boundary 2,462.328秒。helper小test 4 passed（最終確認4.71秒）、full suiteは実行していない。追加監査は10月1〜2日に実施した。詳細・追加no-op・過去rawとの比較・環境hashは[評価README](../evaluations/continuation/README.md#pr-30-generated-block-canonicalizationのwindows実原本検証--2026-10-01)と[公開summary](../evaluations/continuation/generated-block-canonical-summary.json)を参照。Claude Opus 5.5の独立レビューは利用できる呼出手段がないため未実施で、指定レビュー前のPR作成は保留する。
+正式系列の所要時間はpage-entry 1,937.078秒、boundary 2,462.328秒。helper小test 4 passed（最終確認4.71秒）、full suiteは実行していない。追加監査は10月1〜2日に実施した。詳細・追加no-op・過去rawとの比較・環境hashは[評価README](../evaluations/continuation/README.md#pr-30-generated-block-canonicalizationのwindows実原本検証--2026-10-01)と[公開summary](../evaluations/continuation/generated-block-canonical-summary.json)を参照。Claude Opus 5.5の独立レビューは利用できる呼出手段がないため未実施。PRはdraftとして作成し、独立レビューの完了を待つ。
