@@ -929,3 +929,64 @@ overflow・second・shorten・regrowの4〜6ページと、no-opの全10ペー�
 5. すべて成功した場合だけ、`runs/<run名>/summary.json`を`evaluations/continuation/summary.json`へ置き、資料の結果を更新する。
 
 公開集計には、原本URL/hash、engine・評価コード・helperのhash、実行環境、実際に使ったproviderのfile名・face・hashと照合元集計のhash、各段階と拒否の検査結果、各保存のresource量だけを含める。これは単一外部原本での境界評価であり、一般PDFの成功率ではない。
+
+## PR #30 generated block canonicalizationのWindows実原本検証 — 2026-10-01
+
+PR #30 merge `8178462d84ade7241b536a533756149a5fb39754`、engine digest `dddbdc19f611fcbef0001e93c821955924d5341c25b63401c37c8e5d267a2a4c`の外部検証。上記の過去の増加記録、およびPR #30時点の「実PDFでの外部検証は未実施」という履歴は置き換えない。今回も**source slot側の累積は残る**。
+
+[測定runner](generated_block_canonical.py)は既存のpage-entry / confirmed boundary evaluatorを変更せず再利用した。正式系列はgrow（旧名overflow）→ second → shorten → regrow → noop1 → noop2 → noop3。source replay、reopen、容量超過の拒否も維持する。追加のgrow直後・dormant中のno-opは正式系列から分岐する。[公開summary](generated-block-canonical-summary.json)に環境・入力hash、各blockのSHA/marker/font alias、各page programの展開後bytes・operator数、owner別増分を記録する。raw PDF・sidecar・glyph・PNGは`runs/generated-block-canonical-windows/`内だけに保持する。
+
+正式2系列のblock metricsは同じ（destination固有markerのため、系列間のSHAは異なる）。
+
+| stage | bytes | operators | Tf / Tm | Tj / TJ | painting shows | text objects |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| grow | 3,044 | 259 | 36 / 36 | 36 / 0 | 36 | 1 |
+| second | 3,224 | 273 | 38 / 38 | 38 / 0 | 38 | 1 |
+| shorten | 310 | 33 | 3 / 3 | 0 / 3 | 0 | 3 |
+| regrow | 3,044 | 259 | 36 / 36 | 36 / 0 | 36 | 1 |
+| noop1 | 3,044 | 259 | 36 / 36 | 36 / 0 | 36 | 1 |
+| noop2 | 3,044 | 259 | 36 / 36 | 36 / 0 | 36 | 1 |
+| noop3 | 3,044 | 259 | 36 / 36 | 36 / 0 | 36 | 1 |
+
+両系列とも**grow = regrow = noop1 = noop2 = noop3のblock bytesが完全一致**した。activeのtext objectは1つで、過去revisionのtext objectは積み上がらない。shortenの3つはtyping slotとbody/latinの非描画style witness。operator nesting違反は全保存で0。`markers()`・既存binding・`generated_block_bytes()`・`content_stream.operators()`を使い、新しいPDF parserやengine ownership contractは実装していない。
+
+各no-opの増分は両系列とも次のとおり。圧縮後PDF file sizeによる成功判定ではない。
+
+| page | decoded program bytes / no-op | operators / no-op | generated | source slot | その他 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 4 | +4,420 | +368 | 0 | +4,420 | 0 |
+| 5 | +14,312 | +1,117 | 0 | +14,312 | 0 |
+| 6 | 0 | 0 | 0 | 0 | 0 |
+| 他7ページ | 0 | 0 | 0 | 0 | 0 |
+
+source合計は**+18,732 bytes / +1,485 operators / no-op**。`report.mutation_map`のowner・kindと各置換のlength−消費bytesを集計し、mutation owner別のlength deltaをpage単位のdecoded program length deltaと照合した。source slotの絶対spanを新しく推定した値や、span全体のbyte-by-byte attributionではない。regrow→noop3で4ページは40,379→53,639 bytes、5ページは70,109→113,045 bytes、6ページは29,360 bytesのまま。generated部分の解消から、source累積も解決したとは言えない。
+
+page-entryは`reviewed-page6-space`、boundaryは`reviewed-page6-boundary`。後者は既存`boundary-b848698b464255ff0b2b6f90`（offset 17,602、ordinal 1,303）を維持し、prefix 17,602 bytesとsuffix 8,714 bytesは原本と完全一致する。destination authority、slot ID、creation binding、marker pairを保持し、page-entryへの移動や再bindingはない。
+
+正式no-op 3回は両系列の**全10ページでMuPDF一致・Poppler 144dpi差分0**。既存監査で独立pypdf Unicode、glyph origin/Unicode/CID/GID/W、source paint・image・annotation・元fontを確認した。Type0数4、所有font root数4、graph object数24、所有alias数は4/5/6ページで1/2/1のまま。no-opは既存graphを`reused`し、dormantで必要なaliasを消していない。代表のregrow 4〜6ページとshorten 6ページを目視し、生成文字の欠けやロゴへの侵入、dormantの描画残留はなかった。
+
+既存公開summaryのgenerated block増分は3,088 bytes/no-opで、PR #30本文の3,076 bytesとは別の測定値として扱う。PR本文の値から導くsource増分18,708 bytesと今回18,732 bytesとの差24 bytesについて、原因は特定していない。過去記録を書き換えず今回のowner照合済み実測を採用する。公開済みの正式2系列の全rawは手元にないため、過去の全保存とのpixel/glyph一致を主張しない。
+
+追加のgrow直後・dormant中のno-opも両系列で通過し、block bytes不変・全10ページの両renderer差分0を確認した。dormantのtyping styleは`logical:body`、witness集合は`logical:body` / `logical:latin`、所有aliasは`/PRF1`のまま。既存`scope_chain_checks.glyph_coordinates()`を全段階と追加no-opへ再利用し、保存された生成glyphのUnicode/GID/code/font/originを計画と直接照合した。原点の最大差は約0.0000244141pt（既存許容値0.002pt）。no-op間と2 destination間の保存glyph原点digestも一致した。
+
+残っていた部分raw `runs/verified/overflow.pdf`とも、両系列regrowの全10ページがMuPDF/Popplerで完全一致した。そこから今回の正式no-opへも全ページ一致が続く。旧growのglyph planとpage-entry authorityも一致する。ただし旧rawにはengine digest・完了summary・generated font ownership記録がないため、公開済み正式系列の完全な履歴比較や、この部分rawとのfont ownership同一性は主張しない。font counts・allocation・authorityの比較は既存公開summaryを使い、すべて一致した。
+
+初回の過去raw比較は、旧page-entryとboundaryの意図的な6ページの抽出順差を、helperが「未編集ページの本文変化」として拒否した。比較の`edited_pages={6}`を明示して修正したが、全10ページそれぞれの厳密なno-op pixel gateと、正式系列の独立抽出監査は維持した。失敗記録と原因はrawおよび公開summaryの`evaluation_attempts`に残す。engineの問題として失敗した結果を成功へ置き換えたものではない。summaryで省略する他7ページは、長さ・operator数だけでなくdecoded bytesの完全一致を要求する。
+
+Windows 11 build 26200 / Python 3.12.14 / PyMuPDF 1.27.2.3 / pypdf 6.10.0 / Poppler 26.07.0。未加工原本とmsmincho.ttc face 1・times.ttf face 0のSHA-256は指定値と一致した。正式page-entryは1,937.078秒、boundaryは2,462.328秒で、重い処理は直列実行した。helper小testは4 passed（最終確認4.71秒）。engineと原本は変更せず、full pytest suiteは実行していない。正式系列は10月1日、追加監査は10月1〜2日に実施した。
+
+集計の実行時間は初回1,428.024秒（比較設定の失敗を含む）、座標監査追加後76.015秒、最終108.093秒。正式系列と合わせた記録済みevaluator時間は6,011.538秒（約100.2分）で、会話の中断・レビュー待ちは含めない。集計の再実行では保存済みprobesをhash照合して再利用し、正式系列・追加no-opのPDF保存は繰り返していない。
+
+runnerは上記起点HEADとengine/input hashを固定し、不一致を拒否する。再評価は、そのHEADの作業ツリーへ評価ファイルを置いて行う。
+
+```powershell
+# 再評価時だけ、未使用のrun名で実行する。
+.\.venv\Scripts\python.exe -m evaluations.continuation.generated_block_canonical --run <未使用名> --publish
+# 正式2系列が完了済みの場合だけ、追加no-opと集計を続行する。
+.\.venv\Scripts\python.exe -m evaluations.continuation.generated_block_canonical --run <既存名> --collect --publish
+.\.venv\Scripts\python.exe -m pytest -q evaluations/continuation/test_canonical_metrics.py
+```
+
+`--collect`は完了済み追加no-opのinput/output hashを照合して再利用し、正式系列を再実行しない。未完了の追加no-opを上書きして続行する機能はない。
+
+Claude Opus 5.5の[独立レビュー](https://github.com/YanTKYS/pdfengine/pull/31#pullrequestreview-5391061158)はhead `946a94adeb74fbccf6f801a247ebf886d0388fe2`に対して**PASS**。evaluatorの判定ロジック・公開summaryの数値・既存helperとの整合・主張範囲を確認し、generated no-op stabilityとsource累積の切り分け、renderer/glyph/font/authorityの証拠、historical comparisonの制限を妥当とした。engine contractの再実装はなく、Draft → Readyは可との結論。レビューではWindows raw評価・helper testを再実行していない。
