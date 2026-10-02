@@ -1184,3 +1184,23 @@ grow直後・dormant中の追加no-opも両系列でbytes不変・全ページ�
 正式系列の所要時間はpage-entry 1,937.078秒、boundary 2,462.328秒。helper小test 4 passed（最終確認4.71秒）、full suiteは実行していない。追加監査は10月1〜2日に実施した。詳細・追加no-op・過去rawとの比較・環境hashは[評価README](../evaluations/continuation/README.md#pr-30-generated-block-canonicalizationのwindows実原本検証--2026-10-01)と[公開summary](../evaluations/continuation/generated-block-canonical-summary.json)を参照。
 
 Claude Opus 5.5の[独立レビュー](https://github.com/YanTKYS/pdfengine/pull/31#pullrequestreview-5391061158)はhead `946a94adeb74fbccf6f801a247ebf886d0388fe2`に対して**PASS**。evaluation code・公開summary・既存helperとの整合、generated/source累積の解釈、renderer/glyph/font/authorityの証拠とhistorical comparisonの制限を確認した。engine contractの再実装はなく、Draft → Readyは可との結論。Windows raw評価・helper testはレビューで再実行していない。
+
+## Source slot ownership contractの調査 — 2026-10-02
+
+起点`8c4e904d1e7d51e4ba1d8c7e693eaad816059f0f`。runtime/schemaの変更なし。
+既存shared-flow syntheticのgrow→noop1→noop2→noop3で、sourceは毎回page 1 +2,175 bytes/+215 operators、
+page 2 +954/+88 (合計+3,129/+303)を再現。second→noop、empty→noop→regrow、retained source fontと
+部分show/複数BT、anchor別paintの累積も測定した。current PDF/sidecarでの別process reopenは成功するが、
+sourceの過去mutation_mapは永続化されず、古いgenerated nonpainting bytesを元sourceと区別して削除する証拠はない。
+
+**IMPLEMENTATION READY (既存shared-flowのtext source slotに限定)**。
+初回source非描画化とsuffix復元bridgeを固定して残し、新しく出すtext/empty/style witnessだけを
+stable marker islandとcurrent-only ownership recordで所有する契約を推奨する。
+新形式の不整合はfail closed、legacyは従来modeか明示再確認であり、自動migration/旧履歴掃除はしない。
+anchor付きgeneral editableへの展開はNOT READYで、別paint islandとdormant anchorの証明が必要。
+既存shared-flowのanchor拒否を維持する。source累積が既に解消されたという意味ではない。
+
+新helper 4 passed、root-cause focused 12 passed。full suite・実原本再評価は未実行。
+[設計とacceptance matrix](source-slot-rewrite-ownership.md)、
+[synthetic summary](../evaluations/continuation/source-slot-ownership-summary.json)、
+[実行方法](../evaluations/continuation/README.md#source-slot-ownership調査)を参照。

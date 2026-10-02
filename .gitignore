@@ -41,4 +41,5 @@ tmp/
 !/evaluations/continuation/boundary-review-formal-summary.json
 !/evaluations/continuation/geometry-review-external-summary.json
 !/evaluations/continuation/generated-block-canonical-summary.json
+!/evaluations/continuation/source-slot-ownership-summary.json
 /evaluations/continuation/runs/

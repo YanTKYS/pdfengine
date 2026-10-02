@@ -990,3 +990,48 @@ runnerは上記起点HEADとengine/input hashを固定し、不一致を拒否�
 `--collect`は完了済み追加no-opのinput/output hashを照合して再利用し、正式系列を再実行しない。未完了の追加no-opを上書きして続行する機能はない。
 
 Claude Opus 5.5の[独立レビュー](https://github.com/YanTKYS/pdfengine/pull/31#pullrequestreview-5391061158)はhead `946a94adeb74fbccf6f801a247ebf886d0388fe2`に対して**PASS**。evaluatorの判定ロジック・公開summaryの数値・既存helperとの整合・主張範囲を確認し、generated no-op stabilityとsource累積の切り分け、renderer/glyph/font/authorityの証拠、historical comparisonの制限を妥当とした。engine contractの再実装はなく、Draft → Readyは可との結論。レビューではWindows raw評価・helper testを再実行していない。
+
+## Source slot ownership調査
+
+起点`8c4e904d1e7d51e4ba1d8c7e693eaad816059f0f`、2026-10-02のlocal Windows評価。
+[`source_slot_accumulation.py`](source_slot_accumulation.py)は既存fixtureを使い、現行runtimeの
+show operator rewriteとnonpainting履歴の累積を観測する。新ownership方式は実装しない。
+Windows 11 / Python 3.12.14 / PyMuPDF 1.27.2.3 / pypdf 6.10.0。
+runtime digestはsummaryに独自の算出方法と共に記載し、別方式のPR #31 engine digestと混同しない。
+
+```powershell
+.\.venv\Scripts\python.exe -m evaluations.continuation.source_slot_accumulation --output evaluations/continuation/source-slot-ownership-summary.json
+.\.venv\Scripts\python.exe -m pytest -q evaluations/continuation/test_source_slot_accumulation.py
+```
+
+`--work <未使用のdirectory>`でraw出力先を指定できる。省略時はignored `tmp/source-slot-*`を作る。
+既存ファイルを上書きしてsaveを継続する機能はない。公開summaryだけをcommitする。
+12回のre-editは別processでcurrent PDF/sidecarを開き、旧report/旧revisionをwriterへ渡さない。
+通常のfont provider assetは必要。親processは前後のrawを測定するため保持する。
+
+shared-flowのgrow後3 no-opはpage 1 +2,175 bytes/+215 operators、page 2 +954/+88、
+合計**+3,129 bytes/+303 operators/no-op**。page 3は不変。
+second/noop、empty/noop/regrowも記録し、同じpageの複数slotをowner別に集計した。
+partial show＋別BTのretained source glyph probeはnoop +538/+53。
+anchor付きprobeのnoopは+2,028/+192 (text +1,784 bytes、decoration +244 bytes)。
+全no-opはMuPDF全page画素一致。全290 mutationsについて入力span、出力長、deltaと未変更gap/suffixを照合した。
+これはsyntheticの証拠であり、PR #31の実原本のspan全体attributionを追加で証明したものではない。
+
+summaryの`pages`はpage全体のcensus、`by_owner`はslot別の消費/出力operator censusと増分、
+`slots`はcurrent glyph events/empty bindingを表す。source全体の絶対owned rangeは存在しないため記録しない。
+`owner: null`はordinary editable writerがownerを渡さないことを表し、shared slot IDを推測で付けない。
+`all_current_events_at_emitted_glyph_anchors`は保存時のreportによる対応確認であり、
+reopen後の過去nonpainting bytesの所有を証明しない。`reused_code_glyph_count`とretained glyph数も区別する。
+
+今回の検証: helper **4 passed (最終確認1.88s)**、以下の既存focused tests **12 passed (141.05s)**。
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/test_operator_nesting.py::test_source_rewrite_isolates_new_text_and_keeps_following_cursor_and_state tests/test_operator_nesting.py::test_rewrite_refuses_to_cross_what_the_source_text_object_opened tests/test_operator_nesting.py::test_empty_style_witness_is_its_own_isolated_text_object tests/test_shared_flow.py::test_late_fragment_failure_does_not_publish_shared_flow tests/test_shared_flow.py::test_shared_flow_keeps_destination_paint_guards tests/test_generated_block_canonical.py::test_source_slots_keep_the_ordinary_rewrite tests/test_editable.py::test_logical_spaces_ranges_and_limits_survive_repeated_edits
+```
+
+full suiteと実PDF/Poppler評価は実行していない。runtime、sidecar schema、writer、font lifecycle、
+MutationProgram、public APIには変更なし。synthetic no-opのgrowthが0になったという結果でもない。
+**IMPLEMENTATION READY**は次のshared-flow text source slot実装の設計判断で、
+anchor再描画を含むgeneral editableは対象外・NOT READY。
+[設計contract・legacy/fail-closed・acceptance matrix](../../docs/source-slot-rewrite-ownership.md)と
+[公開summary](source-slot-ownership-summary.json)に根拠と独立レビューの論点を記載した。
