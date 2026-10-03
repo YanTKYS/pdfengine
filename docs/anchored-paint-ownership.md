@@ -444,3 +444,99 @@ B3のpath-free境界・ExtGState初期拒否、trusted sidecarの信頼境界、
 late paint rebind rollback、公開summaryのcoverage/CTM不安定性を検証する。
 既存anchor/editableと必要なpath mapping/transaction testsだけを実行する。full suite、実LibreOffice原本は未実行。
 実行command・最終結果は[評価README](../evaluations/anchors/README.md)を参照。
+
+## 14. 独立レビュー結果
+
+reviewer: Claude Opus 5.5 / reviewed head `ef43c729c9875ebbb0980a899e0ab68344a2f60a`
+
+**PASS — NOT READY CONFIRMED.** current analysis、anchor-group paint island案、B1–B3の整理は正しい。
+ただし実装前blockerとして**B4（page単位marker inventoryと複数editable sidecarの協調）を追加**する。
+このPRはIMPLEMENTATION READYへ変更しない。runtime/evaluator/test logicはレビューで変更していない。
+
+### 確認した結論
+
+- **member vs authorship:** `_candidates`/`AnchoredPaintEdit`はgeometry・色・seqnoで候補を出すだけ、
+  `emitted_paths`/`map_path`は同一save内のmapping、`_bind_relations`は`source_ids`/range/affinityだけを保存する。
+  path IDはPDF SHA/program SHA/terminal byte range由来でrevisionごとに変わる。current persistent evidenceは
+  「現在のrelation member」以上を示さず、q/path/fill/Q envelopeの作者証明にはならない。AMBIGUOUS分類は正しい。
+- **residue:** 旧generated pathはterminalが`n`化された非描画residueで、current sidecarからownerが消えた後は
+  runtimeからAMBIGUOUS。observerの来歴知識を権限にしない分類は正しい。
+- **数値:** 主系列200/23→2,225/215→4,253/407→6,281/599→8,309/791、no-op +2,028/+192
+  = text +1,784/+172 + decoration +244/+20、change +1,689/+158、change noop +1,664/+158をsummaryで照合した。
+  identity CTMでもpayloadはfirst 251 bytes→noop1–3 243 bytes（1回で収束）、CTM系列は毎回変化する。
+
+### B1 — canonical geometry（実装前blocker、閉じられる）
+
+原因分析は正しい。`interpreted_paints`はMuPDF device上のfloat32 path/matrixを返し、`_candidates`が
+そのrendered boundsとMuPDF traceのglyph originからoffset/thicknessを毎save再推定する。これがlayout baselineに足され、
+`_local_translation`のfloat64逆変換と`number()`の12桁出力を経て次saveの入力になる。この**feedback loop**が
+固定点にならない（82.24299621582031→…はfloat32 ULP単位の移動）。recipe固定だけでは不十分で、次のcontractが必要:
+
+1. owned/dormantではrendered paint geometry、MuPDF trace、`_candidates`をpaint座標の入力に使わない。
+   paint geometryの唯一のauthorityはrecipe＋今回のplanned layout（page座標）。
+2. recipeのoffset/thicknessはcreation時に一度だけ有限decimal文字列へ正規化して固定する（負zeroなし、指数表記なし）。
+3. planned layoutの入力（confirmed layout、logical text、style size/Tz/rise、font advances）がsave間で固定点であることを
+   glyph planのorigin/advanceのbyte一致で示す。ordinary text rewrite経由で値が往復する場合も同じ。
+4. local座標変換はMuPDFのfloat32 template matrixではなく、content_stream interpreterのCTM（source decimal由来、
+   必要ならPR #19のexact rational方式）を使い、出力を決められたdecimal規則で一度だけ量子化する。
+5. toleranceではなく、同一入力→同一bytesの決定性と、入力に前回出力が還流しないことでbyte canonicalityを作る。
+
+必要evidence: identity CTMとscale＋translation CTM（0.83/0.91を含む）でfirst==noop1==noop2==noop3、
+change==change-noop、regrow==regrow-noopのpaint body bytes/SHA/operatorsが一致すること。renderer一致は別KPI。
+
+### B2 — zero-paint planner / explicit revival（推奨contractでは実装前blocker）
+
+現行runtimeでは全削除は拒否、部分削除はgroupが`project_range`→`None`、`_bind_relations`でskipされ消失する。
+dormant identityを保持する推奨contractではB2は必須。同じcaretに2 dormant groupがあり得る以上、
+geometry/range/styleから自動選択してはならず、explicit revivalは必要。同一caret 2 groupは必須fixture。
+最小request案（次設計PRで確定、今回は未実装）:
+`{"anchor_revivals": [{"anchor_id": "<64 hex>", "range": [a, b], "start_affinity": "...", "end_affinity": "..."}]}`。
+対象はdormantの既存anchorだけ、rangeは編集後Unicodeのgrapheme境界、他active rangeと非重複、whitespace-onlyは拒否。
+collapse point `p`は診断情報に留め、復活の権限にしない（物理位置はmarkerが持つ）。
+text insertion witness/empty-style recordはpaint authorityに流用しない。dormant planはtemplate paintが無いため、
+色・clip・matrixをentry boundary Stateから得るglyph-free経路が要る。
+
+### B3 — dormant boundary（推奨contractでは実装前blocker、案Aで閉じられる）
+
+案A（初回active island位置をdormant中もそのまま保持）を推奨する。markerは消費されず、位置の権限は
+creation時のsource terminal consume（island前の`n`）とmarker pairが持ち、rebindはinventoryで行う。
+B（text位置へ移動）とC（page-entry等）はz-order・CTM・clipを変えるため不採用、Dは案Aで不要。
+q/Qはcurrent pathを保存しないので、path-free entry/exitとpending clipなしは必要条件。grammarで全subpathを
+body内fillで閉じることと合わせて十分。entry digestはcreation時から不変量として入力/出力/reopenで照合する。
+ExtGStateの全拒否は妥当（Stateは`/ca`/`/CA`しか解釈せず、SMask/BM等はopacity=1の報告でも存在し得る）。
+clipは形状正規化をsource-outputの`context()`から流用し、各rectの包含は既存`_check_clip`で証明する。
+
+### 追加blocker B4 — page単位inventoryと複数sidecar
+
+§5/§6の「unclaimed valid paint markerは拒否」はshared-flowのような1 sidecar/pageでは妥当だが、
+ordinary editableはparagraphごとにsidecarを持つ。paragraph Aを単独保存するとBのsidecarはPDF SHA不一致で再確認が要り、
+再確認ではBの旧markerを引き継げない（§10）。結果としてAもBも相手のmarkerをunclaimedとして拒否し続け、
+同一pageの2 paragraphが恒久的に編集不能になり得る。次設計PRで、(a)全paint ownershipをpage単位manifestに集約、
+(b)同一pageの全sidecarを常に同時transactionで扱う、(c)他element markerを権限なしで許容しつつ重複・overlapを拒否する
+inventory scope、のいずれかと再確認policyを確定し、交互単独保存・stale sidecar再確認fixtureで示す必要がある。
+
+fill/style、group identity、z-order、resource ownership、transaction順序には追加blockerはない。
+fill色はentry contextが継承元で、black .7/blue .9は別groupかつ別entry contextとして区別される。
+現行`MutationProgram`/`Transaction`で、全ownershipをinput revisionで検証→plan→commit→final rebind→seal→publishの
+順序は実現できる。mutation ownerにはanchor_idを診断用に入れてよいが、persistent authorityにはしない。
+
+### Non-blocking
+
+1. B2/B3は「dormant identityを保持する」推奨contractの前提。group消失時に自分の所有block（marker含む）と
+   recordを丸ごと削除し、全削除は現行どおり拒否、復活なし、という狭いv1ならB3は不要。次設計PRでどちらかを明示する。
+2. entry digestへのtext state・line stateの包含はfill描画には不要で保守的（false rejectの可能性）。
+   paint用context subsetを明文化する。
+3. `marker_id`は`anchor_id`（既に`logical_element_id`を含む）と重複入力。`current.page`はparagraph pageと一致検証する。
+4. `F`→`f`正規化はcreation時の1回だけbyteを変える。fill_ruleはrecipeから決定的に出す。
+5. `_publish`の説明（exception rollbackであり、2 link間のOS crash atomicityではない）は正確。
+
+### 再実行と未実行
+
+focused: `tests/test_paint_ownership_observation.py`、`tests/test_anchors.py`、`tests/test_editable.py`、
+`tests/test_transaction.py`の2 testで**34 passed**（138.48s）。full suiteと外部LibreOffice原本は実行していない。
+
+### 次PRのscope
+
+runtime実装ではなく、B1–B4を閉じるdesign/evidence PR。B1のbyte固定点evidence（identity/scale CTM、
+change/regrow）、B2のrevision request形とdormant planner責務、B3の案A境界・context証明、
+B4のinventory scopeと複数sidecar fixtureを含める。dormantを持たない狭いv1を選ぶ場合はその理由とB2/B3の扱いを記す。

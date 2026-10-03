@@ -63,3 +63,12 @@ fails. This is exception rollback, not a crash-atomic two-file filesystem commit
 
 No full suite or external LibreOffice original was run. Runtime digest remains
 `d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+
+## Independent review
+
+Claude Opus 5.5 reviewed head `ef43c729c9875ebbb0980a899e0ab68344a2f60a`: **PASS — NOT READY CONFIRMED**.
+The evaluator observes current runtime output only (token spans are explicitly not owned ranges; no
+ownership parser or writer). Summary values were reconciled, including no-op +2,028/+192 =
+text +1,784/+172 + decoration +244/+20. Focused tests were rerun: 34 passed (138.48s).
+Full suite and external originals were not run. Findings, including the added blocker B4, are in
+[docs §14](../../docs/anchored-paint-ownership.md#14-独立レビュー結果).
