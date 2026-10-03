@@ -913,3 +913,97 @@ sidecar fixtureは1 coordinated initial save＋A単独2 saves、B stale refusal�
 read-only boundary 14 cases。pure identity/inventory/termination/refusal casesも新summaryへ保存した。
 runtime digestは`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`で不変。
 full suite、外部LibreOffice原本、future owned-PDF writerは実行・実装していない。
+
+### 15.11 Independent review — Claude Opus 5.5
+
+- reviewed HEAD: `5e60936959400f8865eac3673f158faa38bf5624`（レビュー開始時のPR #36 head。この記録を追加するcommitとは別）
+- base: `fdba3dcb44b0fe4010a3ea1fc986b3aac83da2e6`（main。PR #35 head `7920e37` を含むmerge commitであることを確認）
+- **verdict: PASS WITH NON-BLOCKING NOTES — DESIGN/EVIDENCE ONLY; RUNTIME NOT READY**
+- B1-L: **未解決（OPEN）**。runtime implementation: **NOT READY**。
+
+差分はdocs/evaluations/testsの8 files、追加のみ（削除行0）。`pdfeditor/`、schema、writer、Transaction/MutationProgramは無変更、
+runtime digestは`d22fb048…5dea`のまま。§1–14、PR #35 summary/evaluator/Opusレビューは変更されていない。
+このPRにはCI check runが設定されていない。
+
+**検証**（Linux cloud、Python 3.12.3、PyMuPDF 1.27.2.3、Poppler pdftoppm 24.02.0、`requirements.lock.txt`）:
+README記載のfocused tests **11 passed**。`paint_contract` evaluatorを一時出力先で再実行した
+（tracked summaryは上書きしていない。Windows固定の`DEFAULT_POPPLER`だけをscratch wrapperで`/usr/bin/pdftoppm`へ差し替え、
+repo fileは変更していない）。生成summaryはcommit済み`paint-contract-summary.json`と**全fieldで完全一致（差分0）**。
+prototype SHA、glyph origin/advance、renderer結果を含めてWindows記録が再現したので、B1-Lはplatform固有の現象ではない。
+full suite: 未実行。外部Windows/LibreOffice原本validation: 未実行（本PRの要件外）。
+
+#### 論点別の結論
+
+- **A. NARROW V1:** 安全な縮小。§15.1は機能を「後で実装」ではなく契約上の非機能として除外している。具体的には、
+  dormant/`q Q` body、revival requestをunknown optionとして拒否、full empty拒否、visible segment 0拒否、
+  `project_range`=Noneのgroupだけcomplete block＋recordを同時終了、old ID再利用不可、再挿入textは装飾なし。
+  §6–8/§11のFULL案は残るが、§15.1が「歴史的候補でありNARROWが次scope」と明記しているので、実装対象は曖昧でない（N7）。
+- **B. B4 document-single-owner:** 正しい。`source_sha`はfile全体のbytesをhashし（`selection.py:15`）、
+  `open_editable`はそのSHA不一致を拒否する（`editable.py:52`）。そのためpage単位の制限では足りないことはcodeから直接言える。
+  A/B evidenceでは、hashだけを差し替えても`selection source SHA-256`で失敗し、marker inventoryだけではselection/snapshotをrefreshできない。
+  §15.5は「数学的に不可能」とは主張していない。unknown/stale/foreign markerを自動adoption・rebase・cleanupしない規定もある。
+  運用上は強い制限だが、v1の安全側の制限として成立する。
+- **C. complete block termination:** 契約は十分。範囲はwriterが所有するnewline/marker/body/markerに限定され、
+  source whitespace、initial `n`、construction/wrapper、fixed/foreign paint、residueを含まない。
+  current revisionで行う再証明（marker、program/block SHA、context、grammar、全単射、foreign不在）、
+  path-free entry/exit、「q/Qがpathを復元するから」ではないという根拠、同一Transactionでのrecord削除、partial publication禁止を確認した。
+- **D. paint context / grammar:** 過不足なし。exact S、clip（0または1つのrect）、fill operator/components、q depthはMUST MATCH。
+  ExtGState evidence、page `/Group`、DefaultGray/RGB/CMYK、pending path/clip、marked、compatibility、text objectは拒否する。
+  stroke-only/text-only stateはdigest外だが、bodyが副作用を持たないので保持される。text clip（Tr≥4）は
+  `state.clip`へpathなしで積まれるため、analyzerのclip条件で拒否されることをcodeで確認した（fixtureはない）。
+  `q (m l l l h f|f*)+ Q`は現行writer（`anchors.py` `_rect_commands`のm/l/h）由来で、active-only scopeでは閉じている。
+  creation時の`F`→`f`と、owned bodyで`F`を拒否する判断も妥当。
+- **E. B1-L因果:** 結論は**正しい**。ただし説明は網羅的ではない（N1）。`ParagraphShaper.shape`（`paragraph.py:175-187`）のleft分岐は、
+  次unitがretained・同じsource line・source offsetが連続という条件を満たすときに、metric advanceをMuPDF trace origin差へ置き換える。
+  offset 3 spaceはfirst/noop1ともwidth 600/Tf 12/Tz 100/Tc=Ts=0、`PaintChar.advance=7.199999999999999`。
+  firstでは次の`F`がnew provider `s0`なのでmetric値を使い、noop1では`F`がretainedになるので`48.8000031−41.6000023`（float32）=`7.200000762939453`を使う。
+  これはstyle ID renameでもpaint geometry誤差でもない。
+- **F. canonical formatter:** recipe固定、1e-6 grid、exact rationalのhalf-even（tieとNaN/±Inf/過大値も確認）、
+  negative zeroなし、exponentなし、exact S、planned layoutはround-trip decimalのまま扱いsnapしない、をcodeとtestで確認した。
+  2e-6 ptの入力差でもbytesが変わることがtestされており、tolerance gateとは分離されている。
+  PDFへ挿入されたowned writerだという過剰主張はない。実測でもgridはdriftを隠していない（例: `71.909377`→`71.909378`）。
+- **G. 次PR scope:** canonical paragraph layout authority design/evidenceが妥当。paint runtime implementationへ進む根拠はまだない。
+
+#### Blocking findings
+
+なし。
+
+#### Non-blocking findings
+
+1. **B1-Lのtrigger列挙が不完全。** 実測driftには三つの経路がある:
+   (i) new→retained provider遷移（offset 3）、
+   (ii) reflow/削除によるsource line・source連続性の変化（identity first→noop1 index 14は元source line 1末尾のspaceで、
+   firstでは`following.line`不一致のためmetric、reflow後は同じlineになりtrace。change→noop index 3は`FIVE `削除で
+   `original_offsets`の連続性が切れたためmetricになったもので、new providerが原因ではない）、
+   (iii) retained同士のtrace差はabsolute x位置のfloat32量子化に依存し、位置が動くと値が変わる
+   （index 16 `H`は両stageで隣接retainedなのに`7.200000762939453`→`7.1999969482421875`）。
+   次PRはprovider境界の統一だけでなく、trace差そのものをadvance authorityにするかどうかを扱う必要がある。
+2. **legacy mutationとpaint-domain blockのoverlap規定がない。** §15.5でoverlap禁止を明示しているのはsource-slot/continuation markerだけ。
+   owner sidecarを失った・staleになった後、同じparagraphをlegacy再確認して編集すると、`_candidates`がowned fillを
+   source underlineとして`n`化し、marker pair内部を書き換え得る。fail-closed（後でINVALID）ではあるが、runtime前に
+   「paint-domain block rangeへ重なるordinary mutationは拒否」をacceptance matrixへ加えること。
+3. **creation recipeのauthorityが未規定。** prototypeのrecipeは現行runtimeのMuPDF float32由来のgroup offsetである
+   （identity `1.300003/0.699997`。source `.7`からは`1.3/.7`。scaleは`1.182999/0.636997`）。
+   S同様、source path decimal operand＋exact Sから導出すると規定するのが一貫している。noop canonicalityには影響しない。
+4. terminationのacceptance matrixに、block除去後のoperator列が「除去前−block」と一致するという
+   lexical/token境界不変条件を明示gateとして加えると良い（final rebindでも検出は可能）。
+5. B4のcross-page主張はcode事実（whole-file SHA）に基づく。runtime fixtureはsame-pageだけで、symbolic testはpage名のラベルだけである。
+   summaryの`sidecars.narrow_sequence`は実測値の隣に置かれたnormative/symbolicな列なので、そう分かるlabelが望ましい。
+6. 既存clip proofのCTM（`_clip_source_ctms`はbinary64 parse値を合成）とpaint vertexのdecimal Sは別authorityである。
+   runtimeでは、同じSに対してclip包含を証明するか、差のboundを明記すること。
+7. §6–8/§11のFULL/dormant記述には前方参照がない（§1–14不変の方針による）。runtime PRは§15だけを仕様として引用すること。
+8. evaluatorは`DEFAULT_POPPLER`がWindows pathに固定されており、Linuxでの再現にはwrapperが必要だった（focused testsには影響しない）。
+9. 次PR matrixには、active range内への挿入（range growth）→noop、non-left alignmentの扱い（scope外と明記するか、対象にするか）、
+   first→noop1のphysical style ID splitを踏まえた「semantic style」比較の定義も含めること。
+
+#### 次PRとして妥当な最小scope
+
+canonical paragraph layout authority design/evidence（runtime paint実装・tolerance緩和・粗いquantization・hidden normalization saveなし）。
+最低限、以下を扱う:
+
+- retained / new / retained-new境界、source line変化（reflow）、削除によるsource非連続、line-end Tc処理、
+  explicit tracking/word spacing、wrap境界付近のwidth
+- identity CTMとscale+translation CTM（0.83/0.91）
+- first→noop×3、change→noop×3、range growth→noop
+- origin/advance/line allocation/semantic styleのexact比較と、glyph accuracy≤0.002ptを別gateとして示すこと
+- N1(iii)のtrace差position依存の扱いを必須とする。text-layout runtime変更が必要なら、別途承認された実装PRへ切り出す。

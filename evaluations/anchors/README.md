@@ -129,3 +129,22 @@ run. Runtime digest stays
 `d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
 Raw PDFs/fonts/reports/rasters are ignored. Only the explicit compact summary
 is tracked (force-added by exact filename); no ignore policy was broadened.
+
+### Independent review of PR #36 — Claude Opus 5.5
+
+Reviewed head `5e60936959400f8865eac3673f158faa38bf5624` (base `fdba3dc…`):
+**PASS WITH NON-BLOCKING NOTES — DESIGN/EVIDENCE ONLY; RUNTIME NOT READY.**
+B1-L remains open. The 11 focused tests passed on Linux/Python 3.12.3/PyMuPDF 1.27.2.3.
+`paint_contract` was rerun to a scratch output, with only the Windows `DEFAULT_POPPLER` path
+redirected to `/usr/bin/pdftoppm` via a wrapper. The rerun reproduced the tracked summary
+exactly (0 field differences), so B1-L is not Windows-specific. Full suite and external
+originals were not run. No blocking findings. Non-blocking notes cover:
+
+- the additional B1-L triggers: source-line/adjacency change and float32 position dependence
+  of trace differences
+- legacy mutations overlapping paint-domain blocks
+- the creation recipe's authority
+- the termination lexical check
+
+The tracked summary, evaluator and tests are unchanged.
+Details: [docs §15.11](../../docs/anchored-paint-ownership.md#1511-independent-review--claude-opus-55).
