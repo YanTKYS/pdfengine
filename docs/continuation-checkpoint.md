@@ -1283,3 +1283,29 @@ B1（float32 rendered geometry→再推定のfeedback loop）、B2（explicit re
 追加blocker **B4（page単位marker inventoryと複数editable sidecar）**を記録した。focused 34 passed、
 full suite・外部原本は未実行。次PRはB1–B4を閉じるdesign/evidence PR。
 [レビュー詳細](anchored-paint-ownership.md#14-独立レビュー結果)。
+
+## Anchored paint contract scope reduction — 2026-10-04
+
+Base `fdba3dcb44b0fe4010a3ea1fc986b3aac83da2e6` (PR #35 merge verified).
+**NARROW V1 / NOT READY**. Select active group islands only: full empty stays
+refused; a vanished group terminates its verified complete block and record;
+no dormant/revival. Limit independent paint ownership to **one editable per
+PDF document**, since whole-PDF SHA invalidates sibling sidecars even across
+pages. No automatic rebase/adoption of unknown markers.
+
+Fixed creation recipe + exact source-decimal CTM removes the paint feedback
+loop, but planned glyph origins/advances themselves change on first/change
+to noop. New blocker **B1-L**: the left-aligned retained-glyph shaper substitutes
+adjacent MuPDF trace origin differences for metric-based advances. Even the
+same Courier 600-width/Tf12/Tz100 space changes planned advance after reopen.
+Both identity and scale CTM prototype byte gates fail at first/change→noop;
+noop1–3 are stable. Eight current-runtime MuPDF/Poppler comparisons have zero
+pixel differences, which does not establish byte canonicality.
+
+Pure numeric/policy models, 14 read-only boundary probes, current A/B stale
+sidecar evidence, explicit scope/record/context/termination/fail-closed and
+acceptance matrices are recorded in [design §15](anchored-paint-ownership.md#15-b1b4-design-gates--2026-10-04).
+Next scope is B1-L layout-authority design/evidence, not paint runtime implementation.
+11 focused tests passed, runtime unchanged, no full suite or external original.
+[New summary](../evaluations/anchors/paint-contract-summary.json) and
+[reproduction](../evaluations/anchors/README.md#pr-35-design-gates--2026-10-04).

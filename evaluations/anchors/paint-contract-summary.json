@@ -1,0 +1,2591 @@
+{
+  "base": "fdba3dcb44b0fe4010a3ea1fc986b3aac83da2e6",
+  "runtime_sha256": "d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea",
+  "scope": "NARROW V1",
+  "method": "Pure prototypes plus unmodified current-runtime observation; prototype bytes never installed",
+  "geometry": {
+    "identity": {
+      "context": {
+        "exact_ctm": [
+          "1",
+          "0",
+          "0",
+          "1",
+          "0",
+          "0"
+        ],
+        "interpreter_ctm": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "at_terminal_exit": {
+          "pending_path": false,
+          "pending_clip": false,
+          "text_object": false,
+          "marked": 0,
+          "compatibility": 0,
+          "q_depth": 0
+        },
+        "fill": [
+          "g",
+          [
+            "0"
+          ]
+        ],
+        "opacity": 1,
+        "other": {},
+        "clip": []
+      },
+      "recipe": {
+        "offset": "1.300003",
+        "thickness": "0.699997",
+        "fill_rule": "nonzero"
+      },
+      "stages": {
+        "first": {
+          "text": "ONE FIVE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "027b6ea8971fe611cf6cc5c3cbf984b2f86e7d006f505331ee088bb7c789504f",
+          "line_allocation_sha256": "a1c47460a85d2cec166f7b0f960f16414724e412924e311c3d06ce8987ced9bd",
+          "style_ids_sha256": "0cd7e2736fbef1f51e3da40f64fca57878eee886674c39803b975464a89c82a6",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[20.0,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[27.200000762939453,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[34.400001525878906,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.60000228881836,60.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":4,"end":5,"origin":[48.80000228881836,60.0],"advance":5.90625,"style_id":"s0","size":12.0,"provider":"s0"},
+          {"unicode":"I","start":5,"end":6,"origin":[54.70625228881836,60.0],"advance":4.078125,"style_id":"s0","size":12.0,"provider":"s0"},
+          {"unicode":"V","start":6,"end":7,"origin":[58.78437728881836,60.0],"advance":6.796875,"style_id":"s0","size":12.0,"provider":"s0"},
+          {"unicode":"E","start":7,"end":8,"origin":[65.58125228881836,60.0],"advance":6.328125,"style_id":"s0","size":12.0,"provider":"s0"},
+          {"unicode":"S","start":9,"end":10,"origin":[20.0,76.0],"advance":6.234375,"style_id":"s0","size":12.0,"provider":"s0"},
+          {"unicode":"E","start":10,"end":11,"origin":[26.234375,76.0],"advance":6.328125,"style_id":"s0","size":12.0,"provider":"s0"},
+          {"unicode":"V","start":11,"end":12,"origin":[32.5625,76.0],"advance":6.796875,"style_id":"s0","size":12.0,"provider":"s0"},
+          {"unicode":"E","start":12,"end":13,"origin":[39.359375,76.0],"advance":6.328125,"style_id":"s0","size":12.0,"provider":"s0"},
+          {"unicode":"N","start":13,"end":14,"origin":[45.6875,76.0],"advance":8.765625,"style_id":"s0","size":12.0,"provider":"s0"},
+          {"unicode":" ","start":14,"end":15,"origin":[54.453125,76.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"T","start":15,"end":16,"origin":[61.653125,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"H","start":16,"end":17,"origin":[68.85312576293946,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":17,"end":18,"origin":[76.05312652587891,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":18,"end":19,"origin":[83.25312728881836,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":19,"end":20,"origin":[90.45312805175782,76.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":21,"end":22,"origin":[20.0,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"O","start":22,"end":23,"origin":[27.199996948242188,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"U","start":23,"end":24,"origin":[34.399993896484375,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":24,"end":25,"origin":[41.59999084472656,92.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 8,
+              "x": 20.0,
+              "baseline": 60.0,
+              "width": 51.90937728881836
+            },
+            {
+              "start": 9,
+              "end": 20,
+              "x": 20.0,
+              "baseline": 76.0,
+              "width": 77.65312881469727
+            },
+            {
+              "start": 21,
+              "end": 25,
+              "x": 20.0,
+              "baseline": 92.0,
+              "width": 28.799990844726562
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":4}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":4,"provider":"s0","nominal_pdf_width":492.1875},
+          {"start":5,"provider":"s0","nominal_pdf_width":339.84375},
+          {"start":6,"provider":"s0","nominal_pdf_width":566.40625},
+          {"start":7,"provider":"s0","nominal_pdf_width":527.34375},
+          {"start":9,"provider":"s0","nominal_pdf_width":519.53125},
+          {"start":10,"provider":"s0","nominal_pdf_width":527.34375},
+          {"start":11,"provider":"s0","nominal_pdf_width":566.40625},
+          {"start":12,"provider":"s0","nominal_pdf_width":527.34375},
+          {"start":13,"provider":"s0","nominal_pdf_width":730.46875},
+          {"start":14,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":21,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":22,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":23,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":24,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              20.0,
+              71.90937728881836,
+              60.0
+            ],
+            [
+              20.0,
+              97.65312805175782,
+              76.0
+            ],
+            [
+              20.0,
+              48.799990844726565,
+              92.0
+            ]
+          ],
+          "prototype": {
+            "bytes": 208,
+            "sha256": "faa375f5645a34b17427f3658d6dc847838fabc8f626618f2aa080522605e8e7",
+            "operators": 20,
+            "body": "q\n20 198.699997 m\n71.909377 198.699997 l\n71.909377 198 l\n20 198 l\nh\nf\n20 182.699997 m\n97.653128 182.699997 l\n97.653128 182 l\n20 182 l\nh\nf\n20 166.699997 m\n48.799991 166.699997 l\n48.799991 166 l\n20 166 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.699997"
+                ],
+                [
+                  "71.909377",
+                  "198.699997"
+                ],
+                [
+                  "71.909377",
+                  "198"
+                ],
+                [
+                  "20",
+                  "198"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.699997"
+                ],
+                [
+                  "97.653128",
+                  "182.699997"
+                ],
+                [
+                  "97.653128",
+                  "182"
+                ],
+                [
+                  "20",
+                  "182"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "166.699997"
+                ],
+                [
+                  "48.799991",
+                  "166.699997"
+                ],
+                [
+                  "48.799991",
+                  "166"
+                ],
+                [
+                  "20",
+                  "166"
+                ]
+              ]
+            ]
+          }
+        },
+        "noop1": {
+          "text": "ONE FIVE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "9ce6c236369b391fbddaff388deff8d9485b314b7699486e2e32fc31cda5d1a4",
+          "line_allocation_sha256": "a1c47460a85d2cec166f7b0f960f16414724e412924e311c3d06ce8987ced9bd",
+          "style_ids_sha256": "f77503e50796e864031d07e7da966f66d92dc67c50480bddfbbe90ee29d48dac",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[20.0,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[27.200000762939453,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[34.400001525878906,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.60000228881836,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":4,"end":5,"origin":[48.80000305175781,60.0],"advance":5.90625,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"I","start":5,"end":6,"origin":[54.70625305175781,60.0],"advance":4.078125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[58.78437805175781,60.0],"advance":6.796875,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[65.58125305175781,60.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"S","start":9,"end":10,"origin":[20.0,76.0],"advance":6.234375,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":10,"end":11,"origin":[26.234375,76.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"V","start":11,"end":12,"origin":[32.5625,76.0],"advance":6.796875,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":12,"end":13,"origin":[39.359375,76.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"N","start":13,"end":14,"origin":[45.6875,76.0],"advance":8.765625,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":" ","start":14,"end":15,"origin":[54.453125,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"T","start":15,"end":16,"origin":[61.65312576293945,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"H","start":16,"end":17,"origin":[68.8531265258789,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":17,"end":18,"origin":[76.0531234741211,76.0],"advance":7.200004577636719,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":18,"end":19,"origin":[83.25312805175781,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":19,"end":20,"origin":[90.453125,76.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":21,"end":22,"origin":[20.0,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"O","start":22,"end":23,"origin":[27.199996948242188,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"U","start":23,"end":24,"origin":[34.399993896484375,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":24,"end":25,"origin":[41.59999084472656,92.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 8,
+              "x": 20.0,
+              "baseline": 60.0,
+              "width": 51.90937805175781
+            },
+            {
+              "start": 9,
+              "end": 20,
+              "x": 20.0,
+              "baseline": 76.0,
+              "width": 77.653125
+            },
+            {
+              "start": 21,
+              "end": 25,
+              "x": 20.0,
+              "baseline": 92.0,
+              "width": 28.799991607666016
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":4},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":15}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":492.1875,"text_space_advance":5.90625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":339.84375,"text_space_advance":4.078125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":9,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":11,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":12,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":13,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":14,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":21,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":22,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":23,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":24,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              20.0,
+              71.90937805175781,
+              60.0
+            ],
+            [
+              20.0,
+              97.653125,
+              76.0
+            ],
+            [
+              20.0,
+              48.799990844726565,
+              92.0
+            ]
+          ],
+          "prototype": {
+            "bytes": 208,
+            "sha256": "e3d99b63fa7b161ae520820d39906164bdedd76bd0537b658558279f1758b2a1",
+            "operators": 20,
+            "body": "q\n20 198.699997 m\n71.909378 198.699997 l\n71.909378 198 l\n20 198 l\nh\nf\n20 182.699997 m\n97.653125 182.699997 l\n97.653125 182 l\n20 182 l\nh\nf\n20 166.699997 m\n48.799991 166.699997 l\n48.799991 166 l\n20 166 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.699997"
+                ],
+                [
+                  "71.909378",
+                  "198.699997"
+                ],
+                [
+                  "71.909378",
+                  "198"
+                ],
+                [
+                  "20",
+                  "198"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.699997"
+                ],
+                [
+                  "97.653125",
+                  "182.699997"
+                ],
+                [
+                  "97.653125",
+                  "182"
+                ],
+                [
+                  "20",
+                  "182"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "166.699997"
+                ],
+                [
+                  "48.799991",
+                  "166.699997"
+                ],
+                [
+                  "48.799991",
+                  "166"
+                ],
+                [
+                  "20",
+                  "166"
+                ]
+              ]
+            ]
+          }
+        },
+        "noop2": {
+          "text": "ONE FIVE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "9ce6c236369b391fbddaff388deff8d9485b314b7699486e2e32fc31cda5d1a4",
+          "line_allocation_sha256": "a1c47460a85d2cec166f7b0f960f16414724e412924e311c3d06ce8987ced9bd",
+          "style_ids_sha256": "f77503e50796e864031d07e7da966f66d92dc67c50480bddfbbe90ee29d48dac",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[20.0,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[27.200000762939453,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[34.400001525878906,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.60000228881836,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":4,"end":5,"origin":[48.80000305175781,60.0],"advance":5.90625,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"I","start":5,"end":6,"origin":[54.70625305175781,60.0],"advance":4.078125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[58.78437805175781,60.0],"advance":6.796875,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[65.58125305175781,60.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"S","start":9,"end":10,"origin":[20.0,76.0],"advance":6.234375,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":10,"end":11,"origin":[26.234375,76.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"V","start":11,"end":12,"origin":[32.5625,76.0],"advance":6.796875,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":12,"end":13,"origin":[39.359375,76.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"N","start":13,"end":14,"origin":[45.6875,76.0],"advance":8.765625,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":" ","start":14,"end":15,"origin":[54.453125,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"T","start":15,"end":16,"origin":[61.65312576293945,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"H","start":16,"end":17,"origin":[68.8531265258789,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":17,"end":18,"origin":[76.0531234741211,76.0],"advance":7.200004577636719,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":18,"end":19,"origin":[83.25312805175781,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":19,"end":20,"origin":[90.453125,76.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":21,"end":22,"origin":[20.0,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"O","start":22,"end":23,"origin":[27.199996948242188,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"U","start":23,"end":24,"origin":[34.399993896484375,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":24,"end":25,"origin":[41.59999084472656,92.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 8,
+              "x": 20.0,
+              "baseline": 60.0,
+              "width": 51.90937805175781
+            },
+            {
+              "start": 9,
+              "end": 20,
+              "x": 20.0,
+              "baseline": 76.0,
+              "width": 77.653125
+            },
+            {
+              "start": 21,
+              "end": 25,
+              "x": 20.0,
+              "baseline": 92.0,
+              "width": 28.799991607666016
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":6},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":8}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":492.1875,"text_space_advance":5.90625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":339.84375,"text_space_advance":4.078125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":9,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":11,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":12,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":13,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":14,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":21,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":22,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":23,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":24,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              20.0,
+              71.90937805175781,
+              60.0
+            ],
+            [
+              20.0,
+              97.653125,
+              76.0
+            ],
+            [
+              20.0,
+              48.799990844726565,
+              92.0
+            ]
+          ],
+          "prototype": {
+            "bytes": 208,
+            "sha256": "e3d99b63fa7b161ae520820d39906164bdedd76bd0537b658558279f1758b2a1",
+            "operators": 20,
+            "body": "q\n20 198.699997 m\n71.909378 198.699997 l\n71.909378 198 l\n20 198 l\nh\nf\n20 182.699997 m\n97.653125 182.699997 l\n97.653125 182 l\n20 182 l\nh\nf\n20 166.699997 m\n48.799991 166.699997 l\n48.799991 166 l\n20 166 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.699997"
+                ],
+                [
+                  "71.909378",
+                  "198.699997"
+                ],
+                [
+                  "71.909378",
+                  "198"
+                ],
+                [
+                  "20",
+                  "198"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.699997"
+                ],
+                [
+                  "97.653125",
+                  "182.699997"
+                ],
+                [
+                  "97.653125",
+                  "182"
+                ],
+                [
+                  "20",
+                  "182"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "166.699997"
+                ],
+                [
+                  "48.799991",
+                  "166.699997"
+                ],
+                [
+                  "48.799991",
+                  "166"
+                ],
+                [
+                  "20",
+                  "166"
+                ]
+              ]
+            ]
+          }
+        },
+        "noop3": {
+          "text": "ONE FIVE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "9ce6c236369b391fbddaff388deff8d9485b314b7699486e2e32fc31cda5d1a4",
+          "line_allocation_sha256": "a1c47460a85d2cec166f7b0f960f16414724e412924e311c3d06ce8987ced9bd",
+          "style_ids_sha256": "f77503e50796e864031d07e7da966f66d92dc67c50480bddfbbe90ee29d48dac",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[20.0,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[27.200000762939453,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[34.400001525878906,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.60000228881836,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":4,"end":5,"origin":[48.80000305175781,60.0],"advance":5.90625,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"I","start":5,"end":6,"origin":[54.70625305175781,60.0],"advance":4.078125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[58.78437805175781,60.0],"advance":6.796875,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[65.58125305175781,60.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"S","start":9,"end":10,"origin":[20.0,76.0],"advance":6.234375,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":10,"end":11,"origin":[26.234375,76.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"V","start":11,"end":12,"origin":[32.5625,76.0],"advance":6.796875,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":12,"end":13,"origin":[39.359375,76.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"N","start":13,"end":14,"origin":[45.6875,76.0],"advance":8.765625,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":" ","start":14,"end":15,"origin":[54.453125,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"T","start":15,"end":16,"origin":[61.65312576293945,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"H","start":16,"end":17,"origin":[68.8531265258789,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":17,"end":18,"origin":[76.0531234741211,76.0],"advance":7.200004577636719,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":18,"end":19,"origin":[83.25312805175781,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":19,"end":20,"origin":[90.453125,76.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":21,"end":22,"origin":[20.0,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"O","start":22,"end":23,"origin":[27.199996948242188,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"U","start":23,"end":24,"origin":[34.399993896484375,92.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":24,"end":25,"origin":[41.59999084472656,92.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 8,
+              "x": 20.0,
+              "baseline": 60.0,
+              "width": 51.90937805175781
+            },
+            {
+              "start": 9,
+              "end": 20,
+              "x": 20.0,
+              "baseline": 76.0,
+              "width": 77.653125
+            },
+            {
+              "start": 21,
+              "end": 25,
+              "x": 20.0,
+              "baseline": 92.0,
+              "width": 28.799991607666016
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":6},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":8}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":492.1875,"text_space_advance":5.90625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":339.84375,"text_space_advance":4.078125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":9,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":11,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":12,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":13,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":14,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":21,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":22,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":23,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":24,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              20.0,
+              71.90937805175781,
+              60.0
+            ],
+            [
+              20.0,
+              97.653125,
+              76.0
+            ],
+            [
+              20.0,
+              48.799990844726565,
+              92.0
+            ]
+          ],
+          "prototype": {
+            "bytes": 208,
+            "sha256": "e3d99b63fa7b161ae520820d39906164bdedd76bd0537b658558279f1758b2a1",
+            "operators": 20,
+            "body": "q\n20 198.699997 m\n71.909378 198.699997 l\n71.909378 198 l\n20 198 l\nh\nf\n20 182.699997 m\n97.653125 182.699997 l\n97.653125 182 l\n20 182 l\nh\nf\n20 166.699997 m\n48.799991 166.699997 l\n48.799991 166 l\n20 166 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.699997"
+                ],
+                [
+                  "71.909378",
+                  "198.699997"
+                ],
+                [
+                  "71.909378",
+                  "198"
+                ],
+                [
+                  "20",
+                  "198"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.699997"
+                ],
+                [
+                  "97.653125",
+                  "182.699997"
+                ],
+                [
+                  "97.653125",
+                  "182"
+                ],
+                [
+                  "20",
+                  "182"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "166.699997"
+                ],
+                [
+                  "48.799991",
+                  "166.699997"
+                ],
+                [
+                  "48.799991",
+                  "166"
+                ],
+                [
+                  "20",
+                  "166"
+                ]
+              ]
+            ]
+          }
+        },
+        "change": {
+          "text": "ONE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "be1205054979d333f785b2b4fcfa186e69dfdf95679590f296a4f1a67bf0568c",
+          "line_allocation_sha256": "03a2e20e0eb066610e5dac916e23e0b91618b24ad2d874777ecd965c781769e0",
+          "style_ids_sha256": "f0ba51add376d7f02e683eac35adc2de74975f282464e9473d2f3b268a7b7a6a",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[20.0,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[27.200000762939453,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[34.400001525878906,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.60000228881836,60.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"S","start":4,"end":5,"origin":[48.80000228881836,60.0],"advance":6.234375,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":5,"end":6,"origin":[55.03437728881836,60.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[61.36250228881836,60.0],"advance":6.796875,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[68.15937728881836,60.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"N","start":8,"end":9,"origin":[74.48750228881836,60.0],"advance":8.765625,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"T","start":10,"end":11,"origin":[20.0,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"H","start":11,"end":12,"origin":[27.200000762939453,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":12,"end":13,"origin":[34.39999771118164,76.0],"advance":7.200004577636719,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":13,"end":14,"origin":[41.60000228881836,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":14,"end":15,"origin":[48.79999923706055,76.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":" ","start":15,"end":16,"origin":[55.99999923706055,76.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":16,"end":17,"origin":[63.19999923706055,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"O","start":17,"end":18,"origin":[70.39999618530274,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"U","start":18,"end":19,"origin":[77.59999313354493,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":19,"end":20,"origin":[84.79999008178712,76.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 9,
+              "x": 20.0,
+              "baseline": 60.0,
+              "width": 63.25312728881836
+            },
+            {
+              "start": 10,
+              "end": 20,
+              "x": 20.0,
+              "baseline": 76.0,
+              "width": 71.99999084472657
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":6},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":8}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":8,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":11,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":12,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":13,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":14,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":15,"provider":"original","nominal_pdf_width":null},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              20.0,
+              83.25312728881836,
+              60.0
+            ],
+            [
+              20.0,
+              91.99999008178712,
+              76.0
+            ]
+          ],
+          "prototype": {
+            "bytes": 138,
+            "sha256": "d822899e76ac345d0ad8e5f0769706bb859281d9e1ccbe770c62c1eb6a6ce1a1",
+            "operators": 14,
+            "body": "q\n20 198.699997 m\n83.253127 198.699997 l\n83.253127 198 l\n20 198 l\nh\nf\n20 182.699997 m\n91.99999 182.699997 l\n91.99999 182 l\n20 182 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.699997"
+                ],
+                [
+                  "83.253127",
+                  "198.699997"
+                ],
+                [
+                  "83.253127",
+                  "198"
+                ],
+                [
+                  "20",
+                  "198"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.699997"
+                ],
+                [
+                  "91.99999",
+                  "182.699997"
+                ],
+                [
+                  "91.99999",
+                  "182"
+                ],
+                [
+                  "20",
+                  "182"
+                ]
+              ]
+            ]
+          }
+        },
+        "change_noop": {
+          "text": "ONE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "6d242da103e71fe62766dad0986343573646bbcde9722022735872f90a1966fd",
+          "line_allocation_sha256": "03a2e20e0eb066610e5dac916e23e0b91618b24ad2d874777ecd965c781769e0",
+          "style_ids_sha256": "f0ba51add376d7f02e683eac35adc2de74975f282464e9473d2f3b268a7b7a6a",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[20.0,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[27.200000762939453,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[34.400001525878906,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.60000228881836,60.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"S","start":4,"end":5,"origin":[48.80000305175781,60.0],"advance":6.234375,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":5,"end":6,"origin":[55.03437805175781,60.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[61.36250305175781,60.0],"advance":6.796875,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[68.15937805175781,60.0],"advance":6.328125,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"N","start":8,"end":9,"origin":[74.48750305175781,60.0],"advance":8.765625,"style_id":"s1","size":12.0,"provider":"original"},
+          {"unicode":"T","start":10,"end":11,"origin":[20.0,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"H","start":11,"end":12,"origin":[27.200000762939453,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":12,"end":13,"origin":[34.39999771118164,76.0],"advance":7.200004577636719,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":13,"end":14,"origin":[41.60000228881836,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"E","start":14,"end":15,"origin":[48.79999923706055,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":" ","start":15,"end":16,"origin":[56.0,76.0],"advance":7.200000762939453,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"F","start":16,"end":17,"origin":[63.20000076293945,76.0],"advance":7.199993133544922,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"O","start":17,"end":18,"origin":[70.39999389648438,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"U","start":18,"end":19,"origin":[77.59999084472656,76.0],"advance":7.1999969482421875,"style_id":"s0","size":12.0,"provider":"original"},
+          {"unicode":"R","start":19,"end":20,"origin":[84.79998779296875,76.0],"advance":7.199999999999999,"style_id":"s0","size":12.0,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 9,
+              "x": 20.0,
+              "baseline": 60.0,
+              "width": 63.25312805175781
+            },
+            {
+              "start": 10,
+              "end": 20,
+              "x": 20.0,
+              "baseline": 76.0,
+              "width": 71.99998779296875
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":6},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":12.0,"horizontal_scale":1.0,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":8}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":8,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":11,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":12,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":13,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":14,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              20.0,
+              83.25312805175781,
+              60.0
+            ],
+            [
+              20.0,
+              91.99998779296875,
+              76.0
+            ]
+          ],
+          "prototype": {
+            "bytes": 140,
+            "sha256": "bab30ecfbdfa37b37baea5f2a5f47ecfb70c9f291ac964594dcba15dc60c9329",
+            "operators": 14,
+            "body": "q\n20 198.699997 m\n83.253128 198.699997 l\n83.253128 198 l\n20 198 l\nh\nf\n20 182.699997 m\n91.999988 182.699997 l\n91.999988 182 l\n20 182 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.699997"
+                ],
+                [
+                  "83.253128",
+                  "198.699997"
+                ],
+                [
+                  "83.253128",
+                  "198"
+                ],
+                [
+                  "20",
+                  "198"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.699997"
+                ],
+                [
+                  "91.999988",
+                  "182.699997"
+                ],
+                [
+                  "91.999988",
+                  "182"
+                ],
+                [
+                  "20",
+                  "182"
+                ]
+              ]
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "first->noop1": {
+          "glyph_geometry_exact": false,
+          "max_origin_delta": 3.051757815342171e-06,
+          "max_advance_delta": 3.814697265625e-06,
+          "changed_advances": 5,
+          "line_allocation_exact": true,
+          "style_ids_exact": false,
+          "prototype_body_exact": false,
+          "renderer": {
+            "dpi": 144,
+            "pages": {
+              "1": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              },
+              "2": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              }
+            },
+            "passed": true
+          }
+        },
+        "noop1->noop2": {
+          "glyph_geometry_exact": true,
+          "max_origin_delta": 0.0,
+          "max_advance_delta": 0.0,
+          "changed_advances": 0,
+          "line_allocation_exact": true,
+          "style_ids_exact": true,
+          "prototype_body_exact": true,
+          "renderer": {
+            "dpi": 144,
+            "pages": {
+              "1": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              },
+              "2": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              }
+            },
+            "passed": true
+          }
+        },
+        "noop2->noop3": {
+          "glyph_geometry_exact": true,
+          "max_origin_delta": 0.0,
+          "max_advance_delta": 0.0,
+          "changed_advances": 0,
+          "line_allocation_exact": true,
+          "style_ids_exact": true,
+          "prototype_body_exact": true,
+          "renderer": {
+            "dpi": 144,
+            "pages": {
+              "1": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              },
+              "2": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              }
+            },
+            "passed": true
+          }
+        },
+        "change->change_noop": {
+          "glyph_geometry_exact": false,
+          "max_origin_delta": 2.288818365059342e-06,
+          "max_advance_delta": 3.814697265625e-06,
+          "changed_advances": 4,
+          "line_allocation_exact": true,
+          "style_ids_exact": true,
+          "prototype_body_exact": false,
+          "renderer": {
+            "dpi": 144,
+            "pages": {
+              "1": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              },
+              "2": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              }
+            },
+            "passed": true
+          }
+        }
+      }
+    },
+    "ctm": {
+      "context": {
+        "exact_ctm": [
+          "83/100",
+          "0",
+          "0",
+          "91/100",
+          "29/4",
+          "23/2"
+        ],
+        "interpreter_ctm": [
+          0.8299999833106995,
+          0.0,
+          0.0,
+          0.9100000262260437,
+          7.25,
+          11.5
+        ],
+        "at_terminal_exit": {
+          "pending_path": false,
+          "pending_clip": false,
+          "text_object": false,
+          "marked": 0,
+          "compatibility": 0,
+          "q_depth": 1
+        },
+        "fill": [
+          "g",
+          [
+            "0"
+          ]
+        ],
+        "opacity": 1,
+        "other": {},
+        "clip": []
+      },
+      "recipe": {
+        "offset": "1.182999",
+        "thickness": "0.636997",
+        "fill_rule": "nonzero"
+      },
+      "stages": {
+        "first": {
+          "text": "ONE FIVE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "1ef328232dff9481f68ab4f3ca41522da22e69c7d482383c5c6544ae9e6bf2e5",
+          "line_allocation_sha256": "9197179ac71a6cd6a920dcfb5fb60ed550c1f26bb871f674d9502bb39f77a794",
+          "style_ids_sha256": "fef6431c287590a1ea56db174d390215d37b10fa1a65b50b71cb928259e6d664",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[23.850000381469727,66.5],"advance":5.97599983215332,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[29.826000213623047,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[35.802001953125,66.5],"advance":5.9759979248046875,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.77799987792969,66.5],"advance":5.975999879837036,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"F","start":4,"end":5,"origin":[47.75399975776672,66.5],"advance":4.902187401428818,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":"I","start":5,"end":6,"origin":[52.65618715919554,66.5],"advance":3.384843681938946,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":"V","start":6,"end":7,"origin":[56.041030841134486,66.5],"advance":5.6414061365649095,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":"E","start":7,"end":8,"origin":[61.682436977699396,66.5],"advance":5.252343644388019,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":" ","start":8,"end":9,"origin":[66.93478062208742,66.5],"advance":2.606718697585165,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":"S","start":9,"end":10,"origin":[69.54149931967258,66.5],"advance":5.174531145952641,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":"E","start":10,"end":11,"origin":[74.71603046562522,66.5],"advance":5.252343644388019,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":"V","start":11,"end":12,"origin":[79.96837411001324,66.5],"advance":5.6414061365649095,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":"E","start":12,"end":13,"origin":[85.60978024657815,66.5],"advance":5.252343644388019,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":"N","start":13,"end":14,"origin":[90.86212389096617,66.5],"advance":7.275468603707849,"style_id":"s0","size":10.920000314712524,"provider":"s0"},
+          {"unicode":"T","start":15,"end":16,"origin":[23.850000381469727,81.05999755859375],"advance":5.97599983215332,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"H","start":16,"end":17,"origin":[29.826000213623047,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"R","start":17,"end":18,"origin":[35.802001953125,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"E","start":18,"end":19,"origin":[41.77799987792969,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"E","start":19,"end":20,"origin":[47.75400161743164,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":" ","start":20,"end":21,"origin":[53.730003356933594,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"F","start":21,"end":22,"origin":[59.70600128173828,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"O","start":22,"end":23,"origin":[65.68199920654297,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"U","start":23,"end":24,"origin":[71.65799713134766,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.920000314712524,"provider":"original"},
+          {"unicode":"R","start":24,"end":25,"origin":[77.63399505615234,81.05999755859375],"advance":5.975999879837036,"style_id":"s0","size":10.920000314712524,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 14,
+              "x": 23.850000381469727,
+              "baseline": 66.5,
+              "width": 74.2875921132043
+            },
+            {
+              "start": 15,
+              "end": 25,
+              "x": 23.850000381469727,
+              "baseline": 81.05999755859375,
+              "width": 59.75999455451965
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":10.920000314712524,"horizontal_scale":0.9120878674618056,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":4}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":4,"provider":"s0","nominal_pdf_width":492.1875},
+          {"start":5,"provider":"s0","nominal_pdf_width":339.84375},
+          {"start":6,"provider":"s0","nominal_pdf_width":566.40625},
+          {"start":7,"provider":"s0","nominal_pdf_width":527.34375},
+          {"start":8,"provider":"s0","nominal_pdf_width":261.71875},
+          {"start":9,"provider":"s0","nominal_pdf_width":519.53125},
+          {"start":10,"provider":"s0","nominal_pdf_width":527.34375},
+          {"start":11,"provider":"s0","nominal_pdf_width":566.40625},
+          {"start":12,"provider":"s0","nominal_pdf_width":527.34375},
+          {"start":13,"provider":"s0","nominal_pdf_width":730.46875},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":20,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":21,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":22,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":23,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"},
+          {"start":24,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100,"Tc":0,"Ts":0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              23.850000381469727,
+              98.13759249467402,
+              66.5
+            ],
+            [
+              23.850000381469727,
+              83.60999493598938,
+              81.05999755859375
+            ]
+          ],
+          "prototype": {
+            "bytes": 170,
+            "sha256": "c25094b41be3d7689c901e6157d22063c4f33a0d822dfead637ba6fbad265e80",
+            "operators": 14,
+            "body": "q\n20 198.700001 m\n109.503123 198.700001 l\n109.503123 198.000004 l\n20 198.000004 l\nh\nf\n20 182.700004 m\n91.999994 182.700004 l\n91.999994 182.000007 l\n20 182.000007 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.700001"
+                ],
+                [
+                  "109.503123",
+                  "198.700001"
+                ],
+                [
+                  "109.503123",
+                  "198.000004"
+                ],
+                [
+                  "20",
+                  "198.000004"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.000007"
+                ],
+                [
+                  "20",
+                  "182.000007"
+                ]
+              ]
+            ]
+          }
+        },
+        "noop1": {
+          "text": "ONE FIVE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "cb894cd31887de086bd7edf6f5b0aba20fd13c8692336b34722aae977961a3c5",
+          "line_allocation_sha256": "9197179ac71a6cd6a920dcfb5fb60ed550c1f26bb871f674d9502bb39f77a794",
+          "style_ids_sha256": "d5c1310042d17774e8a98a8857bf21fc640574e82b44d6945cd32ac5c59e86fb",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[23.850000381469727,66.5],"advance":5.97599983215332,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[29.826000213623047,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[35.802001953125,66.5],"advance":5.9759979248046875,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.77799987792969,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"F","start":4,"end":5,"origin":[47.75400161743164,66.5],"advance":4.902187347412109,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":"I","start":5,"end":6,"origin":[52.65618896484375,66.5],"advance":3.384845733642578,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[56.04103469848633,66.5],"advance":5.6414031982421875,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[61.682437896728516,66.5],"advance":5.252346038818359,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":" ","start":8,"end":9,"origin":[66.93478393554688,66.5],"advance":2.6067123413085938,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":"S","start":9,"end":10,"origin":[69.54149627685547,66.5],"advance":5.174537658691406,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":"E","start":10,"end":11,"origin":[74.71603393554688,66.5],"advance":5.252342224121094,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":"V","start":11,"end":12,"origin":[79.96837615966797,66.5],"advance":5.6414031982421875,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":"E","start":12,"end":13,"origin":[85.60977935791016,66.5],"advance":5.252349853515625,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":"N","start":13,"end":14,"origin":[90.86212921142578,66.5],"advance":7.27546860370785,"style_id":"s1","size":10.919999599456787,"provider":"original"},
+          {"unicode":"T","start":15,"end":16,"origin":[23.850000381469727,81.05999755859375],"advance":5.97599983215332,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"H","start":16,"end":17,"origin":[29.826000213623047,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"R","start":17,"end":18,"origin":[35.802001953125,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"E","start":18,"end":19,"origin":[41.77799987792969,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"E","start":19,"end":20,"origin":[47.75400161743164,81.05999755859375],"advance":5.976005554199219,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":" ","start":20,"end":21,"origin":[53.73000717163086,81.05999755859375],"advance":5.975994110107422,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"F","start":21,"end":22,"origin":[59.70600128173828,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"O","start":22,"end":23,"origin":[65.68199920654297,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"U","start":23,"end":24,"origin":[71.65799713134766,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919999599456787,"provider":"original"},
+          {"unicode":"R","start":24,"end":25,"origin":[77.63399505615234,81.05999755859375],"advance":5.975999879837036,"style_id":"s0","size":10.919999599456787,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 14,
+              "x": 23.850000381469727,
+              "baseline": 66.5,
+              "width": 74.2875974336639
+            },
+            {
+              "start": 15,
+              "end": 25,
+              "x": 23.850000381469727,
+              "baseline": 81.05999755859375,
+              "width": 59.75999455451965
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":10.919999599456787,"horizontal_scale":0.9120879272032072,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":4},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":10.919999599456787,"horizontal_scale":0.9120879272032072,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":15}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":492.1875,"text_space_advance":5.90625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":339.84375,"text_space_advance":4.078125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":8,"provider":"original","width_1000em":261.71875,"text_space_advance":3.140625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":9,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":11,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":12,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":13,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":20,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":21,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":22,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":23,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":24,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              23.850000381469727,
+              98.13759781513363,
+              66.5
+            ],
+            [
+              23.850000381469727,
+              83.60999493598938,
+              81.05999755859375
+            ]
+          ],
+          "prototype": {
+            "bytes": 168,
+            "sha256": "58a9f59de6a9280a8a5df14c90c696def4425a704da76da39052ad524b108b07",
+            "operators": 14,
+            "body": "q\n20 198.700001 m\n109.50313 198.700001 l\n109.50313 198.000004 l\n20 198.000004 l\nh\nf\n20 182.700004 m\n91.999994 182.700004 l\n91.999994 182.000007 l\n20 182.000007 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.700001"
+                ],
+                [
+                  "109.50313",
+                  "198.700001"
+                ],
+                [
+                  "109.50313",
+                  "198.000004"
+                ],
+                [
+                  "20",
+                  "198.000004"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.000007"
+                ],
+                [
+                  "20",
+                  "182.000007"
+                ]
+              ]
+            ]
+          }
+        },
+        "noop2": {
+          "text": "ONE FIVE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "cb894cd31887de086bd7edf6f5b0aba20fd13c8692336b34722aae977961a3c5",
+          "line_allocation_sha256": "9197179ac71a6cd6a920dcfb5fb60ed550c1f26bb871f674d9502bb39f77a794",
+          "style_ids_sha256": "d5c1310042d17774e8a98a8857bf21fc640574e82b44d6945cd32ac5c59e86fb",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[23.850000381469727,66.5],"advance":5.97599983215332,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[29.826000213623047,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[35.802001953125,66.5],"advance":5.9759979248046875,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.77799987792969,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"F","start":4,"end":5,"origin":[47.75400161743164,66.5],"advance":4.902187347412109,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":"I","start":5,"end":6,"origin":[52.65618896484375,66.5],"advance":3.384845733642578,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[56.04103469848633,66.5],"advance":5.6414031982421875,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[61.682437896728516,66.5],"advance":5.252346038818359,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":" ","start":8,"end":9,"origin":[66.93478393554688,66.5],"advance":2.6067123413085938,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":"S","start":9,"end":10,"origin":[69.54149627685547,66.5],"advance":5.174537658691406,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":"E","start":10,"end":11,"origin":[74.71603393554688,66.5],"advance":5.252342224121094,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":"V","start":11,"end":12,"origin":[79.96837615966797,66.5],"advance":5.6414031982421875,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":"E","start":12,"end":13,"origin":[85.60977935791016,66.5],"advance":5.252349853515625,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":"N","start":13,"end":14,"origin":[90.86212921142578,66.5],"advance":7.27546860370785,"style_id":"s1","size":10.91999888420105,"provider":"original"},
+          {"unicode":"T","start":15,"end":16,"origin":[23.850000381469727,81.05999755859375],"advance":5.97599983215332,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"H","start":16,"end":17,"origin":[29.826000213623047,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"R","start":17,"end":18,"origin":[35.802001953125,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"E","start":18,"end":19,"origin":[41.77799987792969,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"E","start":19,"end":20,"origin":[47.75400161743164,81.05999755859375],"advance":5.976005554199219,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":" ","start":20,"end":21,"origin":[53.73000717163086,81.05999755859375],"advance":5.975994110107422,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"F","start":21,"end":22,"origin":[59.70600128173828,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"O","start":22,"end":23,"origin":[65.68199920654297,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"U","start":23,"end":24,"origin":[71.65799713134766,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.91999888420105,"provider":"original"},
+          {"unicode":"R","start":24,"end":25,"origin":[77.63399505615234,81.05999755859375],"advance":5.975999879837036,"style_id":"s0","size":10.91999888420105,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 14,
+              "x": 23.850000381469727,
+              "baseline": 66.5,
+              "width": 74.2875974336639
+            },
+            {
+              "start": 15,
+              "end": 25,
+              "x": 23.850000381469727,
+              "baseline": 81.05999755859375,
+              "width": 59.75999455451965
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":10.91999888420105,"horizontal_scale":0.9120879869446165,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":6},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":10.91999888420105,"horizontal_scale":0.9120879869446165,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":8}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":492.1875,"text_space_advance":5.90625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":339.84375,"text_space_advance":4.078125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":8,"provider":"original","width_1000em":261.71875,"text_space_advance":3.140625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":9,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":11,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":12,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":13,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":20,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":21,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":22,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":23,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":24,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              23.850000381469727,
+              98.13759781513363,
+              66.5
+            ],
+            [
+              23.850000381469727,
+              83.60999493598938,
+              81.05999755859375
+            ]
+          ],
+          "prototype": {
+            "bytes": 168,
+            "sha256": "58a9f59de6a9280a8a5df14c90c696def4425a704da76da39052ad524b108b07",
+            "operators": 14,
+            "body": "q\n20 198.700001 m\n109.50313 198.700001 l\n109.50313 198.000004 l\n20 198.000004 l\nh\nf\n20 182.700004 m\n91.999994 182.700004 l\n91.999994 182.000007 l\n20 182.000007 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.700001"
+                ],
+                [
+                  "109.50313",
+                  "198.700001"
+                ],
+                [
+                  "109.50313",
+                  "198.000004"
+                ],
+                [
+                  "20",
+                  "198.000004"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.000007"
+                ],
+                [
+                  "20",
+                  "182.000007"
+                ]
+              ]
+            ]
+          }
+        },
+        "noop3": {
+          "text": "ONE FIVE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "cb894cd31887de086bd7edf6f5b0aba20fd13c8692336b34722aae977961a3c5",
+          "line_allocation_sha256": "9197179ac71a6cd6a920dcfb5fb60ed550c1f26bb871f674d9502bb39f77a794",
+          "style_ids_sha256": "d5c1310042d17774e8a98a8857bf21fc640574e82b44d6945cd32ac5c59e86fb",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[23.850000381469727,66.5],"advance":5.97599983215332,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[29.826000213623047,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[35.802001953125,66.5],"advance":5.9759979248046875,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.77799987792969,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"F","start":4,"end":5,"origin":[47.75400161743164,66.5],"advance":4.902187347412109,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":"I","start":5,"end":6,"origin":[52.65618896484375,66.5],"advance":3.384845733642578,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[56.04103469848633,66.5],"advance":5.6414031982421875,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[61.682437896728516,66.5],"advance":5.252346038818359,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":" ","start":8,"end":9,"origin":[66.93478393554688,66.5],"advance":2.6067123413085938,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":"S","start":9,"end":10,"origin":[69.54149627685547,66.5],"advance":5.174537658691406,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":"E","start":10,"end":11,"origin":[74.71603393554688,66.5],"advance":5.252342224121094,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":"V","start":11,"end":12,"origin":[79.96837615966797,66.5],"advance":5.6414031982421875,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":"E","start":12,"end":13,"origin":[85.60977935791016,66.5],"advance":5.252349853515625,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":"N","start":13,"end":14,"origin":[90.86212921142578,66.5],"advance":7.27546860370785,"style_id":"s1","size":10.919998168945312,"provider":"original"},
+          {"unicode":"T","start":15,"end":16,"origin":[23.850000381469727,81.05999755859375],"advance":5.97599983215332,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"H","start":16,"end":17,"origin":[29.826000213623047,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"R","start":17,"end":18,"origin":[35.802001953125,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"E","start":18,"end":19,"origin":[41.77799987792969,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"E","start":19,"end":20,"origin":[47.75400161743164,81.05999755859375],"advance":5.976005554199219,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":" ","start":20,"end":21,"origin":[53.73000717163086,81.05999755859375],"advance":5.975994110107422,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"F","start":21,"end":22,"origin":[59.70600128173828,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"O","start":22,"end":23,"origin":[65.68199920654297,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"U","start":23,"end":24,"origin":[71.65799713134766,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919998168945312,"provider":"original"},
+          {"unicode":"R","start":24,"end":25,"origin":[77.63399505615234,81.05999755859375],"advance":5.975999879837036,"style_id":"s0","size":10.919998168945312,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 14,
+              "x": 23.850000381469727,
+              "baseline": 66.5,
+              "width": 74.2875974336639
+            },
+            {
+              "start": 15,
+              "end": 25,
+              "x": 23.850000381469727,
+              "baseline": 81.05999755859375,
+              "width": 59.75999455451965
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":10.919998168945312,"horizontal_scale":0.9120880466860336,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":6},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":10.919998168945312,"horizontal_scale":0.9120880466860336,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":8}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":492.1875,"text_space_advance":5.90625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":339.84375,"text_space_advance":4.078125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":8,"provider":"original","width_1000em":261.71875,"text_space_advance":3.140625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":9,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":11,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":12,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":13,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":20,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":21,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":22,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":23,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":24,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              23.850000381469727,
+              98.13759781513363,
+              66.5
+            ],
+            [
+              23.850000381469727,
+              83.60999493598938,
+              81.05999755859375
+            ]
+          ],
+          "prototype": {
+            "bytes": 168,
+            "sha256": "58a9f59de6a9280a8a5df14c90c696def4425a704da76da39052ad524b108b07",
+            "operators": 14,
+            "body": "q\n20 198.700001 m\n109.50313 198.700001 l\n109.50313 198.000004 l\n20 198.000004 l\nh\nf\n20 182.700004 m\n91.999994 182.700004 l\n91.999994 182.000007 l\n20 182.000007 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.700001"
+                ],
+                [
+                  "109.50313",
+                  "198.700001"
+                ],
+                [
+                  "109.50313",
+                  "198.000004"
+                ],
+                [
+                  "20",
+                  "198.000004"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.000007"
+                ],
+                [
+                  "20",
+                  "182.000007"
+                ]
+              ]
+            ]
+          }
+        },
+        "change": {
+          "text": "ONE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "a2e9d2d1b69a482362635ae8e4cf9054f3a8db58a609c6390b3bd5e80efcf44c",
+          "line_allocation_sha256": "03a2e20e0eb066610e5dac916e23e0b91618b24ad2d874777ecd965c781769e0",
+          "style_ids_sha256": "f0ba51add376d7f02e683eac35adc2de74975f282464e9473d2f3b268a7b7a6a",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[23.850000381469727,66.5],"advance":5.97599983215332,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[29.826000213623047,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[35.802001953125,66.5],"advance":5.9759979248046875,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.77799987792969,66.5],"advance":5.975999879837036,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"S","start":4,"end":5,"origin":[47.75399975776672,66.5],"advance":5.174537658691406,"style_id":"s1","size":10.919997453689575,"provider":"original"},
+          {"unicode":"E","start":5,"end":6,"origin":[52.92853741645813,66.5],"advance":5.252342224121094,"style_id":"s1","size":10.919997453689575,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[58.18087964057922,66.5],"advance":5.6414031982421875,"style_id":"s1","size":10.919997453689575,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[63.82228283882141,66.5],"advance":5.252349853515625,"style_id":"s1","size":10.919997453689575,"provider":"original"},
+          {"unicode":"N","start":8,"end":9,"origin":[69.07463269233703,66.5],"advance":7.27546860370785,"style_id":"s1","size":10.919997453689575,"provider":"original"},
+          {"unicode":"T","start":10,"end":11,"origin":[23.850000381469727,81.05999755859375],"advance":5.97599983215332,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"H","start":11,"end":12,"origin":[29.826000213623047,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"R","start":12,"end":13,"origin":[35.802001953125,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"E","start":13,"end":14,"origin":[41.77799987792969,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"E","start":14,"end":15,"origin":[47.75400161743164,81.05999755859375],"advance":5.976005554199219,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":" ","start":15,"end":16,"origin":[53.73000717163086,81.05999755859375],"advance":5.975994110107422,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"F","start":16,"end":17,"origin":[59.70600128173828,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"O","start":17,"end":18,"origin":[65.68199920654297,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"U","start":18,"end":19,"origin":[71.65799713134766,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919997453689575,"provider":"original"},
+          {"unicode":"R","start":19,"end":20,"origin":[77.63399505615234,81.05999755859375],"advance":5.975999879837036,"style_id":"s0","size":10.919997453689575,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 9,
+              "x": 23.850000381469727,
+              "baseline": 66.5,
+              "width": 52.50010091457516
+            },
+            {
+              "start": 10,
+              "end": 20,
+              "x": 23.850000381469727,
+              "baseline": 81.05999755859375,
+              "width": 59.75999455451965
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":10.919997453689575,"horizontal_scale":0.9120881064274584,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":6},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":10.919997453689575,"horizontal_scale":0.9120881064274584,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":8}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":8,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":11,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":12,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":13,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":14,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              23.850000381469727,
+              76.35010129604488,
+              66.5
+            ],
+            [
+              23.850000381469727,
+              83.60999493598938,
+              81.05999755859375
+            ]
+          ],
+          "prototype": {
+            "bytes": 168,
+            "sha256": "737c8963902ff266ced92bf165aaede4b2b06788fd4b6ea10f1acbdc0963683f",
+            "operators": 14,
+            "body": "q\n20 198.700001 m\n83.253134 198.700001 l\n83.253134 198.000004 l\n20 198.000004 l\nh\nf\n20 182.700004 m\n91.999994 182.700004 l\n91.999994 182.000007 l\n20 182.000007 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.700001"
+                ],
+                [
+                  "83.253134",
+                  "198.700001"
+                ],
+                [
+                  "83.253134",
+                  "198.000004"
+                ],
+                [
+                  "20",
+                  "198.000004"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.000007"
+                ],
+                [
+                  "20",
+                  "182.000007"
+                ]
+              ]
+            ]
+          }
+        },
+        "change_noop": {
+          "text": "ONE SEVEN THREE FOUR",
+          "glyph_geometry_sha256": "415cf60a7165ec46bafd04d6c96ee2244380a0202817464255227fd46480bcd6",
+          "line_allocation_sha256": "03a2e20e0eb066610e5dac916e23e0b91618b24ad2d874777ecd965c781769e0",
+          "style_ids_sha256": "f0ba51add376d7f02e683eac35adc2de74975f282464e9473d2f3b268a7b7a6a",
+          "glyphs": [
+          {"unicode":"O","start":0,"end":1,"origin":[23.850000381469727,66.5],"advance":5.97599983215332,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"N","start":1,"end":2,"origin":[29.826000213623047,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"E","start":2,"end":3,"origin":[35.802001953125,66.5],"advance":5.9759979248046875,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":" ","start":3,"end":4,"origin":[41.77799987792969,66.5],"advance":5.976001739501953,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"S","start":4,"end":5,"origin":[47.75400161743164,66.5],"advance":5.174537658691406,"style_id":"s1","size":10.919996738433838,"provider":"original"},
+          {"unicode":"E","start":5,"end":6,"origin":[52.92853927612305,66.5],"advance":5.252342224121094,"style_id":"s1","size":10.919996738433838,"provider":"original"},
+          {"unicode":"V","start":6,"end":7,"origin":[58.18088150024414,66.5],"advance":5.641407012939453,"style_id":"s1","size":10.919996738433838,"provider":"original"},
+          {"unicode":"E","start":7,"end":8,"origin":[63.822288513183594,66.5],"advance":5.252342224121094,"style_id":"s1","size":10.919996738433838,"provider":"original"},
+          {"unicode":"N","start":8,"end":9,"origin":[69.07463073730469,66.5],"advance":7.27546860370785,"style_id":"s1","size":10.919996738433838,"provider":"original"},
+          {"unicode":"T","start":10,"end":11,"origin":[23.850000381469727,81.05999755859375],"advance":5.97599983215332,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"H","start":11,"end":12,"origin":[29.826000213623047,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"R","start":12,"end":13,"origin":[35.802001953125,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"E","start":13,"end":14,"origin":[41.77799987792969,81.05999755859375],"advance":5.976001739501953,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"E","start":14,"end":15,"origin":[47.75400161743164,81.05999755859375],"advance":5.976005554199219,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":" ","start":15,"end":16,"origin":[53.73000717163086,81.05999755859375],"advance":5.975994110107422,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"F","start":16,"end":17,"origin":[59.70600128173828,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"O","start":17,"end":18,"origin":[65.68199920654297,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"U","start":18,"end":19,"origin":[71.65799713134766,81.05999755859375],"advance":5.9759979248046875,"style_id":"s0","size":10.919996738433838,"provider":"original"},
+          {"unicode":"R","start":19,"end":20,"origin":[77.63399505615234,81.05999755859375],"advance":5.975999879837036,"style_id":"s0","size":10.919996738433838,"provider":"original"}
+        ],
+          "lines": [
+            {
+              "start": 0,
+              "end": 9,
+              "x": 23.850000381469727,
+              "baseline": 66.5,
+              "width": 52.50009895954281
+            },
+            {
+              "start": 10,
+              "end": 20,
+              "x": 23.850000381469727,
+              "baseline": 81.05999755859375,
+              "width": 59.75999455451965
+            }
+          ],
+          "styles": [
+          {"id":"s0","font_resource":"/Regular","font_name":"Courier","font_size":10.919996738433838,"horizontal_scale":0.9120881661688913,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":6},
+          {"id":"s1","font_resource":"/PRF1","font_name":"ProvidedFont","font_size":10.919996738433838,"horizontal_scale":0.9120881661688913,"tracking":0.0,"tracking_provenance":"observed_source","baseline_shift":-0.0,"baseline_shift_provenance":"observed_source","fill":["g",["0"]],"observed_color":[0.0,0.0,0.0],"font_xref":8}
+        ],
+          "source_font_metrics": [
+          {"start":0,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":1,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":2,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":3,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":4,"provider":"original","width_1000em":519.53125,"text_space_advance":6.234375,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":5,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":6,"provider":"original","width_1000em":566.40625,"text_space_advance":6.796875,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":7,"provider":"original","width_1000em":527.34375,"text_space_advance":6.328125,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":8,"provider":"original","width_1000em":730.46875,"text_space_advance":8.765625,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/PRF1"},
+          {"start":10,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":11,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":12,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":13,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":14,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":15,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":16,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":17,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":18,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"},
+          {"start":19,"provider":"original","width_1000em":600.0,"text_space_advance":7.199999999999999,"Tf":12.0,"Tz":100.0,"Tc":0.0,"Ts":0.0,"font_resource":"/Regular"}
+        ],
+          "alignment": {
+            "value": "left",
+            "provenance": "generated_layout_policy"
+          },
+          "planned_segments": [
+            [
+              23.850000381469727,
+              76.35009934101254,
+              66.5
+            ],
+            [
+              23.850000381469727,
+              83.60999493598938,
+              81.05999755859375
+            ]
+          ],
+          "prototype": {
+            "bytes": 168,
+            "sha256": "fe3537d022f49b5f748b39737c12a15450876512a2ff0263effc3f565a8d8911",
+            "operators": 14,
+            "body": "q\n20 198.700001 m\n83.253132 198.700001 l\n83.253132 198.000004 l\n20 198.000004 l\nh\nf\n20 182.700004 m\n91.999994 182.700004 l\n91.999994 182.000007 l\n20 182.000007 l\nh\nf\nQ\n",
+            "segment_coordinates": [
+              [
+                [
+                  "20",
+                  "198.700001"
+                ],
+                [
+                  "83.253132",
+                  "198.700001"
+                ],
+                [
+                  "83.253132",
+                  "198.000004"
+                ],
+                [
+                  "20",
+                  "198.000004"
+                ]
+              ],
+              [
+                [
+                  "20",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.700004"
+                ],
+                [
+                  "91.999994",
+                  "182.000007"
+                ],
+                [
+                  "20",
+                  "182.000007"
+                ]
+              ]
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "first->noop1": {
+          "glyph_geometry_exact": false,
+          "max_origin_delta": 5.320459607105477e-06,
+          "max_advance_delta": 6.51273876517422e-06,
+          "changed_advances": 13,
+          "line_allocation_exact": true,
+          "style_ids_exact": false,
+          "prototype_body_exact": false,
+          "renderer": {
+            "dpi": 144,
+            "pages": {
+              "1": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              },
+              "2": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              }
+            },
+            "passed": true
+          }
+        },
+        "noop1->noop2": {
+          "glyph_geometry_exact": true,
+          "max_origin_delta": 0.0,
+          "max_advance_delta": 0.0,
+          "changed_advances": 0,
+          "line_allocation_exact": true,
+          "style_ids_exact": true,
+          "prototype_body_exact": true,
+          "renderer": {
+            "dpi": 144,
+            "pages": {
+              "1": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              },
+              "2": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              }
+            },
+            "passed": true
+          }
+        },
+        "noop2->noop3": {
+          "glyph_geometry_exact": true,
+          "max_origin_delta": 0.0,
+          "max_advance_delta": 0.0,
+          "changed_advances": 0,
+          "line_allocation_exact": true,
+          "style_ids_exact": true,
+          "prototype_body_exact": true,
+          "renderer": {
+            "dpi": 144,
+            "pages": {
+              "1": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              },
+              "2": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              }
+            },
+            "passed": true
+          }
+        },
+        "change->change_noop": {
+          "glyph_geometry_exact": false,
+          "max_origin_delta": 5.6743621854593584e-06,
+          "max_advance_delta": 7.62939453125e-06,
+          "changed_advances": 3,
+          "line_allocation_exact": true,
+          "style_ids_exact": true,
+          "prototype_body_exact": false,
+          "renderer": {
+            "dpi": 144,
+            "pages": {
+              "1": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              },
+              "2": {
+                "mupdf_equal": true,
+                "poppler_changed_pixels": 0,
+                "poppler_size_changed": false
+              }
+            },
+            "passed": true
+          }
+        }
+      }
+    }
+  },
+  "sidecars": {
+    "B_before": "restored",
+    "B_after_A": "needs_confirmation",
+    "reason": "PDF revision differs from the editable model",
+    "hash_only_refresh": "needs_confirmation",
+    "hash_only_reason": "selection source SHA-256 does not match",
+    "A_after_A": "restored",
+    "narrow_sequence": [
+      [
+        "confirm A",
+        "valid"
+      ],
+      [
+        "confirm B owned",
+        "refuse: DOCUMENT_OWNER_INVENTORY_MISMATCH"
+      ],
+      [
+        "edit A",
+        "valid"
+      ],
+      [
+        "reopen B legacy",
+        "refuse: STALE_OWNER_MODEL"
+      ],
+      [
+        "edit B owned",
+        "refuse: DOCUMENT_OWNER_INVENTORY_MISMATCH"
+      ],
+      [
+        "reopen A",
+        "valid"
+      ],
+      [
+        "edit A",
+        "valid"
+      ]
+    ],
+    "B_edit_refusal": "semantic re-edit requires confirmation: PDF revision differs from the editable model",
+    "B_published": false,
+    "A_second_edit": "restored"
+  },
+  "verdict": "NOT READY",
+  "boundaries": {
+    "plain": {
+      "eligible_for_further_proof": true,
+      "reasons": [],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 0,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "before_terminal_pending_path": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "PENDING_PATH"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 0,
+      "pending_path": true,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "q_line_state": {
+      "eligible_for_further_proof": true,
+      "reasons": [],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {
+        "w": "[2]",
+        "d": "[[3, 2], 1]",
+        "J": "[1]",
+        "j": "[2]",
+        "M": "[8]"
+      },
+      "q_depth": 1,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "scale": {
+      "eligible_for_further_proof": true,
+      "reasons": [],
+      "exact_ctm": [
+        "83/100",
+        "0",
+        "0",
+        "91/100",
+        "29/4",
+        "23/2"
+      ],
+      "interpreter_ctm": [
+        0.8299999833106995,
+        0.0,
+        0.0,
+        0.9100000262260437,
+        7.25,
+        11.5
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 1,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "rectangle_clip": {
+      "eligible_for_further_proof": true,
+      "reasons": [],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 1,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 1,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "before_clip_consume": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "PENDING_PATH",
+        "PENDING_CLIP"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 1,
+      "pending_path": true,
+      "pending_clip": true,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          0
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "compound_clip": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "UNSUPPORTED_CLIP"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 1,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 1,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "curve_clip": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "UNSUPPORTED_CLIP"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 1,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 1,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "marked": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "MARKED_CONTENT"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 0,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "compatibility": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "COMPATIBILITY"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 0,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "extgstate": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "INHERITED_EXTGSTATE"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1.0,
+      "other": {
+        "ExtGState:/Test": {
+          "/ca": 1,
+          "/CA": 1,
+          "/BM": "/Multiply"
+        }
+      },
+      "q_depth": 0,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "page_group": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "PAGE_GROUP"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 0,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "default_color": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "DEFAULT_COLORSPACE_OVERRIDE"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 0,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          "0"
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    },
+    "text_object": {
+      "eligible_for_further_proof": false,
+      "reasons": [
+        "TEXT_OBJECT"
+      ],
+      "exact_ctm": [
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0"
+      ],
+      "interpreter_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "opacity": 1,
+      "other": {},
+      "q_depth": 0,
+      "pending_path": false,
+      "pending_clip": false,
+      "clip_count": 0,
+      "fill": [
+        "g",
+        [
+          0
+        ]
+      ],
+      "note": "Boundary evidence only; does not prove containment, authorship, clip ink bounds or ownership"
+    }
+  },
+  "state_model": {
+    "owned": "OWNED_BY_CURRENT",
+    "no_owner": "NO_PAINT_OWNER",
+    "active_identity_unchanged": true,
+    "termination": {
+      "effect": "delete_complete_block_and_record",
+      "range": [
+        100,
+        200
+      ]
+    },
+    "groups_after_termination": {},
+    "new_creation_identity_differs": true,
+    "refusals": {
+      "unknown_other_owner": "DOCUMENT_OWNER_INVENTORY_MISMATCH",
+      "marker_without_record": "DOCUMENT_OWNER_INVENTORY_MISMATCH",
+      "lost_sidecar": "DOCUMENT_OWNER_INVENTORY_MISMATCH",
+      "stale_sidecar": "STALE_OWNER_MODEL",
+      "duplicate_marker": "INVALID_COLLIDING",
+      "missing_marker": "DOCUMENT_OWNER_INVENTORY_MISMATCH",
+      "old_identity_revival": "REVIVAL_UNSUPPORTED",
+      "full_empty": "FULL_EMPTY_REFUSED",
+      "unproven_termination": "OWNERSHIP_UNPROVEN"
+    },
+    "premise": "Input block authenticity/complete range/containment verified before transition; model does not verify PDFs"
+  }
+}

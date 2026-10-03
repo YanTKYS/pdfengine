@@ -540,3 +540,470 @@ focused: `tests/test_paint_ownership_observation.py`、`tests/test_anchors.py`�
 runtime実装ではなく、B1–B4を閉じるdesign/evidence PR。B1のbyte固定点evidence（identity/scale CTM、
 change/regrow）、B2のrevival request形とdormant planner責務、B3の案A境界・context証明、
 B4のinventory scopeと複数sidecar fixtureを含める。dormantを持たない狭いv1を選ぶ場合はその理由とB2/B3の扱いを記す。
+
+## 15. B1–B4 design gates — 2026-10-04
+
+Base: `fdba3dcb44b0fe4010a3ea1fc986b3aac83da2e6`、PR #35 merge確認後のmain。
+§1–14、PR #35 evaluator/summary、Opusレビューは変更していない。
+
+**Chosen scope: NARROW V1。最終判定: NOT READY。** B2/B3のdormant機能は契約から明示除外し、
+B4はPDF document全体で1つの独立paint ownerに限定して閉じる。B1ではpaint feedbackを切った後も
+**current planned glyph advance自体がfirst/change後のreopenで変わる**ことを実測した。
+これを新blocker **B1-L（planned layout authority）**とする。画素差0や小さな誤差をもってREADYにはしない。
+次PRはpaint runtime実装ではなく、B1-Lだけを対象とするlayout authority設計・evidenceが最小scopeである。
+
+[新evaluator](../evaluations/anchors/paint_contract.py)、[pure formatter](../evaluations/anchors/canonical_geometry.py)、
+[read-only boundary分析](../evaluations/anchors/paint_boundary_analysis.py)、
+[新summary](../evaluations/anchors/paint-contract-summary.json)を参照。
+prototypeはPDF/markerを生成・挿入しない。pure policy modelの`validated=True`は外部で完全証明済みという
+**前提**であり、ownership verifierの代用品ではない。renderer結果も現行runtimeで保存したPDFの結果である。
+
+### 15.1 FULLとNARROW V1の選択
+
+| scope | 得られる機能 | 必要な追加authority | 結論 |
+|---|---|---|---|
+| FULL | active/dormant/explicit revival、独立した複数owner | zero-paint template、collapsed ranges、same-caret識別、revival request、全sidecar協調/rebase | 現行APIの範囲を大きく拡張。v1には採用しない |
+| NARROW V1 | active underlineのbounded rewrite、group終了 | 完全なactive block所有、終了のatomicなrecord削除、単一owner inventory | **採用**。現在のempty拒否とgroup消失semanticsに近く、機能追加を抑える |
+
+NARROW V1の規範:
+
+- 1 anchor group＝1 independent active paint island。複数group/複数line segmentsは同じparagraph owner内で許可。
+- PDF document全体で**1 independently managed paint-owning editable**。page単位だけの制限では不十分（§15.5）。
+- 全paragraph emptyは現在と同じく拒否する。nonempty rangeだがvisible segmentゼロも拒否し、
+  whitespace-onlyをdormantやownership終了へ暗黙変換しない。
+- `project_range`がNoneになるgroupだけは、検証済み**complete block（marker pair含む）**とrecordを同transactionで終了。
+- dormant state/body/recipe retention/automatic revival/explicit revivalは全て**非対応**。
+  `q Q`は許可bodyではない。revival requestはunknown optionとして明示拒否する。
+- 文字を再挿入しても装飾は戻らない。新underlineを扱うなら、別途明示確認できる現在のsource underlineから
+  **新creation**を開始する。任意のunderlineを描く新APIも追加しない。終了したanchor IDをcallerが指定して再利用できない。
+- 旧nonpainting residue、source construction、source wrapper、fixed/foreign paintは終了時にも触らない。
+
+FULLのstate machine/API案を併記して実装者に選択させない。§6–8のdormant案は歴史的候補であり、
+この節のNARROW V1仕様を次のscopeとする。ただしB1-Lが閉じるまで実装着手を勧めない。
+
+### 15.2 B1: paint feedbackを切った実験と新blocker
+
+現行の二つのloopを区別する。
+
+1. paint: current rendered path → MuPDF float32 bounds/matrix → `_candidates` → median offset/thickness
+   → layout baseline → `_rect_commands` → `_local_translation` → `number()` → current rendered path。
+2. text/layout: planned positions/advances → PDF text output → MuPDF trace → retained glyphsのadjacent origin差
+   → 次の`ParagraphShaper.shape()`/layout。line末尾・新旧provider境界では別のadvance式を使う。
+
+prototypeは1を切り、初回group recipeを固定して、各revisionの**その時点のglyph plan**からrectangleを作る。
+current underline bounds、旧generated rectangle、path source IDをformatterの入力にしない。
+glyph planから行ごとにrangeと交差するglyphを取り、境界whitespaceを除き、
+`left = first.origin.x`、`right = last.origin.x + last.advance`、`baseline = line.baseline`を得る。
+このfixtureはrise/shape x-offset=0。将来runtimeはreportから復元せず、既存plannerと同じ
+`PlacedGlyph.x/advance`とline baselineを直接使い、riseやshaper offsetをunderline位置へ重複加算しない。
+
+| 入力authority | 現行code path / 注意 |
+|---|---|
+| line allocation | `layout_attributed`が測ったadvancesとavailable width、alignmentで決定。今回の全comparisonでは一致 |
+| glyph origin / advance | `ParagraphShaper.shape`→layout→paragraph glyph_plan。**下表のとおり完全一致しない** |
+| font metrics | retainedは`FontCodec`のWidths/W等と`PaintChar.advance`、場合によりadjacent trace差へ置換。new providerはshaped-font metrics |
+| font size / Tz | `SourceParagraph`はstate.size、text×CTM matrix、state.tzからstyle size/horizontal_scaleを算出 |
+| rise | style baseline_shift、placed glyph offset。underlineはline baselineを基準にしてriseを足さない |
+| alignment | この実験はleft。non-leftのnominal width/tracking経路は別なので同じ結論と決め付けない |
+| page coordinates | layout x/baseline/advancesはunrotated page coordinates。保存local座標やtemplate device matrixをauthorityにしない |
+
+同じsemantic textを保つ隣接save間で、glyph intervalsごとにorigin/advanceのraw JSON値を比較した。
+firstは`TWO`→`FIVE SEVEN`、changeは`FIVE `削除。identity/scaleの両方で同じ編集を行った。
+
+| case / comparison | max origin delta (pt) | max advance delta (pt) | changed advances | line allocation | prototype bytes equal |
+|---|---:|---:|---:|---|---|
+| identity first→noop1 | 0.000003051758 | 0.000003814697 | 5 | equal | **no** |
+| identity noop1→noop2→noop3 | 0 | 0 | 0 | equal | yes |
+| identity change→change-noop | 0.000002288818 | 0.000003814697 | 4 | equal | **no** |
+| scale first→noop1 | 0.000005320460 | 0.000006512739 | 13 | equal | **no** |
+| scale noop1→noop2→noop3 | 0 | 0 | 0 | equal | yes |
+| scale change→change-noop | 0.000005674362 | 0.000007629395 | 3 | equal | **no** |
+
+first→noop1のstyle IDsは両fixtureで変わる。`_bind_paragraph`がretained resourceとnew fontの混在を
+output physical stylesへsplitするためであり、IDのrenaming自体をfont意味の変更とは主張しない。
+noop1–3/change→noopではstyle ID列は一致している。それでもchange→noopのgeometryは一致しない。
+
+特にidentity fixtureのUnicode offset 3のspaceは、first/noop1ともCourier width=600、Tf=12、Tz=100、
+Tc=Ts=0、`PaintChar.advance=7.199999999999999`で一致する。一方、**planned advance**は
+`7.199999999999999`→`7.200000762939453`となる。
+`ParagraphShaper.shape`のleft alignment分岐で「次unitも同じsource lineの連続retained glyph」なら
+`following.observation.origin.x - observation.origin.x`を使うためである。
+firstでは次のFがnew provider、reopen後は両方retainedになり、計算経路が変わる。
+delete/reflowでもline adjacencyと末尾扱いが変わる。同じlogical/style/font inputから計画値を安定に得る契約がまだない。
+
+#### Numeric prototypeの固定した規則
+
+- recipeはcreation時に一度だけoffset/thicknessを **1e-6 pt、round-half-even**へ量子化し、
+  canonical decimal stringとして固定する。正のthickness、finiteのみ、absolute value≤1e9、negative zeroなし、
+  指数表記なし、locale/save回数非依存。fill ruleは`nonzero`/`evenodd`。
+- current planned coordinatesはround-trip decimal spellingでexact rationalへ変換する。
+  **layoutそのものをgridへsnapして差を隠さない**。全source-decimal CTM計算はrationalのまま行う。
+- local vertex出力時だけ1e-6 local unitへhalf-even量子化する。quotient/remainderによるexact rational roundingを使い、
+  Decimal精度設定によるdouble roundingも避ける。量子化でwidth/heightが0になるrectは拒否する。
+- これは狭い実験規則。任意のinput driftを吸収できる保証ではなく、B1-Lを解決する代わりにはならない。
+  gridを粗くして既知fixtureを一致させても、half-grid境界やline-wrap境界では保証にならない。
+
+同じrecipe＋同じplanned rows＋同じexact contextはfresh processでもexact same bytes。
+しかし実際のreopen入力を使ったgateは以下の結果である（full SHA/body/coordsは新summary）。
+
+| prototype | first | noop1 / noop2 / noop3 | change | change-noop | ops |
+|---|---:|---:|---:|---:|---:|
+| identity | 208 bytes, `faa375f5…` | 208, `e3d99b63…` | 138, `d822899e…` | 140, `bab30ecf…` | 20 active / 14 after change |
+| scale+translation | 170, `c25094b4…` | 168, `58a9f59d…` | 168, `737c8963…` | 168, `fe3537d0…` | 14 |
+
+8 comparisons×2 pagesは**現行runtime PDF**のMuPDF/Poppler 144 dpi差0。prototype bytesはPDFへ挿入しておらず、
+prototype renderer equalityを実証したとは言わない。0.002ptはglyph/render accuracy用であり、byte一致判定には一切使わない。
+
+### 15.3 CTMとpaint context
+
+`ContentPage.state.ctm`はsource decimalを完全保持していない。
+`content_stream.multiply()`は`pymupdf.Matrix`を使用するため、実測Mは
+`[0.8299999833106995,0,0,0.9100000262260437,7.25,11.5]`だった。
+PR #19で導入された`continuation.source_ctms()`は既存operator parserが示したcm spanから元のdecimal tokenを読み、
+q/Q stackをrationalで合成する。実測Sは`[83/100,0,0,91/100,29/4,23/2]`。
+paint prototypeは**Sを使用**し、MやMuPDF paint template matrixを逆変換authorityにしない。
+
+v1はrotation=0、UserUnit=1、MediaBox原点0、CropBox=MediaBox、positive axis-aligned Sのみに限定する。
+page高さH、S=(a,0,0,d,e,f)なら、page point (x,y)のlocal座標は
+`((x-e)/a, (H-y-f)/d)`。source decimal→rational合成→rational inverse→local decimal量子化を一回だけ行う。
+shear/rotation/reflection/singular/不明なcm spellingは拒否する。
+将来のruntime gateはSによる結果と実renderer Mによる結果の差も既存PR #19相当の0.002pt accuracy boundで検証する。
+このaccuracy gateをcanonicality gateと統合してはならない。
+
+paint用contextはtext source-outputの全Stateをコピーしない。以下を規範とする。
+
+| 分類 | fields / 規則 |
+|---|---|
+| MUST MATCH | exact source-decimal CTM S、page frame、clip authority（0または1つ）、device fill operator/components、rendering intent evidence、q depth |
+| MUST BE DEFAULT / absent | opacity=stroke opacity=1、active ExtGState evidenceなし、page `/Group`なし、DefaultGray/RGB/CMYK overrideなし |
+| MUST BE SAFE | pending path=false、pending clip=false、text object=false、marked depth=compatibility depth=0、parser/nesting errorsなし |
+| IGNORED in entry digest, must be preserved by execution | stroke color、line width/dash/cap/join/miter、flatness。bodyはstraight fill-onlyなので描画意味に使わず、state operatorを出さないq/Q bodyは値を変えない |
+| IGNORED text-only | font resource/xref、Tf/Tz/Tc/Tw/TL/Ts/Tr、text/line matrices。bodyにtextがなく、paragraph planner/font verificationは別authority。textをpaint contextへ混ぜない |
+| locator only | content xref、physical stream index、byte offsets、clip `at`。source operatorを特定してexact semanticsを読むために使い、context identityには入れない |
+
+fill color/opacityのauthorityは**entry context**。recipeには重複保存しない。
+black .7とblue .9は別group/entry fill＋別recipe thicknessとして保持する。
+fill ruleだけはrecipeで決まり、canonical creation時から`f`または`f*`を出す。source `F`はcreation時に`f`へ正規化し、
+owned grammarには`F`を許可しない。owned bodyにFが入っていればcanonical grammar mismatchで拒否する。
+
+ExtGStateは`State.opacity==1`だけでは安全といえない。`ContentPage._walk`が`gs`処理時に
+`other['ExtGState:<name>']=state_object(resource)`を保存し、ca/CA以外もresource evidenceとして残す。
+今回`ca=CA=1, BM=Multiply` fixtureはopacity=1のままだが、active ExtGState evidenceで拒否できた。
+entryに1つでもExtGState evidenceがあればv1は全拒否。page `/Group`とdefault color-space overrideはState外なので、
+`content.pdf_page`/Resourcesを直接検査する。未知operator/parser errorを見なかったことにして進めない。
+
+clipは0または1つのproven source rectangular path clipのみ。rule W/W*、single re、positive axis-aligned clip CTM、
+finite operands、source clip correspondenceを検証する。既存PR #19 clip proofと`_check_clip/contains_fill`で、
+paragraph inkと各生成rectangleがclip内であることを確認する。compound/curve/text clipは拒否。
+island内ではclipを書かない。read-only analyzerの`eligible_for_further_proof`はこの包含証明や所有権まで行う値ではない。
+
+boundary fixtureはplain/q-line-state/scale/single-rectangle clipの4正例と、pending path、pending clip、compound/curve clip、
+marked、compatibility、text object、active ExtGState、page group、default-color overrideの10負例。
+これらは本PRのsource fixtureを読むだけで、future marker parserを先行実装していない。
+
+### 15.4 B2/B3: active ownership終了の契約
+
+active→activeは同じmarker pair内のbodyを置換する。所有単位も初回位置も変えない。
+初回は既存counterfactual guardに従ってconfirmed source terminalだけを`n`へ消費し、
+group最初のterminal位置に新blockを出す。他source terminalも既存どおり`n`へ消費する。
+source construction/wrapperはblock外のまま。paragraph末尾/page entryへ集約しないため既存のpaint placementを保つ。
+
+active→terminatedは、編集前のvalid owned recordから**complete block range**を証明してから削除する。
+blockの定義はwriterが新規に所有した開始newline、begin line、body、end lineと終端newlineまで。
+既存source whitespaceをrangeへ拡張しない。active rewriteはbodyだけ、terminationはcomplete blockを消費する。
+両方式とも事前に同じprogram/block hash、marker identity、entry/exit、grammar、segment全単射、foreign不在を検証する。
+
+削除前bodyはpath-free entry→全pathをfillでconsume→path-free exit、entry=exit graphics state。
+したがってbodyとcomment pair全体を除いたときもsource suffixには同じstateが渡る。
+**q/Qがpathを復元するから安全なのではない**。入出力pathが空で、body内に他path/stateの作用がないことが必要。
+initial source `n`、他group、fixed paint、過去の非描画residueはcomplete block外なので保持する。
+
+同じTransactionでrecord/underlines entryを削除し、final rebindで消えたmarker/segmentsが0であることを検査する。
+他groupは再bindする。最後のgroup終了時はpaint owner recordも終了し、空groupの所有権を残さない。
+current paragraph/text/editable modelは通常のsemantic stateとして残る。
+全paragraph emptyはこの遷移より先に拒否する。削除要求でpartial成功を公開しない。
+
+純粋modelではvalid ownershipを前提に、complete owned bytesだけの除去、record同時終了、元state非変更、
+未証明削除拒否、全empty拒否、old-ID revival拒否を検査した。
+B2のzero-paint plannerとB3のdormant location authorityは「後で実装」ではなく、**NARROW V1の非機能**とする。
+
+### 15.5 B4: single independently managed owner per PDF
+
+`open_editable`はparagraph pageではなく**PDF file全体のSHA**を照合する。
+また`inspect_element`はpage全pathを含み、各path IDもPDF SHA/program/range由来。
+他ownerのmarkerをprotected-otherとして無視するだけでは、Bのparagraph selectionやpage-global element snapshotを更新できない。
+
+| B4案 | current-only安全性 / 運用負担 | 採否 |
+|---|---|---|
+| document/page manifest | 全ownersを1 revisionへsealできる。document schema、public coordination API、publication単位の変更が必要 | v1では不採用 |
+| all sidecars coordinated | `plan_document_edit`＋1 Transaction＋全bindで現在も同時更新の基盤はある。callerは毎回siblings全件が必要、欠落検出registryも必要 | 独立ordinary APIとは別product contract。v1では不採用 |
+| scoped inventory＋safe rebase | 他markerの非干渉だけではtext/fixed relationsの古いID、font/resource、global snapshotのrefreshを証明できない | historyなしの新semantic matching authorityを増やすため不採用 |
+| 1 owner/page | 同page問題を避けても、別pageのsaveで全PDF SHAが変わり他modelがstaleになる | 不十分 |
+| **1 owner/PDF document** | all paint-domain inventoryが1 current modelに収まる。独立ownerの交互編集を明示的に禁止できる | **採用**。最小の安全制限 |
+
+実測current-runtime fixtureはA/Bを同じPDFへ同時bindした後、Aだけno-op saveした。
+B reopenは`needs_confirmation: PDF revision differs from the editable model`。
+BのPDF hashだけを書き換えて再sealしても`selection source SHA-256 does not match`。
+古いBによるeditも未公開で拒否、current Aはreopen/再saveできた。
+これはsafe rebaseが数学的に不可能という証明ではない。現在のAPIに必要なauthorityがないというcode/evidenceであり、
+markerだけからcurrent B textの一意対応・保持されたmeaning・fixed relationを再構築する方式は設計していない。
+
+NARROWのnormative sequence:
+
+| stage | 結果 |
+|---|---|
+| confirm A/B as ordinary legacy observations | 許可。両方をpaint-owningとして登録することは不可 |
+| explicitly create owned A | documentにpaint-domain blockがなく、current Aが完全検証できれば許可 |
+| create owned B while A exists | **DOCUMENT_OWNER_INVENTORY_MISMATCH**、planning前拒否 |
+| edit A | current A＋全paint inventory一致なら許可 |
+| reopen old B | **STALE_OWNER_MODEL**。他者保存で古い意味を使うことをpolicyとして拒否 |
+| edit B / fresh owned confirm B | old Bではstale拒否、freshでもA blockがunclaimedなのでowned creation拒否 |
+| reopen current A → edit A | 許可。拒否したB operationはPDFを変えない |
+
+これはchecksumエラーに偶然依存するpolicyではない。owned entry pointは所有者数/inventory/whole-PDF revisionを
+**API contractのpreflight**として検証し、上記named refusalで止める。
+legacy ordinary編集は従来のrevision-bound挙動を維持するため、別のlegacy/external APIでPDFを書き換えること自体を
+全世界的に禁止できるとは主張しない。その場合current owned modelがstaleになり、owned editingを再開できない。
+operational consequenceは明示的であり、暗黙rebase/fallback/cleanupで「回復」しない。
+callerが独立ownersの交互保存を必要とするならcoordinated document modelを別scopeとして設計する。
+
+#### Inventory / reconfirmation
+
+paint-domain inventoryはdocument全pageのmerged top-level programsを既存operator lexerで走査する。
+完全なstandalone paint comment lineのみ認識し、string等の内部を検索しない。
+inline image等で完全inventoryを得られなければowned modeを拒否する。
+Form内markerはv1のcreation先にならず、top-level paint authorityとしてclaimできない。
+domainは`pdfengine-paint-v1`。source-slot/continuationのmarkerはinventory collisionに数えないが、
+そのbyte rangesやauthorityへoverlapするmutationは禁止する。
+
+| current situation | classification / policy |
+|---|---|
+| current valid record＋inventoryが完全一致 | OWNED BY CURRENT。各groupを個別に再証明して編集 |
+| valid-looking other paint marker | PROTECTED OTHER/UNKNOWNという診断のみ。触らず、single-owner policyによりowned operation全体を拒否 |
+| marker only / completely lost sidecar | FOREIGN/UNKNOWN。auto-claim、fresh ownership adoption、marker cleanup禁止 |
+| stale sidecar | STALE OWNER。semantic refresh/rebase非対応、旧recordを新PDFへ移植しない |
+| duplicate/malformed/overlapping pair | INVALID/COLLIDING。未公開で拒否 |
+| current legacy model、paint markerなし | 従来処理を維持。明示的owned creation開始だけ許可 |
+| legacy model＋unknown paint marker | legacy分析/観測は可、owned promotionは不可。旧権限を再確認したことにしない |
+| other ownership domain only | paint inventoryから除外。現行ordinary `_source_output` guardはそのまま |
+
+### 15.6 Persistent contractとidentity（B1-L以外の推奨固定事項）
+
+new capabilityはfuture editable versionとして導入し、v2を自動昇格しない。
+最小導入surfaceは**current legacy editable modelからの明示owned creation**とする。
+current modelを持たない初回source編集は既存ordinary confirmation/writeを先に行い、
+その後のcurrent confirmed modelをcreation入力にする。raw path/shapeだけの作者推定は行わない。
+この初回source residueは追加の一回限りのものとして許容し、旧bytesの掃除へ拡張しない。
+
+```text
+paint_ownership = {
+  version: 1,
+  owner_created_from_model_sha256: <immutable creation input model SHA>,
+  owner_id: H("pdfengine-paint-owner-v1", logical_element.id, owner_created_from_model_sha256),
+  groups: {
+    <anchor_id>: {
+      created_from: {model_sha256, source_ids: sorted initial IDs, range: initial Unicode range},
+      recipe: {offset: canonical decimal, thickness: canonical decimal, fill_rule},
+      marker_id: H("pdfengine-paint-v1" + NUL + anchor_id),
+      current: {page, block_range, program_sha256, block_sha256, entry_context_sha256}
+    }
+  }
+}
+```
+
+`anchor_id = SHA256(canonical JSON({domain:"pdfengine-anchor-v1", owner:owner_id, kind:"underline",
+model:created_from.model_sha256, source_ids:sorted IDs, range:initial range}))`。
+owner IDのHもUTF-8 sorted-key compact JSON、domain/field名を含める。
+marker IDにはlogical ownerを再度入れず、既にownerを含むanchor IDだけをdomain-separated hashする。
+body/geometry、current source ID successor、save counter、timestamp、random、xref、offsetはidentityの更新入力にしない。
+current Unicode range/affinities/source IDsは`underlines`の対応するanchor_idに一箇所だけ置く。
+kindはv1でunderlineのみ、activeだけなので`state`/`revival`/dormant locatorは不要。
+
+current modelはtrusted editing documentで、checksumは署名ではない。immutable creation seedと正規writerが
+作ったrecordを信頼の起点にし、current marker/hash/grammar/context/containmentで一貫性を再証明する。
+callerが全recordを悪意で偽造・再sealする攻撃まで作者を証明する設計ではない。
+
+group終了後にcallerからold anchor_idを受け取るentry pointは設けない。
+新creationはcurrent confirmation model SHA＋現在の明示source IDs/rangeからIDを作るため、
+終了したgroupのcreation seedは再利用しない。pure modelも別creation revisionでIDが変わることを確認した。
+任意の過去PDF/model pairへのrevision rollbackを、current-onlyでglobal anti-replayできるとは主張しない。
+history配列/tombstone配列は不要。created_fromは1回だけ固定、currentは上書き、終了groupは削除する。
+
+### 15.7 Grammar、current-only verification、atomicity
+
+canonical active bodyはexact formatterによる`q\n (x y m\n x y l\n x y l\n x y l\n h\n fill\n)+ Q\n`。
+fill=`f`または`f*`。`re/c/n/S/B/F/color/cm/gs/clip/text/marked`等、不要operatorは許可しない。
+少なくとも1 segment。operand count、finite/canonical numeric spelling、rect形状、閉path、順序、grammarを検証する。
+allowed operator集合だけの検査で終わらせない。
+
+reopenはcurrent PDF＋current model＋fontsだけで次を一括検証する。
+
+1. whole-PDF revision、model/schema、logical owner identity、creation identity、document-wide inventory。
+2. 各blockのcomplete marker/range/program/block SHA、context、scope、grammar、生成segmentの全単射。
+   current source IDsはcontainment locatorとして使い、次geometryへ還流させない。
+3. 全current group segmentsがbodyに完全包含、全body paintがそのgroupに属すること。
+   fixed source IDs、foreign path/text/style witness、他island authorityが範囲内にないこと。
+4. 上記を全て同じinput revisionで終えてからtext＋paint body rewrite/complete terminationをplanし、1 Transactionへ。
+   intermediate text bytesからpaint所有を再証明しない。
+5. final PDFで全glyph/path/fixed relationsをrebindし、range/hashを更新、終了marker/record不在を検査、model seal/再open。
+   結果全てが検証されるまで公開しない。
+
+entry digestはcreation時の意味を不変量にする一方、program/block/rangeはfinal revisionで更新する。
+text-only stateをdigestに含めないため、textのfont resource追加など無関係な変化でpaint contextを再定義しない。
+source `_source_output`をordinaryへ流用せず、paint ownershipを独立させる。
+既存`write_editable`のtemporary save→bind→seal→pair publicationの構造を使える。
+late failureはtemp内で完結し、2件目link例外も既存のrollbackで自分の1件目だけを除去する。
+OS crash between linksまでのtwo-file atomicityは現行機構にない。
+
+### 15.8 Fail-closed / implementation acceptance matrix
+
+| 条件・test | 要求結果 |
+|---|---|
+| first creation | current legacy confirmation＋paint inventory空、source terminalだけconsume、新blockだけowned |
+| first→noop1/2/3、change→noop | same semantic stateでbody bytes/SHA/operators/segment coords exact equality。**B1-Lにより現在未達** |
+| geometry identity / scale+translation | recipe固定、exact S、planned authority固定点、accuracyとcanonicalityを別gateにする |
+| multiline / multiple groups / styles | groupごと元位置、色はentry、thickness/ruleはrecipe。全segmentsとIDsが全単射 |
+| fixed background / intervening foreign path | 元bytes/paint保持。source constructionもowned blockへ取り込まない |
+| q / line-state / source suffix | path-free entry/exit、同じpaint context、ignored stateにも副作用なし |
+| single rectangle clip | source correspondenceと全generated rect包含。compound/curve/text/unknown clip拒否 |
+| multiple paragraphs same/different page | second independent paint ownerはplanning前のpolicy refusal。stale siblingを自動rebaseしない |
+| fresh-process reopen | current PDF/model/fontsのみ。previous report/PDF/mutation historyなし |
+| full paragraph empty | output pairなしでFULL_EMPTY_REFUSED。partial group終了を先に公開しない |
+| group deletion | complete block＋underlines entry＋group recordの一括終了、foreign gaps/初回residueを保持 |
+| last group deletion | paint owner recordも終了。空body/dormant権限を作らない |
+| reinsert / old revival | text再挿入はundecorated。old ID revival拒否、新確認sourceからのcreationだけ新ID |
+| missing/duplicate/malformed marker、anchor mismatch | 拒否、recordへの自動採用なし |
+| block/program/context tamper | 再sealしたmodelでもsemantic/containment不一致は拒否。自己署名で権限が増えるとしない |
+| foreign segment inside / owned segment outside / fixed ID inside | 双方向containment mismatch、未公開で拒否 |
+| overlapping blocks/mutations | whole-input preflightで拒否、orderで解決しない |
+| unsupported CTM/page/clip/state/ExtGState | finite/positive/explicit scopeを満たさなければ拒否 |
+| stale owner / unknown other marker / lost sidecar | B4 named policy refusal。legacy anchored rewriteへfallbackしない |
+| legacy | 現行behavior維持、explicit creation以後だけowned。旧residue cleanup禁止 |
+| late rollback | temp save後paint rebind失敗、record削除失敗、pair publication失敗で公開pairなし |
+
+paint-only no-op KPI: delta **0 bytes / 0 operators**、新paint residue 0、marker/anchor identity不変。
+全page増分0は要求しない。ordinary text growthを別計上し、page delta=text delta＋paint deltaとして照合する。
+renderer KPI: MuPDF＋available Poppler diff0、fixed/foreign/source suffix保持。
+prototypeの同一入力決定性、current planned inputsの安定性、renderer accuracyの3 gateを相互に代用しない。
+
+### 15.9 残blockerと次PR
+
+| exact unresolved question | safety/canonicalityへの影響 | code path | minimal next evidence |
+|---|---|---|---|
+| **B1-L:** 保存前後でretained/new/line-end間のadvance authorityをどう統一し、同じlogical/style/font/layout入力を固定点にするか | paintがglyphから離れる、line-wrap boundaryが変わる、markerだけ入れてもno-op bodyが変わる。現在のplanを信用してREADYとできない | `ParagraphShaper.shape`のleft adjacent-trace分岐／末尾Tc調整／new shaped provider→`layout_attributed`→text serialization→`_bind_paragraph`→`SourceParagraph` | offset3 spaceの同じ600/12/100 metrics反例をまず解消。identity/0.83–0.91 CTMでfirst/change→noop×3、provider境界、line末尾、widthをwrap境界付近にしたfixture。origin/advance/line/style意味のexact比較とglyph accuracy≤0.002ptを別々に示す |
+
+recipe＋paint CTM feedbackの除去、numeric formatterの決定性は確認できたが、B1全体は閉じていない。
+**次PR scope:** canonical paragraph layout authorityのdesign/evidenceに限定する。
+nominal font width＋明示tracking/word spacingとsource positioning intentをどう保つか、retained/source advancesを
+明示されたlogical geometryとして保持する必要があるかを比較する。観測noiseを丸めるだけ、旧paint bodyの再利用、
+初回だけ隠れたnormalization saveを挟む方法は「同じsemantic入力の固定点」の証明にしない。
+runtimeのtext-layout変更が必要なら別途承認された実装PRへ切り出し、今回のpaint contractへ隠して入れない。
+
+B2はdormant非対応＋complete termination、B3はactive boundary/isolation＋削除時state等価、
+B4はdocument単一owner＋rebase非対応というscopeで決定した。
+**NOT READY**は未完の実装を隠すラベルではなく、実測で残ったB1-Lのためである。
+次のOpusレビュー対象は、この因果関係、scope reductionの運用制約、完全block削除の権限、
+context subset、global inventory、失効modelの扱いとB1-Lの最小追加証拠。
+
+### 15.10 検証
+
+新design/evidence tests 6＋既存focused tests 5＝**11 passed**。
+geometryは12 current-runtime saves/10 fresh-process re-edits、8 dual-renderer no-op comparisons。
+sidecar fixtureは1 coordinated initial save＋A単独2 saves、B stale refusal（未公開）。
+read-only boundary 14 cases。pure identity/inventory/termination/refusal casesも新summaryへ保存した。
+runtime digestは`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`で不変。
+full suite、外部LibreOffice原本、future owned-PDF writerは実行・実装していない。
+
+### 15.11 Independent review — Claude Opus 5.5
+
+- reviewed HEAD: `5e60936959400f8865eac3673f158faa38bf5624`（レビュー開始時のPR #36 head。この記録を追加するcommitとは別）
+- base: `fdba3dcb44b0fe4010a3ea1fc986b3aac83da2e6`（main。PR #35 head `7920e37` を含むmerge commitであることを確認）
+- **verdict: PASS WITH NON-BLOCKING NOTES — DESIGN/EVIDENCE ONLY; RUNTIME NOT READY**
+- B1-L: **未解決（OPEN）**。runtime implementation: **NOT READY**。
+
+差分はdocs/evaluations/testsの8 files、追加のみ（削除行0）。`pdfeditor/`、schema、writer、Transaction/MutationProgramは無変更、
+runtime digestは`d22fb048…5dea`のまま。§1–14、PR #35 summary/evaluator/Opusレビューは変更されていない。
+このPRにはCI check runが設定されていない。
+
+**検証**（Linux cloud、Python 3.12.3、PyMuPDF 1.27.2.3、Poppler pdftoppm 24.02.0、`requirements.lock.txt`）:
+README記載のfocused tests **11 passed**。`paint_contract` evaluatorを一時出力先で再実行した
+（tracked summaryは上書きしていない。Windows固定の`DEFAULT_POPPLER`だけをscratch wrapperで`/usr/bin/pdftoppm`へ差し替え、
+repo fileは変更していない）。生成summaryはcommit済み`paint-contract-summary.json`と**全fieldで完全一致（差分0）**。
+prototype SHA、glyph origin/advance、renderer結果を含めてWindows記録が再現したので、B1-Lはplatform固有の現象ではない。
+full suite: 未実行。外部Windows/LibreOffice原本validation: 未実行（本PRの要件外）。
+
+#### 論点別の結論
+
+- **A. NARROW V1:** 安全な縮小。§15.1は機能を「後で実装」ではなく契約上の非機能として除外している。具体的には、
+  dormant/`q Q` body、revival requestをunknown optionとして拒否、full empty拒否、visible segment 0拒否、
+  `project_range`=Noneのgroupだけcomplete block＋recordを同時終了、old ID再利用不可、再挿入textは装飾なし。
+  §6–8/§11のFULL案は残るが、§15.1が「歴史的候補でありNARROWが次scope」と明記しているので、実装対象は曖昧でない（N7）。
+- **B. B4 document-single-owner:** 正しい。`source_sha`はfile全体のbytesをhashし（`selection.py:15`）、
+  `open_editable`はそのSHA不一致を拒否する（`editable.py:52`）。そのためpage単位の制限では足りないことはcodeから直接言える。
+  A/B evidenceでは、hashだけを差し替えても`selection source SHA-256`で失敗し、marker inventoryだけではselection/snapshotをrefreshできない。
+  §15.5は「数学的に不可能」とは主張していない。unknown/stale/foreign markerを自動adoption・rebase・cleanupしない規定もある。
+  運用上は強い制限だが、v1の安全側の制限として成立する。
+- **C. complete block termination:** 契約は十分。範囲はwriterが所有するnewline/marker/body/markerに限定され、
+  source whitespace、initial `n`、construction/wrapper、fixed/foreign paint、residueを含まない。
+  current revisionで行う再証明（marker、program/block SHA、context、grammar、全単射、foreign不在）、
+  path-free entry/exit、「q/Qがpathを復元するから」ではないという根拠、同一Transactionでのrecord削除、partial publication禁止を確認した。
+- **D. paint context / grammar:** 過不足なし。exact S、clip（0または1つのrect）、fill operator/components、q depthはMUST MATCH。
+  ExtGState evidence、page `/Group`、DefaultGray/RGB/CMYK、pending path/clip、marked、compatibility、text objectは拒否する。
+  stroke-only/text-only stateはdigest外だが、bodyが副作用を持たないので保持される。text clip（Tr≥4）は
+  `state.clip`へpathなしで積まれるため、analyzerのclip条件で拒否されることをcodeで確認した（fixtureはない）。
+  `q (m l l l h f|f*)+ Q`は現行writer（`anchors.py` `_rect_commands`のm/l/h）由来で、active-only scopeでは閉じている。
+  creation時の`F`→`f`と、owned bodyで`F`を拒否する判断も妥当。
+- **E. B1-L因果:** 結論は**正しい**。ただし説明は網羅的ではない（N1）。`ParagraphShaper.shape`（`paragraph.py:175-187`）のleft分岐は、
+  次unitがretained・同じsource line・source offsetが連続という条件を満たすときに、metric advanceをMuPDF trace origin差へ置き換える。
+  offset 3 spaceはfirst/noop1ともwidth 600/Tf 12/Tz 100/Tc=Ts=0、`PaintChar.advance=7.199999999999999`。
+  firstでは次の`F`がnew provider `s0`なのでmetric値を使い、noop1では`F`がretainedになるので`48.8000031−41.6000023`（float32）=`7.200000762939453`を使う。
+  これはstyle ID renameでもpaint geometry誤差でもない。
+- **F. canonical formatter:** recipe固定、1e-6 grid、exact rationalのhalf-even（tieとNaN/±Inf/過大値も確認）、
+  negative zeroなし、exponentなし、exact S、planned layoutはround-trip decimalのまま扱いsnapしない、をcodeとtestで確認した。
+  2e-6 ptの入力差でもbytesが変わることがtestされており、tolerance gateとは分離されている。
+  PDFへ挿入されたowned writerだという過剰主張はない。実測でもgridはdriftを隠していない（例: `71.909377`→`71.909378`）。
+- **G. 次PR scope:** canonical paragraph layout authority design/evidenceが妥当。paint runtime implementationへ進む根拠はまだない。
+
+#### Blocking findings
+
+なし。
+
+#### Non-blocking findings
+
+1. **B1-Lのtrigger列挙が不完全。** 実測driftには三つの経路がある:
+   (i) new→retained provider遷移（offset 3）、
+   (ii) reflow/削除によるsource line・source連続性の変化（identity first→noop1 index 14は元source line 1末尾のspaceで、
+   firstでは`following.line`不一致のためmetric、reflow後は同じlineになりtrace。change→noop index 3は`FIVE `削除で
+   `original_offsets`の連続性が切れたためmetricになったもので、new providerが原因ではない）、
+   (iii) retained同士のtrace差はabsolute x位置のfloat32量子化に依存し、位置が動くと値が変わる
+   （index 16 `H`は両stageで隣接retainedなのに`7.200000762939453`→`7.1999969482421875`）。
+   次PRはprovider境界の統一だけでなく、trace差そのものをadvance authorityにするかどうかを扱う必要がある。
+2. **legacy mutationとpaint-domain blockのoverlap規定がない。** §15.5でoverlap禁止を明示しているのはsource-slot/continuation markerだけ。
+   owner sidecarを失った・staleになった後、同じparagraphをlegacy再確認して編集すると、`_candidates`がowned fillを
+   source underlineとして`n`化し、marker pair内部を書き換え得る。fail-closed（後でINVALID）ではあるが、runtime前に
+   「paint-domain block rangeへ重なるordinary mutationは拒否」をacceptance matrixへ加えること。
+3. **creation recipeのauthorityが未規定。** prototypeのrecipeは現行runtimeのMuPDF float32由来のgroup offsetである
+   （identity `1.300003/0.699997`。source `.7`からは`1.3/.7`。scaleは`1.182999/0.636997`）。
+   S同様、source path decimal operand＋exact Sから導出すると規定するのが一貫している。noop canonicalityには影響しない。
+4. terminationのacceptance matrixに、block除去後のoperator列が「除去前−block」と一致するという
+   lexical/token境界不変条件を明示gateとして加えると良い（final rebindでも検出は可能）。
+5. B4のcross-page主張はcode事実（whole-file SHA）に基づく。runtime fixtureはsame-pageだけで、symbolic testはpage名のラベルだけである。
+   summaryの`sidecars.narrow_sequence`は実測値の隣に置かれたnormative/symbolicな列なので、そう分かるlabelが望ましい。
+6. 既存clip proofのCTM（`_clip_source_ctms`はbinary64 parse値を合成）とpaint vertexのdecimal Sは別authorityである。
+   runtimeでは、同じSに対してclip包含を証明するか、差のboundを明記すること。
+7. §6–8/§11のFULL/dormant記述には前方参照がない（§1–14不変の方針による）。runtime PRは§15だけを仕様として引用すること。
+8. evaluatorは`DEFAULT_POPPLER`がWindows pathに固定されており、Linuxでの再現にはwrapperが必要だった（focused testsには影響しない）。
+9. 次PR matrixには、active range内への挿入（range growth）→noop、non-left alignmentの扱い（scope外と明記するか、対象にするか）、
+   first→noop1のphysical style ID splitを踏まえた「semantic style」比較の定義も含めること。
+
+#### 次PRとして妥当な最小scope
+
+canonical paragraph layout authority design/evidence（runtime paint実装・tolerance緩和・粗いquantization・hidden normalization saveなし）。
+最低限、以下を扱う:
+
+- retained / new / retained-new境界、source line変化（reflow）、削除によるsource非連続、line-end Tc処理、
+  explicit tracking/word spacing、wrap境界付近のwidth
+- identity CTMとscale+translation CTM（0.83/0.91）
+- first→noop×3、change→noop×3、range growth→noop
+- origin/advance/line allocation/semantic styleのexact比較と、glyph accuracy≤0.002ptを別gateとして示すこと
+- N1(iii)のtrace差position依存の扱いを必須とする。text-layout runtime変更が必要なら、別途承認された実装PRへ切り出す。
