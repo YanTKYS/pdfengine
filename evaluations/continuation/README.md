@@ -1100,3 +1100,11 @@ full実行で生成したlifecycle fixtureもcollectorで再計測し、公開su
 2 skipsはAES-128/AES-256の保存テスト（pypdfのAES provider未導入）。source ownershipのPoppler比較は実行済み。
 PR #31原本のWindows external validationは実施しない。page 4/5のeligibilityは次の検証対象であり、
 このsynthetic結果を実PDFの+18,732 bytes/no-opの解消へ外挿しない。
+
+Claude Opus 5.5の独立レビューはhead `8d72d3b6233ea7ea16328ec56e4f46560730cd47`に対して
+**PASS — READY FOR WINDOWS EXTERNAL VALIDATION**。`source_output_canonical.py`はruntimeの
+`open_shared_flow`・`inventory`・`grammar`を使って測定するだけで、ownership判定を別実装していないこと、
+summaryのengine digestとfirst/noop1-3・second/empty/regrowの数値が本文と一致することを確認した。
+レビューでは`tests/test_source_ownership.py`、`tests/test_generated_block_canonical.py`と更新した
+boundary/clip/scopeの3 test関数を再実行し、72 passed / 1 skipped（Poppler未導入）。full suite・実PDFは再実行していない。
+non-blocking事項は[設計§12](../../docs/source-slot-rewrite-ownership.md#12-実装の独立レビュー結果)を参照。

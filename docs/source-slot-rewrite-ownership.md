@@ -472,3 +472,36 @@ engine digest（`pdfeditor/*.py`のfilename＋NUL＋file bytesを名前順でSHA
 - after: `d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`
 
 最終test結果と再現commandは[評価README](../evaluations/continuation/README.md#source-output-canonical実装--2026-10-03)に記録する。
+
+## 12. 実装の独立レビュー結果
+
+Claude Opus 5.5の独立レビューはhead `8d72d3b6233ea7ea16328ec56e4f46560730cd47`に対して
+**PASS — READY FOR WINDOWS EXTERNAL VALIDATION**。runtime/test/evidenceの修正なし。
+ownershipはcurrent PDF＋sidecarだけから、record、program/block SHA、operator span gapのmarker、
+`q BT ... ET Q`の構造grammar、glyph/witness包含で再証明され、markerは位置特定であって権限ではない。
+所有検証失敗時のordinary rewrite fallbackはなく、v1は自動upgradeしない。
+初回とowned rewriteのbodyは同じ`_source_body()`から出るため、first=noop1は構造的に成立する。
+marker外のresidue/bridgeは消費されず、restoreはline Tm＋numeric TJでTm/Tlmを明示的に戻す。
+entry contextはinput・body・output・reopenで記録値と照合される。矩形clipはcontextの形状条件と、
+writerが全glyph inkに行う既存`allow_clip`の組み合わせで証明され、既存契約より弱くない。
+同一source showの二重ownerは、v2 confirm成功後にruntimeの`MutationProgram.add`
+（one operator cannot have two owners）で拒否されることを再現で確認した。
+font ownershipは`generated_fonts`/Transactionの別経路のまま、generated continuationとの共存、
+late failureでのatomic rollbackも確認した。full suiteの4 failuresは期待値を更新した4 caseと一致し、
+更新後のassertは位置の単調増加から等値へ強まり、authority assertは維持されている。
+
+レビューでの再実行: `tests/test_source_ownership.py`、`tests/test_generated_block_canonical.py`、
+期待値を更新したboundary/clip/scopeの3 test関数で**72 passed / 1 skipped**（PopplerがレビューWindows環境に未導入）。
+engine digest `d22fb048…`とsummary値の一致を確認した。full suiteとPR #31実原本は再実行していない。
+
+Windows external validation以降で扱うnon-blocking事項:
+
+1. v2 confirmは自分の記録にないsource markerを拒否し、confirmは常にv2を作るため、v2で編集したPDFの
+   sidecarを失うとそのpageを再確認できない。安全側だが運用上の制約として記録する。
+2. first=noop1はidentity/平行移動CTMでのみ実証。縮小など逆行列が割り切れないCTMでは、Tm基底の12桁書き出しと
+   再読込の往復でbodyが一度ずれる可能性がある。実原本検証でbody一致を確認項目に含める。
+3. `inventory`は、2 islandのend行とbegin行が直接隣接すると共有LFのためoverlapと判定し、operand間の
+   marker風commentは検査しない。現行writerでは起きず、いずれも権限を与えない。
+4. `_source_output`は`edit_document(**overrides)`から届き得る。ownerが必要でeditable sidecarに記録も残らないため
+   ownershipは成立しないが、shared flow外では明示拒否するとよい。
+5. 作成時点でemptyのslotは複数slot testで間接的にのみ通過。Poppler画素比較はWindows検証で再確認する。
