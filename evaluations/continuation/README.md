@@ -1108,3 +1108,55 @@ summaryのengine digestとfirst/noop1-3・second/empty/regrowの数値が本文�
 レビューでは`tests/test_source_ownership.py`、`tests/test_generated_block_canonical.py`と更新した
 boundary/clip/scopeの3 test関数を再実行し、72 passed / 1 skipped（Poppler未導入）。full suite・実PDFは再実行していない。
 non-blocking事項は[設計§12](../../docs/source-slot-rewrite-ownership.md#12-実装の独立レビュー結果)を参照。
+
+
+## Source-output Windows external validation — 2026-10-03
+
+起点・評価HEAD `9d70d8c6de7736aba194573ea482dcde7ed9e31a`、branch `codex/source-output-windows-validation`。
+Windows 11 build 26200 / Python 3.12.14 / PyMuPDF 1.27.2.3 / pypdf 6.10.0 / Poppler 26.07.0。
+PR #31原本SHA `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`、
+msmincho.ttc face 1 SHA `ceb8d745001f56b61ce768d84172d35bdf68e498423c9320dcb22e7c900944c2`、
+times.ttf face 0 SHA `931c5de5c70401d9324d5014c123802b4fb753000360ceb2f56c589403cd58c5`が一致した。
+engine digestはbefore/afterとも`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`。
+
+rawはignored `runs/source-output-windows/`、公開結果は[source-output-external-summary.json](source-output-external-summary.json)。
+[実装後の外部検証記録](../../docs/source-slot-rewrite-ownership.md#13-windows-external-validation--2026-10-03)に判定と測定表を記載する。
+source/provider/runtimeのexact SHA確認後に、両系列を元PDFからfresh v2 confirmし、runtime自身のeligibility判定を行った。
+非eligibleなら正式mutation lifecycleを開始しない。今回のpage 4/5は両系列ともeligible（scan 176.875秒）。
+
+既存PR #31 helperを再利用し、grow/second/dormant直後のno-op branchを次のsemantic save前に監査する。
+original source replay、同じpage6 destination/boundary、logical edits、独立Unicode/CID/GID/W、
+0.002pt座標許容値、paint/image/annotation/元font、generated font graph、144dpi両rendererのgateを維持する。
+新collectorは保存済みartifactを読むだけで、PDFを再保存しない。
+
+```powershell
+# 新規正式run。source/font SHAおよびruntime/HEAD不一致は開始前に停止する。
+.venv\Scripts\python.exe -m evaluations.continuation.source_output_external --run <新規名>
+# eligibility.jsonがeligibleの場合だけ以下を実行する。
+.venv\Scripts\python.exe -m evaluations.continuation.source_output_external --run <同名> --phase page-entry
+.venv\Scripts\python.exe -m evaluations.continuation.source_output_external --run <同名> --phase boundary
+# 独立したsynthetic補足。正式PDFの非eligible時にも実行可能。
+.venv\Scripts\python.exe -m evaluations.continuation.source_output_probes --run <同名>
+.venv\Scripts\python.exe -m evaluations.continuation.source_output_collect --run <同名> --publish
+```
+
+focusedは**73 passed / 0 failed / 0 skipped (663.82s)**。
+内訳は初期helper 7、新source ownership既存群54、generated block canonical既存群12。
+collectorの判定/compact encoding testsを追加した最終helper確認は**9 passed (0.99s)**で、
+重複を除く合計は75 tests。Poppler testはskipされていない。
+scale/creation-empty/operational/adjacentの保存・renderer probesは別途正式runnerで全て通過した。
+
+```powershell
+.venv\Scripts\python.exe -m pytest -q evaluations/continuation/test_source_output_external.py tests/test_source_ownership.py tests/test_generated_block_canonical.py --basetemp tmp/source-output-external-focused
+.venv\Scripts\python.exe -m pytest -q evaluations/continuation/test_source_output_external.py --basetemp tmp/source-output-external-helpers-gates
+```
+
+full suiteは実行していない。runtime変更のないvalidation PRであり、PR #33のfull結果を再実行しないという依頼に従った。
+原本・font・raw artifactはcommitしない。general editableへの展開はNOT READYのまま。
+
+正式page-entryは3,397.344秒、boundaryは3,384.125秒（各系列の追加no-opと監査を含む）。
+両系列は一部並行して実行したため、これらの和を全体のwall timeとは扱わない。
+全段階通過後のcollectorで**PASS — WINDOWS EXTERNAL VALIDATION**。
+初回collectionはUTF-8 JSONの保存後、最終statusのem dashをcp932 consoleへ表示する箇所だけで
+UnicodeEncodeErrorになった。表示をASCII statusへ変え、read-only collectionを再実行した。
+この1件を`evaluation_attempts`に記録し、PDF lifecycleの再実行・runtime修正・gateの緩和は行っていない。

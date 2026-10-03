@@ -43,4 +43,5 @@ tmp/
 !/evaluations/continuation/generated-block-canonical-summary.json
 !/evaluations/continuation/source-slot-ownership-summary.json
 !/evaluations/continuation/source-output-canonical-summary.json
+!/evaluations/continuation/source-output-external-summary.json
 /evaluations/continuation/runs/

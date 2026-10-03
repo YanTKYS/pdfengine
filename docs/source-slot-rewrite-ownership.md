@@ -505,3 +505,83 @@ Windows external validation以降で扱うnon-blocking事項:
 4. `_source_output`は`edit_document(**overrides)`から届き得る。ownerが必要でeditable sidecarに記録も残らないため
    ownershipは成立しないが、shared flow外では明示拒否するとよい。
 5. 作成時点でemptyのslotは複数slot testで間接的にのみ通過。Poppler画素比較はWindows検証で再確認する。
+
+
+## 13. Windows external validation — 2026-10-03
+
+起点・評価runtimeは`9d70d8c6de7736aba194573ea482dcde7ed9e31a` (PR #33 merge)。
+新branch `codex/source-output-windows-validation`で、PR #31と同じ未加工LibreOffice PDFと
+msmincho.ttc face 1 / times.ttf face 0をSHA照合した。runtime digestは
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`で固定し、`pdfeditor/`は変更しない。
+
+[source-output external evaluator](../evaluations/continuation/source_output_external.py)はPR #31の
+`evaluate.py` / `boundary_destination.py`の確認・logical edit・全独立監査をそのまま再利用する。
+新しいv2確認を未加工原本から行い、source slotsはuninitializedで開始する。古いv1 sidecarは使用しない。
+source ownership判定はruntimeの`initial_context()`、`open_shared_flow()`、`inventory()`、`grammar()`に委ねる。
+既存lifecycleのgrow/second/shorten直後にno-op branchを追加し、次のsemantic saveに進む前に検証する。
+各no-opはbody・page program・record全体、entry context、prefix/suffix、owner別mutation deltaを照合する。
+page 6は従来のgenerated continuation contractと、既存のboundary
+`boundary-b848698b464255ff0b2b6f90` (offset 17,602)を使う。
+
+PHASE 1の両系列とも、page 4 / slot-0、page 5 / slot-1は**eligible**。
+source event数は11 / 28、first show rangeは[17552,17592] / [71,93]。
+両方ともidentity CTM、marked-content/compatibility depth 0で、既存text-object splitと
+source-output initial contextが成功した。clip、fill/stroke、q depth等の完全な証拠は
+[新summary](../evaluations/continuation/source-output-external-summary.json)に記録する。
+
+**PASS — WINDOWS EXTERNAL VALIDATION**。両系列ともgrow → first-noop → second → second-noop →
+shorten/dormant → dormant-noop → regrow → noop1 → noop2 → noop3を通過した。
+各系列10回、合計20回のshared-flow verified save（source replay出力は別）でruntime変更なし。
+
+| source page | grow / first-noop / second / second-noop / regrow / noop1–3 body bytes / ops | page bytes / ops | shorten / dormant-noop body bytes / ops | page bytes / ops |
+|---|---:|---:|---:|---:|
+| 4 / slot-0 | 4,157 / 364 | 31,409 / 1,921 | 269 / 28 | 27,521 / 1,585 |
+| 5 / slot-1 | 13,664 / 1,113 | 41,494 / 2,787 | 140 / 23 | 27,970 / 1,697 |
+
+active body SHAはpage 4が`c4ba7309e14464edd4e78b177cb1403a98da93ce2cf8bf4f1e4558a3c3c85d05`、
+page 5が`a46ba69a8d492987baf358866730fe4df043ee60d8e211821e6c08b3639cfe34`。
+両系列でbodyが一致する（flow別marker identityのため系列間のpage SHA同一は要求しない）。
+secondの変更箇所はpage 6側で、source bodyはgrowと同じ。shortenではpage 4に短文、page 5にempty/style witnessを保持する。
+
+全6組のno-op比較でsource body・全page programがbyte identical、record全体も一致した。
+全stageでmarker/created_from/entry contextとmarker外prefix/suffixを保持する。
+初回source-output-createのmarker外部分は、page 4が前61 bytes (`TJ ET`)＋後53 bytes (`BT Tm TJ`)、
+page 5が前30 bytes＋後52 bytes。初回だけのresidue/restoreで、以後はbodyだけを各slot 1件の
+`source-output-rewrite`で置換する。各mutationの消費/置換lengthとbyte/operator deltaをpage deltaへ照合した。
+
+| no-opごとのsource増分 | historical PR #31 | current v2（両系列・全no-op） |
+|---|---:|---:|
+| page 4 | +4,420 bytes / +368 operators | **0 / 0** |
+| page 5 | +14,312 bytes / +1,117 operators | **0 / 0** |
+| 合計 | +18,732 bytes / +1,485 operators | **0 / 0** |
+
+no-opの全10ページでMuPDF pixel equal、Poppler 144dpi changed pixels 0。
+semantic editでは従来のplanned region＋1pt raster margin外のPoppler差分0で、固定pageの画素を維持した。
+独立Unicode/CID/GID/W、source/generated glyphのcode/font/originを照合し、保存座標の最大差は
+0.0000244140624943pt（従来許容値0.002pt）。source paint・画像・annotation・元font resourcesを維持した。
+page 4/5/6のgenerated alias数は1/2/1、Type0と所有font rootは4、font graph objectは24。
+no-opで全てreusedとなり、font record/countは増えない。
+
+page 6のgenerated blockはgrow/regrow/noopが3,044 bytes / 259 operators、secondが3,224 / 273、
+dormantが310 / 33。それぞれの直後no-opで不変。destination ID、slot ID、creation binding、marker pairと
+元page6 prefix/suffix・boundary authorityを保持し、source mutationとのoverlapなし。全保存のnesting違反は0。
+page-entry / boundaryの保存glyph原点も一致した。
+
+追加のWindows synthetic probes:
+
+- scale+translation `0.83 0 0 0.91 7.25 11.5 cm`でfirst=noop bodyは661 bytes / 42 operators、
+  pageは1,005 bytes / 56 operators。body SHAは`7e8c44dc6ab692f07ea03e71d419b997465195dcd154775da12d684e4dc9ec7f`。
+  entry contextと同じ原text object内のKEEP suffixのgraphics state・Tm/Tlm・code/originを保持し、両renderer差分0。
+- 作成時emptyはuninitialized→ownedを通り、painting show 0、typing `[] TJ` exactly 1、必要style witness 1。
+  first-empty=empty-noop bodyは80 bytes / 13 operators、pageは374 bytes / 22 operators。
+  body SHAは`ecdabe4257c99f1d90c653c4af926f72a017c0b02b8c5345ac191edb9a92c7c3`、両renderer差分0でregrow成功。
+- ordinary `edit_document(**overrides)`へ`_source_output`を渡してもownerはNoneのままで、
+  `source output requires a text-only owning source slot`を返し、PDF/sidecarを公開しない。
+- v2 sidecar喪失後、marker付きPDFから同pageをfresh sourceとして再confirmすると、
+  `source output marker inventory differs from owned slots`で拒否する。
+  **sidecar loss後のautomatic reconfirmは行わない**。markerを削除して回避する運用はこの検証に含めない。
+- 現行writerの同page・2 source islandsでは間に91 bytesあり、end/beginは直接隣接しない。
+  no-opのpage bytesと両rendererが一致。generic marker parserは変更していない。
+
+[実行環境・command・tests](../evaluations/continuation/README.md#source-output-windows-external-validation--2026-10-03)も参照。
+過去のPR #31/#32/#33の証拠は保持し、今回の結果で上書きしない。general editableは引き続き**NOT READY**。
