@@ -538,5 +538,5 @@ focused: `tests/test_paint_ownership_observation.py`、`tests/test_anchors.py`�
 ### 次PRのscope
 
 runtime実装ではなく、B1–B4を閉じるdesign/evidence PR。B1のbyte固定点evidence（identity/scale CTM、
-change/regrow）、B2のrevision request形とdormant planner責務、B3の案A境界・context証明、
+change/regrow）、B2のrevival request形とdormant planner責務、B3の案A境界・context証明、
 B4のinventory scopeと複数sidecar fixtureを含める。dormantを持たない狭いv1を選ぶ場合はその理由とB2/B3の扱いを記す。
