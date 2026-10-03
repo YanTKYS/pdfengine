@@ -45,3 +45,5 @@ tmp/
 !/evaluations/continuation/source-output-canonical-summary.json
 !/evaluations/continuation/source-output-external-summary.json
 /evaluations/continuation/runs/
+
+!/evaluations/anchors/paint-ownership-summary.json
