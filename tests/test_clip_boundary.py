@@ -614,9 +614,9 @@ def test_a_page_entry_block_before_the_clip_leaves_its_authority_alone(tmp_path)
 def test_a_source_rewrite_before_the_clip_leaves_its_authority_alone(tmp_path):
     """Paragraph A's own source slot precedes the clip on the page it continues on.
 
-    Each save rewrites that slot in the same transaction, so the clip's
-    operators and the boundary move; the block follows by provenance, and
-    the clip is still the confirmed one.
+    The first rewrite moves the clip operators and boundary by provenance.
+    Later saves of the same source fragment keep those positions stable;
+    the clip remains the confirmed one throughout.
     """
     source, state, chosen = flow(tmp_path, clipped(), same_page=True)
     ident, chosen = 'dest-R2', chosen['R2']
@@ -639,8 +639,8 @@ def test_a_source_rewrite_before_the_clip_leaves_its_authority_alone(tmp_path):
         assert inside[0].state.clip[0]['at'][1] == [op.name for op in operators(data)].index('n') > confirmed
         starts.append(len(prefix))
         source = out
-    # The rewritten slot grew before the boundary: the block moved with it.
-    assert chosen['offset'] < starts[0] < starts[1] < starts[2]
+    # Initial creation moves the boundary; canonical source re-saves do not.
+    assert chosen['offset'] < starts[0] == starts[1] == starts[2]
 
 
 # -- rollback -----------------------------------------------------------------------

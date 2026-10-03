@@ -42,4 +42,5 @@ tmp/
 !/evaluations/continuation/geometry-review-external-summary.json
 !/evaluations/continuation/generated-block-canonical-summary.json
 !/evaluations/continuation/source-slot-ownership-summary.json
+!/evaluations/continuation/source-output-canonical-summary.json
 /evaluations/continuation/runs/

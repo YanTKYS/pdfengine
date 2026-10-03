@@ -485,8 +485,8 @@ def _source_ids(source, page):
 def test_same_transaction_edits_around_the_scope_keep_it(tmp_path, where, monkeypatch):
     """Paragraph A's source slot sits before the scope, in it before or after the boundary, or after it.
 
-    Each save rewrites that slot in the same transaction: offsets and
-    ordinals move, and the boundary stays in the same scope.
+    Initial creation moves offsets and ordinals while keeping the boundary
+    in the same scope. Later saves of this source fragment stay canonical.
     """
     import test_scope_boundary as module
     real = module.make_selection
@@ -512,14 +512,15 @@ def test_same_transaction_edits_around_the_scope_keep_it(tmp_path, where, monkey
         opening.append(scope['opening']['start'])
         gaps.append(scope['matching']['start'] - binding['end'])
         source = out
-    # The slot grows with each rewrite, and moves what follows it: the q only
-    # when it precedes the scope, the matching Q past the block only when it is
-    # in the scope's suffix. The block's own growth moves the matching Q too.
-    assert (opening == sorted(set(opening)) and opening[0] > confirmed['opening']['start']) == (where == 'before')
+    # The initial source island moves the q only when it precedes the scope,
+    # and the Q-to-block gap only when it is in the scope's suffix. The source
+    # fragment is unchanged by these later saves, so it adds no further bytes.
+    assert opening == [opening[0]] * 3
+    assert (opening[0] > confirmed['opening']['start']) == (where == 'before')
     if where != 'before':
         assert opening == [confirmed['opening']['start']] * 3
     if where == 'suffix':
-        assert gaps == sorted(set(gaps)) and gaps[0] > confirmed['matching']['start'] - chosen['offset']
+        assert gaps == [gaps[0]] * 3 and gaps[0] > confirmed['matching']['start'] - chosen['offset']
     else:
         assert gaps == [confirmed['matching']['start'] - chosen['offset']] * 3
 

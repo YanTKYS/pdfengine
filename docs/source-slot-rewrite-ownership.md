@@ -376,3 +376,99 @@ summaryの数値を再計算して本文と一致を確認し、helper 4 passed�
    `reserve_font_alias`の`/PRF{n}`割当が順序依存なため、ownership/binding/semanticsの同一性とする。
 5. v1はactive marked contentを拒否するため、page levelで`BDC`に包まれたtagged PDFは対象外になり得る。
    PR #31実原本page 4/5がv1範囲内かは未検証で、そのKPIを約束しない。
+
+## 11. 実装済みsynthetic contract — 2026-10-03
+
+起点HEADは`9cb6e0704f7caf062cbaf1460f0184409c344753`。上記の調査・レビューは修正前の履歴として保持する。
+新規`confirm_shared_flow()`は`pdfengine-shared-flow-2`を返す。v1はopen/editとも従来のordinary source
+rewriteを維持し、v1を出力する。自動upgradeや過去のsource residueの削除は行わない。
+public APIのsignature、MutationProgram、generated continuation algorithm、font lifecycleは変更していない。
+
+v2のsource slotだけに`source_output`を必須とし、確認時は`uninitialized`、最初の保存成功時に`owned`へ移る。
+generated continuation slotには付与しない。実fixtureの初回recordは次の通り。
+
+```json
+{
+  "version": 1,
+  "state": "owned",
+  "marker_id": "ffc89ff80b121ef6a99f1cbe45f863bbf3f06ce686845922d11a2694279131e8",
+  "created_from": {
+    "pdf_sha256": "d652096b7b98c3642746de01b8a9cdd18739ca028c49aea17bd6f234350de355",
+    "paragraph_snapshot_sha256": "b939f22e116465e9b06ee46281ff5eea17e5ca37b47acc784c8e852ecd10632e"
+  },
+  "current": {
+    "program_sha256": "79ed64db29e4d0ce2f0d7ded400f9ede91e4ef6281a5446a371009630a3b0886",
+    "range": [55, 610],
+    "block_sha256": "83c0dc80a96f07eb615ab3e52741405067c7bf28aab517d4fc7ec5f610f5501a",
+    "entry_context_sha256": "fe8bcc0ff9ac2d2c66406053385fc72cbfb0ff545b45a0ffd252e80db9cd7d6a"
+  }
+}
+```
+
+marker IDはcanonical JSONの`["pdfengine-source-slot-v1", flow.id, slot_id, created_from]`のSHA-256。
+完全な`% pdfengine-source-slot-v1 begin <id>` / `end <id>`行を書き、既存`operators()`のspan間のgapだけで
+認識する。literal string内の類似文字列は数えず、foreign/duplicate/missing/malformed markerを拒否する。
+rangeはbegin直前のLFからend行末LFまで、hashはそのblock全体、置換範囲は両markerを除いたbodyだけである。
+
+bodyは`q Q BT ET Tf Tz Tc Tw Ts Tm Tj TJ g rg k`のみの、閉じた`q BT ... ET Q`群。
+`%`、`cm`、`gs`、色空間operator、path/XObject、marked-content/compatibility、入れ子BT等は拒否し、
+既存operator nesting auditとContentPageの解釈結果も検証する。
+entry contextはStateのCTM/font alias/size/spacing/paint/other/clipとscopeを使用し、font xrefとclipの`at`を除く。
+fill/stroke/otherの文字列は保持、有限数値だけを扱い、数値の負zeroを0へ揃える。object keyをsortし、配列順を保つ。
+owned後のentry digestはinput/output/reopenで記録値と一致を要求する。
+
+初回だけ、選択したsource glyphを既存`rewritten_event`で非描画化し、最初のshow後に外側`ET`、island、
+既存restore logicの`BT`＋line `Tm`＋post-show cursor用numeric `TJ`を置く。mixed showの非選択glyphと他のoperatorは残す。
+以後は同じformatterで作ったcurrent bodyを1 mutation (`source-output-rewrite`)で置換する。
+外側residue/bridgeは固定し、過去bodyのnumeric TJ履歴を追加しない。既存のremoval/ink/collision guardと、
+1 Transaction・verified save・PDF/sidecarのatomic publicationを通す。
+
+### 保存系列の測定
+
+単一source slotのsynthetic fixture（`tests/test_source_ownership.py::lifecycle`）。全値はdecoded bytes。
+body SHAの記号はA=`dcd49a66907cb4c121589dea886a845926e0a6a06aa1e6f55e4e616df866a0a8`、
+B=`112f3fcf1cb62fff497c985fc581b2d5620846721291d254a667c19d5021fafa`、
+C=`e1f094707af8f0786a2941d6f47cba308cc8896fa400e5ced5b2641daf25c8cf`。
+
+| stage | body bytes / operators | body SHA | page bytes / operators | 前stageからのpage delta |
+|---|---:|---|---:|---:|
+| first | 360 / 42 | A | 654 / 51 | +614 / +46（初回のみ） |
+| noop1 | 360 / 42 | A | 654 / 51 | 0 / 0 |
+| noop2 | 360 / 42 | A | 654 / 51 | 0 / 0 |
+| noop3 | 360 / 42 | A | 654 / 51 | 0 / 0 |
+| second | 224 / 28 | B | 518 / 37 | −136 / −14 |
+| second noop | 224 / 28 | B | 518 / 37 | 0 / 0 |
+| empty | 77 / 13 | C | 371 / 22 | −147 / −15 |
+| empty noop | 77 / 13 | C | 371 / 22 | 0 / 0 |
+| regrow | 360 / 42 | A | 654 / 51 | +283 / +29 |
+
+first/noop1/noop2/noop3はbodyだけでなくpage program全bytesが一致する。
+emptyのpainting showは0、typing `[] TJ`は1件で同じstyleのwitnessと共用する。
+全9stageでmarker/created_from/entry context、island前後のbytesが不変。regrowはfirstと同じbodyへ戻る。
+no-op 3回は全pageのMuPDF/Poppler画素も一致した。
+[新実装のcompact evidence](../evaluations/continuation/source-output-canonical-summary.json)に全SHAとoperator内訳を記録した。
+PR #32の`source-slot-ownership-summary.json`、調査script/testは変更していない。
+
+### 検証範囲
+
+| 項目 | 確認内容 |
+|---|---|
+| multiple slots | 全recordを同じinput revisionで検証し、commit後に全slotをfinal programへrebind。no-opの全3page bytes不変。計画順入替えはslot/marker identity・Unicode・画素が一致し、各physical bindingをfinal programで検証（font alias順によるbytes差を許容） |
+| original/generated font | retained original code＋新fontを一つのbodyで検証。元font resource不変。通常shared flowのgenerated font ownershipは別経路、no-opで増殖なし |
+| mixed show/multiple BT | 対象外glyphのcode/origin/font保持。後方eventの選択部分も一度だけ非描画化。同一source showの二重ownerは拒否 |
+| CTM/q/clip | 非identity平行移動、q scope、証明済み矩形clipでcontext・no-op bytes・画素を保持 |
+| scope/paint | active BMC/BX、pending path/clip、text clippingを拒否。fixed background relation、対象外画像・annotationを保持 |
+| tamper | reseal済みrecordの欠落/version/identity/hash/range/context/owner改変を拒否。byte hashを更新したbodyへのcm/path混入、entry context変更も拒否 |
+| containment | 全selected glyphとempty/style witnessのbody包含、foreign glyph不在を要求。anchor/decorates/logical decoration_ranges拒否を維持 |
+| coexistence/reopen | 同じpageのsourceとgenerated continuationを共存。destination authority不変。current PDF/sidecarとfont assetだけの別processで再編集成功 |
+| rollback | final rebind、output context検証、sidecar publicationの失敗で両artifactを公開せず、元PDF/model不変 |
+
+general editableへの展開は**NOT READY**。PR #31原本のWindows評価は依頼どおり実施していない。
+page 4/5のactive marked content等を含むeligibilityは未確認で、実PDFの+18,732 bytes/no-opが解消したとは主張しない。
+
+engine digest（`pdfeditor/*.py`のfilename＋NUL＋file bytesを名前順でSHA-256）:
+
+- before: `2e0ad53bdd617280ec390679559113f41a227be9b91cfab02d705f4f08cf2c45`
+- after: `d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`
+
+最終test結果と再現commandは[評価README](../evaluations/continuation/README.md#source-output-canonical実装--2026-10-03)に記録する。

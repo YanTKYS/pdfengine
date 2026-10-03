@@ -305,8 +305,9 @@ def test_same_transaction_mutation_before_or_after_the_boundary(tmp_path, page1,
         starts.append(len(prefix))
         source = out
     if where == 'prefix':
-        # The prefix grew with each rewrite: the block moved with it, by provenance.
-        assert source_offset < starts[0] < starts[1] < starts[2]
+        # The first source island moves the boundary by provenance. These
+        # later edits leave the source fragment unchanged, so v2 adds no history.
+        assert source_offset < starts[0] == starts[1] == starts[2]
     else:
         assert starts == [source_offset] * 3
 
