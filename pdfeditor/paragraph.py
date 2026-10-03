@@ -39,6 +39,31 @@ def _style_witness(style, writer_spacing, inverse_ctm):
     return body + matrix_operator(multiply(style.matrix, inverse_ctm))
 
 
+def _source_body(result, paragraph, commands, glyph_offsets, witnesses, typing, writer_spacing, inverse_ctm):
+    """One formatter for both the first and every later source-owned body."""
+    from .source_ownership import grammar
+    data = b'q BT' + b''.join(commands)
+    anchors = {f'glyph:{n}': len(b'q BT') + offset for n, offset in enumerate(glyph_offsets)}
+    result.glyph_names = list(anchors)
+    if typing is not None:
+        data += _style_witness(paragraph.styles[typing], writer_spacing, inverse_ctm)
+        anchors['slot'] = len(data)
+        data += b'[] TJ'
+        result.slot = True
+    data += b' ET Q\n'
+    for ident, body in sorted(witnesses):
+        name = 'empty-style:' + ident
+        if ident == typing:
+            anchors[name] = anchors['slot']
+        else:
+            data += b'q BT' + body
+            anchors[name] = len(data)
+            data += b'[] TJ ET Q\n'
+        result.empty_style_names[ident] = name
+    grammar(data)
+    return data, anchors
+
+
 def _rewrite_generated_block(result, content, paragraph, selected, owner, generated, commands, glyph_offsets,
                              witnesses, slot_style, writer_spacing, inverse_ctm):
     """Replace the body of a proven, owned generated continuation block by its canonical form.
@@ -312,7 +337,7 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                         max_bottom=None, min_line_height=None, element_snapshot=None, element_relations=None,
                         anchor_spec=None, baseline=None, preserve_empty=False, empty_style_id=None,
                         render_styles=None, paragraph_style=None, paragraph_layout=None, _paragraph_continues=False,
-                        _allow_empty_style_witnesses=False, owner=None, _generated_block=None):
+                        _allow_empty_style_witnesses=False, owner=None, _generated_block=None, _source_output=None):
     """Prove source facts and plan every byte mutation of one paragraph edit.
 
     ``_generated_block`` (shared flow only) names the continuation destination
@@ -364,6 +389,16 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
         resolved = paragraph.resolved
         pno, first = resolved.page - 1, paragraph.first
         state = first.state
+        source_owned = _source_output is not None and _source_output['state'] == 'owned'
+        if _source_output is not None:
+            from . import source_ownership as source_output
+            if owner is None or _generated_block is not None or anchor_spec is not None:
+                raise PdfError('source output requires a text-only owning source slot')
+            if source_owned:
+                source_range = source_output.owned_body(content, _source_output, snapshot)
+                result.source_entry_context = _source_output['current']['entry_context_sha256']
+            else:
+                result.source_entry_context = source_output.initial_context(content, paragraph)
         available, layout_options = _layout_parameters(paragraph, snapshot, width=width, x=x,
             first_line_indent=first_line_indent, baseline=baseline, min_line_height=min_line_height, max_bottom=max_bottom)
         x, baseline, width, indent, leading, bottom = (layout_options[k] for k in
@@ -500,10 +535,25 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             _rewrite_generated_block(result, content, paragraph, selected, owner, _generated_block, commands,
                                      glyph_offsets, witnesses, empty_typing_style if preserve_empty and not units
                                      else None, writer_spacing, inverse_ctm)
-        for event in ([] if _generated_block is not None else paragraph.events):
+        if _source_output is not None:
+            source_body, source_anchors = _source_body(result, paragraph, commands, glyph_offsets, witnesses,
+                empty_typing_style if preserve_empty and not units else None, writer_spacing, inverse_ctm)
+            if source_owned:
+                mutation = Mutation(*source_range, source_body, kind=source_output.REWRITE,
+                                    anchors=source_anchors, owner=owner)
+                result.mutations.append(mutation)
+                result.first_mutation = mutation
+                result.removal_mutations.append(Mutation(*source_range, b'q BT' + commands[0] + b' ET Q\n',
+                                                        kind='text-remove', owner=owner))
+        for event in ([] if _generated_block is not None or source_owned else paragraph.events):
             data, op_offset, chars = rewritten_event(event, selected, remove=True)
             anchors = {'rewritten': op_offset}
-            if event is first:
+            if event is first and _source_output is not None:
+                begin, end = source_output.markers(_source_output)
+                data += b' ET' + begin
+                anchors.update({name: len(data) + offset for name, offset in source_anchors.items()})
+                data += source_body + end + b'BT ' + restore
+            elif event is first:
                 if preserve_empty and not units:
                     anchors['slot'] = len(data) + 1
                     data += b' [] TJ '
@@ -532,7 +582,8 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                             anchors[name] = len(data) + offset
                         data += body + b' ET Q'
                     data += b' BT ' + restore
-            mutation = Mutation(event.operator.start, event.operator.end, data, kind='text-edit',
+            mutation = Mutation(event.operator.start, event.operator.end, data,
+                                kind=source_output.CREATE if event is first and _source_output is not None else 'text-edit',
                                 anchors=anchors, chars=chars, owner=owner)
             result.mutations.append(mutation)
             if event is first:

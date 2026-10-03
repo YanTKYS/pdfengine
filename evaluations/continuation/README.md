@@ -1041,3 +1041,70 @@ Claude Opus 5.5の独立レビューはhead `bd56485075bd5f55c08380ae23658c4807f
 測り、所有spanを推定していないこと、`painting_show`の限定、summaryと本文の数値一致を確認した。
 レビューではhelper 4 passed、上記focused 12 passedを再実行した。raw評価・full suite・実PDFは再実行していない。
 実装PRで固定するnon-blocking事項は[設計§10](../../docs/source-slot-rewrite-ownership.md#10-独立レビュー結果)を参照。
+
+## Source-output canonical実装 — 2026-10-03
+
+起点`9cb6e0704f7caf062cbaf1460f0184409c344753`。PR #32のhistorical summary/codeは変更せず、
+新shared-flow v2の測定を[source-output-canonical-summary.json](source-output-canonical-summary.json)へ分離した。
+仕様・record実形・digest・検証範囲は[実装結果](../../docs/source-slot-rewrite-ownership.md#11-実装済みsynthetic-contract--2026-10-03)を参照。
+raw fixtureはignored `tmp/`に置き、公開summaryは9stageのbody/page census、固定prefix/suffixとcurrent recordだけを記録する。
+
+再現手順（repository root、既存Python test環境）:
+
+```powershell
+python -m pytest -q tests/test_source_ownership.py --basetemp tmp/source-owned-final-focus
+python -m evaluations.continuation.source_output_canonical tmp/source-owned-final-focus/source-lifecycle0 --output evaluations/continuation/source-output-canonical-summary.json
+```
+
+collectorは保存済みPDF＋sidecarをopen検証・計測するだけで、PDFを再保存しない。
+engine before digestは起点Git blob、afterは現在の`pdfeditor/*.py`を同じfilename＋NUL＋bytes方式で計算する。
+Popplerは`PATH`の`pdftoppm`を使い、今回のWindows環境ではskipせず実行した。
+環境はWindows 11 build 26200 / Python 3.12.14 / pytest 9.1.1 / PyMuPDF 1.27.2.3 /
+pypdf 6.10.0 / fonttools 4.64.0 / uharfbuzz 0.55.0。
+
+開発中の新testは48 passed (424.78s)、追加したphysical tamper/scope testsは6 passed (80.07s)。
+既存機能のfocused回帰command:
+
+```powershell
+python -m pytest -q tests/test_shared_flow.py tests/test_generated_fonts.py tests/test_generated_block_canonical.py tests/test_continuation.py tests/test_boundary_destination.py tests/test_multi_destination.py tests/test_continuation_caller_to_shared_flow.py tests/test_operator_nesting.py tests/test_editable.py tests/test_mutation.py tests/test_transaction.py --basetemp tmp/source-owned-regressions
+```
+
+既存focusedは180 passed / 1 failed。失敗はsource prefixが毎回増えることを要求した旧期待値で、
+grow/second/noopの実測offsetはいずれも2,165だった。同じ前提のclip testも含めて期待値を更新し、
+次の再検証で**3 passed (235.48s)**。runtimeの変更はない。
+
+```powershell
+python -m pytest -q tests/test_boundary_destination.py::test_same_transaction_mutation_before_or_after_the_boundary tests/test_clip_boundary.py::test_a_source_rewrite_before_the_clip_leaves_its_authority_alone --basetemp tmp/source-owned-boundary-final
+```
+
+最終runtimeに対するfull suiteは次のcommandで**1回だけ**実行し、
+**1,196 passed / 4 failed / 2 skipped (9,471.34s)**だった。
+
+```powershell
+python -m pytest -q --basetemp tmp/source-owned-full --durations=15
+```
+
+4 failuresは上記boundary/clipの旧期待値2件と、`test_scope_boundary.py`の
+`test_same_transaction_edits_around_the_scope_keep_it[before/suffix]`。
+後者も毎回のsource累積を期待しており、実測はscope openingが2,392、Qまでのgapが2,437で各stageとも安定した。
+boundary/clipはfullのcollection後、scopeはfull完了後に旧期待値を修正した。
+新仕様に合わせて初回の位置移動と以後の安定性をassertし、該当4条件をfocusedで再検証した。
+結果は**4 passed (255.34s)**。
+
+```powershell
+python -m pytest -q tests/test_scope_boundary.py::test_same_transaction_edits_around_the_scope_keep_it --basetemp tmp/source-owned-scope-final
+```
+
+runtimeはfull suite開始後に変更していない。full suiteの再実行は行わず、修正したtestだけを再検証した。
+full実行で生成したlifecycle fixtureもcollectorで再計測し、公開summaryと全bytesの一致を確認した。
+2 skipsはAES-128/AES-256の保存テスト（pypdfのAES provider未導入）。source ownershipのPoppler比較は実行済み。
+PR #31原本のWindows external validationは実施しない。page 4/5のeligibilityは次の検証対象であり、
+このsynthetic結果を実PDFの+18,732 bytes/no-opの解消へ外挿しない。
+
+Claude Opus 5.5の独立レビューはhead `8d72d3b6233ea7ea16328ec56e4f46560730cd47`に対して
+**PASS — READY FOR WINDOWS EXTERNAL VALIDATION**。`source_output_canonical.py`はruntimeの
+`open_shared_flow`・`inventory`・`grammar`を使って測定するだけで、ownership判定を別実装していないこと、
+summaryのengine digestとfirst/noop1-3・second/empty/regrowの数値が本文と一致することを確認した。
+レビューでは`tests/test_source_ownership.py`、`tests/test_generated_block_canonical.py`と更新した
+boundary/clip/scopeの3 test関数を再実行し、72 passed / 1 skipped（Poppler未導入）。full suite・実PDFは再実行していない。
+non-blocking事項は[設計§12](../../docs/source-slot-rewrite-ownership.md#12-実装の独立レビュー結果)を参照。

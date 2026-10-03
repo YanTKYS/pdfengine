@@ -1211,3 +1211,26 @@ Claude Opus 5.5の独立レビューはhead `bd56485075bd5f55c08380ae23658c4807f
 コードと照合した。summary数値を再計算し、helper 4 passed・focused 12 passedを再確認した。
 marker認識・body grammar・entry digest不変量・matrix補足・v1 scopeの5点は実装PRで固定する
 non-blocking事項として[設計§10](source-slot-rewrite-ownership.md#10-独立レビュー結果)に記録した。
+
+## Source slot ownershipの実装 — 2026-10-03
+
+起点`9cb6e0704f7caf062cbaf1460f0184409c344753`。新規shared-flow v2のtext source slotを、
+初回だけ固定するsource residue/bridgeと、current text/style bodyのstable marker islandに分離した。
+current PDF＋sidecarからmarker・grammar・glyph/witness包含・entry contextを再証明し、owned bodyだけを
+1 mutationで置換する。v1はv1のordinary rewriteを維持し、自動upgradeしない。
+content ownershipは既存generated font/continuation authorityと独立している。
+
+synthetic first/noop1/noop2/noop3はbody 360 bytes/42 operators、page 654 bytes/51 operatorsで一致し、
+no-op growthは0。second→noop、empty→noop→regrowも固定bridgeとidentityを保ち、MuPDF/Popplerでno-op画素一致。
+複数slotのfinal rebind、retained font、CTM/q/矩形clip、scope/tamper拒否、continuation共存、rollbackを検証した。
+詳細・実record・SHAは[実装結果](source-slot-rewrite-ownership.md#11-実装済みsynthetic-contract--2026-10-03)、
+command/test結果は[評価README](../evaluations/continuation/README.md#source-output-canonical実装--2026-10-03)を参照。
+PR #32のhistorical evidenceは保持する。general editableはNOT READY。
+PR #31実原本は依頼どおり未評価で、page 4/5のsource-output-v1 eligibilityは未確認。
+
+Claude Opus 5.5の独立レビューはhead `8d72d3b6233ea7ea16328ec56e4f46560730cd47`に対して
+**PASS — READY FOR WINDOWS EXTERNAL VALIDATION**。current-only ownership再証明、gap限定marker、
+構造grammar、単一formatter、固定bridge、entry context不変量、runtimeでのsame-show拒否、font ownership分離、
+v1非upgrade、continuation共存、rollbackと、更新した4 test caseの妥当性をコードと照合した。
+新規・更新testを再実行し72 passed / 1 skipped（Poppler未導入）。non-blocking 5件は
+[設計§12](source-slot-rewrite-ownership.md#12-実装の独立レビュー結果)に記録した。

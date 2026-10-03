@@ -12,7 +12,9 @@ semantic decorationは有力な残課題だが、この二段落には移動す�
 
 ## Identityとcapacityの分離
 
-`shared_flow.py`の`pdfengine-shared-flow-1`は次を分離する。
+`shared_flow.py`の新規confirmは`pdfengine-shared-flow-2`を返し、次を分離する。
+v2のtext source slotは[current outputのownership](source-slot-rewrite-ownership.md#11-実装済みsynthetic-contract--2026-10-03)を持つ。
+既存`pdfengine-shared-flow-1`のopen/editは従来のsource rewriteを維持し、自動upgradeしない。
 
 | データ | 役割 |
 |---|---|

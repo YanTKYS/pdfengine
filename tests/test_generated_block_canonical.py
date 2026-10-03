@@ -4,7 +4,8 @@ A re-edit of an existing generated slot replaces the body between the
 block's own markers with exactly what a creation writes for the current
 fragment; superseded operators are not kept, so no-op saves do not grow the
 page program. Ownership is the verified destination binding of this
-revision; source slots and legacy bindings keep the ordinary rewrite.
+revision; source slots have a separate ownership contract and legacy
+continuation bindings keep the ordinary rewrite.
 """
 from collections import Counter
 from copy import deepcopy
@@ -212,12 +213,13 @@ def test_each_destination_rewrites_only_its_own_block(tmp_path):
     assert {r: block_of(out3, state3, 'dest-' + r) for r in slots} == after
 
 
-def test_source_slots_keep_the_ordinary_rewrite(tmp_path):
+def test_source_slots_use_their_own_rewrite_contract(tmp_path):
     source, state = prepared(tmp_path)
     out, state, _ = saved(tmp_path, source, state, change(state, LONG), 'grow')
     out, state, report = saved(tmp_path, out, state, {}, 'noop')
     page1 = report['mutation_map'][1]['mutations']
-    assert page1 and all(m['kind'] != REWRITE for m in page1)
+    from pdfeditor.source_ownership import REWRITE as SOURCE_REWRITE
+    assert page1 and all(m['kind'] == SOURCE_REWRITE for m in page1)
     assert {m['owner'] for m in page1} == {'slot-0'}
     assert [m['owner'] for m in rewrites(report, 2)] == [slot_id(state['continuation_destinations']['empty'])]
 
