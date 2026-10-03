@@ -1,0 +1,2212 @@
+{
+  "base": "0e468ff7fd3abd76612b5de6cffd2444f8135a2f",
+  "runtime_sha256": "d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea",
+  "python": "3.12.14",
+  "pymupdf": "1.27.2.3",
+  "method": "Current runtime only; no paint ownership parser or writer",
+  "cases": {
+    "lifecycle": {
+      "initial": {
+        "page": {
+          "bytes": 200,
+          "operators": 23,
+          "text_token_bytes": 119,
+          "path_token_bytes": 51,
+          "path_operators": 6,
+          "fill_operators": 3,
+          "n": 0,
+          "q": 0,
+          "Q": 0
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"anchors":{"paragraph_sha256":"f79510b8d34f76d445504a5aa6af99d021b74f9d46b35674cdeb4f547e0b4220","element_sha256":"b866b52f8f68b42b861476fa6402d7660493d20570677c0523878a1e3895e2ed","underlines":[{"source_ids":["path-c53f79daa2532bc54ee2d8d1ff74ae8ef15b2dc20253bc406285653342425526","path-f8022cbf9715f977c5bb11ab6f7f77663e3c9386ef2661c403e85b14de0524fc"],"range":[0,18]}],"fixed_relations":[{"source_id":"path-3eabd53eee97307aeb6f90dde2ec54690fcfd19940551953145cee627163810d","relation":"backgrounds","behavior":"fixed-to-page"}]},"element_sha256":"b866b52f8f68b42b861476fa6402d7660493d20570677c0523878a1e3895e2ed"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 2225,
+          "operators": 215,
+          "text_token_bytes": 1647,
+          "path_token_bytes": 279,
+          "path_operators": 24,
+          "fill_operators": 4,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "program_sha256": "8121ff8114fd1e0af332b9bed17cad746c94a6577e816416105783ea45488156",
+        "bindings": [
+          {"text":"ONE FIVE SEVEN THREE FOUR","styles":2,"paragraph_sha256":"93f8a172ddf9181bc7059293ed18edc10bd91ef6f45ffb713281ebfd1d315345","element_sha256":"4e6e92e6a51e9299a63ff56eefa775023e3db1ce6628a436840d3da589e04ea1","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-7c6c4c72af718248ad6603ce76e57ad2dc042327e34a130de32af24376e5a6d2","path-717115d023ca985d161a1eb1c8065d265c69ec01a46318f6724c74bc7524dffe","path-efb60a64ea563a19c73abee83f4e11bc6872bef169e502d3db9437d58509dc54"],"range":[0,25],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-022f6eaee88f9bcd0bbac0cca6c9661b5f46935360230d78f8f473f97654d326","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":4,"current_anchor_paints":3,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,71.90937805175781,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,97.65312957763672,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,93.30000305175781,48.799991607666016,94.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":69230,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 2025,
+          "operators": 192,
+          "text_token_bytes": 1528,
+          "path_token_bytes": 228,
+          "path_operators": 18,
+          "fill_operators": 1,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 4,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 2,
+              "delta_bytes": 1773,
+              "delta_operators": 172
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 252,
+              "delta_operators": 20
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":251,"sha256":"246ad6d8265adab16b30da83af78fd6c162be8afce5f1fda3af1e0dd2a576eb0","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[92,93],"output_start":1828}
+        ]
+        },
+        "other_page_program_equal": true,
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 228,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 34,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop1": {
+        "page": {
+          "bytes": 4253,
+          "operators": 407,
+          "text_token_bytes": 3186,
+          "path_token_bytes": 499,
+          "path_operators": 42,
+          "fill_operators": 4,
+          "n": 5,
+          "q": 4,
+          "Q": 4
+        },
+        "program_sha256": "24d4f0d3516c55b9178fad849983e7077c08f4b34b2d505d6a75627ea1ea7bf2",
+        "bindings": [
+          {"text":"ONE FIVE SEVEN THREE FOUR","styles":2,"paragraph_sha256":"5770fd1fe12eb3ddcc5b1c1d3c20850beec946c7614a877a402582bed9bf3fa5","element_sha256":"903dda79dcc68646de54ac740892e69689b3e55937d5a6da6e4284fd04132602","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"5a4efe2524df1df9f162d4270fd2e4b81a483f7450c44adf24c7d8c37bf74ec1","groups":[{"source_ids":["path-f2166c0a93a526ce3b3a1150235a13fcc48d3bec964f30944f778dd10b0319f5","path-402a116a6d007ed861114ed019cdea0182681fe5c73665311149098be1856657","path-a59a4790f889f81e513ed8b93535d128bfeed78cc3bbe7119e0fc9e61c6329de"],"range":[0,25],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-fac3d0d6487dbd10d9841eaa6952d837f88cf1cb423cb954b32d3836c4c2b429","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":4,"current_anchor_paints":3,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,71.90937805175781,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,97.65312194824219,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,93.30000305175781,48.799991607666016,94.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":103993,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 2028,
+          "operators": 192,
+          "text_token_bytes": 1539,
+          "path_token_bytes": 220,
+          "path_operators": 18,
+          "fill_operators": 0,
+          "n": 3,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 26,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 23,
+              "delta_bytes": 1784,
+              "delta_operators": 172
+            },
+            "decoration / None": {
+              "count": 3,
+              "delta_bytes": 244,
+              "delta_operators": 20
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":243,"sha256":"a58314eb44433c04aa59b7a44c958db6c9d1c24415157eaf5a949b04edcd6564","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[1910,1911],"output_start":3696}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 220,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 262,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop2": {
+        "page": {
+          "bytes": 6281,
+          "operators": 599,
+          "text_token_bytes": 4725,
+          "path_token_bytes": 719,
+          "path_operators": 60,
+          "fill_operators": 4,
+          "n": 8,
+          "q": 6,
+          "Q": 6
+        },
+        "program_sha256": "8e3c7ed7bc1573ad47fc32a17227f0740301fe60da37d6d6ecb2a4a00a37373b",
+        "bindings": [
+          {"text":"ONE FIVE SEVEN THREE FOUR","styles":2,"paragraph_sha256":"96bfeaa5a4d253b80d6d852c42c6f8659741bbd26c334996a3bd79a3f48cea08","element_sha256":"7b2e57fdd2d52e268e96fb8e74d17119edf7a99acc896326a80bc8b939ae2345","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"ea7a3ba0dd93555d2c378b1124dd211a136097ce94743b317b550ec95c7a29db","groups":[{"source_ids":["path-3a8b261a18d308896c764e389b8f5d828cb5058bea30f388c6d4509b14b1e735","path-5838089935c1871d32249e386ce62f228d9a72922e6127d5ec8a60d65ba0a8c5","path-8eae6a7b404b6ae59dccd0905533cff4620fce414cc5d82961e5b8f3b36a0485"],"range":[0,25],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-3c8b89f4a32e3120908fda7e7f0c6b60203a1eed1768d9f32415ef6d9c88060b","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":4,"current_anchor_paints":3,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,71.90937805175781,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,97.65312194824219,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,93.30000305175781,48.799991607666016,94.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":138702,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 2028,
+          "operators": 192,
+          "text_token_bytes": 1539,
+          "path_token_bytes": 220,
+          "path_operators": 18,
+          "fill_operators": 0,
+          "n": 3,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 26,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 23,
+              "delta_bytes": 1784,
+              "delta_operators": 172
+            },
+            "decoration / None": {
+              "count": 3,
+              "delta_bytes": 244,
+              "delta_operators": 20
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":243,"sha256":"a58314eb44433c04aa59b7a44c958db6c9d1c24415157eaf5a949b04edcd6564","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[3778,3779],"output_start":5564}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 220,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 482,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop3": {
+        "page": {
+          "bytes": 8309,
+          "operators": 791,
+          "text_token_bytes": 6264,
+          "path_token_bytes": 939,
+          "path_operators": 78,
+          "fill_operators": 4,
+          "n": 11,
+          "q": 8,
+          "Q": 8
+        },
+        "program_sha256": "f870cf4aec28a4c2cf9a68ab7c189ac78653d70244e41f7482c6382481cd956c",
+        "bindings": [
+          {"text":"ONE FIVE SEVEN THREE FOUR","styles":2,"paragraph_sha256":"67dd21695d409b97ba232f51b6a1d5b37526cfda17b3642cd8f959edcc70a441","element_sha256":"120e9fe13d248baf80e3d7560df8f4670ec7a467c57047e9fa95453a331e604e","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"ae3314c4d5628a2819b12d962a4ca665956143c4c39e978d6de1219f7aa4cbbd","groups":[{"source_ids":["path-e4cfe15e28188bcf987adb6d7ea7fe3b0330ace95bccfadf32d1896c09be3ee0","path-11b2c698b2d570dd5f04732e2af8a0568ed349d5ba5fcfa71adcd98ae919e438","path-e250092c7aaa2dbddb38cea97c2ba6e2b8e28866e0ff7776da7da69e9429aecf"],"range":[0,25],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-51b3623a644d88afff16214c7830a49b8ea93fba05d1651fd2019b8b6184d02d","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":4,"current_anchor_paints":3,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,71.90937805175781,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,97.65312194824219,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,93.30000305175781,48.799991607666016,94.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":173411,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 2028,
+          "operators": 192,
+          "text_token_bytes": 1539,
+          "path_token_bytes": 220,
+          "path_operators": 18,
+          "fill_operators": 0,
+          "n": 3,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 26,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 23,
+              "delta_bytes": 1784,
+              "delta_operators": 172
+            },
+            "decoration / None": {
+              "count": 3,
+              "delta_bytes": 244,
+              "delta_operators": 20
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":243,"sha256":"a58314eb44433c04aa59b7a44c958db6c9d1c24415157eaf5a949b04edcd6564","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[5646,5647],"output_start":7432}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 220,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 702,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "change": {
+        "page": {
+          "bytes": 9998,
+          "operators": 949,
+          "text_token_bytes": 7578,
+          "path_token_bytes": 1091,
+          "path_operators": 90,
+          "fill_operators": 3,
+          "n": 14,
+          "q": 10,
+          "Q": 10
+        },
+        "program_sha256": "11f63efc5a42486d7b43eb35b47d3b092623890fd40865a0de10aa48ffea3a59",
+        "bindings": [
+          {"text":"ONE SEVEN THREE FOUR","styles":2,"paragraph_sha256":"ba46e7f047e98d2a3f05a8f3c0a17ed426184e4dd0411ff70f69282586ecf621","element_sha256":"a1cc6544732fda967bd52f79bfab13b12603319033a89565c0455155ac30b0f7","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"c3a542d9169a2b0bc73bae26feea6b9e05efed03dee189b86c57f36d87da7574","groups":[{"source_ids":["path-d7e202bc7ba5678b5decb92a31d3202e25cdf4ad7c08ad97628857609f00e169","path-d5dc58c5724d831e7ba6941df4c11fafed68a014283a5a19836d3752e44a65cc"],"range":[0,20],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-16fe26a12c2666069c2b02e5c6c084ef4a8c1ca486fb8efe4be56621f8d9f511","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,83.25312805175781,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":196049,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1689,
+          "operators": 158,
+          "text_token_bytes": 1314,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": -1,
+          "n": 3,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 26,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 23,
+              "delta_bytes": 1519,
+              "delta_operators": 144
+            },
+            "decoration / None": {
+              "count": 3,
+              "delta_bytes": 170,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":169,"sha256":"27e776235bb0932653fdb2e213d3dfe5298e04db1beac4bb5406b12fdbcaeeb1","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[7514,7515],"output_start":9035}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 922,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "change_noop": {
+        "page": {
+          "bytes": 11662,
+          "operators": 1107,
+          "text_token_bytes": 8869,
+          "path_token_bytes": 1241,
+          "path_operators": 102,
+          "fill_operators": 3,
+          "n": 16,
+          "q": 12,
+          "Q": 12
+        },
+        "program_sha256": "ab118475b2a5909fa10597a43aa850e71f58911cbf2ce8e92e9db4cd21244376",
+        "bindings": [
+          {"text":"ONE SEVEN THREE FOUR","styles":2,"paragraph_sha256":"e231364e3581687820447f0773ae1d77ea26e87ae5a330ff426c0423988fb4ab","element_sha256":"98dd29a99ad661124171ad891b5fa0a2ea31ab7a92d6362679fc4b1f5bbdb2be","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"9fd008722740f5c77cf38440e7540e3c80308baf9e5d3edc2b9a2ad5d13c28f6","groups":[{"source_ids":["path-bc97994d652456addfc97eecd0f56d685f8006ed52ad54538b589920a1b6c65b","path-48fbfb0332f5222b23c39ad317619e7d975a30f803e220979ab0ab85a3d684b9"],"range":[0,20],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-196983dac682c05053ecda7211af47cde83559707ccbe3145492633874022689","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,83.25312805175781,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99998474121094,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":225270,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1664,
+          "operators": 158,
+          "text_token_bytes": 1291,
+          "path_token_bytes": 150,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 21,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 19,
+              "delta_bytes": 1496,
+              "delta_operators": 144
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 168,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":167,"sha256":"0a4d663b45af71b456c54e24e683c76c53e28464b043f0633a58a7ede2ec7c7c","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[9117,9118],"output_start":10615}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 150,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 1074,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "empty": {
+        "status": "refused",
+        "reason": "empty element paint relations require explicit dormant decoration/ownership semantics",
+        "pdf_published": false,
+        "sidecar_published": false
+      },
+      "empty_noop": {
+        "status": "unreachable",
+        "reason": "empty revision was not published"
+      },
+      "regrow": {
+        "status": "unreachable",
+        "reason": "empty revision was not published"
+      }
+    },
+    "multiple": {
+      "initial": {
+        "page": {
+          "bytes": 200,
+          "operators": 23,
+          "text_token_bytes": 119,
+          "path_token_bytes": 51,
+          "path_operators": 6,
+          "fill_operators": 3,
+          "n": 0,
+          "q": 0,
+          "Q": 0
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"anchors":{"paragraph_sha256":"f79510b8d34f76d445504a5aa6af99d021b74f9d46b35674cdeb4f547e0b4220","element_sha256":"b866b52f8f68b42b861476fa6402d7660493d20570677c0523878a1e3895e2ed","underlines":[{"source_ids":["path-c53f79daa2532bc54ee2d8d1ff74ae8ef15b2dc20253bc406285653342425526"],"range":[0,7]},{"source_ids":["path-f8022cbf9715f977c5bb11ab6f7f77663e3c9386ef2661c403e85b14de0524fc"],"range":[8,18]}],"fixed_relations":[{"source_id":"path-3eabd53eee97307aeb6f90dde2ec54690fcfd19940551953145cee627163810d","relation":"backgrounds","behavior":"fixed-to-page"}]},"element_sha256":"b866b52f8f68b42b861476fa6402d7660493d20570677c0523878a1e3895e2ed"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 1753,
+          "operators": 169,
+          "text_token_bytes": 1311,
+          "path_token_bytes": 203,
+          "path_operators": 18,
+          "fill_operators": 3,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "program_sha256": "3a39a65eaec564f6e1bbd83fc5ef18baa7f33d2004e53d4075145984eb318d54",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"20289a1a8a4c97e87621dbb3b02e4f66d1ee0a303eb7a90940ff17cece41044f","element_sha256":"81c91869473275391877d0e3f16be9797ab579073879b063268ba0401c75822d","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-06f9004d3df1f4f95521f3afcd7de4deeb3301316be3ce280a05c69ec241d67a"],"range":[0,7],"start_affinity":"reject","end_affinity":"reject"},{"source_ids":["path-4f7d95f303ab99fb37bd29d2417bde4daa164b172b93348528aad93c478da8f9"],"range":[8,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-24c634397868138b8ddcd70522e67a8938f268f63bb9af1fca398621baf60937","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":53805,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1553,
+          "operators": 146,
+          "text_token_bytes": 1192,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "mutation": {
+          "count": 4,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 2,
+              "delta_bytes": 1377,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 176,
+              "delta_operators": 16
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":87,"sha256":"6c5da76be46c84cc4cc8a5afb9fdb8d1bcf5b4f852c8872ce09e8f32e5fb745e","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[92,93],"output_start":1432},
+          {"bytes":87,"sha256":"c98892fc5dbe4a423c86e51368f5f61449c1442be9904ef2422e4e9b67d70e2c","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[157,158],"output_start":1624}
+        ]
+        },
+        "other_page_program_equal": true,
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 34,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop1": {
+        "page": {
+          "bytes": 3270,
+          "operators": 315,
+          "text_token_bytes": 2467,
+          "path_token_bytes": 355,
+          "path_operators": 30,
+          "fill_operators": 3,
+          "n": 4,
+          "q": 6,
+          "Q": 6
+        },
+        "program_sha256": "91f8f0351ca39c0c02b36157a8661019f1c91833f9e1bd8828ee759b32e27b83",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"c77014b6057f16b721c63261e4f445ea7f323d00628c39ac1f6eb66498327bb5","element_sha256":"e63998cbeecd351d54c793cf826eca4f9258be2e02faa871e08164ca78e73edd","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"a31d6f915db9bea71cf9e1eb1540ae21af4a40befb7afc756839f30aa6263730","groups":[{"source_ids":["path-5a23667e52bd77149ce6d4f1c99190c1b2b17af19bfbaf3526a7e8eb769408aa"],"range":[0,7],"start_affinity":"reject","end_affinity":"reject"},{"source_ids":["path-5c1f6e565639d814ca7c53752c32e31b61629e3e122aff18f6fc1286c0fe8c4d"],"range":[8,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-77cca4ef83393c1266a7634494816a0f5307813d885773936114f7936a1f136a","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":80259,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1517,
+          "operators": 146,
+          "text_token_bytes": 1156,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1341,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 176,
+              "delta_operators": 16
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":87,"sha256":"6c5da76be46c84cc4cc8a5afb9fdb8d1bcf5b4f852c8872ce09e8f32e5fb745e","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[1514,1515],"output_start":2857},
+          {"bytes":87,"sha256":"c98892fc5dbe4a423c86e51368f5f61449c1442be9904ef2422e4e9b67d70e2c","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[1706,1707],"output_start":3137}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 186,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      }
+    },
+    "styles": {
+      "initial": {
+        "page": {
+          "bytes": 218,
+          "operators": 25,
+          "text_token_bytes": 135,
+          "path_token_bytes": 51,
+          "path_operators": 6,
+          "fill_operators": 3,
+          "n": 0,
+          "q": 0,
+          "Q": 0
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":2,"anchors":{"paragraph_sha256":"b4616e32760fb95e61d603c00ae00df067b2e496b046f57ada8b90c4e3d967fa","element_sha256":"30d4e79331ae780f6b4372826c4e3cb9cac81d138a6ec7dd96093e7566fb071b","underlines":[{"source_ids":["path-34fd465ab528b5befd37d8fd3802b286615327fab45cbd3b97087fbc650735b1","path-134f5351f76a04d36120b5616b51274731c95cf781802f82e580fef1312d030d"],"range":[0,18]}],"fixed_relations":[{"source_id":"path-14b751447d1ded67bec56aa25101aea45912447030684c80435beac272ad08f3","relation":"backgrounds","behavior":"fixed-to-page"}]},"element_sha256":"30d4e79331ae780f6b4372826c4e3cb9cac81d138a6ec7dd96093e7566fb071b"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 1755,
+          "operators": 169,
+          "text_token_bytes": 1317,
+          "path_token_bytes": 203,
+          "path_operators": 18,
+          "fill_operators": 3,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "program_sha256": "5d580404f9e8eafcf9bd12a78f50dc018e7db9f2dd486acb5341c5f2006b67d6",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":2,"paragraph_sha256":"9675f17d6959f09a350c299f7df0b6f77e0f2b017e497cdcbd1d679ef9286102","element_sha256":"05d9d064201b421b2587a7df1f7b93cd5569c724fa1c7976922387e03661ae06","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-a7db84bdf52de527b352d48f944748442dbda2d25b736827465a5ce3f3bfbd84","path-4505e1d5d42efd1541a953c0f8838bfdd2066ab1bccc8cf85fe19beb3aa1b84e"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-9c837195c73cb72aaaa89724c16405b27094dc19f385d68983d381b877e7d9f2","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":54264,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1537,
+          "operators": 144,
+          "text_token_bytes": 1182,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 5,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 3,
+              "delta_bytes": 1367,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 170,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":169,"sha256":"56084807313cde61e8d70b2238cc0270e6fd688fb6db2ba4b476f663750f0957","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[110,111],"output_start":1440}
+        ]
+        },
+        "other_page_program_equal": true,
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 34,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop1": {
+        "page": {
+          "bytes": 3257,
+          "operators": 313,
+          "text_token_bytes": 2464,
+          "path_token_bytes": 355,
+          "path_operators": 30,
+          "fill_operators": 3,
+          "n": 4,
+          "q": 4,
+          "Q": 4
+        },
+        "program_sha256": "5c09fac1095ff02cab27ebec57a3f8b3fc5447563c9bf4c82b7487370994bb00",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":2,"paragraph_sha256":"a7042c045652ad3b8491f9a06e875c523edca35938db3fcdb78656aff8023458","element_sha256":"562f56d738194b8ab6a92ab5dbe9dd7e1ef95ae0db3618900a8466d4e8409cea","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"b73c705cf401606550b5c55de12b1d9ae6441eeefa2ebb34497232c9337f1f6a","groups":[{"source_ids":["path-426e64c9b5a708048354aa82ea72431351aa8f30c1ab7354b223da6cd8d77244","path-37edbc09ca81b285e4524ccaaac05eb0dea3ecd01a6ff53f07c74edfe6c7e49f"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-f55becb95132c3e374ae4e9956a1241f680f4acf1ccab5e1c1b2172145dd8358","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":80359,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1502,
+          "operators": 144,
+          "text_token_bytes": 1147,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1332,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 170,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":169,"sha256":"56084807313cde61e8d70b2238cc0270e6fd688fb6db2ba4b476f663750f0957","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[1522,1523],"output_start":2856}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 186,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      }
+    },
+    "two": {
+      "initial": {
+        "page": {
+          "bytes": 130,
+          "operators": 14,
+          "text_token_bytes": 80,
+          "path_token_bytes": 37,
+          "path_operators": 4,
+          "fill_operators": 2,
+          "n": 0,
+          "q": 0,
+          "Q": 0
+        },
+        "bindings": [
+          {"text":"ONE TWO","styles":1,"anchors":{"paragraph_sha256":"359b5f947f39c0bdda59462cd1d77a290dc33edbe283870e3ebf4de0ac689835","element_sha256":"df34587a923417bd56a38527b28c319e1433483f5ccc0651725226652078e128","underlines":[{"source_ids":["path-58a31c390a90b778ee0e87cb515db4f8966c001e49d295124d98a2b0b5b760b5"],"range":[0,7]}],"fixed_relations":[]},"element_sha256":"df34587a923417bd56a38527b28c319e1433483f5ccc0651725226652078e128"},
+          {"text":"NEXT ONE","styles":1,"anchors":{"paragraph_sha256":"67933f803589862e5fd5cc261e28f6736bb9474525272902ba4d03f9600a3563","element_sha256":"523cc7f64b3304e098f984e6661d9eee3332921ef5f9af0cbf9cc2810d25037c","underlines":[{"source_ids":["path-30d66eff64d50919984bd6a136ea25293138b056fe9cce0b0ff6110c7b8d6bff"],"range":[0,8]}],"fixed_relations":[]},"element_sha256":"523cc7f64b3304e098f984e6661d9eee3332921ef5f9af0cbf9cc2810d25037c"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 1598,
+          "operators": 157,
+          "text_token_bytes": 1190,
+          "path_token_bytes": 191,
+          "path_operators": 16,
+          "fill_operators": 2,
+          "n": 2,
+          "q": 4,
+          "Q": 4
+        },
+        "program_sha256": "06a7ba37153099914506f906ad77e662788c60dddbf406bfe96a8e992e1f09b5",
+        "bindings": [
+          {"text":"ONE TWO","styles":1,"paragraph_sha256":"b7714b01a52912ceb4d345a00471070f8289c4b793352a6187a2d63b729e95c1","element_sha256":"a55f152bcc3a182403ac0b44b2423341ff2d074770e7663892ed374300ebd2e7","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-f4b71b6ec863c9c8250f172ec4ed5a40acd44849de833ec1f6c421a74168df08"],"range":[0,7],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[],"relations":null,"element_path_count":2,"current_anchor_paints":1,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":44048,"has_paint_output_field":false},
+          {"text":"NEXT ONE","styles":1,"paragraph_sha256":"56614cf7ac8fe3c8ba30754426d8d612995d9525e15b526ba3049356c877039d","element_sha256":"7a4cc332ca61f7e1500c6d5f2cf6f10a11245bf2bd745e34711c23eb63c102ae","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-4126d4b9999e2f7468e9b928dc593676dc40084d7aa0f9c1936398714113e9bf"],"range":[0,8],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[],"relations":null,"element_path_count":2,"current_anchor_paints":1,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[200.0,61.30000305175781,257.5999755859375,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":44565,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1468,
+          "operators": 143,
+          "text_token_bytes": 1110,
+          "path_token_bytes": 154,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 4,
+          "Q": 4
+        },
+        "mutation": {
+          "count": 4,
+          "by_kind_owner": {
+            "text-edit / paragraph-0": {
+              "count": 1,
+              "delta_bytes": 605,
+              "delta_operators": 60
+            },
+            "decoration / paragraph-0": {
+              "count": 1,
+              "delta_bytes": 88,
+              "delta_operators": 8
+            },
+            "text-edit / paragraph-1": {
+              "count": 1,
+              "delta_bytes": 685,
+              "delta_operators": 67
+            },
+            "decoration / paragraph-1": {
+              "count": 1,
+              "delta_bytes": 90,
+              "delta_operators": 8
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":87,"sha256":"6c5da76be46c84cc4cc8a5afb9fdb8d1bcf5b4f852c8872ce09e8f32e5fb745e","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[62,63],"output_start":669},
+          {"bytes":89,"sha256":"229f1157375aa1f92f90dd8e6410f6909fb8f8533e6f49cc4b87043924f75151","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[129,130],"output_start":1509}
+        ]
+        },
+        "other_page_program_equal": true,
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 154,
+          "fixed_path_token_bytes": 0,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 37,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        }
+      },
+      "noop1": {
+        "page": {
+          "bytes": 3038,
+          "operators": 300,
+          "text_token_bytes": 2272,
+          "path_token_bytes": 345,
+          "path_operators": 28,
+          "fill_operators": 2,
+          "n": 4,
+          "q": 8,
+          "Q": 8
+        },
+        "program_sha256": "8be409632e026611a28f5818dcf97cb6b3f8c8594153b2a09c97f79f2db652e1",
+        "bindings": [
+          {"text":"ONE TWO","styles":1,"paragraph_sha256":"025c420ba7b7c5ab403b0fd36e49f698ff3f1f29e6ad08dc6ac94f99b6db56a9","element_sha256":"f217731d18eea3ec6677990a2f439ab8f1471830919829216649190736cfae89","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"f38e32ce93272b7860d827bbed5ef662d4229a083bd6fca1ef2781f3eebb1c6c","groups":[{"source_ids":["path-c8fd5bd5148c833e5a4a2b084cdc205a23b147d3b804df38ddce0423c9e1887d"],"range":[0,7],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[],"relations":null,"element_path_count":2,"current_anchor_paints":1,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":70034,"has_paint_output_field":false},
+          {"text":"NEXT ONE","styles":1,"paragraph_sha256":"8dbbfc3fd35879d1d564557a38c22c005fae18605c97f5f17b4d4e1c57ab9fec","element_sha256":"c13ee3dedad2fd8fca7030f188f665bb7032140273ab124b2270cda5c224e075","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"d53e7a7ce20383ffc4e84ea9e4b6b08d4c43a5309803707da9d2fb79b5e063dc","groups":[{"source_ids":["path-79e69fdb2c74658e965eb5bb0e4cba955147365e4d202a4a9b33bf075267d419"],"range":[0,8],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[],"relations":null,"element_path_count":2,"current_anchor_paints":1,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[200.0,61.30000305175781,257.5999755859375,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":70565,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1440,
+          "operators": 143,
+          "text_token_bytes": 1082,
+          "path_token_bytes": 154,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 4,
+          "Q": 4
+        },
+        "mutation": {
+          "count": 17,
+          "by_kind_owner": {
+            "text-edit / paragraph-0": {
+              "count": 7,
+              "delta_bytes": 592,
+              "delta_operators": 60
+            },
+            "decoration / paragraph-0": {
+              "count": 1,
+              "delta_bytes": 88,
+              "delta_operators": 8
+            },
+            "text-edit / paragraph-1": {
+              "count": 8,
+              "delta_bytes": 670,
+              "delta_operators": 67
+            },
+            "decoration / paragraph-1": {
+              "count": 1,
+              "delta_bytes": 90,
+              "delta_operators": 8
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":87,"sha256":"6c5da76be46c84cc4cc8a5afb9fdb8d1bcf5b4f852c8872ce09e8f32e5fb745e","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[751,752],"output_start":1345},
+          {"bytes":89,"sha256":"229f1157375aa1f92f90dd8e6410f6909fb8f8533e6f49cc4b87043924f75151","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[1593,1594],"output_start":2945}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 154,
+          "fixed_path_token_bytes": 0,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 191,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        }
+      }
+    },
+    "unrelated": {
+      "initial": {
+        "page": {
+          "bytes": 303,
+          "operators": 25,
+          "text_token_bytes": 119,
+          "path_token_bytes": 68,
+          "path_operators": 8,
+          "fill_operators": 4,
+          "n": 0,
+          "q": 0,
+          "Q": 0
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"anchors":{"paragraph_sha256":"a2ff6cb89dd708dfcd446a341c58694768e0eee4b70709c9cccfce4ef7f62ac6","element_sha256":"833531fd88deb510794ca918aa389d235522cb486613d90398c92855741a73a3","underlines":[{"source_ids":["path-ac7d0b650539488163fb472b0974f292b54af9a7228e6bf07d4a7938e4262bb2","path-24c2256e3191dacc0dfd2abdc615502ba97af0ef989f4cd1469f750dbdfbc49a"],"range":[0,18]}],"fixed_relations":[{"source_id":"path-394b833e5ac18089a4204c937dd536f734060a911efd8085649b3defb6ceb45e","relation":"backgrounds","behavior":"fixed-to-page"}]},"element_sha256":"833531fd88deb510794ca918aa389d235522cb486613d90398c92855741a73a3"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 1850,
+          "operators": 169,
+          "text_token_bytes": 1311,
+          "path_token_bytes": 220,
+          "path_operators": 20,
+          "fill_operators": 4,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "program_sha256": "51e747aff86046562d308b29acca984178ab57b40ca2dd74c1ab8efa9591d24d",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"cfd94985230c720818a299a2fee89a5d7ad6918c2a0a105993b60e8c05465c03","element_sha256":"9fa04c17a8fb34b79e7928eb97f671ed56a8097633784f9c0baed96b34687a24","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-a101c0515f397e08b8b25af1e53cb2a698156ce6737bf033a61f6f8c3a22d9de","path-b83d97cabaf019d03cf2239577e767cbfe97c74878cd1846cc60bdae0c9e9f35"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-99e41dc1f5406272518173fee136dba01f6f8ff9d0a1bf184c9fd897a94b9e1b","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":4,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":56484,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1547,
+          "operators": 144,
+          "text_token_bytes": 1192,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 4,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 2,
+              "delta_bytes": 1377,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 170,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":169,"sha256":"56084807313cde61e8d70b2238cc0270e6fd688fb6db2ba4b476f663750f0957","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[195,196],"output_start":1535}
+        ]
+        },
+        "other_page_program_equal": true,
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 17,
+          "unbound_path_token_bytes": 34,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": [
+            {
+              "source_id": "path-9b1eb0d75e005a740cf54ffbb82089f6ede3db9fd304485b564b1a48e246e902",
+              "fingerprints": [
+                "f720bfa831ba1c032893511abac1edb1d8dfa783c2d8143e1c5197445feecac6"
+              ]
+            }
+          ]
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop1": {
+        "page": {
+          "bytes": 3361,
+          "operators": 313,
+          "text_token_bytes": 2467,
+          "path_token_bytes": 372,
+          "path_operators": 32,
+          "fill_operators": 4,
+          "n": 4,
+          "q": 4,
+          "Q": 4
+        },
+        "program_sha256": "599cbfde2e8eb37eab6e1f999cde92b9198f952260cddace7e74afd65f32b9df",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"4a015bbc6e2202ed6de20f818d717a9cf46e5fd7f75a3a825238d6cfa4ea351d","element_sha256":"0172bfe4d6c8fdd7cfb44a40971042256af922423bea1dd5d9dea3acc520b013","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"3047c3004c994f7b76719efcda8ae0dbf964a5d6ccd0bbc06da6ae1f02487fa1","groups":[{"source_ids":["path-734b3bfb563371d16874c8192d9c5c86325cce53953ff77c47fc17b01ac331ee","path-074206140189e45db1cc9a738dced4c7a474270ff85bb69c19bd272ccc5500d7"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-9cc938d370eeeb0a85fc73dd30eb235061e1dc86d727f5cce0eb852a89e3b5d9","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":4,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":82578,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1511,
+          "operators": 144,
+          "text_token_bytes": 1156,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1341,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 170,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":169,"sha256":"56084807313cde61e8d70b2238cc0270e6fd688fb6db2ba4b476f663750f0957","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[1617,1618],"output_start":2960}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 17,
+          "unbound_path_token_bytes": 186,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": [
+            {
+              "source_id": "path-ddad60836c8338cc094787384a7449a011da62004f368eed0f56f8edfdcc50bd",
+              "fingerprints": [
+                "f720bfa831ba1c032893511abac1edb1d8dfa783c2d8143e1c5197445feecac6"
+              ]
+            }
+          ]
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      }
+    },
+    "q": {
+      "initial": {
+        "page": {
+          "bytes": 236,
+          "operators": 31,
+          "text_token_bytes": 119,
+          "path_token_bytes": 51,
+          "path_operators": 6,
+          "fill_operators": 3,
+          "n": 0,
+          "q": 1,
+          "Q": 1
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"anchors":{"paragraph_sha256":"25ae27fce95f1c413dada1a9181653ef405125601226f96434e6f73b2c182ad9","element_sha256":"b77d063473247e9ef7ea10d819b587b20a4081b0bc4fa168d041e7f39450e998","underlines":[{"source_ids":["path-88e3921c6641916b35f2f397fa1076ce086311dfeae97c8f5499827379380b5f","path-b357f4c70493ddc4cf4c3feb83c3c8ebb198445408663b3d09e6d682f5e16ee3"],"range":[0,18]}],"fixed_relations":[{"source_id":"path-e91356c9647d3158fe98b8159d94613e69d609f16a7c4e8715e6d59a2a7bdac2","relation":"backgrounds","behavior":"fixed-to-page"}]},"element_sha256":"b77d063473247e9ef7ea10d819b587b20a4081b0bc4fa168d041e7f39450e998"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 1783,
+          "operators": 175,
+          "text_token_bytes": 1311,
+          "path_token_bytes": 203,
+          "path_operators": 18,
+          "fill_operators": 3,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "program_sha256": "8ddb1324adbe3c2613aeba8ce9bd77db36d40dbb31998629907546b75bc9e15b",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"0f7730a896437c86aa6b47d73c547a60285fc9cded5ae2a47f0ff9454d911da9","element_sha256":"e6f0959270a49924f92b511c73c559f7fc60cf8718533eb25ce16f27901f1006","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-5d5c781ce56ecfe4d5441fe125534b10073f0aae55a7a4c14346a8fba6076c01","path-ee5511e1d803d5d0376bf95028f94f0da0c423309d846336414ab1bc2a05156d"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-f5543a850574b584f82fb51f36d65ac4b0db817e555f12c60cee23fa251cc40e","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":54784,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1547,
+          "operators": 144,
+          "text_token_bytes": 1192,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 4,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 2,
+              "delta_bytes": 1377,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 170,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":169,"sha256":"56084807313cde61e8d70b2238cc0270e6fd688fb6db2ba4b476f663750f0957","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[126,127],"output_start":1466}
+        ]
+        },
+        "other_page_program_equal": true,
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 34,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop1": {
+        "page": {
+          "bytes": 3294,
+          "operators": 319,
+          "text_token_bytes": 2467,
+          "path_token_bytes": 355,
+          "path_operators": 30,
+          "fill_operators": 3,
+          "n": 4,
+          "q": 5,
+          "Q": 5
+        },
+        "program_sha256": "ff054c6c028f1667e86dec89be707859d18ee54ad8811dc635123e1cfdd4db2a",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"38016d6c75f79eb2bb230d3d98dd82dd9145405957443c258ed09a930d5a780d","element_sha256":"71f4800a9a01e89a25d9751e028608d1bb958c5e899e79b44dc561db6d97cdb2","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"f6f32fd10e53dddc5957faad21b10b0b9a56f2f4aac5f9d7d21ed6b4607977b5","groups":[{"source_ids":["path-7e664f2c825849153ff4eeb4860b3ad682ae255d39a68d3759e2ef580ec88fbd","path-fcb9b4ad0882d7822a1b3c7d55d2a6782a03bd1274bf237f9612981cc62f7de9"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-7fc5b04a2deca3695c6d9bb212ab9157ec72e2695e5ed4457884fe31444c661f","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":80875,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1511,
+          "operators": 144,
+          "text_token_bytes": 1156,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1341,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 170,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":169,"sha256":"56084807313cde61e8d70b2238cc0270e6fd688fb6db2ba4b476f663750f0957","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[1548,1549],"output_start":2891}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 186,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      }
+    },
+    "ctm": {
+      "initial": {
+        "page": {
+          "bytes": 231,
+          "operators": 26,
+          "text_token_bytes": 119,
+          "path_token_bytes": 51,
+          "path_operators": 6,
+          "fill_operators": 3,
+          "n": 0,
+          "q": 1,
+          "Q": 1
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"anchors":{"paragraph_sha256":"5dd72186f837fd281103dccd42d7ce79e0def863df9b15fd96e47aca3d5d7415","element_sha256":"13987c876b54c59a0c8b32d76f9b7062af8ac11bcb773c1f74edd4a85a1c41d4","underlines":[{"source_ids":["path-c1b88c91542147b7b988fe64ff10b3f092171e7cd087efad1e2e4bc788034254","path-2bc102754738293fb623c47bea509c8b63c0fa47610ff9a4c867c24a5a7314b0"],"range":[0,18]}],"fixed_relations":[{"source_id":"path-eec7af66e2959d8909f40768b1305d6fe1380659047e514323022a508410cbb8","relation":"backgrounds","behavior":"fixed-to-page"}]},"element_sha256":"13987c876b54c59a0c8b32d76f9b7062af8ac11bcb773c1f74edd4a85a1c41d4"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 2211,
+          "operators": 170,
+          "text_token_bytes": 1662,
+          "path_token_bytes": 285,
+          "path_operators": 18,
+          "fill_operators": 3,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "program_sha256": "260e0f45898f1d3f3b48616f0c2496bcbce6b60df486beb8bf98153e007b7780",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"6af72b7c752948172c44965a0f2db548195cc62384752ce3b997ecddac40bcb8","element_sha256":"00153097e8b822b14b81fe4db3d229a53daa28e39d84283ec6fce32464f3326d","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-375b6e6e06fb4865327f0feba2b616e836570062da8baa86af9c62bff275ef49","path-8310f722c806b66b9ce11f603f7f545cbef415751811dd100ed4cedabfb4d48f"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-42b5643e642e3a2f0b6b9e2b262e20d175cff782a2cd62f97dfbae10e5757c12","paint_fingerprints":["02cd176ef7a0d54a863b0fdfba3a730f058a012f9110c182576d2149a070f2a6"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[0.8299999833106995,0.0,0.0,-0.9100000262260437,7.25,248.5],"clips":[],"bounds":[23.850000381469727,67.68299865722656,101.53799438476562,68.31999206542969],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[0.8299999833106995,0.0,0.0,-0.9100000262260437,7.25,248.5],"clips":[],"bounds":[23.850000381469727,82.24299621582031,47.75399398803711,82.87998962402344],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":54653,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1980,
+          "operators": 144,
+          "text_token_bytes": 1543,
+          "path_token_bytes": 234,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 4,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 2,
+              "delta_bytes": 1728,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 252,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":251,"sha256":"c16e2761b5c12a15b7cb686287abf518b6277db7aa9c1589d3c36ecb1543c0e7","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[121,122],"output_start":1812}
+        ]
+        },
+        "other_page_program_equal": true,
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 234,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 34,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop1": {
+        "page": {
+          "bytes": 4178,
+          "operators": 314,
+          "text_token_bytes": 3192,
+          "path_token_bytes": 519,
+          "path_operators": 30,
+          "fill_operators": 3,
+          "n": 4,
+          "q": 5,
+          "Q": 5
+        },
+        "program_sha256": "27a38ba22f62d3783ab944995d35e6ab02b5a3cbecba0e8415d54568bbecaa87",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"34c04ffcb8bc91380037bf898b3c01243f2e429270c32589c07dfff5ed365a11","element_sha256":"87ee8ccf17ed322cf0c7a429c96130df4ea055247def11a1a34e8a3a4ca25b6b","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"1b1fd17f48e922745972350ed4294d3c2d5f4adc8830fa75ac0d7897f038260d","groups":[{"source_ids":["path-77dd4a315963cbc6568b70d3d4b535affd22291a9044dc59a9b495aa7de97f10","path-5136b0e420884e4bdb291e846b3481a33fca9bbc33f8fd12f5606276428c3e2d"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-1e5cc1c0feb2c86cbc7e09d4d838ac6a3393c35d0f2326897d25a5ba09312844","paint_fingerprints":["02cd176ef7a0d54a863b0fdfba3a730f058a012f9110c182576d2149a070f2a6"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[0.8299999833106995,0.0,0.0,-0.9100000262260437,7.25,248.5],"clips":[],"bounds":[23.850000381469727,67.68299865722656,101.53800201416016,68.31999206542969],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[0.8299999833106995,0.0,0.0,-0.9100000262260437,7.25,248.5],"clips":[],"bounds":[23.850000381469727,82.24298095703125,47.75399398803711,82.87997436523438],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":80741,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1967,
+          "operators": 144,
+          "text_token_bytes": 1530,
+          "path_token_bytes": 234,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1715,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 252,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":251,"sha256":"86c8c6c3578a60ae050ef2695d54562c7d68ddcc7b71124365304f95a9f96129","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[1936,1937],"output_start":3653}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 234,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 268,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop2": {
+        "page": {
+          "bytes": 6145,
+          "operators": 458,
+          "text_token_bytes": 4722,
+          "path_token_bytes": 753,
+          "path_operators": 42,
+          "fill_operators": 3,
+          "n": 6,
+          "q": 7,
+          "Q": 7
+        },
+        "program_sha256": "0724e5fb50f027dc921a9a1fea909eecb8356c2d63d11784acef6b5759286747",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"1674c4cc2c1340f7946917882661a9bc3410e5e71bc92671b7ee2f30c9c2bd5f","element_sha256":"61d4551947a01f2e36e94717681e90ac86443d420530cd6115aefe762de894d1","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"c8b44663e0f8a794dd154093f08d3232dfcb759184996bfbe7d39a46ad1b1740","groups":[{"source_ids":["path-2115043a858f431b7647e806029f0af6d11774ac3c9e874b6f7dec29b5ca131e","path-f183f244ac04b6d230b19c8d40add6a6fb3b1d087996e2a17310bc68448e7c00"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-ed499d83b10a0d4621f0b71a3a03243b503e302130ccd8f69196efebe16837a6","paint_fingerprints":["02cd176ef7a0d54a863b0fdfba3a730f058a012f9110c182576d2149a070f2a6"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[0.8299999833106995,0.0,0.0,-0.9100000262260437,7.25,248.5],"clips":[],"bounds":[23.850000381469727,67.6829833984375,101.53800201416016,68.31997680664062],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[0.8299999833106995,0.0,0.0,-0.9100000262260437,7.25,248.5],"clips":[],"bounds":[23.850000381469727,82.24298095703125,47.75399398803711,82.87997436523438],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":106768,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1967,
+          "operators": 144,
+          "text_token_bytes": 1530,
+          "path_token_bytes": 234,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1715,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 252,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":251,"sha256":"22290b2aac4096c13e34daccf9fff8ba48fde07f92be1c08accbd9067c59041a","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[3775,3776],"output_start":5492}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 234,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 502,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop3": {
+        "page": {
+          "bytes": 8114,
+          "operators": 602,
+          "text_token_bytes": 6252,
+          "path_token_bytes": 989,
+          "path_operators": 54,
+          "fill_operators": 3,
+          "n": 8,
+          "q": 9,
+          "Q": 9
+        },
+        "program_sha256": "f37d5990b048f4a96147fd566ab57406f35b7fb93b70c8032e5c9b50ad70b576",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"e28e9ea3fa2d03e1acdf1d726876abe43f9677597ca76efd0e55007148e11589","element_sha256":"ca1c4cfa6343cc0a4cd1f0edfda13560f2ae0c942d6d7eba81013580084c8a11","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"19620be392524ecb46a577dec6fe71e7c9bda99b5b790a46274863525694c50b","groups":[{"source_ids":["path-5819e149d863105fcc27c02fc5ad031b4f56a09e642e1961677555f3b8e5d2a4","path-f760dd81831c482ead1f417b2bbbc0826add43718925fe204072d3e47a7f0b99"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-a2285929b5e3de3819d517cd44b71c993254e5916a356d1c8469a941a78f5d1a","paint_fingerprints":["02cd176ef7a0d54a863b0fdfba3a730f058a012f9110c182576d2149a070f2a6"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[0.8299999833106995,0.0,0.0,-0.9100000262260437,7.25,248.5],"clips":[],"bounds":[23.850000381469727,67.6829833984375,101.53800201416016,68.31997680664062],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[0.8299999833106995,0.0,0.0,-0.9100000262260437,7.25,248.5],"clips":[],"bounds":[23.850000381469727,82.24296569824219,47.75399398803711,82.87997436523438],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":132797,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1969,
+          "operators": 144,
+          "text_token_bytes": 1530,
+          "path_token_bytes": 236,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1715,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 254,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":253,"sha256":"7110cbf1684c31e986e099a142190edb95330da85571c6d266c415c1169d0e02","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[5614,5615],"output_start":7331}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 236,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 736,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      }
+    },
+    "clip": {
+      "initial": {
+        "page": {
+          "bytes": 226,
+          "operators": 28,
+          "text_token_bytes": 119,
+          "path_token_bytes": 69,
+          "path_operators": 8,
+          "fill_operators": 3,
+          "n": 1,
+          "q": 1,
+          "Q": 1
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"anchors":{"paragraph_sha256":"10e8cd573988bd4da8d5b01e9cf97ae6c901f901c34d320ffef4502c942f6c9b","element_sha256":"66c56f89ad1fa1a13ad3ebbf2ee1e7060f679bbeb144ad528e78d8cd29230cae","underlines":[{"source_ids":["path-c6d440ac6b8cacb8f85ff76d82f8d8321031d514a6dd9015a956b413bcff974f","path-677a223e16ba047fdacac478f8ad4dbe3c1dbf43325017eb3a7ade8c2c5db31d"],"range":[0,18]}],"fixed_relations":[{"source_id":"path-a8dfda4398d9b30a250df601ed53c34a1ba201dc63aa5313fada77b9b083e994","relation":"backgrounds","behavior":"fixed-to-page"}]},"element_sha256":"66c56f89ad1fa1a13ad3ebbf2ee1e7060f679bbeb144ad528e78d8cd29230cae"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 1773,
+          "operators": 172,
+          "text_token_bytes": 1311,
+          "path_token_bytes": 221,
+          "path_operators": 20,
+          "fill_operators": 3,
+          "n": 3,
+          "q": 3,
+          "Q": 3
+        },
+        "program_sha256": "fb915f549831dbcb6f5c8d72b38187553d096d3f9ad7a38ea385900686e21860",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"ac81c968f0e9b727b8c7b7a59d9d22dfc8d715f65d71351876055c846a31a4ff","element_sha256":"1164e31fc7e59dd4ca6cb79ff3665c13a2efa2310270976ecf85106b093d1e2b","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-e0c74b5f08f9fd1d0d13dc87bfb50e2e50032a4db0593cc2fe5562c0bfe344ac","path-ae4c1ac44ff5d9e2cdd0a38c45984d7869a77207c3b5c74a1d9171cc96171526"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-d67a869a94188c3f29ca6d16ef256a8dfb8bf046929fdbb7833bb96a2d5f566f","paint_fingerprints":["9908387784a105d3522ce93959fc780944dd0be63cac461fcca75aecdfe25219"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[{"kind":"clip-path","geometry":[["m",10.0,140.0],["l",310.0,140.0],["l",310.0,10.0],["l",10.0,10.0],["h"]],"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"even_odd":false}],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[{"kind":"clip-path","geometry":[["m",10.0,140.0],["l",310.0,140.0],["l",310.0,10.0],["l",10.0,10.0],["h"]],"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"even_odd":false}],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":54748,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1547,
+          "operators": 144,
+          "text_token_bytes": 1192,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 4,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 2,
+              "delta_bytes": 1377,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 170,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":169,"sha256":"56084807313cde61e8d70b2238cc0270e6fd688fb6db2ba4b476f663750f0957","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[116,117],"output_start":1456}
+        ]
+        },
+        "other_page_program_equal": true,
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 52,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop1": {
+        "page": {
+          "bytes": 3284,
+          "operators": 316,
+          "text_token_bytes": 2467,
+          "path_token_bytes": 373,
+          "path_operators": 32,
+          "fill_operators": 3,
+          "n": 5,
+          "q": 5,
+          "Q": 5
+        },
+        "program_sha256": "45a8c6dada9626bfd78f669fff8abcb6995c8607114015823ee3356244893cb1",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"d51cb7e95b37a94e6e4b404703b4a2bfb15928198927adbeb52e3037a12ad6a9","element_sha256":"cb928765bc068baa0ebbe98b06082940e375145d9c5a57341a4ac909a343baec","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"3d90b513fcc41b677bfdaa7de6cc2a4dd3c346669869fe84513131b7987d01f1","groups":[{"source_ids":["path-9992eebf33792ca80199bcb97aca22d05cfc4ac8630d8f6bc289b85c5ea54b96","path-39e9d75330ac84ab21b08a06efb3f71c082e4a85c7bb5ad815fd35163d934deb"],"range":[0,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-48c9e804fe398f9f73cc806516ee0cf51b395174addafb0d1c223807867ce729","paint_fingerprints":["9908387784a105d3522ce93959fc780944dd0be63cac461fcca75aecdfe25219"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[{"kind":"clip-path","geometry":[["m",10.0,140.0],["l",310.0,140.0],["l",310.0,10.0],["l",10.0,10.0],["h"]],"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"even_odd":false}],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[{"kind":"clip-path","geometry":[["m",10.0,140.0],["l",310.0,140.0],["l",310.0,10.0],["l",10.0,10.0],["h"]],"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"even_odd":false}],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":80837,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1511,
+          "operators": 144,
+          "text_token_bytes": 1156,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1341,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 170,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":169,"sha256":"56084807313cde61e8d70b2238cc0270e6fd688fb6db2ba4b476f663750f0957","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[1538,1539],"output_start":2881}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 204,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      }
+    },
+    "delete_group": {
+      "initial": {
+        "page": {
+          "bytes": 200,
+          "operators": 23,
+          "text_token_bytes": 119,
+          "path_token_bytes": 51,
+          "path_operators": 6,
+          "fill_operators": 3,
+          "n": 0,
+          "q": 0,
+          "Q": 0
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"anchors":{"paragraph_sha256":"f79510b8d34f76d445504a5aa6af99d021b74f9d46b35674cdeb4f547e0b4220","element_sha256":"b866b52f8f68b42b861476fa6402d7660493d20570677c0523878a1e3895e2ed","underlines":[{"source_ids":["path-c53f79daa2532bc54ee2d8d1ff74ae8ef15b2dc20253bc406285653342425526"],"range":[0,7]},{"source_ids":["path-f8022cbf9715f977c5bb11ab6f7f77663e3c9386ef2661c403e85b14de0524fc"],"range":[8,18]}],"fixed_relations":[{"source_id":"path-3eabd53eee97307aeb6f90dde2ec54690fcfd19940551953145cee627163810d","relation":"backgrounds","behavior":"fixed-to-page"}]},"element_sha256":"b866b52f8f68b42b861476fa6402d7660493d20570677c0523878a1e3895e2ed"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 1753,
+          "operators": 169,
+          "text_token_bytes": 1311,
+          "path_token_bytes": 203,
+          "path_operators": 18,
+          "fill_operators": 3,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "program_sha256": "3a39a65eaec564f6e1bbd83fc5ef18baa7f33d2004e53d4075145984eb318d54",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"20289a1a8a4c97e87621dbb3b02e4f66d1ee0a303eb7a90940ff17cece41044f","element_sha256":"81c91869473275391877d0e3f16be9797ab579073879b063268ba0401c75822d","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-06f9004d3df1f4f95521f3afcd7de4deeb3301316be3ce280a05c69ec241d67a"],"range":[0,7],"start_affinity":"reject","end_affinity":"reject"},{"source_ids":["path-4f7d95f303ab99fb37bd29d2417bde4daa164b172b93348528aad93c478da8f9"],"range":[8,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-24c634397868138b8ddcd70522e67a8938f268f63bb9af1fca398621baf60937","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":53809,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1553,
+          "operators": 146,
+          "text_token_bytes": 1192,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "mutation": {
+          "count": 4,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 2,
+              "delta_bytes": 1377,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 176,
+              "delta_operators": 16
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":87,"sha256":"6c5da76be46c84cc4cc8a5afb9fdb8d1bcf5b4f852c8872ce09e8f32e5fb745e","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[92,93],"output_start":1432},
+          {"bytes":87,"sha256":"c98892fc5dbe4a423c86e51368f5f61449c1442be9904ef2422e4e9b67d70e2c","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[157,158],"output_start":1624}
+        ]
+        },
+        "other_page_program_equal": true,
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 34,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop1": {
+        "page": {
+          "bytes": 3270,
+          "operators": 315,
+          "text_token_bytes": 2467,
+          "path_token_bytes": 355,
+          "path_operators": 30,
+          "fill_operators": 3,
+          "n": 4,
+          "q": 6,
+          "Q": 6
+        },
+        "program_sha256": "91f8f0351ca39c0c02b36157a8661019f1c91833f9e1bd8828ee759b32e27b83",
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":1,"paragraph_sha256":"c77014b6057f16b721c63261e4f445ea7f323d00628c39ac1f6eb66498327bb5","element_sha256":"e63998cbeecd351d54c793cf826eca4f9258be2e02faa871e08164ca78e73edd","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"6d2d8eb0ef095be35fc9749d93bf48d96417a2edbcd92c85c59f1cac9113211b","groups":[{"source_ids":["path-5a23667e52bd77149ce6d4f1c99190c1b2b17af19bfbaf3526a7e8eb769408aa"],"range":[0,7],"start_affinity":"reject","end_affinity":"reject"},{"source_ids":["path-5c1f6e565639d814ca7c53752c32e31b61629e3e122aff18f6fc1286c0fe8c4d"],"range":[8,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-77cca4ef83393c1266a7634494816a0f5307813d885773936114f7936a1f136a","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,91.99999237060547,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":80263,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1517,
+          "operators": 146,
+          "text_token_bytes": 1156,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1341,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 176,
+              "delta_operators": 16
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":87,"sha256":"6c5da76be46c84cc4cc8a5afb9fdb8d1bcf5b4f852c8872ce09e8f32e5fb745e","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[1514,1515],"output_start":2857},
+          {"bytes":87,"sha256":"c98892fc5dbe4a423c86e51368f5f61449c1442be9904ef2422e4e9b67d70e2c","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[1706,1707],"output_start":3137}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 186,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "delete": {
+        "page": {
+          "bytes": 4270,
+          "operators": 411,
+          "text_token_bytes": 3250,
+          "path_token_bytes": 435,
+          "path_operators": 36,
+          "fill_operators": 2,
+          "n": 6,
+          "q": 8,
+          "Q": 8
+        },
+        "program_sha256": "173bd44a17dd4a37d99b61c5e88e568314dcb9548381ee09c40fda6a6477a788",
+        "bindings": [
+          {"text":" THREE FOUR","styles":1,"paragraph_sha256":"15446bf6d42c8e82f31b02ba820c01d863c6c40dffb8de13d3afaf46ac2cc343","element_sha256":"c0a99b59a68b225c6e2c31949301f1caac1f7812233d1dde79069157a1415e02","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"d69fa09a014b6d7683712f1e9954bda87a8c3da689b6aef31a045569a87a4aa3","groups":[{"source_ids":["path-ab8f16f78a5fcaa8fff75d369b375588781b54fecf6d623d0cce1b5432a7000e"],"range":[1,11],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-dcc2c789211fc940defe6deedb50bfb13dc3c8022f548f16f4bd7adc969490fe","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":2,"current_anchor_paints":1,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[27.200000762939453,61.30000305175781,99.19999694824219,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":90641,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1000,
+          "operators": 96,
+          "text_token_bytes": 783,
+          "path_token_bytes": 80,
+          "path_operators": 6,
+          "fill_operators": -1,
+          "n": 2,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 908,
+              "delta_operators": 88
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 92,
+              "delta_operators": 8
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":91,"sha256":"288edc3d37619c5c8c93e36a3b5296537a7cbc65b9b09d6cac423e6d037cd1b1","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[3219,3220],"output_start":4129}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 80,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 338,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "delete_noop": {
+        "page": {
+          "bytes": 5276,
+          "operators": 507,
+          "text_token_bytes": 4021,
+          "path_token_bytes": 533,
+          "path_operators": 42,
+          "fill_operators": 2,
+          "n": 7,
+          "q": 10,
+          "Q": 10
+        },
+        "program_sha256": "57fa8edce1650d948a76288b680ecdc90d67191df05fcbd965af84173c4770f7",
+        "bindings": [
+          {"text":" THREE FOUR","styles":1,"paragraph_sha256":"ab56c3a54de8ebfdd0027bbc6f19dc369c5bc2156338eb0611274dfae4b07338","element_sha256":"29ce9b2fca05bda64e444936ccf27f6124c17e5038c23a8a0314dde36cddf996","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"652353f0bf811070550d7288fe5de27e6c23156c5e73f8e0626db839dd3ddecb","groups":[{"source_ids":["path-fc9a63b6d20ccc2a6a0d673b8fe3561a021a949013bc42731bf114a4ac3ba80b"],"range":[1,11],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-372c7b9efbe2f67bd468202cc8a227b31387292fcedc8d29c5d8005094eed2a6","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":2,"current_anchor_paints":1,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[27.200000762939453,61.30000305175781,99.19998931884766,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":107995,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1006,
+          "operators": 96,
+          "text_token_bytes": 771,
+          "path_token_bytes": 98,
+          "path_operators": 6,
+          "fill_operators": 0,
+          "n": 1,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 12,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 11,
+              "delta_bytes": 896,
+              "delta_operators": 88
+            },
+            "decoration / None": {
+              "count": 1,
+              "delta_bytes": 110,
+              "delta_operators": 8
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":109,"sha256":"cd691145f1f08ff6e36e6b7723bde4bf5f538842c73ec4f3b5c2430f8087b39b","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[4215,4216],"output_start":5113}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 98,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 418,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "insert_again": {
+        "page": {
+          "bytes": 6543,
+          "operators": 630,
+          "text_token_bytes": 4941,
+          "path_token_bytes": 707,
+          "path_operators": 54,
+          "fill_operators": 3,
+          "n": 8,
+          "q": 12,
+          "Q": 12
+        },
+        "program_sha256": "76a5cde7b1766f554a8f4496b7cbdf21ab201293434ba2315d18669e63bf3a9a",
+        "bindings": [
+          {"text":"ONE  THREE FOUR","styles":2,"paragraph_sha256":"09b12455bf287c9fa919f0ffe3447c5acf6130a87974ba71c08f69640df4d34e","element_sha256":"3e9e3b7efdcbd72e231a27f8a340fd9ae1541386783003ee63fb664c0a112680","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"9074ae935deb84cd22eb7f8ace69f04ea181146ebd6cc41fd2ebe43eec3dfe2c","groups":[{"source_ids":["path-b4778e9f9316da6cd0d7a12efc0703f227c16acf07116451abe937f17e331af8","path-3d442d4ef57306005a0efbfc7c8edddf3ed3757f5017ed060239de28aa37ce10"],"range":[5,15],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-32c9a958dcf787ead81ba1ca9dfe5211a3d5446e87af20cd6e5d62640958f449","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[54.34062576293945,61.30000305175781,90.34062957763672,62.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"clips":[],"bounds":[20.0,77.30000305175781,48.799991607666016,78.0],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":136242,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1267,
+          "operators": 123,
+          "text_token_bytes": 920,
+          "path_token_bytes": 174,
+          "path_operators": 12,
+          "fill_operators": 1,
+          "n": 1,
+          "q": 2,
+          "Q": 2
+        },
+        "mutation": {
+          "count": 12,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 11,
+              "delta_bytes": 1075,
+              "delta_operators": 109
+            },
+            "decoration / None": {
+              "count": 1,
+              "delta_bytes": 192,
+              "delta_operators": 14
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":191,"sha256":"906ca2d0f0464bf70415dafb104f2f482ad96fcf1e7fed776f640344fe0b1a99","operators":["q","m","l","l","l","h","f","m","l","l","l","h","f","Q"],"source_terminal_range":[5217,5218],"output_start":6294}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 174,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 516,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      }
+    },
+    "paint_styles": {
+      "initial": {
+        "page": {
+          "bytes": 210,
+          "operators": 25,
+          "text_token_bytes": 116,
+          "path_token_bytes": 51,
+          "path_operators": 6,
+          "fill_operators": 3,
+          "n": 0,
+          "q": 0,
+          "Q": 0
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":2,"anchors":{"paragraph_sha256":"9a86bfc79fff2d6a236cc64b6edf5d6f5389fe82d2a83bd91415274a627aa2ad","element_sha256":"949d3dff40390086d51a0ac9673b068b7c22859159a92b627407531dd4b61fc6","underlines":[{"source_ids":["path-51b60e714bd8fae7aa97840e8fcb8aac1eec73d6584ee7ee941289a2e78304d9"],"range":[0,7]},{"source_ids":["path-768002179f3eb26f44218af9d8e5f911bda38e6b9ab3e100d6817086a28b429d"],"range":[8,18]}],"fixed_relations":[{"source_id":"path-a97a096590e1d00606ddd282b5754e3e97e5907c3a990bfe17b0d7d0a871aaa6","relation":"backgrounds","behavior":"fixed-to-page"}]},"element_sha256":"949d3dff40390086d51a0ac9673b068b7c22859159a92b627407531dd4b61fc6"}
+        ]
+      },
+      "first": {
+        "page": {
+          "bytes": 1783,
+          "operators": 171,
+          "text_token_bytes": 1278,
+          "path_token_bytes": 203,
+          "path_operators": 18,
+          "fill_operators": 3,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "program_sha256": "49e0d5b0be808d0399982a9e03cba5851811366069ef9530634b5a1aaed2a9b3",
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 34,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":2,"paragraph_sha256":"fd1e5cc9c4944d7eeb0852212e275544e22eefea543690a997d3baf1c237b7b6","element_sha256":"6a0336bab350c253dcc394b2dbef50023a91fcf138e5cf898a105be2440b1495","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":null,"groups":[{"source_ids":["path-d0dfa10faa1849ed148d1c105953c2a4f053ac25baa69b083c1b7a071c3d701b"],"range":[0,7],"start_affinity":"reject","end_affinity":"reject"},{"source_ids":["path-3a36460f5a362793a74c327af09a00058ef925d3b1d2f9271f21a62ff8841b4f"],"range":[8,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-786ccaac280a1dfb69b8e3297f29cac4e3747211466730779f639fdacba68066","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"clips":[],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"bounds":[20.0,77.10000610351562,91.99999237060547,78.0],"clips":[],"colorspace":"DeviceRGB","components":[0.0,0.0,1.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":54722,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1573,
+          "operators": 146,
+          "text_token_bytes": 1162,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "mutation": {
+          "count": 4,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 2,
+              "delta_bytes": 1397,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 176,
+              "delta_operators": 16
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":87,"sha256":"6c5da76be46c84cc4cc8a5afb9fdb8d1bcf5b4f852c8872ce09e8f32e5fb745e","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[92,93],"output_start":1452},
+          {"bytes":87,"sha256":"7632d0913f07a788dc4b41129480989a8550bfb98ec52dbd00008e55ac7511b2","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[163,164],"output_start":1650}
+        ]
+        },
+        "other_page_program_equal": true,
+        "source_KEEP_state_and_glyphs_equal": true
+      },
+      "noop1": {
+        "page": {
+          "bytes": 3320,
+          "operators": 317,
+          "text_token_bytes": 2404,
+          "path_token_bytes": 355,
+          "path_operators": 30,
+          "fill_operators": 3,
+          "n": 4,
+          "q": 6,
+          "Q": 6
+        },
+        "program_sha256": "78c10cff0480f094a69b1bab3dbf05a7ebb8bd5a201322af55ca574a78d4ef2f",
+        "paint_inventory": {
+          "current_anchor_path_token_bytes": 152,
+          "fixed_path_token_bytes": 17,
+          "other_current_path_token_bytes": 0,
+          "unbound_path_token_bytes": 186,
+          "note": "Unbound includes source nonpainting path/clip operations, not an authorship classification",
+          "other_paints": []
+        },
+        "bindings": [
+          {"text":"ONE TWO THREE FOUR","styles":2,"paragraph_sha256":"ede0ade0702503c8d74f25726d1f9204fe053057a3f333687188fafcae9f7268","element_sha256":"88c2c3e8dfbea84b72c843f91d5919a9fe7030d9fab3bbc006abae067b60e1f9","logical_element":{"id":"paragraph-1","kind":"paragraph","contained_by":"region-1","provenance":"caller_confirmed_selection","alignment":{"value":"left","provenance":"generated_layout_policy"}},"previous_model_sha256":"ef9fd56e8f9b2d2a98f1b182c856025f95790b5fb0394705351ace4263ec3149","groups":[{"source_ids":["path-d4de3bbf471997f4b9e57af2d265f59a5ee8300620599e4a9464af2ae6223fa7"],"range":[0,7],"start_affinity":"reject","end_affinity":"reject"},{"source_ids":["path-8281cfcbedaaff15c59dd6a6fd0b9d52217c4e41d610573127ad66d8e18b481b"],"range":[8,18],"start_affinity":"reject","end_affinity":"reject"}],"fixed":[{"source_id":"path-41f0351f095f2dbe59ce4d8afa3cc5d5aa710da870fc35827ceedba2edf0fed8","paint_fingerprints":["9755c2ffaf328ea3dc500821f74442221d73f2bd801a5c18b5f1ab8fdedd1499"]}],"relations":null,"element_path_count":3,"current_anchor_paints":2,"anchor_template_paints":[{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"bounds":[20.0,61.30000305175781,70.4000015258789,62.0],"clips":[],"colorspace":"DeviceGray","components":[0.0],"opacity":1.0,"even_odd":false},{"matrix":[1.0,0.0,0.0,-1.0,0.0,260.0],"bounds":[20.0,77.10000610351562,91.99999237060547,78.0],"clips":[],"colorspace":"DeviceRGB","components":[0.0,0.0,1.0],"opacity":1.0,"even_odd":false}],"sidecar_bytes":81186,"has_paint_output_field":false}
+        ],
+        "delta": {
+          "bytes": 1537,
+          "operators": 146,
+          "text_token_bytes": 1126,
+          "path_token_bytes": 152,
+          "path_operators": 12,
+          "fill_operators": 0,
+          "n": 2,
+          "q": 3,
+          "Q": 3
+        },
+        "mutation": {
+          "count": 19,
+          "by_kind_owner": {
+            "text-edit / None": {
+              "count": 17,
+              "delta_bytes": 1361,
+              "delta_operators": 130
+            },
+            "decoration / None": {
+              "count": 2,
+              "delta_bytes": 176,
+              "delta_operators": 16
+            }
+          },
+          "unchanged_gaps_verified": true,
+          "emitted_group_payloads": [
+          {"bytes":87,"sha256":"6c5da76be46c84cc4cc8a5afb9fdb8d1bcf5b4f852c8872ce09e8f32e5fb745e","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[1534,1535],"output_start":2897},
+          {"bytes":87,"sha256":"7632d0913f07a788dc4b41129480989a8550bfb98ec52dbd00008e55ac7511b2","operators":["q","m","l","l","l","h","f","Q"],"source_terminal_range":[1732,1733],"output_start":3183}
+        ]
+        },
+        "other_page_program_equal": true,
+        "status": "saved",
+        "fresh_process": true,
+        "provenance_inputs": "current PDF + current sidecar(s) + fonts",
+        "render": {
+          "dpi": 144,
+          "pages": {
+            "1": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            },
+            "2": {
+              "mupdf_equal": true,
+              "poppler_changed_pixels": 0,
+              "poppler_size_changed": false
+            }
+          },
+          "passed": true
+        },
+        "source_KEEP_state_and_glyphs_equal": true
+      }
+    }
+  }
+}

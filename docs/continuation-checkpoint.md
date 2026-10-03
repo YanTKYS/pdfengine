@@ -1254,3 +1254,25 @@ collection末尾のcp932表示エラー1件だけ修正し、経緯をsummaryへ
 [再現command](../evaluations/continuation/README.md#source-output-windows-external-validation--2026-10-03)、
 [compact evidence](../evaluations/continuation/source-output-external-summary.json)を参照。
 general editableは引き続きNOT READY。
+
+
+## General anchored paint ownership design — 2026-10-03
+
+Base `0e468ff7fd3abd76612b5de6cffd2444f8135a2f` (PR #34). **NOT READY**.
+Current ordinary anchored no-ops add 2,028 bytes / 192 operators per save:
+text +1,784/+172, decoration +244/+20. Current fills remain three underlines
+plus the fixed background; old path construction, n and q/Q remain unowned.
+Full empty is refused; deleting one disjoint anchor range drops its group
+identity, and reinsertion does not restore it. Nonidentity CTM payloads change
+on every no-op despite zero MuPDF/Poppler pixel difference.
+Recommend separate anchor-group paint islands plus persistent dormant recipe
+records. Current path relations do not prove authorship or byte-envelope
+ownership. Canonical geometry, zero-paint revival and dormant boundary proof
+remain gates; ordinary _source_output guard and legacy behavior stay intact.
+Ten synthetic series: 29 successful saves, 19 fresh-process re-edits, one
+empty refusal, 16 dual-renderer no-op comparisons passed. Six helper/guard
+tests plus 28 existing focused tests passed; no full suite/external original.
+Runtime digest remains d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea.
+[Contract, classification and acceptance matrix](anchored-paint-ownership.md),
+[reproduction](../evaluations/anchors/README.md),
+[compact evidence](../evaluations/anchors/paint-ownership-summary.json).
