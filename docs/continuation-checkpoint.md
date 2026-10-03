@@ -1234,3 +1234,23 @@ Claude Opus 5.5の独立レビューはhead `8d72d3b6233ea7ea16328ec56e4f4656073
 v1非upgrade、continuation共存、rollbackと、更新した4 test caseの妥当性をコードと照合した。
 新規・更新testを再実行し72 passed / 1 skipped（Poppler未導入）。non-blocking 5件は
 [設計§12](source-slot-rewrite-ownership.md#12-実装の独立レビュー結果)に記録した。
+
+
+## PR #33後のWindows source-output external validation — 2026-10-03
+
+起点・評価HEAD `9d70d8c6de7736aba194573ea482dcde7ed9e31a`。
+**PASS — WINDOWS EXTERNAL VALIDATION**。PR #31と同一SHAのLibreOffice原本・両fontを使用し、
+page 4/5はruntimeのinitial_contextで両系列ともeligibleだった。元PDFからfresh shared-flow v2を確認し、
+既存page-entry / confirmed boundaryの2系列を各10 saveで検証した。
+first→first-noop、second→second-noop、dormant→dormant-noop、regrow→noop1→noop2→noop3の
+source body/page programはbyte identical。source no-op増分は両pageとも0 bytes / 0 operatorsで、
+PR #31の合計+18,732/+1,485から解消した（このexact input/scenarioの範囲）。
+全10pageのMuPDF/Poppler no-op差分0、glyph/resource/font・continuation authority・nesting監査も通過した。
+scale CTM、creation-time empty、private flag拒否、sidecar-loss再confirm拒否、非隣接markerの補足も通過。
+focusedは73 passed、最終helper 9 passed（unique 75、skipなし）。full suiteは依頼どおり未実行。
+engine digestは`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`で不変。
+collection末尾のcp932表示エラー1件だけ修正し、経緯をsummaryへ保存した。runtime変更・PDF再実行なし。
+[測定値と制限](source-slot-rewrite-ownership.md#13-windows-external-validation--2026-10-03)、
+[再現command](../evaluations/continuation/README.md#source-output-windows-external-validation--2026-10-03)、
+[compact evidence](../evaluations/continuation/source-output-external-summary.json)を参照。
+general editableは引き続きNOT READY。
