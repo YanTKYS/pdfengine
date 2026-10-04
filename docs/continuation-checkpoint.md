@@ -1405,3 +1405,68 @@ Runtime digest unchanged:
 
 Validation: 29 new design tests + 142 focused regressions = **171 passed**;
 new design tests rerun after final scope checks. Full suite/external validation not run.
+
+
+## Authorized layout publication — 2026-10-04
+
+Starting main `1f5a7f0d70d4365eb0d6fac7cbebd647a3dd6ace` includes merged PR #39
+and its review. Branch `codex/authorized-layout-publication`.
+**DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR** for the explicit narrow
+static-TT/body-style/owned-source-island/new-bundle-directory contract.
+**Layout runtime NOT READY; paint runtime NOT READY.**
+
+P4 trusts the current API caller plus explicit edit request. Persistent semantics
+are required; persistent HMAC/signature/authorization receipts are not. N reopens
+reverify; D body edits/reflow derive only permitted changes; E reinterpretations
+require explicit fields; R split/join/mixed/unsupported/foreign operations refuse.
+Immutable verified input, exact semantic diff, candidate physical re-verification
+and independently proven source-output ownership close B1-L-C at design level.
+No-op save may change PDF bytes/binding while preserving exact semantic payload.
+
+The existing `_publish` rolls back ordinary second-link errors but can leave a
+public half pair if rollback unlink also fails. The selected design stages both
+files privately, then renames one new complete bundle directory. No third receipt
+or manifest. Ten real filesystem probes show no half public pair, including
+rollback and post-rename failure. Two arbitrary public destinations, overwrite,
+concurrent publishers and unsupported filesystems are outside this ready scope.
+
+17 independently repeated transition cases, four additional edge transitions,
+explicit font change, 13 pre-commit failure injections, actual owner/operator-span
+and publication probes are in the separate summary. Next is independent design
+review, then a narrow layout implementation PR adapting canonical measurement to
+owned source-output bodies plus the selected publication contract. Existing paint
+obligations remain in §15.11/§16.6. No runtime changes in this PR.
+Runtime digest: `d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+[Design §19](anchored-paint-ownership.md#19-authorized-layout-publication-under-p4--2026-10-04),
+[summary](../evaluations/anchors/publication-summary.json),
+[reproduction/tests](../evaluations/anchors/README.md#authorized-layout-publication--2026-10-04).
+
+Validation: **55 new design tests + 111 focused regressions = 166 passed**.
+One Poppler-only test was deliberately deselected; full suite and external-original
+validation were not run. Final evidence is the clean `runs/publication-04` run.
+
+
+PR #40 small-change revision (2026-10-04): publication READY now requires every
+expected outcome in both orders, including complete new contents on success and
+after-rename failure. Missing evidence and a never-publishing implementation fail.
+Ownership READY includes body/context/foreign-byte preservation, parsed spans and
+all three refusal probes. `body_style_id` is a semantic label only; its explicit
+rename leaves the canonical "body" associations, metrics and PDF bytes unchanged.
+The normal, empty and all-space cases are tested.
+Validation after revision: **89 passed = 60 publication design + 29 semantic binding
+regressions**. The earlier 111 focused-regression result remains historical; the
+remaining runtime regressions were not rerun for these evaluator/docs-only fixes.
+Evidence regenerated in `runs/publication-05`; runtime digest unchanged. Full suite
+and external originals not run. Independent Opus review remains the next step;
+layout and paint runtime remain NOT READY.
+
+
+PR #40 B1-L-O resolution (2026-10-04): after the §19.9 Claude Opus 5.5 REQUEST CHANGES, design §19.10 places the
+semantic payload in the single owned source slot of a proposed `pdfengine-shared-flow-3` sidecar, next to its
+`source_output` owner witness, sealed together. Persistent artifacts are exactly PDF + shared-flow sidecar.
+Ownership is re-proven by the unmodified runtime v2 validator. The surface is restricted to one paragraph, one owned
+source slot, one region, one body style and no continuation. Stored-record lifecycle evidence covers 14 positives,
+20 refusing negatives (both one-sided stale states), 6 isolated owner refusals and the two-artifact publication
+matrix. DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR is re-asserted for that surface; layout runtime is not
+implemented (split L1–L3), and paint runtime remains NOT READY. Validation 211 passed, 1 deselected; runtime digest
+unchanged. [Design §19.10](anchored-paint-ownership.md#1910-b1-l-o-resolution--semantic-state-inside-the-shared-flow-owner-sidecar).

@@ -1,0 +1,550 @@
+{
+  "artifacts": [
+    "document.pdf",
+    "shared-flow.json"
+  ],
+  "base": "1f5a7f0d70d4365eb0d6fac7cbebd647a3dd6ace",
+  "edit_diff": {
+    "text": {
+      "after": "AA B",
+      "before": "A B"
+    }
+  },
+  "field_classes": {
+    "derived_current_physical_binding": [
+      "pdf_sha256",
+      "slots[s].binding",
+      "generated_fonts",
+      "physical_breaks",
+      "slots[s].semantic.derived",
+      "slots[s].semantic.binding"
+    ],
+    "immutable_creation_identity": [
+      "flow.id",
+      "slots[s].paragraph_id",
+      "slots[s].region_id",
+      "slots[s].source_snapshot_sha256",
+      "slots[s].source_output.version",
+      "slots[s].source_output.marker_id",
+      "slots[s].source_output.created_from",
+      "contract_sha256"
+    ],
+    "integrity": [
+      "model_sha256 (digest link previous_model_sha256 keeps its existing role)"
+    ],
+    "mutable_current_owner_witness": [
+      "slots[s].source_output.state",
+      "slots[s].source_output.current"
+    ],
+    "semantic_authority": [
+      "slots[s].semantic.payload"
+    ]
+  },
+  "gates": {
+    "authenticated_binding": {
+      "atomic_pair_publication": true,
+      "candidate_reverification": true,
+      "current_binding": true,
+      "fresh_bundle_reopen": true,
+      "owner_semantic_rebind": true,
+      "physical_mutation_ownership": true,
+      "semantic_transition_authority": true,
+      "stored_owner_binding": true
+    },
+    "input_admissibility": {
+      "scope_conditions": true,
+      "scoped_physical": true
+    },
+    "model_determinism": {
+      "exact_derived": true
+    }
+  },
+  "isolated_owner_refusals": {
+    "copied_owner_record": {
+      "expected": "creation identity mismatch",
+      "isolated": true,
+      "reason": "source output creation identity mismatch",
+      "refused": true
+    },
+    "foreign_glyph_in_island": {
+      "expected": "foreign or unproven glyph",
+      "isolated": true,
+      "reason": "foreign or unproven glyph inside source output island",
+      "refused": true
+    },
+    "marker_spoof": {
+      "expected": "duplicate source output marker",
+      "isolated": true,
+      "reason": "duplicate source output marker",
+      "refused": true
+    },
+    "new_semantic_old_owner_witness": {
+      "expected": "witness mismatch",
+      "isolated": true,
+      "reason": "source output program/block/range/context witness mismatch",
+      "refused": true
+    },
+    "old_owner_witness_new_pdf": {
+      "expected": "witness mismatch",
+      "isolated": true,
+      "reason": "source output program/block/range/context witness mismatch",
+      "refused": true
+    },
+    "stale_context": {
+      "expected": "witness mismatch",
+      "isolated": true,
+      "reason": "source output program/block/range/context witness mismatch",
+      "refused": true
+    }
+  },
+  "limitation": "Runtime _source_body writer stands in for the L2 canonical island writer; no runtime schema/opener/writer is implemented. No latest/current pointer is maintained.",
+  "negative": {
+    "continuation_present": {
+      "reason": "CONTINUATION_REFUSED",
+      "refused": true
+    },
+    "copied_owner_record": {
+      "reason": "RUNTIME_OWNER_VALIDATION:shared capacity, identities or confirmed contract changed",
+      "refused": true
+    },
+    "foreign_glyph_in_island": {
+      "reason": "RUNTIME_OWNER_VALIDATION:PDF revision differs from the editable model",
+      "refused": true
+    },
+    "generated_continuation_slot": {
+      "reason": "GENERATED_CONTINUATION_SLOT_REFUSED",
+      "refused": true
+    },
+    "implicit_confirmation": {
+      "reason": "EXPLICIT_SEMANTIC_CONFIRMATION_REQUIRED",
+      "refused": true
+    },
+    "marker_spoof": {
+      "reason": "RUNTIME_OWNER_VALIDATION:PDF revision differs from the editable model",
+      "refused": true
+    },
+    "new_owner_old_semantic": {
+      "reason": "OWNER_SEMANTIC_BINDING",
+      "refused": true
+    },
+    "new_semantic_old_owner_consistent_binding": {
+      "reason": "RUNTIME_OWNER_VALIDATION:source output program/block/range/context witness mismatch",
+      "refused": true
+    },
+    "new_semantic_old_owner_witness": {
+      "reason": "RUNTIME_OWNER_VALIDATION:source output program/block/range/context witness mismatch",
+      "refused": true
+    },
+    "old_owner_witness_new_pdf": {
+      "reason": "RUNTIME_OWNER_VALIDATION:PDF revision differs from the editable model",
+      "refused": true
+    },
+    "second_slot_present": {
+      "reason": "EXACTLY_ONE_SOURCE_SLOT",
+      "refused": true
+    },
+    "semantic_only_reseal": {
+      "reason": "SEMANTIC_TEXT_BINDING",
+      "refused": true
+    },
+    "stale_context": {
+      "reason": "RUNTIME_OWNER_VALIDATION:PDF revision differs from the editable model",
+      "refused": true
+    },
+    "unauthorized_candidate_semantic": {
+      "reason": "UNAUTHORIZED_SEMANTIC_DIFF",
+      "refused": true
+    },
+    "unowned_source_slot": {
+      "reason": "SOURCE_SLOT_NOT_OWNED",
+      "refused": true
+    },
+    "v2_open_of_semantic_sidecar": {
+      "reason": "runtime v2 opener does not accept the semantic schema",
+      "refused": true
+    },
+    "v2_reopen_never_auto_upgrades": {
+      "reason": "opening v2 creates no semantic payload",
+      "refused": true
+    },
+    "wrong_paragraph_id": {
+      "reason": "OWNER_SEMANTIC_BINDING",
+      "refused": true
+    },
+    "wrong_region_id": {
+      "reason": "OWNER_SEMANTIC_BINDING",
+      "refused": true
+    },
+    "wrong_slot_id": {
+      "reason": "OWNER_SEMANTIC_BINDING",
+      "refused": true
+    }
+  },
+  "ownership": {
+    "candidate_rebind": true,
+    "containment": true,
+    "current_witness_matches": true,
+    "entry_exit_derived": true,
+    "exact_island_span": true,
+    "marker_spoof_refused": true,
+    "stale_context_refused": true,
+    "stale_stored_witness_refused": true,
+    "stored_owner_owned": true,
+    "stored_slot_exists": true
+  },
+  "positive": {
+    "bundle_publication_candidate": true,
+    "candidate_pdf_generated": true,
+    "combined_sidecar_reseal": true,
+    "fresh_candidate_validate": true,
+    "fresh_published_reopen": true,
+    "noop_reopen": true,
+    "noop_save_semantic_identical": true,
+    "owner_rebind": true,
+    "repeated_noop_reopen": true,
+    "semantic_payload_update": true,
+    "stored_owner_current_witness": true,
+    "stored_semantic_payload": true,
+    "stored_shared_flow_reopen": true,
+    "text_edit_authorized": true
+  },
+  "publication": {
+    "pdf-first:after-rename": {
+      "complete_new_pair": true,
+      "entries_after": [
+        "current",
+        "next"
+      ],
+      "error": "after-rename",
+      "formal_current": "new",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": false,
+      "public": "next",
+      "public_files": [
+        true,
+        true
+      ],
+      "visible_before_commit": false
+    },
+    "pdf-first:before-rename": {
+      "complete_new_pair": false,
+      "entries_after": [
+        "current"
+      ],
+      "error": "before-rename",
+      "formal_current": "old",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": true,
+      "public": "next",
+      "public_files": [
+        false,
+        false
+      ],
+      "visible_before_commit": false
+    },
+    "pdf-first:none": {
+      "complete_new_pair": true,
+      "entries_after": [
+        "current",
+        "next"
+      ],
+      "error": null,
+      "formal_current": "new",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": false,
+      "public": "next",
+      "public_files": [
+        true,
+        true
+      ],
+      "visible_before_commit": false
+    },
+    "pdf-first:rollback-unlink": {
+      "complete_new_pair": false,
+      "entries_after": [
+        "current"
+      ],
+      "error": "rollback-unlink",
+      "formal_current": "old",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": true,
+      "public": "next",
+      "public_files": [
+        false,
+        false
+      ],
+      "visible_before_commit": false
+    },
+    "pdf-first:second-link": {
+      "complete_new_pair": false,
+      "entries_after": [
+        "current"
+      ],
+      "error": "second-link",
+      "formal_current": "old",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": false,
+      "public": "next",
+      "public_files": [
+        false,
+        false
+      ],
+      "visible_before_commit": false
+    },
+    "record-first:after-rename": {
+      "complete_new_pair": true,
+      "entries_after": [
+        "current",
+        "next"
+      ],
+      "error": "after-rename",
+      "formal_current": "new",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": false,
+      "public": "next",
+      "public_files": [
+        true,
+        true
+      ],
+      "visible_before_commit": false
+    },
+    "record-first:before-rename": {
+      "complete_new_pair": false,
+      "entries_after": [
+        "current"
+      ],
+      "error": "before-rename",
+      "formal_current": "old",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": true,
+      "public": "next",
+      "public_files": [
+        false,
+        false
+      ],
+      "visible_before_commit": false
+    },
+    "record-first:none": {
+      "complete_new_pair": true,
+      "entries_after": [
+        "current",
+        "next"
+      ],
+      "error": null,
+      "formal_current": "new",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": false,
+      "public": "next",
+      "public_files": [
+        true,
+        true
+      ],
+      "visible_before_commit": false
+    },
+    "record-first:rollback-unlink": {
+      "complete_new_pair": false,
+      "entries_after": [
+        "current"
+      ],
+      "error": "rollback-unlink",
+      "formal_current": "old",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": true,
+      "public": "next",
+      "public_files": [
+        false,
+        false
+      ],
+      "visible_before_commit": false
+    },
+    "record-first:second-link": {
+      "complete_new_pair": false,
+      "entries_after": [
+        "current"
+      ],
+      "error": "second-link",
+      "formal_current": "old",
+      "half_public": false,
+      "old_intact": true,
+      "old_still_opens": true,
+      "private_leftover": false,
+      "public": "next",
+      "public_files": [
+        false,
+        false
+      ],
+      "visible_before_commit": false
+    }
+  },
+  "published_reopens": [
+    {
+      "body_span": [
+        144,
+        447
+      ],
+      "emitted": "AA B",
+      "entry_exit_proven": true,
+      "marker_id": "74eab68c0dfe35cb550efc07169ba32124a3dd4931d4c81d2da692ba10a5566a",
+      "owner_current": {
+        "block_sha256": "2a75fde62197f42f300f13b03a4e4d644d3c60505f5d2bf29bc440081ca8a6db",
+        "entry_context_sha256": "fe8bcc0ff9ac2d2c66406053385fc72cbfb0ff545b45a0ffd252e80db9cd7d6a",
+        "program_sha256": "d4aa249a97c7a2e240a416378b85da7652be10877bb5080f2df5171754c1a768",
+        "range": [
+          45,
+          543
+        ]
+      },
+      "plan_sha": "3629064a1afb6547ceda8ea4623417d91380c902475b654ac9f2a4e1f709cd11",
+      "show_spans": [
+        [
+          215,
+          224
+        ],
+        [
+          287,
+          296
+        ],
+        [
+          359,
+          368
+        ],
+        [
+          431,
+          440
+        ]
+      ],
+      "slot_id": "slot-0"
+    },
+    {
+      "body_span": [
+        144,
+        447
+      ],
+      "emitted": "AA B",
+      "entry_exit_proven": true,
+      "marker_id": "74eab68c0dfe35cb550efc07169ba32124a3dd4931d4c81d2da692ba10a5566a",
+      "owner_current": {
+        "block_sha256": "2a75fde62197f42f300f13b03a4e4d644d3c60505f5d2bf29bc440081ca8a6db",
+        "entry_context_sha256": "fe8bcc0ff9ac2d2c66406053385fc72cbfb0ff545b45a0ffd252e80db9cd7d6a",
+        "program_sha256": "d4aa249a97c7a2e240a416378b85da7652be10877bb5080f2df5171754c1a768",
+        "range": [
+          45,
+          543
+        ]
+      },
+      "plan_sha": "3629064a1afb6547ceda8ea4623417d91380c902475b654ac9f2a4e1f709cd11",
+      "show_spans": [
+        [
+          215,
+          224
+        ],
+        [
+          287,
+          296
+        ],
+        [
+          359,
+          368
+        ],
+        [
+          431,
+          440
+        ]
+      ],
+      "slot_id": "slot-0"
+    },
+    {
+      "body_span": [
+        144,
+        447
+      ],
+      "emitted": "AA B",
+      "entry_exit_proven": true,
+      "marker_id": "74eab68c0dfe35cb550efc07169ba32124a3dd4931d4c81d2da692ba10a5566a",
+      "owner_current": {
+        "block_sha256": "2a75fde62197f42f300f13b03a4e4d644d3c60505f5d2bf29bc440081ca8a6db",
+        "entry_context_sha256": "fe8bcc0ff9ac2d2c66406053385fc72cbfb0ff545b45a0ffd252e80db9cd7d6a",
+        "program_sha256": "d4aa249a97c7a2e240a416378b85da7652be10877bb5080f2df5171754c1a768",
+        "range": [
+          45,
+          543
+        ]
+      },
+      "plan_sha": "3629064a1afb6547ceda8ea4623417d91380c902475b654ac9f2a4e1f709cd11",
+      "show_spans": [
+        [
+          215,
+          224
+        ],
+        [
+          287,
+          296
+        ],
+        [
+          359,
+          368
+        ],
+        [
+          431,
+          440
+        ]
+      ],
+      "slot_id": "slot-0"
+    }
+  ],
+  "runtime_sha256": "d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea",
+  "schema": "pdfengine-shared-flow-3",
+  "stored_reopen": {
+    "body_span": [
+      144,
+      375
+    ],
+    "emitted": "A B",
+    "entry_exit_proven": true,
+    "marker_id": "74eab68c0dfe35cb550efc07169ba32124a3dd4931d4c81d2da692ba10a5566a",
+    "owner_current": {
+      "block_sha256": "279e5022bc4c6a8a7afadaebfa33f8b955f9473da2b37ffd708ecd10d58dfdeb",
+      "entry_context_sha256": "fe8bcc0ff9ac2d2c66406053385fc72cbfb0ff545b45a0ffd252e80db9cd7d6a",
+      "program_sha256": "1753a1528e48cb01d2ad326a6e5410609f44e246d661cfe3e60468aad3ff55b0",
+      "range": [
+        45,
+        471
+      ]
+    },
+    "plan_sha": "5dc3bb0fcb2d6779a9c465d6f7a67c1f8b726e64d2610734ae8ff56566311ba3",
+    "show_spans": [
+      [
+        215,
+        224
+      ],
+      [
+        287,
+        296
+      ],
+      [
+        359,
+        368
+      ]
+    ],
+    "slot_id": "slot-0"
+  },
+  "verdict": "DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR"
+}

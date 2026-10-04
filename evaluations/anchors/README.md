@@ -349,3 +349,107 @@ rerun into a scratch directory produced a summary identical to the tracked one (
 negatives refused). Main judgement: B1-L-C needs a closed semantic-transition model with the trusted API caller as
 the boundary, not persistent signatures or receipts. Full suite and external originals were not run. Details in
 [design §18.10](../../docs/anchored-paint-ownership.md#1810-independent-review--claude-opus-55).
+
+
+## Authorized layout publication — 2026-10-04
+
+Base `1f5a7f0d70d4365eb0d6fac7cbebd647a3dd6ace` includes merged PR #39/review.
+**DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR** within the narrow contract
+in [§19](../../docs/anchored-paint-ownership.md#19-authorized-layout-publication-under-p4--2026-10-04).
+Both layout and paint runtimes remain NOT READY. [Separate summary](publication-summary.json).
+
+```powershell
+.venv\Scripts\python.exe -m evaluations.anchors.publication_observation --work evaluations/anchors/runs/publication-reproduce --output evaluations/anchors/runs/publication-reproduce/summary.json
+.venv\Scripts\python.exe -m pytest -q tests/test_authorized_publication_design.py
+.venv\Scripts\python.exe -m pytest -q tests/test_semantic_binding_design.py tests/test_transaction.py tests/test_mutation.py tests/test_editable.py tests/test_source_ownership.py -k "not poppler_noop_pixels"
+```
+
+Use a new work directory. The evaluator creates only synthetic PDFs/font assets
+and named temporary publication targets under that root. No external original,
+network service, login, key store or authorization receipt is needed. P4 trusts
+the API caller and explicit request; historical §18 HMAC code is not invoked.
+
+The pure state machine and fixture builder are **not runtime API/schema/layout/
+serializer/Transaction replacements**. Current physical checks use the existing
+strict whole-page synthetic oracle; a separate actual owned-island probe uses
+`owned_body`, context/containment, `operators()` spans and MutationProgram. This
+is an explicitly separated implementation-adapter design, not a claim of an
+integrated runtime island layout writer. Existing ownership regression tests
+supply additional coverage. No marker auto-adoption or regex runtime binding.
+
+Evidence: 17 independent repeated requested transitions, four further edge
+transitions, explicit alternate font, no-op PDF-byte change without semantic
+change, 15 negatives, 13 pre-commit model failures. An additional test covers
+post-commit failure with a complete new pair. Six real unmodified `_publish`
+probes show why two direct public links are insufficient when rollback fails.
+Ten proposed private-directory probes leave either no public new bundle or
+both new files; private cleanup failure is recorded, not concealed.
+
+Selected publication scope: a new directory, same local filesystem, exclusive
+caller, both verified artifacts private until one directory rename. No overwrite,
+no arbitrary independent public paths, no network filesystem guarantee, no crash/
+power-loss durability claim. A directory container is not a third receipt/manifest.
+A failed private cleanup can leave ignored staging files; they are never current.
+The legacy runtime publication behavior is unchanged.
+
+Summary gates derive the scoped DESIGN READY verdict. Exact semantic values never
+come back from output decimals. Accuracy ≤0.002 pt is independent of authorization
+and publication; maximum origin discrepancy is 0.000006103515630684342 pt.
+Full suite and external original validation not run. Poppler-only regression is
+explicitly deselected; there is no new raster equality claim.
+Runtime digest unchanged:
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+Historical docs/reviews/evidence from PR #36–#39 remain preserved.
+
+Validation: **55 new design tests + 111 focused regressions = 166 passed**.
+One Poppler-only test was deliberately deselected; full suite and external-original
+validation were not run. Final evidence is the clean `runs/publication-04` run.
+
+
+PR #40 small-change revision (2026-10-04): publication READY now requires every
+expected outcome in both orders, including complete new contents on success and
+after-rename failure. Missing evidence and a never-publishing implementation fail.
+Ownership READY includes body/context/foreign-byte preservation, parsed spans and
+all three refusal probes. `body_style_id` is a semantic label only; its explicit
+rename leaves the canonical "body" associations, metrics and PDF bytes unchanged.
+The normal, empty and all-space cases are tested.
+Validation after revision: **89 passed = 60 publication design + 29 semantic binding
+regressions**. The earlier 111 focused-regression result remains historical; the
+remaining runtime regressions were not rerun for these evaluator/docs-only fixes.
+Evidence regenerated in `runs/publication-05`; runtime digest unchanged. Full suite
+and external originals not run. Independent Opus review remains the next step;
+layout and paint runtime remain NOT READY.
+
+### Independent review of authorized layout publication
+
+Claude Opus 5.5 reviewed HEAD `f1e91ca5d6f61b5824a5ca2c23901cc6b663a3da`: **REQUEST CHANGES** — one blocking
+design gap (B1-L-O). The runtime surface and the source-output owner record that must be published with the PDF are
+undefined: source-output ownership exists only in shared-flow v2 sidecars, while the design publishes only
+PDF + semantic record. P4, the transition classes, the semantic diff gate, candidate re-verification and the
+directory-rename publication contract otherwise hold. Tests: 171 passed, 1 deselected (60 design + 111 regressions). The evaluator rerun reproduced
+`publication-summary.json` with 0 differences. Layout and paint runtime remain NOT READY. Details in
+[design §19.9](../../docs/anchored-paint-ownership.md#199-independent-review--claude-opus-55).
+
+### B1-L-O resolution — shared-flow owner sidecar (2026-10-04)
+
+Addendum to the §19.9 REQUEST CHANGES; §19 and §19.9 are preserved. The semantic payload now lives in the single
+owned source slot of a proposed `pdfengine-shared-flow-3` sidecar, next to its existing `source_output` owner
+witness. Persistent artifacts stay **two**: `document.pdf` + `shared-flow.json`. Ownership is re-proven only by the
+unmodified runtime shared-flow v2 validator on a derived projection. Design/evidence only; no runtime change.
+
+```powershell
+.venv\Scripts\python.exe -m evaluations.anchors.semantic_owner_observation --work evaluations/anchors/runs/semantic-owner-reproduce --output evaluations/anchors/runs/semantic-owner-reproduce/summary.json
+.venv\Scripts\python.exe -m pytest -q tests/test_semantic_owner_binding_design.py tests/test_authorized_publication_design.py tests/test_semantic_binding_design.py tests/test_source_ownership.py tests/test_shared_flow.py tests/test_transaction.py tests/test_mutation.py tests/test_editable.py -k "not poppler_noop_pixels"
+```
+
+The evaluator starts every lifecycle from a real single-slot shared-flow sidecar saved to disk and reloaded. It
+records:
+
+- 14 positives, including a fresh-process published-bundle reopen ×3;
+- 20 refusing negatives, including both one-sided stale states (old owner/new semantic, new owner/old semantic);
+- 6 owner refusals isolated through `source_ownership.validate`;
+- the two-artifact publication matrix.
+
+All gates pass, and the verdict is derived from them. The existing runtime `_source_body` writer stands in for the
+future L2 canonical writer. No latest/current pointer is maintained. Validation: 19 new B1-L-O design tests plus PR #40 publication design, semantic binding, source-ownership, shared-flow, transaction, mutation and editable regressions: **211 passed, 1 deselected** (Poppler-only). A second evaluator run reproduced `semantic-owner-summary.json` byte-for-byte. Details in
+[design §19.10](../../docs/anchored-paint-ownership.md#1910-b1-l-o-resolution--semantic-state-inside-the-shared-flow-owner-sidecar).
