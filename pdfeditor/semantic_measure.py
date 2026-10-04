@@ -113,9 +113,14 @@ def edit_edges(edges, start, end, inserted):
 
 
 def layout(text, style, glyph_metrics, region, empty, edges):
-    """Exact left layout. Returns lines, emitted glyphs and omitted current offsets."""
-    x, baseline, width, leading = (rational(region[k]) for k in ('x', 'baseline', 'width', 'leading'))
-    if width <= 0 or leading <= 0:
+    """Exact left layout inside the confirmed region (horizontal and vertical capacity).
+
+    Every line must satisfy baseline - ascent >= top and baseline + descent <= bottom
+    exactly; there is no tolerance. Returns lines, emitted glyphs and omitted offsets.
+    """
+    x, baseline, width, leading, top, bottom = (rational(region[k]) for k in
+                                                ('x', 'baseline', 'width', 'leading', 'top', 'bottom'))
+    if width <= 0 or leading <= 0 or not top < bottom:
         raise PdfError('nonpositive semantic region')
     asc_empty, desc_empty = rational(empty['ascent']), rational(empty['descent'])
     deltas = {e['left']: e['delta'] for e in edges}
@@ -143,6 +148,8 @@ def layout(text, style, glyph_metrics, region, empty, edges):
         tuples, span, inset, asc, desc = metrics
         if lines:
             baseline += max(leading, lines[-1]['descent'] + asc)
+        if baseline - asc < top or baseline + desc > bottom:
+            raise PdfError('semantic line exceeds the confirmed region top or bottom')
         pen = x + inset
         for i, t in enumerate(tuples, start):
             emitted.append(dict(offset=i, text=t['text'], origin=[str(pen), str(baseline + t['y_offset'])],

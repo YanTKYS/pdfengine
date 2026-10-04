@@ -2660,7 +2660,7 @@ rebind and no bundle publication (those are L2/L3). Paint runtime remains NOT RE
 
 | Module | Responsibility |
 |---|---|
-| `pdfeditor/semantic_measure.py` | Pure exact measurement for the narrow scope: pinned font policy, static-TT checks, nominal glyph metrics from the confirmed asset, one provider-independent measurement rule, exact left layout with explicit newlines, confirmed adjacent edges and the §17 edge edit policy. No renderer or PDF input. |
+| `pdfeditor/semantic_measure.py` | Pure exact measurement for the narrow scope: pinned font policy, static-TT checks, nominal glyph metrics from the confirmed asset, one provider-independent measurement rule, exact left layout with explicit newlines inside the confirmed region's horizontal and vertical capacity, confirmed adjacent edges and the §17 edge edit policy. No renderer or PDF input. |
 | `pdfeditor/semantic_layout.py` | `pdfengine-shared-flow-3` schema, explicit confirmation, read-only open/verification, closed N/D/E/R transitions, exact semantic diff. |
 
 Public API (minimal, no writer/save/publication):
@@ -2710,10 +2710,13 @@ receipts and prior revisions refuse.
    static, unhinted, simple-glyph TrueType with the pinned policy. Island text must be painted only through
    `generated_fonts` aliases owned by the slot whose provider SHA is the semantic asset; no subset or GID equality
    is required.
-7. Region from `state['regions'][region_id]` and the paragraph `min_line_height`. Derived state is recomputed and
-   must be equal.
+7. Region from `state['regions'][region_id]` (x, width, first_baseline, and top/bottom from `bounds`) and the
+   paragraph `min_line_height`, as exact rationals. Every line, including empty lines, must satisfy
+   `baseline - ascent >= top` and `baseline + descent <= bottom` exactly (no tolerance), and must fit the width.
+   Derived state is recomputed and must be equal.
 8. Island: `owned.witness` equals `current`; entry and exit contexts are derived and equal; the entry context is
-   identity CTM, unclipped, default and opaque; the island's emitted characters equal the exact plan.
+   identity CTM, unclipped, opaque, no ExtGState, and default black fill/stroke (DeviceGray 0, as in the PDF initial
+   graphics state); the island's emitted characters equal the exact plan.
 
 ### 20.4 Transitions (read-only)
 
@@ -2729,7 +2732,7 @@ record-replacement path. `require_authorized_payload` refuses any unrequested di
 
 ### 20.5 Evidence
 
-`tests/test_semantic_layout.py` (52 tests) builds a real single-slot shared flow (owned after the first save, then a
+`tests/test_semantic_layout.py` (58 tests) builds a real single-slot shared flow (owned after the first save, then a
 second revision) only from runtime APIs. It covers:
 
 - explicit confirmation; no implicit upgrade (the v2 opener still opens v2, never adds semantics, and rejects v3);
@@ -2741,10 +2744,12 @@ second revision) only from runtime APIs. It covers:
 - every scope refusal with its specific reason; copied owner refused;
 - duplicate marker, marker spoof, foreign glyph and stale context refused, also isolated through
   `source_ownership.validate`;
-- D/E/N/R transitions and unauthorized-diff refusal.
+- D/E/N/R transitions and unauthorized-diff refusal;
+- region capacity: wrap inside the region passes; a long insert, extra empty lines, font-size growth and a rise above
+  the top are refused before any next state is authorized; a non-default (red) entry fill refuses confirmation.
 
-Full suite: **1,410 passed, 8 skipped, 0 failed** (four file-balanced shards of the whole `tests/` tree, run in parallel; skips: 1 Poppler-unavailable renderer check, 2 AES-provider-unavailable save tests, 5 external-corpus tests not downloaded). No existing test was changed or removed. External Windows/LibreOffice validation was not run: L1 is a read-only state layer, adds no PDF
-output and claims no rendering result. Runtime digest after L1: `bbd5b28d385747986536fe3c9abff7bf5c3a99b779372f4779ebd93b77db9ed3`.
+Full suite (rerun after the region-capacity and entry-paint fixes): **1,416 passed, 8 skipped, 0 failed** (four file-balanced shards of the whole `tests/` tree, run in parallel; skips: 1 Poppler-unavailable renderer check, 2 AES-provider-unavailable save tests, 5 external-corpus tests not downloaded). No existing test was changed or removed. External Windows/LibreOffice validation was not run: L1 is a read-only state layer, adds no PDF
+output and claims no rendering result. Runtime digest after L1: `68fc3a4085a566bdd389227e9664e8b8f46505225768d6d0bd8aadacd71359a5`.
 
 ### 20.6 L2 obligations
 

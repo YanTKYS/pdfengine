@@ -47,10 +47,10 @@ def static_font(family='SemanticProof'):
     return out.getvalue()
 
 
-def make_flow(root, flow_id='semantic-flow'):
+def make_flow(root, flow_id='semantic-flow', prefix=b''):
     """Single paragraph / single slot / one region / one style; first save creates the owner."""
     root.mkdir(parents=True, exist_ok=True)
-    source = source_pdf(root, b'BT /Regular 12 Tf 20 200 Td (XY) Tj ET')
+    source = source_pdf(root, prefix + b'BT /Regular 12 Tf 20 200 Td (XY) Tj ET')
     asset = root / 'asset.ttf'; asset.write_bytes(static_font())
     p = inspect_paragraph(source, make_selection(source, glyph_ids=[0, 1], explicit_width=150))
     story = confirm_story(source, {'part': dict(page=1, bounds=[18, 40, 200, 220], paragraph=p, paint_relations=[],
@@ -59,7 +59,7 @@ def make_flow(root, flow_id='semantic-flow'):
         styles={'body': dict(provider=dict(path=str(asset)), provider_relation='substituted')},
         style_assignments={'part': {s['id']: 'body' for s in p['styles']}}, typing_style_id='body')
     state = confirm_shared_flow(source, {'A': story}, flow_id=flow_id, paragraph_order=['A'],
-        regions={'R': dict(page=1, bounds=[18, 40, 200, 220], x=20, width=150, first_baseline=200)},
+        regions={'R': dict(page=1, bounds=[18, 40, 200, 250], x=20, width=150, first_baseline=200)},
         region_order=['R'], slot_regions={'A': {'part': 'R'}},
         paragraph_policies={'A': dict(min_line_height=22, first_line_indent=0, keep_together=False,
             break_before='auto', break_after='auto', empty=dict(kind='reserve-line', ascent=10, descent=3))},
@@ -374,3 +374,31 @@ def test_field_authority_separates_owner_creation_from_semantics():
     assert 'slots[s].source_output.created_from' in authority['immutable_creation_identity']
     assert authority['semantic_authority'] == ('slots[s].semantic.payload',)
     assert 'slots[s].source_output.current' in authority['mutable_current_owner_witness']
+
+
+def test_region_capacity_admits_wrap_inside_the_confirmed_region(flows):
+    result = plan(flows, dict(operation='edit', start=3, end=3, text=' AB AB AB AB AB AB AB'))
+    assert result['classification'] == 'D' and len(result['next_plan']['lines']) == 2
+    bottom = flows['v3_rev1']['regions']['R']['bounds'][3]
+    from fractions import Fraction
+    assert all(Fraction(line['baseline']) + Fraction(line['descent']) <= Fraction(str(bottom))
+               for line in result['next_plan']['lines'])
+
+
+@pytest.mark.parametrize('name,request_', [
+    ('long_insert', dict(operation='edit', start=3, end=3, text=' ' + 'AB ' * 30)),
+    ('empty_lines', dict(operation='edit', start=3, end=3, text='\n\n\n')),
+    ('font_size_growth', dict(operation='reinterpret', changes=dict(font_size='100'))),
+    ('rise_above_top', dict(operation='reinterpret', changes=dict(rise='-170'))),
+])
+def test_region_capacity_refuses_lines_outside_top_or_bottom(flows, name, request_):
+    with pytest.raises(PdfError, match='region top or bottom'):
+        plan(flows, request_)
+
+
+def test_entry_paint_context_must_be_default_black(tmp_path):
+    source, asset = make_flow(tmp_path / 'red', 'red-flow', prefix=b'1 0 0 rg ')
+    main = tmp_path / 'red'
+    with pytest.raises(PdfError, match='default black'):
+        semantic.confirm_semantic_layout(main / 'rev1.pdf', main / 'rev1.json', slot_id='slot-0',
+                                         semantic=statement(asset))

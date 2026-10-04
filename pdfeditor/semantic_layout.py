@@ -113,11 +113,12 @@ def _payload(payload, slot):
 
 
 def _region(state, slot):
-    """Confirmed shared-flow region and paragraph leading; nothing from PDF geometry."""
+    """Confirmed shared-flow region (incl. vertical bounds) and leading; nothing from PDF geometry."""
     r = state['regions'][slot['region_id']]
     leading = state['paragraph_policies'][slot['paragraph_id']]['min_line_height']
     return {k: str(F(str(v))) for k, v in
-            dict(x=r['x'], baseline=r['first_baseline'], width=r['width'], leading=leading).items()}
+            dict(x=r['x'], baseline=r['first_baseline'], width=r['width'], leading=leading,
+                 top=r['bounds'][1], bottom=r['bounds'][3]).items()}
 
 
 def _asset(state, slot, payload, asset=None):
@@ -199,9 +200,11 @@ def _island(source, state, sid, payload, plan):
         if not before == after == record['current']['entry_context_sha256']:
             raise PdfError('semantic island entry/exit context differs')
         state_in = entry.state
+        default_paint = (state_in.fill[0] == 'g' and tuple(map(str, state_in.fill[1])) == ('0',)
+                         and state_in.stroke[0] == 'G' and tuple(map(str, state_in.stroke[1])) == ('0',))
         if (tuple(float(v) for v in state_in.ctm) != (1.0, 0.0, 0.0, 1.0, 0.0, 0.0) or state_in.clip
-                or state_in.other or state_in.opacity != 1 or state_in.stroke_opacity != 1):
-            raise PdfError('semantic layout needs an identity, unclipped, default opaque entry context')
+                or state_in.other or state_in.opacity != 1 or state_in.stroke_opacity != 1 or not default_paint):
+            raise PdfError('semantic layout needs an identity, unclipped, default black opaque entry context')
         events = [e for e in content.events if not e.invocation and span[1] <= e.operator.start < e.operator.end <= span[2]]
         fonts = state.get('generated_fonts', {}).get(str(page), {})
         for event in events:
