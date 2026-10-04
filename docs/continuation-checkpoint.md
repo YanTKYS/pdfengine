@@ -1482,3 +1482,16 @@ co-binding. `plan_semantic_transition` returns closed N/D/E/R next states withou
 save, owner rebind or publication yet (L2/L3). Every line must fit the confirmed region exactly (width, top and bottom), and the entry context must be the default black, opaque, unclipped identity state. Tests: 58 new; full suite 1,416 passed / 8 environment skips.
 Runtime digest `68fc3a4085a566bdd389227e9664e8b8f46505225768d6d0bd8aadacd71359a5`. Paint runtime NOT READY.
 [L1 details](anchored-paint-ownership.md#20-l1-runtime-shared-flow-semantic-layout-state--2026-10-04).
+
+
+## Shared-flow semantic island writer L2 — 2026-10-05
+
+From main `9f50cf0b5ea8ff4656bf87d511b8b227f8abf556` (PR #41). `semantic_writer.build_semantic_candidate` produces a
+private candidate PDF + shared-flow-3 sidecar. It runs L1 verification and transition authority, rewrites only the
+owned source-output body inside `Transaction`, rebinds the owner witness and the semantic state, and reopens the
+candidate from disk with exact canonical-body and ≤0.002 pt checks. No-op saves are byte-stable on the owned island;
+Tw and Tw↔edge are written and verified. **L2 NOT COMPLETE:** blocker B-L2-S — style-value and font reinterpretations
+need a registry-change contract, because the v2 registry/fragment validation binds them to source observations.
+Tests: 32 new; full suite 1,448 passed / 8 environment skips. Runtime digest
+`d9e69d513cc20cb1bf3060051372e11452eb8a04f7c003df751b1a8a9fb2bf40`. No publication (L3). Paint runtime NOT READY.
+[L2 details](anchored-paint-ownership.md#21-l2-runtime-canonical-semantic-island-writer--2026-10-04).

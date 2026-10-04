@@ -2759,3 +2759,127 @@ candidate re-verification through `open_semantic_flow`. It also admits Tw/edge e
 serializes and witnesses them, and adds region/registry changes only with an explicit confirmed contract. L3 adds
 the bundle-directory publication adapter and failure matrix. Paint runtime stays behind validated layout and the
 five §15.11/§16.6 obligations.
+
+
+## 21. L2 runtime: canonical semantic island writer — 2026-10-04
+
+Starting main `9f50cf0b5ea8ff4656bf87d511b8b227f8abf556` (PR #41, L1 merged). §20 is preserved. L2 connects an
+authorized semantic transition to an actual PDF mutation of the single owned source slot. Candidates are private
+(PDF + shared-flow-3 sidecar under a caller workspace). **No public publication, pointer, receipt or history** (L3).
+Paint runtime remains NOT READY.
+
+**Result: L2 NOT COMPLETE — one recorded blocker, B-L2-S.** The writer, Transaction integration, owner and semantic
+rebind, candidate verification, no-op stability, Tw and Tw↔edge are implemented and verified. Explicit style-value and
+font-asset reinterpretations are refused by design until a registry-change contract exists (§21.6).
+
+### 21.1 Runtime surface and API
+
+| Module | Responsibility |
+|---|---|
+| `pdfeditor/semantic_island.py` | Pure canonical body serializer: the exact plan becomes `q BT … ET Q` with the fixed decimal policy; reads the alias/codebook back for exact re-serialization |
+| `pdfeditor/semantic_writer.py` | `build_semantic_candidate(source, model, request, *, workspace, asset=None)` returns `{directory, pdf, sidecar, plan, verification, body}` |
+| `pdfeditor/semantic_layout.py` | Unchanged policy. The island check now reports `canonical` and admits Tw ≠ 0 or edges only when the island is the exact canonical body. |
+
+The scope is unchanged from L1 (one paragraph, one owned slot, one region, one body style, left, A/B/space/newline,
+≤256 characters, static TT, identity/unclipped/opaque/default-black entry, exact region capacity).
+
+### 21.2 Authority chain (no new authority)
+
+1. `open_semantic_flow(source, model)` must be `restored` (owner via the unmodified v2 validator, semantic co-binding,
+   island).
+2. `plan_semantic_transition` is the only transition policy. `require_authorized_payload(plan, payload)` pins the writer
+   to `plan['next']`. The writer recomputes the exact plan with L1 `_derive` and refuses any difference from
+   `plan['next_derived']`.
+3. Class N needs no candidate. Class D and E over `word_spacing`/`edges`/`body_style_id` are writable. Other E
+   transitions refuse (B-L2-S).
+4. Inside `Transaction(source)`: the source SHA must equal the verified revision. The slot's existing generated fonts
+   are registered with `own_fonts`. `source_ownership.owned_body` proves the byte span. One
+   `Mutation(start, end, body, kind='source-output-rewrite', owner=slot_id)` replaces only the body between the markers.
+   The font comes from the confirmed asset through `ShapedFont.resource` and `reserve_font_alias(owner=slot_id)`, so only
+   the slot's own releasable alias is re-targeted and foreign aliases are untouched. `commit` keeps its source-revision,
+   overlap, foreign glyph/paint, font-fingerprint and pixel checks and saves once.
+5. After commit, `bind_document_edit` rebinds the slot through the identity map. Then `styles.bind_fragment`, slot
+   range/render_end/occupancy, style binding, the shared-flow logical record (`styles.project`, as `edit_shared_flow`
+   does), `source_ownership.rebind` (same marker_id/created_from/entry context, new current witness),
+   `_generated_fonts`, `pdf_sha256`, `physical_breaks` and `previous_model_sha256` (digest link only) are updated. A
+   source change during commit refuses.
+6. `semantic_layout._attach` seals the authorized payload with derived state and a binding to the candidate revision.
+   The sidecar is written to disk and reopened with `open_semantic_flow`. Its semantic state must equal `plan['next']`
+   and its derived state `plan['next_derived']`. The island must be canonical, its bytes must equal the serialized body,
+   its glyph order must equal the plan, and the MuPDF origins must be within ≤0.002 pt (an additional check after the
+   exact checks).
+
+Any failure removes the private candidate directory. Source PDF and sidecar are never modified.
+
+### 21.3 Canonical grammar and semantic → operator mapping
+
+```
+q BT /<slot alias> <size> Tf <scale×100> Tz <tracking/scale> Tc 0 Tw <−rise> Ts <fill> <g|rg|k>
+1 0 0 1 <x> <top − baseline> Tm <code> Tj        one per emitted glyph, plan order
+(empty: 1 0 0 1 <region x> <top − first_baseline> Tm [] TJ)
+ET Q
+```
+
+Only source-output body operators are used; there is no `%`, cm, gs or color space. Positions come from the exact plan.
+The positions carry Tw (space advance) and confirmed edges (pair advance, suppressed at a line end), so intent remains
+confirmed rather than physically witnessed (Option B). Tc witnesses tracking (equal to the confirmed registry tracking),
+Ts witnesses rise and Tz scale. Decimal spelling is the §18/§19 output policy: at most 6 places, ties to even, no
+exponent, no negative zero. It is never read back as semantic input.
+
+The font codebook is fixed: sorted {used chars} ∪ {A, space}, so codes are stable for a stable character set. The fill
+is the confirmed registry fill. Repeated glyphs each get their own `Tm`/`Tj` in plan order; operators are never reused
+or reordered. Trimmed spaces and newlines are not painted. An empty body keeps a typing `[] TJ` witness that only
+witnesses the style adapter.
+
+### 21.4 Evidence (`tests/test_semantic_writer.py`, 32 tests; L1 + L2 90 passed)
+
+- **Only the owned body changes:** the page prefix and suffix around the markers are byte-identical. The owner keeps
+  marker_id, created_from and entry context and gets a new current witness.
+- **No-op stability:** save1 = save2 = save3 island bytes and operator counts, MuPDF 144 dpi pixels identical, each
+  reopened canonical.
+- **Text edit:** `A B` → `AA B` → no-op (same body).
+- **Tw:** 0 → 6/5 moves only the glyph after the space (34.4 → 35.6), and it persists through a no-op.
+- **Tw→edge and edge→Tw:** physically identical bodies, distinct records, both verify.
+- **Edge policy in actual candidates:** endpoint delete drops the edge, insertion between drops it, an earlier edit
+  remaps it, and at a line end the right endpoint starts the next line at the region x.
+- **Empty and regrow:** empty → no-op stable → regrow returns the original body. Newline and trailing space produce the
+  derived omissions, and a trailing space leaves the body unchanged. A `body_style_id` rename keeps the physical body.
+- **Refusals:** reopen (nothing to write), split, hash_refresh, region change, region overflow, nonadjacent edge, stale
+  owner, stale semantic, serializer tamper, writing outside the owned body, marker spoof, foreign glyph, context
+  change, and a source revision race.
+- **Failure injection** at plan, serializer, mutation, commit, rebind, semantic bind and candidate re-verification:
+  inputs are byte-identical and no candidate is left in the workspace.
+- **Fresh-process reopen** of edit, no-op, Tw→edge and label candidates.
+
+Full suite: **1,448 passed, 8 skipped, 0 failed** (four file-balanced parallel shards of the whole `tests/` tree; skips: 1 Poppler unavailable, 2 AES provider unavailable, 5 external corpus not downloaded). No existing test was changed or removed. Poppler is unavailable here. External Windows/LibreOffice validation was not run: there is no
+prepared single-owned-slot target, and no new adaptation was started. Runtime digest: `d9e69d513cc20cb1bf3060051372e11452eb8a04f7c003df751b1a8a9fb2bf40`.
+
+### 21.5 L2 completion check
+
+All criteria hold except **font/style actual transitions**:
+
+- the writer exists, rewrites only the owned body, reuses L1 transition authority and Transaction, and guards the
+  source revision;
+- candidates are private; owner rebind and semantic rebind succeed; the sidecar is resealed and passes a fresh
+  `open_semantic_flow`;
+- no-op output is stable; Tw and edge output reopen correctly;
+- scope refusals are preserved, inputs are unchanged on failure, and no L3 publication was added.
+
+### 21.6 Blocker B-L2-S — style/font reinterpretation needs a registry-change contract
+
+The v3 verifier reuses the v2 validator unchanged. In v2, `story_styles.validate_registry` binds each registry
+attribute (font_size, horizontal_scale, tracking, baseline_shift, fill) and the reflow provider to immutable source
+observations. `validate_fragment` requires the slot's physical inline attributes and provider recipe to equal that
+registry, and L1 requires the semantic style to equal it too. A candidate that paints the new size, scale, rise or
+tracking, or a new font asset, therefore cannot pass owner validation, and changing the registry would break the
+source-witness rule. Closing this needs a design decision, not more writer code: an explicit, caller-confirmed
+registry-change contract for the owned slot. For example, a v3 registry entry whose provenance is the confirmed
+semantic style rather than source observations, validated against the semantic payload and the canonical island,
+while the immutable source witnesses stay as creation evidence. Until then the writer refuses these E transitions
+(`B-L2-S`), and L1 planning still computes them read-only.
+
+### 21.7 L3 obligation
+
+L3 publishes a verified candidate pair (`document.pdf` + `shared-flow.json`) through private staging, one new bundle
+directory and one rename, with the PR #40 failure matrix and an end-to-end public reopen. It adds no latest/current
+pointer.
