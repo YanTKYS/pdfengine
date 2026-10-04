@@ -1309,3 +1309,27 @@ Next scope is B1-L layout-authority design/evidence, not paint runtime implement
 11 focused tests passed, runtime unchanged, no full suite or external original.
 [New summary](../evaluations/anchors/paint-contract-summary.json) and
 [reproduction](../evaluations/anchors/README.md#pr-35-design-gates--2026-10-04).
+
+
+## Canonical paragraph layout authority — 2026-10-04
+
+Starting main `b97c6b8dbba33176f25554ae35618a2ae2568941` includes merged PR #36.
+**NOT READY — design/evidence only.** L1 provider transitions, L2 source-line/
+adjacency transitions and L3 retained trace position dependence are reproduced.
+New blocker **B1-L-M**: fixing all advances still leaves source trace ink in
+width measurement; identical target input wraps AB into one or two lines
+according to the source's absolute position. Scaled reconstructed semantic
+size/scale also drift independently of physical style-ID changes.
+
+A trace authority is rejected; nominal-only loses TJ/Tm intent; creation-time
+records need full metrics and current-only verification. A hybrid lowered to
+one logical metric representation is the preferred direction, not a complete
+accepted contract. Left only; candidate refuses unconfirmed TJ/manual position
+intent. Its exact rational/fresh-process determinism is not a PDF roundtrip proof.
+
+48 current-runtime saves cover first/change/noop×3, active range growth,
+reflow, Tc/Tw/Tz/TJ/Tm and identity/scaled CTMs. 102 focused tests passed;
+runtime digest unchanged. Full suite and external original validation not run.
+Next: canonical ink/vertical metrics and exact style/font binding design;
+paint runtime remains blocked. See [§16](anchored-paint-ownership.md#16-b1-l-canonical-layout-authority-evidence--2026-10-04)
+and [summary](../evaluations/anchors/layout-authority-summary.json).
