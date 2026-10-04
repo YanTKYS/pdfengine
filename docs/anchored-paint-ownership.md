@@ -2413,3 +2413,95 @@ remaining runtime regressions were not rerun for these evaluator/docs-only fixes
 Evidence regenerated in `runs/publication-05`; runtime digest unchanged. Full suite
 and external originals not run. Independent Opus review remains the next step;
 layout and paint runtime remain NOT READY.
+
+### 19.9 Independent review — Claude Opus 5.5
+
+- Reviewed HEAD: `f1e91ca5d6f61b5824a5ca2c23901cc6b663a3da`; base `1f5a7f0d70d4365eb0d6fac7cbebd647a3dd6ace`
+  (PR #39 merge commit, verified merged). This record is a separate commit on top of the reviewed HEAD.
+- **Verdict: REQUEST CHANGES — one blocking design gap (B1-L-O below); otherwise the design holds.**
+  The §19 claim *DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR* is **not supported yet**.
+  Layout runtime is not implemented and is **NOT READY**; paint runtime **NOT READY**.
+- Tests: the README current command (publication design + semantic binding + transaction/mutation/editable/
+  source-ownership regressions, Poppler deselected): **171 passed, 1 deselected (422.57 s; 60 design + 111 regressions, which also re-runs the 111 not rerun after the PR revision)**. `publication_observation` rerun into a scratch
+  directory reproduced the tracked `publication-summary.json` with **0 differences** (17 positives, 15/15 negatives
+  refused, 13 failure injections, 6 `_publish` and 10 directory probes, same gate values). Runtime digest
+  `d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea` unchanged; no `pdfeditor/` diff.
+  Full suite and external Windows/LibreOffice validation: not run.
+
+**What holds (PASS-level findings).**
+
+- *P4 trust model:* consistent. There is no caller authentication, receipt, key or account; the checksum is integrity-only;
+  `authorize_transition` needs a `Verified` value; semantic change comes only from the closed request grammar; the
+  privileged-caller reseal is explicitly out of scope (§19.1); the engine does not re-approve its own output (S5 reopens the
+  candidate, and the wrong-candidate negative refuses).
+- *Initial confirmation:* it is a separate full statement, physically verified before sealing; there is no marker or
+  sidecar adoption, and no owner is auto-created.
+- *Persistent record:* current-state bounded; there is no receipt or layout history and no hash-refresh operation; the
+  record is not a change authority.
+- *N/D/E/R:* I found no hidden meaning change in D. A space inserted inheriting confirmed Tw follows §17; edge
+  remap/drop/suppression follows the adjacent-pair policy. `body_style_id` is verified as a pure label (diff
+  `body_style_id` only; canonical `"body"` slot, metrics and bytes unchanged). Keeping it in E is acceptable, because it
+  makes the label change explicit at no cost.
+- *Semantic diff gate:* `check_diff` requires canonical equality with the authorized expectation, and the tampered
+  Tw/font/label cases refuse. Exact rational spelling (`str(Fraction)`) is representation only.
+- *Candidate re-verification and no-op save:* the save request authorizes only the binding update, after old
+  verification and a fresh candidate reopen. This is distinct from a bare `hash_refresh`, which has no path.
+- *Existing `_publish` limit:* reproduced. A second-link failure rolls back, but second-link plus rollback-unlink failure
+  leaves a half public pair in both orders. It is correctly not called atomic.
+- *Directory publication:* private children, verification, a same-parent non-existing target and one rename as the commit
+  point are sound for the stated scope (exclusive caller, local filesystem, no overwrite, exception atomicity only).
+  `publication_gate` requires all ten rows, including successful complete contents and after-rename completion. A
+  never-publishing implementation and missing evidence fail. Private garbage is correctly separated from public state.
+  After-rename failure with inspect-before-retry is correct.
+- *Transaction reuse:* source SHA check, `MutationProgram` overlap, foreign glyph/paint/font checks, one candidate save
+  and identity maps are reusable. `publish_program` can write into the private staging directory.
+- *Accuracy:* it remains separate; it is not an input to any authorization/ownership/publication gate.
+
+**Blocking finding B1-L-O: the runtime surface and the owner record that must be published with it are undefined.**
+
+- Where: §19.2/§19.5/§19.7 (artifacts "exactly PDF + semantic record"); the evaluator record `owner={'domain','id'}`
+  and `check_owner` comparing IDs only.
+- Issue: §19 makes the existing owned source-output island the write authority. In the runtime, source-output ownership
+  exists **only** in shared-flow v2 sidecars (`slots[*].source_output` with marker_id, created_from and the mutable
+  `current` program/range/block/context witness). `_source_output` is reachable only from `edit_shared_flow`; ordinary
+  editable has no owner, and PR #33 deliberately keeps it closed. §19 names neither the target surface nor where the
+  owner's `current` witness lives after a save. Every save rebinds that witness. Publishing only PDF + semantic record
+  would leave the shared-flow sidecar stale, so the next open refuses. Avoiding that needs either a third artifact
+  (contradicting the pair gate) or embedding (a shared-flow schema change). A shared-flow paragraph can also span several
+  slots and regions, while the semantic record assumes one paragraph and one region.
+- Why design, not implementation: this decides which persistent record carries write-authority evidence, how many
+  artifacts the atomic publication commits, and which schema version changes. Those are exactly the authority and
+  publication boundaries the design phase settles; an implementer would otherwise invent them.
+- Safety impact: fail-closed (stale owner witness → refusal), but no safe positive lifecycle is defined, and the
+  `physical_mutation_ownership` and `atomic_pair_publication` gates are evaluated against an owner record that does not
+  correspond to the runtime one. The island probe self-computes the owner `current` from the same PDF under a fixture
+  grant, so it proves adapter mechanics, not record co-binding.
+- Minimum resolution (small design addendum, no runtime):
+  1. Choose the surface. Recommended: a shared-flow v2 text source slot that is already `owned`, whose paragraph has
+     exactly one slot and no continuation destination.
+  2. Define the composition. Recommended: embed the semantic payload in that slot under a new shared-flow schema
+     version, so the bundle stays PDF + one sidecar, with `source_output.current` and the semantic record sealed and
+     published together.
+  3. State that the canonical layout writer replaces `_source_body` for that slot only, and that the region comes from
+     the slot's confirmed region.
+  4. Make the ownership and publication gates require the persisted owner witness to be rebound in the published sidecar.
+  5. Add one evidence probe: a real shared-flow v2 slot reopened from its stored record (not self-witnessed), a
+     transition, a candidate, rebinding of both records, and refusal of a stale owner witness.
+  Once that addendum passes review, the remaining work is implementation.
+
+**Non-blocking notes.**
+
+1. `island_probe` hardcodes `entry_exit_proven=True`. It is implied by `owned.witness` succeeding, but should be
+   derived from its entry/exit comparison.
+2. The directory contract has no in-place "current" pointer. Consumers find the newest bundle through caller state, and
+   any later "latest" pointer update lies outside the atomicity claim. Document this.
+3. Gate naming: `current_binding` is derived from the negative set. Also require a positive stored-record reopen.
+4. Implementation split once READY: (L1) semantic state + transitions + read-only island-scoped verifier; (L2) canonical
+   island writer + Transaction + owner/semantic rebind; (L3) bundle-directory publication adapter + full failure
+   matrix. Each lands behind refusal of unsupported contexts.
+5. The narrow scope (A/B/space/newline, ≤256 chars, static unhinted TT, one body style, left, identity CTM, unclipped
+   opaque context) is small enough. Do not widen it before the first implementation is validated.
+
+**Next scope.** The B1-L-O addendum above. After it is reviewed, DESIGN READY can be reconsidered and layout
+implementation can start, preferably split into L1–L3. Paint runtime stays behind validated layout and the five
+§15.11/§16.6 obligations.

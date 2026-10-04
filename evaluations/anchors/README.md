@@ -419,3 +419,13 @@ remaining runtime regressions were not rerun for these evaluator/docs-only fixes
 Evidence regenerated in `runs/publication-05`; runtime digest unchanged. Full suite
 and external originals not run. Independent Opus review remains the next step;
 layout and paint runtime remain NOT READY.
+
+### Independent review of authorized layout publication
+
+Claude Opus 5.5 reviewed HEAD `f1e91ca5d6f61b5824a5ca2c23901cc6b663a3da`: **REQUEST CHANGES** — one blocking
+design gap (B1-L-O). The runtime surface and the source-output owner record that must be published with the PDF are
+undefined: source-output ownership exists only in shared-flow v2 sidecars, while the design publishes only
+PDF + semantic record. P4, the transition classes, the semantic diff gate, candidate re-verification and the
+directory-rename publication contract otherwise hold. Tests: 171 passed, 1 deselected (60 design + 111 regressions). The evaluator rerun reproduced
+`publication-summary.json` with 0 differences. Layout and paint runtime remain NOT READY. Details in
+[design §19.9](../../docs/anchored-paint-ownership.md#199-independent-review--claude-opus-55).
