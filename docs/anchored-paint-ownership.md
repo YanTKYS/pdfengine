@@ -1630,3 +1630,73 @@ The five paint obligations remain tracked in §15.11/§16.6: ordinary/legacy
 mutation overlap refusal; source-decimal path + exact S creation recipe;
 termination lexical gate; cross-page fixture; unified clip/paint CTM authority.
 This PR does not implement them or create duplicate TODOs.
+
+### 17.10 Independent review — Claude Opus 5.5
+
+- Reviewed HEAD: `9c68d31c4bcbaad5fb4fc205b24a8d1360441a19`; base `8f9bf6e9e5288b73046ff0c769fa337cde4c537e`
+  (PR #37 merge commit, verified merged). This record is a separate commit on top of the reviewed HEAD.
+- **Verdict: PASS WITH NON-BLOCKING NOTES — DESIGN/EVIDENCE ONLY; NOT READY.**
+  Layout runtime **NOT READY**. Paint runtime **NOT READY**. No blocking findings.
+- Focused tests (README command): **121 passed** (184.34 s). `measurement_observation` rerun into a scratch
+  directory reproduced a summary **identical** to the tracked `measurement-authority-summary.json`
+  (0 differences, same local Windows platform metadata); the tracked file was not overwritten.
+  Full suite: not run. External Windows/LibreOffice original validation: not run.
+  No `pdfeditor/`, serializer, schema, API, verifier or paint writer change.
+
+**Counterexamples.** B1-L-M is reproduced (`source_ink` trace bbox fallback). B1-L-V follows directly from
+`ParagraphShaper.shape`: new glyphs use `ShapedFont.ascender/descender` (hhea/upem) × size, retained glyphs take
+`max(trace bbox extent, hhea × size/upem)`. The `max` runs even when `embedded_outline` bounds are readable, so the
+asymmetry is a rule selected by provider, not only the Base-14 fallback; MuPDF's em-normalized trace box
+(600/−200 → 9/3 at 12 pt) explains 7.2/2.4 → 9/3 and the 2.4 pt baseline move. The near-boundary actual roundtrip
+(first 1 line → noop 2 lines, B moves 16 pt) is a valid diagnostic: every plan is saved within 0.0000152587890625 pt,
+so writer accuracy passes while the plan itself changes on reopen. B1-L-S: `SourceParagraph` derives size/scale/
+tracking/rise from a pymupdf (float32) `multiply(text_matrix, ctm)`; the serializer writes a float32 inverse basis and
+`_bind_paragraph` accepts close values, giving the recorded monotonic size ratchet. B1-L-I: the serializer emits
+`0 Tw` and per-glyph `Tm`, so active positions do not determine Tw versus TJ/Tm intent.
+
+**Candidates.** D (common logical measurement) as the structure and E (exact source decimal tokens → `Fraction`,
+not `Fraction(str(float))`) as its source-input layer are sound. E's restricted ASCII grammar refuses font switches,
+rotation/shear, unknown operators, missing/nonpositive widths, escapes and nesting, and is not claimed as a general
+parser; `/Widths` remain an external witness. F (float32 snapping) is correctly rejected: it rewrites semantic inputs,
+stays position/renderer dependent and is not closed under addition. CTM is kept as renderer-adapter context, separate
+from semantic style; resource/ID renames are separated from numeric drift.
+
+**Bounds matrix / tuple.** The A/B/C1–C3/D classification is appropriate: readability alone is not admission, subset
+names are not identity, subset bytes legitimately differ from the asset SHA, and glyph correspondence plus
+hmtx/hhea/outline/Unicode checks are required. Refusing Base-14 in this narrow scope is acceptable. The pure tuple is
+internally consistent: one rule for all providers; ink is rise-shifted once relative to `baseline_origin`;
+ascent/descent take hhea and ink y extents without trace input; tracking and edges are suppressed at the trimmed line
+end; trailing spaces stay records but are not painted; empty lines use an explicit recipe. The edge policy (adjacent
+only, removed by endpoint delete or insertion between, preserved while adjacent, suppressed at line end, cross-
+paragraph/vertical/nonadjacent refused) does not over-infer authorial intent.
+
+**Binding, witness, gates.** `verification_candidate()` is correctly described as comparison of supplied witness data,
+not extraction/authentication; current-subset samples are partial evidence. Font binding, spacing intent and
+current-only lifecycle canonicality are correctly OPEN, and `verdict()` cannot be overridden by accuracy. The five
+paint obligations from §15.11/§16.6 remain tracked.
+
+**Non-blocking notes.**
+
+1. Gates mix determinism and admissibility. Record three layers separately: model determinism (closed for the pure
+   candidate), input admissibility (style/ink-vertical PASS only for preconfirmed or synthetic inputs), and
+   authenticated current binding (OPEN).
+2. Semantic witness: because the current serializer gives identical bytes for Tw intent and a confirmed edge, a record
+   that swaps those intents cannot be caught by physical comparison. The next design must choose between
+   (a) intent-encoding canonical serialization in an owned region, verified by exact re-serialization from the current
+   record (a lossless current PDF witness), and (b) explicit confirmation held in the caller-trusted record and bound
+   to current physical positions, stated as *not* physically witnessed. A free-form PDF-internal marker alone adds no
+   authority.
+3. Empty lines and trimmed trailing spaces have no painted witness. Either give them a nonpainting physical witness
+   (as source-output empty/style `[] TJ` witnesses do) or treat them under explicit-confirmation authority; this belongs
+   to the next scope together with default/paragraph style association.
+4. F's rejection does not exclude a renderer-independent fixed *output* decimal rule applied only at serialization and
+   never fed back into logical inputs; that is compatible with D and differs from snapping semantic values.
+5. An AFM contract for Base-14 may later be admissible for advances and line metrics; ink accuracy against the
+   renderer's substituted outline would still need separate evidence. Refusal now is fine.
+
+**Next minimal scope.** Current-only semantic witness / font-and-empty-style association design for the static-TT
+subset: choose the intent witness (note 2); font association via code→CID→GID→Unicode and asset glyph equivalence;
+repeated glyphs, omitted whitespace and empty/nonpainted style association; Tw-versus-edge ambiguity; stale, tampered
+and resealed record refusal; positive and negative binding fixtures; and proof that the canonical record survives a
+verified PDF→record rebind. Layout runtime implementation should not start before that gate closes; paint runtime
+remains blocked behind layout.

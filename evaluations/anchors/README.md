@@ -276,3 +276,11 @@ passed all 121; the two strengthened style-ratchet tests then passed separately.
 Windows/LibreOffice original validation were not run. Runtime digest unchanged:
 `d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
 PR #36/#37 historical evidence, evaluators and independent review remain intact.
+
+### Independent review of canonical measurement
+
+Claude Opus 5.5 reviewed HEAD `9c68d31c4bcbaad5fb4fc205b24a8d1360441a19`: **PASS WITH NON-BLOCKING NOTES —
+DESIGN/EVIDENCE ONLY; NOT READY** (layout and paint runtime NOT READY). Focused tests: 121 passed. The evaluator
+rerun into a scratch directory produced a summary identical to the tracked one. Full suite and external originals
+were not run. Findings and the next scope are in
+[design §17.10](../../docs/anchored-paint-ownership.md#1710-independent-review--claude-opus-55).
