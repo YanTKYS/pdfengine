@@ -2646,3 +2646,111 @@ Recommended implementation split (none implemented here):
 Validation: 19 new B1-L-O design tests plus PR #40 publication design, semantic binding, source-ownership, shared-flow, transaction, mutation and editable regressions: **211 passed, 1 deselected** (Poppler-only). A second evaluator run reproduced `semantic-owner-summary.json` byte-for-byte. Runtime digest unchanged
 `d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`. Full suite and external originals were not
 run. An independent review of this resolution is recommended before L1 starts.
+
+
+## 20. L1 runtime: shared-flow semantic layout state — 2026-10-04
+
+Starting main `b14bc96b528955bd4a12bd4c8968e661a02a161e` (PR #40 merged at `704b396`; B1-L-C and B1-L-O closed,
+DESIGN READY). This section records the **L1 implementation**; §1–§19 are preserved. L1 makes the semantic
+authority of §19.10 an actual runtime schema that can be confirmed, opened read-only and transitioned into an
+authorized next semantic state. **It does not write PDFs**: no canonical island writer, no candidate save, no owner
+rebind and no bundle publication (those are L2/L3). Paint runtime remains NOT READY.
+
+### 20.1 What L1 adds
+
+| Module | Responsibility |
+|---|---|
+| `pdfeditor/semantic_measure.py` | Pure exact measurement for the narrow scope: pinned font policy, static-TT checks, nominal glyph metrics from the confirmed asset, one provider-independent measurement rule, exact left layout with explicit newlines, confirmed adjacent edges and the §17 edge edit policy. No renderer or PDF input. |
+| `pdfeditor/semantic_layout.py` | `pdfengine-shared-flow-3` schema, explicit confirmation, read-only open/verification, closed N/D/E/R transitions, exact semantic diff. |
+
+Public API (minimal, no writer/save/publication):
+
+- `confirm_semantic_layout(source, model, *, slot_id, semantic) -> state`: the trusted caller's complete semantic
+  statement over an already owned v2 slot. The v2 sidecar is validated first by the unmodified `open_shared_flow`.
+  No owner is created and nothing is inferred from PDF geometry. Returns a v3 state that has already passed a full
+  `_verify`. The caller persists it, and the PDF is unchanged.
+- `open_semantic_flow(source, model) -> {status: 'restored', state, slot_id, paragraph_id, region_id, semantic, derived,
+  owner, island} | {status: 'needs_confirmation', reason}`: read-only. Repeated opens return identical semantic, owner and
+  derived values and write nothing.
+- `plan_semantic_transition(source, model, request, *, asset=None) -> plan`: verifies the current bundle, applies the
+  closed request policy and returns `classification`, `current`, `next`, `next_derived`, an exact `diff`,
+  `executable_now` and `requires`.
+- `require_authorized_payload(plan, candidate)`: refuses any candidate payload that differs from `plan['next']`.
+
+### 20.2 Runtime schema and field authority
+
+v3 is the v2 state with `schema: "pdfengine-shared-flow-3"` and, in the single owned slot only,
+`semantic = {version: 1, payload, derived, binding}`. Persistent artifacts remain the PDF + this one sidecar.
+
+| Class | Fields |
+|---|---|
+| Immutable creation identity | `flow.id`, slot `paragraph_id`/`region_id`/`source_snapshot_sha256`, `source_output.marker_id`/`created_from`, `contract_sha256` (unchanged v2 contract) |
+| Mutable current owner witness | `source_output.state`, `source_output.current` |
+| Semantic authority | `payload`: `text`, exact `style` (font_size, horizontal_scale, rise, tracking, word_spacing, spacing_intent), `font` (asset SHA + pinned policy), `edges`, `body_style_id`, `region_id` |
+| Derived / current binding | `derived` (intervals `current:i`, omitted trailing spaces/newlines, empty ascent/descent), `binding` (slot/paragraph/region IDs, `pdf_sha256`, `marker_id`, owner program/block SHA), `pdf_sha256` |
+| Integrity | `model_sha256` (existing digest; not authorization) |
+
+Values are canonical exact rational strings (a non-canonical spelling such as `12.0` refuses). Unknown fields, history,
+receipts and prior revisions refuse.
+
+### 20.3 Verification order (no second owner verifier)
+
+1. Model checksum.
+2. Scope: exactly one paragraph, one source slot (no `destination_id`/`creation_provenance`), one confirmed region,
+   one body style, left alignment, no continuation destinations/bindings, `source_output.state == "owned"`.
+3. **Owner, reused unchanged:** an in-memory v2 projection (semantic removed, schema v2, resealed, never persisted)
+   is passed to `shared_flow.open_shared_flow`. Thus `source_ownership.validate` (`record_identity`, inventory,
+   grammar, context witness, containment), PDF revision, contract, generated fonts and placement are exactly the v2
+   rules. v2 and v3 cannot diverge.
+4. Payload shape and `binding` == current slot identity + `source_output.current` + `pdf_sha256`.
+5. Text == paragraph logical text == slot binding text. Style == the confirmed body style (font_size,
+   horizontal_scale, tracking, rise = −baseline_shift). Tw ≠ 0 or edges refuse, because no current writer can
+   witness them (L2).
+6. Font: the payload SHA equals the confirmed registry provider SHA and the supplied asset bytes. The asset must be
+   static, unhinted, simple-glyph TrueType with the pinned policy. Island text must be painted only through
+   `generated_fonts` aliases owned by the slot whose provider SHA is the semantic asset; no subset or GID equality
+   is required.
+7. Region from `state['regions'][region_id]` and the paragraph `min_line_height`. Derived state is recomputed and
+   must be equal.
+8. Island: `owned.witness` equals `current`; entry and exit contexts are derived and equal; the entry context is
+   identity CTM, unclipped, default and opaque; the island's emitted characters equal the exact plan.
+
+### 20.4 Transitions (read-only)
+
+| Class | Requests | L1 result |
+|---|---|---|
+| N | `reopen` | No change; `executable_now=True` (nothing to publish) |
+| D | `save`, `edit {start,end,text}` (insert/delete/replace/growth/newline/trailing space), `reflow {width}` equal to the confirmed region width | Next payload/derived with the §17 edge policy (endpoint delete or insertion between drops an edge; earlier edits remap). A different width is a region change and refuses. `executable_now=False`, `requires` = L2 writer + authorized publication. |
+| E | `reinterpret {changes}` over word_spacing, edges, font (needs the explicitly supplied asset), font_size, horizontal_scale, rise, tracking, body_style_id | Authorized next semantic state and diff, not executable in L1 |
+| R | split, join, mixed_style, vertical/cross-paragraph/nonadjacent edges, region_reassignment, hash_refresh, replace_record, unknown | Refuse |
+
+Semantic change comes only from the request. There is no inference from geometry, no hash-refresh API and no
+record-replacement path. `require_authorized_payload` refuses any unrequested diff (Tw, font, label, edges).
+
+### 20.5 Evidence
+
+`tests/test_semantic_layout.py` (52 tests) builds a real single-slot shared flow (owned after the first save, then a
+second revision) only from runtime APIs. It covers:
+
+- explicit confirmation; no implicit upgrade (the v2 opener still opens v2, never adds semantics, and rejects v3);
+  unowned and non-v2 confirmation refused; unwitnessed Tw/edges and non-canonical values refused;
+- stored reopen ×3 identical and byte-untouched; owner, text, style, font, region, derived and binding tampering
+  refused even after reseal;
+- stale owner (current PDF + old `source_output.current`) refused; stale semantic refused, including a forged current
+  binding (finally refused by text binding); old owner against a new PDF refused;
+- every scope refusal with its specific reason; copied owner refused;
+- duplicate marker, marker spoof, foreign glyph and stale context refused, also isolated through
+  `source_ownership.validate`;
+- D/E/N/R transitions and unauthorized-diff refusal.
+
+Full suite: **1,410 passed, 8 skipped, 0 failed** (four file-balanced shards of the whole `tests/` tree, run in parallel; skips: 1 Poppler-unavailable renderer check, 2 AES-provider-unavailable save tests, 5 external-corpus tests not downloaded). No existing test was changed or removed. External Windows/LibreOffice validation was not run: L1 is a read-only state layer, adds no PDF
+output and claims no rendering result. Runtime digest after L1: `bbd5b28d385747986536fe3c9abff7bf5c3a99b779372f4779ebd93b77db9ed3`.
+
+### 20.6 L2 obligations
+
+L2 implements the canonical island writer for this single owned slot (replacing only its `_source_body`-equivalent
+body), Transaction integration, `source_ownership.rebind` together with the semantic payload/binding update, and
+candidate re-verification through `open_semantic_flow`. It also admits Tw/edge execution once the writer
+serializes and witnesses them, and adds region/registry changes only with an explicit confirmed contract. L3 adds
+the bundle-directory publication adapter and failure matrix. Paint runtime stays behind validated layout and the
+five §15.11/§16.6 obligations.

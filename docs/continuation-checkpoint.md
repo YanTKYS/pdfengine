@@ -1470,3 +1470,15 @@ source slot, one region, one body style and no continuation. Stored-record lifec
 matrix. DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR is re-asserted for that surface; layout runtime is not
 implemented (split L1–L3), and paint runtime remains NOT READY. Validation 211 passed, 1 deselected; runtime digest
 unchanged. [Design §19.10](anchored-paint-ownership.md#1910-b1-l-o-resolution--semantic-state-inside-the-shared-flow-owner-sidecar).
+
+
+## Shared-flow semantic layout L1 — 2026-10-04
+
+From main `b14bc96b528955bd4a12bd4c8968e661a02a161e` (PR #40). Runtime `pdfengine-shared-flow-3`: an explicit
+`confirm_semantic_layout` adds a bounded semantic payload to the single owned source slot of a one-paragraph,
+one-slot, one-region, one-style v2 flow. `open_semantic_flow` verifies it read-only, re-proving ownership through the
+unmodified v2 validator on an in-memory projection and checking semantic/owner/text/style/font/region/derived/island
+co-binding. `plan_semantic_transition` returns closed N/D/E/R next states without writing PDFs. No canonical writer,
+save, owner rebind or publication yet (L2/L3). Tests: 52 new; full suite 1,410 passed / 8 environment skips.
+Runtime digest `bbd5b28d385747986536fe3c9abff7bf5c3a99b779372f4779ebd93b77db9ed3`. Paint runtime NOT READY.
+[L1 details](anchored-paint-ownership.md#20-l1-runtime-shared-flow-semantic-layout-state--2026-10-04).
