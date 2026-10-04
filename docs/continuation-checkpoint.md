@@ -1459,3 +1459,14 @@ remaining runtime regressions were not rerun for these evaluator/docs-only fixes
 Evidence regenerated in `runs/publication-05`; runtime digest unchanged. Full suite
 and external originals not run. Independent Opus review remains the next step;
 layout and paint runtime remain NOT READY.
+
+
+PR #40 B1-L-O resolution (2026-10-04): after the §19.9 Claude Opus 5.5 REQUEST CHANGES, design §19.10 places the
+semantic payload in the single owned source slot of a proposed `pdfengine-shared-flow-3` sidecar, next to its
+`source_output` owner witness, sealed together. Persistent artifacts are exactly PDF + shared-flow sidecar.
+Ownership is re-proven by the unmodified runtime v2 validator. The surface is restricted to one paragraph, one owned
+source slot, one region, one body style and no continuation. Stored-record lifecycle evidence covers 14 positives,
+20 refusing negatives (both one-sided stale states), 6 isolated owner refusals and the two-artifact publication
+matrix. DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR is re-asserted for that surface; layout runtime is not
+implemented (split L1–L3), and paint runtime remains NOT READY. Validation 211 passed, 1 deselected; runtime digest
+unchanged. [Design §19.10](anchored-paint-ownership.md#1910-b1-l-o-resolution--semantic-state-inside-the-shared-flow-owner-sidecar).

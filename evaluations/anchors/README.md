@@ -429,3 +429,27 @@ PDF + semantic record. P4, the transition classes, the semantic diff gate, candi
 directory-rename publication contract otherwise hold. Tests: 171 passed, 1 deselected (60 design + 111 regressions). The evaluator rerun reproduced
 `publication-summary.json` with 0 differences. Layout and paint runtime remain NOT READY. Details in
 [design §19.9](../../docs/anchored-paint-ownership.md#199-independent-review--claude-opus-55).
+
+### B1-L-O resolution — shared-flow owner sidecar (2026-10-04)
+
+Addendum to the §19.9 REQUEST CHANGES; §19 and §19.9 are preserved. The semantic payload now lives in the single
+owned source slot of a proposed `pdfengine-shared-flow-3` sidecar, next to its existing `source_output` owner
+witness. Persistent artifacts stay **two**: `document.pdf` + `shared-flow.json`. Ownership is re-proven only by the
+unmodified runtime shared-flow v2 validator on a derived projection. Design/evidence only; no runtime change.
+
+```powershell
+.venv\Scripts\python.exe -m evaluations.anchors.semantic_owner_observation --work evaluations/anchors/runs/semantic-owner-reproduce --output evaluations/anchors/runs/semantic-owner-reproduce/summary.json
+.venv\Scripts\python.exe -m pytest -q tests/test_semantic_owner_binding_design.py tests/test_authorized_publication_design.py tests/test_semantic_binding_design.py tests/test_source_ownership.py tests/test_shared_flow.py tests/test_transaction.py tests/test_mutation.py tests/test_editable.py -k "not poppler_noop_pixels"
+```
+
+The evaluator starts every lifecycle from a real single-slot shared-flow sidecar saved to disk and reloaded. It
+records:
+
+- 14 positives, including a fresh-process published-bundle reopen ×3;
+- 20 refusing negatives, including both one-sided stale states (old owner/new semantic, new owner/old semantic);
+- 6 owner refusals isolated through `source_ownership.validate`;
+- the two-artifact publication matrix.
+
+All gates pass, and the verdict is derived from them. The existing runtime `_source_body` writer stands in for the
+future L2 canonical writer. No latest/current pointer is maintained. Validation: 19 new B1-L-O design tests plus PR #40 publication design, semantic binding, source-ownership, shared-flow, transaction, mutation and editable regressions: **211 passed, 1 deselected** (Poppler-only). A second evaluator run reproduced `semantic-owner-summary.json` byte-for-byte. Details in
+[design §19.10](../../docs/anchored-paint-ownership.md#1910-b1-l-o-resolution--semantic-state-inside-the-shared-flow-owner-sidecar).

@@ -2505,3 +2505,144 @@ layout and paint runtime remain NOT READY.
 **Next scope.** The B1-L-O addendum above. After it is reviewed, DESIGN READY can be reconsidered and layout
 implementation can start, preferably split into L1–L3. Paint runtime stays behind validated layout and the five
 §15.11/§16.6 obligations.
+
+### 19.10 B1-L-O resolution — semantic state inside the shared-flow owner sidecar
+
+History preserved: §19 claimed DESIGN READY, and §19.9 (Claude Opus 5.5) answered **REQUEST CHANGES** for B1-L-O,
+the undefined runtime surface and owner-record co-publication. This section closes only B1-L-O. It does not
+rewrite §19 or §19.9, and it leaves P4 unchanged (trusted caller, explicit request, checksum for integrity only,
+no HMAC/PKI/receipts, malicious privileged caller out of scope). It is design/evidence only: there is no
+`pdfeditor/` change, and no runtime schema, opener or writer.
+
+**Selected runtime surface.** A shared-flow v2 **text source slot** whose `source_output.state == "owned"`, in a
+flow with exactly one paragraph, exactly one source slot, one confirmed region and one body style; no
+continuation destination, destination binding or generated continuation slot; within the existing narrow
+static-TT/A-B-space-newline/left/identity-context scope. General editable and multi-slot shared flow remain out of
+scope. Any failed condition refuses (`scope()`).
+
+**Schema and artifacts.** The proposed `pdfengine-shared-flow-3` keeps **two persistent artifacts: the PDF and one
+shared-flow sidecar**. This supersedes the §19 wording "PDF + semantic record": there is no separate semantic file
+and no third artifact. The single slot keeps its existing `source_output` record and gains
+`slots[slot_id].semantic = {version, payload, derived, binding}`. The whole state is sealed by the existing
+`model_sha256` digest (integrity only).
+
+| Field class | Fields |
+|---|---|
+| Immutable creation identity | `flow.id`, slot `paragraph_id`/`region_id`/`source_snapshot_sha256`, `source_output.version`/`marker_id`/`created_from`, `contract_sha256` |
+| Mutable current owner witness | `source_output.state`, `source_output.current` (program/range/block/entry-context SHA) |
+| Semantic authority | `semantic.payload`: text, exact style (incl. Tw intent), font asset SHA + policy, positioning edges, `body_style_id`, `region_id` |
+| Derived / current physical binding | `pdf_sha256`, slot `binding`, `generated_fonts`, `physical_breaks`, `semantic.derived` (intervals, omissions, empty metrics), `semantic.binding` |
+| Integrity | `model_sha256`. `previous_model_sha256` keeps its existing digest-link role and is not history. |
+
+`source_output.created_from` is owner creation provenance, not semantic content; the semantic payload never
+re-derives owner identity. Everything is current-state bounded: no old semantic records, edit, owner-witness or
+confirmation history, and no previous ranges or layout snapshots.
+
+**Co-binding.** `semantic.binding = {slot_id, paragraph_id, region_id, pdf_sha256, marker_id,
+owner_program_sha256, owner_block_sha256}` must equal the slot identity, the sidecar `pdf_sha256` and the slot's
+`source_output.marker_id`/`current`. Ownership is re-proven only by the **unmodified runtime v2 validator** on a
+derived, never-persisted v2 projection (semantic removed, v2 schema, resealed). That validator runs
+`record_identity`, marker inventory, grammar, context witness and containment through `source_ownership.validate`.
+The semantic payload is then checked against the same revision:
+
+- text against the paragraph logical text and the slot binding;
+- style against the confirmed style registry;
+- font SHA against the island's `generated_fonts` provider SHA;
+- derived intervals, omissions and empty metrics, recomputed from the payload;
+- the island's emitted characters against the derived plan;
+- entry/exit context derived from `owned.context`, not hardcoded.
+
+Owner witness and semantic payload are therefore valid only together, for one current PDF.
+
+**Region authority.** `payload.region_id` must equal the slot's region. Layout values come from
+`state['regions'][region_id]` (x, width, first_baseline, bounds) and the paragraph's confirmed `min_line_height`.
+Nothing is inferred. A change that needs a different region is refused (`REGION_CHANGE_REQUIRES_CONFIRMED_REGION`).
+
+**Writer target.** The future L2 writer rewrites only that single owned slot's `_source_body`-equivalent body,
+between its existing markers, through `MutationProgram`/`Transaction`. It never touches foreign prefix/suffix,
+other page content or other slots, and never falls back to a whole-page writer. In this evidence the existing
+runtime `_source_body` writer stands in for the canonical writer. Canonical placement remains the §18/§19 fixtures'
+responsibility, and Tw≠0 or edges are admitted only once the L2 writer can serialize them
+(`TW_EDGE_REQUIRE_L2_WRITER`).
+
+**Opt-in only.** `initial_confirmation` needs an explicit `confirm-semantic-layout` request with a full payload over
+an already-owned, runtime-validated v2 slot. Opening a v2 sidecar never creates a semantic payload, and the runtime
+v2 opener rejects the v3 schema. No owner is created or adopted.
+
+**Candidate lifecycle (consistent with `edit_shared_flow`).**
+
+1. Verify the old PDF + sidecar: integrity, scope, the runtime owner validation on the projection, and semantic
+   co-binding.
+2. Express the slot as the §19 P4 `Verified` input and `authorize_transition` the explicit request.
+3. Run the existing `edit_shared_flow` on the projection. It performs the owned-body rewrite, Transaction commit,
+   slot binding, `source_ownership.rebind`, generated fonts, `pdf_sha256`, physical breaks, reseal and validate,
+   writing into private build staging.
+4. Freshly reopen the candidate with the runtime validator.
+5. Attach the authorized payload; `check_diff` it against the authorization.
+6. Reseal the complete v3 sidecar.
+7. Freshly validate PDF + sidecar.
+8. Stage exactly `document.pdf` + `shared-flow.json` privately and publish them as one new bundle directory.
+9. Freshly reopen the published bundle in new processes.
+
+General shared-flow editing is not given this capability.
+
+**Publication.** The §19 directory contract is kept with the two artifacts renamed `document.pdf` and
+`shared-flow.json`. The complete new sidecar is finished and validated in private staging before the one rename.
+New PDF + old sidecar, old PDF + new sidecar, or a semantic-only file is never a public current bundle. The
+contract publishes a **new unique bundle directory only**. No latest/current pointer, symlink or index is maintained
+or claimed atomic; the caller receives and manages the new bundle path.
+
+**Evidence** (`semantic_owner_observation.py`, `semantic-owner-summary.json`; real single-slot shared-flow fixture
+saved to disk and reloaded before every lifecycle):
+
+- **14 positives:** stored reopen, stored owner witness, stored semantic payload, no-op reopen, authorized text edit
+  (diff text only, class D), candidate PDF, owner rebind (same marker/created_from, new current, same entry
+  context), semantic update, combined v3 reseal, fresh candidate validation, bundle publication (exactly two files,
+  no pointer), fresh published reopen in 3 new processes (identical), and no-op save with byte-identical payload.
+- **20 negatives refuse:**
+  - old owner + new PDF;
+  - new semantic + old owner (two variants);
+  - new owner + old semantic;
+  - copied owner record;
+  - wrong slot, paragraph or region;
+  - second slot, continuation, generated slot, unowned slot;
+  - marker spoof, stale context, foreign glyph in the island;
+  - semantic-only self-seal, unrequested candidate semantics, implicit confirmation;
+  - v2 opener rejects v3, and v2 reopen never auto-upgrades.
+- **6 isolated owner refusals** call `source_ownership.validate` directly, after refreshing all hashes, so that the
+  intended defect (not an incidental PDF-hash mismatch) produces the refusal: duplicate marker, witness mismatch ×3,
+  foreign glyph, creation identity mismatch.
+- **Publication matrix:** the real candidate pair in both orders × none/second-link/rollback-unlink/before-rename/
+  after-rename. Every row satisfies the §19 gate (no half pair, no early visibility, old bundle intact and still
+  opening); private leftovers after rollback failures are recorded as garbage, not as current bundles.
+- The §19 `island_probe` now derives `entry_exit_proven` from the context comparison (regenerated
+  `publication-summary.json`, unchanged values).
+
+| Required gate | Result |
+|---|---|
+| A model_determinism.exact_derived | PASS (repeated fresh reopens identical) |
+| B input_admissibility.scoped_physical / scope_conditions | PASS (all scope refusals) |
+| C current_binding | PASS (positive stored reopen + all negatives) |
+| C semantic_transition_authority | PASS (authorized D diff; self-seal/unrequested/implicit refused) |
+| C stored_owner_binding | PASS (stored owned witness; copied owner isolated refusal) |
+| C physical_mutation_ownership | PASS (stored slot, owned, current witness, exact span, containment, derived entry/exit, candidate rebind, isolated stale/spoof/context refusals) |
+| C candidate_reverification | PASS |
+| C owner_semantic_rebind | PASS (rebind + update; both one-sided stale states refused) |
+| C fresh_bundle_reopen | PASS |
+| C atomic_pair_publication | PASS (two-artifact matrix) |
+
+**B1-L-O is closed at the design level.** Under the selected single owned slot surface and the restricted
+bundle-directory contract, this section re-asserts **DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR**. Layout
+runtime is **not implemented** and remains NOT READY until L1–L3 land and are validated. Paint runtime remains
+**NOT READY** behind validated layout and the five §15.11/§16.6 obligations.
+
+Recommended implementation split (none implemented here):
+
+- **L1:** semantic payload schema (`pdfengine-shared-flow-3`, opt-in) + transition model + read-only stored-owner/
+  island verifier.
+- **L2:** canonical island writer for the single owned slot + Transaction integration + owner/semantic rebind.
+- **L3:** bundle-directory publication adapter + failure matrix + end-to-end reopen.
+
+Validation: 19 new B1-L-O design tests plus PR #40 publication design, semantic binding, source-ownership, shared-flow, transaction, mutation and editable regressions: **211 passed, 1 deselected** (Poppler-only). A second evaluator run reproduced `semantic-owner-summary.json` byte-for-byte. Runtime digest unchanged
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`. Full suite and external originals were not
+run. An independent review of this resolution is recommended before L1 starts.

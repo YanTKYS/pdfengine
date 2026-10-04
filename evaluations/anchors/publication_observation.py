@@ -117,6 +117,9 @@ def island_probe(root):
         selected=sorted({n for e in content.events for c in e.chars for n in c.source_orders})
         snapshot={'selection':{'glyph_ids':selected}}
         a,b=owned.owned_body(content,owner,snapshot)
+        # Derived evidence, not a literal: entry and exit context of the owned body.
+        before=owned.context(owned._boundary(content,a));after=owned.context(owned._boundary(content,b))
+        entry_exit=before==after==owner['current']['entry_context_sha256']
         ops=list(operators(data[a:b]));shows=[o for o in ops if o.name=='Tj']
         require(len(shows)==4 and all(a<=a+o.start<a+o.end<=b for o in shows),'PARSED_SHOW_SPANS')
         program=MutationProgram(data)
@@ -129,7 +132,7 @@ def island_probe(root):
         foreign=deepcopy(snapshot);foreign['selection']['glyph_ids']=selected[1:]
         containment=negative(lambda:owned.owned_body(content,owner,foreign))
         return dict(body_equal=data[a:b]==body,foreign_prefix_suffix_preserved=same==data,
-            body_span=[a,b],parsed_show_spans=[[a+o.start,a+o.end] for o in shows],entry_exit_proven=True,
+            body_span=[a,b],parsed_show_spans=[[a+o.start,a+o.end] for o in shows],entry_exit_proven=entry_exit,
             overlap=overlap,stale_context=stale,foreign_containment=containment,
             limitation='Caller-granted fixture owner; no automatic marker adoption or semantic write grant. Separate adapter probe, not integrated layout runtime.')
     finally:content.close()
