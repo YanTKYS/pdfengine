@@ -91,7 +91,7 @@ def requests():
         'Tw_change':dict(operation='reinterpret',changes=dict(word_spacing='2')),
         'Tw_to_edge':dict(operation='reinterpret',changes=dict(word_spacing='0',edges=[edge])),
         'style_change':dict(operation='reinterpret',changes=dict(font_size='37/3',horizontal_scale='4/5',rise='-1',tracking='1/4')),
-        'default_style_change':dict(operation='reinterpret',changes=dict(body_style_id='body-next'))}
+        'body_style_label_rename':dict(operation='reinterpret',changes=dict(body_style_id='body-next'))}
 
 
 def negative(call):
@@ -129,7 +129,7 @@ def island_probe(root):
         foreign=deepcopy(snapshot);foreign['selection']['glyph_ids']=selected[1:]
         containment=negative(lambda:owned.owned_body(content,owner,foreign))
         return dict(body_equal=data[a:b]==body,foreign_prefix_suffix_preserved=same==data,
-            parsed_show_spans=[[a+o.start,a+o.end] for o in shows],entry_exit_proven=True,
+            body_span=[a,b],parsed_show_spans=[[a+o.start,a+o.end] for o in shows],entry_exit_proven=True,
             overlap=overlap,stale_context=stale,foreign_containment=containment,
             limitation='Caller-granted fixture owner; no automatic marker adoption or semantic write grant. Separate adapter probe, not integrated layout runtime.')
     finally:content.close()
@@ -211,11 +211,49 @@ def directory_publication_probe(root):
             except OSError as exc:error=str(exc)
             public_files=[(public/n).exists() for n in ('document.pdf','semantic.json')]
             results[order+':'+failure]=dict(error=error,public_files=public_files,
+                complete_new_pair=all(public_files) and
+                    (public/'document.pdf').read_bytes()==b'new-pdf' and
+                    (public/'semantic.json').read_bytes()==b'new-record',
                 formal_current='new' if all(public_files) else 'old',
                 half_public=any(public_files) and not all(public_files),
                 private_leak=private.exists() and any(private.iterdir()),visible_before_commit=any(seen),
                 old_intact=(old/'document.pdf').read_bytes()==b'old-pdf' and (old/'semantic.json').read_bytes()==b'old-record')
     return results
+
+
+def publication_gate(directory):
+    """Require every expected outcome, including successful publication."""
+    for order in ('pdf-first','record-first'):
+        for failure in ('none','second-link','rollback-unlink','before-rename','after-rename'):
+            row=directory.get(order+':'+failure,{})
+            committed=failure in ('none','after-rename')
+            if not (row.get('old_intact') is True and row.get('half_public') is False and
+                    row.get('visible_before_commit') is False and
+                    row.get('formal_current')==('new' if committed else 'old') and
+                    row.get('public_files')==[committed,committed] and
+                    row.get('complete_new_pair') is committed and 'error' in row and
+                    (row['error'] is None if failure=='none' else bool(row['error']))):
+                return False
+    return True
+
+
+def ownership_gate(island):
+    """Require positive span/context evidence as well as all three refusals."""
+    if not all(island.get(k) is True for k in
+               ('body_equal','foreign_prefix_suffix_preserved','entry_exit_proven')):
+        return False
+    if not all(island.get(k,{}).get('refused') is True for k in
+               ('overlap','stale_context','foreign_containment')):
+        return False
+    body=island.get('body_span',[]);spans=island.get('parsed_show_spans',[])
+    if len(body)!=2 or len(spans)!=4:
+        return False
+    end=body[0]
+    for span in spans:
+        if len(span)!=2 or not end<=span[0]<span[1]<=body[1]:
+            return False
+        end=span[1]
+    return True
 
 
 def evaluate(root):
@@ -292,10 +330,10 @@ def evaluate(root):
         authenticated_binding=dict(current_binding=all(v['refused'] for v in negatives.values()),
             semantic_transition_authority=all(v['refused'] for v in negatives.values()) and font_evidence['verified'] and
                 all(v['verified'] for v in edge_evidence.values()) and noop_bytes['semantic_identical'],
-            physical_mutation_ownership=island['overlap']['refused'] and island['foreign_containment']['refused'],
+            physical_mutation_ownership=ownership_gate(island),
             candidate_reverification=negatives['candidate_physical']['refused'],
             atomic_pair_publication=all(v['old_pair_intact'] and not v['provisional_targets'] for v in failures.values())
-                and all(v['old_intact'] and not v['half_public'] and not v['visible_before_commit'] for v in directory.values())))
+                and publication_gate(directory)))
     require(runtime_digest()==before,'RUNTIME_CHANGED')
     return dict(base=BASE,runtime_sha256=before,positive=positives,negative=negatives,failure_injection=failures,
         owned_island=island,existing_publish=publication,directory_publication=directory,

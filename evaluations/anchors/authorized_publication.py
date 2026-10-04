@@ -41,8 +41,9 @@ def derive(semantic, asset):
             empty=dict(ascent=str(max(F(0),F(font.font['hhea'].ascent,font.upem)*size-rise)),
                        descent=str(max(F(0),-F(font.font['hhea'].descent,font.upem)*size+rise))))
         plan=layout(model);emitted={g['start'] for g in plan['glyphs']}
-        # PR39 adapter uses one body style; semantic label remains independently
-        # explicit in this model and never inferred from physical neighbours.
+        # body_style_id is caller metadata naming the single semantic style.
+        # Renaming it does not change style values or the canonical "body" slot
+        # shared by interval/omitted/default/empty associations in the PR39 adapter.
         record=dict(model=model,font_policy=font_policy(),
             codebook={c:i+1 for i,c in enumerate(sorted(set(text.replace('\n',''))|{'A',' '}))},
             intervals=[dict(start=i,end=i+1,id=f'current:{i}',style='body') for i in range(len(text))],

@@ -6,7 +6,8 @@ from fontTools.ttLib import TTFont
 from evaluations.anchors.authorized_publication import (derive,initial_confirmation,verify_current,
     authorize_transition,PairStore,run,seal,unpack,STAGES,verdict)
 from evaluations.anchors.publication_observation import (initial,physical,build_pdf,requests,
-    TARGET,OWNER,evaluate,publication_probe,directory_publication_probe,island_probe)
+    TARGET,OWNER,evaluate,publication_probe,directory_publication_probe,island_probe,
+    publication_gate,ownership_gate)
 from evaluations.anchors.semantic_binding import canonical,sha
 
 
@@ -170,6 +171,55 @@ def test_actual_owner_and_parsed_operator_spans(tmp_path):
     v=island_probe(tmp_path)
     assert v['body_equal'] and v['foreign_prefix_suffix_preserved'] and len(v['parsed_show_spans'])==4
     assert all(v[k]['refused'] for k in ('overlap','stale_context','foreign_containment'))
+
+
+def test_publication_gate_requires_all_expected_outcomes(tmp_path):
+    evidence=directory_publication_probe(tmp_path)
+    assert publication_gate(evidence)
+    for key in evidence:
+        missing=deepcopy(evidence);del missing[key]
+        assert not publication_gate(missing)
+        for field in ('old_intact','half_public','visible_before_commit','complete_new_pair'):
+            changed=deepcopy(evidence);changed[key][field]=not changed[key][field]
+            assert not publication_gate(changed)
+        for field in ('formal_current','public_files','error'):
+            changed=deepcopy(evidence);del changed[key][field]
+            assert not publication_gate(changed)
+    # A publisher that never commits is safe from half pairs, but is not READY.
+    never=deepcopy(evidence)
+    for row in never.values():
+        row.update(formal_current='old',public_files=[False,False],complete_new_pair=False)
+    assert not publication_gate(never)
+
+
+def test_ownership_gate_requires_positive_and_negative_evidence(tmp_path):
+    evidence=island_probe(tmp_path)
+    assert ownership_gate(evidence)
+    for field in evidence:
+        if field=='limitation':continue
+        changed=deepcopy(evidence);del changed[field]
+        assert not ownership_gate(changed)
+    for field in ('body_equal','foreign_prefix_suffix_preserved','entry_exit_proven'):
+        changed=deepcopy(evidence);changed[field]=False
+        assert not ownership_gate(changed)
+    for field in ('overlap','stale_context','foreign_containment'):
+        changed=deepcopy(evidence);changed[field]['refused']=False
+        assert not ownership_gate(changed)
+    for spans in ([],[[0,1]]*4,[evidence['body_span']]*4):
+        assert not ownership_gate(dict(evidence,parsed_show_spans=spans))
+
+
+@pytest.mark.parametrize('text',['A B  \n\nAA','','   '])
+def test_body_style_label_rename_keeps_canonical_slot_and_metrics(text):
+    store,asset=initial(text);old=deepcopy(store.current)
+    result=apply(store,asset,requests()['body_style_label_rename']);verified(store,asset)
+    new=store.current[1]
+    assert result['diff']=={'body_style_id':{'before':'body','after':'body-next'}}
+    assert new['semantic']['body_style_id']=='body-next'
+    assert new['semantic']['style']==old[1]['semantic']['style']
+    assert new['derived']==old[1]['derived'] and store.current[0]==old[0]
+    assert new['derived']['default_style_id']==new['derived']['empty_style_id']=='body'
+    assert all(v['style']=='body' for v in new['derived']['intervals']+new['derived']['omitted'])
 
 
 def test_three_layers_cannot_be_overridden_by_accuracy():

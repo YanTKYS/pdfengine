@@ -294,7 +294,7 @@
       },
       "Tw_preserved": true
     },
-    "default_style_change": {
+    "body_style_label_rename": {
       "classification": "E",
       "diff": {
         "body_style_id": {
@@ -504,6 +504,10 @@
   "owned_island": {
     "body_equal": true,
     "foreign_prefix_suffix_preserved": true,
+    "body_span": [
+      120,
+      307
+    ],
     "parsed_show_spans": [
       [
         202,
@@ -666,6 +670,7 @@
         true,
         true
       ],
+      "complete_new_pair": true,
       "formal_current": "new",
       "half_public": false,
       "private_leak": false,
@@ -678,6 +683,7 @@
         false,
         false
       ],
+      "complete_new_pair": false,
       "formal_current": "old",
       "half_public": false,
       "private_leak": false,
@@ -690,6 +696,7 @@
         false,
         false
       ],
+      "complete_new_pair": false,
       "formal_current": "old",
       "half_public": false,
       "private_leak": true,
@@ -702,6 +709,7 @@
         false,
         false
       ],
+      "complete_new_pair": false,
       "formal_current": "old",
       "half_public": false,
       "private_leak": true,
@@ -714,6 +722,7 @@
         true,
         true
       ],
+      "complete_new_pair": true,
       "formal_current": "new",
       "half_public": false,
       "private_leak": false,
@@ -726,6 +735,7 @@
         true,
         true
       ],
+      "complete_new_pair": true,
       "formal_current": "new",
       "half_public": false,
       "private_leak": false,
@@ -738,6 +748,7 @@
         false,
         false
       ],
+      "complete_new_pair": false,
       "formal_current": "old",
       "half_public": false,
       "private_leak": false,
@@ -750,6 +761,7 @@
         false,
         false
       ],
+      "complete_new_pair": false,
       "formal_current": "old",
       "half_public": false,
       "private_leak": true,
@@ -762,6 +774,7 @@
         false,
         false
       ],
+      "complete_new_pair": false,
       "formal_current": "old",
       "half_public": false,
       "private_leak": true,
@@ -774,6 +787,7 @@
         true,
         true
       ],
+      "complete_new_pair": true,
       "formal_current": "new",
       "half_public": false,
       "private_leak": false,

@@ -2147,7 +2147,7 @@ scope precondition, not an invitation to overwrite a concurrently edited source.
 |---|---|---|
 | N | Reopen: recompute current binding, keep semantic payload unchanged | No new semantic authorization; caller-trusted current record plus physical re-verification |
 | D | Explicit save, body insert/delete/replace/growth, width reflow, newline and trailing-space edits | The current mutation call; exact deterministic policies only |
-| E | Tw, edge add/remove/delta or Tw↔edge, font/asset, size, scale, rise, tracking, single body/default-style label change | Each changed semantic field must appear in `changes` |
+| E | Tw, edge add/remove/delta or Tw↔edge, font/asset, size, scale, rise, tracking, single body-style semantic label rename | Each changed semantic field must appear in `changes` |
 | R | Split/join, mixed styles, vertical/nonadjacent/cross-paragraph edges, arbitrary inheritance, unsupported fonts/shaping/context, foreign ownership overlap | Refuse even if another gate or accuracy passes |
 
 Pure request grammar (not a new runtime public API):
@@ -2189,9 +2189,13 @@ Edge additions/delta changes require an explicit full current edge list.
 
 Newline insertion/deletion, trailing spaces, all-space and fully empty paragraphs
 recompute current dispositions/empty metrics in the same declared body style.
-No nearest glyph is consulted. An explicit body-style label change changes the
-single default/typing/empty style consistently; independent empty-line style or
-mixed body/empty styles remain refused. Exact font/style changes also regenerate
+No nearest glyph is consulted. `body_style_id` is only a caller-supplied semantic
+label for the single style, not the identity of a physical/derived slot. An explicit
+rename changes that label alone. Interval, omitted, default/typing and empty-style
+associations always use the canonical `"body"` slot; the rename changes neither
+style values nor derived metrics nor PDF bytes. Actual font/style value changes
+are separate explicit requests applying to that one shared slot. Independent
+empty-line style or mixed body/empty styles remain refused. Exact font/style changes also regenerate
 empty metrics from the selected asset hhea policy. This deliberately supports a
 single body style, not arbitrary style inheritance.
 
@@ -2360,7 +2364,15 @@ There is no authentication key, receipt or user-account component in the new flo
 | C candidate_reverification | Real candidate reopen; wrong candidate refuses / PASS |
 | C atomic_pair_publication | Private pair + one public directory commit, injected failures / PASS under the stated output/filesystem scope |
 
-`verdict(gates)` requires all subgates in all three nonempty layers. An accuracy
+`verdict(gates)` requires all named subgates in all three layers. The publication
+gate requires all ten directory probes: both successful orders publish the complete
+new pair with expected contents; before-rename, second-link and rollback-unlink
+failures leave old current and no new public files; after-rename errors leave the
+complete new pair. All rows require old intact, no half pair and no early visibility.
+A publisher that never publishes cannot pass. Ownership requires body equality,
+foreign prefix/suffix preservation, entry/exit proof, four ordered nonoverlapping
+parsed show spans inside the exact body span, and overlap/stale-context/foreign-
+containment refusal. Missing evidence fails these gates. An accuracy
 PASS cannot override authorization or publication failure. **B1-L-C is closed at
 the design level under P4 and the selected directory-publication scope.** The
 public-two-link rollback limit is addressed by that restricted publication design,
@@ -2386,3 +2398,18 @@ Full suite and external-original validation are not run. See the separate
 Validation: **55 new design tests + 111 focused regressions = 166 passed**.
 One Poppler-only test was deliberately deselected; full suite and external-original
 validation were not run. Final evidence is the clean `runs/publication-04` run.
+
+
+PR #40 small-change revision (2026-10-04): publication READY now requires every
+expected outcome in both orders, including complete new contents on success and
+after-rename failure. Missing evidence and a never-publishing implementation fail.
+Ownership READY includes body/context/foreign-byte preservation, parsed spans and
+all three refusal probes. `body_style_id` is a semantic label only; its explicit
+rename leaves the canonical "body" associations, metrics and PDF bytes unchanged.
+The normal, empty and all-space cases are tested.
+Validation after revision: **89 passed = 60 publication design + 29 semantic binding
+regressions**. The earlier 111 focused-regression result remains historical; the
+remaining runtime regressions were not rerun for these evaluator/docs-only fixes.
+Evidence regenerated in `runs/publication-05`; runtime digest unchanged. Full suite
+and external originals not run. Independent Opus review remains the next step;
+layout and paint runtime remain NOT READY.

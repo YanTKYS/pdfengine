@@ -404,3 +404,18 @@ Historical docs/reviews/evidence from PR #36–#39 remain preserved.
 Validation: **55 new design tests + 111 focused regressions = 166 passed**.
 One Poppler-only test was deliberately deselected; full suite and external-original
 validation were not run. Final evidence is the clean `runs/publication-04` run.
+
+
+PR #40 small-change revision (2026-10-04): publication READY now requires every
+expected outcome in both orders, including complete new contents on success and
+after-rename failure. Missing evidence and a never-publishing implementation fail.
+Ownership READY includes body/context/foreign-byte preservation, parsed spans and
+all three refusal probes. `body_style_id` is a semantic label only; its explicit
+rename leaves the canonical "body" associations, metrics and PDF bytes unchanged.
+The normal, empty and all-space cases are tested.
+Validation after revision: **89 passed = 60 publication design + 29 semantic binding
+regressions**. The earlier 111 focused-regression result remains historical; the
+remaining runtime regressions were not rerun for these evaluator/docs-only fixes.
+Evidence regenerated in `runs/publication-05`; runtime digest unchanged. Full suite
+and external originals not run. Independent Opus review remains the next step;
+layout and paint runtime remain NOT READY.
