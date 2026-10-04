@@ -2078,3 +2078,311 @@ reopen, derived safe transitions, explicit reinterpretation, refusals, island-sc
 pair publication with failure injection, and positive/negative fixtures, including refusal of bare hash refresh. If it
 closes, the next step can be **DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR** for the static-TT/body-style scope.
 Paint runtime remains behind layout and its five §15.11/§16.6 obligations.
+
+
+## 19. Authorized layout publication under P4 — 2026-10-04
+
+**Result: DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR**, only for the
+narrow contract below. **Layout runtime NOT READY; paint runtime NOT READY.**
+Starting main `1f5a7f0d70d4365eb0d6fac7cbebd647a3dd6ace` includes PR #39 and its
+§18.10 review. Branch `codex/authorized-layout-publication`. Sections 1–18 and
+all historical review/evidence artifacts are preserved.
+
+### 19.1 B1-L-C resolution: caller/request authority, not authentication
+
+Select **P4 = P1 trusted API caller + P2 explicit mutation call**. Initial
+confirmation is the caller's explicit statement of the complete semantic state.
+Every edit call authorizes only its enumerated transition from a freshly verified
+current bundle. No persistent HMAC key, signature, receipt, login, PKI, account,
+certificate or external/network authorization service is needed or added.
+The §18 HMAC harness remains historical evidence; the new model does not call it.
+
+Persist current semantics, intervals/dispositions, exact font/style/Tw/edges,
+empty/default style, asset identity, document/paragraph identity, PDF binding and
+owner identifiers. Persist an integrity checksum/version, **not authorization**.
+The checksum, current SHA, document ID and owner ID detect accidental mismatch;
+none permits semantic reinterpretation or grants ownership by itself. New state
+is justified by the explicit request plus the deterministic transition function,
+not by the fact that the engine constructed or sealed it.
+
+In scope: stale/copy/foreign bundles, accidental record damage, manual PDF
+modification, unsupported transitions, unexpected engine-side semantic drift,
+partial publication and foreign ownership overlap. Out of scope: a malicious
+trusted caller, compromised process/machine, hostile administrator, stolen OS
+credentials or cryptographic storage attackers. No authentication infrastructure
+is introduced to solve those excluded threats.
+
+This distinction changes the §18 reseal claim: a privileged caller can supply a
+self-consistently resealed alternative Tw/edge record with identical physical
+bytes. P4 does **not** cryptographically detect that assertion. The caller-trusted
+record store is a precondition. Ordinary corruption fails checksum/binding; an
+engine-side candidate rewrite fails the captured old-state/request diff gate.
+Do not promise rejection of every externally forged, physically equivalent
+record while simultaneously placing that privileged forger outside the boundary.
+
+### 19.2 Persistent payload, derived data and transient capabilities
+
+The model's semantic payload holds current text, one explicit body-style label,
+exact style values, confirmed font SHA/policy, live edges and layout region.
+Derived current glyph metrics, interval ordinals, omitted whitespace/newline and
+empty metrics are rebuilt from that payload and the supplied font asset. They
+are persisted and checked for exact equality on reopen. Current PDF SHA, target,
+owner and checksum belong to the binding envelope. All are bounded by current
+text/styles/fonts/edges; no prior plans, revisions, traces or receipt chain.
+
+`verify_current` checks version/target/checksum/current PDF SHA, recomputes derived
+data and physically verifies the current PDF before returning an immutable
+`Verified` value. The pure model captures PDF/record/asset bytes and uses an
+in-process sentinel to prevent accidental direct dict invocation. This is not a
+security token against a hostile Python caller and is never persisted.
+`Authorized` captures that verified input, the immutable request and exact
+permitted new payload. Mutation of a caller's dict after capture cannot alter it.
+Runtime integration must also guard source revision changes while planning, as
+`Transaction.commit` already does. Caller serialization/exclusive access is a
+scope precondition, not an invitation to overwrite a concurrently edited source.
+
+### 19.3 N / D / E / R and the request shape
+
+| Class | Operation / permitted effect | Authority |
+|---|---|---|
+| N | Reopen: recompute current binding, keep semantic payload unchanged | No new semantic authorization; caller-trusted current record plus physical re-verification |
+| D | Explicit save, body insert/delete/replace/growth, width reflow, newline and trailing-space edits | The current mutation call; exact deterministic policies only |
+| E | Tw, edge add/remove/delta or Tw↔edge, font/asset, size, scale, rise, tracking, single body/default-style label change | Each changed semantic field must appear in `changes` |
+| R | Split/join, mixed styles, vertical/nonadjacent/cross-paragraph edges, arbitrary inheritance, unsupported fonts/shaping/context, foreign ownership overlap | Refuse even if another gate or accuracy passes |
+
+Pure request grammar (not a new runtime public API):
+
+```
+{operation: "save"}
+{operation: "edit", start: int, end: int, text: string}
+{operation: "reflow", width: exact_rational_string}
+{operation: "reinterpret", changes: {
+  word_spacing?, edges?, font?, font_size?, horizontal_scale?,
+  rise?, tracking?, body_style_id?
+}}
+```
+
+`font` names the explicitly supplied replacement asset SHA; replacement bytes
+must be passed separately and must match. Supplying another asset without a
+font-change request refuses. Unknown request fields/operations refuse. There is
+no record-replacement or bare `hash_refresh` operation. An initial `confirm`
+statement is a separate full semantic declaration, not an edit fallback after
+old verification fails. Caller confirmation does not auto-create a source owner.
+
+`authorize_transition(old_verified, request)` cannot accept an unverified dict.
+It applies the closed operation policy, validates scope and returns exact expected
+new semantics. `check_diff` compares the candidate with that exact expectation
+and reports changed paths such as text, style.word_spacing, font.sha, edges,
+body_style_id and region.width. Thus even an otherwise admissible/accurate new
+state refuses if it differs from the requested transition. Derived intervals,
+omissions and metrics are separately recomputed, not caller-overridden fields.
+
+### 19.4 Spacing, empty-state and font transition policies
+
+Ordinary text edits retain Tw, font and style unchanged. New spaces receive the
+existing confirmed Tw. Deleting an edge endpoint or inserting between endpoints
+drops that edge; preceding edits remap its current indices. Reflow retains the
+same adjacent-pair meaning but suppresses its contribution at a line end. It
+never infers a replacement Tw from positions. Tw→edge explicitly sets both
+word_spacing and edges; edge→Tw explicitly removes the edge and sets Tw.
+Edge additions/delta changes require an explicit full current edge list.
+
+Newline insertion/deletion, trailing spaces, all-space and fully empty paragraphs
+recompute current dispositions/empty metrics in the same declared body style.
+No nearest glyph is consulted. An explicit body-style label change changes the
+single default/typing/empty style consistently; independent empty-line style or
+mixed body/empty styles remain refused. Exact font/style changes also regenerate
+empty metrics from the selected asset hhea policy. This deliberately supports a
+single body style, not arbitrary style inheritance.
+
+Same-font text edits are D. Asset/font replacement is E and must pass current
+used-glyph/font verification with the new asset. A foreign change to the old
+PDF font fails old verification before authorization; a record-only alteration
+fails integrity or captured semantic diff. Runtime font retargeting must retain
+`PageTransaction.own_fonts` and whole-alias-use checks: an alias shared with
+foreign glyphs cannot be replaced merely because semantic font change is allowed.
+
+### 19.5 Semantic permission and physical ownership stay separate
+
+The model's `check_owner` is an explicit contract adapter, not an implemented
+runtime owner verifier. A semantic request never grants a byte span. Runtime
+integration must independently call current source-output identity/inventory,
+`owned_body`/`witness`/containment and context validation before creating a
+`Mutation(kind=source-output-rewrite, owner=...)`. `MutationProgram` and Transaction
+retain overlap, source identity, foreign glyph/paint and font-resource checks.
+No marker discovery, shape similarity or successful semantic verification can
+promote foreign/legacy bytes to owned content.
+
+The ready scope inherits the prototype's A/B/space/newline repertoire (maximum
+256 characters), simple unhinted static TT and one body style. Initially require
+an unrotated page with identity entry CTM, default opaque graphics context and no
+clipping/Form invocation. Other contexts and broader shaping need separate proof.
+Supplied assets remain caller inputs checked by SHA on every reopen; missing assets
+refuse. They are not a third publication artifact or silently copied from staging.
+
+**Verification target is the existing owned island, not the page.** Require the
+exact current owner body span, closed q/BT…ET/Q grammar, parsed operator spans,
+entry/exit context equality, current record/glyph/empty-slot containment and exact
+canonical re-serialization of that body. Markers are locators only. All mutations
+stay within the owned span; outside bytes/paint/resource uses remain governed by
+Transaction. Empty/nonpainting operators must be contained in that same owner.
+Do not create a second semantic ownership domain nested inside paint/source output.
+
+A real read-only probe embeds a canonical repeated-AAAA body between existing
+source-output markers with foreign rectangle programs before and after it.
+It calls `owned.witness`, `owned.owned_body`, `operators()` and `MutationProgram`:
+four distinct parsed show spans bind; before/after foreign bytes remain intact;
+stale context, foreign containment and overlapping foreign mutation refuse.
+The owner is a fixture grant from the trusted construction context, not auto-adopted
+from its marker. Existing source-ownership regressions cover the wider identity/
+inventory machinery. No regex scan is proposed for the runtime adapter.
+
+The transition PDF fixtures still use §18's whole-page strict extractor as an
+independent candidate-physical oracle. The owned-island probe is **separate**;
+this PR does not claim an integrated island layout writer/verifier. The design
+handoff requires moving those same exact font/code/Unicode/metric/outline checks
+into the existing owner's proven current body, preserving source-output context
+and Transaction's checks for the rest of the page. This is an implementation
+obligation with a defined adapter boundary, not whole-page write authority.
+
+### 19.6 S0–S9 publication machine
+
+| State | Input → output | Failure / externally visible effects |
+|---|---|---|
+| S0 VerifyOld | Current PDF + trusted record/assets/target → immutable verified state | Any mismatch refuses; old pair unchanged |
+| S1 AuthorizeTransition | Verified state + explicit request + separate owner proof → allowed semantic transition | No guessing or record adoption; old pair unchanged |
+| S2 BuildSemanticState | Closed transition → exact new payload + semantic diff | Unrequested diff refuses; memory only |
+| S3 BuildCanonicalLayout | Admissible new state → exact full tuple/layout | Unsupported metrics/overflow refuses; memory only |
+| S4 BuildCandidatePDF | Owner-scoped program/resource plan → private temporary PDF | Transaction writes privately and checks old revision/foreign content |
+| S5 VerifyCandidatePhysicalBinding | Actual reopened candidate PDF + expected semantics/assets → current physical proof | Stale/wrong candidate refuses, even if built by the engine |
+| S6 BuildCandidateRecord | New payload + derived intervals + current owner/binding/SHA → private record | No authorization receipt; no stale byte spans |
+| S7 SealIntegrity | Current record → checksummed pair, fully reverified | Seal is integrity only; staging paths must not leak into persistent references |
+| S8 PublishPair | Verified private PDF+record → one new public bundle directory | Directory rename is commit point; no partial public pair |
+| S9 Committed | Complete new pair → caller result | No rollback after commit; late reporting error leaves complete new pair |
+
+Class N has no publication. A Class D no-op save may reserialize to different PDF
+bytes: keep semantic payload byte-identical, verify the candidate and update only
+current binding/envelope fields under the save call's authority. The model appends
+a harmless final PDF newline to demonstrate changed SHA plus unchanged exact
+semantics and successful fresh verification. Bare hash refresh still has no API
+path: old verification, authorization and new physical verification cannot be skipped.
+An externally resealed, physically equivalent record supplied by a privileged
+trusted caller is the excluded assertion discussed in §19.1, not evidence that
+an internal hash-refresh endpoint is safe.
+
+Exact rational inputs flow one way to the fixed output-decimal grammar. Neither
+serialized decimals nor renderer float matrices become the next semantic input.
+Accuracy ≤0.002 pt remains a separate physical check and cannot repair failed
+semantic authorization, ownership or publication.
+
+### 19.7 Existing Transaction/_publish audit and the selected publication contract
+
+`Transaction.commit` verifies source SHA, plan conflicts, foreign glyph/paint/
+font/pixel preservation, builds one candidate via `publish_program`, and returns
+current identity maps. `write_editable` already calls it inside a temporary output
+workspace, binds/verifies the sidecar, then calls `_publish` for PDF+record.
+`ensure_destination` prevents overwriting the source/existing destinations.
+`publish_program` verifies the encoded PDF before linking a temporary file.
+These are reusable components; Transaction alone does not publish a semantic pair.
+
+`editable._publish` links targets sequentially and unlinks its own earlier links
+if an Exception occurs. It does not switch two arbitrary public paths atomically.
+Ordinary second-link failures roll back, but an additional unlink failure leaves
+one public target behind. Both orders are reproduced against the **unmodified**
+function. This is a real boundary limit, not a new runtime fix in this PR.
+
+**Selected narrow solution:** publish to a new, nonexisting bundle directory on
+one supported local filesystem. Stage the two fixed children privately in the
+same parent, run `_publish` only inside that private directory, verify both, and
+rename the complete directory to its final name. Final artifacts remain exactly
+PDF + semantic record; the container directory is not a third receipt/manifest.
+Do not copy across volumes or fall back to two public paths. Existing destination,
+symlink/alias ambiguity, independently writable output paths, concurrent publishers
+and unsupported filesystem rename semantics refuse this narrow contract.
+
+The caller has exclusive access during publication. The public namespace contains
+only committed bundle directories; readers never discover/adopt private staging
+paths. Before the rename, the old pair remains current. After it succeeds, both
+new files are visible together. Private cleanup may fail and leave garbage; it
+must not advertise a current bundle or alter the old one. A failure reported after
+the rename has a complete new pair: inspect/verify the known target before retrying,
+never automatically repeat the semantic edit into another destination.
+
+Python documents same-filesystem rename behavior and Windows destination-exists
+refusal; success atomicity is explicitly specified as a POSIX requirement. See
+[`os.rename`](https://docs.python.org/3/library/os.html#os.rename).
+This experiment exercises the proposed commit boundary on local Windows. Future
+implementation must confirm its supported filesystem's directory-rename guarantee;
+no claim is made for arbitrary network filesystems. This is **exception atomicity
+of the public pair**, not power-loss/OS-crash durability, fsync protocol, lock-free
+concurrent publication or secure deletion of private temporaries.
+
+The legacy two-arbitrary-path APIs retain their current behavior; this design
+must be introduced as a narrow bundle-publication adapter/opt-in contract, never
+silently claimed for all existing `_publish` calls. Runtime implementation remains
+separate. If that output restriction is unavailable, the strict publication gate
+is NOT READY for that deployment; do not substitute public rollback assumptions.
+
+### 19.8 Evidence, gates and implementation handoff
+
+The evidence evaluator separates synthetic current-PDF transition checks, the
+actual source-output/operator probe, the pure publication model, actual existing
+`_publish` failures and proposed directory-publication filesystem probes.
+There is no authentication key, receipt or user-account component in the new flow.
+
+- 17 requested transition cases, each repeated independently, compare exact new
+  pairs and physically reverify generated static-TT PDFs. Additional edge cases
+  cover endpoint deletion, between-endpoint insertion, suppression and edge→Tw;
+  explicit Tw→edge on A B retains identical PDF bytes while changing only requested
+  meaning. Explicit alternate font bytes are also verified.
+- No-op reopen preserves current state; no-op save with changed PDF bytes preserves
+  exact semantic payload and updates its verified binding.
+- 15 evaluator negatives include unverified old state, hash_refresh, unsupported
+  operations, unrequested Tw/font/default changes, stale/corrupt/foreign bundles,
+  ownership/overlap failures and a wrong generated candidate. Tests additionally
+  cover copied sidecars and unauthorized edge changes.
+- 13 pre-commit failure injections cover every S0–S8 boundary and both file orders.
+  All leave the old pair intact with no model-public targets. A post-commit exception
+  test leaves a complete new pair.
+- Six actual `_publish` probes expose ordinary rollback and its unlink-failure
+  limitation. Ten proposed directory probes cover both orders, second-link failure,
+  rollback failure, before-rename and after-rename failure: no half public pair;
+  all old pairs remain intact. A private orphan is explicitly recorded when cleanup
+  fails, never mislabeled as successful cleanup.
+
+| Required gate | Evidence / scoped result |
+|---|---|
+| A model determinism | Exact independent repeated transitions / PASS |
+| B input admissibility | Static-TT/body-style and candidate physical checks / PASS |
+| C current_binding | S0 integrity/target/SHA/derived/current physical checks / PASS |
+| C semantic_transition_authority | Captured old state, closed caller requests, exact semantic diff / PASS |
+| C physical_mutation_ownership | Separate existing owner/parser/containment/overlap proof direction / PASS for the design adapter |
+| C candidate_reverification | Real candidate reopen; wrong candidate refuses / PASS |
+| C atomic_pair_publication | Private pair + one public directory commit, injected failures / PASS under the stated output/filesystem scope |
+
+`verdict(gates)` requires all subgates in all three nonempty layers. An accuracy
+PASS cannot override authorization or publication failure. **B1-L-C is closed at
+the design level under P4 and the selected directory-publication scope.** The
+public-two-link rollback limit is addressed by that restricted publication design,
+not by claiming the current runtime already has the new behavior.
+
+Next minimal scope is a **separate narrow layout implementation PR**: introduce
+exact semantic state/closed request transitions; adapt font/measurement binding to
+the proven source-output island using parsed operators; generate and verify one
+candidate with existing Transaction; persist current-only semantics; and implement
+the restricted private-pair/directory-publication adapter with the same failure
+matrix. Preserve legacy behavior and refuse unsupported contexts/styles/fonts.
+Independent review should confirm this design verdict before implementation starts.
+Paint implementation does not follow automatically: the five §15.11/§16.6 paint
+obligations remain, without duplicate TODOs.
+
+No pdfeditor/, runtime serializer, public API/schema, Transaction, runtime verifier
+or paint writer changes. Runtime digest unchanged:
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+Full suite and external-original validation are not run. See the separate
+[summary](../evaluations/anchors/publication-summary.json) and
+[reproduction/tests](../evaluations/anchors/README.md#authorized-layout-publication--2026-10-04).
+
+Validation: **55 new design tests + 111 focused regressions = 166 passed**.
+One Poppler-only test was deliberately deselected; full suite and external-original
+validation were not run. Final evidence is the clean `runs/publication-04` run.

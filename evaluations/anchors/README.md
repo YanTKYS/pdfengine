@@ -349,3 +349,58 @@ rerun into a scratch directory produced a summary identical to the tracked one (
 negatives refused). Main judgement: B1-L-C needs a closed semantic-transition model with the trusted API caller as
 the boundary, not persistent signatures or receipts. Full suite and external originals were not run. Details in
 [design §18.10](../../docs/anchored-paint-ownership.md#1810-independent-review--claude-opus-55).
+
+
+## Authorized layout publication — 2026-10-04
+
+Base `1f5a7f0d70d4365eb0d6fac7cbebd647a3dd6ace` includes merged PR #39/review.
+**DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR** within the narrow contract
+in [§19](../../docs/anchored-paint-ownership.md#19-authorized-layout-publication-under-p4--2026-10-04).
+Both layout and paint runtimes remain NOT READY. [Separate summary](publication-summary.json).
+
+```powershell
+.venv\Scripts\python.exe -m evaluations.anchors.publication_observation --work evaluations/anchors/runs/publication-reproduce --output evaluations/anchors/runs/publication-reproduce/summary.json
+.venv\Scripts\python.exe -m pytest -q tests/test_authorized_publication_design.py
+.venv\Scripts\python.exe -m pytest -q tests/test_semantic_binding_design.py tests/test_transaction.py tests/test_mutation.py tests/test_editable.py tests/test_source_ownership.py -k "not poppler_noop_pixels"
+```
+
+Use a new work directory. The evaluator creates only synthetic PDFs/font assets
+and named temporary publication targets under that root. No external original,
+network service, login, key store or authorization receipt is needed. P4 trusts
+the API caller and explicit request; historical §18 HMAC code is not invoked.
+
+The pure state machine and fixture builder are **not runtime API/schema/layout/
+serializer/Transaction replacements**. Current physical checks use the existing
+strict whole-page synthetic oracle; a separate actual owned-island probe uses
+`owned_body`, context/containment, `operators()` spans and MutationProgram. This
+is an explicitly separated implementation-adapter design, not a claim of an
+integrated runtime island layout writer. Existing ownership regression tests
+supply additional coverage. No marker auto-adoption or regex runtime binding.
+
+Evidence: 17 independent repeated requested transitions, four further edge
+transitions, explicit alternate font, no-op PDF-byte change without semantic
+change, 15 negatives, 13 pre-commit model failures. An additional test covers
+post-commit failure with a complete new pair. Six real unmodified `_publish`
+probes show why two direct public links are insufficient when rollback fails.
+Ten proposed private-directory probes leave either no public new bundle or
+both new files; private cleanup failure is recorded, not concealed.
+
+Selected publication scope: a new directory, same local filesystem, exclusive
+caller, both verified artifacts private until one directory rename. No overwrite,
+no arbitrary independent public paths, no network filesystem guarantee, no crash/
+power-loss durability claim. A directory container is not a third receipt/manifest.
+A failed private cleanup can leave ignored staging files; they are never current.
+The legacy runtime publication behavior is unchanged.
+
+Summary gates derive the scoped DESIGN READY verdict. Exact semantic values never
+come back from output decimals. Accuracy ≤0.002 pt is independent of authorization
+and publication; maximum origin discrepancy is 0.000006103515630684342 pt.
+Full suite and external original validation not run. Poppler-only regression is
+explicitly deselected; there is no new raster equality claim.
+Runtime digest unchanged:
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+Historical docs/reviews/evidence from PR #36–#39 remain preserved.
+
+Validation: **55 new design tests + 111 focused regressions = 166 passed**.
+One Poppler-only test was deliberately deselected; full suite and external-original
+validation were not run. Final evidence is the clean `runs/publication-04` run.

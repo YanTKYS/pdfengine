@@ -1,0 +1,927 @@
+{
+  "base": "1f5a7f0d70d4365eb0d6fac7cbebd647a3dd6ace",
+  "runtime_sha256": "d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea",
+  "positive": {
+    "noop_save": {
+      "classification": "D",
+      "diff": {},
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "8ec777c3cb7b07037162409987762611dccace79a51f64ce7cef4537ce20e740",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "insert": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": "AA B  \n\nAA"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "6128dbab943b6b98fd8dd878daec42c5aeea2614799699f20a648b6fc7c59e35",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "space_insert": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": "A  B  \n\nAA"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "2dbf3221ce7ad21a45c2a0ad101a48561260bcd7da5dd2145b8caff44637b93e",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "delete": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": " B  \n\nAA"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "f6765471d5ee4a9adc2767b920370379c58f4b4be33bc7c5b8184a624fc974a7",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "replace": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": "B B  \n\nAA"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "6b946cf3ccb50055d03fffef6eef7286b8a3a313c9a781c180bbafcf116d57c3",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "growth": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": "A B AA  \n\nAA"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "903836eb808ddf2aebc9ce4ca1e54915203fa26f99d31a7ca95d7dbd828138ba",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "newline_insert": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": "A\n B  \n\nAA"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "188d6ecf9b274c6d800eb524338c5617798566cf6644072fa2defccd1c9e7899",
+      "accuracy": {
+        "max_origin_error": 6.103515630684342e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "newline_delete": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": "A B  \nAA"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "feb56805fcba10c143543c2988ab2a6ecb265a0167dc082b23b26b9f60cdbc40",
+      "accuracy": {
+        "max_origin_error": 6.103515630684342e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "trailing_space_insert": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": "A B  \n\nAA "
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "8ec777c3cb7b07037162409987762611dccace79a51f64ce7cef4537ce20e740",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "trailing_space_delete": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": "A B\n\nAA"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "fa54e175ae495cbdc4ba85f5ae81437ef1c59c6b730f1fdcedf5e20290e22f1f",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "empty": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": ""
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "260e5cde30227b551e38dcb52a733fab25795284291e8709c76306a48ac61430",
+      "accuracy": {
+        "max_origin_error": 0,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "all_space": {
+      "classification": "D",
+      "diff": {
+        "text": {
+          "before": "A B  \n\nAA",
+          "after": "   "
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "260e5cde30227b551e38dcb52a733fab25795284291e8709c76306a48ac61430",
+      "accuracy": {
+        "max_origin_error": 0,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "reflow": {
+      "classification": "D",
+      "diff": {
+        "region.width": {
+          "before": "100",
+          "after": "16"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "518b7e93005e0c73f8f9169d322006b974414b850deb9635c1175af555ae7e92",
+      "accuracy": {
+        "max_origin_error": 6.103515630684342e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "Tw_change": {
+      "classification": "E",
+      "diff": {
+        "style.word_spacing": {
+          "before": "6/5",
+          "after": "2"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "53705eab4aa16b88f4a60b6c203b1b7446e99d8f8d02556aa255f359de7bfc2e",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": false
+    },
+    "Tw_to_edge": {
+      "classification": "E",
+      "diff": {
+        "edges": {
+          "before": [],
+          "after": [
+            {
+              "boundary_policy": "suppress-at-line-end",
+              "delta": "6/5",
+              "left": 1,
+              "operator": "TJ",
+              "right": 2,
+              "semantics": "confirmed-adjacent-pair"
+            }
+          ]
+        },
+        "style.word_spacing": {
+          "before": "6/5",
+          "after": "0"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "a46a5e0aa759272f2afa7d12becae2d0c0d97a6c9adcf883352d89746994ab23",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": false
+    },
+    "style_change": {
+      "classification": "E",
+      "diff": {
+        "style.font_size": {
+          "before": "12",
+          "after": "37/3"
+        },
+        "style.horizontal_scale": {
+          "before": "1",
+          "after": "4/5"
+        },
+        "style.rise": {
+          "before": "0",
+          "after": "-1"
+        },
+        "style.tracking": {
+          "before": "0",
+          "after": "1/4"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "d43196875233ad0dc4867d905a1e58718399605b595b6cc7b8f9d8b35b67e532",
+      "accuracy": {
+        "max_origin_error": 4.069010415719276e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    },
+    "default_style_change": {
+      "classification": "E",
+      "diff": {
+        "body_style_id": {
+          "before": "body",
+          "after": "body-next"
+        }
+      },
+      "semantic_exact": true,
+      "deterministic": true,
+      "plan_sha": "8ec777c3cb7b07037162409987762611dccace79a51f64ce7cef4537ce20e740",
+      "accuracy": {
+        "max_origin_error": 3.051757815342171e-06,
+        "passed": true
+      },
+      "Tw_preserved": true
+    }
+  },
+  "negative": {
+    "hash_refresh": {
+      "refused": true,
+      "reason": "REFUSED_TRANSITION:hash_refresh"
+    },
+    "split": {
+      "refused": true,
+      "reason": "REFUSED_TRANSITION:split"
+    },
+    "join": {
+      "refused": true,
+      "reason": "REFUSED_TRANSITION:join"
+    },
+    "mixed_style": {
+      "refused": true,
+      "reason": "REFUSED_TRANSITION:mixed_style"
+    },
+    "vertical_edge": {
+      "refused": true,
+      "reason": "REFUSED_TRANSITION:vertical_edge"
+    },
+    "unverified": {
+      "refused": true,
+      "reason": "OLD_NOT_VERIFIED"
+    },
+    "unrequested_word_spacing": {
+      "refused": true,
+      "reason": "UNAUTHORIZED_SEMANTIC_DIFF"
+    },
+    "unrequested_font": {
+      "refused": true,
+      "reason": "UNAUTHORIZED_SEMANTIC_DIFF"
+    },
+    "unrequested_body_style_id": {
+      "refused": true,
+      "reason": "UNAUTHORIZED_SEMANTIC_DIFF"
+    },
+    "foreign_owner": {
+      "refused": true,
+      "reason": "PHYSICAL_OWNERSHIP"
+    },
+    "ownership_overlap": {
+      "refused": true,
+      "reason": "PHYSICAL_OWNERSHIP"
+    },
+    "record_corruption": {
+      "refused": true,
+      "reason": "RECORD_INTEGRITY"
+    },
+    "stale_pdf": {
+      "refused": true,
+      "reason": "STALE_PDF"
+    },
+    "foreign_target": {
+      "refused": true,
+      "reason": "CURRENT_TARGET"
+    },
+    "candidate_physical": {
+      "refused": true,
+      "reason": "CANONICAL_PROGRAM_MISMATCH"
+    }
+  },
+  "failure_injection": {
+    "VerifyOld:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:VerifyOld",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": []
+    },
+    "AuthorizeTransition:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:AuthorizeTransition",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": []
+    },
+    "BuildSemanticState:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:BuildSemanticState",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": []
+    },
+    "BuildCanonicalLayout:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:BuildCanonicalLayout",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": []
+    },
+    "BuildCandidatePDF:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:BuildCandidatePDF",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": []
+    },
+    "VerifyCandidatePhysicalBinding:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:VerifyCandidatePhysicalBinding",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": []
+    },
+    "BuildCandidateRecord:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:BuildCandidateRecord",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": []
+    },
+    "SealIntegrity:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:SealIntegrity",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": []
+    },
+    "PublishPair:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:PublishPair",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": []
+    },
+    "after_pdf:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:after_pdf",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": [
+        {
+          "after": "pdf",
+          "current": "old",
+          "complete": false
+        }
+      ]
+    },
+    "after_pdf:record-first": {
+      "refused": true,
+      "reason": "INJECTED:after_pdf",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": [
+        {
+          "after": "record",
+          "current": "old",
+          "complete": false
+        },
+        {
+          "after": "pdf",
+          "current": "old",
+          "complete": true
+        }
+      ]
+    },
+    "after_record:pdf-first": {
+      "refused": true,
+      "reason": "INJECTED:after_record",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": [
+        {
+          "after": "pdf",
+          "current": "old",
+          "complete": false
+        },
+        {
+          "after": "record",
+          "current": "old",
+          "complete": true
+        }
+      ]
+    },
+    "after_record:record-first": {
+      "refused": true,
+      "reason": "INJECTED:after_record",
+      "old_pair_intact": true,
+      "provisional_targets": false,
+      "events": [
+        {
+          "after": "record",
+          "current": "old",
+          "complete": false
+        }
+      ]
+    }
+  },
+  "owned_island": {
+    "body_equal": true,
+    "foreign_prefix_suffix_preserved": true,
+    "parsed_show_spans": [
+      [
+        202,
+        211
+      ],
+      [
+        232,
+        241
+      ],
+      [
+        262,
+        271
+      ],
+      [
+        292,
+        301
+      ]
+    ],
+    "entry_exit_proven": true,
+    "overlap": {
+      "refused": true,
+      "reason": "mutations overlap or an insertion touches another mutation; one operator cannot have two owners"
+    },
+    "stale_context": {
+      "refused": true,
+      "reason": "source output ownership is not proven for this revision"
+    },
+    "foreign_containment": {
+      "refused": true,
+      "reason": "foreign or unproven glyph inside source output island"
+    },
+    "limitation": "Caller-granted fixture owner; no automatic marker adoption or semantic write grant. Separate adapter probe, not integrated layout runtime."
+  },
+  "existing_publish": {
+    "pdf-first:none": {
+      "error": null,
+      "targets": [
+        true,
+        true
+      ],
+      "intermediate": [
+        [
+          false,
+          false
+        ],
+        [
+          true,
+          false
+        ]
+      ],
+      "old_intact": true,
+      "formal_current": "new",
+      "orphan": false
+    },
+    "pdf-first:second-link": {
+      "error": "injected second-link failure",
+      "targets": [
+        false,
+        false
+      ],
+      "intermediate": [
+        [
+          false,
+          false
+        ],
+        [
+          true,
+          false
+        ]
+      ],
+      "old_intact": true,
+      "formal_current": "old",
+      "orphan": false
+    },
+    "pdf-first:rollback-unlink": {
+      "error": "injected rollback failure",
+      "targets": [
+        true,
+        false
+      ],
+      "intermediate": [
+        [
+          false,
+          false
+        ],
+        [
+          true,
+          false
+        ]
+      ],
+      "old_intact": true,
+      "formal_current": "old",
+      "orphan": true
+    },
+    "record-first:none": {
+      "error": null,
+      "targets": [
+        true,
+        true
+      ],
+      "intermediate": [
+        [
+          false,
+          false
+        ],
+        [
+          false,
+          true
+        ]
+      ],
+      "old_intact": true,
+      "formal_current": "new",
+      "orphan": false
+    },
+    "record-first:second-link": {
+      "error": "injected second-link failure",
+      "targets": [
+        false,
+        false
+      ],
+      "intermediate": [
+        [
+          false,
+          false
+        ],
+        [
+          false,
+          true
+        ]
+      ],
+      "old_intact": true,
+      "formal_current": "old",
+      "orphan": false
+    },
+    "record-first:rollback-unlink": {
+      "error": "injected rollback failure",
+      "targets": [
+        false,
+        true
+      ],
+      "intermediate": [
+        [
+          false,
+          false
+        ],
+        [
+          false,
+          true
+        ]
+      ],
+      "old_intact": true,
+      "formal_current": "old",
+      "orphan": true
+    }
+  },
+  "directory_publication": {
+    "pdf-first:none": {
+      "error": null,
+      "public_files": [
+        true,
+        true
+      ],
+      "formal_current": "new",
+      "half_public": false,
+      "private_leak": false,
+      "visible_before_commit": false,
+      "old_intact": true
+    },
+    "pdf-first:second-link": {
+      "error": "second-link",
+      "public_files": [
+        false,
+        false
+      ],
+      "formal_current": "old",
+      "half_public": false,
+      "private_leak": false,
+      "visible_before_commit": false,
+      "old_intact": true
+    },
+    "pdf-first:rollback-unlink": {
+      "error": "rollback-unlink",
+      "public_files": [
+        false,
+        false
+      ],
+      "formal_current": "old",
+      "half_public": false,
+      "private_leak": true,
+      "visible_before_commit": false,
+      "old_intact": true
+    },
+    "pdf-first:before-rename": {
+      "error": "before-rename",
+      "public_files": [
+        false,
+        false
+      ],
+      "formal_current": "old",
+      "half_public": false,
+      "private_leak": true,
+      "visible_before_commit": false,
+      "old_intact": true
+    },
+    "pdf-first:after-rename": {
+      "error": "after-rename",
+      "public_files": [
+        true,
+        true
+      ],
+      "formal_current": "new",
+      "half_public": false,
+      "private_leak": false,
+      "visible_before_commit": false,
+      "old_intact": true
+    },
+    "record-first:none": {
+      "error": null,
+      "public_files": [
+        true,
+        true
+      ],
+      "formal_current": "new",
+      "half_public": false,
+      "private_leak": false,
+      "visible_before_commit": false,
+      "old_intact": true
+    },
+    "record-first:second-link": {
+      "error": "second-link",
+      "public_files": [
+        false,
+        false
+      ],
+      "formal_current": "old",
+      "half_public": false,
+      "private_leak": false,
+      "visible_before_commit": false,
+      "old_intact": true
+    },
+    "record-first:rollback-unlink": {
+      "error": "rollback-unlink",
+      "public_files": [
+        false,
+        false
+      ],
+      "formal_current": "old",
+      "half_public": false,
+      "private_leak": true,
+      "visible_before_commit": false,
+      "old_intact": true
+    },
+    "record-first:before-rename": {
+      "error": "before-rename",
+      "public_files": [
+        false,
+        false
+      ],
+      "formal_current": "old",
+      "half_public": false,
+      "private_leak": true,
+      "visible_before_commit": false,
+      "old_intact": true
+    },
+    "record-first:after-rename": {
+      "error": "after-rename",
+      "public_files": [
+        true,
+        true
+      ],
+      "formal_current": "new",
+      "half_public": false,
+      "private_leak": false,
+      "visible_before_commit": false,
+      "old_intact": true
+    }
+  },
+  "noop_byte_change": {
+    "pdf_changed": true,
+    "semantic_identical": true,
+    "current_verified": true
+  },
+  "edge_transitions": {
+    "endpoint_delete": {
+      "explicit_Tw_to_edge_same_pdf": true,
+      "edges": [],
+      "advances": [
+        "36/5",
+        "36/5"
+      ],
+      "diff": {
+        "edges": {
+          "before": [
+            {
+              "boundary_policy": "suppress-at-line-end",
+              "delta": "6/5",
+              "left": 1,
+              "operator": "TJ",
+              "right": 2,
+              "semantics": "confirmed-adjacent-pair"
+            }
+          ],
+          "after": []
+        },
+        "text": {
+          "before": "A B",
+          "after": "AB"
+        }
+      },
+      "verified": true
+    },
+    "between_insert": {
+      "explicit_Tw_to_edge_same_pdf": true,
+      "edges": [],
+      "advances": [
+        "36/5",
+        "36/5",
+        "36/5",
+        "36/5"
+      ],
+      "diff": {
+        "edges": {
+          "before": [
+            {
+              "boundary_policy": "suppress-at-line-end",
+              "delta": "6/5",
+              "left": 1,
+              "operator": "TJ",
+              "right": 2,
+              "semantics": "confirmed-adjacent-pair"
+            }
+          ],
+          "after": []
+        },
+        "text": {
+          "before": "A B",
+          "after": "A AB"
+        }
+      },
+      "verified": true
+    },
+    "suppression": {
+      "explicit_Tw_to_edge_same_pdf": true,
+      "edges": [
+        {
+          "boundary_policy": "suppress-at-line-end",
+          "delta": "6/5",
+          "left": 1,
+          "operator": "TJ",
+          "right": 2,
+          "semantics": "confirmed-adjacent-pair"
+        }
+      ],
+      "advances": [
+        "36/5",
+        "36/5"
+      ],
+      "diff": {
+        "region.width": {
+          "before": "100",
+          "after": "8"
+        }
+      },
+      "verified": true
+    },
+    "edge_to_Tw": {
+      "explicit_Tw_to_edge_same_pdf": true,
+      "edges": [],
+      "advances": [
+        "36/5",
+        "42/5",
+        "36/5"
+      ],
+      "diff": {
+        "edges": {
+          "before": [
+            {
+              "boundary_policy": "suppress-at-line-end",
+              "delta": "6/5",
+              "left": 1,
+              "operator": "TJ",
+              "right": 2,
+              "semantics": "confirmed-adjacent-pair"
+            }
+          ],
+          "after": []
+        },
+        "style.word_spacing": {
+          "before": "0",
+          "after": "6/5"
+        }
+      },
+      "verified": true
+    }
+  },
+  "font_transition": {
+    "diff": {
+      "font.sha": {
+        "before": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "after": "63d44573ecba97e3256e46171b3d0e38daef21d295b0005d3dc5443a97772dc2"
+      }
+    },
+    "verified": true
+  },
+  "gates": {
+    "model_determinism": {
+      "exact_derived": true
+    },
+    "input_admissibility": {
+      "scoped_physical": true
+    },
+    "authenticated_binding": {
+      "current_binding": true,
+      "semantic_transition_authority": true,
+      "physical_mutation_ownership": true,
+      "candidate_reverification": true,
+      "atomic_pair_publication": true
+    }
+  },
+  "verdict": "DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR"
+}
