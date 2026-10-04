@@ -1,0 +1,1157 @@
+{
+  "base": "f749bb893ac883e235ce73d5ea1aa2a5bdc1fddd",
+  "runtime_sha256": "d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea",
+  "scope": "synthetic whole-page static TT, external trusted test confirmation",
+  "positive": {
+    "repeated": {
+      "admitted": true,
+      "semantic_sha": "a56f39bf5056ec61a7e53046822d2ba9f1172aca720c735e01c8a197299237b1",
+      "plan_sha": "62eae9baaae4e25ed570e067d461cd4088deb5ce3b2090191f4f3d0fab63fdfc",
+      "measurement_sha": "1efba7121709efababfd328ac95200cf9cd054ffd4f0025091da91be0ef5197d",
+      "witness": {
+        "program_sha": "84b091195c008d98a7ec62e5f567563c33c9a758559e83f111cd57063d59f83c",
+        "program_bytes": 407,
+        "binding": [
+          {
+            "interval": [
+              0,
+              1
+            ],
+            "byte_span": [
+              82,
+              91
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              1,
+              2
+            ],
+            "byte_span": [
+              112,
+              121
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              2,
+              3
+            ],
+            "byte_span": [
+              142,
+              151
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              3,
+              4
+            ],
+            "byte_span": [
+              172,
+              181
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              5,
+              6
+            ],
+            "byte_span": [
+              202,
+              211
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              6,
+              7
+            ],
+            "byte_span": [
+              234,
+              243
+            ],
+            "code": 2,
+            "style": "body"
+          },
+          {
+            "interval": [
+              7,
+              8
+            ],
+            "byte_span": [
+              266,
+              275
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              8,
+              9
+            ],
+            "byte_span": [
+              298,
+              307
+            ],
+            "code": 2,
+            "style": "body"
+          },
+          {
+            "interval": [
+              9,
+              10
+            ],
+            "byte_span": [
+              330,
+              339
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              14,
+              15
+            ],
+            "byte_span": [
+              360,
+              369
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              15,
+              16
+            ],
+            "byte_span": [
+              392,
+              401
+            ],
+            "code": 3,
+            "style": "body"
+          }
+        ],
+        "default_style_span": [
+          40,
+          63
+        ],
+        "font_samples": [
+          {
+            "code": 1,
+            "cid": 1,
+            "current_gid": 1,
+            "asset_gid": 1,
+            "unicode": "A",
+            "width": "600",
+            "outline_sha": "0c2b1f9f8fd3dd7b965b09b0388a72af8979dfbb376074288605f59563126d7c"
+          },
+          {
+            "code": 2,
+            "cid": 2,
+            "current_gid": 3,
+            "asset_gid": 3,
+            "unicode": " ",
+            "width": "600",
+            "outline_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          {
+            "code": 3,
+            "cid": 3,
+            "current_gid": 2,
+            "asset_gid": 2,
+            "unicode": "B",
+            "width": "600",
+            "outline_sha": "25d20180e5eabb88af5237182392f1c7d72e44f39b9c6db5c9669b35f60a842c"
+          }
+        ],
+        "asset_sha": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "embedded_program_sha": "e7b3c9a25d4719d9aa81437a83bf85de1bd66ebf2473aa5735201ef7485637de",
+        "subset_bytes_equal_asset": false
+      },
+      "accuracy": {
+        "max_origin_error": 6.103515630684342e-06,
+        "passed": true
+      },
+      "authority": "external-confirmation + current font/program witness; intent is not physically witnessed",
+      "reopen_exact": true,
+      "fresh_reopens": 3,
+      "omitted": [
+        {
+          "offset": 4,
+          "kind": "newline",
+          "style": "body"
+        },
+        {
+          "offset": 10,
+          "kind": "trimmed-space",
+          "style": "body"
+        },
+        {
+          "offset": 11,
+          "kind": "trimmed-space",
+          "style": "body"
+        },
+        {
+          "offset": 12,
+          "kind": "newline",
+          "style": "body"
+        },
+        {
+          "offset": 13,
+          "kind": "newline",
+          "style": "body"
+        }
+      ]
+    },
+    "tw": {
+      "admitted": true,
+      "semantic_sha": "f2b7b6cbff5bfe83828fed9834fbfe3c06ec538b0546700c54c503575e22b6fd",
+      "plan_sha": "12ebb819d42ca88ea2663c766f302f12dc60ac4a926b1705f646cce3e4bfba8d",
+      "measurement_sha": "74dc6f3449bbabdb4c8939fa769b79e44f4f012e221b779c2d9b6beac22e68dc",
+      "witness": {
+        "program_sha": "dc9adc40ee6a578933ccddaf6786d43b594791165740ee92ba57e11575da2ec4",
+        "program_bytes": 157,
+        "binding": [
+          {
+            "interval": [
+              0,
+              1
+            ],
+            "byte_span": [
+              82,
+              91
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              1,
+              2
+            ],
+            "byte_span": [
+              112,
+              121
+            ],
+            "code": 2,
+            "style": "body"
+          },
+          {
+            "interval": [
+              2,
+              3
+            ],
+            "byte_span": [
+              142,
+              151
+            ],
+            "code": 3,
+            "style": "body"
+          }
+        ],
+        "default_style_span": [
+          40,
+          63
+        ],
+        "font_samples": [
+          {
+            "code": 1,
+            "cid": 1,
+            "current_gid": 1,
+            "asset_gid": 1,
+            "unicode": "A",
+            "width": "600",
+            "outline_sha": "0c2b1f9f8fd3dd7b965b09b0388a72af8979dfbb376074288605f59563126d7c"
+          },
+          {
+            "code": 2,
+            "cid": 2,
+            "current_gid": 3,
+            "asset_gid": 3,
+            "unicode": " ",
+            "width": "600",
+            "outline_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          {
+            "code": 3,
+            "cid": 3,
+            "current_gid": 2,
+            "asset_gid": 2,
+            "unicode": "B",
+            "width": "600",
+            "outline_sha": "25d20180e5eabb88af5237182392f1c7d72e44f39b9c6db5c9669b35f60a842c"
+          }
+        ],
+        "asset_sha": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "embedded_program_sha": "e7b3c9a25d4719d9aa81437a83bf85de1bd66ebf2473aa5735201ef7485637de",
+        "subset_bytes_equal_asset": false
+      },
+      "accuracy": {
+        "max_origin_error": 1.5258789076710855e-06,
+        "passed": true
+      },
+      "authority": "external-confirmation + current font/program witness; intent is not physically witnessed",
+      "reopen_exact": true,
+      "fresh_reopens": 3,
+      "omitted": []
+    },
+    "edge": {
+      "admitted": true,
+      "semantic_sha": "5fd0734b4e9f3d8005ace445d4fca6d80b34e58df5cff7e7a4bcec2f465d7de1",
+      "plan_sha": "0a61d78406673dd52b94dd0da7880cdc2b3eaa91534e7e582799d8857250e8a4",
+      "measurement_sha": "6c3d0487a753d5f378ef155e18bb4bd88e02307fd68b7b4f79b63ab7890dae8f",
+      "witness": {
+        "program_sha": "dc9adc40ee6a578933ccddaf6786d43b594791165740ee92ba57e11575da2ec4",
+        "program_bytes": 157,
+        "binding": [
+          {
+            "interval": [
+              0,
+              1
+            ],
+            "byte_span": [
+              82,
+              91
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              1,
+              2
+            ],
+            "byte_span": [
+              112,
+              121
+            ],
+            "code": 2,
+            "style": "body"
+          },
+          {
+            "interval": [
+              2,
+              3
+            ],
+            "byte_span": [
+              142,
+              151
+            ],
+            "code": 3,
+            "style": "body"
+          }
+        ],
+        "default_style_span": [
+          40,
+          63
+        ],
+        "font_samples": [
+          {
+            "code": 1,
+            "cid": 1,
+            "current_gid": 1,
+            "asset_gid": 1,
+            "unicode": "A",
+            "width": "600",
+            "outline_sha": "0c2b1f9f8fd3dd7b965b09b0388a72af8979dfbb376074288605f59563126d7c"
+          },
+          {
+            "code": 2,
+            "cid": 2,
+            "current_gid": 3,
+            "asset_gid": 3,
+            "unicode": " ",
+            "width": "600",
+            "outline_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          {
+            "code": 3,
+            "cid": 3,
+            "current_gid": 2,
+            "asset_gid": 2,
+            "unicode": "B",
+            "width": "600",
+            "outline_sha": "25d20180e5eabb88af5237182392f1c7d72e44f39b9c6db5c9669b35f60a842c"
+          }
+        ],
+        "asset_sha": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "embedded_program_sha": "e7b3c9a25d4719d9aa81437a83bf85de1bd66ebf2473aa5735201ef7485637de",
+        "subset_bytes_equal_asset": false
+      },
+      "accuracy": {
+        "max_origin_error": 1.5258789076710855e-06,
+        "passed": true
+      },
+      "authority": "external-confirmation + current font/program witness; intent is not physically witnessed",
+      "reopen_exact": true,
+      "fresh_reopens": 3,
+      "omitted": []
+    },
+    "empty": {
+      "admitted": true,
+      "semantic_sha": "685a1b09f02f7e2fe223e88293a0a2e85799b91747f843e2bd11f4d0d4986d6f",
+      "plan_sha": "260e5cde30227b551e38dcb52a733fab25795284291e8709c76306a48ac61430",
+      "measurement_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "witness": {
+        "program_sha": "87add7d820e36a77b409729697a0383544ab9a4dc02ece3510345ffba8070e98",
+        "program_bytes": 69,
+        "binding": [],
+        "default_style_span": [
+          40,
+          63
+        ],
+        "font_samples": [
+          {
+            "code": 1,
+            "cid": 1,
+            "current_gid": 1,
+            "asset_gid": 1,
+            "unicode": "A",
+            "width": "600",
+            "outline_sha": "0c2b1f9f8fd3dd7b965b09b0388a72af8979dfbb376074288605f59563126d7c"
+          },
+          {
+            "code": 2,
+            "cid": 2,
+            "current_gid": 3,
+            "asset_gid": 3,
+            "unicode": " ",
+            "width": "600",
+            "outline_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        ],
+        "asset_sha": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "embedded_program_sha": "a6f9c96d04dd101d8d375e51aaa2e2d6970c8d21bf8f63cc46626b54be320781",
+        "subset_bytes_equal_asset": false
+      },
+      "accuracy": {
+        "max_origin_error": 0,
+        "passed": true
+      },
+      "authority": "external-confirmation + current font/program witness; intent is not physically witnessed",
+      "reopen_exact": true,
+      "fresh_reopens": 3,
+      "omitted": []
+    },
+    "spaces": {
+      "admitted": true,
+      "semantic_sha": "685ab1a89588a23aea561b19034e04f0f55edc1532c9bddf03e0aad4fcdc62ac",
+      "plan_sha": "260e5cde30227b551e38dcb52a733fab25795284291e8709c76306a48ac61430",
+      "measurement_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "witness": {
+        "program_sha": "87add7d820e36a77b409729697a0383544ab9a4dc02ece3510345ffba8070e98",
+        "program_bytes": 69,
+        "binding": [],
+        "default_style_span": [
+          40,
+          63
+        ],
+        "font_samples": [
+          {
+            "code": 1,
+            "cid": 1,
+            "current_gid": 3,
+            "asset_gid": 3,
+            "unicode": " ",
+            "width": "600",
+            "outline_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          {
+            "code": 2,
+            "cid": 2,
+            "current_gid": 1,
+            "asset_gid": 1,
+            "unicode": "A",
+            "width": "600",
+            "outline_sha": "0c2b1f9f8fd3dd7b965b09b0388a72af8979dfbb376074288605f59563126d7c"
+          }
+        ],
+        "asset_sha": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "embedded_program_sha": "a6f9c96d04dd101d8d375e51aaa2e2d6970c8d21bf8f63cc46626b54be320781",
+        "subset_bytes_equal_asset": false
+      },
+      "accuracy": {
+        "max_origin_error": 0,
+        "passed": true
+      },
+      "authority": "external-confirmation + current font/program witness; intent is not physically witnessed",
+      "reopen_exact": true,
+      "fresh_reopens": 3,
+      "omitted": [
+        {
+          "offset": 0,
+          "kind": "trimmed-space",
+          "style": "body"
+        },
+        {
+          "offset": 1,
+          "kind": "trimmed-space",
+          "style": "body"
+        },
+        {
+          "offset": 2,
+          "kind": "trimmed-space",
+          "style": "body"
+        }
+      ]
+    },
+    "reflow": {
+      "admitted": true,
+      "semantic_sha": "66608d588719a29c570f2226a566d21e21836a6f8985e7dcdc7d6fb05d9b45d7",
+      "plan_sha": "ea459c8b2955fb9251346fbc65f0b9cabe3b9baa052c42eb5a60ca3a36aeba78",
+      "measurement_sha": "3dfb2268a6d40ad31037bf663bd5061b622923e52c84df201893ecf10a731897",
+      "witness": {
+        "program_sha": "224a06c93affb40634a544ad6aebe64d698aeba6c5bbcbd9376ed8c326334667",
+        "program_bytes": 341,
+        "binding": [
+          {
+            "interval": [
+              0,
+              1
+            ],
+            "byte_span": [
+              82,
+              91
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              1,
+              2
+            ],
+            "byte_span": [
+              112,
+              121
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              2,
+              3
+            ],
+            "byte_span": [
+              142,
+              151
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              3,
+              4
+            ],
+            "byte_span": [
+              174,
+              183
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              5,
+              6
+            ],
+            "byte_span": [
+              204,
+              213
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              7,
+              8
+            ],
+            "byte_span": [
+              234,
+              243
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              9,
+              10
+            ],
+            "byte_span": [
+              264,
+              273
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              14,
+              15
+            ],
+            "byte_span": [
+              294,
+              303
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              15,
+              16
+            ],
+            "byte_span": [
+              326,
+              335
+            ],
+            "code": 3,
+            "style": "body"
+          }
+        ],
+        "default_style_span": [
+          40,
+          63
+        ],
+        "font_samples": [
+          {
+            "code": 1,
+            "cid": 1,
+            "current_gid": 1,
+            "asset_gid": 1,
+            "unicode": "A",
+            "width": "600",
+            "outline_sha": "0c2b1f9f8fd3dd7b965b09b0388a72af8979dfbb376074288605f59563126d7c"
+          },
+          {
+            "code": 2,
+            "cid": 2,
+            "current_gid": 3,
+            "asset_gid": 3,
+            "unicode": " ",
+            "width": "600",
+            "outline_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          {
+            "code": 3,
+            "cid": 3,
+            "current_gid": 2,
+            "asset_gid": 2,
+            "unicode": "B",
+            "width": "600",
+            "outline_sha": "25d20180e5eabb88af5237182392f1c7d72e44f39b9c6db5c9669b35f60a842c"
+          }
+        ],
+        "asset_sha": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "embedded_program_sha": "e7b3c9a25d4719d9aa81437a83bf85de1bd66ebf2473aa5735201ef7485637de",
+        "subset_bytes_equal_asset": false
+      },
+      "accuracy": {
+        "max_origin_error": 6.103515630684342e-06,
+        "passed": true
+      },
+      "authority": "external-confirmation + current font/program witness; intent is not physically witnessed",
+      "reopen_exact": true,
+      "fresh_reopens": 3,
+      "omitted": [
+        {
+          "offset": 4,
+          "kind": "trimmed-space",
+          "style": "body"
+        },
+        {
+          "offset": 6,
+          "kind": "trimmed-space",
+          "style": "body"
+        },
+        {
+          "offset": 8,
+          "kind": "trimmed-space",
+          "style": "body"
+        },
+        {
+          "offset": 10,
+          "kind": "trimmed-space",
+          "style": "body"
+        },
+        {
+          "offset": 11,
+          "kind": "trimmed-space",
+          "style": "body"
+        },
+        {
+          "offset": 12,
+          "kind": "newline",
+          "style": "body"
+        },
+        {
+          "offset": 13,
+          "kind": "newline",
+          "style": "body"
+        }
+      ]
+    },
+    "gid_renumbered": {
+      "admitted": true,
+      "semantic_sha": "74aede2e6e35cf4f68136684e6197603815982174a69456306e82d2b26aea6dd",
+      "plan_sha": "40c9f55b5036fa4a7aa9b63aa0500d75ba86e8403bb087fcd59a1c3ce77024bc",
+      "measurement_sha": "eadcf63f25da3a4955d87708aec34f847b96f68a6e24f3726a703df500c56ff9",
+      "witness": {
+        "program_sha": "f54504fd2fa8b3858438fecef05ab64dd2edd786621ef9ef1f5c9aca5c80a5ca",
+        "program_bytes": 247,
+        "binding": [
+          {
+            "interval": [
+              0,
+              1
+            ],
+            "byte_span": [
+              82,
+              91
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              1,
+              2
+            ],
+            "byte_span": [
+              112,
+              121
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              2,
+              3
+            ],
+            "byte_span": [
+              142,
+              151
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              3,
+              4
+            ],
+            "byte_span": [
+              172,
+              181
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              4,
+              5
+            ],
+            "byte_span": [
+              202,
+              211
+            ],
+            "code": 2,
+            "style": "body"
+          },
+          {
+            "interval": [
+              5,
+              6
+            ],
+            "byte_span": [
+              232,
+              241
+            ],
+            "code": 1,
+            "style": "body"
+          }
+        ],
+        "default_style_span": [
+          40,
+          63
+        ],
+        "font_samples": [
+          {
+            "code": 1,
+            "cid": 1,
+            "current_gid": 3,
+            "asset_gid": 1,
+            "unicode": "A",
+            "width": "600",
+            "outline_sha": "0c2b1f9f8fd3dd7b965b09b0388a72af8979dfbb376074288605f59563126d7c"
+          },
+          {
+            "code": 2,
+            "cid": 2,
+            "current_gid": 1,
+            "asset_gid": 3,
+            "unicode": " ",
+            "width": "600",
+            "outline_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        ],
+        "asset_sha": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "embedded_program_sha": "c534f26ce1e276b351fa927a535ccf7d85023fc18e03383e02ee60276aead7c5",
+        "subset_bytes_equal_asset": false
+      },
+      "accuracy": {
+        "max_origin_error": 1.5258789076710855e-06,
+        "passed": true
+      },
+      "authority": "external-confirmation + current font/program witness; intent is not physically witnessed",
+      "reopen_exact": true,
+      "fresh_reopens": 3,
+      "omitted": []
+    },
+    "fractional_style": {
+      "admitted": true,
+      "semantic_sha": "0c706913b65a2745aac25db216fb2695a8b7531fdd2c2b1a84c1127ca1df5a7c",
+      "plan_sha": "48070053e84f8909431107838229bfac7f12097f380ae78d94d6adf97e699f03",
+      "measurement_sha": "217e7170d9535de214b121f17bf93dd78d40162390ce0b6f6e33b52c2eddfc3f",
+      "witness": {
+        "program_sha": "05074f70e319e6f6508b72244063eaa535b46c2110fc0613172db2ba01c935a4",
+        "program_bytes": 164,
+        "binding": [
+          {
+            "interval": [
+              0,
+              1
+            ],
+            "byte_span": [
+              85,
+              94
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              1,
+              2
+            ],
+            "byte_span": [
+              117,
+              126
+            ],
+            "code": 2,
+            "style": "body"
+          },
+          {
+            "interval": [
+              2,
+              3
+            ],
+            "byte_span": [
+              149,
+              158
+            ],
+            "code": 1,
+            "style": "body"
+          }
+        ],
+        "default_style_span": [
+          43,
+          66
+        ],
+        "font_samples": [
+          {
+            "code": 1,
+            "cid": 1,
+            "current_gid": 1,
+            "asset_gid": 1,
+            "unicode": "A",
+            "width": "600",
+            "outline_sha": "0c2b1f9f8fd3dd7b965b09b0388a72af8979dfbb376074288605f59563126d7c"
+          },
+          {
+            "code": 2,
+            "cid": 2,
+            "current_gid": 3,
+            "asset_gid": 3,
+            "unicode": " ",
+            "width": "600",
+            "outline_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        ],
+        "asset_sha": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "embedded_program_sha": "a6f9c96d04dd101d8d375e51aaa2e2d6970c8d21bf8f63cc46626b54be320781",
+        "subset_bytes_equal_asset": false
+      },
+      "accuracy": {
+        "max_origin_error": 8.544921854536369e-07,
+        "passed": true
+      },
+      "authority": "external-confirmation + current font/program witness; intent is not physically witnessed",
+      "reopen_exact": true,
+      "fresh_reopens": 3,
+      "omitted": []
+    },
+    "nonterminating_style": {
+      "admitted": true,
+      "semantic_sha": "b69f12e1f0b82a543cf8f0b32233b347adf195f67784a8ca0b0970e2833ccede",
+      "plan_sha": "2f595914862b27c9a17664ca8d3db71eba9974d172ab4da2d62b8789fd62fc20",
+      "measurement_sha": "6f6282db6ffdf59453b5274cfd1f48760d0dff446fdbf9499308bd9d2b97996b",
+      "witness": {
+        "program_sha": "1a0c849c8e2ab7b1309aad0e6c18a52c7a5b7391347ac08220fee399fc441ac2",
+        "program_bytes": 162,
+        "binding": [
+          {
+            "interval": [
+              0,
+              1
+            ],
+            "byte_span": [
+              89,
+              98
+            ],
+            "code": 1,
+            "style": "body"
+          },
+          {
+            "interval": [
+              1,
+              2
+            ],
+            "byte_span": [
+              119,
+              128
+            ],
+            "code": 2,
+            "style": "body"
+          },
+          {
+            "interval": [
+              2,
+              3
+            ],
+            "byte_span": [
+              147,
+              156
+            ],
+            "code": 1,
+            "style": "body"
+          }
+        ],
+        "default_style_span": [
+          47,
+          70
+        ],
+        "font_samples": [
+          {
+            "code": 1,
+            "cid": 1,
+            "current_gid": 1,
+            "asset_gid": 1,
+            "unicode": "A",
+            "width": "600",
+            "outline_sha": "0c2b1f9f8fd3dd7b965b09b0388a72af8979dfbb376074288605f59563126d7c"
+          },
+          {
+            "code": 2,
+            "cid": 2,
+            "current_gid": 3,
+            "asset_gid": 3,
+            "unicode": " ",
+            "width": "600",
+            "outline_sha": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        ],
+        "asset_sha": "0fafd12f9b1c8b344d296afefa576678cc1385927077cdc5bdaa67776f4d20c6",
+        "embedded_program_sha": "a6f9c96d04dd101d8d375e51aaa2e2d6970c8d21bf8f63cc46626b54be320781",
+        "subset_bytes_equal_asset": false
+      },
+      "accuracy": {
+        "max_origin_error": 3.8146972514141453e-07,
+        "passed": true
+      },
+      "authority": "external-confirmation + current font/program witness; intent is not physically witnessed",
+      "reopen_exact": true,
+      "fresh_reopens": 3,
+      "omitted": []
+    }
+  },
+  "negative": {
+    "tampered_font": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "resealed_font": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "tampered_Tw": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "resealed_Tw": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "tampered_edge": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "resealed_edge": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "tampered_empty_style": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "resealed_empty_style": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "tampered_interval": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "resealed_interval": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "tampered_omitted": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "resealed_omitted": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "wrong_asset": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "foreign_key": {
+      "refused": true,
+      "reason": "EXTERNAL_AUTHORITY_MISMATCH"
+    },
+    "copied_document": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "copied_paragraph": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "copied_other_pdf_record": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "stale_pdf": {
+      "refused": true,
+      "reason": "STALE_PDF"
+    },
+    "pdf_hash_only_updated": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "rehashed_receipt": {
+      "refused": true,
+      "reason": "EXTERNAL_AUTHORITY_MISMATCH"
+    },
+    "physical_unicode": {
+      "refused": true,
+      "reason": "UNICODE_MAPPING"
+    },
+    "physical_cid_gid": {
+      "refused": true,
+      "reason": "GID_RANGE"
+    },
+    "physical_width": {
+      "refused": true,
+      "reason": "PDF_WIDTH_MISMATCH"
+    },
+    "physical_outline": {
+      "refused": true,
+      "reason": "OUTLINE_MISMATCH"
+    },
+    "physical_marker": {
+      "refused": true,
+      "reason": "CANONICAL_PROGRAM_MISMATCH"
+    },
+    "physical_style": {
+      "refused": true,
+      "reason": "CANONICAL_PROGRAM_MISMATCH"
+    },
+    "physical_empty_style": {
+      "refused": true,
+      "reason": "CANONICAL_PROGRAM_MISMATCH"
+    },
+    "physical_position": {
+      "refused": true,
+      "reason": "CANONICAL_PROGRAM_MISMATCH"
+    },
+    "physical_repeat_order": {
+      "refused": true,
+      "reason": "CANONICAL_PROGRAM_MISMATCH"
+    },
+    "Tw_to_edge_resealed": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    }
+  },
+  "intent_ambiguity": {
+    "pdf_bytes_identical": true,
+    "physical_only_accepts_swapped_intent": true,
+    "authenticated_refusal": {
+      "refused": true,
+      "reason": "CURRENT_CONFIRMATION_MISMATCH"
+    },
+    "limitation": "Option B does not physically witness intent; independent confirmation distinguishes the records"
+  },
+  "gates": {
+    "model_determinism": {
+      "exact_reopens": true
+    },
+    "input_admissibility": {
+      "static_tt_scope": true,
+      "asset_metrics": true,
+      "explicit_style": true,
+      "confirmed_intent": true
+    },
+    "authenticated_binding": {
+      "current_font": true,
+      "interval_bijection": true,
+      "nonpainted_style": true,
+      "intent_receipt": true,
+      "current_revision": true,
+      "fresh_process_rebind": true,
+      "production_confirmation_issuance": false,
+      "atomic_edit_publication_contract": false
+    }
+  },
+  "serialization": {
+    "exact": "1/3",
+    "output": "0.333333",
+    "authority_after_output": "1/3"
+  },
+  "verdict": "NOT READY",
+  "open_blocker": "B1-L-C: trusted confirmation issuance and atomic publication across an authorized edit are not established by a test signer"
+}

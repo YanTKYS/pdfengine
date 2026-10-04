@@ -284,3 +284,59 @@ DESIGN/EVIDENCE ONLY; NOT READY** (layout and paint runtime NOT READY). Focused 
 rerun into a scratch directory produced a summary identical to the tracked one. Full suite and external originals
 were not run. Findings and the next scope are in
 [design §17.10](../../docs/anchored-paint-ownership.md#1710-independent-review--claude-opus-55).
+
+
+## Current semantic binding — 2026-10-04
+
+Base `f749bb893ac883e235ce73d5ea1aa2a5bdc1fddd`, PR #38 merge and independent
+review verified. **NOT READY — DESIGN/EVIDENCE ONLY**, both runtimes NOT READY.
+[Design §18](../../docs/anchored-paint-ownership.md#18-current-semantic-witness-binding--2026-10-04)
+and [separate summary](semantic-binding-summary.json).
+
+```powershell
+.venv\Scripts\python.exe -m evaluations.anchors.semantic_binding_observation --work evaluations/anchors/runs/semantic-binding-reproduce --output evaluations/anchors/runs/semantic-binding-reproduce/summary.json
+.venv\Scripts\python.exe -m pytest -q tests/test_semantic_binding_design.py tests/test_measurement_authority_design.py tests/test_source_ownership.py tests/test_empty_element.py tests/test_style_confirmation.py tests/test_shaped_font.py
+```
+
+Use a new work directory. No external font/document, Poppler or runtime changes
+are needed. This is a fixture PDF builder plus read-only design binder, not a
+runtime PDF serializer/verifier, schema or authentication service. It consumes a
+narrow complete-page language, static simple unhinted TT, one body style, and
+A/B/space/newline. Unsupported objects, context, fonts/styles and record history
+refuse. `/W` entries are restricted to integer operands; source float parsing is
+not used as exact metric authority. The full current file is independently bound.
+
+Nine fixtures save once and reopen in three fresh processes each. Workers receive
+only current PDF, current record/receipt, current asset, a separately supplied test
+authority and independent target. Raw artifacts and the ephemeral test key remain
+in the ignored work directory; keys and receipt tags are absent from the tracked
+summary. The test key is **not** a production trust store or proof of user approval.
+The issuer is a deliberately unrestricted fixture oracle; production confirmation
+issuance and atomic edit publication are explicitly OPEN in layer C.
+
+`positive` records actual extracted current font/program/interval witnesses,
+accuracy and exact rebind comparisons. `negative` records 30 refusal cases.
+`intent_ambiguity` shows byte-identical Tw/edge PDFs: physical-only matching passes
+but the independent confirmation rejects a resealed swap. `gates` separates A
+model determinism, B admissibility and C authenticated binding. All scoped fixture
+checks pass; the two open design obligations derive NOT READY. Accuracy never
+overwrites missing authority. Fixed six-place output decimal spelling does not
+change exact logical values or feed renderer output back into authority.
+
+Current font samples allow subset bytes and current GIDs to differ from the asset.
+A test-development CID→`.notdef` mutation exposed a missing check when its outline
+and width matched A; current nonzero GID/cmap/Unicode correspondence now refuses it.
+This is included in the negatives, not silently relabeled as a passing run.
+
+Maximum plan→saved origin discrepancy is 0.000006103515630684342 pt, below 0.002 pt.
+No new raster equality or runtime save/noop/authorized-edit lifecycle claim is made.
+The lifecycle is authenticated **read-only rebind**, conditional on a separate
+trusted confirmation input. Prior PR #36–#38 evidence/review bytes are preserved.
+Runtime SHA-256:
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+Full suite and external original validation: not run.
+
+Validation: **171 passed** (29 new design tests + 142 focused regressions).
+The 29 new tests were rerun after final scope checks.
+Final tracked evidence is the clean `runs/semantic-binding-05` run. Earlier runs
+were evaluator development; no earlier PDF or report feeds a current rebind.

@@ -1700,3 +1700,289 @@ repeated glyphs, omitted whitespace and empty/nonpainted style association; Tw-v
 and resealed record refusal; positive and negative binding fixtures; and proof that the canonical record survives a
 verified PDF→record rebind. Layout runtime implementation should not start before that gate closes; paint runtime
 remains blocked behind layout.
+
+
+## 18. Current semantic witness binding — 2026-10-04
+
+**Result: NOT READY — DESIGN/EVIDENCE ONLY.** Layout runtime and paint runtime
+remain NOT READY. Starting main `f749bb893ac883e235ce73d5ea1aa2a5bdc1fddd`
+includes merged PR #38 and its §17.10 independent review. Branch:
+`codex/current-semantic-witness-binding`. Sections 1–17, their evidence and
+reviews remain byte-for-byte preserved.
+
+### 18.1 Three different claims and the trust boundary
+
+| Layer | What it establishes | What it does not establish |
+|---|---|---|
+| A: model determinism | Equal exact canonical input gives equal full measurement and layout | That the input is admissible or belongs to this PDF |
+| B: input admissibility | Metrics come from a supported confirmed asset, style/intent are explicitly confirmed, scope/policies validate | That an untrusted record is an authentic confirmation |
+| C: authenticated current binding | Independently trusted semantic confirmation plus freshly extracted current program/font/interval evidence agree | That an arbitrary signing helper constitutes a production user-confirmation or publication policy |
+
+This experiment advances C with actual PDF extraction, not just dict comparison.
+It also exposes **B1-L-C: confirmation-to-publication authority gap**. A test
+signer can authenticate any input handed to it, including an intent swap that
+leaves PDF bytes unchanged. Authentication of an issuer's message is not proof
+that the issuer was authorized to confirm that meaning. A production issuer
+must distinguish a user's new semantic decision from merely recalculating a
+hash. That issuance/transition contract is still open; adding a secret to an
+unchecked sidecar is not the resolution.
+
+The selected experiment's trust root is an **independent caller's explicit
+confirmation**, represented by a test HMAC authority. Its key and target
+(document handle, paragraph, page, audience) enter through a trusted test-runner
+channel, outside the PDF/record/receipt bundle. The random key is never published
+in the summary. This is a controlled fixture trust assumption, not a production
+key store, signature format, authentication service or evidence of a real user
+confirmation. A caller that loads the key/target from the same untrusted bundle
+would violate the premise and must not claim authenticated binding.
+
+The receipt binds a domain, independently selected current document/paragraph,
+exact semantic-record digest, exact current PDF digest and supplied asset digest.
+The record includes current interval/disposition/font/style/edge policy and
+current PDF SHA. Its optional public self-hash is diagnostic and is deliberately
+excluded from authentication; recomputing it grants nothing. Hashes bind bytes
+*after* trust is established, and are not trust roots. Subsetless font names,
+marker names, a PDF hash or an application-generated JSON file likewise do not
+establish authority. Source decimal operators are facts about placement/state;
+assigning future-edit Tw/edge meaning still requires confirmation.
+
+### 18.2 Witness options and selected direction
+
+| Option | Benefit | Independent authority and limitations | Decision |
+|---|---|---|---|
+| A: canonical intent-encoding PDF region | Re-serialization could distinguish Tw/edge/empty-style meanings from current PDF bytes | Requires externally authorized ownership, exact semantic grammar, current byte/context binding and atomic updates. A forged canonical region can be internally consistent; its marker cannot authorize itself. | Viable future alternative, not selected for this experiment |
+| B: explicit confirmation + physical binding | Keeps exact meaning outside lossy physical geometry; supports nonpainted intervals | Intent is **confirmed, not physically witnessed**. Needs an independent trusted confirmation channel; absence or loss of that channel refuses. | Selected for scoped read-only positive evidence |
+| C: hybrid confirmation + partial owned witness | Can put interval/style anchors in PDF while external confirmation authenticates their intent | Still needs A's ownership and B's issuance rules; partially witnessed fields must be labeled individually | Deferred; no reason yet to add a second ownership domain |
+| D: current record + exact output expectation alone | Detects foreign edits to the expected program/font/context | Tw and edge records can generate identical bytes. It does not authenticate intent or nonpainted logical state. | Necessary physical check, rejected as a standalone trust root |
+
+Selection B is a conditional direction, not a claim that every caller-trusted
+record is trustworthy by declaration. Without a valid independently issued
+current confirmation, there is no fallback to marker adoption, name matching,
+nearest-glyph matching, geometric inference or public resealing.
+
+### 18.3 Static-TT current font association
+
+The admitted experiment is deliberately narrow: one complete synthetic page,
+one direct content stream, one `/F` Type0 / Identity-H / CIDFontType2 resource,
+static simple unhinted TrueType, one body style, left layout and A/B/space/newline.
+Maximum 256 current characters. No Forms, page rotation, page boxes other than
+the fixed MediaBox, marked content, inherited style ambiguity, optional content,
+annotations, blend state, arbitrary clipping, variable/collection fonts, composites,
+CFF, unsupported shaping or mixed styles are admitted. This is a strict fixture
+language, not a general PDF verifier. Whole-page equality grants no mutation right.
+
+| Association | Current extraction / exact obligation |
+|---|---|
+| Asset and instance | Independently confirmed asset SHA; collection index 0, no variations; nominal one-codepoint shaping, kern=false, HarfBuzz version, outline algorithm and fontTools version pinned in policy |
+| Resource / descriptor | Resolve current `/F`, descendant and FontDescriptor. Check exact permitted dictionaries/types, descriptor names internally consistent, flags, hhea-derived ascent/descent, explicit bbox/CapHeight/StemV policy |
+| Encoding / code / CID | Identity-H only; two-byte codes; signed codebook must be a bijection and cover emitted and default/nonpainted font characters |
+| CID / GID / Unicode | Read current CIDToGIDMap; nonzero in-range GID; exact ToUnicode grammar and mapping; current embedded cmap must map that Unicode to that current glyph |
+| Metrics | Equal upem, hhea and hmtx (advance and bearing) against confirmed asset glyph; PDF `/W` equals exact 1000/upem-scaled hmtx. Fixed `/DW` is checked, not used to invent missing widths |
+| Outline | Decomposed recording-pen sequence of each used/default glyph equals the asset glyph's sequence; no hint programs or composites in scope. Empty space is explicitly proven empty |
+| Identity across subset | Compare mapped semantics, **not numerical GID equality or font-file SHA equality**. Current subset bytes may differ from full asset bytes. Descriptor bbox follows the confirmed full asset; a subset may have a smaller global bbox |
+
+Actual positive evidence renumbers A from asset GID 1 to current GID 3 and space
+from 3 to 1, and still passes. Development negatives also showed why outline
+and width equality alone are inadequate: the synthetic `.notdef` and A have the
+same outline/metrics. A CID→GID 0 substitution initially escaped those checks;
+nonzero GID plus current cmap/Unicode correspondence now rejects it. This is
+recorded as a strengthened association condition, not hidden as a passing test.
+An embedded program lacking the required cmap is outside this narrow proof.
+
+The current extractor reads the actual saved PDF using pypdf/fontTools and checks
+fresh MuPDF origins separately. A full-file hash alone is never its font proof.
+Negative fixtures deliberately reissue *test* receipts over invalid PDFs to show
+that even an authentic test message cannot bypass font/program validation.
+
+### 18.4 Repeated occurrences and bounded logical intervals
+
+Each current character has exactly one interval `[i,i+1)` and current ordinal
+identity `current:i`. Emitted glyphs bind in verified canonical program order to
+exact `<code> Tj` byte spans, not to nearest positions or matching Unicode/GID.
+The complete expected program, including each Tm and control state, must match
+before those spans can be used. Repeated `AAAA` therefore has four different
+intervals/spans even though all four codes and glyph identities are equal.
+Swapping two equal-glyph drawing commands with their different positions is
+rejected even when the visible result is unchanged. Swapping interval records
+also fails the bijection or independent confirmation.
+
+Ordinal identities are **current-state identities, not permanent historical IDs**.
+Insert/delete/reflow creates a newly confirmed current mapping. A deleted and
+reinserted A must never inherit a stale occurrence binding; it gets the current
+interval and a newly validated program span. An exactly identical net current
+state needs no deletion history. Physical trace IDs and PDF object numbers are
+not semantic identities; GID renumbering and current byte spans are reproven.
+The positive reflow fixture demonstrates a fresh current mapping, not an
+implemented authenticated edit transition from the earlier fixture.
+
+The record holds only current glyphs, styles/fonts, codebook, intervals, omitted
+interval dispositions and live edges: O(current text + styles + fonts + edges).
+No old geometries, trace snapshots, revision arrays or migration chain. Unknown
+record/model fields, including added history, refuse. Receipts are one current
+statement, not a signature history. The evaluator's evidence history is outside
+all candidate runtime inputs.
+
+### 18.5 Whitespace and empty-style association
+
+| Logical case | Authority and physical association |
+|---|---|
+| Interior empty-outline space | Current font cmap/code/width and verified empty outline; still an emitted Tj interval |
+| Authored trailing / line-end trimmed space | Signed current interval and explicit `trimmed-space` disposition computed from the exact plan; no invented painted witness |
+| Tw-target space | Confirmed exact word-spacing intent plus its current space interval; not inferred from physical distance |
+| Newline | Signed current newline interval; explicit structural omission, not a fabricated glyph |
+| Empty line | Designated body style and its asset-derived exact ascent/descent, minimum leading and canonical paragraph plan |
+| Fully empty fragment / all-space fragment | Explicit body default/typing style, current `/F` resource and nonpainting style anchor; no nearest glyph required |
+
+All current offsets must partition into emitted intervals and explicit nonpainted
+intervals with no duplicates or visible omissions. The receipt authenticates
+nonpainted meaning; the PDF does not contain trailing-space/newline intent in
+this option. A change only to those record fields is caught by the independent
+receipt, including after public self-hash recomputation.
+
+The fixture emits one exact default-state `[] TJ` anchor under q/BT and a full
+style/matrix declaration. It physically witnesses the current render-adapter
+font/size/scale/context, **not** the number of omitted spaces, Tw intent, empty
+line count, logical style name or authorial meaning. All lines use the explicitly
+confirmed `body` style; preceding/following glyph style is irrelevant. Authored
+and inserted empty lines use body. Mixed-style boundaries and per-line authored
+empty-style overrides refuse until a range/style association contract exists.
+
+### 18.6 Nonpainting witnesses, ownership and domain conflicts
+
+| Carrier | What it can witness | Why it cannot authorize itself |
+|---|---|---|
+| Nonpainting `[] TJ` | Current text state and a lexical program location | Empty glyph output does not identify a semantic interval/style unless independently bound |
+| Marked content | Explicit structural grouping / named properties | Tag or MCID presence does not prove ownership/authorship |
+| Owned metadata/object | Canonical exact semantic payload could encode intent | Must independently bind object reference, bytes, owner and current render region |
+| Canonical comment/marker | A locator within an audited grammar | Foreign content can copy the same string; never promote by marker match |
+| Explicit record-only meaning | Full exact logical intent/nonpainted state under Option B | Valid only with independent confirmation plus current physical proof; self-hash is insufficient |
+
+PDF's text-showing and marked-content syntax supplies carriers, not this
+application's authority model. See [ISO 32000-1 §§9.4.3 and 14.6](https://developer.adobe.com/document-services/docs/assets/35e4369068f86065372c18787171a17e/PDF_ISO_32000-1.pdf).
+The existing `paragraph._style_witness` / `logical_element.slot_binding` paths
+already use empty TJ slots, while `source_ownership` checks their containment.
+This experiment does not extend, adopt or replace those runtime contracts.
+
+**Selected B adds no PDF semantic-ownership domain.** The fixture's whole-page
+program is read-only evidence. A future runtime edit must separately obtain
+source-output ownership; verification is not write authorization. If A/hybrid
+is later selected, its minimum contract is: externally authorized stable owner
+identity; current decoded program/object and exact lexical begin/end spans;
+closed canonical grammar and balanced termination; external current revision
+binding; no foreign/legacy promotion; stale/duplicate/spoof marker refusal;
+exclusive mutation spans; and PDF plus record/receipt publication in the same
+Transaction. Comments or objects discovered in an arbitrary PDF cannot seed
+that owner by themselves.
+
+Do not create a nested independently mutable semantic block inside a paint or
+source-output block. Prefer a single source-output owner for any future empty
+style anchor, with the semantic record referring to its proven current span.
+Ordinary/legacy edits overlapping an owned source/paint span must refuse unless
+the owning transaction explicitly coordinates the replacement. Combining these
+domains is a future contract task, not proven by the isolated whole-page fixture.
+
+### 18.7 Edit semantics and publication boundary
+
+The following are proposed semantic transitions, not runtime capabilities:
+
+| Operation | Current semantic update / admissibility |
+|---|---|
+| Insert, delete, replace, range growth | Rebuild current intervals/dispositions and exact plan; remove deleted meaning and obsolete edges; no stale span reuse |
+| Reflow | Keep confirmed logical style/intent; regenerate current allocation and byte-span binding; edge suppressed when endpoints split across lines |
+| Newline insert/delete | Body style applies explicitly; regenerate empty-line metrics and omissions; no nearest-style inference |
+| Entire body style change | Requires explicit new semantic confirmation, including font/size/rise/tracking/Tw/default metrics |
+| Edge endpoint delete / insertion between endpoints | Drop the edge, as §17's confirmed adjacent-pair policy specifies; never silently transfer it |
+| Paragraph split/join, mixed styles, cross-paragraph/vertical edge | Refuse; no implied authority transfer or style inheritance |
+| Unsupported/foreign PDF mutation | Refuse current receipt; do not refresh its PDF hash and call that a confirmation |
+
+Future publication must validate the old current bundle under its existing
+trusted authority; apply an authorized semantic edit; derive exact new layout
+and candidate bytes; independently validate the new current physical relation;
+then issue the new confirmation under an explicit permitted transition and
+publish PDF/record/receipt atomically. Failure must expose neither half a bundle
+nor a receipt for uncommitted bytes. Unchanged read-only reopen reuses the same
+receipt and freshly verifies the same current PDF. No history is needed for
+that check. Proposed edit transition approval is distinct from self-resealing.
+
+**Still OPEN:** how a production caller proves a first confirmation and delegates
+specified future edits to the issuer, and how that issuer participates in the
+existing Transaction/source-output publication boundary. `issue_test_confirmation`
+intentionally has no user authorization state machine; it is an oracle for known
+fixtures. Calling it on arbitrary current bytes cannot satisfy this obligation.
+B1-L-C's safety consequence is that an unrestricted issuer can endorse Tw→edge
+without a user decision even though all physical checks pass. Its canonicality
+consequence is a different future-space/edit rule with unchanged current geometry.
+Minimum next evidence: a separate pure authorization/publication state machine
+that accepts explicit confirmation/allowed edits, refuses bare hash refresh and
+foreign domain reuse, and injects failures before/after each atomic-publication
+step. This is a **design/evidence** task; implementing a runtime key store or
+verifier is not necessary to close the design gate.
+
+### 18.8 Tamper/reseal and current-only lifecycle evidence
+
+Actual synthetic current PDFs cover repeated glyphs, interior/trailing space,
+blank lines, fully empty and all-space fragments, Tw, a confirmed adjacent edge,
+reflow, valid GID renumbering and fractional/nonterminating logical size. Nine
+saved fixtures each bind and then reopen in three fresh processes: **27 exact
+fresh-process authenticated rebinds**. Workers receive only the current PDF,
+record/receipt, current asset and separate test-authority input/target; no prior
+PDF, prior plan or hidden save. Extraction→admissibility→canonical layout→exact
+program expectation→physical accuracy is repeated. Same semantic/measurement/
+plan/witness results hold. This is read-only current-revision evidence, not a
+runtime save/noop/edit implementation.
+
+**30 negative cases refuse**, including record font/Tw/edge/empty-style/interval/
+omission edits, each publicly resealed; wrong asset/key, copied document/paragraph,
+stale PDF, PDF-hash-only refresh, forged rehashed receipt, changed Unicode,
+CID/GID, widths, outline, marker, physical style/empty anchor/position and repeated
+command order, plus the Tw→edge swap. Font/program negatives carry freshly issued
+*test* receipts to isolate physical checks from receipt rejection. Those test
+issuances are deliberately not production authorization evidence.
+
+For `A B`, confirmed Tw=1.2 and a confirmed adjacent edge of 1.2 create **identical
+fixture PDF bytes**, not merely equal glyph positions. Physical-only extraction
+accepts the swapped record. The original independent receipt rejects it even
+after self-reseal. A newly authorized explicit confirmation could intentionally
+change that intent; a hash refresh must not be able to authorize it. Option B
+therefore authenticates confirmed intent but **does not physically witness it**.
+
+All nine plan→saved origin checks pass ≤0.002 pt; maximum
+`0.000006103515630684342` pt. Accuracy cannot override any failed binding gate.
+No raster/Poppler equality or external-original validation is claimed.
+
+### 18.9 Serialization and final gates
+
+Logical values remain exact rational strings. A fixed renderer-independent
+output rule emits at most six decimal places, nearest/ties-to-even, no exponent
+and no negative zero. For example logical `37/3` produces output `12.333333` but
+remains `37/3` on all rebinds; `1/3` outputs `0.333333`. Output text is only a
+physical expectation checked against the logical authority. Neither decimal
+spelling nor MuPDF float32 output is fed back into semantic values. A placement
+accuracy failure must refuse or require a different explicitly designed output
+policy, never snap the logical input. This differs from §17's rejected F.
+
+| Gate | Result |
+|---|---|
+| A model determinism | PASS for exact fresh-process current fixture replays |
+| B input admissibility | PASS within the explicit static-TT/body-style/confirmed-intent fixture scope |
+| C current font / interval / nonpainted-style / intent receipt / revision / read-only rebind | PASS conditional on independently trusted test confirmations |
+| C production confirmation issuance | OPEN: test signing is not authorized semantic transition proof |
+| C atomic edit publication contract | OPEN: source-output/Transaction/receipt boundary not yet established |
+
+`three_layer_verdict` requires every required subgate in all three nonempty layers
+to be true. Measured fixture gates derive from evidence; the two open design
+obligations are explicitly false. Tests exercise hypothetical fully closed gates
+and each layer's failure: the verdict is not a fixed NOT READY string and an
+extra accuracy PASS cannot override it. **Final: NOT READY.**
+
+Validation: **29 new design tests + 142 focused regressions = 171 passed**.
+The 29 new tests were rerun after final scope checks.
+Validation and reproduction are recorded in the [evaluation README](../evaluations/anchors/README.md#current-semantic-binding--2026-10-04)
+and [separate summary](../evaluations/anchors/semantic-binding-summary.json).
+Runtime digest remains
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+No pdfeditor/, serializer, schema, public API, runtime verifier or paint changes.
+Full suite and external original validation are not run. Existing paint obligations
+remain in §15.11/§16.6: overlap refusal, source-decimal path + exact S recipe,
+termination lexical gate, cross-page fixture and unified clip/paint CTM authority.
+No duplicate TODOs or implementation changes were introduced.
