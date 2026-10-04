@@ -1986,3 +1986,95 @@ Full suite and external original validation are not run. Existing paint obligati
 remain in §15.11/§16.6: overlap refusal, source-decimal path + exact S recipe,
 termination lexical gate, cross-page fixture and unified clip/paint CTM authority.
 No duplicate TODOs or implementation changes were introduced.
+
+### 18.10 Independent review — Claude Opus 5.5
+
+- Reviewed HEAD: `218698957c61f3cb36aadca65971d31882959a60`; base `f749bb893ac883e235ce73d5ea1aa2a5bdc1fddd`
+  (PR #38 merge commit, verified merged). This record is a separate commit on top of the reviewed HEAD.
+- **Verdict: PASS WITH NON-BLOCKING NOTES — DESIGN/EVIDENCE ONLY; NOT READY.** No blocking findings.
+  Layout runtime **NOT READY**; paint runtime **NOT READY**.
+- Focused tests (README command): **170 passed, 1 skipped** (482.53 s; the skip is `test_source_ownership.py::test_poppler_noop_pixels`, Poppler is not installed in the review environment; the PR records 171 passed with Poppler). `semantic_binding_observation` rerun into a scratch
+  directory: summary **identical** to the tracked `semantic-binding-summary.json` (0 differences; the random test key
+  and receipt tags are not in the summary). 9 positive fixtures, 27 fresh-process rebinds all `reopen_exact`; 30/30
+  negatives refused; maximum plan→saved origin error 6.10e-6 pt. Full suite and external Windows/LibreOffice
+  validation: not run. No `pdfeditor/`, serializer, schema, API, Transaction, verifier or paint change.
+
+**Three layers.** A (determinism), B (admissibility) and C (authenticated current binding) are correctly separated;
+`three_layer_verdict` needs every subgate in all three layers, and accuracy is not a gate input, so neither A, B nor a
+placement PASS can override a C failure.
+
+**Option B and physical binding.** The key/target enter `bind()` only as caller arguments; the self-hash is excluded
+from the message; PDF hash, marker or font names never grant authority. Physical validation is independent of the
+receipt: the nine physical negatives carry freshly issued test receipts and still refuse in `extract_current`.
+Binding is current-only: exact expected program equality, Type0/Identity-H, exact ToUnicode, CIDToGIDMap with nonzero
+GID, embedded cmap→same glyph, upem/hhea/hmtx, decomposed outline and integer `/W` against the asset; no previous PDF,
+plan or trace is read. GID renumbering (A 1→3, space 3→1) passes, as it should. The `.notdef` strengthening (nonzero
+GID + current cmap + ToUnicode) is sufficient within this symbolic-flag, unhinted, simple-glyph scope; I found no
+remaining outline+width+cmap misbinding there. Repeated `AAAA` is bound by full-program equality followed by ordered
+show spans; order swaps refuse, and nothing falls back to nearest matching. The regex span scan is acceptable only
+because it runs on already-verified canonical bytes. `current:i` is a structural current-state identity: stale IDs
+cannot survive insert/delete, and delete→reinsert cannot revive one.
+
+**Whitespace, empty style, `[] TJ`.** Nonpainted intervals (trimmed space, newline, empty line, empty and all-space
+fragments) carry meaning only in the confirmed record; empty metrics come from the designated body font × exact size,
+independent of neighbours; mixed styles refuse. `[] TJ` is correctly limited to render-adapter state, not counts,
+Tw or authorial intent.
+
+**Tw/edge ambiguity.** Reproduced: the two fixtures produce byte-identical PDFs, physical-only matching accepts the
+swapped record, and the original confirmation refuses it after reseal. This proves intent is not physically
+recoverable from these bytes. Tamper/reseal, copied/foreign target, wrong asset/key, stale PDF, hash-only refresh and
+rehashed receipt all refuse; public resealing creates no authority.
+
+**B1-L-C and the trust model (main judgement).** B1-L-C is real, but it is an *authorization invariant*, not an
+authentication-infrastructure problem: semantic fields must change only through enumerated transitions requested by
+the current caller. pdfengine does not need user accounts, PKI, a persistent key store or a network service.
+Recommended model, P4 (hybrid of P1/P2):
+
+- Trust boundary = the pdfengine API caller (P1), as in the source-output and paint designs.
+- Initial confirmation = an explicit caller statement of the semantic state.
+- Each mutation call is itself the capability for its transition (P2): `old verified bundle + explicit edit request →
+  new state`. No persistent secret is needed.
+- Persistent semantic record = caller-trusted sidecar bound to the current PDF SHA, document/paragraph target and asset,
+  with an integrity checksum for accidental damage, and physically re-verified on every reopen. This is required to keep
+  meaning across save/reopen. It is not caller authorization.
+- Persistent authorization receipts and cryptographic signatures are **not required**. P3 is an optional deployment
+  extension when the sidecar store is writable by untrusted parties; it lives outside the engine. Because a receipt binds
+  the PDF SHA, every publication would need re-issuance; an engine-held key would only be a self-seal.
+
+Transition classes for the next design. *No-op reopen*: no new authority, physical re-verification only.
+*Derived safe, automatic inside an explicit edit call*: text insert/delete/replace in body style; recompute
+intervals, omissions and empty metrics; reflow/width change; drop an edge on endpoint delete or insertion between;
+suppress it at line end. *Semantic reinterpretation, needs an explicit field in the request*: Tw↔edge, adding edges,
+style/size/rise/tracking/Tw change, font/asset change, empty-style change. *Refuse*: split/join, mixed styles,
+cross-paragraph or vertical edges.
+
+Threat model: in scope are accidental stale records, copied sidecars, foreign PDFs, manual/accidental modification and
+internal record corruption (PDF SHA + target + checksum + physical verification + closed transitions). Out of scope:
+a malicious privileged caller, a compromised machine, stolen keys.
+
+**Atomic publication.** The proposed order (verify old bundle → authorized transition → canonical layout → candidate
+PDF → new physical verification by full reopen/extraction → new record bound to the candidate SHA → pair publish) is
+right. Use the existing `Transaction` and `_publish`, and keep source-output ownership as the only write authority;
+semantic verification grants no mutation right. Inject failures after layout, after candidate save, at physical
+verification, at record sealing and at second-link publication; each must leave the old pair intact and publish
+neither or both. That is exception atomicity, not crash atomicity.
+
+**Non-blocking notes.**
+
+1. Replace persistent HMAC receipts by P4 in the next design. Rename the gate `production_confirmation_issuance` to
+   "semantic transition authority" so it does not imply identity infrastructure.
+2. Under P4 the resealed Tw→edge negative becomes a trusted-caller assertion; state this threat boundary explicitly
+   instead of implying cryptographic detection.
+3. Runtime physical binding must be scoped to the owned source-output body (exact re-serialization of the island), not
+   whole-page equality, and must use `operators()` spans rather than a regex. This combines B with the existing
+   ownership domain and makes Option A or a new hybrid domain unnecessary.
+4. The engine must never sign or confirm its own output; derived records are authorized by the current edit call, not
+   by an engine-held key.
+5. Define no-op save semantics: when only PDF bytes change (re-serialization), the record's PDF binding updates under
+   the edit call's authority while the semantic payload stays byte-identical.
+
+**Next minimal scope.** A pure authorization/publication state-machine design under P4: initial confirmation, no-op
+reopen, derived safe transitions, explicit reinterpretation, refusals, island-scoped physical verification,
+pair publication with failure injection, and positive/negative fixtures, including refusal of bare hash refresh. If it
+closes, the next step can be **DESIGN READY FOR SEPARATE LAYOUT IMPLEMENTATION PR** for the static-TT/body-style scope.
+Paint runtime remains behind layout and its five §15.11/§16.6 obligations.

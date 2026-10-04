@@ -340,3 +340,12 @@ Validation: **171 passed** (29 new design tests + 142 focused regressions).
 The 29 new tests were rerun after final scope checks.
 Final tracked evidence is the clean `runs/semantic-binding-05` run. Earlier runs
 were evaluator development; no earlier PDF or report feeds a current rebind.
+
+### Independent review of semantic binding
+
+Claude Opus 5.5 reviewed HEAD `218698957c61f3cb36aadca65971d31882959a60`: **PASS WITH NON-BLOCKING NOTES —
+DESIGN/EVIDENCE ONLY; NOT READY** (layout and paint runtime NOT READY). Focused tests: 170 passed, 1 skipped (Poppler absent in the review environment). The evaluator
+rerun into a scratch directory produced a summary identical to the tracked one (9 positives, 27 exact rebinds, 30/30
+negatives refused). Main judgement: B1-L-C needs a closed semantic-transition model with the trusted API caller as
+the boundary, not persistent signatures or receipts. Full suite and external originals were not run. Details in
+[design §18.10](../../docs/anchored-paint-ownership.md#1810-independent-review--claude-opus-55).
