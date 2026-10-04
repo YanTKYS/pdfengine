@@ -1495,3 +1495,17 @@ need a registry-change contract, because the v2 registry/fragment validation bin
 Tests: 32 new; full suite 1,448 passed / 8 environment skips. Runtime digest
 `d9e69d513cc20cb1bf3060051372e11452eb8a04f7c003df751b1a8a9fb2bf40`. No publication (L3). Paint runtime NOT READY.
 [L2 details](anchored-paint-ownership.md#21-l2-runtime-canonical-semantic-island-writer--2026-10-04).
+
+
+## B-L2-S closed: current semantic style/font authority — L2 COMPLETE — 2026-10-04
+
+From main `77bb93e705307c8a52be09cc8116936dfebc12f3` (PR #42). Semantic record version 2 separates creation evidence
+(immutable source registry, observations, provider, contract), current semantic authority (`semantic.payload` plus
+`semantic.current = {provenance, provider}`) and current physical binding (canonical island, generated font subset,
+owner witness, `semantic.binding` font fields). Initial confirmation is `source-confirmed`; only an explicit E
+transition of font_size/horizontal_scale/rise/tracking/font makes it `caller-confirmed-current-semantic`. The v2
+validator still checks the source registry; only `validate_fragment` sees an in-memory current-style adapter. Version
+1 records still open, are never upgraded implicitly, and keep the B-L2-S refusal. Style, combined style, font A→B and
+A→B→A candidates reopen in a fresh process, and no-ops are byte- and pixel-stable (MuPDF and Poppler). Tests:
+67 new, 2 PR #42 blocker tests retargeted to version 1; full suite 1,502 passed / 21 environment skips / 0 failed. Runtime digest `d62168a667d3ca421f6422e27c3ea5909005b67ddcef2016f2e38fbc1ece381d`. **L2 COMPLETE.** Next: L3 publication. Paint runtime NOT READY.
+[B-L2-S resolution](anchored-paint-ownership.md#218-b-l2-s-resolution--current-semantic-stylefont-authority--2026-10-04).

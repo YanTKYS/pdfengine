@@ -165,7 +165,10 @@ def _policies(state):
         raise PdfError('paragraph boundaries are identity relations, not Unicode or physical breaks')
 
 
-def _validate(source,value):
+def _validate(source,value,current_styles=None):
+    # current_styles is used only by the shared-flow-3 opener (semantic_layout):
+    # per paragraph, the in-memory current-style registry its current fragments
+    # are bound to. The source registry is still validated as creation evidence.
     state=deepcopy(value);checksum=state.pop('model_sha256',None)
     if state.get('schema') not in (SCHEMA,LEGACY_SCHEMA) or checksum!=digest(state):raise PdfError('shared flow model version or checksum differs')
     state['model_sha256']=checksum
@@ -248,7 +251,10 @@ def _validate(source,value):
                         or slot['binding']['paragraph']['text']!=logical['text'][a:end]
                         or any(c not in ' \r\n' for c in logical['text'][end:z])):
                     raise PdfError('fragment ranges must partition only their owning paragraph')
-                styles.validate_fragment(_style_state(state,pid),sid);cursor=z
+                fragment_state=_style_state(state,pid)
+                if current_styles is not None and pid in current_styles:
+                    fragment_state=dict(fragment_state,style_registry=current_styles[pid])
+                styles.validate_fragment(fragment_state,sid);cursor=z
                 if state['allocation_provenance']=='generated-from-confirmed-shared-flow':
                     b=slot['binding']
                     if (b['logical_element']['alignment']!=alignment
@@ -327,6 +333,26 @@ def open_shared_flow(source,model):
     try:
         value=model if isinstance(model,dict) else json.loads(Path(model).read_text(encoding='utf-8'))
         return dict(status='restored',state=_validate(source,value))
+    except (OSError,ValueError,TypeError,KeyError,IndexError,AttributeError,PdfError) as exc:
+        return dict(status='needs_confirmation',reason=str(exc),semantics='unknown')
+
+
+@proof_session
+def _open_current_flow(source,model,current_styles):
+    """Internal to shared-flow-3: the v2 validator with current fragments bound to current styles.
+
+    Not a v2 entry point: v2 sidecars always open through open_shared_flow.
+    """
+    try:
+        if not isinstance(current_styles,dict) or not current_styles:
+            raise PdfError('current style binding needs explicit paragraph registries')
+        value=model if isinstance(model,dict) else json.loads(Path(model).read_text(encoding='utf-8'))
+        if set(current_styles)-set(value['paragraphs']):
+            raise PdfError('current style binding names an unknown paragraph')
+        for pid,registry in current_styles.items():
+            if set(registry)!=set(value['paragraphs'][pid]['style_registry']):
+                raise PdfError('current style binding changes logical style identities')
+        return dict(status='restored',state=_validate(source,value,current_styles))
     except (OSError,ValueError,TypeError,KeyError,IndexError,AttributeError,PdfError) as exc:
         return dict(status='needs_confirmation',reason=str(exc),semantics='unknown')
 
