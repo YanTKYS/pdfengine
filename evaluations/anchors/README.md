@@ -200,3 +200,25 @@ Full suite and external Windows/LibreOffice original validation not run.
 compares A–D, defines left-only scope, semantic comparison, unresolved
 source intent/font/ink authority and the minimum next design task. Future
 paint obligations remain tracked in §15.11.
+
+### Independent review of PR #37 — Claude Opus 5.5
+
+Reviewed head `74309256d620c85079fe676fa02273ad575065a8` (base `b97c6b8…`):
+**PASS WITH NON-BLOCKING NOTES — DESIGN/EVIDENCE ONLY; NOT READY**
+(layout runtime NOT READY, paint runtime NOT READY, B1-L/B1-L-M open).
+
+- The 102 focused tests passed on Linux/Python 3.12.3/PyMuPDF 1.27.2.3.
+- `layout_observation` was rerun to a scratch output. Only the `python` version field
+  differed from the tracked summary.
+- L1–L3 and B1-L-M are confirmed against the code: `layout_attributed` measures width
+  with ink inset/overhang, and `source_ink` falls back to trace bbox. Advance-only closure
+  is refuted.
+- No blocking findings. Non-blocking notes:
+  - a monotone ratchet in scaled semantic size/scale over six saves
+  - undocumented spacing outcomes: Tz/Tm scaled geometry, Tw intent loss
+  - the bounds_source scope of B1-L-M
+  - candidates E/F
+  - small candidate and evaluator nits
+
+The tracked summary, evaluator and tests are unchanged.
+Details: [docs §16.8](../../docs/anchored-paint-ownership.md#168-independent-review--claude-opus-55).

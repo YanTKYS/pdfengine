@@ -1228,3 +1228,109 @@ Measured maximum saved-origin discrepancy across the 48 saves is
 `0.0000152587890625` pt. Maximum independent source-decimal fixture discrepancy
 is `0.0000053405761732960855` pt. Both pass the accuracy bound and neither
 alters the NOT READY canonicality verdict.
+
+### 16.8 Independent review — Claude Opus 5.5
+
+- reviewed HEAD: `74309256d620c85079fe676fa02273ad575065a8`（レビュー開始時のPR #37 head。この記録を追加するcommitとは別）
+- base: `b97c6b8dbba33176f25554ae35618a2ae2568941`（main。PR #36 head `d0dfd08` を含むmerge commitであることを確認）
+- **verdict: PASS WITH NON-BLOCKING NOTES — DESIGN/EVIDENCE ONLY; NOT READY**
+- layout runtime: **NOT READY**。paint runtime: **NOT READY**。B1-L（B1-L-Mを含む）: **OPEN**。
+
+差分は7 files、追加のみ（削除行0）。`pdfeditor/`、schema、serializer、paint/marker実装は無変更。
+runtime digestは`d22fb048…5dea`のまま。PR #37にはCI check runが設定されていない。
+
+**検証**（Linux cloud、Python 3.12.3、PyMuPDF 1.27.2.3、`requirements.lock.txt`）:
+
+- README記載のfocused tests: **102 passed**。
+- evaluator再実行: `layout_observation`をscratch出力先で再実行した（tracked summaryは上書きしていない）。
+  tracked `layout-authority-summary.json`との差分は`python`のversion表記（3.12.14→3.12.3）の1 fieldだけで、
+  それ以外の全値が完全一致した。L1–L3とB1-L-Mは、Windows固有でもplatform依存でもない。
+- full suite: 未実行。外部Windows/LibreOffice原本validation: 未実行（要件外）。
+
+#### 論点別の結論
+
+- **L1/L2/L3:** 3つとも独立したtriggerとして成立する。testsは実lifecycleをLinux上でliveに再実行してassertしている。
+  - L1（offset 3）: width 600/Tf 12/Tz 100/`PaintChar.advance=7.199999999999999`は不変のまま、`metric`→`trace-difference`に切り替わる。
+  - L2: offset 14はproviderが両stageとも`original`で、`same_source_line`がFalse→Trueになる。change offset 3は
+    `source_contiguous`がFalse→Trueになる。どちらもproviderの変化を伴わない。
+  - L3: offset 16は両stageとも`trace-difference`かつ連続しているが、`trace_pair`の位置が変わってadvanceが変わる。
+  - これらは`paragraph.py`のleft分岐とcodeが一致する。
+- **B1-L-M:** 現行runtime構造に由来するfixed-point blockerとして**成立**する。evaluator bug、fixture error、
+  toleranceだけの問題、provider遷移の別表現のいずれでもない。
+  - `layout_attributed.measured()`は`width = right − left`を計算する（`rich_layout.py:161-184`）。
+    `left = min(0, pen+ink.x0)`、`right = max(pen, pen+ink.x1)`で、ascent/descentもink y extentとのmaxを取る。
+    ink insetはglyph origin（`pen = line_x + metrics.inset`）にも効く。fit判定は`width ≤ available + 1e-7`。
+  - `source_ink()`はfont programを読めないsource glyphについて、`trace bbox − trace origin`をinkとして返す（`paragraph.py:159`）。
+  - Courier `AB`でadvanceを両方`7.2`に固定しても、ink x1はsource x=20で`7.200000762939453`、
+    x=100/200で`7.1999969482421875`。target width `14.400000381469727`では2 lines対1 lineになった。
+    **width 14.4ちょうどでも**、x=20だけが2 linesになる。
+  - どのepsilonを選んでもnoise幅のbandが残り、そのband内ではsource位置によってallocationが決まる。
+    したがってtoleranceの調整では閉じない。
+  - 「advanceを揃えれば解決する」という単純化は、このcode/evidenceで否定されている。
+- **Authority A–D:**
+  - A（adjacent trace）のrejectはL1–L3から妥当。
+  - B単独が不十分という評価も妥当。TJ 1.2 pt（=100/1000×12）、Tm 2.8 pt（=30−27.2）、scale時はそれぞれ×0.83で、算術どおり。
+  - Cをcomplete authorityとしないことも妥当。advanceの記録だけではB1-L-Mもcurrent bindingも閉じない。
+  - Dは「preferred direction、未採用」と正しく位置付けられている。retained/newで同じmeasurement ruleを使う方向、
+    traceをlogical authorityへ暗黙昇格しないこと、source positioning intentの保存/確認、font/subset/shaping verificationが未解決であることを明記している。
+- **scope/refusal:** 研究用design/evidence scopeとして妥当。left-only、printable ASCII、1 glyph/codepoint、zero offset、
+  confirmed Tc/Twに限定している。TJ/Tmは`SOURCE_POSITIONING_INTENT_UNRESOLVED`、non-leftは`NON_LEFT_OUT_OF_SCOPE`で明示的に拒否し、
+  「将来対応」として曖昧に残していない。「runtimeが物理gapを保持できる」ことと「intentを確定できている」ことも区別されている。
+- **pure candidate:** exact rationalでgrid snapやtoleranceは使っていない。fresh processで3回とも一致した。
+  advance-only、rich_layout非再現、PDF binding/lifecycleの証明ではない、という点をdocstring・summary premise・§16が明記している。誤昇格はない。
+- **canonicality vs accuracy:** 分離は維持されている。48 savesすべてがaccuracy ≤0.002 pt（最大`1.52587890625e-05`）だが、
+  first/change（両CTM）とscaled growth→noopはcanonicality failureとして扱われている。
+  後続のno-opが安定することをもってB1-Lを閉じてはいない。
+- **paint obligations:** §15.11の5項目は§16.6で失われずに追跡されている（今回は未実装で正しい）。
+
+#### Blocking findings
+
+なし。
+
+#### Non-blocking findings
+
+1. **scaled semantic styleは「ratchet」である。** ctm lifecycleで再構成`font_size`は
+   first `10.920000314712524`→noop1 `10.919999599456787`→noop2 `10.91999888420105`→noop3 `10.919998168945312`→change `10.919997453689575`→change_noop1 `10.919996738433838`と、
+   saveごとに約7.15e-7ずつ**6回連続で単調に減少**し、その後に止まる。horizontal_scaleも同様に増加する。
+   geometryが一致するnoop1→noop2→noop3でも進むので、geometry gateだけでは検出できない。
+   また、firstの値自体がfloat32 CTM由来で、exactな10.92ではない。§16.1の「some geometry-stable no-ops」は控えめな表現なので、
+   次PRでは独立した名前付きblocker（style reconstruction loop）とsemantic gateとして扱うこと。
+2. **spacingの個別結果がdocにない。** summaryには次の結果がある。docの§16.5へ明記すること:
+   - Tz_scaled/Tm_scaledでは、編集なしのfirst→noopでgeometryが不一致（L3）。
+   - Tw（identity）ではsemantic不一致。serializerがTwをresetするため、source Tw intentがfirst saveで物理位置へ変換され、
+     `unconfirmed-source-adjustment`→`none-observed`となる。
+   - scaled 6 caseはすべてsemantic不一致。
+3. **B1-L-Mの適用範囲。** 対象はtrace bbox fallback（unembedded、またはfontToolsで読めないprogram）である。
+   Courierのtrace bboxはadvance box＋float32 noiseにすぎない。embeddedのTT/OTFはoutline boundsなので位置に依存しない。
+   一方、ascent/descentはhheaが上回らない限り、全retained glyphでtrace由来になる。次PRは`bounds_source`別に列挙すること。
+   unembedded base-14については、拒否以外に標準AFM metricsをcanonical sourceにする選択肢も比較すると良い。
+4. **候補の補足。**
+   - (E) PR #19方式のexact operator算術（decimal Tf/Tm/TJ/Widths）でtrace observationを置き換える案は、Dのsource intent入力層として明記すると良い。
+   - (F) write側でfloat32表現可能値へsnapする案は、grid snapとして明示的にrejectしておくこと。
+   - 現在のprovisional scope（TJ/Tm拒否）では、Dのmetric式はBと一致する。Dの差分はintent確認とfont/metric bindingにあることを明示すること。
+5. pure candidateは「positive horizontal metrics」と書いているが、`plan()`は`a < 0`だけを拒否しており、0 advanceを通す。
+   `cell()`もmetric>0を検証していない。zero-offset/単一codepointの検査はevaluatorの`supplied()`にしかなく、`plan()`自体にはない。
+6. evaluatorは`verdict='NOT READY'`を固定値で書いている。gate結果から導出する方が証拠性が高い（PR #36の方式）。
+7. B1-L-Mはread-only probeであり、境界付近でのPDF roundtripではない（PRもそう明記している）。
+   次PRでは、境界付近のfirst→noop roundtripか、新authorityの下での安定性を示すこと。
+8. growth/reflowのno-op比較は1回だけで、×3ではない。
+
+#### 次PRとして妥当な最小scope
+
+**layout measurement / verification design**（design/evidenceのみ。layout/paint runtime変更は含めない）。PR提案の項目に同意する:
+
+- provider-independentなcanonical ink/ascent/descent
+- exact font size/horizontal scale authority
+- current-only font/metric binding
+- source/new mixed measurement
+- metric programを証明できない場合のrefusal
+- TJ/Tm intentのrefusal
+
+これに加えて、以下を扱う:
+
+- N1のstyle ratchetをsemantic gateで閉じること
+- N2のTw intent喪失
+- N3の`bounds_source`別のB1-L-M範囲
+- 両CTMでの境界付近roundtrip
+
+layout runtime implementationへ進むのは、このdesignを独立レビューで通した後に別PRで判断する。paint runtimeはその後である。
