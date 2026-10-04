@@ -15,6 +15,9 @@ semantic decorationは有力な残課題だが、この二段落には移動す�
 `shared_flow.py`の新規confirmは`pdfengine-shared-flow-2`を返し、次を分離する。
 v2のtext source slotは[current outputのownership](source-slot-rewrite-ownership.md#11-実装済みsynthetic-contract--2026-10-03)を持つ。
 既存`pdfengine-shared-flow-1`のopen/editは従来のsource rewriteを維持し、自動upgradeしない。
+1 paragraph・1 owned source slot・1 region・1 body styleのv2だけは、明示的な`semantic_layout.confirm_semantic_layout`
+で`pdfengine-shared-flow-3`（semantic layout state、L1はread-only）を得られる。v2のopen/editは変わらず、
+openしただけでv3になることはない（[L1](anchored-paint-ownership.md#20-l1-runtime-shared-flow-semantic-layout-state--2026-10-04)）。
 
 | データ | 役割 |
 |---|---|
