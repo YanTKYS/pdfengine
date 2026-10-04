@@ -22,6 +22,7 @@ from .editable import _seal
 from .proof_session import proof_session
 from .selection import source_sha
 from .shaped_font import ShapedFont
+from . import semantic_island as island
 from . import semantic_measure as measure
 from . import shared_flow
 from . import source_ownership as owned
@@ -178,10 +179,8 @@ def _registry_binding(state, slot, payload):
     if (F(style['font_size']) != F(str(props['font_size'])) or F(style['horizontal_scale']) != F(str(props['horizontal_scale']))
             or F(style['tracking']) != F(str(props['tracking'])) or F(style['rise']) != -F(str(props['baseline_shift']))):
         raise PdfError('semantic style differs from the confirmed body style')
-    # The only writer that produced the current island emits 0 Tw and no
-    # positioning edges, so such intent is not bound to this revision until L2.
-    if F(style['word_spacing']) != 0 or payload['edges']:
-        raise PdfError('Tw or positioning-edge intent needs the L2 canonical island writer')
+    # Tw and positioning edges are physically carried only by glyph positions;
+    # they are admitted only when the island is the exact canonical body (_island).
 
 
 def _island(source, state, sid, payload, plan):
@@ -214,9 +213,31 @@ def _island(source, state, sid, payload, plan):
                     raise PdfError('island text is not painted with the semantic font asset')
         if [c.text for e in events for c in e.chars] != [g['text'] for g in plan['emitted']]:
             raise PdfError('island text differs from the semantic plan')
-        return dict(body_span=[span[1], span[2]], entry_exit_context=before)
+        canonical = data[span[1]:span[2]] == canonical_body(content, state, sid, payload, plan, events, data[span[1]:span[2]])
+        if (F(payload['style']['word_spacing']) != 0 or payload['edges']) and not canonical:
+            raise PdfError('Tw or positioning-edge intent needs a canonical island written for it')
+        return dict(body_span=[span[1], span[2]], entry_exit_context=before, canonical=canonical)
     finally:
         content.close()
+
+
+def canonical_body(content, state, sid, payload, plan, events, body_bytes):
+    """The exact canonical body this semantic state would have with the island's own alias/codes."""
+    slot = state['slots'][sid]
+    box = [F(str(v)) for v in content.pdf_page.mediabox]
+    if box[0] != 0 or box[1] != 0:
+        raise PdfError('semantic island needs a MediaBox anchored at the origin')
+    try:
+        alias, codes = island.island_codes(body_bytes, events)
+    except PdfError:
+        return None  # not a canonical-form island (e.g. one written before L2)
+    if set(codes) != {g['text'] for g in plan['emitted']}:
+        return None
+    paragraph = state['paragraphs'][slot['paragraph_id']]
+    fill = styles.properties(paragraph['style_registry'][paragraph['logical']['typing_style_id']])['fill']
+    region = _region(state, slot)
+    return island.body(payload['style'], plan['emitted'], alias=alias, codes=codes, fill=fill, page_top=box[3],
+                       origin=(region['x'], region['baseline']))[0]
 
 
 def _verify(source, state):
