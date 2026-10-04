@@ -1334,3 +1334,299 @@ runtime digestは`d22fb048…5dea`のまま。PR #37にはCI check runが設定�
 - 両CTMでの境界付近roundtrip
 
 layout runtime implementationへ進むのは、このdesignを独立レビューで通した後に別PRで判断する。paint runtimeはその後である。
+
+
+## 17. Canonical measurement and current-only verification — 2026-10-04
+
+**Result: NOT READY — DESIGN/EVIDENCE ONLY.** Layout runtime and paint runtime
+remain NOT READY. Starting main is `8f9bf6e9e5288b73046ff0c769fa337cde4c537e`,
+with PR #37 verified merged. Branch: `codex/canonical-measurement-contract`.
+Sections 1–16, their evaluators/summaries and independent reviews are preserved.
+
+### 17.1 Blockers, including two stronger physical counterexamples
+
+| Blocker | Cause, code path and consequence |
+|---|---|
+| M1 / B1-L-M | `ParagraphShaper.source_ink` uses trace bbox minus origin when a program is unavailable. The §16 fixed-advance AB counterexample is reproduced. This fallback cannot be canonical semantic ink. |
+| M2 / **B1-L-V: vertical normalization mismatch** | New glyphs use supplied hhea metrics; retained glyphs use the maximum of trace vertical extents and embedded hhea. Even readable embedded outlines do not remove this provider asymmetry. A synthetic TT font with upem=1000, hhea=600/-200 and width=600 changes ascent/descent from 7.2/2.4 to 9/3 after reopen at 12 pt. Two-line baseline changes from 69.6 to 72, a **2.4 pt no-op displacement**. |
+| M3 / **B1-L-S: semantic style reconstruction loop** | `SourceParagraph` derives size=`Tf*M.d`, horizontal scale=`M.a/M.d*Tz/100`, tracking=`Tc*M.a*Tz/100`, rise=`-Ts*M.d`, where M comes through float32 matrix composition. The serializer applies another float32 inverse/basis transformation, then `_bind_paragraph` accepts close reconstructed values. On scaled saves, size monotonically changes even during geometry-stable no-ops. |
+| M4 / **B1-L-I: spacing intent witness gap** | The paragraph serializer starts with `0 Tw` and positions individual glyphs. Current active glyph positions do not uniquely identify authored Tw versus a confirmed TJ/Tm edge. `_bind_paragraph` retains Unicode/style bindings but no canonical word-spacing intent field. Physical gap equality cannot re-establish that intent. |
+
+The embedded font is synthetic and generated locally, not a substituted system
+font. Its rectangles and hhea deliberately expose the normalization difference.
+Both `provided_outline` and `embedded_outline` have available program bounds;
+the vertical failure is independent of the Base-14 ink fallback. Under scaled
+CTM, first→noop origin displacement is about **1.223999 pt** in this fixture.
+The exact font metrics need not agree with MuPDF's normalized trace advance box.
+That box is a physical observation, not a second semantic line-height authority.
+
+The actual near-boundary PDF roundtrip also strengthens §16's read-only result.
+At source x=100, output target x=20, width **14.399997329711914**, first save
+fits AB on one line; reopen→noop places B on a second line, **16 pt** below.
+The width is the midpoint of measured first/noop widths in the ordinary 14.4
+probe. It is a diagnostic input, not an epsilon correction or a proposed fix.
+At 14.4 and ±0.000001 the actual fixture retains allocation while its ink tuple
+still changes. Thus a boundary probe must record measurements as well as lines.
+
+### 17.2 Bounds-source authority matrix
+
+| Bounds class | Advance | Ink | Vertical / empty-line metrics | Font identity | Current-only verification |
+|---|---|---|---|---|---|
+| A: readable embedded outline | Proven code mapping plus explicit `/Widths`/`/W`; must match selected hmtx authority or carry a separately confirmed override | Program outline under one pinned extraction algorithm, then exact logical scale/rise; never trace-relative bbox | Choose one declared font metric policy, provisionally hhea; include ink y extents once. Explicit empty-line recipe from a designated font/style | Program/instance and used glyph semantics; subset name alone insufficient | Check code→CID→GID/Unicode, widths, upem, hhea, outline and descriptor. Current subset SHA need not equal original asset SHA. |
+| B: supplied known asset | Shaped/nominal integer metrics from the confirmed instance/features | The same asset outline rule as A | Same vertical rule as A, including empty-line recipe | Asset SHA + collection index/variation instance + shaping policy/version | Reprove current subset's used glyph mappings/metrics/outlines against the current asset; do not trust a sidecar path/name alone. |
+| C1: unembedded Base-14 using trace | Position-dependent trace differences | Position-dependent advance-box fallback | Renderer-normalized trace values | Name/resource does not identify an actual renderer program | **Reject as canonical measurement authority.** |
+| C2: unembedded Base-14 using AFM | Pinned AFM widths plus exact source spacing | Pinned per-glyph AFM bounds, if present | Explicit pinned AFM/line metric policy; missing fields must refuse | AFM SHA/version/encoding is a metric identity, not proof of the renderer's substituted outline | Canonical arithmetic is possible, but this experiment has no renderer/program binding or accuracy proof for AFM ink. **Not selected.** |
+| C3: unembedded Base-14 refused | None | None | None | No proven canonical program | **Selected narrow refusal** until a separately verified AFM/renderer policy exists. Courier remains a negative evidence fixture. |
+| D: unreadable/unknown program | Source width alone is insufficient | Unknown | Unknown | Unproven | **FONT_METRIC_AUTHORITY_UNPROVEN**. No promotion of trace data into a logical record. |
+
+The AFM alternative is real: AFM defines character widths and bounding boxes,
+while Ascender/Descender and character bounds can be optional. Missing fields
+therefore require an explicit policy rather than a trace fallback. See
+[Adobe AFM specification §7](https://adobe-type-tools.github.io/font-tech-notes/pdfs/5004.AFM_Spec.pdf).
+AFM supplies metric data; accepting it as proof of an unembedded renderer's
+particular outlines would be an additional assumption, not established here.
+
+The experiment demonstrates a static TrueType rectangle font. It does not
+claim general CFF/cubic extrema, variation instancing, hinting, collection-font
+mapping or arbitrary OpenType shaping proof. Those require a pinned canonical
+algorithm and expanded witnesses, or explicit refusal. A readable program
+avoids M1's trace fallback but does not, by itself, close M2/M3/font binding.
+
+### 17.3 Authority candidates A–F
+
+| Candidate | Decision |
+|---|---|
+| A: current trace authority | Rejected by L1–L3, M1 and M2. Absolute-position-dependent differences/boxes cannot define semantic metrics. |
+| B: nominal/shaped metrics plus spacing | Necessary metric ingredient, insufficient alone. It does not identify spacing intent, guarantee font binding, or select consistent vertical/empty metrics. |
+| C: creation-time logical record | Useful only as a bounded **current** metric/style/intent record. Do not freeze trace boxes or stale absolute coordinates; do not retain a revision history. |
+| D: common logical measurement representation | Preferred structure. Both source and supplied paths lower to the same tuple/rule before layout. With unresolved positioning refused, its metric arithmetic resembles B; its additional obligations are intent confirmation and font/metric binding. |
+| E: exact source operator arithmetic | Preferred source-input layer for D. Decimal Tf/Tm/Tz/Tc/Tw/Ts/TJ and rational CTM arithmetic preserve facts without MuPDF reconstruction. Exact operator facts do not by themselves establish authorial editing semantics. |
+| F: writer-side float32 normalization | Rejected. Snapping logical values to a renderer grid changes semantic inputs, is position/renderer dependent, and does not preserve addition/subtraction. `float32(float32(20)+float32(7.2))-float32(20)` differs from `float32(7.2)`. Hidden repeated saves and first-save exceptions remain forbidden. |
+
+The E experiment parses original **literal decimal tokens**, not
+`Fraction(str(pypdf.FloatObject))`. It has a restricted ASCII grammar for
+q/Q/cm, BT/ET, one font alias, Tf/Tm/Td/Tc/Tw/Tz/Ts and simple Tj/TJ strings.
+It rejects malformed adjacency, escapes/nesting, font switching, unknown
+operators, rotation/shear, missing widths and nonpositive advances. `/Widths`
+and `/W` values enter as separately witnessed rational strings: this is **not**
+a general font-dictionary lexical extractor. All fixture widths are the exact
+integer 600; arbitrary dictionary extraction remains a verification obligation.
+
+### 17.4 Canonical full measurement tuple and coordinate conventions
+
+Provisional logical input, for each current Unicode glyph interval:
+
+```
+semantic_font_identity / instance / shaping policy
+logical glyph identity (not transient PDF code or trace GID)
+font-unit width, upem, outline bounds, selected ascent/descent
+exact page-space font_size, horizontal_scale, rise
+confirmed inline tracking, authored word_spacing_intent
+confirmed positioning edges and boundary policy
+```
+
+Measurement derives a single tuple `(advance, x_offset, y_offset, ink,
+ascent, descent, semantic_style)` using rational arithmetic. Provider is
+ignored by the model. For positive horizontal layout, `sx=size*scale/upem`,
+`sy=size/upem`; font bounds `(a,b,c,d)` become
+`(a*sx, -d*sy+rise, c*sx, -b*sy+rise)` relative to the **line baseline origin**.
+Ascent/descent start at `max(0,hheaAsc*sy-rise)` /
+`max(0,-hheaDesc*sy+rise)`; line measurement also includes the ink y extents.
+It never takes a maximum with a freshly observed trace bbox.
+
+The plan records `baseline_origin` separately from painted `origin`, whose y
+is baseline plus rise. Ink is already rise-shifted relative to baseline; do not
+add rise twice. Tracking and an adjacent-pair edge are suppressed at the final
+painted glyph of a line. A confirmed word-space term applies only to authored
+ASCII space. Trailing logical spaces remain records but are not painted.
+
+Width is the union of advance extents and ink, including left inset/right
+overhang. Next baseline is previous baseline plus the maximum of confirmed
+minimum leading and previous descent plus next ascent. Empty lines use an
+explicit confirmed rational metric recipe produced from a designated current
+font/style, not a nearby trace or an inferred nearest style. Binding that
+nonpainted recipe is part of the open font/empty-style contract.
+
+Scope: left only; printable ASCII, one glyph/codepoint, zero shaping offsets,
+plus explicit newlines. Input glyph metrics require positive width/upem/size/
+horizontal scale; zero or negative resulting advances refuse. Ascent/descent
+may individually be zero but must be nonnegative with positive sum. Zero-size,
+missing metrics, nonfinite/oversized numbers and invalid ink bounds refuse.
+No ink is accepted only for space with `empty_outline_verified`; missing ink
+for a visible character refuses. This model is not Unicode rich_layout, a PDF
+writer, a schema, a sidecar implementation or a runtime verifier.
+
+### 17.5 One-way semantic style authority
+
+At initial confirmation, exact source operands/CTM or explicit user logical
+values define rational page-space size, scale, rise and spacing. Example:
+Tf=12, Tz=100, diagonal CTM .83/.91 gives **size=10.92 exactly** and horizontal
+scale=.83/.91. Ts=2 gives rise=-1.82. With Tz=80 and Tc=.4, tracking=.2656.
+These are not the first float32 observations, which already contain error.
+
+Store the chosen current logical values, font instance/policy and confirmation
+meaning. Source operand witnesses are creation facts, not an accumulating
+history. On reopen, validate the same record against current physical witnesses;
+do not replace its values by inverse calculations from physical matrices.
+CTM belongs to the renderer adapter/coordinate proof. Exact logical values
+flow into placement/serialization; physical measurements flow only into
+verification/accuracy/refusal. A changed CTM/context is a binding change to
+validate or refuse, not permission to reinterpret the logical style.
+
+M3 evidence retains the ratchet sequence approximately
+10.920000314712524 → 10.919999599456787 → 10.91999888420105 →
+10.919998168945312. Equal geometry does not make those semantic values equal.
+Physical resource/style ID renames are excluded from semantic comparison;
+exact numeric representation normalization (0 versus -0, decimal versus
+rational spelling) is permitted, tolerance merging is not.
+
+### 17.6 Spacing intent and positioning edges
+
+Keep authored Tc tracking, authored Tw word spacing, new-text logical tracking,
+nominal space width, current physical gap, justification gap, numeric TJ and
+manual Tm/Td positioning as distinct facts. Justification is outside left-only
+scope. Tw must persist as confirmed logical word-space intent, including its
+application to future inserted spaces; it cannot be recovered from gap size.
+
+Exact lowering identifies source edge deltas without assigning editing intent.
+For `A B` at Tf12/width600, Tw=1.2, a TJ=-100 before B, and Tm x=35.6 before B
+all give the same three exact origins. Their logical intentions differ. This
+proves non-uniqueness of the glyph-position projection, **not** equality of the
+entire PDFs; residual inactive operators may still differ. They are not an
+automatic authority to attach old spacing intent to current active glyphs.
+
+The pure resolved candidate requires explicit confirmation of
+`confirmed-adjacent-pair / suppress-at-line-end`. It stores boundaries, rational
+horizontal delta and that policy. While adjacent on a line the edge survives
+reflow; when split across lines it is suppressed. Deleting either endpoint or
+inserting between them removes the edge. Edits before both endpoints remap
+both indices. Moving/range-splitting across paragraphs has no admitted policy:
+refuse until a confirmed rule exists. Vertical edge deltas, unconfirmed intent
+or nonadjacent endpoints refuse **SOURCE_POSITIONING_INTENT_UNRESOLVED** (or
+an explicit invalid-edge error). No TJ/Tm authorial meaning is inferred merely
+because a source operator or an equal gap is observed.
+
+A current record would be O(current glyphs + styles/fonts + live edges), with
+no stale absolute positions or history array. That logical record prevents
+intent loss in the pure model. Proving its meaning belongs to the current PDF
+still needs the witness contract below; the model's success is not that proof.
+
+### 17.7 Current-only font and semantic verification contract
+
+A future verifier must consume only the current PDF, current logical record,
+current supplied assets and explicit confirmations. It must either establish
+all required correspondences or refuse, without changing the canonical inputs:
+
+1. Bind current paragraph/code ranges and Unicode intervals bijectively,
+   including repeated glyphs, omitted whitespace and empty-style witnesses.
+2. Resolve font resources/descriptor, Encoding/CMap/ToUnicode and code→CID→GID
+   from current objects. A subsetless font name is insufficient.
+3. Identify the current asset/instance by SHA, collection index, variations,
+   upem and pinned shaping features/version. Distinguish embedded program hash
+   from full asset hash: valid subsets legitimately have different bytes.
+4. Compare used outlines, hmtx, selected vertical metrics, PDF widths and
+   descriptor meaning. Reject incompatible widths rather than silently choosing
+   between PDF `/W` and font hmtx. Compare decomposed outlines under one pinned
+   representation; arbitrary glyph numbering is not a semantic identity.
+5. Verify exact logical style and spacing/edge intent through an explicit
+   current semantic witness/confirmation contract. Expected serialized placement
+   and ≤0.002 pt accuracy are necessary but cannot alone prove intent identity.
+6. Verify expected line allocation/baseline/origin/advance relationships and
+   the current rendering context. Mismatch, missing asset/metric program,
+   unsupported shaping or ambiguous association must refuse before publication.
+
+Read-only evidence compares current synthetic PDF code/CID/GID, ToUnicode,
+widths, hmtx, upem, hhea, descriptor metrics and decomposed used outlines against
+the current known asset at first and noop1. Those samples match even though
+subset-program SHA differs from asset SHA. This is **partial witness evidence**,
+not a general binding verifier. The separate symbolic `verification_candidate`
+rejects each of 11 changed/missing witness fields and name-only input; it does
+not authenticate where those input fields came from.
+
+**Open contract:** full association/shaping and nonpainted/empty-style witnesses
+are not closed by the sampled glyphs. More importantly, the exact current
+semantic witness carrying Tw/edge intent has not been selected. Merely adding
+an unchecked sidecar field fails the user's requirement. Next design must
+choose and test either a lossless current PDF semantic witness bound to the
+record, or a separately justified explicit-confirmation authority plus current
+binding. Do not claim that geometry comparison distinguishes Tw from TJ/Tm.
+These are design obligations, not a claim that runtime verifier implementation
+must be included in this PR.
+
+### 17.8 Evidence matrix, gates and accuracy
+
+| Evidence | Coverage / result |
+|---|---|
+| Actual lifecycle | Courier + supplied CJK and embedded + supplied synthetic TT, each identity/scaled. First, change, growth, reflow each followed by noop1/2/3: **64 saves, 60 fresh re-edits**. |
+| Bounds | Trace fallback, provided outline, embedded outline; read-only unknown unembedded program refuses canonical authority; AFM is compared but not adopted. |
+| Style | Combined Tc=.4/Tw=1.2/Tz=80/Ts=2, both CTMs, first→noop×3: **8 saves**. Separate identity Tw first→noop adds **2 saves**. Scaled size/scale ratchet and identity Tw loss remain visible. |
+| Boundary | Below/exact/above nominal 14.4 (scaled 11.952), both CTMs, plus observed noise-band midpoint: **14 saves**. All seven roundtrips saved; noise-band allocation changes. |
+| E operator candidate | Tj, Tc, Tw, Tz, Ts, numeric TJ, manual Tm under both CTMs; exact token arithmetic and explicit unresolved edge semantics. |
+| Full tuple candidate | First/change/growth/reflow × both CTMs × 3 fresh processes = **24 deterministic replays**. Same input produces exact style/tuple/lines/baselines/origins/advances. Boundary, empty-line and rise/spacing probes also recorded. This is not a current-PDF candidate roundtrip. |
+| Edge candidate | Confirmed TJ/Tm pair, insertion/deletion, line-end suppression and Tw distinguished from equal positioned origins; unresolved intent refused. |
+| Verification model | Current used-glyph samples plus 11 independent symbolic witness mutations, missing fields/name-only rejection. Full binding remains unproven. |
+
+Total **88 actual saves**. Maximum planned-to-saved MuPDF origin discrepancy is
+`0.0000152587890625` pt; all 88 pass ≤0.002 pt. However **no-op preservation
+accuracy fails** for the new vertical/boundary counterexamples (2.4/16 pt).
+These gates answer different questions: the writer accurately saves a plan
+that changed incorrectly on a no-op. Do not describe these cases as visually
+stable or use plan-to-saved accuracy to conceal their canonicality failure.
+No new raster equality, Poppler or external-original validation is claimed.
+
+Final verdict is derived from explicit gates, not a fixed label:
+
+| Gate | Status / scope |
+|---|---|
+| exact style authority | PASS for preconfirmed candidate inputs only |
+| ink/vertical authority | PASS for the known synthetic metric program candidate; Base-14/unknown not admitted |
+| font binding | OPEN: partial current glyph samples are not complete association/empty-style proof |
+| spacing intent | OPEN: current persisted semantic witness contract absent |
+| candidate current-only lifecycle canonicality | OPEN: pure replay is not authenticated PDF→record rebind |
+
+`verdict(gates)` returns DESIGN READY only if all five required design gates
+are true. Tests prove that an accuracy PASS cannot override any failed gate.
+Unchanged runtime failures are diagnostic evidence, not by themselves a rule
+that would prevent a design from ever being READY before implementation.
+
+Future acceptance requires exact semantic style, **full** tuple, allocation,
+baselines, planned origins and advances on every same-state lifecycle edge.
+Semantic edits/width changes may change layout; their following no-ops may not.
+Reject unsupported/currently unproven inputs, and separately require placement
+accuracy ≤0.002 pt and no-op preservation. Before claiming READY, demonstrate
+current-only font/intent/empty-style correspondence, including tampering or
+resealing attempts, under the narrowed admitted scope.
+
+### 17.9 Validation and minimum next scope
+
+**27 new design/evidence tests + 94 focused regressions = 121 passed.**
+After the coordinate/grammar refinements, the 22 affected pure/probe tests also
+passed again. The final focused rerun passed all 121 tests; the two strengthened
+style-ratchet tests then passed separately. Full suite: not run. External Windows/LibreOffice original
+validation: not run. Local Windows, Python 3.12.14, PyMuPDF 1.27.2.3.
+Physical saves from `runs/measurement-02` were retained while pure candidate,
+witness and gate summaries were reassessed; no hidden extra save or old report
+was supplied as an input to runtime re-edits. The single clean reproduction
+command runs both layers from scratch.
+
+Runtime digest unchanged:
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+No pdfeditor/, schema, public API, serializer, paint writer or marker parser
+changes. Raw PDFs/fonts/full reports stay ignored; only the separate compact
+[measurement summary](../evaluations/anchors/measurement-authority-summary.json)
+is tracked. [Reproduction](../evaluations/anchors/README.md#canonical-measurement--2026-10-04).
+
+**NOT READY.** Preferred direction is D+E plus a common canonical ink/vertical
+metric rule, with Base-14/unknown refused and F rejected. The newly isolated
+vertical normalization failure and actual boundary roundtrip establish stronger
+consequences than sub-micro-point drift. The next minimal task is **current-only
+semantic witness / font-and-empty-style association design** for the supported
+static-TT subset, with Tw-versus-edge ambiguity and positive/negative binding
+fixtures. It must show that the canonical record survives verified rebind,
+not merely that a JSON plan is deterministic. Layout runtime implementation
+requires that design gate; paint runtime follows separately and remains blocked.
+
+The five paint obligations remain tracked in §15.11/§16.6: ordinary/legacy
+mutation overlap refusal; source-decimal path + exact S creation recipe;
+termination lexical gate; cross-page fixture; unified clip/paint CTM authority.
+This PR does not implement them or create duplicate TODOs.

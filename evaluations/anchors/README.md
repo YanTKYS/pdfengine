@@ -222,3 +222,57 @@ Reviewed head `74309256d620c85079fe676fa02273ad575065a8` (base `b97c6b8…`):
 
 The tracked summary, evaluator and tests are unchanged.
 Details: [docs §16.8](../../docs/anchored-paint-ownership.md#168-independent-review--claude-opus-55).
+
+
+## Canonical measurement — 2026-10-04
+
+Base `8f9bf6e9e5288b73046ff0c769fa337cde4c537e` includes merged PR #37.
+**NOT READY — DESIGN/EVIDENCE ONLY.** Both layout and paint runtime remain NOT READY.
+See [design §17](../../docs/anchored-paint-ownership.md#17-canonical-measurement-and-current-only-verification--2026-10-04)
+and [separate compact summary](measurement-authority-summary.json).
+
+From repository root, using a new work directory:
+
+```powershell
+.venv\Scripts\python.exe -m evaluations.anchors.measurement_observation --work evaluations/anchors/runs/measurement-reproduce --output evaluations/anchors/runs/measurement-reproduce/summary.json
+.venv\Scripts\python.exe -m pytest -q tests/test_measurement_authority_design.py tests/test_rich_layout.py tests/test_spacing.py tests/test_style_confirmation.py tests/test_shaped_font.py
+```
+
+The evaluator creates a deterministic synthetic static TT font, needs no external
+original or Poppler, and uses the unmodified runtime. Re-edit workers consume only
+the current PDF/model/request and assets, never previous reports or a save history.
+Raw PDFs/fonts/full per-stage observations remain ignored. The compact summary
+samples first/last lifecycle glyphs; their full raw observations have SHA digests.
+
+- `physical_observation`: 64 lifecycle saves (four font/CTM cases, first/change/
+  growth/reflow each followed by noop1/2/3), 14 boundary saves, 8 combined-style
+  saves and 2 separate identity-Tw saves. This is 88 actual saves. Source trace
+  ink, embedded vertical normalization, style ratchet and Tw loss are observations
+  of the current runtime, not fabricated candidate output.
+- `logical_authority_candidate`: exact ASCII operator arithmetic, full metric
+  tuple, explicit empty metrics, confirmed adjacent edges and rational left-only
+  layout. Eight semantic records × three fresh processes produce 24 exact replays.
+  Source widths are witnessed rational inputs, not a general PDF dictionary
+  lexical extractor. No PDF writer, runtime replacement, sidecar or schema exists.
+- `verification_candidate`: actual current subset used-glyph metric/outline
+  samples, bounds inventory and a symbolic 11-field mutation model. These do not
+  authenticate complete font, empty-style or spacing-intent association.
+- `gates` / `verdict`: individual design gates derive NOT READY. Model determinism
+  cannot close the three unproven binding/intent/lifecycle gates.
+
+All 88 plan→saved trace origin checks pass ≤0.002 pt, maximum
+0.0000152587890625 pt. This is not a noop-preservation pass: the embedded identity
+fixture moves by 2.4 pt and the boundary noise-band example by 16 pt. Exact
+canonicality is separate from placement accuracy. No rounding or grid correction
+is used to hide these failures. The noise-band width is a diagnostic midpoint,
+not a candidate authority rule.
+
+The checked-in evidence retains the completed physical run `runs/measurement-02`
+while reassessing the pure model, current font witnesses and gates after refinements.
+No hidden normalization save was added. The reproduction command above runs both
+layers from scratch. 27 new tests + 94 focused regressions = **121 passed**;
+22 affected pure/probe tests also passed after refinements. A final focused rerun
+passed all 121; the two strengthened style-ratchet tests then passed separately. Full suite and external
+Windows/LibreOffice original validation were not run. Runtime digest unchanged:
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+PR #36/#37 historical evidence, evaluators and independent review remain intact.

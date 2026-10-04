@@ -1333,3 +1333,39 @@ runtime digest unchanged. Full suite and external original validation not run.
 Next: canonical ink/vertical metrics and exact style/font binding design;
 paint runtime remains blocked. See [§16](anchored-paint-ownership.md#16-b1-l-canonical-layout-authority-evidence--2026-10-04)
 and [summary](../evaluations/anchors/layout-authority-summary.json).
+
+
+## Canonical measurement authority — 2026-10-04
+
+Starting main `8f9bf6e9e5288b73046ff0c769fa337cde4c537e` includes merged PR #37.
+Branch: `codex/canonical-measurement-contract`. **NOT READY — DESIGN/EVIDENCE ONLY.**
+Layout runtime and paint runtime remain NOT READY.
+
+M1 trace ink instability now has an actual near-boundary save→reopen counterexample:
+one line becomes two (16 pt displacement). New M2/B1-L-V evidence shows provided
+versus embedded vertical normalization changes baseline by 2.4 pt despite readable
+outlines. M3/B1-L-S names the scaled semantic size/scale reconstruction ratchet;
+M4/B1-L-I isolates loss of the authored Tw witness. Equal glyph positions cannot
+distinguish Tw from confirmed TJ/Tm positioning intent.
+
+Prefer D common logical full measurement + E exact source operands, with one
+provider-independent ink/vertical rule. Reject trace authority and F float32
+normalization. Base-14/unknown programs refuse the narrow design; AFM remains
+an unbound alternative. Current subset used-glyph witnesses are positive samples,
+not a complete font/empty-style/intent binding contract. Pure exact tuple replay
+is not a candidate PDF lifecycle proof; three design gates remain open.
+
+88 actual saves cover both CTMs, first/change/growth/reflow→noop×3, combined
+Tc/Tw/Tz/Ts, and actual boundary probes. All plan→saved origin checks are ≤0.002 pt
+(maximum 0.0000152587890625 pt), while noop preservation and exact canonicality
+fail. 24 pure fresh-process plans are exact. 121 focused tests passed; full suite
+and external original validation not run. Runtime unchanged, digest
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+
+Next minimal scope: current-only semantic witness and font/empty-style association
+design for static TT, including Tw/edge ambiguity and positive/negative binding
+fixtures. Do not start layout or paint runtime implementation. Existing paint
+obligations remain in §15.11/§16.6, without duplicate TODOs.
+[Design §17](anchored-paint-ownership.md#17-canonical-measurement-and-current-only-verification--2026-10-04),
+[summary](../evaluations/anchors/measurement-authority-summary.json),
+[reproduction](../evaluations/anchors/README.md#canonical-measurement--2026-10-04).
