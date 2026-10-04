@@ -1369,3 +1369,39 @@ obligations remain in §15.11/§16.6, without duplicate TODOs.
 [Design §17](anchored-paint-ownership.md#17-canonical-measurement-and-current-only-verification--2026-10-04),
 [summary](../evaluations/anchors/measurement-authority-summary.json),
 [reproduction](../evaluations/anchors/README.md#canonical-measurement--2026-10-04).
+
+
+## Current semantic binding — 2026-10-04
+
+Starting main `f749bb893ac883e235ce73d5ea1aa2a5bdc1fddd` includes PR #38 and its
+independent review. Branch `codex/current-semantic-witness-binding`.
+**NOT READY — DESIGN/EVIDENCE ONLY.** Layout and paint runtime remain NOT READY.
+
+Three gates now distinguish model determinism, input admissibility and authenticated
+current binding. Compare A intent-encoding owned PDF witness, B external explicit
+confirmation + physical binding, hybrid and exact output expectation alone.
+B is selected for narrow evidence; intent is confirmed, not physically witnessed.
+A random independent test authority represents the trusted caller. Public self-hash,
+PDF hash and marker names cannot authorize a record. Production receipt issuance
+and atomic source-output/Transaction publication remain open as **B1-L-C**.
+
+Nine saved static-TT fixtures and 27 fresh-process current-only rebinds cover repeated
+glyphs, whitespace, empty/default style, Tw, edges, reflow and legitimate GID
+renumbering. Actual PDF font/program/byte-span witnesses are extracted. 30 tamper,
+reseal, copied/foreign, font and physical-program negatives refuse. Tw and edge can
+produce identical PDF bytes: physical-only comparison accepts the swap, independent
+confirmation rejects it. All nine origin-accuracy checks pass ≤0.002 pt, maximum
+0.000006103515630684342 pt; accuracy cannot close the open authority gates.
+
+Next minimal scope: design and test the trusted confirmation/authorized-edit issuance
+state machine and atomic PDF/record/receipt publication boundary, including failure
+injection and no auto-reconfirmation after hash refresh. No runtime implementation
+until that design gate closes. Existing paint obligations remain in §15.11/§16.6.
+Runtime digest unchanged:
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+[Design §18](anchored-paint-ownership.md#18-current-semantic-witness-binding--2026-10-04),
+[summary](../evaluations/anchors/semantic-binding-summary.json),
+[reproduction and tests](../evaluations/anchors/README.md#current-semantic-binding--2026-10-04).
+
+Validation: 29 new design tests + 142 focused regressions = **171 passed**;
+new design tests rerun after final scope checks. Full suite/external validation not run.
