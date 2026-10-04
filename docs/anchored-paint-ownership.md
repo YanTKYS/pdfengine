@@ -1007,3 +1007,224 @@ canonical paragraph layout authority design/evidence（runtime paint実装・tol
 - first→noop×3、change→noop×3、range growth→noop
 - origin/advance/line allocation/semantic styleのexact比較と、glyph accuracy≤0.002ptを別gateとして示すこと
 - N1(iii)のtrace差position依存の扱いを必須とする。text-layout runtime変更が必要なら、別途承認された実装PRへ切り出す。
+
+
+## 16. B1-L canonical layout authority evidence — 2026-10-04
+
+**Verdict: NOT READY. Design/evidence only; no layout or paint runtime implementation.**
+PR #36 was verified merged at `b97c6b8dbba33176f25554ae35618a2ae2568941`, the starting
+main for branch `codex/canonical-layout-authority`. Sections 1–15, including the
+Opus review in §15.11, are historical evidence and remain unchanged.
+
+### 16.1 Root causes and the authority boundary
+
+The complete path is `ContentPage` → `SourceParagraph` → `apply_edits` →
+`ParagraphShaper.shape` → `rich_layout.layout_attributed` → paragraph glyph
+serialization → `_bind_paragraph` → reopened `SourceParagraph`.
+
+| Value / path | Meaning and present behavior |
+|---|---|
+| Font `/Widths` or `/W`, supplied font instance / hmtx / HarfBuzz integers | Potential semantic metric input, provided font identity, instance, shaping policy and source intent are established. A subset resource alias or glyph number alone is not a font identity. |
+| Source `Tf`, `Tc`, `Tw`, `Tz`, `Ts`, `Tm`, numeric `TJ`, CTM | Source positioning facts. Whether spacing is logical inline spacing or a line-specific adjustment requires a scope rule/confirmation. Exact source decimal operands are preferable to reconstructed float32 matrices. |
+| `PaintChar.advance` | `(width/1000*Tf + Tc + (Tw for single-byte space))*Tz/100`, evaluated in binary64. Numeric TJ separately advances Tm by `-TJ/1000*Tf*Tz/100`; it is not in PaintChar.advance. |
+| Retained, left-aligned glyph | Starts from PaintChar.advance times horizontal source matrix. If the next retained unit is on the same source line with consecutive original logical offsets, replaces that advance with the difference of absolute trace origins. At candidate line end removes Tc. |
+| New provider, left-aligned glyph | HarfBuzz advance times size/scale/upem plus confirmed logical tracking, with tracking removed at candidate line end. Source Tw/TJ is not independently represented by this expression. Shaping run boundaries currently depend on retained/new providers. |
+| Trace origin / bbox, physical source line, current glyph ID and resource/style ID | Physical observations/bindings. Serialization, float32 transforms and reflow can change them without a requested semantic change. They must not redefine logical metric authority. |
+| `layout_attributed` | Shapes each candidate slice, trims trailing spaces, considers pen advances **and ink overhang/inset**, and combines ascent/descent for baselines. Width fit currently permits `1e-7`; that is not an exact canonicality comparison. |
+| Serializer | Each glyph receives a Tm; `pymupdf.Point`/Matrix transformations use float32, then operands are formatted with `.12g`. Tw is reset; source adjacency is reconstructed in the resulting program. |
+| `_bind_paragraph` / reopen | Rebinds Unicode offsets to current glyphs, verifies styles with `_close`, reconstructs styles and lines from current physical witnesses, and carries supplied-font recipes. It does not persist a canonical logical advance/ink record. |
+
+L1 is provider transition: at identity offset 3 the following F changes from new
+to retained, switching metric to trace. PaintChar.advance stays
+`7.199999999999999`, while the plan becomes `7.200000762939453`.
+L2 is adjacency/line transition: offset 14's next retained glyph moves onto the
+same source line after reflow; after deleting `FIVE `, offset 3's original
+logical offsets are discontinuous until rebind. Neither requires a new glyph.
+L3 is retained-retained trace instability: offset 16 uses consecutive retained
+trace differences in both stages but changes from `7.200000762939453` to
+`7.1999969482421875` as absolute origins change.
+
+**Additional isolated blocker B1-L-M:** replacing all advances by the same
+constant does not remove physical observation from the rest of layout. The
+unembedded Courier fallback `source_ink` subtracts origin from trace bbox.
+With `AB`, both advances forced to exactly the same Python value `7.2`, the
+measured two-glyph width is `14.400000762939452` at source x=20 and `14.4` at
+source x=100 or 200. Re-layout all three at the **same** target x=20 and width
+`14.400000381469727`: the first breaks into two lines, the others fit one.
+The difference exceeds the existing fit epsilon. No provider transition,
+spacing edit, or font change is involved. This is a read-only shaping probe,
+not a modified runtime writer or a claimed candidate PDF roundtrip.
+
+Vertical metrics also consume trace bbox (plus embedded hhea maxima); the
+present probe proves the ink/width counterexample, not every possible vertical
+failure. A design must choose canonical ink, ascent/descent and empty-line
+metrics as well as advances before claiming stable line allocation/baselines.
+Scale lifecycle additionally shows reconstructed `font_size` and
+`horizontal_scale` drifting separately, even on some geometry-stable no-ops.
+Those exact semantic-value differences are not physical style-ID renames.
+
+### 16.2 Candidate comparison and decision
+
+| Candidate | Evidence / decision |
+|---|---|
+| A: retain adjacent trace differences | **Rejected.** L1/L2 select different branches; L3 is position-dependent even with the same branch. Later no-ops becoming stable does not validate first→noop. |
+| B: nominal/shaped metrics + Tf/Tz/Tc/Tw/tracking | **Insufficient alone.** Numeric TJ fixture adds 1.2 pt to an edge (0.996 under scale); explicit Tm adds 2.8 pt (2.324 under scale). Nominal-only loses these, well beyond 0.002 pt. Source spacing intent must be represented or refused. Canonical advances still leave B1-L-M. |
+| C: creation-time logical geometry record | Useful component if it stores current logical metrics/intent rather than absolute source positions. Freezing observed advances alone preserves observation noise, does not cover ink/style/line-end rules, and does not prove a current PDF matches the record. **Not selected as a complete authority.** |
+| D: source intent + supplied font shaping, lowered to one logical representation | **Preferred direction, not an accepted complete contract.** Both must enter the same provider-independent metric/spacing/ink representation before candidate measurement. The experiment proves only exact arithmetic/determinism of preconfirmed ASCII advance cells. Font/subset equivalence, full measurement and current-only binding are unresolved. |
+
+The provisional D representation contains current Unicode intervals/cluster
+identity, stable font instance identity, metric numerator/upem, logical
+size/horizontal scale/rise, confirmed inter-glyph tracking/word spacing, and
+separate explicit positioning intent. A complete proposal must add canonical
+ink bounds, ascent/descent, shaping features/version and cluster/run boundary
+rules. Every candidate line must apply the same rules irrespective of the
+current retained/new classification. Reflow recomputes origin/allocation;
+source line identity never selects a different advance authority.
+
+A current record is O(current text + current styles/fonts), not an append-only
+history. Delete removes its cells/incident positioning edges; insert constructs
+new cells from a verified current font recipe. No previous PDF/report, old
+absolute x/y, earlier line allocation or hidden normalization save is an input.
+A future binding gate must prove current Unicode/code/outline/width/style and
+current placement against the record. Whole-PDF hashes and self-sealed JSON
+alone do not prove this. An arbitrary logical record cannot authorize unrelated
+paint or silently adopt a changed font. That verifier is **not implemented**.
+
+### 16.3 Explicit narrow scope and refusals
+
+**Left alignment only.** Right/center/justify are outside this authority
+experiment; they have distinct spacing/gap rules in current runtime and need
+separate design evidence. Current runtime support is unchanged.
+
+The pure candidate accepts preconfirmed printable ASCII, one glyph per
+codepoint, zero shaping offsets, positive horizontal metrics, and a supplied
+exact layout region/leading. Retained nominal metrics and new integer shaped
+metrics can both produce the same rational cells. It suppresses tracking at
+line end and omits trailing-space paint while retaining those logical cells.
+Exact rational calculations are not a snap grid. Width changes of 0.000001 pt
+can legitimately change allocation; identical width/input must not.
+
+Tc is admitted only as confirmed inline tracking. Tw needs confirmed logical
+word-space intent; observed line distribution must not silently become typing
+style. Numeric TJ and independent Tm/Td positioning are **explicitly refused
+by the candidate** pending an edge-intent contract. In particular, whether an
+edge survives reflow, is suppressed at line end, or disappears when either
+endpoint is deleted/inserted between is not inferred from nearby geometry.
+The observations retain these cases to demonstrate why B cannot replace them
+silently. Current runtime can preserve their physical gaps; that is not a
+canonical intent contract. Variable line spacing, contextual/ligature shaping,
+multi-codepoint glyphs, arbitrary fonts without a verified metric program,
+rotation/shear, vertical writing and non-left alignment remain outside the
+prototype. This is a research subset, not a declaration that its whole runtime
+implementation is ready.
+
+### 16.4 Semantic comparison
+
+Physical glyph ID, source index/line, resource alias, provider and style ID are
+recorded for diagnosis, never compared as semantic style equality. The
+semantic comparison includes font meaning, size, horizontal scale, tracking,
+rise, fill, and whether word-spacing intent is still unconfirmed. Numeric
+representations such as 0, -0.0 and decimal string "0" normalize to the same
+rational; **distinct values are never rounded together**. Unknown tracking is
+not zero. The controlled fixtures identify Courier/WinAnsi/600 by construction
+and supplied fonts by original asset SHA (including current-sidecar font
+recipes), not by subset prefix. This is a fixture lineage premise, **not a
+general font equivalence proof**; current glyph codes/IDs and physical font
+names remain separate evidence. A production semantic font identity needs
+instance/variation/features and verified subset glyph equivalence.
+
+Raw per-stage rows record offsets, glyph identity/code, semantic font/style,
+provider, source offset/line, next-provider/same-line/continuity, font width or
+integer shaped metrics/upem, PaintChar.advance, Tc/Tw/Tz/Tf, source matrix,
+planned origin/advance, line baseline, ink/ascent/descent and bounds authority.
+Nonpainted logical whitespace offsets are listed explicitly. The observer
+re-shapes each final line and requires exact agreement with its saved plan.
+
+### 16.5 Evidence matrix and gate interpretation
+
+| Matrix item | Actual evidence / acceptance distinction |
+|---|---|
+| retained→retained, new→retained, retained→new/mixed boundary | Identity and scaled initial replacement plus insertion; L1 and L3 named rows retained. Provider classifications are observed, not assumed equal. |
+| consecutive/discontinuous offsets; same/different source lines | Offset 14 first→noop, offset 3 delete→noop; source adjacency recorded before each save. |
+| first→noop1→noop2→noop3 | Fresh processes, current PDF/model/font only; first→noop fails exact geometry in both CTMs. |
+| change/delete→noop1→noop2→noop3 | `FIVE ` deletion; first no-op fails in both CTMs, later plans stable. |
+| active-range growth→noop | Insert ` EXTRA` inside the active underline range; range grows from [0,20] to [0,26]. Identity geometry exact, scaled geometry not exact. |
+| reflow→noop | Explicit width changes from 80 to 65; changed allocation is intentional, following no-op exact in both CTMs. |
+| line middle/end/trailing whitespace | Spacing fixtures use `A B C `; final logical space omitted, last painted glyph uses line-end handling. Tc explicitly confirmed. |
+| near wrap / tiny width changes | Pure candidate and actual `layout_attributed` probes at 14.399999/14.4/14.400001. B1-L-M additionally holds target width fixed while source observation changes. No near-boundary PDF save is claimed. |
+| default / Tc / Tw / Tz / numeric TJ / explicit Tm | Six source programs under each of identity and exact .83/.91 + 7.25/11.5. Each first→noop saved/reopened. |
+| semantic style | Compare actual values after numeric representation normalization; style-ID splits alone cannot cause failure. Scaled size/scale drift remains a failure. |
+| candidate determinism | First/change/growth/reflow preconfirmed logical inputs replayed three times in fresh processes; exact plans match. **Not** a PDF lifecycle/binding proof. |
+| accuracy | Every actual save compares planned origins to saved MuPDF trace via current bound glyph IDs; source spacing additionally compares independent exact-decimal fixture positions to source trace. Bound ≤0.002 pt, separately from exactness. |
+
+The lifecycle evidence comprises 24 saves / 22 fresh-process re-edits; spacing
+adds 24 saves / 12 fresh-process re-edits. All 48 saved-placement accuracy checks
+pass ≤0.002 pt. No raster equality is used to promote a failing exact gate.
+The new evaluator does not run Poppler or LibreOffice. PR #36's dual-renderer
+observations remain historical evidence, not a new validation claim.
+
+Identity first→noop max origin/advance deltas:
+`3.051757815342171e-06` / `3.814697265625e-06` pt.
+Scaled first→noop: `5.320459607105477e-06` / `6.51273876517422e-06` pt.
+Scaled growth→noop: `3.992579877376556e-06` / `4.08664345741272e-06` pt.
+All are **canonicality failures**, despite their accuracy being acceptable.
+Source TJ and manual Tm lose approximately 1.2 and 2.8 pt respectively under B;
+that is a source-intent accuracy failure, independent of fixed-point concerns.
+See the separate [compact summary](../evaluations/anchors/layout-authority-summary.json)
+and [reproduction](../evaluations/anchors/README.md#b1-l-layout-authority--2026-10-04).
+
+### 16.6 Remaining gate and minimum next scope
+
+**NOT READY** is the intended success-B result. No complete authority is
+selected. B1-L-M is a concrete counterexample to advance-only closure, and
+scaled semantic style reconstruction is an additional unresolved input loop.
+Next scope is a small **layout measurement/verification design**: choose
+provider-independent ink/ascent/descent and exact size/scale authority; define
+current-PDF font/metric binding, with refusal when a source metric program is
+unavailable. Reproduce the fixed-advance AB counterexample and source/new mixed
+case under that full representation. Keep TJ/Tm refused unless a current-only
+edge policy is explicitly closed. Only then assess a separate layout runtime
+implementation PR. Paint runtime is not ready.
+
+No `pdfeditor/`, public API, schema, serializer, marker parser or paint writer
+changes. Runtime digest remains
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+The §15.11 future paint obligations remain mandatory: reject ordinary/legacy
+mutation overlap with paint blocks, derive creation recipe from source decimal
+path + exact S, prove termination operator stream = before minus owned block,
+add cross-page runtime fixture, and unify clip proof CTM with paint S authority.
+No duplicate TODO file or implementation is introduced here.
+
+
+### 16.7 Validation
+
+New design tests 17 + existing focused paragraph/rich-layout/spacing/style
+confirmation tests 85 = **102 passed**. After tightening semantic numeric
+representation normalization, the six affected pure candidate/style tests
+passed again. The final evaluator also requires its re-shaped advance to
+match each actual report exactly. Full suite: not run (design/evidence scope).
+External Windows/LibreOffice original validation: not run. The evaluator and
+focused tests ran locally on Windows, Python 3.12.14 / PyMuPDF 1.27.2.3.
+
+
+Future design acceptance gates (not yet passed as a whole):
+
+- Same semantic input must reproduce exact origins, advances, allocation,
+  baselines and semantic styles for **every** no-op edge in §16.5, including
+  first/change/growth. A changed width/edit is compared only to its own next
+  no-op, not required to retain the preceding allocation.
+- A provider-independent full measurement tuple (advance, offset, ink,
+  ascent/descent) must close B1-L-M at both near-boundary widths and both CTMs.
+  A source without a provable canonical metric source must be refused rather
+  than silently importing a fresh trace box into that tuple.
+- Source intent accuracy and planned-to-saved placement must separately meet
+  ≤0.002 pt. Current-only font/style/Unicode/position binding must fail on
+  changed witnesses even if a sidecar is resealed. General binding is still
+  unimplemented and unproven in this experiment.
+- Unconfirmed positioning intent, unsupported shaping and non-left alignment
+  must be explicit scope refusals in that future proposal; no fallback to A.
+
+Measured maximum saved-origin discrepancy across the 48 saves is
+`0.0000152587890625` pt. Maximum independent source-decimal fixture discrepancy
+is `0.0000053405761732960855` pt. Both pass the accuracy bound and neither
+alters the NOT READY canonicality verdict.

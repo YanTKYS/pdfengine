@@ -148,3 +148,55 @@ originals were not run. No blocking findings. Non-blocking notes cover:
 
 The tracked summary, evaluator and tests are unchanged.
 Details: [docs §15.11](../../docs/anchored-paint-ownership.md#1511-independent-review--claude-opus-55).
+
+
+## B1-L layout authority — 2026-10-04
+
+Base `b97c6b8dbba33176f25554ae35618a2ae2568941`, PR #36 merge verified.
+**NOT READY.** This adds independent layout design evidence; the PR #36
+paint contract, summary and review remain unchanged.
+
+```powershell
+.venv\Scripts\python.exe -m evaluations.anchors.layout_observation --work evaluations/anchors/runs/layout-authority-reproduce --output evaluations/anchors/runs/layout-authority-reproduce/summary.json
+.venv\Scripts\python.exe -m pytest -q tests/test_layout_authority_design.py tests/test_rich_layout.py tests/test_spacing.py tests/test_style_confirmation.py tests/test_attributed.py
+```
+
+Use a new work directory. On other platforms use that environment's Python;
+this evaluator has no Poppler/Windows path dependency. It reuses the prior
+synthetic Courier and supplied CJK font fixture. No external documents/fonts
+are committed. Raw per-stage reports and `physical-observations.json` record
+all glyph metrics/provider/source adjacency and semantic/physical style
+separately. `layout-authority-summary.json` is the separate compact evidence.
+
+`physical_observation` contains actual unmodified runtime save/reopen evidence
+and explicitly labeled read-only layout probes. `logical_candidate` is a pure
+preconfirmed ASCII advance-cell experiment: fresh processes receive only the
+current record. It does **not** bind a PDF, implement rich_layout, prove subset
+font equivalence, or certify a runtime fixed point. Rational cells include
+source nominal widths and actual supplied-font integer shaped metrics, with
+tracking/word spacing distinct. No snapping, hidden save or tolerance-based
+canonical comparison is performed. Physical observations never feed this
+candidate as a reopened layout authority.
+
+48 saves: 24 lifecycle (22 fresh re-edits) and 24 spacing (12 fresh re-edits).
+24 lifecycle stages cover first/change→noop1/2/3, deletion, active-range growth
+and explicit width reflow under identity and .83/.91 + translation CTMs.
+Spacing cases cover default/Tc/Tw/Tz/TJ/Tm plus trailing whitespace under both
+CTMs. Accuracy compares actual planned origins to saved trace via bound IDs,
+and source positions to independent decimal fixture oracles; no raster checks
+are run by this evaluator. The fixed-advance ink probe demonstrates a change
+in actual `layout_attributed` wrapping at one fixed target width, despite
+identical advances. The three nearby width inputs are separate semantic inputs.
+
+17 new design/evidence tests + 85 existing focused tests = **102 passed**;
+6 affected pure tests rerun after semantic numeric normalization also passed.
+Final evidence: `runs/layout-authority-04/summary.json` copied to the tracked
+summary; earlier local runs were evaluator development, not normalization saves.
+Runtime digest remains
+`d22fb0482e25e3d9a37bdce05bf9a3447f7aa331e684410b8d8dea5ca1f35dea`.
+Full suite and external Windows/LibreOffice original validation not run.
+
+[Design §16](../../docs/anchored-paint-ownership.md#16-b1-l-canonical-layout-authority-evidence--2026-10-04)
+compares A–D, defines left-only scope, semantic comparison, unresolved
+source intent/font/ink authority and the minimum next design task. Future
+paint obligations remain tracked in §15.11.
