@@ -1522,3 +1522,20 @@ existing entry is refused, never replaced. Failures before the rename leave the 
 staging directory removed. Published bytes equal the candidate bytes, and no sidecar field is rewritten. Tests: 41
 new; full suite 1,546 passed / 21 environment skips / 0 failed (no new skips). A directory sync failure after a successful public reopen is a named late failure (`PublishedSyncError`, bundle public and verified); a withdrawal always reports its quarantine path. Runtime digest `c6252fa73f5e37e8de61fa36b990e04c67d6d72b039b488a988e356488c0e3d4`. **L3 COMPLETE.** Paint runtime NOT READY.
 [L3 details](anchored-paint-ownership.md#22-l3-runtime-atomic-semantic-bundle-publication--2026-10-05).
+
+
+## L1–L3 integrated semantic lifecycle — NARROW SEMANTIC LIFECYCLE VALIDATED — 2026-10-05
+
+From main `5e83d0f6703db14b7e74f0dc832c13877289f182` (PR #44). The full lifecycle runs on the existing runtime APIs
+only: confirm, edit, style/font/Tw reinterpretation, no-op, publish bundle A, bundle A as the next input, edit,
+Tw→edge, font back, no-op, publish bundle B. It includes fresh-process reopen and a restart from disk only.
+Results:
+- Owner identity, caller-confirmed authority and creation evidence carry across revisions.
+- Old bundles stay byte-identical, and candidate bytes equal published bytes.
+- Cross-revision mixes, stale owner/semantic/font records and tampered bundles refuse.
+- A 15-step lifecycle is bounded (no history, no operator growth).
+
+One runtime bug was found and fixed: a rewrite's Transaction area did not cover removed old ink outside MuPDF's
+renderer box (font overshoot under Tz). The writer now plans the exact removed ink. Tests: 47 new; full suite 1,593
+passed / 21 environment skips / 0 failed. Runtime digest `dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`. Paint runtime NOT READY.
+[§23](anchored-paint-ownership.md#23-l1l3-integrated-lifecycle-validation--2026-10-05).

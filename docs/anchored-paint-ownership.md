@@ -3231,3 +3231,19 @@ handle into staging is open at the rename and none into the bundle afterwards (c
 `open_semantic_flow`), which is the precondition for a Windows directory rename. This is not a Windows execution;
 Windows behaviour is not claimed as verified. External Windows/LibreOffice validation was not run (no prepared
 single-owned-slot target; not required for this lifecycle).
+
+### 23.7 Validation and verdict
+
+`tests/test_semantic_lifecycle.py`: 47 passed. Focused suites (lifecycle, semantic layout, writer, authority,
+publication, generated fonts, source ownership, shared flow): 329 passed. Full suite (whole `tests/` tree,
+pytest-xdist 4 workers, `--dist loadfile`, Python 3.12.3 on Linux): **1,593 passed, 21 skipped, 0 failed**
+(PR #44: 1,546 + 47 new). The skips are the same 21 environment-only skips (Windows Arial / Noto Sans JP 11, AES
+provider 2, external corpus 5, Windows-path Poppler 3); none is new, no existing test changed. Runtime digest
+(SHA-256 over sorted `pdfeditor/*.py` name + NUL + bytes): `dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e` (PR #44: `c6252fa7…`; the only runtime change is
+the §23.4 writer fix).
+
+**Verdict: NARROW SEMANTIC LIFECYCLE VALIDATED.** Published bundles serve as the next revision's input across
+revisions without breaking semantic authority, physical ownership, creation evidence or the publication boundary,
+within the stated narrow scope. This does **not** mean general PDF editing, multi-slot/multi-paragraph support or
+paint runtime readiness. Paint runtime remains NOT READY. Remaining scope (not started): external Windows/LibreOffice
+validation of a prepared single-owned-slot target, any scope expansion, paint runtime.
