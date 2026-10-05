@@ -3142,3 +3142,92 @@ writers are unchanged.
 
 Out of scope and not started: paint runtime (NOT READY), multi-paragraph/multi-slot, region contracts, asset
 packaging/archives, revision databases, undo/autosave, concurrency, network or cloud publication.
+
+## 23. L1–L3 integrated lifecycle validation — 2026-10-05
+
+Starting main `5e83d0f6703db14b7e74f0dc832c13877289f182` (PR #44 merged: L3 COMPLETE). §20–§22 are preserved.
+Objective: run L1 (state/verifier), L2 (canonical writer + current style/font authority) and L3 (publication) as one
+runtime lifecycle, using **published bundles as the next revision's only input**, and fix only what reproduces.
+Scope is unchanged (one paragraph, one owned slot, one region, one body style, static TT, A/B/space/newline, ≤256
+characters, left, default context, semantic record version 2, local bundles). No new API, authority, session
+manager or history store; only `confirm_semantic_layout`, `open_semantic_flow`, `plan_semantic_transition`,
+`build_semantic_candidate` and `publish_semantic_bundle` are used. Paint runtime remains NOT READY.
+
+### 23.1 Lifecycle (`tests/test_semantic_lifecycle.py`)
+
+```
+rev1 (v2) ─confirm→ "A B" 12pt A ─edit→ "AA B" ─E→ 13pt, tracking 1/4 ─E→ font B ─E→ Tw 6/5 ─save→ r5
+r5 ─publish→ bundle-A ─(bundle-A/document.pdf + shared-flow.json as input)→ save (no-op) │ edit "AA B A"
+   ─E→ Tw 0 + edges on both spaces ─E→ font A ─save→ r9 ─publish→ bundle-B ─fresh process reopen
+```
+
+| Check | Result |
+|---|---|
+| Current state per revision | Every revision (12 incl. both bundles) reopens `restored` with the exact text, size, tracking, Tw, edges, font SHA, provider and provenance expected for it; all candidates are canonical. |
+| Published bundle as next source | `build_semantic_candidate(bundle-A/document.pdf, bundle-A/shared-flow.json, …)` produces the next revisions; no staging copy or candidate path is used. A copy of bundle A in another directory opens and produces the same next body (path independence: `pdf_sha256`, owner witness, generated fonts, binding, registry, provider and island are path-free). |
+| Restart simulation / fresh processes | Bundle A and bundle B reopen in a new process with the same payload, authority and owner. A new process opens bundle A, plans the edit (class D, exact diff) and builds the candidate from disk only; its body and semantics equal the in-process revision. |
+| Immutability | Bundle A is byte-identical after five candidates and bundle B were built from it, after every failure test and after tampering copies. Destinations are distinct (`bundle-A`, `bundle-B`). |
+| Byte identity | Candidate PDF/sidecar = published PDF/sidecar for r5→A and r9→B; the publication SHA-256 equals the candidate's. |
+| No-op across publication | Owned body r4 = r5 (no-op) = bundle A = a no-op candidate from bundle A, same operator count; r8 = r9 = bundle B. |
+| Owner continuity | `marker_id` and `created_from` are identical in every revision; at every revision the stored `current` equals the witness recomputed from that revision's PDF, `pdf_sha256` equals the file SHA and the semantic binding names the same block; each semantic change has a new witness. |
+| Authority continuity | `source-confirmed` until the first explicit style change; `caller-confirmed-current-semantic` from then on, through a later text edit, no-ops and two publications (13 pt / 1/4 never return to 12 pt / 0). |
+| Creation evidence | Registry (attributes, observations, provider A, relation), `source_model_sha256`, `source_snapshot_sha256`, `created_from` and `contract_sha256` equal the original v2 values in all revisions. |
+| Font | A → B (bundle A, later edit) → A (bundle B): current provider and the single generated record (`/PRF1`) follow; the registry stays A. |
+| Tw / edge | Tw 6/5 published in A; Tw→edges (both spaces) gives the same owned body and pixels with distinct semantic records; edges published in B. |
+| Provider asset | A bundle whose current provider asset is removed refuses to open or edit; restoring the same bytes at the recorded path restores it. No packaging. |
+
+### 23.2 Multi-revision negative evidence and failure isolation
+
+- Mixed pairs `A.pdf + B.json` and `B.pdf + A.json` refuse in `open_semantic_flow`, `build_semantic_candidate` and
+  `publish_semantic_bundle` (no destination created).
+- Bundle B resealed with bundle A's `source_output.current`, semantic record, semantic record with B's binding forged,
+  current authority only, `generated_fonts` or slot binding: all refuse.
+- Creation evidence tampered after the twelfth revision (attribute, provider SHA, observations, `created_from`,
+  `source_model_sha256`, `source_snapshot_sha256`): all refuse.
+- A copy of published bundle A with appended PDF bytes, an unsealed sidecar edit or a resealed semantic edit cannot be
+  planned or edited; publication is not trust.
+- Injected failures while building from bundle A (plan, serializer, Transaction commit, owner rebind, semantic bind,
+  candidate reopen): bundle A byte-identical, no candidate left.
+- Publication of B failing at staged verification or at the rename: no destination, bundles A and B byte-identical.
+- Public-reopen failure: the destination does not exist, the quarantine is not adopted (building from the
+  destination path fails; the quarantine name is refused as a destination).
+- `PublishedSyncError`: `.result` names a public, verified bundle byte-identical to B; it is used as the next source
+  and edits successfully.
+
+### 23.3 Boundedness
+
+A 15-step mixed lifecycle from bundle B (save, edit, save, scale, save, Tw, save, edge, save, font B, save, font A,
+three saves) reopens every step canonical with the same marker, caller-confirmed authority, the version 2 key set and
+unchanged creation evidence, then publishes and reopens in a fresh process. The trailing no-ops have identical PDF
+size, sidecar size, owned-body size and operator count and an identical sidecar structure; the font change before
+them has the same body and operator count. There is always exactly one generated font record; the sidecar's
+top-level keys never grow and `previous_model_sha256` is one digest, not a list. Sizes follow the text, not the
+revision count (an exploratory 16-step chain kept the PDF at 4.0–4.1 KB, 17 xref objects and three page fonts).
+
+### 23.4 Runtime bug found and fixed (one)
+
+The long lifecycle reproduced a fail-closed liveness bug in the L2 writer. A rewrite planned its Transaction pixel
+area as `resolved.bbox ∪ new ink`, where `resolved.bbox` is MuPDF's renderer box of the **old** glyphs. That box
+uses normalized ascender/descender (0.75/0.25 em) and, under `Tz`, a horizontally scaled size: for font B at 13 pt
+with `80 Tz` it ended at y 192.2 while font B's outline (700/1000 em, above its 600 ascent) reaches y 190.9.
+Removing it changed pixels outside the planned area, so `Transaction` refused a legitimate transition (minimal
+reproduction: font B → 13 pt + scale 4/5 → font A; the same switch at scale 1 passed only by antialiasing margin).
+Fix (`semantic_writer.py`, nothing else): the planned area also covers the **exact ink of the island being replaced**,
+derived from the verified current semantic state and its current asset (the same outline formula as the new ink,
+now one helper `_ink_rects`). The pixel check, foreign-glyph/paint/font checks and obstacle checks are unchanged;
+only removed ink is added to the planned area. Regression test:
+`test_removed_old_ink_beyond_the_renderer_box_is_inside_the_planned_area` (fails before, passes after).
+
+### 23.5 Raster
+
+MuPDF 144 dpi: no-op and publication identical (r4 = r5 = bundle A; r8 = r9 = bundle B); Tw → edge identical; every
+semantic change differs. Poppler 24.02 (`pdftoppm`, 144 dpi): r4 = r5 = bundle A, r9 = bundle B, A ≠ B.
+
+### 23.6 Windows (static) and external validation
+
+Publication code was reviewed for Windows paths: directory fsync is skipped on `nt`; staged files use `open('xb')`
+and `os.fsync`; an existing destination makes `os.rename` raise before publication (cleanup path). On Linux, no file
+handle into staging is open at the rename and none into the bundle afterwards (checked through `/proc/self/fd` after
+`open_semantic_flow`), which is the precondition for a Windows directory rename. This is not a Windows execution;
+Windows behaviour is not claimed as verified. External Windows/LibreOffice validation was not run (no prepared
+single-owned-slot target; not required for this lifecycle).
