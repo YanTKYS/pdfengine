@@ -2883,7 +2883,7 @@ while the immutable source witnesses stay as creation evidence. Until then the w
 
 L3 publishes a verified candidate pair (`document.pdf` + `shared-flow.json`) through private staging, one new bundle
 directory and one rename, with the PR #40 failure matrix and an end-to-end public reopen. It adds no latest/current
-pointer.
+pointer. *(Later: §22 implements this boundary; L3 COMPLETE.)*
 
 ### 21.8 B-L2-S resolution — current semantic style/font authority — 2026-10-04
 
@@ -3018,3 +3018,127 @@ authority is explicit, current physical binding is verified, unauthorized drift 
 **Remaining L3 scope.** Verified candidate PDF + verified shared-flow-3 sidecar → private staging → one complete new
 bundle directory → one rename → public reopen, with the PR #40 failure matrix and no latest/current pointer. Not
 implemented here. Paint runtime remains NOT READY.
+
+## 22. L3 runtime: atomic semantic bundle publication — 2026-10-05
+
+Starting main `14f651579fdb1a3c4f09c7d0a923f014adb32717` (PR #43 merged: B-L2-S CLOSED, L2 COMPLETE). §19 (design)
+and §21 (L2) are preserved. L3 implements the §19.7 selected contract for the L2 candidate pair. It is a publication
+**boundary**, not a new authority: it does not re-seal, rebind or reinterpret anything, and it does not re-implement
+semantic verification. Paint runtime remains NOT READY.
+
+### 22.1 Runtime surface
+
+`pdfeditor/semantic_publication.py`: `publish_semantic_bundle(pdf, sidecar, destination)` returns `{directory, pdf,
+sidecar, sha256, verification}`. `verification` is the public reopen evidence: `status` (always `restored` on
+return), `slot_id`, `version`, `semantic`, `authority`, `owner`, `island`. The bundle has two fixed children,
+`document.pdf` and `shared-flow.json` (the L2 candidate names). The directory is a container, not a third artifact:
+there is no manifest, receipt, index, history or latest pointer. The caller chooses the destination name; nothing
+else names revisions. No L1/L2 module changed.
+
+### 22.2 Publication contract
+
+```
+destination: new name, parent is an existing non-symlink directory, nothing at the name (lexists)
+read candidate PDF + sidecar bytes once
+staging = mkdtemp(prefix=".pdfengine-staging-", dir=parent)          same parent ⇒ same filesystem
+write document.pdf, shared-flow.json  (open "xb", write, flush, fsync, close); fsync(staging dir)*
+open_semantic_flow(staging/document.pdf, staging/shared-flow.json) == restored
+staged bytes still equal the read bytes (SHA-256); destination still absent
+os.rename(staging, destination)                                      the single publication step
+open_semantic_flow(destination/document.pdf, destination/shared-flow.json) == restored   right after the rename
+published bytes equal the verified staged bytes
+fsync(parent)*                                                       durability, after verification
+→ success
+(* where the platform can open directories; skipped on Windows)
+```
+
+- **Trust boundary (TOCTOU).** The bytes that are verified are the staged bytes, and the same directory is renamed.
+  A change to the candidate file after it was read cannot reach the bundle. A change to the staging files after
+  verification refuses.
+- **Verification is delegated.** Staged and public checks are both the unchanged `open_semantic_flow` (integrity,
+  scope, creation evidence through the v2 validator, owner witness, semantic/current authority, canonical island,
+  generated-font subset/provider binding, provider asset SHA). Each call is its own outermost proof session, so the
+  public reopen shares no cached evidence with the staging check.
+- **No rewrite.** Published bytes equal staged bytes, which equal the candidate bytes. `pdf_sha256`, the owner
+  witness, the authority, the source registry, provider paths, generated-font records and the semantic binding are
+  untouched. The L2 sidecar holds no candidate-directory path (only the provider asset path), so the pair is
+  relocatable as-is. Assets are not packaged: a missing or changed provider asset is refused by the existing
+  validator.
+- **Immutable destination.** An existing file, an empty or non-empty directory, a previously published bundle, or a
+  destination that appears during publication is refused; nothing at that name is replaced, moved or deleted.
+  Re-publishing the same bundle to its own name refuses. Names starting with the staging/withdrawn prefixes are
+  refused.
+- **Failure before the rename** (PDF write, sidecar write after the PDF, directory sync, verification, tampering,
+  stale owner, authority/semantic mismatch, generated-font binding mismatch, collision, the rename itself, any other
+  exception): the public namespace is unchanged and the staging directory is removed. If that cleanup fails, the
+  original exception is raised with a note naming the private leftover; the leftover only ever has the staging
+  prefix.
+- **Failure after the rename.** The public reopen is part of success. If it is not `restored`, raises, or the
+  published bytes differ, the bundle is **withdrawn by one rename** to `.pdfengine-withdrawn-<name>-<random>` in the
+  same parent, kept intact (not deleted) for inspection, and `PdfError` names that path. If the withdrawal rename
+  also fails, `PdfError` states that the public path is **not a verified bundle**. Success is never returned for a
+  bundle that did not reopen. This narrows §19.6 S9 ("a late reporting error leaves the complete new pair"): a
+  failed public reopen is not a reporting error but a bundle that does not verify, so it does not stay public. Since
+  the bytes are identical to the verified staging pair, such a failure means the environment changed between the
+  two checks (for example the provider asset). Readers that open it during that window get the same refusal from
+  `open_semantic_flow`.
+- **Every state after the rename is named** (review follow-up on PR #44). The public reopen runs immediately after
+  the rename; the parent directory sync runs only afterwards, so semantic verification and directory durability are
+  separate outcomes:
+
+  | After `os.rename(staging, destination)` | Outcome |
+  |---|---|
+  | reopen `restored`, bytes equal, parent sync OK | success, result returned |
+  | reopen `restored`, bytes equal, parent sync fails | `PublishedSyncError` (a `PdfError`): the **verified, complete bundle is public** at the destination; `.result` is the full publication result; durability is not confirmed. It is not withdrawn. |
+  | reopen fails or bytes differ; withdrawal rename OK; sync OK | `PdfError` "withdrawn to `<quarantine>`" |
+  | reopen fails; withdrawal rename OK; sync fails | `PdfError` "withdrawn to `<quarantine>`; the directory sync after the withdrawal failed" (the quarantine path is still reported, the destination is free) |
+  | reopen fails; withdrawal rename fails | `PdfError` "`<destination>` is NOT verified and could not be withdrawn" |
+
+  Power-loss durability stays outside the guarantee; a sync failure never turns a verified bundle into an
+  unverified one, and an unverified bundle is never reported as success.
+
+**Scope (unchanged from §19.7).** This is exception atomicity of the public pair on one local filesystem with an
+exclusive publisher. It is not concurrent-publisher locking, power-loss/OS-crash durability or secure deletion. One
+POSIX caveat is recorded: `rename(2)` replaces an *empty* directory that another process creates in the instant after
+the final existence check; the exclusive-publisher assumption excludes that race (Windows `os.rename` refuses any
+existing destination). Python's standard library has no no-replace rename. Windows behaviour was not executed here;
+the operations used (`mkdtemp`, `open('xb')`, `fsync` on files, `os.rename` of a closed directory, `rmtree`) are
+the ones §19.7 selected for Windows, and directory fsync is skipped there.
+
+### 22.3 Evidence (`tests/test_semantic_publication.py`, 41 tests)
+
+| Area | Result |
+|---|---|
+| Happy path | L2 candidates (save, 12→13 pt, font A→B) publish. Exactly **one** `os.rename` runs, from `.pdfengine-staging-*` in the same parent to the destination. `open_semantic_flow` runs on the staged pair, then on the public path, never on the candidate path. The final directory holds exactly `document.pdf` and `shared-flow.json`, and the result reports `restored`. |
+| Bytes | Staged bytes (captured at the rename) = public bytes = candidate bytes for the PDF and the sidecar. The sidecar is JSON-identical, the candidate is unchanged, and the provider path is unchanged. |
+| Fresh process | Published save, size and font bundles reopen `restored` and canonical in a new Python process, with the same payload and authority. |
+| Collision | An existing bundle, empty directory or file at the destination is refused, and every byte under the parent is unchanged. Re-publishing a bundle to its own name is refused. A destination created after verification is refused. Reserved and invalid names are refused, and a missing parent is refused. |
+| Staged verification (before the rename) | Each of these is refused: PDF bytes tampered; PDF tampered with every SHA in the sidecar resealed; sidecar edited without a reseal; stale owner witness; authority flipped to source-confirmed; unrequested tracking; generated-font binding subset; generated-font record provider; source registry attribute; missing provider asset. Tampering inside staging is refused. A staging change after verification is refused. A candidate changed after it was read does not reach the bundle. In every case the parent stays empty. |
+| Failure injection before the rename | Failures injected at the PDF write, the sidecar write (after the PDF), the directory sync, verification and the rename itself all leave the parent equal to its previous contents, with an existing bundle intact and no staging left. A cleanup failure keeps the original exception and adds a note, and only a staging-prefixed private leftover remains. |
+| After the rename | A failed public reopen withdraws the bundle by one rename into quarantine (both files kept) and raises an error naming the quarantine path. The public path is confirmed to be the one reopened. If the withdrawal also fails, an explicit "NOT verified" error is raised. Public bytes changed right after the rename are withdrawn, not reported as success. |
+| Directory sync after a rename (review follow-up) | When the parent sync fails after the publish rename, the public reopen has already run, so the result is `PublishedSyncError`. It carries the `restored` result, and the bundle stays public, complete, byte-identical and reopenable. When the withdrawal rename succeeds but its sync fails, the error still names the quarantine, the destination is free, and both files are kept. On the reviewed head `ea7800d`, both cases escaped as a raw `OSError`, before the public reopen and without the quarantine path respectively. |
+
+Mutation check: disabling the staged-verification test fails 12 tests, and skipping the public reopen check fails 2.
+
+**Validation** (after the review follow-up, `8bb8245`). Full suite (whole `tests/` tree, pytest-xdist 4 workers,
+`--dist loadfile`, Python 3.12.3 on Linux): **1,546 passed, 21 skipped, 0 failed** (PR #43: 1,505 + 41 new; first
+L3 commit: 1,544). The skips are the same 21 environment-only skips (Windows Arial / Noto Sans JP 11, AES provider 2,
+external corpus 5, Windows-path Poppler 3); none is new. Windows and external renderer validation were not run.
+Runtime digest (SHA-256 over sorted `pdfeditor/*.py` name + NUL + bytes): `c6252fa73f5e37e8de61fa36b990e04c67d6d72b039b488a988e356488c0e3d4` (PR #43: `45e6913d…`; the only
+runtime change is the new `semantic_publication.py`).
+
+### 22.4 L3 verdict
+
+**L3 COMPLETE.** The full path runs on real files:
+
+1. an L2 verified candidate is read once;
+2. it is placed in a private staging directory in the destination parent;
+3. the staged pair passes a fresh `open_semantic_flow`;
+4. the complete directory is published by one rename;
+5. the public bundle passes a fresh reopen from its public path, in this process and in a new process.
+
+There is no partial public pair on any tested failure, no overwrite, and no sidecar rewrite. L1/L2 validators and
+writers are unchanged.
+
+Out of scope and not started: paint runtime (NOT READY), multi-paragraph/multi-slot, region contracts, asset
+packaging/archives, revision databases, undo/autosave, concurrency, network or cloud publication.
