@@ -1509,3 +1509,16 @@ validator still checks the source registry; only `validate_fragment` sees an in-
 A→B→A candidates reopen in a fresh process, and no-ops are byte- and pixel-stable (MuPDF and Poppler). Tests:
 70 new, 2 PR #42 blocker tests retargeted to version 1; full suite 1,505 passed / 21 environment skips / 0 failed. Version 1 keeps its legacy rise sign (rise = −baseline_shift); a nonzero legacy rise is not upgraded to version 2. Runtime digest `45e6913da2b5cb4da385aee3f2de71c0ade6b0a46dc977994edceaf1fd32fd50`. **L2 COMPLETE.** Next: L3 publication. Paint runtime NOT READY.
 [B-L2-S resolution](anchored-paint-ownership.md#218-b-l2-s-resolution--current-semantic-stylefont-authority--2026-10-04).
+
+
+## Semantic bundle publication L3 — L3 COMPLETE — 2026-10-05
+
+From main `14f651579fdb1a3c4f09c7d0a923f014adb32717` (PR #43). `semantic_publication.publish_semantic_bundle(pdf,
+sidecar, destination)` reads the L2 candidate pair once and stages exactly those bytes in a private directory in
+the destination parent. It verifies the staged pair with the unchanged `open_semantic_flow`, publishes the complete
+directory with one rename, and reopens it from the public path. A failed public reopen withdraws the bundle by one
+rename to private quarantine and raises an error; success is never reported. Destinations are immutable: an
+existing entry is refused, never replaced. Failures before the rename leave the public namespace unchanged and the
+staging directory removed. Published bytes equal the candidate bytes, and no sidecar field is rewritten. Tests: 39
+new; full suite FULLSUITE_PLACEHOLDER. Runtime digest `DIGEST_PLACEHOLDER`. **L3 COMPLETE.** Paint runtime NOT READY.
+[L3 details](anchored-paint-ownership.md#22-l3-runtime-atomic-semantic-bundle-publication--2026-10-05).
