@@ -3001,13 +3001,15 @@ the rise sign contract above, with three tests on a source with Ts 1 (`tests/tes
 fixture): the version 1 nonzero-shift bundle reopens; version 2 source-confirmed rise −1 holds and saves physically;
 the nonzero legacy rise is not upgraded silently. Two of them fail on `a994d7d` and pass now.
 
-**Validation.** `tests/test_semantic_authority.py`: 67 passed; L1 + L2 + authority: 157 passed. Full suite (whole
-`tests/` tree, pytest-xdist 4 workers, `--dist loadfile`, Python 3.12.3 on Linux): **1,502 passed, 21 skipped, 0
-failed**. Skips are environment-only: Windows Arial / Noto Sans JP not present (11), AES provider unavailable (2),
-external corpus not downloaded (5), Poppler at the Windows runtime path required by `test_source_ctm_compensation` (3;
-the system `pdftoppm` used above is a different binary). External Windows/LibreOffice validation was not run: no
-prepared single-owned-slot target exists and the blocker was an authority/schema problem. Runtime digest
-(SHA-256 over sorted `pdfeditor/*.py` name + NUL + bytes): `d62168a667d3ca421f6422e27c3ea5909005b67ddcef2016f2e38fbc1ece381d` (PR #42: `d9e69d51…`).
+**Validation** (after the review follow-up, `ca8a6cd`). `tests/test_semantic_authority.py`: 70 passed; L1 + L2 +
+authority + generated fonts + shared flow: 187 passed. Full suite (whole `tests/` tree, pytest-xdist 4 workers,
+`--dist loadfile`, Python 3.12.3 on Linux): **1,505 passed, 21 skipped, 0 failed** (first commit: 1,502 passed). Skips
+are environment-only: Windows Arial / Noto Sans JP not present (11), AES provider unavailable (2), external corpus not
+downloaded (5), Poppler at the Windows runtime path required by `test_source_ctm_compensation` (3; the system
+`pdftoppm` used above is a different binary). External Windows/LibreOffice validation was not run: no prepared
+single-owned-slot target exists and the blocker was an authority/schema problem. Runtime digest (SHA-256 over sorted
+`pdfeditor/*.py` name + NUL + bytes): `45e6913da2b5cb4da385aee3f2de71c0ade6b0a46dc977994edceaf1fd32fd50` (PR #42:
+`d9e69d51…`).
 
 **Verdict: B-L2-S CLOSED. L2 COMPLETE.** Style values and the font asset are written to actual candidates and pass a
 fresh reopen, no-ops are stable, source creation evidence is retained and still validated, current semantic

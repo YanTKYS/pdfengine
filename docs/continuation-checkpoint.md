@@ -1507,5 +1507,5 @@ transition of font_size/horizontal_scale/rise/tracking/font makes it `caller-con
 validator still checks the source registry; only `validate_fragment` sees an in-memory current-style adapter. Version
 1 records still open, are never upgraded implicitly, and keep the B-L2-S refusal. Style, combined style, font A→B and
 A→B→A candidates reopen in a fresh process, and no-ops are byte- and pixel-stable (MuPDF and Poppler). Tests:
-67 new, 2 PR #42 blocker tests retargeted to version 1; full suite 1,502 passed / 21 environment skips / 0 failed. Runtime digest `d62168a667d3ca421f6422e27c3ea5909005b67ddcef2016f2e38fbc1ece381d`. **L2 COMPLETE.** Next: L3 publication. Paint runtime NOT READY.
+70 new, 2 PR #42 blocker tests retargeted to version 1; full suite 1,505 passed / 21 environment skips / 0 failed. Version 1 keeps its legacy rise sign (rise = −baseline_shift); a nonzero legacy rise is not upgraded to version 2. Runtime digest `45e6913da2b5cb4da385aee3f2de71c0ade6b0a46dc977994edceaf1fd32fd50`. **L2 COMPLETE.** Next: L3 publication. Paint runtime NOT READY.
 [B-L2-S resolution](anchored-paint-ownership.md#218-b-l2-s-resolution--current-semantic-stylefont-authority--2026-10-04).
