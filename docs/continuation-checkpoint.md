@@ -1574,3 +1574,26 @@ The harness test file had 4 Windows-portability bugs: cp932 decoding, and a JSON
 fixed in the tests only; the harness and runtime are unchanged. Windows full suite: 1,625 passed / 7 environment
 skips / 0 failed. Paint runtime NOT READY.
 [§25](anchored-paint-ownership.md#25-windows-semantic-lifecycle-external-evidence--2026-10-05).
+
+
+## Paint runtime blocker reassessment — 2026-10-05
+
+From main `b4a45c39aa279a5442404f307a6fdbe048c2d288` (PR #47 merged). Design/evidence only; the runtime digest is
+unchanged (`dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`).
+
+- **Structural fact:** the §15 paint contract targets ordinary editable anchors. The validated L1–L3 layout exists
+  only on the shared-flow v3 single owned slot, which refuses anchors, decorates relations, decoration ranges and path
+  operators in the owned body.
+- **Resolved there:** B1 loop/formatter, B1-L (L1–L3, M, V, S, I, C, O) and B-L2-S. Evidence: prototype underline
+  geometry from the exact plan is byte-identical across first → noop, scaled style, Tw/edge and font no-ops, and is
+  recomputable from the sidecar + asset + page frame in a fresh process (`tests/test_paint_reassessment.py`, 11
+  passed, including the painted-body v2 refusal).
+- **Remaining status:** B2 excluded; B3 partial; B4/O3 dissolve if paint lives in the slot's owner body; O1 partial;
+  O2 becomes P-REC; O4 open (low); O5 dissolved by scope.
+- **New blockers:** P-SURF (paint inside the owned body recommended; the unchanged v2 validator rejects a painted PDF,
+  so v3 needs its own current-body grammar/witness validator while v2 creation evidence is reused, §26.6), P-SEM (decoration payload and
+  transitions), P-REC (recipe units/fill), P-EMPTY, P-ADOPT (refuse in v1) and P-VER (implementation obligations).
+- **Paint runtime NOT READY.** Next: a "semantic underline contract" design/evidence PR, then the narrow
+  implementation.
+
+[§26](anchored-paint-ownership.md#26-paint-runtime-blocker-reassessment-after-l1l3--2026-10-05).
