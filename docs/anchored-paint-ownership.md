@@ -3369,3 +3369,27 @@ TTC face are outside the semantic scope.
   already-confirmed input, a plan refusal, font determinism and dehinting, and the CLI in a fresh process.
 - Full-suite numbers are recorded in §24.7.
 - Runtime digest unchanged from PR #45: `dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`.
+
+### 24.7 Full suite and readiness
+
+**Full suite** (whole `tests/` tree, pytest-xdist 4 workers, `--dist loadfile`, Python 3.12.3 on Linux):
+**1,610 passed, 21 skipped, 0 failed** (PR #45 had 1,593; this PR adds 17). The 21 skips are the same
+environment-only ones as before, and none is new:
+
+| Skip reason | Count |
+|---|---|
+| Windows Arial / Noto Sans JP absent | 11 |
+| AES provider unavailable | 2 |
+| external corpus not downloaded | 5 |
+| Windows-path Poppler | 3 |
+
+No GitHub CI was added, and no Windows runner was added.
+
+**WINDOWS EXTERNAL VALIDATION READY:**
+- the harness exists, and its synthetic tests pass;
+- the inputs, the commands, the result schema, report generation, failure recording and input preservation are
+  documented;
+- no Windows PASS is claimed;
+- the full suite passes.
+
+Windows execution status: **NOT RUN**. LibreOffice execution status: **NOT RUN**. Paint runtime remains NOT READY.
