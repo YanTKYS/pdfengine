@@ -1586,11 +1586,12 @@ unchanged (`dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`).
   operators in the owned body.
 - **Resolved there:** B1 loop/formatter, B1-L (L1–L3, M, V, S, I, C, O) and B-L2-S. Evidence: prototype underline
   geometry from the exact plan is byte-identical across first → noop, scaled style, Tw/edge and font no-ops, and is
-  recomputable from the sidecar + asset + page frame in a fresh process (`tests/test_paint_reassessment.py`, 10
-  passed).
+  recomputable from the sidecar + asset + page frame in a fresh process (`tests/test_paint_reassessment.py`, 11
+  passed, including the painted-body v2 refusal).
 - **Remaining status:** B2 excluded; B3 partial; B4/O3 dissolve if paint lives in the slot's owner body; O1 partial;
   O2 becomes P-REC; O4 open (low); O5 dissolved by scope.
-- **New blockers:** P-SURF (paint domain: in-island versioned grammar recommended), P-SEM (decoration payload and
+- **New blockers:** P-SURF (paint inside the owned body recommended; the unchanged v2 validator rejects a painted PDF,
+  so v3 needs its own current-body grammar/witness validator while v2 creation evidence is reused, §26.6), P-SEM (decoration payload and
   transitions), P-REC (recipe units/fill), P-EMPTY, P-ADOPT (refuse in v1) and P-VER (implementation obligations).
 - **Paint runtime NOT READY.** Next: a "semantic underline contract" design/evidence PR, then the narrow
   implementation.

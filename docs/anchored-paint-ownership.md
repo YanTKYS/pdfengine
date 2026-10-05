@@ -3569,18 +3569,18 @@ Status is given for the semantic surface. The ordinary editable surface keeps it
 
 | ID | Question that must be decided before implementation | Why it is design, not implementation |
 |---|---|---|
-| **P-SURF** paint ownership domain on the semantic slot | **A:** paint lives inside the slot's source-output body, after the text group, as `q (x y m x y l x y l x y l h f)+ Q`. **B:** a sibling `pdfengine-paint-v1` island (§15 grammar and marker pair) owned by the same slot record. **C:** ordinary editable (rejected, §26.1). | A changes the source-output grammar that v3 currently reuses *unchanged* from v2 (§20.3 step 3). It therefore needs a versioned v3-only grammar/projection adapter, so that v2 stays byte-for-byte and v2 never accepts paint. B keeps v2 untouched but brings back a second domain, marker inventory, B4 and the termination lexical gate (O3). This decides write authority and the verifier boundary. **Recommendation: A**, versioned: one owner, one exact re-serialization covering text and paint, no new marker domain, so B4 and O3 dissolve. |
+| **P-SURF** paint ownership domain on the semantic slot | **A:** paint lives inside the slot's source-output body, after the text group, as `q (x y m x y l x y l x y l h f)+ Q`. **B:** a sibling `pdfengine-paint-v1` island (§15 grammar and marker pair) owned by the same slot record. **C:** ordinary editable (rejected, §26.1). | A puts path operators into the actual owned body, and the v2 path rejects that PDF itself, not only the sidecar. `semantic_layout._project_v2()` only removes the semantic field and restores the v2 schema; it hands the **same current PDF** to `shared_flow._validate`, which always ends in `source_ownership.validate` (`shared_flow.py:266-267`). That runs `witness` → `grammar()` on the actual body (`source_ownership.py:258`), and `grammar()` rejects `m/l/h/f/re`. Stripping paint from the projected sidecar therefore cannot make a painted PDF pass the unchanged v2 validator. A needs a **v3-only current-body grammar/witness validator** (§26.6). B keeps v2 untouched but brings back a second domain, marker inventory, B4 and the termination lexical gate (O3). This decides write authority and the verifier boundary. **Recommendation: A**, versioned: one owner, one exact re-serialization covering text and paint, no new marker domain, so B4 and O3 dissolve. |
 | **P-SEM** decoration semantic authority | `payload.decorations` (range, affinities, kind `underline`, recipe) and its N/D/E/R classes. **D:** remap on edit and growth inside the range; shrink on deletion; terminate the group when its range collapses. **E:** add, remove or change the recipe. **R:** revival, reuse of an old ID, overlap, mixed kinds. Identity is current-state only (like `current:i`), with no `anchor_id` history, because option A needs no marker. | This is the same class of decision as B1-L-C/B-L2-S: which fields may change, and under which request. |
-| **P-REC** recipe authority | Caller-confirmed exact rational offset/thickness: absolute pt or em-relative? The evidence (§26.4) shows an absolute offset keeps y = 58.7 after 12 → 37/3 pt. Fill must equal the text fill (the entry context is default black), so a colored underline is refused. | It defines what a style change means for paint (E-class side effects) and what must be confirmed. |
+| **P-REC** recipe authority | Caller-confirmed exact rational offset/thickness: absolute pt or em-relative? The evidence (§26.4) shows an absolute offset keeps y = 58.7 after 12 → 37/3 pt. Fill: the entry context is default black, but the canonical body sets the source-confirmed registry fill inside the body (§21.3), so text can already be colored. The natural rule is **underline fill = current text fill**, emitted by the paint group itself, since the text group's `Q` restores the entry fill. A black-only v1 is acceptable only as an explicit new scope gate that also requires the text fill to be black, not as a consequence of the entry context. | It defines what a style change means for paint (E-class side effects) and what must be confirmed. |
 | **P-ADOPT** source underline adoption | Shared-flow refuses source decorations, so an existing underline can neither be kept anchored nor consumed. Consuming it means mutating foreign bytes outside the owned span. | **v1 should refuse it explicitly.** v1 then means "caller-declared underline on semantic text", not "keep an existing source underline anchored". Adoption is a later, separate authority. |
 | **P-EMPTY** empty text with decorations | §15.1 refused full empty for a paint-owning paragraph. On the semantic surface, empty → regrow already works for text. Under A, termination is record removal plus re-serialization, so refusal is unnecessary. | It must be stated explicitly: either terminate all groups with no dormant state, or refuse. |
-| **P-VER** verifier/Transaction obligations (implementation once P-SURF is decided) | The canonical island check covers text and paint. Transaction declares island paint as owned (`paint_changes`). The planned pixel area includes the removed old rectangles (§23.4 lesson). The v2 projection with the paint stripped validates. Underline vs glyph placement accuracy ≤0.002 pt stays a separate gate. | Not a design question once A/B is chosen; listed so that it is not lost. |
+| **P-VER** verifier/Transaction obligations (implementation once P-SURF is decided) | The canonical island check covers text and paint. Transaction declares island paint as owned (`paint_changes`). The planned pixel area includes the removed old rectangles (§23.4 lesson). Creation evidence still passes the v2 contract, and the current body passes the v3 grammar/witness validator (§26.6). Underline vs glyph placement accuracy ≤0.002 pt stays a separate gate. | Not a design question once A/B is chosen; listed so that it is not lost. |
 
 The §15.8 acceptance matrix still applies where it is surface-independent: bytes KPI, fresh-process, tamper/reseal,
 foreign injection, late rollback. Rows tied to ordinary editable or legacy reconfirmation become refusals on the
 semantic surface: source terminal consumption, legacy growth, scale CTM and clip.
 
-### 26.4 Evidence (`tests/test_paint_reassessment.py`, 10 tests)
+### 26.4 Evidence (`tests/test_paint_reassessment.py`, 10 tests; 11 after §26.6)
 
 A prototype formatter **inside the test** derives one rectangle per line over the painted glyphs of a range. It trims
 boundary spaces (§15.2 rule), uses the line baseline, a fixed exact recipe (`offset 13/10`, `thickness 7/10`) and
@@ -3596,7 +3596,7 @@ It runs over a real L2 chain built from runtime APIs: save×3, edit `A B` → `A
 | No-op fixed point (6 groups × 3 ranges, including first → noop and the scaled style) | Byte-identical in every group. This is the comparison that failed in §15.2 and §16.5 (there with identity and 0.83/0.91 CTMs; this surface admits the identity CTM only, and "scaled" here is a 4/5 horizontal-scale style). |
 | Semantic change | Base, growth and scaled bodies are all different. Tw 6/5 moves the end from 44.43 to 45.63; font B gives 41.683333. |
 | Tw vs confirmed edge | Identical paint, as for text (§21.4) |
-| Current-only | A fresh process with only the sidecar, asset and page top reproduces the bytes for three revisions |
+| Current-only | A fresh process with only the sidecar, asset and page frame (MediaBox top read from the current PDF by the parent and passed in) reproduces the bytes for three revisions |
 | Read-only | Every revision still reopens `restored` and canonical |
 | Code facts | `BODY_OPERATORS` has no path operators; `grammar()` rejects a paint group after the text group |
 
@@ -3608,7 +3608,7 @@ semantic payload, the asset and the region, so equal semantic state gives equal 
 stored candidates satisfy this, and that no physical observation is needed. It does not show that such paint can be
 owned, verified or published. That is P-SURF/P-SEM/P-VER.
 
-Validation: `tests/test_paint_reassessment.py` **10 passed** (Windows, Python 3.12.14). Full suite: not run (no runtime
+Validation: `tests/test_paint_reassessment.py` **10 passed** (Windows, Python 3.12.14); **11 passed** after the §26.6 probe. Full suite: not run (no runtime
 change). The runtime digest is unchanged.
 
 ### 26.5 Verdict and next scope
@@ -3626,13 +3626,50 @@ change). The runtime digest is unchanged.
 
 **Next minimal scope (one design/evidence PR):** "semantic underline contract" on the single owned slot.
 
-- Choose P-SURF A with a versioned v3-only source-output grammar adapter.
+- Choose P-SURF A and design the §26.6 split: v2 creation-evidence validation reused unchanged, plus a v3-only current
+  source-output body grammar/witness validator. v2 schema and behaviour are not relaxed.
 - Define `payload.decorations` and its N/D/E/R classes (P-SEM).
-- Fix P-REC (recommendation: em-relative or explicitly re-confirmed on a size change; same fill as text).
+- Fix P-REC (recommendation: em-relative or explicitly re-confirmed on a size change; underline fill = current text
+  fill, or an explicit black-only scope gate on the text fill).
 - State P-EMPTY (terminate) and refuse P-ADOPT.
-- Add read-only probes: a candidate body with a paint group accepted by a prototype adapter and refused by v2; the
-  projection with paint stripped validates through the unchanged v2 validator; tamper/reseal of the decorations;
-  removed-ink planned area.
+- Add read-only probes: a candidate body with a paint group accepted by the prototype v3 body validator and refused by
+  the unchanged v2 path (`source_ownership.validate` on the same PDF); creation evidence still validated by the v2
+  contract; tamper/reseal of the decorations; removed-ink planned area.
 
 Once that is reviewed, a **narrow paint implementation PR** (decorations + canonical text+paint island writer +
 verifier, scope unchanged otherwise) is the next step. Do not start it before that review.
+
+### 26.6 Review follow-up: v2 cannot validate a painted body; v3 needs its own current-body validator
+
+The PR #48 review found that the earlier next-scope wording ("projection with paint stripped validates through the
+unchanged v2 validator") contradicts the runtime. Under option A the painted body is in the actual PDF. The v2 path
+inspects that PDF: `_project_v2` → `shared_flow._validate` → `source_ownership.validate` → `witness` → `grammar()`,
+which rejects path operators. Only the sidecar is projected; the PDF is not. The wording is corrected above.
+New evidence `test_unchanged_v2_path_rejects_a_painted_actual_body` inserts the prototype paint group after the text
+group of a real owned body. `source_ownership.validate` refuses with `invalid source output body grammar`, before
+any witness comparison. The unpainted body passes the same grammar.
+
+Contract to design in the next PR (option A stays the first candidate):
+
+- **Layer A creation evidence** (registry, source observations, `contract_sha256`, `created_from`, marker identity,
+  inventory) keeps the existing v2 contract and code.
+- **Current source-output body** of the v3 slot is checked by a v3-only grammar/witness validator: text groups as
+  today, followed by the paint group grammar, exact canonical re-serialization of text and paint, entry = exit context,
+  and glyph containment unchanged.
+- Natural shapes:
+  - split `shared_flow` validation so that v2 keeps calling `source_ownership.validate` exactly as today, and v3
+    injects its current-body validator;
+  - or make two explicit stages, creation-evidence validation and current-body ownership validation.
+- **v2 schema and behaviour are not relaxed.** A v2 sidecar never admits path operators, and the v2 opener still
+  rejects v3.
+- **Not a first candidate:** building a virtual paint-stripped PDF and passing it to the v2 validator. That would have
+  to reconstruct the PDF SHA, owner program/block witness and context for bytes that were never published.
+
+Non-blocking corrections from the same review:
+
+- The fresh-process probe is described as "sidecar + asset + page frame": the parent reads the MediaBox top from the
+  current PDF and passes it in (test docstring aligned).
+- P-REC fill: underline fill = current text fill is the natural rule; black-only needs an explicit text-fill scope
+  gate (§26.3).
+
+The verdict is unchanged: **paint runtime NOT READY.** The next PR is the semantic underline contract.

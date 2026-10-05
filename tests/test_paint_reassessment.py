@@ -5,7 +5,7 @@ rectangles only from the exact semantic plan (`semantic_layout._derive` over the
 stored payload, the current asset and the confirmed region) plus a fixed exact
 recipe. It never reads rendered paths, MuPDF traces or earlier output. The
 probe asks whether the old B1/B1-L feedback loops are gone on this surface:
-same semantic state ⇒ same paint bytes, from the sidecar alone. It is not an
+same semantic state ⇒ same paint bytes, from the sidecar, asset and page frame. It is not an
 owned paint writer, a grammar extension or a verifier.
 """
 from fractions import Fraction as F
@@ -179,3 +179,29 @@ def test_island_text_witness_is_unchanged_by_the_probe(chain):
     for name in ('save3', 'edit_noop', 'scaled_noop2', 'tw_noop', 'edge_noop', 'font_b_noop'):
         result = semantic.open_semantic_flow(chain[name]['pdf'], chain[name]['sidecar'])
         assert result['status'] == 'restored' and result['island']['canonical'], name
+
+
+def test_unchanged_v2_path_rejects_a_painted_actual_body(chain, tmp_path):
+    """§26.6: under option A the paint is in the actual PDF, which the v2 path inspects (not only the sidecar).
+
+    Inserting the prototype paint group after the text group inside the owned body makes
+    `source_ownership.validate` refuse at the body grammar, before any witness comparison. The semantic
+    open refuses too (here already because the PDF revision changed). Stripping paint from a projected
+    sidecar cannot help: the bytes the v2 grammar reads are the PDF's.
+    """
+    pdf, sidecar = chain['save3']['pdf'], chain['save3']['sidecar']
+    state = json.loads(Path(sidecar).read_text(encoding='utf-8'))
+    marker = next(iter(state['slots'].values()))['source_output']['marker_id']
+    paint = bodies(chain, 'save3')[0]
+    painted = tmp_path / 'painted.pdf'
+    with pymupdf.open(pdf) as document:
+        xref = document[0].get_contents()[-1]
+        data = document.xref_stream(xref)
+        _, body_start, body_end, _ = owned.inventory(data)[marker]
+        owned.grammar(data[body_start:body_end])  # the unpainted body is valid
+        document.update_stream(xref, data[:body_end] + paint + data[body_end:])
+        document.save(painted)
+    with pytest.raises(Exception, match='source output body grammar'):
+        owned.validate(painted, state)
+    result = semantic.open_semantic_flow(painted, state)
+    assert result['status'] == 'needs_confirmation'
