@@ -47,3 +47,6 @@ tmp/
 /evaluations/continuation/runs/
 
 !/evaluations/anchors/paint-ownership-summary.json
+
+# Semantic lifecycle external validation: commit only result.json + report.md per run (artifacts/logs stay local).
+!/evaluations/semantic_lifecycle/runs/*/result.json

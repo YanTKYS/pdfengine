@@ -1539,3 +1539,19 @@ One runtime bug was found and fixed: a rewrite's Transaction area did not cover 
 renderer box (font overshoot under Tz). The writer now plans the exact removed ink. Tests: 47 new; full suite 1,593
 passed / 21 environment skips / 0 failed. Runtime digest `dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`. Paint runtime NOT READY.
 [§23](anchored-paint-ownership.md#23-l1l3-integrated-lifecycle-validation--2026-10-05).
+
+
+## Windows semantic lifecycle validation preparation — WINDOWS EXTERNAL VALIDATION READY (not run) — 2026-10-05
+
+From main `a68e2f3167696470af59e9466c071a5a11385913` (PR #45). This adds
+`evaluations/semantic_lifecycle/windows_validation.py`:
+- **Subcommands:** `prepare-synthetic`, `prepare-fonts`, `prepare` and `run`.
+- **Lifecycle:** 16 stages with PASS/REFUSED/SKIPPED/FAIL.
+- **Output:** `result.json` (schema in the README), `report.md`, `artifacts/` and `logs/`.
+- **Exit codes:** 0, 1, 2, 3 and 4.
+
+Inputs are checked unchanged. The harness has 17 synthetic tests. A synthetic page with LibreOffice's structure
+(page-wide clip group) is refused at `confirm` as `UNSUPPORTED_TARGET`; this is also the expected outcome for an
+unmodified LibreOffice PDF on Windows. There is no runtime change. The full suite gives 1,610 passed / 21
+environment skips / 0 failed. **Windows and LibreOffice execution: NOT RUN.** Paint runtime NOT READY.
+[§24](anchored-paint-ownership.md#24-windows-external-semantic-lifecycle-validation-preparation--2026-10-05).
