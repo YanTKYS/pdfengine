@@ -1,0 +1,1091 @@
+{
+  "schema_version": 1,
+  "executed_at": "2026-10-05T09:56:25.589792+00:00",
+  "disclaimer": "Windows execution has not been performed by the PR that added this harness. This report is evidence only for the execution it describes.",
+  "stages": [
+    {
+      "id": "preflight",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "plan": {
+          "edit": {
+            "start": 0,
+            "end": 0,
+            "text": "A"
+          },
+          "style": {
+            "tracking": "1/4"
+          },
+          "next_edit": {
+            "start": 0,
+            "end": 0,
+            "text": "B"
+          }
+        }
+      }
+    },
+    {
+      "id": "baseline",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "schema": "pdfengine-shared-flow-2",
+        "creation_evidence": {
+          "style_registry": "d92bd7e841042c86d4a2a4f525efb2ee8eb6a69bcc79e35c8e29d47d44df58a0",
+          "source_observations": "e797f91464929257f0e72d73c2e1899a368b1e0e73aa8f1ee7d6fa80eb78fd12",
+          "source_provider": "323f32bd020e82d5f29c648493302e0ff6f689b2f6b36c01bde2f34c92e32608",
+          "source_model_sha256": "11a50bb2d0968275732fa040f64d081b94ccd86cb2e6a4d9beca8f06871b1eff",
+          "source_snapshot_sha256": "ce80ebc3a20a7f7e23d09d4fbed502a41377affd44759d14148217293065c573",
+          "created_from": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+          "contract_sha256": "eaaf259d4940866d7a9904a21752f320eb8d76c317b51d1209b04ec4bc8fe41f"
+        }
+      }
+    },
+    {
+      "id": "confirm",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "mode": "confirmed from shared-flow-2 (statement = source-confirmed registry values)",
+        "revision": {
+          "pdf": "document.pdf",
+          "sidecar": "artifacts/confirmed/shared-flow.json",
+          "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+          "sidecar_sha256": "86087fd2b014d22742c21b5fe575abcca74828c0bd5085a99da446c43601f05a",
+          "pdf_size": 3756,
+          "sidecar_size": 39418,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "93757518a1c005eff9c6c8e447e0dff69060add99c7753b9f4a58a78cf53d1fd",
+            "block_sha256": "e0938be9022945d3d550fe26197606aa64e27e16fb23085b661a95649efe2501",
+            "range": [
+              45,
+              478
+            ],
+            "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 2,
+            "canonical": false
+          },
+          "island": {
+            "sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+            "size": 238,
+            "operators": 28
+          }
+        }
+      }
+    },
+    {
+      "id": "edit",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "edit",
+          "start": 0,
+          "end": 0,
+          "text": "A"
+        },
+        "classification": "D",
+        "diff": {
+          "text": {
+            "before": "A B",
+            "after": "AA B"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/candidate-01-edit/semantic-candidate-7o951mx8/document.pdf",
+          "sidecar": "artifacts/candidate-01-edit/semantic-candidate-7o951mx8/shared-flow.json",
+          "pdf_sha256": "0183a34219aebe576cb285157282cb67eea8e61a8a8ce828501222e9e0e1c5d5",
+          "sidecar_sha256": "80d45fb5e735b0750e1b60a566f7e9dbfe324a8e649ee02dccf5457fea176558",
+          "pdf_size": 3921,
+          "sidecar_size": 35348,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "39eb2bec9a62ca0ed4e478909ab97ad772c7ea66fdf0b19270f4208df0f5e174",
+            "block_sha256": "d1687deb8e2bd33accd961ded5b354e81c82da4a3d146edf60c2d66c556aa3a3",
+            "range": [
+              45,
+              424
+            ],
+            "pdf_sha256": "0183a34219aebe576cb285157282cb67eea8e61a8a8ce828501222e9e0e1c5d5"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+            "size": 184,
+            "operators": 18
+          }
+        }
+      }
+    },
+    {
+      "id": "style",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "tracking": "1/4"
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "style.tracking": {
+            "before": "0",
+            "after": "1/4"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/candidate-02-style/semantic-candidate-857ywhm8/document.pdf",
+          "sidecar": "artifacts/candidate-02-style/semantic-candidate-857ywhm8/shared-flow.json",
+          "pdf_sha256": "a9541246891049de0e81bb90ca6e2bd9ef0cf334909fef99a657d3d66be6b1fc",
+          "sidecar_sha256": "c916103afcbe903a48e41eca42cb694588a2860f5cd3d2a356167074e4d31960",
+          "pdf_size": 3906,
+          "sidecar_size": 35762,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "7116a4f2f7090af4473c50976801686a625591e7647e808d7f50bbae956bdad2",
+            "block_sha256": "ce93378a38f06bbb5d15314ac393b2d0214bb60f114fd367ee49a12405ecac28",
+            "range": [
+              45,
+              427
+            ],
+            "pdf_sha256": "a9541246891049de0e81bb90ca6e2bd9ef0cf334909fef99a657d3d66be6b1fc"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "a5ca60b4a2c5b53ae2f1f3a855912dff88e5f4bb7c5d03fd66e0e255a8685748",
+            "size": 187,
+            "operators": 18
+          }
+        }
+      }
+    },
+    {
+      "id": "font",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "font": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "font.sha": {
+            "before": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "after": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/candidate-03-font-b/semantic-candidate-0n7s5r1a/document.pdf",
+          "sidecar": "artifacts/candidate-03-font-b/semantic-candidate-0n7s5r1a/shared-flow.json",
+          "pdf_sha256": "1f129b16654aa33bf81e58a68f4b61988a5f5c7f165445aa11d972f56038f071",
+          "sidecar_sha256": "36e2e9aac109eeaf5991ceaa5efc114da84572097c50c76e577cc56bd10fd693",
+          "pdf_size": 4027,
+          "sidecar_size": 35723,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "9902cfb62fc77d1ac8a2989f736183538fbd645f4ca7298aeeaef16244ab8e21",
+            "block_sha256": "1f6b91e29ac5e646b636d3b8783c61a982f693270305f8fc6e5f7d58f125be14",
+            "range": [
+              45,
+              420
+            ],
+            "pdf_sha256": "1f129b16654aa33bf81e58a68f4b61988a5f5c7f165445aa11d972f56038f071"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "12",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "2f905e86a75fc39da81c20fd64d6692bf5935468026b68a27f55f43b8d564e84",
+            "size": 180,
+            "operators": 18
+          }
+        }
+      }
+    },
+    {
+      "id": "noop",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "save"
+        },
+        "classification": "D",
+        "diff": {},
+        "revision": {
+          "pdf": "artifacts/candidate-04-noop/semantic-candidate-6op8i5lb/document.pdf",
+          "sidecar": "artifacts/candidate-04-noop/semantic-candidate-6op8i5lb/shared-flow.json",
+          "pdf_sha256": "783f4fe1962ab7876022c8079ec98ae3011ce85e97088526571a9906301ea130",
+          "sidecar_sha256": "f3bdf303ec99c1ab65511e4742e7ea8c614e72398a347e27c4835e719aa424a3",
+          "pdf_size": 4008,
+          "sidecar_size": 35722,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "9902cfb62fc77d1ac8a2989f736183538fbd645f4ca7298aeeaef16244ab8e21",
+            "block_sha256": "1f6b91e29ac5e646b636d3b8783c61a982f693270305f8fc6e5f7d58f125be14",
+            "range": [
+              45,
+              420
+            ],
+            "pdf_sha256": "783f4fe1962ab7876022c8079ec98ae3011ce85e97088526571a9906301ea130"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "12",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "2f905e86a75fc39da81c20fd64d6692bf5935468026b68a27f55f43b8d564e84",
+            "size": 180,
+            "operators": 18
+          }
+        },
+        "body_stable": true,
+        "operators": 18,
+        "pdf_size": [
+          4027,
+          4008
+        ],
+        "sidecar_size": [
+          35723,
+          35722
+        ]
+      }
+    },
+    {
+      "id": "publish_a",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "candidate": "candidate-04-noop",
+        "directory": "artifacts/bundle-a",
+        "artifacts": [
+          "document.pdf",
+          "shared-flow.json"
+        ],
+        "staged_and_public_reopen": "restored",
+        "candidate_bytes_identical": true,
+        "revision": {
+          "pdf": "artifacts/bundle-a/document.pdf",
+          "sidecar": "artifacts/bundle-a/shared-flow.json",
+          "pdf_sha256": "783f4fe1962ab7876022c8079ec98ae3011ce85e97088526571a9906301ea130",
+          "sidecar_sha256": "f3bdf303ec99c1ab65511e4742e7ea8c614e72398a347e27c4835e719aa424a3",
+          "pdf_size": 4008,
+          "sidecar_size": 35722,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "9902cfb62fc77d1ac8a2989f736183538fbd645f4ca7298aeeaef16244ab8e21",
+            "block_sha256": "1f6b91e29ac5e646b636d3b8783c61a982f693270305f8fc6e5f7d58f125be14",
+            "range": [
+              45,
+              420
+            ],
+            "pdf_sha256": "783f4fe1962ab7876022c8079ec98ae3011ce85e97088526571a9906301ea130"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "12",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "2f905e86a75fc39da81c20fd64d6692bf5935468026b68a27f55f43b8d564e84",
+            "size": 180,
+            "operators": 18
+          }
+        },
+        "fresh_process": "restored"
+      }
+    },
+    {
+      "id": "edit_from_bundle_a",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "edit",
+          "start": 0,
+          "end": 0,
+          "text": "B"
+        },
+        "classification": "D",
+        "diff": {
+          "text": {
+            "before": "AA B",
+            "after": "BAA B"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/candidate-05-edit-from-bundle-a/semantic-candidate-4ttgpthd/document.pdf",
+          "sidecar": "artifacts/candidate-05-edit-from-bundle-a/semantic-candidate-4ttgpthd/shared-flow.json",
+          "pdf_sha256": "1d18dfcef4735a395f63a98b26bf9690450d68cb436f5f28c48e2b602e569b6c",
+          "sidecar_sha256": "a4fb2b2b18d1baf5464658d0cd3af5229ee4c36ad8e22afe1dd7f7f3eda9c4b9",
+          "pdf_size": 4018,
+          "sidecar_size": 37970,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "6547c35ee9d60496fbcc79e5b1bcfd9ebd610e9bf4278832b08886f34b2647b2",
+            "block_sha256": "244f77811eaa03af4107453b2dc98073b08744f36947b0916bd3df2a2306a85b",
+            "range": [
+              45,
+              454
+            ],
+            "pdf_sha256": "1d18dfcef4735a395f63a98b26bf9690450d68cb436f5f28c48e2b602e569b6c"
+          },
+          "semantic": {
+            "text": "BAA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "12",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "54982f54caa6c018ef4250f75df520a93cd86df8eb50e396f9910075e4762a37",
+            "size": 214,
+            "operators": 20
+          }
+        }
+      }
+    },
+    {
+      "id": "font_back",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "font": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2"
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "font.sha": {
+            "before": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "after": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/candidate-06-font-a/semantic-candidate-3pvhj13v/document.pdf",
+          "sidecar": "artifacts/candidate-06-font-a/semantic-candidate-3pvhj13v/shared-flow.json",
+          "pdf_sha256": "c54f9764e442ba61b06bc1a1445906246aebfeb179a24e7a2ec82e80175cd0cb",
+          "sidecar_sha256": "47faa97e9fa4d13d2016d93860b6e0c9be2901a342388c75100432a997dd8d3b",
+          "pdf_size": 3928,
+          "sidecar_size": 37994,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "5bf48ca2e355b68d2dccdff76b14eff629ffadad56de8c33240fa6d163647435",
+            "block_sha256": "4415bf7d54e4973a25ad77b91a6e360251a7d51860a2bb4b0eab2ec0cc096260",
+            "range": [
+              45,
+              454
+            ],
+            "pdf_sha256": "c54f9764e442ba61b06bc1a1445906246aebfeb179a24e7a2ec82e80175cd0cb"
+          },
+          "semantic": {
+            "text": "BAA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "ddaa18803a932ba0b5f9d6f567c6906f5fda328161ed9e957f2123cf5c9bbc42",
+            "size": 214,
+            "operators": 20
+          }
+        }
+      }
+    },
+    {
+      "id": "publish_b",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "candidate": "candidate-06-font-a",
+        "directory": "artifacts/bundle-b",
+        "artifacts": [
+          "document.pdf",
+          "shared-flow.json"
+        ],
+        "staged_and_public_reopen": "restored",
+        "candidate_bytes_identical": true,
+        "revision": {
+          "pdf": "artifacts/bundle-b/document.pdf",
+          "sidecar": "artifacts/bundle-b/shared-flow.json",
+          "pdf_sha256": "c54f9764e442ba61b06bc1a1445906246aebfeb179a24e7a2ec82e80175cd0cb",
+          "sidecar_sha256": "47faa97e9fa4d13d2016d93860b6e0c9be2901a342388c75100432a997dd8d3b",
+          "pdf_size": 3928,
+          "sidecar_size": 37994,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "5bf48ca2e355b68d2dccdff76b14eff629ffadad56de8c33240fa6d163647435",
+            "block_sha256": "4415bf7d54e4973a25ad77b91a6e360251a7d51860a2bb4b0eab2ec0cc096260",
+            "range": [
+              45,
+              454
+            ],
+            "pdf_sha256": "c54f9764e442ba61b06bc1a1445906246aebfeb179a24e7a2ec82e80175cd0cb"
+          },
+          "semantic": {
+            "text": "BAA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "ddaa18803a932ba0b5f9d6f567c6906f5fda328161ed9e957f2123cf5c9bbc42",
+            "size": 214,
+            "operators": 20
+          }
+        },
+        "fresh_process": "restored",
+        "bundle_a_unchanged": true
+      }
+    },
+    {
+      "id": "negatives",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "expected_refusals": {
+          "A.pdf+B.json": "source output ownership: shared flow PDF revision changed",
+          "B.pdf+A.json": "source output ownership: shared flow PDF revision changed"
+        }
+      }
+    },
+    {
+      "id": "continuity",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "creation_evidence": {
+          "style_registry": "d92bd7e841042c86d4a2a4f525efb2ee8eb6a69bcc79e35c8e29d47d44df58a0",
+          "source_observations": "e797f91464929257f0e72d73c2e1899a368b1e0e73aa8f1ee7d6fa80eb78fd12",
+          "source_provider": "323f32bd020e82d5f29c648493302e0ff6f689b2f6b36c01bde2f34c92e32608",
+          "source_model_sha256": "11a50bb2d0968275732fa040f64d081b94ccd86cb2e6a4d9beca8f06871b1eff",
+          "source_snapshot_sha256": "ce80ebc3a20a7f7e23d09d4fbed502a41377affd44759d14148217293065c573",
+          "created_from": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+          "contract_sha256": "eaaf259d4940866d7a9904a21752f320eb8d76c317b51d1209b04ec4bc8fe41f"
+        },
+        "owner_marker_constant": true,
+        "created_from_constant": true,
+        "revisions": 9
+      }
+    },
+    {
+      "id": "raster_mupdf",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "noop_identical": true,
+        "candidate_published_identical": true,
+        "semantic_change_differs": true,
+        "sha256": {
+          "baseline": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8",
+          "changed": "da01f60e484714a62903c33a8e1f3ebda5570df104afe83aca1cb255c7e0d913",
+          "noop": "da01f60e484714a62903c33a8e1f3ebda5570df104afe83aca1cb255c7e0d913",
+          "bundle_a": "da01f60e484714a62903c33a8e1f3ebda5570df104afe83aca1cb255c7e0d913",
+          "bundle_b": "a8cccc17a13399d53ac68ad41eda6562fad5a2d771d431fd33ae350ec82f0f0c"
+        },
+        "pngs": [
+          "artifacts/raster/mupdf-baseline.png",
+          "artifacts/raster/mupdf-bundle_a.png",
+          "artifacts/raster/mupdf-bundle_b.png",
+          "artifacts/raster/mupdf-changed.png",
+          "artifacts/raster/mupdf-noop.png"
+        ]
+      }
+    },
+    {
+      "id": "raster_poppler",
+      "required": false,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "noop_identical": true,
+        "candidate_published_identical": true,
+        "sha256": {
+          "before_noop": "1b8637de82cab6a4c2042ae366f5879b5b49ba67ebe0bebacb145b91821b4550",
+          "noop": "1b8637de82cab6a4c2042ae366f5879b5b49ba67ebe0bebacb145b91821b4550",
+          "bundle_a": "1b8637de82cab6a4c2042ae366f5879b5b49ba67ebe0bebacb145b91821b4550"
+        }
+      }
+    },
+    {
+      "id": "inputs_preserved",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "inputs_unchanged": true,
+        "sha256": {
+          "pdf": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+          "sidecar": "e2fba2596b6ce2073fe7471dc833b2aeee86f3c8f5084e92e88dba8742918799",
+          "font_a": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+          "font_b": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+        }
+      }
+    }
+  ],
+  "revisions": {
+    "confirmed": {
+      "pdf": "document.pdf",
+      "sidecar": "artifacts/confirmed/shared-flow.json",
+      "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+      "sidecar_sha256": "86087fd2b014d22742c21b5fe575abcca74828c0bd5085a99da446c43601f05a",
+      "pdf_size": 3756,
+      "sidecar_size": 39418,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "93757518a1c005eff9c6c8e447e0dff69060add99c7753b9f4a58a78cf53d1fd",
+        "block_sha256": "e0938be9022945d3d550fe26197606aa64e27e16fb23085b661a95649efe2501",
+        "range": [
+          45,
+          478
+        ],
+        "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 2,
+        "canonical": false
+      },
+      "island": {
+        "sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+        "size": 238,
+        "operators": 28
+      }
+    },
+    "candidate-01-edit": {
+      "pdf": "artifacts/candidate-01-edit/semantic-candidate-7o951mx8/document.pdf",
+      "sidecar": "artifacts/candidate-01-edit/semantic-candidate-7o951mx8/shared-flow.json",
+      "pdf_sha256": "0183a34219aebe576cb285157282cb67eea8e61a8a8ce828501222e9e0e1c5d5",
+      "sidecar_sha256": "80d45fb5e735b0750e1b60a566f7e9dbfe324a8e649ee02dccf5457fea176558",
+      "pdf_size": 3921,
+      "sidecar_size": 35348,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "39eb2bec9a62ca0ed4e478909ab97ad772c7ea66fdf0b19270f4208df0f5e174",
+        "block_sha256": "d1687deb8e2bd33accd961ded5b354e81c82da4a3d146edf60c2d66c556aa3a3",
+        "range": [
+          45,
+          424
+        ],
+        "pdf_sha256": "0183a34219aebe576cb285157282cb67eea8e61a8a8ce828501222e9e0e1c5d5"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "size": 184,
+        "operators": 18
+      }
+    },
+    "candidate-02-style": {
+      "pdf": "artifacts/candidate-02-style/semantic-candidate-857ywhm8/document.pdf",
+      "sidecar": "artifacts/candidate-02-style/semantic-candidate-857ywhm8/shared-flow.json",
+      "pdf_sha256": "a9541246891049de0e81bb90ca6e2bd9ef0cf334909fef99a657d3d66be6b1fc",
+      "sidecar_sha256": "c916103afcbe903a48e41eca42cb694588a2860f5cd3d2a356167074e4d31960",
+      "pdf_size": 3906,
+      "sidecar_size": 35762,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "7116a4f2f7090af4473c50976801686a625591e7647e808d7f50bbae956bdad2",
+        "block_sha256": "ce93378a38f06bbb5d15314ac393b2d0214bb60f114fd367ee49a12405ecac28",
+        "range": [
+          45,
+          427
+        ],
+        "pdf_sha256": "a9541246891049de0e81bb90ca6e2bd9ef0cf334909fef99a657d3d66be6b1fc"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "a5ca60b4a2c5b53ae2f1f3a855912dff88e5f4bb7c5d03fd66e0e255a8685748",
+        "size": 187,
+        "operators": 18
+      }
+    },
+    "candidate-03-font-b": {
+      "pdf": "artifacts/candidate-03-font-b/semantic-candidate-0n7s5r1a/document.pdf",
+      "sidecar": "artifacts/candidate-03-font-b/semantic-candidate-0n7s5r1a/shared-flow.json",
+      "pdf_sha256": "1f129b16654aa33bf81e58a68f4b61988a5f5c7f165445aa11d972f56038f071",
+      "sidecar_sha256": "36e2e9aac109eeaf5991ceaa5efc114da84572097c50c76e577cc56bd10fd693",
+      "pdf_size": 4027,
+      "sidecar_size": 35723,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "9902cfb62fc77d1ac8a2989f736183538fbd645f4ca7298aeeaef16244ab8e21",
+        "block_sha256": "1f6b91e29ac5e646b636d3b8783c61a982f693270305f8fc6e5f7d58f125be14",
+        "range": [
+          45,
+          420
+        ],
+        "pdf_sha256": "1f129b16654aa33bf81e58a68f4b61988a5f5c7f165445aa11d972f56038f071"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "12",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "2f905e86a75fc39da81c20fd64d6692bf5935468026b68a27f55f43b8d564e84",
+        "size": 180,
+        "operators": 18
+      }
+    },
+    "candidate-04-noop": {
+      "pdf": "artifacts/candidate-04-noop/semantic-candidate-6op8i5lb/document.pdf",
+      "sidecar": "artifacts/candidate-04-noop/semantic-candidate-6op8i5lb/shared-flow.json",
+      "pdf_sha256": "783f4fe1962ab7876022c8079ec98ae3011ce85e97088526571a9906301ea130",
+      "sidecar_sha256": "f3bdf303ec99c1ab65511e4742e7ea8c614e72398a347e27c4835e719aa424a3",
+      "pdf_size": 4008,
+      "sidecar_size": 35722,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "9902cfb62fc77d1ac8a2989f736183538fbd645f4ca7298aeeaef16244ab8e21",
+        "block_sha256": "1f6b91e29ac5e646b636d3b8783c61a982f693270305f8fc6e5f7d58f125be14",
+        "range": [
+          45,
+          420
+        ],
+        "pdf_sha256": "783f4fe1962ab7876022c8079ec98ae3011ce85e97088526571a9906301ea130"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "12",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "2f905e86a75fc39da81c20fd64d6692bf5935468026b68a27f55f43b8d564e84",
+        "size": 180,
+        "operators": 18
+      }
+    },
+    "bundle-a": {
+      "pdf": "artifacts/bundle-a/document.pdf",
+      "sidecar": "artifacts/bundle-a/shared-flow.json",
+      "pdf_sha256": "783f4fe1962ab7876022c8079ec98ae3011ce85e97088526571a9906301ea130",
+      "sidecar_sha256": "f3bdf303ec99c1ab65511e4742e7ea8c614e72398a347e27c4835e719aa424a3",
+      "pdf_size": 4008,
+      "sidecar_size": 35722,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "9902cfb62fc77d1ac8a2989f736183538fbd645f4ca7298aeeaef16244ab8e21",
+        "block_sha256": "1f6b91e29ac5e646b636d3b8783c61a982f693270305f8fc6e5f7d58f125be14",
+        "range": [
+          45,
+          420
+        ],
+        "pdf_sha256": "783f4fe1962ab7876022c8079ec98ae3011ce85e97088526571a9906301ea130"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "12",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "2f905e86a75fc39da81c20fd64d6692bf5935468026b68a27f55f43b8d564e84",
+        "size": 180,
+        "operators": 18
+      }
+    },
+    "candidate-05-edit-from-bundle-a": {
+      "pdf": "artifacts/candidate-05-edit-from-bundle-a/semantic-candidate-4ttgpthd/document.pdf",
+      "sidecar": "artifacts/candidate-05-edit-from-bundle-a/semantic-candidate-4ttgpthd/shared-flow.json",
+      "pdf_sha256": "1d18dfcef4735a395f63a98b26bf9690450d68cb436f5f28c48e2b602e569b6c",
+      "sidecar_sha256": "a4fb2b2b18d1baf5464658d0cd3af5229ee4c36ad8e22afe1dd7f7f3eda9c4b9",
+      "pdf_size": 4018,
+      "sidecar_size": 37970,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "6547c35ee9d60496fbcc79e5b1bcfd9ebd610e9bf4278832b08886f34b2647b2",
+        "block_sha256": "244f77811eaa03af4107453b2dc98073b08744f36947b0916bd3df2a2306a85b",
+        "range": [
+          45,
+          454
+        ],
+        "pdf_sha256": "1d18dfcef4735a395f63a98b26bf9690450d68cb436f5f28c48e2b602e569b6c"
+      },
+      "semantic": {
+        "text": "BAA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "12",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "54982f54caa6c018ef4250f75df520a93cd86df8eb50e396f9910075e4762a37",
+        "size": 214,
+        "operators": 20
+      }
+    },
+    "candidate-06-font-a": {
+      "pdf": "artifacts/candidate-06-font-a/semantic-candidate-3pvhj13v/document.pdf",
+      "sidecar": "artifacts/candidate-06-font-a/semantic-candidate-3pvhj13v/shared-flow.json",
+      "pdf_sha256": "c54f9764e442ba61b06bc1a1445906246aebfeb179a24e7a2ec82e80175cd0cb",
+      "sidecar_sha256": "47faa97e9fa4d13d2016d93860b6e0c9be2901a342388c75100432a997dd8d3b",
+      "pdf_size": 3928,
+      "sidecar_size": 37994,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "5bf48ca2e355b68d2dccdff76b14eff629ffadad56de8c33240fa6d163647435",
+        "block_sha256": "4415bf7d54e4973a25ad77b91a6e360251a7d51860a2bb4b0eab2ec0cc096260",
+        "range": [
+          45,
+          454
+        ],
+        "pdf_sha256": "c54f9764e442ba61b06bc1a1445906246aebfeb179a24e7a2ec82e80175cd0cb"
+      },
+      "semantic": {
+        "text": "BAA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "ddaa18803a932ba0b5f9d6f567c6906f5fda328161ed9e957f2123cf5c9bbc42",
+        "size": 214,
+        "operators": 20
+      }
+    },
+    "bundle-b": {
+      "pdf": "artifacts/bundle-b/document.pdf",
+      "sidecar": "artifacts/bundle-b/shared-flow.json",
+      "pdf_sha256": "c54f9764e442ba61b06bc1a1445906246aebfeb179a24e7a2ec82e80175cd0cb",
+      "sidecar_sha256": "47faa97e9fa4d13d2016d93860b6e0c9be2901a342388c75100432a997dd8d3b",
+      "pdf_size": 3928,
+      "sidecar_size": 37994,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "5bf48ca2e355b68d2dccdff76b14eff629ffadad56de8c33240fa6d163647435",
+        "block_sha256": "4415bf7d54e4973a25ad77b91a6e360251a7d51860a2bb4b0eab2ec0cc096260",
+        "range": [
+          45,
+          454
+        ],
+        "pdf_sha256": "c54f9764e442ba61b06bc1a1445906246aebfeb179a24e7a2ec82e80175cd0cb"
+      },
+      "semantic": {
+        "text": "BAA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "ddaa18803a932ba0b5f9d6f567c6906f5fda328161ed9e957f2123cf5c9bbc42",
+        "size": 214,
+        "operators": 20
+      }
+    }
+  },
+  "verdict": "PASS",
+  "environment": {
+    "os": {
+      "system": "Windows",
+      "release": "11",
+      "version": "10.0.26200",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "machine": "AMD64"
+    },
+    "python": "3.12.14",
+    "pymupdf": "1.27.2.3",
+    "fonttools": "4.64.0",
+    "uharfbuzz": "0.55.0",
+    "pypdf": "6.10.0",
+    "poppler": {
+      "available": true,
+      "version": "pdftoppm version 26.07.0"
+    },
+    "libreoffice": "unavailable",
+    "repository": {
+      "commit": "452ba772526424b5f7365c1efea88b582337cf20",
+      "dirty": false,
+      "runtime_digest": "dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e"
+    }
+  },
+  "windows_execution": true,
+  "inputs": {
+    "pdf": {
+      "filename": "document.pdf",
+      "sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+      "page_count": 1,
+      "producer": "pypdf",
+      "creator": null,
+      "libreoffice_claimed": false
+    },
+    "sidecar": {
+      "filename": "shared-flow.json",
+      "sha256": "e2fba2596b6ce2073fe7471dc833b2aeee86f3c8f5084e92e88dba8742918799"
+    },
+    "fonts": {
+      "font_a": {
+        "filename": "font-a.ttf",
+        "sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2"
+      },
+      "font_b": {
+        "filename": "font-b.ttf",
+        "sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+      }
+    }
+  },
+  "plan": {
+    "edit": {
+      "start": 0,
+      "end": 0,
+      "text": "A"
+    },
+    "style": {
+      "tracking": "1/4"
+    },
+    "next_edit": {
+      "start": 0,
+      "end": 0,
+      "text": "B"
+    }
+  },
+  "target": {
+    "slot_id": "slot-0",
+    "page": 1,
+    "paragraph_id": "A",
+    "region_id": "R",
+    "sidecar_schema": "pdfengine-shared-flow-2",
+    "semantic_version": null,
+    "owner_state": "owned",
+    "source_font_name": "Courier",
+    "generated_fonts": [
+      "/PRF1"
+    ],
+    "text_length": 3
+  },
+  "finished_at": "2026-10-05T09:56:33.302271+00:00"
+}
