@@ -3393,3 +3393,115 @@ No GitHub CI was added, and no Windows runner was added.
 - the full suite passes.
 
 Windows execution status: **NOT RUN**. LibreOffice execution status: **NOT RUN**. Paint runtime remains NOT READY.
+
+
+## 25. Windows semantic lifecycle external evidence — 2026-10-05
+
+This section records the first Windows execution of the §24 harness. §20–§24 are kept as historical records. There
+are no runtime, harness, scope or contract changes. The only code change is a Windows-portability fix in the harness's
+own test file (§25.4).
+
+### 25.1 Environment
+
+| Item | Value |
+|---|---|
+| OS | Microsoft Windows 11 Home 10.0.26200 (AMD64), locale code page cp932 |
+| Python / PyMuPDF / fontTools / uharfbuzz (HarfBuzz) / pypdf | 3.12.14 / 1.27.2.3 / 4.64.0 / 0.55.0 (14.2.1) / 6.10.0 |
+| Poppler | `pdftoppm` 26.07.0, already present on the machine; put on `PATH` for the session only, nothing installed |
+| LibreOffice | **not installed** (no `soffice` on `PATH` or in the standard install folders) |
+| Starting main | `ce81efd8b84e2e5dd161c83e62f247959ef31ab8` (PR #46 merged) |
+| Evidence commit | `452ba772526424b5f7365c1efea88b582337cf20` (main + the harness-test fix), `dirty: false` |
+| Runtime digest | `dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`, the same as #46 |
+
+**Fonts** are local unhinted A/B/space subsets made by `prepare-fonts` (not committed):
+
+| Font | Derived from | Subset SHA-256 | Source SHA-256 |
+|---|---|---|---|
+| A | `C:\Windows\Fonts\arial.ttf` | `ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2` | `b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a` |
+| B | `C:\Windows\Fonts\times.ttf` | `bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc` | `931c5de5c70401d9324d5014c123802b4fb753000360ceb2f56c589403cd58c5` |
+
+The subsets were byte-identical across two independent runs.
+
+### 25.2 Windows synthetic control — PASS
+
+Run `evaluations/semantic_lifecycle/runs/windows-synthetic-20261005/`: `windows_execution: true`, **verdict `PASS`,
+exit 0**.
+
+All 15 required stages passed:
+
+- preflight, baseline, confirm, edit, style, font, noop;
+- publish_a, edit_from_bundle_a, font_back, publish_b;
+- negatives, continuity, raster_mupdf, inputs_preserved.
+
+`raster_poppler` (optional) also passed.
+
+- **Publication on Windows:** private staging → staged verification → `os.rename` of the directory → public reopen.
+  Bundles A and B each hold exactly `document.pdf` + `shared-flow.json`, candidate and published bytes are identical,
+  and a fresh process reopens each as `restored`. Bundle A was unchanged after bundle B was published. Windows skips
+  the directory fsync by design (§22), and the run does not count that as a failure. Refusal of an existing
+  destination is covered on Windows by `test_semantic_publication.py` (existing destination, republish, a destination
+  appearing after verification, and name rules) in the full suite below.
+- **Published bundle as the next revision:** `edit_from_bundle_a` edited bundle A's PDF + sidecar
+  (`AA B` → `BAA B`) and then published bundle B.
+- **Fonts:** A → B → A (`font`, `font_back` diffs on `font.sha`).
+- **Semantic provenance:** `source-confirmed` until the style change, then `caller-confirmed-current-semantic`.
+- **Negatives:** the mixed pairs A.pdf + B.json and B.pdf + A.json are both refused ("shared flow PDF revision changed").
+- **Continuity:** owner `marker_id` and `created_from` stay constant, and the creation-evidence digests stay
+  constant.
+- **No-op:** the owned body is byte-stable (18 operators).
+- **Raster:** MuPDF and Poppler both show identical no-op rasters and identical candidate/published rasters, and the
+  semantic change differs from the baseline.
+- **Inputs:** all input SHA-256 values are unchanged.
+
+The first attempt, before the test fix, ran the same harness code and also gave `PASS`, exit 0. Its output was not
+committed. After the fix the run was repeated from scratch (fonts, synthetic source, preparation, run), as §24
+requires.
+
+### 25.3 LibreOffice original — NOT PERFORMED
+
+LibreOffice is not installed on this machine. Installing it was not part of this run, and the owner chose to record
+this validation as not performed. The only LibreOffice-produced original on the machine, `lo_migration_ja.pdf`
+(Producer "LibreOffice 4.0"), was **not** used, because §24.5 excludes it (CJK text, hinted TTC face outside the
+semantic scope). No LibreOffice result is claimed. In particular this is neither "safely refused" nor "validated".
+The §24.5 step 2 procedure remains the next action once LibreOffice is available.
+
+### 25.4 Bug found: harness test portability on Windows (fixed here; harness and runtime unchanged)
+
+The first Windows run of the focused suites gave 4 failures in `tests/test_semantic_windows_harness.py`. None
+was in the runtime or in the harness itself.
+
+- **Three tests** read `report.md` / `result.json` / `harness.log` with the locale codec (cp932). The harness writes
+  them as UTF-8, and the em dash in the report failed to decode.
+- **The missing-provider test** replaced the raw provider path string in the sidecar text. On Windows the JSON stores
+  that path with escaped backslashes, so nothing was replaced and the run passed. Its guard compared against a
+  re-serialized dict, so it could not catch this.
+
+Fix (test file only):
+
+- read evidence as UTF-8;
+- replace every provider reference in the parsed JSON, assert that the replacement happened, and reseal
+  consistently (slot bindings, confirmed contract, model checksum), so that the refusal can only come from the
+  missing asset. The test asserts a baseline `REFUSED` whose reason is the missing file (`[Errno 2] No such file`)
+  and is not a checksum, contract or binding-seal mismatch (added after review);
+- also check the JSON-escaped absolute path;
+- add `test_evidence_files_are_utf8_independent_of_the_locale`.
+
+The harness tests then gave 18 passed on Windows (17 earlier + 1 new). Runtime fix PR needed: **no**.
+
+### 25.5 Tests on Windows
+
+- Focused (harness, layout, writer, authority, publication, lifecycle), before the fix: 259 passed, 4 failed (above),
+  2 skipped (Poppler not on `PATH`).
+- Harness after the fix: 18 passed. After the review fix (consistent reseal in the missing-provider test): 18 passed
+  again, and the Windows full suite was rerun with the same totals.
+- Full suite (whole `tests/` tree, four file-balanced parallel shards, Poppler on `PATH`): **1,625 passed, 7 skipped, 0 failed**. The skips are environment-only: 2 AES provider unavailable and 5 external corpus not downloaded. The Linux-only skips (Windows Arial / Noto Sans JP absent, Windows-path Poppler) ran and passed here. The total, 1,632, equals Linux 1,610 + 21 skipped + the 1 new test.
+
+### 25.6 Verdict
+
+- **WINDOWS NARROW SEMANTIC LIFECYCLE VALIDATED.** `windows_execution` is true; the synthetic run passed; publication
+  A/B passed; the published bundle was reused for the next edit; fresh reopen passed; continuity passed; the MuPDF
+  raster check passed; inputs were preserved; and no unexpected runtime FAIL occurred.
+- **LibreOffice original: NOT PERFORMED** (LibreOffice unavailable). No LibreOffice semantic editing claim.
+- Evidence: `evaluations/semantic_lifecycle/runs/windows-synthetic-20261005/result.json` and `report.md`. PDFs, fonts,
+  PNGs and logs stay local; their SHA-256 values are in `result.json`.
+- Next: run §24.5 step 2 on a machine with LibreOffice Writer. Paint runtime remains NOT READY.

@@ -1555,3 +1555,22 @@ Inputs are checked unchanged. The harness has 17 synthetic tests. A synthetic pa
 unmodified LibreOffice PDF on Windows. There is no runtime change. The full suite gives 1,610 passed / 21
 environment skips / 0 failed. **Windows and LibreOffice execution: NOT RUN.** Paint runtime NOT READY.
 [§24](anchored-paint-ownership.md#24-windows-external-semantic-lifecycle-validation-preparation--2026-10-05).
+
+
+## Windows semantic lifecycle evidence — 2026-10-05
+
+This is the first Windows run of the §24 harness, on Windows 11 / Python 3.12.14, from main
+`ce81efd8b84e2e5dd161c83e62f247959ef31ab8`. The runtime digest is unchanged
+(`dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`).
+
+The synthetic control (Arial/Times subsets) gave **PASS, exit 0**: publication A/B went through `os.rename`, bundle A
+was reused for the next edit, fresh reopen and continuity passed, and the MuPDF and Poppler rasters were identical.
+**WINDOWS NARROW SEMANTIC LIFECYCLE VALIDATED.**
+
+The LibreOffice original was **NOT PERFORMED** because LibreOffice is not installed. `lo_migration_ja.pdf` stays
+excluded per §24.5.
+
+The harness test file had 4 Windows-portability bugs: cp932 decoding, and a JSON-escaped path replacement. They were
+fixed in the tests only; the harness and runtime are unchanged. Windows full suite: 1,625 passed / 7 environment
+skips / 0 failed. Paint runtime NOT READY.
+[§25](anchored-paint-ownership.md#25-windows-semantic-lifecycle-external-evidence--2026-10-05).
