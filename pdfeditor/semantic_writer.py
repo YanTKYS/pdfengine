@@ -129,6 +129,35 @@ def _lines(plan, region, text):
     return lines
 
 
+def _ink_rects(font, style, emitted):
+    """Exact page-space ink rectangles (y down) of planned glyphs from the asset outlines."""
+    size, scale = F(style['font_size']), F(style['horizontal_scale'])
+    sx, sy = size * scale / font.upem, size / font.upem
+    gids = {c: font.shape(c, nominal_spacing=True).glyphs[0].gid for c in {g['text'] for g in emitted}}
+    rects = []
+    for glyph in emitted:
+        bounds = font.ink(gids[glyph['text']])
+        if bounds is not None:
+            x, y = (F(v) for v in glyph['origin'])
+            a, b, c, d = bounds
+            rects.append(Rect(float(x + a * sx), float(y - d * sy), float(x + c * sx), float(y - b * sy)))
+    return rects
+
+
+def _removed_ink(state, slot, current):
+    """Exact ink of the island being replaced, from the verified current semantic state and its asset.
+
+    The renderer box of the old glyphs (``resolved.bbox``) is not an ink bound: it uses normalized
+    ascender/descender and, under Tz, a horizontally scaled size, so outline overshoot can lie outside it.
+    """
+    font = semantic._asset(state, slot, current['semantic'], current['authority'])
+    try:
+        _, plan = semantic._derive(state, slot, current['semantic'], font)
+        return _ink_rects(font, current['semantic']['style'], plan['emitted'])
+    finally:
+        font.font.close()
+
+
 def _current_paragraph(state, slot, payload, authority):
     """Paragraph style view the island is written for (source registry or current-style adapter)."""
     p = state['paragraphs'][slot['paragraph_id']]
@@ -136,7 +165,7 @@ def _current_paragraph(state, slot, payload, authority):
             semantic.current_confirmations(state, slot, payload, authority))
 
 
-def _plan_island(page, state, sid, payload, authority, derived_plan, request, logical):
+def _plan_island(page, state, sid, payload, authority, derived_plan, request, logical, removed_ink):
     """Serialize the canonical body and plan its single owned-body Mutation."""
     from .mutation import Mutation
     slot = state['slots'][sid]
@@ -178,15 +207,10 @@ def _plan_island(page, state, sid, payload, authority, derived_plan, request, lo
         result.first_mutation = mutation
         style_ = payload['style']
         size, scale, rise = F(style_['font_size']), F(style_['horizontal_scale']), F(style_['rise'])
-        sx, sy = size * scale / font.upem, size / font.upem
-        new_glyphs, inks = [], []
+        inks, new_glyphs = _ink_rects(font, style_, emitted), []
         for n, glyph in enumerate(emitted):
             g = shaped[glyph['text']]
             x, y = (F(v) for v in glyph['origin'])
-            bounds = font.ink(g.gid)
-            if bounds is not None:
-                a, b, c, d = bounds
-                inks.append(Rect(float(x + a * sx), float(y - d * sy), float(x + c * sx), float(y - b * sy)))
             new_glyphs.append(dict(unicode=glyph['text'], style_id=typing, start=glyph['offset'], end=glyph['offset'] + 1,
                 source_index=None, provider=typing, code_witness=None, font_resource=alias,
                 code=f"{codes[glyph['text']]:04x}", cid=codes[glyph['text']], glyph_id=g.gid,
@@ -206,6 +230,8 @@ def _plan_island(page, state, sid, payload, authority, derived_plan, request, lo
         result.new_glyphs = new_glyphs
         result.final_rects = list(inks)
         result.affected = resolved.bbox.union(ink_bounds)
+        for ink in removed_ink:  # the planned area also covers the exact ink this rewrite removes
+            result.affected = result.affected.union(ink)
         result.font_builders = {alias: resource.build}
         result.font_subsets = {alias: hashlib.sha256(resource.program).hexdigest()}
         result.font_records = {alias: dict(subset_sha256=hashlib.sha256(resource.program).hexdigest(),
@@ -307,6 +333,7 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
     if derived != plan['next_derived']:
         raise PdfError('writer derivation differs from the authorized plan')
     logical = _logical(state, pid, plan['request'], payload['text'])
+    removed_ink = _removed_ink(state, slot, opened)
     root = Path(workspace)
     root.mkdir(parents=True, exist_ok=True)
     private = Path(tempfile.mkdtemp(prefix='semantic-candidate-', dir=root))
@@ -323,7 +350,8 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
             wanted_layout = dict(x=region['x'], width=region['width'], baseline=region['first_baseline'],
                                  max_bottom=region['bounds'][3], first_line_indent=state['paragraph_policies'][pid]['first_line_indent'],
                                  min_line_height=state['paragraph_policies'][pid]['min_line_height'])
-            island_plan, lines, body = _plan_island(page, state, sid, payload, authority, exact, plan['request'], logical)
+            island_plan, lines, body = _plan_island(page, state, sid, payload, authority, exact, plan['request'], logical,
+                                                    removed_ink)
             p, _ = _current_paragraph(state, slot, payload, authority)
             island_plan.document_context = dict(fonts=styles.providers(p),
                 options=document_edit_options(slot['binding'], wanted_layout), previous_state=slot['binding'])
