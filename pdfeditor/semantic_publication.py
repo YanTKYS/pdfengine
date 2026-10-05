@@ -15,10 +15,15 @@ Contract (narrow, see docs §22):
   the public namespace, after it both fixed children are there together;
 * any failure before the rename leaves the public namespace unchanged and
   removes the staging directory (a cleanup failure never hides the cause);
-* if the public reopen fails, the bundle is withdrawn by one rename into a
-  private quarantine name in the same parent and an error is raised; if that
-  rename also fails the error says the public path is not a verified bundle.
-  Success is never reported for a bundle that did not reopen.
+* the public reopen runs right after the rename. If it fails, the bundle is
+  withdrawn by one rename into a private quarantine name in the same parent
+  and an error names that path (also when only the directory sync after the
+  withdrawal fails); if the withdrawal rename fails the error says the public
+  path is not a verified bundle. Success is never reported for a bundle that
+  did not reopen;
+* a directory sync failure after a successful public reopen is a late failure:
+  `PublishedSyncError` says the verified, complete bundle is public at the
+  destination and carries the publication result; durability is not confirmed.
 
 The caller has exclusive use of the destination parent while publishing; this
 is exception atomicity of the public pair on one local filesystem, not
@@ -80,12 +85,28 @@ def _destination(destination):
     return final, parent
 
 
-def _withdraw(final, parent):
-    """Remove a published-but-unverified bundle from the public name with one rename."""
+class PublishedSyncError(PdfError):
+    """The bundle is public at `result['directory']` and verified; only the directory sync failed."""
+
+    def __init__(self, message, result):
+        super().__init__(message)
+        self.result = result
+
+
+def _withdraw_and_raise(final, parent, error):
+    """Take a published-but-unverified bundle off the public name with one rename, then report where it is."""
     quarantine = parent / (WITHDRAWN_PREFIX + final.name + '-' + secrets.token_hex(8))
-    os.rename(final, quarantine)
-    _sync_directory(parent)
-    return quarantine
+    try:
+        os.rename(final, quarantine)
+    except OSError as withdraw:
+        raise PdfError(f'published semantic bundle at {final} is NOT verified and could not be withdrawn: '
+                       f'{withdraw}') from error
+    try:
+        _sync_directory(parent)
+    except OSError as sync:
+        raise PdfError(f'published semantic bundle did not reopen and was withdrawn to {quarantine}; the directory '
+                       f'sync after the withdrawal failed ({sync}): {error}') from error
+    raise PdfError(f'published semantic bundle did not reopen and was withdrawn to {quarantine}: {error}') from error
 
 
 def publish_semantic_bundle(pdf, sidecar, destination):
@@ -118,21 +139,21 @@ def publish_semantic_bundle(pdf, sidecar, destination):
         except OSError as cleanup:
             error.add_note(f'staging cleanup failed, private garbage left at {staging}: {cleanup}')
         raise
-    _sync_directory(parent)
-    try:
+    try:  # public reopen first: semantic verification is not mixed with directory durability
         public = semantic.open_semantic_flow(final / PDF_NAME, final / SIDECAR_NAME)
         if public['status'] != 'restored':
             raise PdfError('published semantic bundle does not reopen: ' + public['reason'])
         if _staged_digests(final) != expected:
             raise PdfError('published semantic bundle bytes differ from the verified staging bytes')
     except Exception as error:
-        try:
-            quarantine = _withdraw(final, parent)
-        except OSError as withdraw:
-            raise PdfError(f'published semantic bundle at {final} is NOT verified and could not be withdrawn: '
-                           f'{withdraw}') from error
-        raise PdfError(f'published semantic bundle did not reopen and was withdrawn to {quarantine}: {error}') from error
-    return dict(directory=final, pdf=final / PDF_NAME, sidecar=final / SIDECAR_NAME, sha256=expected,
-                verification=dict(status=public['status'], slot_id=public['slot_id'], version=public['version'],
-                                  semantic=public['semantic'], authority=public['authority'],
-                                  owner=public['owner'], island=public['island']))
+        _withdraw_and_raise(final, parent, error)
+    result = dict(directory=final, pdf=final / PDF_NAME, sidecar=final / SIDECAR_NAME, sha256=expected,
+                  verification=dict(status=public['status'], slot_id=public['slot_id'], version=public['version'],
+                                    semantic=public['semantic'], authority=public['authority'],
+                                    owner=public['owner'], island=public['island']))
+    try:
+        _sync_directory(parent)
+    except OSError as sync:
+        raise PublishedSyncError(f'semantic bundle is published and verified at {final}, but the directory sync '
+                                 f'after the rename failed; durability is not confirmed: {sync}', result) from sync
+    return result

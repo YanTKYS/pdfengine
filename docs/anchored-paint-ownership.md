@@ -3045,9 +3045,9 @@ write document.pdf, shared-flow.json  (open "xb", write, flush, fsync, close); f
 open_semantic_flow(staging/document.pdf, staging/shared-flow.json) == restored
 staged bytes still equal the read bytes (SHA-256); destination still absent
 os.rename(staging, destination)                                      the single publication step
-fsync(parent)*
-open_semantic_flow(destination/document.pdf, destination/shared-flow.json) == restored
+open_semantic_flow(destination/document.pdf, destination/shared-flow.json) == restored   right after the rename
 published bytes equal the verified staged bytes
+fsync(parent)*                                                       durability, after verification
 → success
 (* where the platform can open directories; skipped on Windows)
 ```
@@ -3082,6 +3082,20 @@ published bytes equal the verified staged bytes
   the bytes are identical to the verified staging pair, such a failure means the environment changed between the
   two checks (for example the provider asset). Readers that open it during that window get the same refusal from
   `open_semantic_flow`.
+- **Every state after the rename is named** (review follow-up on PR #44). The public reopen runs immediately after
+  the rename; the parent directory sync runs only afterwards, so semantic verification and directory durability are
+  separate outcomes:
+
+  | After `os.rename(staging, destination)` | Outcome |
+  |---|---|
+  | reopen `restored`, bytes equal, parent sync OK | success, result returned |
+  | reopen `restored`, bytes equal, parent sync fails | `PublishedSyncError` (a `PdfError`): the **verified, complete bundle is public** at the destination; `.result` is the full publication result; durability is not confirmed. It is not withdrawn. |
+  | reopen fails or bytes differ; withdrawal rename OK; sync OK | `PdfError` "withdrawn to `<quarantine>`" |
+  | reopen fails; withdrawal rename OK; sync fails | `PdfError` "withdrawn to `<quarantine>`; the directory sync after the withdrawal failed" (the quarantine path is still reported, the destination is free) |
+  | reopen fails; withdrawal rename fails | `PdfError` "`<destination>` is NOT verified and could not be withdrawn" |
+
+  Power-loss durability stays outside the guarantee; a sync failure never turns a verified bundle into an
+  unverified one, and an unverified bundle is never reported as success.
 
 **Scope (unchanged from §19.7).** This is exception atomicity of the public pair on one local filesystem with an
 exclusive publisher. It is not concurrent-publisher locking, power-loss/OS-crash durability or secure deletion. One
@@ -3091,7 +3105,7 @@ existing destination). Python's standard library has no no-replace rename. Windo
 the operations used (`mkdtemp`, `open('xb')`, `fsync` on files, `os.rename` of a closed directory, `rmtree`) are
 the ones §19.7 selected for Windows, and directory fsync is skipped there.
 
-### 22.3 Evidence (`tests/test_semantic_publication.py`, 39 tests)
+### 22.3 Evidence (`tests/test_semantic_publication.py`, 41 tests)
 
 | Area | Result |
 |---|---|
@@ -3102,6 +3116,7 @@ the ones §19.7 selected for Windows, and directory fsync is skipped there.
 | Staged verification (before the rename) | Each of these is refused: PDF bytes tampered; PDF tampered with every SHA in the sidecar resealed; sidecar edited without a reseal; stale owner witness; authority flipped to source-confirmed; unrequested tracking; generated-font binding subset; generated-font record provider; source registry attribute; missing provider asset. Tampering inside staging is refused. A staging change after verification is refused. A candidate changed after it was read does not reach the bundle. In every case the parent stays empty. |
 | Failure injection before the rename | Failures injected at the PDF write, the sidecar write (after the PDF), the directory sync, verification and the rename itself all leave the parent equal to its previous contents, with an existing bundle intact and no staging left. A cleanup failure keeps the original exception and adds a note, and only a staging-prefixed private leftover remains. |
 | After the rename | A failed public reopen withdraws the bundle by one rename into quarantine (both files kept) and raises an error naming the quarantine path. The public path is confirmed to be the one reopened. If the withdrawal also fails, an explicit "NOT verified" error is raised. Public bytes changed right after the rename are withdrawn, not reported as success. |
+| Directory sync after a rename (review follow-up) | When the parent sync fails after the publish rename, the public reopen has already run, so the result is `PublishedSyncError`. It carries the `restored` result, and the bundle stays public, complete, byte-identical and reopenable. When the withdrawal rename succeeds but its sync fails, the error still names the quarantine, the destination is free, and both files are kept. On the reviewed head `ea7800d`, both cases escaped as a raw `OSError`, before the public reopen and without the quarantine path respectively. |
 
 Mutation check: disabling the staged-verification test fails 12 tests, and skipping the public reopen check fails 2.
 

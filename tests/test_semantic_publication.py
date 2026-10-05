@@ -287,8 +287,13 @@ def test_failures_before_the_rename_leave_the_public_namespace_unchanged(candida
         monkeypatch.setattr(publication, '_write', _fail_on('document.pdf'))
     elif point == 'sidecar_copy':  # after the PDF was placed, before the sidecar
         monkeypatch.setattr(publication, '_write', _fail_on('shared-flow.json'))
-    elif point == 'directory_sync':
-        monkeypatch.setattr(publication, '_sync_directory', lambda path: (_ for _ in ()).throw(OSError('injected')))
+    elif point == 'directory_sync':  # the staging directory sync, before the rename
+        real_sync = publication._sync_directory
+        def sync(path):
+            if Path(path).name.startswith(publication.STAGING_PREFIX):
+                raise OSError('injected staging sync failure')
+            return real_sync(path)
+        monkeypatch.setattr(publication, '_sync_directory', sync)
     elif point == 'verification':
         monkeypatch.setattr(semantic, 'open_semantic_flow', lambda *a: dict(status='needs_confirmation', reason='injected'))
     else:  # after verification, at the rename itself
@@ -358,3 +363,46 @@ def test_public_byte_change_after_rename_is_not_success(candidates, public, monk
     with pytest.raises(PdfError, match='withdrawn'):
         publication.publish_semantic_bundle(*pair(candidates['base']), public / 'bundle')
     assert not (public / 'bundle').exists()
+
+
+# --- directory sync failures after a successful rename ------------------------------------------------------------
+
+def _parent_sync_fails(monkeypatch, parent, events):
+    real_sync = publication._sync_directory
+    def sync(path):
+        events.append(('sync', Path(path)))
+        if Path(path) == parent:
+            raise OSError('injected parent sync failure')
+        return real_sync(path)
+    monkeypatch.setattr(publication, '_sync_directory', sync)
+
+
+def test_parent_sync_failure_after_publication_is_a_late_failure_with_a_verified_public_bundle(candidates, public,
+                                                                                                monkeypatch):
+    events = []
+    real_open = semantic.open_semantic_flow
+    monkeypatch.setattr(semantic, 'open_semantic_flow',
+                        lambda pdf, sidecar: (events.append(('open', Path(pdf))), real_open(pdf, sidecar))[1])
+    _parent_sync_fails(monkeypatch, public, events)
+    destination = public / 'bundle'
+    with pytest.raises(publication.PublishedSyncError, match='published and verified') as error:
+        publication.publish_semantic_bundle(*pair(candidates['size']), destination)
+    # The public reopen ran before the parent sync was attempted; the bundle stays public and complete.
+    assert events.index(('open', destination / 'document.pdf')) < events.index(('sync', public))
+    assert str(destination) in str(error.value)
+    result = error.value.result
+    assert result['directory'] == destination and result['verification']['status'] == 'restored'
+    assert entries(public) == ['bundle'] and entries(destination) == ['document.pdf', 'shared-flow.json']
+    assert result['pdf'].read_bytes() == Path(candidates['size']['pdf']).read_bytes()
+    assert semantic.open_semantic_flow(result['pdf'], result['sidecar'])['status'] == 'restored'
+
+
+def test_withdrawal_whose_directory_sync_fails_still_reports_the_quarantine(candidates, public, monkeypatch):
+    _second_open_fails(monkeypatch)
+    _parent_sync_fails(monkeypatch, public, [])
+    with pytest.raises(PdfError, match='was withdrawn to .*directory sync after the withdrawal failed') as error:
+        publication.publish_semantic_bundle(*pair(candidates['base']), public / 'bundle')
+    assert 'NOT verified' not in str(error.value) and not (public / 'bundle').exists()
+    quarantine = [n for n in entries(public) if n.startswith(publication.WITHDRAWN_PREFIX + 'bundle-')]
+    assert len(quarantine) == 1 and str(public / quarantine[0]) in str(error.value)
+    assert entries(public / quarantine[0]) == ['document.pdf', 'shared-flow.json']
