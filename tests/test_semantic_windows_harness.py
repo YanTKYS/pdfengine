@@ -211,23 +211,46 @@ def test_missing_input_file_is_a_usage_error_and_writes_nothing(prepared, tmp_pa
 def test_missing_provider_asset_is_refused_before_any_mutation(prepared, tmp_path):
     copy = tmp_path / 'copy'
     shutil.copytree(prepared['prep'], copy)
+    from pdfeditor.document_flow import _reseal
+    from pdfeditor.shared_flow import _contract
     sidecar = json.loads((copy / 'shared-flow.json').read_text(encoding='utf-8'))
-    # Replace the provider path in the parsed JSON (a string replace misses JSON-escaped Windows paths).
-    original, replaced = str((prepared['fonts'] / 'font-a.ttf').resolve()), 0
-    for paragraph in sidecar['paragraphs'].values():
-        for entry in paragraph['style_registry'].values():
-            if entry['reflow_provider']['path'] == original:
-                entry['reflow_provider']['path'] = str(tmp_path / 'gone.ttf')
-                replaced += 1
+    # Point every provider reference at a missing file in the parsed JSON (a string replace misses
+    # JSON-escaped Windows paths), then reseal it consistently: the slot bindings, the confirmed
+    # contract and the model checksum. The refusal must then come from the missing asset alone.
+    original, gone = str((prepared['fonts'] / 'font-a.ttf').resolve()), str(tmp_path / 'gone.ttf')
+    replaced = []
+
+    def swap(node):
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key == 'path' and value == original:
+                    node[key] = gone
+                    replaced.append(key)
+                else:
+                    swap(value)
+        elif isinstance(node, list):
+            for value in node:
+                swap(value)
+
+    swap(sidecar)
     assert replaced and original not in json.dumps(sidecar)  # the provider path really was replaced
+    for slot in sidecar['slots'].values():
+        slot['binding'] = _reseal(slot['binding'])
+    sidecar['contract_sha256'] = _contract(sidecar)
+    sidecar = _reseal(sidecar)
     (copy / 'shared-flow.json').write_text(json.dumps(sidecar, indent=2), encoding='utf-8')
     out = tmp_path / 'out'
     code = main('run', '--pdf', copy / 'document.pdf', '--sidecar', copy / 'shared-flow.json',
                 '--font-a', prepared['fonts'] / 'font-a.ttf', '--font-b', prepared['fonts'] / 'font-b.ttf',
                 '--output-dir', out)
     assert code == 3
-    status = statuses(result(out))
+    value = result(out)
+    status = statuses(value)
     assert status['baseline'] == 'REFUSED' and status['edit'] == 'SKIPPED'
+    reason = next(stage['error'] for stage in value['stages'] if stage['id'] == 'baseline')
+    # Not an integrity, contract or binding-seal refusal: the resealed sidecar is otherwise valid.
+    assert not any(word in reason for word in ('checksum', 'contract', 'identities', 'differs from its'))
+    assert 'gone.ttf' in reason or 'No such file' in reason or 'unavailable' in reason, reason
 
 
 @pytest.mark.parametrize('case', ['wrong_slot', 'mismatched_pdf'])

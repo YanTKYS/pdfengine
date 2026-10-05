@@ -3479,7 +3479,10 @@ was in the runtime or in the harness itself.
 Fix (test file only):
 
 - read evidence as UTF-8;
-- replace the provider in the parsed JSON and assert that the replacement happened;
+- replace every provider reference in the parsed JSON, assert that the replacement happened, and reseal
+  consistently (slot bindings, confirmed contract, model checksum), so that the refusal can only come from the
+  missing asset. The test asserts a baseline `REFUSED` whose reason is the missing file (`[Errno 2] No such file`)
+  and is not a checksum, contract or binding-seal mismatch (added after review);
 - also check the JSON-escaped absolute path;
 - add `test_evidence_files_are_utf8_independent_of_the_locale`.
 
@@ -3489,7 +3492,8 @@ The harness tests then gave 18 passed on Windows (17 earlier + 1 new). Runtime f
 
 - Focused (harness, layout, writer, authority, publication, lifecycle), before the fix: 259 passed, 4 failed (above),
   2 skipped (Poppler not on `PATH`).
-- Harness after the fix: 18 passed.
+- Harness after the fix: 18 passed. After the review fix (consistent reseal in the missing-provider test): 18 passed
+  again, and the Windows full suite was rerun with the same totals.
 - Full suite (whole `tests/` tree, four file-balanced parallel shards, Poppler on `PATH`): **1,625 passed, 7 skipped, 0 failed**. The skips are environment-only: 2 AES provider unavailable and 5 external corpus not downloaded. The Linux-only skips (Windows Arial / Noto Sans JP absent, Windows-path Poppler) ran and passed here. The total, 1,632, equals Linux 1,610 + 21 skipped + the 1 new test.
 
 ### 25.6 Verdict
