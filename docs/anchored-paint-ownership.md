@@ -3247,3 +3247,125 @@ revisions without breaking semantic authority, physical ownership, creation evid
 within the stated narrow scope. This does **not** mean general PDF editing, multi-slot/multi-paragraph support or
 paint runtime readiness. Paint runtime remains NOT READY. Remaining scope (not started): external Windows/LibreOffice
 validation of a prepared single-owned-slot target, any scope expansion, paint runtime.
+
+## 24. Windows external semantic lifecycle validation preparation — 2026-10-05
+
+Starting main `a68e2f3167696470af59e9466c071a5a11385913` (PR #45 merged: NARROW SEMANTIC LIFECYCLE VALIDATED; Windows
+static review only). §20–§23 are preserved.
+
+> **Windows execution has not been performed by this PR. LibreOffice execution has not been performed by this PR.**
+> Synthetic cloud runs test the harness only; none of them is Windows or LibreOffice evidence.
+
+### 24.1 Purpose and claims
+
+This PR prepares, from the cloud side, everything needed so that one Windows session can produce reproducible
+evidence for the §20–§23 lifecycle on an external target.
+
+**What the cloud preparation shows:**
+- the harness's CLI, stage sequencing, `result.json`/`report.md` generation, artifact layout, failure/refusal
+  recording, input preservation and exit codes (17 tests);
+- the expected outcome for a LibreOffice-shaped page, rehearsed on a synthetic page with the same structure.
+
+**What it does not show:** any Windows filesystem, rename, font or renderer behaviour; any LibreOffice-generated PDF.
+The container's LibreOffice is `libreoffice-core` only (no Writer), so no LibreOffice PDF was produced here.
+
+No runtime code changed. The harness only calls `confirm_semantic_layout`, `open_semantic_flow`,
+`plan_semantic_transition`, `build_semantic_candidate` and `publish_semantic_bundle`. For `prepare`, it also calls
+`inspect_paragraph`, `confirm_story`, `confirm_shared_flow` and `edit_shared_flow`.
+
+### 24.2 Harness and inputs
+
+`evaluations/semantic_lifecycle/windows_validation.py`: the subcommands, preparation spec, statuses, exit codes and
+`result.json` schema are documented in [its README](../evaluations/semantic_lifecycle/README.md). The subcommands:
+
+| Subcommand | What it does |
+|---|---|
+| `prepare-synthetic` | Writes an in-scope control source plus spec. `--libreoffice-shape` instead wraps the text in LibreOffice's `0.1 w q … re W* n q BT … ET Q Q` page group. |
+| `prepare-fonts` | Writes deterministic synthetic fonts, or unhinted A/B/space subsets of installed fonts. Hinting is removed with fontTools; the result is checked by the runtime's own `require_static_tt` and `nominal_glyph`. Derived fonts stay local. |
+| `prepare` | Builds a shared-flow v2 owner sidecar for exactly one source slot from an explicit, caller-confirmed spec (page, glyph IDs, region, layout, empty metrics, initial text). Nothing is inferred. |
+| `run` | Runs the lifecycle (see 24.3). |
+
+Target requirements:
+- one paragraph, one owned source slot, one region, one body style, no continuation;
+- static unhinted simple TrueType;
+- text limited to A/B/space/newline;
+- an identity, unclipped, opaque, default-black entry context;
+- a valid current owner.
+
+The harness checks none of this itself: the runtime refuses a target that does not meet it, and the harness records
+that refusal as `UNSUPPORTED_TARGET`. It never adapts a target.
+
+### 24.3 Lifecycle stages and evidence
+
+The stages and their prerequisites:
+
+```
+preflight → baseline → confirm → edit → style → font → noop → publish_a → edit_from_bundle_a (bundle A as input)
+  → font_back → publish_b → negatives (A.pdf+B.json, B.pdf+A.json must refuse) → continuity → raster_mupdf
+  → raster_poppler (optional) → inputs_preserved (always)
+```
+
+Every revision records:
+- **owner:** marker, created_from digest, program and block SHA, range, PDF SHA;
+- **semantic state:** text, font and provider SHA, size, tracking, rise, scale, Tw, edges, provenance, canonical;
+- **owned body:** SHA, size and operator count.
+
+The stages check:
+- **noop:** the body, size and operator count are unchanged.
+- **Publications:** exactly two artifacts, candidate bytes equal published bytes, and a fresh-process reopen.
+- **publish_b:** bundle A is unchanged.
+- **continuity:** creation-evidence digests (registry, observations, provider identity, source model and snapshot,
+  created_from, contract) are equal at baseline and final, and the owner marker and created_from are constant.
+- **Raster:** MuPDF and Poppler at 144 dpi, no-op and candidate-vs-published comparisons, five PNGs.
+- **inputs_preserved:** input SHA-256 values before and after the run.
+
+`result.json` is written after every stage, so a FAIL still leaves the partial evidence, `report.md` and the log.
+
+### 24.4 Synthetic results in the cloud (harness only)
+
+| Run (Linux, not Windows) | Verdict | Exit | Notes |
+|---|---|---|---|
+| in-scope synthetic control | `PASS` | 0 | All 16 stages pass, including Poppler 24.02, fresh-process reopen of both bundles, and mixed-pair refusals. |
+| LibreOffice page shape (`--libreoffice-shape`) | `UNSUPPORTED_TARGET` | 3 | `prepare` (v2 ownership) succeeds; `confirm` is refused with "semantic layout needs an identity, unclipped, default black opaque entry context"; later stages are SKIPPED; inputs are preserved. |
+| hinted asset | refused by `check_font` | — | The dehinted derivative passes. |
+
+Expected Windows outcome for an **unmodified LibreOffice PDF**: `UNSUPPORTED_TARGET` at `confirm`. That is a correct
+refusal of an out-of-scope entry context (LibreOffice's page-wide clip group and `0.1 w`), not a failure. The harness
+does not and must not adapt the PDF. A `PASS` on such a PDF would mean its structure differs from the recorded
+LibreOffice page shape, and must be investigated before it is recorded.
+
+### 24.5 Windows execution procedure (next evidence PR)
+
+Use a clean checkout of this PR's merge commit, then set up the environment as in the README (Python 3.12, lockfile).
+
+1. **In-scope control on Windows.** This exercises the Windows publication path: `os.rename`, no directory fsync, and
+   the Windows fonts.
+   - Run `prepare-fonts --from-a C:\Windows\Fonts\arial.ttf --from-b C:\Windows\Fonts\times.ttf`.
+   - Then `prepare-synthetic` → `prepare` → `run`, with the output directory at
+     `evaluations\semantic_lifecycle\runs\windows-synthetic-<date>`.
+   - Expected: `PASS`, exit 0.
+2. **LibreOffice original.**
+   - In Writer, make a new document whose first line is `XY` in Arial 12 pt, left-aligned, with no other content.
+     Export it as PDF (default options).
+   - Run `python -m pdfeditor observe lo.pdf --page 1 --json catalog.json` and read the glyph IDs and baseline of the
+     `XY` line. Write `spec.json` with a region that contains the line and stays clear of other content.
+   - Then `prepare` (font A from step 1) → `run`, with the output directory at
+     `evaluations\semantic_lifecycle\runs\windows-libreoffice-<date>`.
+   - Expected: `UNSUPPORTED_TARGET` at `confirm`, exit 3. Record the actual outcome whatever it is.
+3. **Commit for the evidence PR:** `result.json` and `report.md` of both runs. Fonts, PDFs, PNGs and logs stay local;
+   their hashes are already in `result.json`.
+   - Do not rerun a run into the same directory.
+   - Do not edit `result.json` by hand.
+   - Report `FAIL`s as they are.
+
+The earlier Windows original (`lo_migration_ja.pdf`, CJK, msmincho.ttc) is not reused here: its text and its hinted
+TTC face are outside the semantic scope.
+
+### 24.6 Validation
+
+- `tests/test_semantic_windows_harness.py`: 17 passed. The tests cover the PASS lifecycle, the result/report schema,
+  layout, input preservation, the LibreOffice-shape refusal, stage failure with partial results, a non-`PdfError`
+  failure, INCOMPLETE, a missing input, a missing provider asset, invalid targets, output collision, an
+  already-confirmed input, a plan refusal, font determinism and dehinting, and the CLI in a fresh process.
+- Full-suite numbers are recorded in §24.7.
+- Runtime digest unchanged from PR #45: `dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`.
