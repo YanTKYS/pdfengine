@@ -27,7 +27,13 @@ from pdfeditor import semantic_island as island
 from pdfeditor import semantic_layout as semantic
 from pdfeditor import semantic_writer as writer
 from pdfeditor import source_ownership as owned
-from test_semantic_layout import make_flow, resealed, statement
+from pdfeditor.attributed import inspect_paragraph
+from pdfeditor.editable import open_editable, write_editable
+from pdfeditor.selection import make_selection
+from pdfeditor.shared_flow import confirm_shared_flow, edit_shared_flow
+from pdfeditor.story_flow import confirm_story
+from test_attributed import source_pdf
+from test_semantic_layout import make_flow, resealed, statement, static_font
 from test_semantic_writer import EDGE, body_of, ops, pixels
 
 COMBINED = dict(font_size='37/3', horizontal_scale='4/5', rise='-1', tracking='1/4')
@@ -585,11 +591,6 @@ def test_font_requests_need_the_exact_supplied_asset(life, tmp_path):
 
 def _font_without_b():
     return glyph_font('NoB', {65: 'A', 32: 'space'}, width=600, box=(0, 0, 500, 600))
-    builder.setupOS2(sTypoAscender=600, sTypoDescender=-200, usWinAscent=600, usWinDescent=200, fsType=0)
-    builder.setupPost(); builder.setupMaxp()
-    builder.font['head'].created = builder.font['head'].modified = 2082844800
-    out = BytesIO(); builder.save(out)
-    return out.getvalue()
 
 
 def test_font_that_cannot_map_the_current_text_refuses(life, tmp_path):
@@ -639,3 +640,84 @@ def test_version1_compatibility_confirmation_is_explicit_and_exact(legacy, life)
     assert semantic.open_semantic_flow(pdf, upgraded)['status'] == 'restored'
     result = writer.build_semantic_candidate(pdf, upgraded, reinterpret(font_size='13'), workspace=life['root'] / 'work')
     assert semantic.open_semantic_flow(result['pdf'], result['sidecar'])['semantic']['style']['font_size'] == '13'
+
+
+# --- nonzero source baseline shift: version 1 sign rule kept, version 2 sign rule -------------------------------------
+
+@pytest.fixture(scope='module')
+def risen(tmp_path_factory):
+    """Owned flow whose source text has Ts 1, i.e. an explicitly confirmed baseline_shift of -1 (y-down)."""
+    root = tmp_path_factory.mktemp('semantic-rise')
+    raw = source_pdf(root, b'BT /Regular 12 Tf 1 Ts 20 200 Td (XY) Tj ET')
+    asset = root / 'asset.ttf'
+    asset.write_bytes(static_font())
+    observed = inspect_paragraph(raw, make_selection(raw, glyph_ids=[0, 1], explicit_width=150))
+    assert [s['baseline_shift'] for s in observed['styles']] == [-1.0]
+    write_editable(raw, root / 'confirmed.pdf', root / 'confirmed-editable.json', observed, [],
+                   fonts={'s0': dict(path=str(asset))}, paragraph_style={'s0': dict(baseline_shift=-1.0)},
+                   min_line_height=22, max_bottom=220)
+    source = root / 'confirmed.pdf'
+    paragraph = open_editable(source, root / 'confirmed-editable.json')['state']['paragraph']
+    story = confirm_story(source, {'part': dict(page=1, bounds=[18, 40, 200, 220], paragraph=paragraph, paint_relations=[],
+        layout=dict(x=20, baseline=200, width=150, max_bottom=220, min_line_height=22, first_line_indent=0))},
+        paragraph_id='A', chain=['part'], protected_regions={},
+        styles={'body': dict(provider=dict(path=str(asset)), provider_relation='substituted')},
+        style_assignments={'part': {s['id']: 'body' for s in paragraph['styles']}}, typing_style_id='body')
+    flow = confirm_shared_flow(source, {'A': story}, flow_id='rise-flow', paragraph_order=['A'],
+        regions={'R': dict(page=1, bounds=[18, 40, 200, 250], x=20, width=150, first_baseline=200)},
+        region_order=['R'], slot_regions={'A': {'part': 'R'}},
+        paragraph_policies={'A': dict(min_line_height=22, first_line_indent=0, keep_together=False,
+            break_before='auto', break_after='auto', empty=dict(kind='reserve-line', ascent=10, descent=3))},
+        follows=[], protected_regions={})
+    edit_shared_flow(source, flow, root / 'rev1.pdf', root / 'rev1.json',
+                     {'A': dict(edits=[dict(start=0, end=2, text='A B', style_id='body')])})
+    v2 = json.loads((root / 'rev1.json').read_text())
+    assert v2['paragraphs']['A']['style_registry']['body']['attributes']['baseline_shift']['value'] == -1.0
+    # Version 1 as PR #41/#42 sealed it: rise = -baseline_shift = +1 (legacy sign).
+    legacy = semantic._attach(v2, 'slot-0', statement(asset, rise='1'))
+    (root / 'legacy.json').write_text(json.dumps(legacy))
+    return dict(root=root, asset=asset, pdf=root / 'rev1.pdf', v2=root / 'rev1.json', legacy=root / 'legacy.json')
+
+
+def test_version1_nonzero_baseline_shift_bundle_still_reopens(risen):
+    before = risen['legacy'].read_bytes()
+    result = semantic.open_semantic_flow(risen['pdf'], risen['legacy'])
+    assert result['status'] == 'restored', result.get('reason')
+    assert result['version'] == 1 and result['authority'] is None and result['semantic']['style']['rise'] == '1'
+    assert risen['legacy'].read_bytes() == before
+    # The version 1 rule itself is unchanged: the version 2 sign is not accepted for a version 1 record.
+    flipped = semantic._attach(json.loads(risen['v2'].read_text()), 'slot-0', statement(risen['asset'], rise='-1'))
+    refused(risen['pdf'], flipped, 'body style')
+
+
+def test_version2_source_confirmed_rise_equals_the_observed_baseline_shift(risen):
+    with pytest.raises(PdfError, match='body style'):
+        semantic.confirm_semantic_layout(risen['pdf'], risen['v2'], slot_id='slot-0',
+                                         semantic=statement(risen['asset'], rise='1'))
+    v3 = semantic.confirm_semantic_layout(risen['pdf'], risen['v2'], slot_id='slot-0',
+                                          semantic=statement(risen['asset'], rise='-1'))
+    assert v3['slots']['slot-0']['semantic']['current']['provenance'] == semantic.SOURCE_CONFIRMED
+    # Ts 1 → baseline_shift −1 → rise −1 holds physically: a source-confirmed save writes Ts = −rise = 1 and verifies.
+    work = risen['root'] / 'work'
+    first = writer.build_semantic_candidate(risen['pdf'], v3, save(), workspace=work)
+    second = writer.build_semantic_candidate(first['pdf'], first['sidecar'], save(), workspace=work)
+    for result in (first, second):
+        opened_ = semantic.open_semantic_flow(result['pdf'], result['sidecar'])
+        assert opened_['status'] == 'restored' and opened_['island']['canonical']
+        assert opened_['authority']['provenance'] == semantic.SOURCE_CONFIRMED
+        assert b' 1 Ts ' in result['body']
+        styles_ = json.loads(Path(result['sidecar']).read_text())['slots']['slot-0']['binding']['paragraph']['styles']
+        assert [s['baseline_shift'] for s in styles_] == [-1.0]
+    assert first['body'] == second['body']
+
+
+def test_version1_nonzero_rise_is_not_upgraded_silently(risen):
+    before = risen['legacy'].read_bytes()
+    stored = json.loads(before)['slots']['slot-0']['semantic']['payload']
+    with pytest.raises(PdfError, match='legacy sign'):
+        semantic.confirm_semantic_layout(risen['pdf'], risen['legacy'], slot_id='slot-0', semantic=stored)
+    # Supplying the converted value is a reinterpretation of the stored payload, not an upgrade.
+    with pytest.raises(PdfError, match='cannot reinterpret'):
+        semantic.confirm_semantic_layout(risen['pdf'], risen['legacy'], slot_id='slot-0',
+                                         semantic=statement(risen['asset'], rise='-1'))
+    assert risen['legacy'].read_bytes() == before

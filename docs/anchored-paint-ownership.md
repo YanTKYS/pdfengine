@@ -2912,7 +2912,8 @@ Generated physical fonts keep the existing `generated-by-pdfengine` provenance; 
 source registry schema is unchanged. Stored version 1 records still open under their PR #41/#42 rules, are never
 upgraded by opening, and keep the old refusal for style/font reinterpretation (message `B-L2-S: semantic version 1 …`).
 The only upgrade path is explicit: `confirm_semantic_layout` given the verified version 1 bundle and exactly its stored
-payload re-seals it as version 2 `source-confirmed` (any other payload refuses). No public API was added; the internal
+payload re-seals it as version 2 `source-confirmed` (any other payload refuses). A version 1 record with a nonzero
+`rise` is refused by that path (see the rise sign contract below). No public API was added; the internal
 additions are `semantic_layout.current_registry/current_confirmations/codebook/font_resource/island_font/
 require_authorized_authority` and `shared_flow._open_current_flow`.
 
@@ -2934,9 +2935,19 @@ require_authorized_authority` and `shared_flow._open_current_flow`.
    codes (so glyph IDs) as the island; every island text operator selects that one slot-owned alias;
 6. the binding's `font_resource`/`font_subset_sha256` must equal the island's generated font.
 
-Sign fix found while building the adapter: semantic `rise` and registry `baseline_shift` are both page y-down offsets
-(origin = baseline + rise; Ts = −rise; measured Ts 1 → baseline_shift −1). L1 compared `rise == −baseline_shift`, which
-only ever ran with 0. It now compares equality for source-confirmed state.
+**Rise sign contract (per record version).** Semantic `rise` and registry `baseline_shift` are both page y-down
+offsets: origin = baseline + rise, the canonical island writes Ts = −rise, and Ts 1 is observed as baseline_shift −1.
+So for version 2, source-confirmed rise must **equal** the registry baseline_shift; the fixture with source Ts 1
+confirms rise −1 (rise +1 refuses), and its canonical saves write `1 Ts`, observe baseline_shift −1 and stay
+byte-stable. Version 1 records keep the rule they were sealed under in PR #41/#42, `rise == −baseline_shift`, so a
+stored version 1 bundle over a nonzero source baseline_shift still reopens unchanged. Evidence: on the same bundle, PR
+#42 main seals and reopens `rise = +1` over baseline_shift −1, the first PR #43 commit (`a994d7d`, which applied the
+version 2 rule to version 1) refused it, and the fixed code reopens it as version 1; the test fixture's version 1
+record is byte-identical to the one PR #42 seals. The legacy and version 2 meanings of a nonzero stored rise are
+opposite, so the explicit version 1 → 2 upgrade **refuses** a nonzero rise instead of re-sealing it (which would
+silently flip its meaning) or converting it (which would rewrite the caller's stored statement). Supplying the
+converted value instead is a reinterpretation of the stored payload and also refuses. Such a slot is confirmed as
+version 2 from its shared-flow v2 owner sidecar. Rise 0 records upgrade as before.
 
 **Writer.** `plan_semantic_transition` returns `next_authority` (and `version`). The writer pins it with
 `require_authorized_authority` next to `require_authorized_payload`, writes through the PR #42 canonical serializer and
@@ -2972,7 +2983,8 @@ claiming 13 pt over the unchanged 12 pt island without a request); physical tamp
 (Tf, Tc, Ts, Tz, Tf back to 12, glyph code); co-binding (stale semantic from another revision, rollback semantic, old
 `generated_fonts`, old subset SHA in the binding, stale semantic with forged current binding); provider record
 tampering (identity, missing record, other slot); current asset bytes replaced; writer drift (serializer adds
-tracking, adapter adds tracking, subset from another asset); authority drift in `require_authorized_authority`; an
+tracking, adapter adds tracking, subset from another asset); version 1 records sealed with the version 2 rise sign;
+the version 1 → 2 upgrade of a nonzero legacy rise, stored or converted; authority drift in `require_authorized_authority`; an
 asset with a non-font request, a font SHA without its asset, an asset that cannot map `B`; initial confirmation with
 any style or font other than the source-confirmed values. Transaction font ownership is unchanged and separate from
 source observations: a font change re-targets only the slot's own releasable alias through `reserve_font_alias(owner=
@@ -2982,6 +2994,12 @@ reservation needs ownership evidence and released glyphs, and a tampered record 
 
 **Tests changed.** The two PR #42 tests that asserted the B-L2-S refusal now assert it for a version 1 record (where it
 still applies); no other existing test changed.
+
+**Review follow-up (rise sign and version 1).** The first PR #43 commit applied the version 2 equality rule to
+version 1 records too, which contradicted "version 1 records open under their original rules". Fixed as described in
+the rise sign contract above, with three tests on a source with Ts 1 (`tests/test_semantic_authority.py`, `risen`
+fixture): the version 1 nonzero-shift bundle reopens; version 2 source-confirmed rise −1 holds and saves physically;
+the nonzero legacy rise is not upgraded silently. Two of them fail on `a994d7d` and pass now.
 
 **Validation.** `tests/test_semantic_authority.py`: 67 passed; L1 + L2 + authority: 157 passed. Full suite (whole
 `tests/` tree, pytest-xdist 4 workers, `--dist loadfile`, Python 3.12.3 on Linux): **1,502 passed, 21 skipped, 0

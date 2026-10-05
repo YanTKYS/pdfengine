@@ -61,6 +61,8 @@ REINTERPRETABLE = frozenset({'font', 'font_size', 'horizontal_scale', 'rise', 't
                              'edges', 'body_style_id'})
 # Explicit E changes that move current style/font authority away from the source-confirmed state.
 STYLE_REINTERPRETATIONS = frozenset({'font', 'font_size', 'horizontal_scale', 'rise', 'tracking'})
+LEGACY_RISE_SIGN = ('version 1 rise uses the legacy sign (rise = -baseline_shift); a nonzero rise is not re-sealed '
+                    'as version 2 (rise = baseline_shift); confirm version 2 from the shared-flow v2 owner sidecar')
 REFUSED_OPERATIONS = frozenset({'split', 'join', 'mixed_style', 'vertical_edge', 'cross_paragraph_edge',
                                 'nonadjacent_edge', 'region_reassignment', 'hash_refresh', 'replace_record'})
 WRITER = 'L2 canonical island writer + authorized publication'
@@ -294,10 +296,14 @@ def _registry_binding(state, slot, payload, current=None):
         return
     props = styles.properties(_source_entry(state, slot))
     style = payload['style']
-    # Semantic rise and registry baseline_shift are both page y-down offsets
-    # (origin = baseline + rise; PDF Ts = -rise).
+    # Version 2: semantic rise and registry baseline_shift are both page y-down
+    # offsets (origin = baseline + rise; PDF Ts = -rise), so they are equal.
+    # Version 1 records keep the rule they were sealed under (PR #41/#42):
+    # rise == -baseline_shift. It is never reinterpreted (see LEGACY_RISE_SIGN).
+    shift = F(str(props['baseline_shift']))
+    rise = shift if current is not None else -shift
     if (F(style['font_size']) != F(str(props['font_size'])) or F(style['horizontal_scale']) != F(str(props['horizontal_scale']))
-            or F(style['tracking']) != F(str(props['tracking'])) or F(style['rise']) != F(str(props['baseline_shift']))):
+            or F(style['tracking']) != F(str(props['tracking'])) or F(style['rise']) != rise):
         raise PdfError('semantic style differs from the confirmed body style')
     if current is not None and current['provider'] != _source_provider(state, slot):
         raise PdfError('source-confirmed semantic font differs from the confirmed style provider')
@@ -524,6 +530,11 @@ def confirm_semantic_layout(source, model, *, slot_id, semantic):
             raise PdfError('semantic version 1 bundle requires confirmation: ' + opened.get('reason', 'version'))
         if _canonical(semantic) != _canonical(opened['semantic']):
             raise PdfError('version 1 compatibility confirmation cannot reinterpret the stored payload')
+        if F(semantic['style']['rise']) != 0:
+            # Version 1 sealed rise as -baseline_shift; version 2 seals it as
+            # +baseline_shift. Re-sealing the stored value would silently flip
+            # its meaning and converting it would rewrite the caller's statement.
+            raise PdfError(LEGACY_RISE_SIGN)
         state = deepcopy(value)
     else:
         restored = shared_flow.open_shared_flow(source, value)
