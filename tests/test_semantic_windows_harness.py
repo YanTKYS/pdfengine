@@ -54,7 +54,7 @@ def run_args(prepared, out, *, prep='prep', font_b=True, extra=()):
 
 
 def result(out):
-    return json.loads((Path(out) / 'result.json').read_text())
+    return json.loads((Path(out) / 'result.json').read_text(encoding='utf-8'))
 
 
 def statuses(value):
@@ -121,13 +121,14 @@ def test_result_json_records_environment_inputs_and_evidence(passed, prepared):
     assert stage['publish_b']['details']['bundle_a_unchanged'] is True
     assert stage['publish_a']['details']['fresh_process'] == 'restored'
     # No absolute local paths in the evidence: inputs by file name, artifacts relative to the output directory.
-    text = (passed['out'] / 'result.json').read_text()
-    assert str(prepared['root']) not in text
+    text = (passed['out'] / 'result.json').read_text(encoding='utf-8')
+    # Check both the raw and the JSON-escaped spelling (Windows paths contain backslashes).
+    assert str(prepared['root']) not in text and json.dumps(str(prepared['root']))[1:-1] not in text
 
 
 def test_report_and_artifact_layout(passed):
     out = passed['out']
-    report = (out / 'report.md').read_text()
+    report = (out / 'report.md').read_text(encoding='utf-8')
     assert harness.DISCLAIMER in report and '**Verdict:** `PASS`' in report
     if platform.system() != 'Windows':
         assert 'NO — not Windows evidence' in report
@@ -136,7 +137,7 @@ def test_report_and_artifact_layout(passed):
     assert sorted(p.name for p in (out / 'artifacts' / 'bundle-b').iterdir()) == ['document.pdf', 'shared-flow.json']
     assert {p.name for p in (out / 'artifacts' / 'raster').glob('mupdf-*.png')} == {
         'mupdf-baseline.png', 'mupdf-changed.png', 'mupdf-noop.png', 'mupdf-bundle_a.png', 'mupdf-bundle_b.png'}
-    assert (out / 'logs' / 'harness.log').read_text().count('stage ') >= 2 * len(LIFECYCLE)
+    assert (out / 'logs' / 'harness.log').read_text(encoding='utf-8').count('stage ') >= 2 * len(LIFECYCLE)
 
 
 def test_original_inputs_are_unchanged(passed, prepared):
@@ -157,7 +158,7 @@ def test_libreoffice_page_shape_is_an_expected_refusal_not_a_failure(prepared):
     assert all(status[s] == 'SKIPPED' for s in LIFECYCLE[3:-1]) and status['inputs_preserved'] == 'PASS'
     confirm = next(s for s in value['stages'] if s['id'] == 'confirm')
     assert 'unclipped' in confirm['error']
-    assert '**REFUSED**' in (out / 'report.md').read_text() and inputs(prepared, 'loprep') == before
+    assert '**REFUSED**' in (out / 'report.md').read_text(encoding='utf-8') and inputs(prepared, 'loprep') == before
 
 
 def test_stage_failure_is_recorded_and_partial_results_are_kept(prepared, monkeypatch):
@@ -176,8 +177,8 @@ def test_stage_failure_is_recorded_and_partial_results_are_kept(prepared, monkey
     assert status['publish_a'] == 'SKIPPED' and status['inputs_preserved'] == 'PASS'
     assert 'no-op save changed the canonical owned body' in next(s for s in value['stages'] if s['id'] == 'noop')['error']
     assert 'candidate-03-font-b' in value['revisions']  # evidence up to the failure is retained
-    assert '**FAIL**' in (out / 'report.md').read_text()
-    assert 'Failure' in (out / 'logs' / 'harness.log').read_text()
+    assert '**FAIL**' in (out / 'report.md').read_text(encoding='utf-8')
+    assert 'Failure' in (out / 'logs' / 'harness.log').read_text(encoding='utf-8')
 
 
 def test_unexpected_exception_is_a_failure_not_a_refusal(prepared, monkeypatch):
@@ -210,11 +211,16 @@ def test_missing_input_file_is_a_usage_error_and_writes_nothing(prepared, tmp_pa
 def test_missing_provider_asset_is_refused_before_any_mutation(prepared, tmp_path):
     copy = tmp_path / 'copy'
     shutil.copytree(prepared['prep'], copy)
-    sidecar = json.loads((copy / 'shared-flow.json').read_text())
-    sidecar_text = (copy / 'shared-flow.json').read_text().replace(
-        str((prepared['fonts'] / 'font-a.ttf').resolve()), str(tmp_path / 'gone.ttf'))
-    assert sidecar_text != json.dumps(sidecar)  # the provider path really was replaced
-    (copy / 'shared-flow.json').write_text(sidecar_text)
+    sidecar = json.loads((copy / 'shared-flow.json').read_text(encoding='utf-8'))
+    # Replace the provider path in the parsed JSON (a string replace misses JSON-escaped Windows paths).
+    original, replaced = str((prepared['fonts'] / 'font-a.ttf').resolve()), 0
+    for paragraph in sidecar['paragraphs'].values():
+        for entry in paragraph['style_registry'].values():
+            if entry['reflow_provider']['path'] == original:
+                entry['reflow_provider']['path'] = str(tmp_path / 'gone.ttf')
+                replaced += 1
+    assert replaced and original not in json.dumps(sidecar)  # the provider path really was replaced
+    (copy / 'shared-flow.json').write_text(json.dumps(sidecar, indent=2), encoding='utf-8')
     out = tmp_path / 'out'
     code = main('run', '--pdf', copy / 'document.pdf', '--sidecar', copy / 'shared-flow.json',
                 '--font-a', prepared['fonts'] / 'font-a.ttf', '--font-b', prepared['fonts'] / 'font-b.ttf',
@@ -287,7 +293,7 @@ def test_font_preparation_is_deterministic_and_dehints(prepared, tmp_path):
     assert main('prepare-fonts', '--output-dir', tmp_path / 'derived', '--from-a', source, '--from-b', source) == 0
     derived = TTFont(tmp_path / 'derived' / 'font-a.ttf')
     assert not {'fpgm', 'prep', 'cvt '} & set(derived.keys())
-    record = json.loads((tmp_path / 'derived' / 'fonts.json').read_text())
+    record = json.loads((tmp_path / 'derived' / 'fonts.json').read_text(encoding='utf-8'))
     assert record['font-a.ttf']['derived_from'] == 'hinted.ttf' and record['font-a.ttf']['source_sha256'] == sha(source)
 
 
@@ -298,3 +304,12 @@ def test_cli_entry_point_runs_in_a_fresh_process(prepared, tmp_path):
     assert done.returncode == 0, done.stderr[-2000:]
     assert 'verdict: PASS (exit 0)' in done.stdout
     assert result(out)['verdict'] == 'PASS'
+
+
+def test_evidence_files_are_utf8_independent_of_the_locale(passed):
+    """Regression (Windows cp932 locale): evidence is UTF-8 bytes and decodes without the locale codec."""
+    for name in ('result.json', 'report.md'):
+        data = (passed['out'] / name).read_bytes()
+        text = data.decode('utf-8')
+        assert text.encode('utf-8') == data
+    assert '\u2014' in (passed['out'] / 'report.md').read_text(encoding='utf-8')
