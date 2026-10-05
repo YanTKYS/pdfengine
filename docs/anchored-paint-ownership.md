@@ -4100,10 +4100,12 @@ remove/recipe; E refusals (17); all-space/newline refusal; semantic tamper (8); 
 paint-first refused; removed/new area (8 pairs, with necessity); z-order; owned vs foreign paint identification;
 obstacle obligation; element-relation obligation; runtime gate probe.
 
-Validation (Linux, Python 3.12.3, PyMuPDF 1.27.2.3): new file 91 passed; focused (`test_semantic_underline_contract`,
-`test_paint_reassessment`, `test_source_ownership`, `test_semantic_layout`, `test_semantic_writer`): see the PR body
-for the exact counts and the full-suite result. Runtime digest unchanged (`dd4fff7b…`). Windows and Poppler were not
-run (no runtime or rendering-path change).
+Validation (Linux, PyMuPDF 1.27.2.3, pytest-xdist 4 workers, `--dist loadfile`): new file **91 passed**; focused
+(`test_semantic_underline_contract`, `test_paint_reassessment`, `test_source_ownership`, `test_semantic_layout`,
+`test_semantic_writer`) **246 passed**. Full suite (whole `tests/` tree, collected before the last probe,
+`test_only_the_named_gates_refuse_a_painted_writer_candidate`, was added): **1,712 passed, 21 skipped, 0 failed**;
+the skips are the same 21 environment-only skips as §22.3. No existing test changed. Runtime digest unchanged
+(`dd4fff7b…`). Windows and Poppler were not run (no runtime or rendering-path change).
 
 **Verdict: SEMANTIC UNDERLINE CONTRACT READY.** Closed: P-SURF (A), v2/v3 validator split, body order (text → paint),
 paint grammar, decorations schema, range semantics, affinity (outside/outside), recipe units (exact em), fill
