@@ -5,7 +5,8 @@ current bundle and an explicit request. Authority chain, nothing new:
 
 * `open_semantic_flow` verifies the current bundle (owner, semantics, island);
 * `plan_semantic_transition` is the only transition policy, and
-  `require_authorized_payload` pins the writer to its `next` payload;
+  `require_authorized_payload` / `require_authorized_authority` pin the writer
+  to its `next` payload and `next_authority` (current style/font authority);
 * `source_ownership.owned_body` proves the byte span this slot owns, and one
   `source-output-rewrite` Mutation replaces only that body inside the existing
   `Transaction` (source revision, overlap, foreign glyph/paint, font ownership);
@@ -37,7 +38,7 @@ from .logical_element import paragraph_from_snapshot, style_recipes
 from .model import Rect
 from .proof_session import proof_session
 from .selection import source_sha
-from .shaped_font import ShapedFont, ShapedRun
+from .shaped_font import ShapedFont
 from .story_flow import LINE_KEYS, _boundaries
 from .style_confirmation import confirm_paragraph
 from .transaction import Plan, Transaction
@@ -47,11 +48,12 @@ from . import shared_flow
 from . import source_ownership as owned
 from . import story_styles as styles
 
-# E transitions whose physical effect stays inside the confirmed registry
-# contract (positions only, or a label). Style values and the font asset are
-# bound by the v2 registry/fragment contract to source observations; changing
-# them needs a confirmed registry-change contract (blocker B-L2-S).
-WRITABLE_REINTERPRETATIONS = frozenset({'word_spacing', 'edges', 'body_style_id'})
+# Semantic record version 2 carries explicit current style/font authority
+# (B-L2-S resolution), so every L1 reinterpretation is writable. A version 1
+# record (PR #41/#42) binds style values and the font asset to the source
+# registry; for it only position/label reinterpretations stay writable.
+WRITABLE_REINTERPRETATIONS = semantic.REINTERPRETABLE
+LEGACY_WRITABLE_REINTERPRETATIONS = frozenset({'word_spacing', 'edges', 'body_style_id'})
 
 
 class SemanticIslandPlan(Plan):
@@ -92,9 +94,10 @@ def _writable(plan):
         raise PdfError('a reopen needs no candidate')
     if plan['classification'] == 'E':
         changed = set(plan['request']['changes'])
-        if changed - WRITABLE_REINTERPRETATIONS:
-            raise PdfError('blocker B-L2-S: style/font reinterpretation needs a confirmed registry-change contract: '
-                           + ', '.join(sorted(changed - WRITABLE_REINTERPRETATIONS)))
+        writable = WRITABLE_REINTERPRETATIONS if plan['version'] != 1 else LEGACY_WRITABLE_REINTERPRETATIONS
+        if changed - writable:
+            raise PdfError('B-L2-S: semantic version 1 binds style/font to the source registry; explicit version 2 '
+                           'confirmation is needed before reinterpreting: ' + ', '.join(sorted(changed - writable)))
 
 
 def _page_top(content):
@@ -126,12 +129,19 @@ def _lines(plan, region, text):
     return lines
 
 
-def _plan_island(page, state, sid, payload, derived_plan, request, logical):
+def _current_paragraph(state, slot, payload, authority):
+    """Paragraph style view the island is written for (source registry or current-style adapter)."""
+    p = state['paragraphs'][slot['paragraph_id']]
+    return (dict(p, style_registry=semantic.current_registry(state, slot, payload, authority)),
+            semantic.current_confirmations(state, slot, payload, authority))
+
+
+def _plan_island(page, state, sid, payload, authority, derived_plan, request, logical):
     """Serialize the canonical body and plan its single owned-body Mutation."""
     from .mutation import Mutation
     slot = state['slots'][sid]
     pid = slot['paragraph_id']
-    p = state['paragraphs'][pid]
+    p, confirmations = _current_paragraph(state, slot, payload, authority)
     content = page.content
     record = slot['source_output']
     snapshot = slot['binding']['paragraph']
@@ -139,9 +149,9 @@ def _plan_island(page, state, sid, payload, derived_plan, request, logical):
     try:
         paragraph = paragraph_from_snapshot(page.source, snapshot, content=content)
         result.paragraph = paragraph
-        paragraph = bind_destination_styles(paragraph, styles.render_styles(p), styles.render_confirmations(p))
+        paragraph = bind_destination_styles(paragraph, styles.render_styles(p), confirmations)
         result.paragraph = paragraph
-        paragraph = confirm_paragraph(paragraph, styles.render_confirmations(p))
+        paragraph = confirm_paragraph(paragraph, confirmations)
         result.paragraph = paragraph
         typing = 'logical:' + p['logical']['typing_style_id']
         style = paragraph.styles[typing]
@@ -150,12 +160,11 @@ def _plan_island(page, state, sid, payload, derived_plan, request, logical):
         provider = p['style_registry'][p['logical']['typing_style_id']]['reflow_provider']
         font = ShapedFont(provider['path'])
         result.font = font  # kept open until the Transaction has built the subset
+        if font.source_sha256 != payload['font']['sha']:
+            raise PdfError('current font provider differs from the semantic font')
         emitted = derived_plan['emitted']
-        chars = sorted({g['text'] for g in emitted} | {'A', ' '})
-        shaped = {c: font.shape(c, nominal_spacing=True).glyphs[0] for c in chars}
-        resource = font.resource([ShapedRun('', tuple(shaped[c] for c in chars))])
-        identity = dict(source_sha256=font.source_sha256, font_index=font.font_index,
-                        variations=font.variations, instance_sha256=font.instance_sha256)
+        chars = semantic.codebook(emitted)
+        shaped, resource, identity = semantic.font_resource(font, emitted)
         alias = page.reserve_font_alias('PRF', consumed=frozenset(selected), retained=frozenset(),
                                         provider=identity, owner=sid)
         codes = {c: int.from_bytes(resource.code(shaped[c]), 'big') for c in chars}
@@ -232,7 +241,8 @@ def _verify_candidate(pdf, sidecar, plan, body):
     opened = semantic.open_semantic_flow(pdf, sidecar)
     if opened['status'] != 'restored':
         raise PdfError('candidate does not verify: ' + opened['reason'])
-    if opened['semantic'] != plan['next'] or opened['derived'] != plan['next_derived']:
+    if (opened['semantic'] != plan['next'] or opened['derived'] != plan['next_derived']
+            or opened['authority'] != plan['next_authority']):
         raise PdfError('candidate semantic state differs from the authorized plan')
     if not opened['island']['canonical']:
         raise PdfError('candidate island is not the exact canonical body')
@@ -248,7 +258,7 @@ def _verify_candidate(pdf, sidecar, plan, body):
     finally:
         content.close()
     slot = state['slots'][opened['slot_id']]
-    font = semantic._asset(state, slot, opened['semantic'])
+    font = semantic._asset(state, slot, opened['semantic'], opened['authority'])
     try:
         _, exact = semantic._derive(state, slot, opened['semantic'], font)
     finally:
@@ -282,13 +292,14 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
         raise PdfError('current semantic bundle does not verify: ' + opened['reason'])
     plan = semantic.plan_semantic_transition(source, value, request, asset=asset)
     _writable(plan)
-    payload = deepcopy(plan['next'])
+    payload, authority = deepcopy(plan['next']), deepcopy(plan['next_authority'])
     semantic.require_authorized_payload(plan, payload)
+    semantic.require_authorized_authority(plan, authority)
     state = deepcopy(opened['state'])
     sid = opened['slot_id']
     slot = state['slots'][sid]
     pid = slot['paragraph_id']
-    font = semantic._asset(state, slot, payload)
+    font = semantic._asset(state, slot, payload, authority)
     try:
         derived, exact = semantic._derive(state, slot, payload, font)
     finally:
@@ -312,8 +323,8 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
             wanted_layout = dict(x=region['x'], width=region['width'], baseline=region['first_baseline'],
                                  max_bottom=region['bounds'][3], first_line_indent=state['paragraph_policies'][pid]['first_line_indent'],
                                  min_line_height=state['paragraph_policies'][pid]['min_line_height'])
-            island_plan, lines, body = _plan_island(page, state, sid, payload, exact, plan['request'], logical)
-            p = state['paragraphs'][pid]
+            island_plan, lines, body = _plan_island(page, state, sid, payload, authority, exact, plan['request'], logical)
+            p, _ = _current_paragraph(state, slot, payload, authority)
             island_plan.document_context = dict(fonts=styles.providers(p),
                 options=document_edit_options(slot['binding'], wanted_layout), previous_state=slot['binding'])
             result = transaction.commit(target)
@@ -323,7 +334,10 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
                 state['paragraphs'][pid]['logical'].update(logical)
                 edited, report = bind_document_edit(result.identity(number), island_plan, result)
                 wanted = dict(text=payload['text'], style_spans=logical['style_spans'] if payload['text'] else [])
-                styles.bind_fragment(shared_flow._style_state(state, pid), sid, edited, wanted, generated=True)
+                # Current fragment binds to the current style view; the source
+                # registry (creation evidence) itself is never rewritten.
+                styles.bind_fragment(dict(shared_flow._style_state(state, pid), style_registry=p['style_registry']),
+                                     sid, edited, wanted, generated=True)
                 edited['boundaries'] = _boundaries(payload['text'])
                 edited['layout_provenance'] = {k: ('explicitly_confirmed' if k == 'width' else
                                                    'generated-from-confirmed-shared-flow') for k in edited['layout']}
@@ -347,7 +361,7 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
         state['physical_breaks'] = shared_flow._breaks(state)
         for current in state['slots'].values():
             current.pop('semantic', None)
-        candidate = semantic._attach(state, sid, payload)
+        candidate = semantic._attach(state, sid, payload, authority, source=target)
         sidecar = private / 'shared-flow.json'
         sidecar.write_bytes((json.dumps(candidate, ensure_ascii=False, indent=2) + '\n').encode('utf-8'))
         verified, accuracy = _verify_candidate(target, sidecar, plan, body)

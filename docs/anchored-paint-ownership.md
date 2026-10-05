@@ -2771,6 +2771,7 @@ Paint runtime remains NOT READY.
 **Result: L2 NOT COMPLETE — one recorded blocker, B-L2-S.** The writer, Transaction integration, owner and semantic
 rebind, candidate verification, no-op stability, Tw and Tw↔edge are implemented and verified. Explicit style-value and
 font-asset reinterpretations are refused by design until a registry-change contract exists (§21.6).
+*(Later: §21.8 closes B-L2-S; L2 COMPLETE. This paragraph is kept as the PR #42 record.)*
 
 ### 21.1 Runtime surface and API
 
@@ -2883,3 +2884,137 @@ while the immutable source witnesses stay as creation evidence. Until then the w
 L3 publishes a verified candidate pair (`document.pdf` + `shared-flow.json`) through private staging, one new bundle
 directory and one rename, with the PR #40 failure matrix and an end-to-end public reopen. It adds no latest/current
 pointer.
+
+### 21.8 B-L2-S resolution — current semantic style/font authority — 2026-10-04
+
+Starting main `77bb93e705307c8a52be09cc8116936dfebc12f3` (PR #42 merged). §21.1–§21.7, including the B-L2-S record in
+§21.6, are preserved as the historical L2 state. This section closes B-L2-S.
+
+**Root cause.** Shared-flow v2 has one style authority: the registry entry, whose attributes and reflow provider are
+bound to immutable source observations (`validate_registry`), and whose values the current fragment must equal
+(`validate_fragment`, provider recipe). The v3 verifier ran that validator on a projection with the semantic record
+removed, and L1 `_registry_binding` also required the semantic style to equal the registry. "Source observation" and
+"current semantic authority" were the same field, so 12 pt → explicit 13 pt failed whichever of the two was kept.
+
+**Selected model: three separate layers, one new field, no source rewrite.**
+
+| Layer | Fields | Changes when |
+|---|---|---|
+| A. Creation evidence | `paragraphs[p].style_registry` (attributes, `source_observations`, `reflow_provider`, `provider_relation`), `source_model_sha256`, `source_snapshot_sha256`, `source_output.created_from`, `contract_sha256` | never (immutable; still validated by the unchanged `validate_registry` and the contract digest) |
+| B. Current semantic authority | `slots[s].semantic.payload` (style values, font SHA + pinned policy) and the new `slots[s].semantic.current = {provenance, provider: {path, sha256}}` | initial confirmation (`source-confirmed`), then only an explicit E change of `font_size`/`horizontal_scale`/`rise`/`tracking`/`font` (`caller-confirmed-current-semantic`) |
+| C. Current physical binding | canonical owned island, `slots[s].binding` (+ `fonts` recipe = current provider), `style_binding`, `generated_fonts[page][alias]`, owner witness, `semantic.binding` (+ `font_resource`, `font_subset_sha256`) | every candidate revision (current only, no history) |
+
+Generated physical fonts keep the existing `generated-by-pdfengine` provenance; source observations keep
+`observed_source`. The three provenances are never merged.
+
+**Schema.** `pdfengine-shared-flow-3` is unchanged; the semantic record goes from `version: 1` to `version: 2`:
+`{version, payload, current, derived, binding}`, with the binding adding `font_resource` and `font_subset_sha256`. The
+source registry schema is unchanged. Stored version 1 records still open under their PR #41/#42 rules, are never
+upgraded by opening, and keep the old refusal for style/font reinterpretation (message `B-L2-S: semantic version 1 …`).
+The only upgrade path is explicit: `confirm_semantic_layout` given the verified version 1 bundle and exactly its stored
+payload re-seals it as version 2 `source-confirmed` (any other payload refuses). A version 1 record with a nonzero
+`rise` is refused by that path (see the rise sign contract below). No public API was added; the internal
+additions are `semantic_layout.current_registry/current_confirmations/codebook/font_resource/island_font/
+require_authorized_authority` and `shared_flow._open_current_flow`.
+
+**Projection contract.** A version 2 record is verified as:
+
+1. integrity, scope, payload shape, current-authority shape (`provider.sha256` = payload font SHA);
+2. layer A and the owner: the v2 `_validate` on the semantic-free projection. For `source-confirmed` this is exactly
+   v2. For `caller-confirmed-current-semantic`, `_open_current_flow` passes an in-memory current-style adapter, used
+   **only** for `validate_fragment`: current values and the current provider as separate fields with
+   `caller-confirmed-current-semantic` provenance; fill/observed color stay the source-confirmed values. The
+   registry, its observations, the contract digest, `source_ownership.validate` and generated-font records are
+   validated unchanged. The adapter is never persisted. v2 call sites are untouched (`current_styles=None`);
+3. co-binding to the owner witness and this PDF revision;
+4. `_registry_binding`: `source-confirmed` (and version 1) style/font must equal the registry; caller-confirmed
+   authority is not compared with source observations;
+5. exact derivation from the current asset (`current.provider`), then the island: caller-confirmed authority requires
+   the exact canonical body; whenever the island is canonical, the slot's generated font record must name the current
+   asset identity and the deterministic canonical subset rebuilt from that asset must have the same SHA, BaseFont and
+   codes (so glyph IDs) as the island; every island text operator selects that one slot-owned alias;
+6. the binding's `font_resource`/`font_subset_sha256` must equal the island's generated font.
+
+**Rise sign contract (per record version).** Semantic `rise` and registry `baseline_shift` are both page y-down
+offsets: origin = baseline + rise, the canonical island writes Ts = −rise, and Ts 1 is observed as baseline_shift −1.
+So for version 2, source-confirmed rise must **equal** the registry baseline_shift; the fixture with source Ts 1
+confirms rise −1 (rise +1 refuses), and its canonical saves write `1 Ts`, observe baseline_shift −1 and stay
+byte-stable. Version 1 records keep the rule they were sealed under in PR #41/#42, `rise == −baseline_shift`, so a
+stored version 1 bundle over a nonzero source baseline_shift still reopens unchanged. Evidence: on the same bundle, PR
+#42 main seals and reopens `rise = +1` over baseline_shift −1, the first PR #43 commit (`a994d7d`, which applied the
+version 2 rule to version 1) refused it, and the fixed code reopens it as version 1; the test fixture's version 1
+record is byte-identical to the one PR #42 seals. The legacy and version 2 meanings of a nonzero stored rise are
+opposite, so the explicit version 1 → 2 upgrade **refuses** a nonzero rise instead of re-sealing it (which would
+silently flip its meaning) or converting it (which would rewrite the caller's stored statement). Supplying the
+converted value instead is a reinterpretation of the stored payload and also refuses. Such a slot is confirmed as
+version 2 from its shared-flow v2 owner sidecar. Rise 0 records upgrade as before.
+
+**Writer.** `plan_semantic_transition` returns `next_authority` (and `version`). The writer pins it with
+`require_authorized_authority` next to `require_authorized_payload`, writes through the PR #42 canonical serializer and
+Transaction with the current-style view (adapter values, explicit tracking/rise confirmations, current provider), binds
+the fragment to that view, and seals version 2 with the island's generated font. No writer-specific transition rule
+was added. `_writable` no longer refuses style/font for version 2.
+
+**Lifecycle evidence** (`tests/test_semantic_authority.py`, actual candidates, every one reopened from disk):
+
+| Case | Result |
+|---|---|
+| font_size 12 → 13 → no-op → no-op | semantic 13; `/PRF1 13 Tf`; physical style 13.0; MuPDF trace size 13; bodies, operator counts and pixels identical through no-ops; text edit afterwards keeps the authority |
+| horizontal_scale 1 → 4/5 | `80 Tz`; B at x 31.52 (= 20 + 2 × 7.2 × 4/5) |
+| rise 0 → −1 | `1 Ts`; physical baseline_shift −1; every origin 1 pt up; empty metrics 41/5 / 7/5; inside the region |
+| tracking 0 → 1/4 | `0.25 Tc`; origins 20, 27.45, 34.9 |
+| combined 37/3, 4/5, −1, 1/4 | `12.333333 Tf 80 Tz 0.3125 Tc 0 Tw 1 Ts`; diff exactly the four fields; stable through two no-ops |
+| font A → B → no-op → no-op | payload SHA B; authority provider B; generated record provider B, `+SemanticAlternate` subset; placement uses B's 500-unit advances (20, 26, 32); source registry still A; only `/PRF1` re-targeted, other resources unchanged |
+| font A → B → A | new explicit transition: provider A, still `caller-confirmed-current-semantic`; body, subset and pixels equal the A base |
+| style + Tw / style + edge | `word_spacing 6/5` kept under 13 pt + 1/4 tracking (B at 37.3); edge record kept under scale/rise, no-op stable |
+| empty | font B, then 13 pt on the `[] TJ` witness; empty metrics follow; no-op stable; regrow paints 13 pt B |
+| fresh process | size, combined, font, rollback, empty, edge+style reopen identically |
+| raster | MuPDF 144 dpi: each style/font change differs from base, no-ops pixel-identical. Poppler 24.02 (`pdftoppm`, 144 dpi): no-ops pixel-identical, changes differ, rollback equals base |
+
+All-space and newline-only text paint nothing and are refused by the existing persistent binding (`bind_empty`, PR
+#42). The refusal is unchanged on main, with or without a style/font transition, the reason is identical, and no
+candidate is left; current authority (plan `next_authority`) is still carried. This is an L2 scope limit, not B-L2-S.
+
+**Negative evidence (all refuse):** source evidence tampering after transitions (registry attribute, observations,
+both, registry provider rewritten to B, provider relation, `created_from`, `source_model_sha256`); current semantic
+tampering (size 14, unrequested tracking, provenance flipped to source-confirmed, unknown provenance, missing
+`current`, version downgrade, provider path pointing at A, payload + provider claiming A over a B island, a sidecar
+claiming 13 pt over the unchanged 12 pt island without a request); physical tampering with owner witness re-sealed
+(Tf, Tc, Ts, Tz, Tf back to 12, glyph code); co-binding (stale semantic from another revision, rollback semantic, old
+`generated_fonts`, old subset SHA in the binding, stale semantic with forged current binding); provider record
+tampering (identity, missing record, other slot); current asset bytes replaced; writer drift (serializer adds
+tracking, adapter adds tracking, subset from another asset); version 1 records sealed with the version 2 rise sign;
+the version 1 → 2 upgrade of a nonzero legacy rise, stored or converted; authority drift in `require_authorized_authority`; an
+asset with a non-font request, a font SHA without its asset, an asset that cannot map `B`; initial confirmation with
+any style or font other than the source-confirmed values. Transaction font ownership is unchanged and separate from
+source observations: a font change re-targets only the slot's own releasable alias through `reserve_font_alias(owner=
+slot)` with the registered `own_fonts` records; source/shared/inherited/foreign aliases are never re-targeted, a
+reservation needs ownership evidence and released glyphs, and a tampered record is not ownership
+(`tests/test_generated_fonts.py`, unchanged).
+
+**Tests changed.** The two PR #42 tests that asserted the B-L2-S refusal now assert it for a version 1 record (where it
+still applies); no other existing test changed.
+
+**Review follow-up (rise sign and version 1).** The first PR #43 commit applied the version 2 equality rule to
+version 1 records too, which contradicted "version 1 records open under their original rules". Fixed as described in
+the rise sign contract above, with three tests on a source with Ts 1 (`tests/test_semantic_authority.py`, `risen`
+fixture): the version 1 nonzero-shift bundle reopens; version 2 source-confirmed rise −1 holds and saves physically;
+the nonzero legacy rise is not upgraded silently. Two of them fail on `a994d7d` and pass now.
+
+**Validation** (after the review follow-up, `ca8a6cd`). `tests/test_semantic_authority.py`: 70 passed; L1 + L2 +
+authority + generated fonts + shared flow: 187 passed. Full suite (whole `tests/` tree, pytest-xdist 4 workers,
+`--dist loadfile`, Python 3.12.3 on Linux): **1,505 passed, 21 skipped, 0 failed** (first commit: 1,502 passed). Skips
+are environment-only: Windows Arial / Noto Sans JP not present (11), AES provider unavailable (2), external corpus not
+downloaded (5), Poppler at the Windows runtime path required by `test_source_ctm_compensation` (3; the system
+`pdftoppm` used above is a different binary). External Windows/LibreOffice validation was not run: no prepared
+single-owned-slot target exists and the blocker was an authority/schema problem. Runtime digest (SHA-256 over sorted
+`pdfeditor/*.py` name + NUL + bytes): `45e6913da2b5cb4da385aee3f2de71c0ade6b0a46dc977994edceaf1fd32fd50` (PR #42:
+`d9e69d51…`).
+
+**Verdict: B-L2-S CLOSED. L2 COMPLETE.** Style values and the font asset are written to actual candidates and pass a
+fresh reopen, no-ops are stable, source creation evidence is retained and still validated, current semantic
+authority is explicit, current physical binding is verified, unauthorized drift refuses, and nothing is published.
+
+**Remaining L3 scope.** Verified candidate PDF + verified shared-flow-3 sidecar → private staging → one complete new
+bundle directory → one rename → public reopen, with the PR #40 failure matrix and no latest/current pointer. Not
+implemented here. Paint runtime remains NOT READY.

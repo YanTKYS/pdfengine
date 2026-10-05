@@ -171,20 +171,30 @@ def test_label_rename_keeps_the_physical_body(chain):
     assert body_of(*chain['steps']['label']) == body_of(*chain['steps']['save3'])
 
 
+def version1(chain, name):
+    """The stored record exactly as PR #41/#42 sealed it (semantic version 1)."""
+    state = json.loads(Path(chain['steps'][name][1]).read_text())
+    return semantic._attach(state, 'slot-0', state['slots']['slot-0']['semantic']['payload'])
+
+
 @pytest.mark.parametrize('changes', [dict(font_size='13'), dict(horizontal_scale='4/5'), dict(rise='-1'),
                                      dict(tracking='1/4')])
-def test_style_reinterpretation_is_the_recorded_blocker(chain, changes):
+def test_style_reinterpretation_of_a_version1_record_keeps_the_b_l2_s_refusal(chain, changes):
+    # Version 2 records carry explicit current authority (tests/test_semantic_authority.py);
+    # a version 1 record binds style to the source registry and is never upgraded implicitly.
     with pytest.raises(PdfError, match='B-L2-S'):
-        build(*chain['steps']['save3'], dict(operation='reinterpret', changes=changes), chain['root'])
+        build(chain['steps']['save3'][0], version1(chain, 'save3'), dict(operation='reinterpret', changes=changes),
+              chain['root'])
 
 
-def test_font_change_is_the_recorded_blocker(chain, tmp_path):
+def test_font_change_of_a_version1_record_keeps_the_b_l2_s_refusal(chain, tmp_path):
     from test_semantic_layout import static_font
     import hashlib
     alternate = tmp_path / 'alternate.ttf'; alternate.write_bytes(static_font('SemanticAlternate'))
     sha = hashlib.sha256(alternate.read_bytes()).hexdigest()
     with pytest.raises(PdfError, match='B-L2-S'):
-        build(*chain['steps']['save3'], dict(operation='reinterpret', changes=dict(font=sha)), chain['root'], asset=alternate)
+        build(chain['steps']['save3'][0], version1(chain, 'save3'), dict(operation='reinterpret', changes=dict(font=sha)),
+              chain['root'], asset=alternate)
 
 
 def test_reopen_needs_no_candidate_and_refusals_are_preserved(chain):
