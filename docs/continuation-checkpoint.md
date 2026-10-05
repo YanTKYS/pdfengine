@@ -1520,5 +1520,5 @@ directory with one rename, and reopens it from the public path. A failed public 
 rename to private quarantine and raises an error; success is never reported. Destinations are immutable: an
 existing entry is refused, never replaced. Failures before the rename leave the public namespace unchanged and the
 staging directory removed. Published bytes equal the candidate bytes, and no sidecar field is rewritten. Tests: 41
-new; full suite 1,544 passed / 21 environment skips / 0 failed (no new skips). Runtime digest `8c7fcd1bfa8c62f9bba0cf8f3c91f58f2ab7510ff0697dc1700c4e454d37efd3`. **L3 COMPLETE.** Paint runtime NOT READY.
+new; full suite 1,546 passed / 21 environment skips / 0 failed (no new skips). A directory sync failure after a successful public reopen is a named late failure (`PublishedSyncError`, bundle public and verified); a withdrawal always reports its quarantine path. Runtime digest `c6252fa73f5e37e8de61fa36b990e04c67d6d72b039b488a988e356488c0e3d4`. **L3 COMPLETE.** Paint runtime NOT READY.
 [L3 details](anchored-paint-ownership.md#22-l3-runtime-atomic-semantic-bundle-publication--2026-10-05).
