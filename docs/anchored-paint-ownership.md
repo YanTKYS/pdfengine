@@ -3105,6 +3105,12 @@ the ones §19.7 selected for Windows, and directory fsync is skipped there.
 
 Mutation check: disabling the staged-verification test fails 12 tests, and skipping the public reopen check fails 2.
 
+**Validation.** Full suite (whole `tests/` tree, pytest-xdist 4 workers, `--dist loadfile`, Python 3.12.3 on Linux):
+**1,544 passed, 21 skipped, 0 failed** (PR #43: 1,505 + 39 new). The skips are the same 21 environment-only skips
+(Windows Arial / Noto Sans JP 11, AES provider 2, external corpus 5, Windows-path Poppler 3); none is new. Windows and
+external renderer validation were not run. Runtime digest (SHA-256 over sorted `pdfeditor/*.py` name + NUL + bytes):
+`8c7fcd1bfa8c62f9bba0cf8f3c91f58f2ab7510ff0697dc1700c4e454d37efd3` (PR #43: `45e6913d…`; the only runtime change is the new `semantic_publication.py`).
+
 ### 22.4 L3 verdict
 
 **L3 COMPLETE.** The full path runs on real files:
