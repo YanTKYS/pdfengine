@@ -3505,3 +3505,134 @@ The harness tests then gave 18 passed on Windows (17 earlier + 1 new). Runtime f
 - Evidence: `evaluations/semantic_lifecycle/runs/windows-synthetic-20261005/result.json` and `report.md`. PDFs, fonts,
   PNGs and logs stay local; their SHA-256 values are in `result.json`.
 - Next: run §24.5 step 2 on a machine with LibreOffice Writer. Paint runtime remains NOT READY.
+
+## 26. Paint runtime blocker reassessment after L1–L3 — 2026-10-05
+
+Starting main `b4a45c39aa279a5442404f307a6fdbe048c2d288` (PR #47 merged 2026-10-05: WINDOWS NARROW SEMANTIC
+LIFECYCLE VALIDATED; LibreOffice original NOT PERFORMED). §1–§25 are preserved. **This section is design/evidence
+only:** there is no paint runtime, no `pdfeditor/` change, no schema or grammar change. The runtime digest is unchanged:
+`dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`.
+
+Question: which of the blockers that stopped paint runtime in #35–#37 (§12, §14, §15.9/§15.11, §16.6) are resolved by
+the L1–L3 semantic lifecycle, which remain, and is a narrow paint implementation now safe to start?
+
+**Answer in one line:** the *layout* blockers are resolved, but only on the semantic surface. That surface has no paint
+model, and it currently refuses paint. Paint runtime stays **NOT READY**. The remaining blockers are new
+surface/authority decisions (§26.3), not layout drift.
+
+### 26.1 The structural fact: the paint contract and the validated layout live on different surfaces
+
+| | Ordinary editable (§1–§15 paint contract) | Shared-flow v3 single owned slot (L1–L3) |
+|---|---|---|
+| Paint model | `anchors.py` (`_candidates`, `AnchoredPaintEdit`), editable v2 `anchors.underlines` | none |
+| Layout authority | `ParagraphShaper` with trace-difference advances, trace ink and float32 style reconstruction (unchanged, B1-L open) | `semantic_measure` exact nominal metrics, one provider-independent rule, exact region capacity |
+| Owner | none (PR #33 keeps `_source_output` closed for ordinary) | `source_output` owner witness, rebound every revision |
+| Publication | `_publish` two-path exception rollback | L3 bundle directory, one rename |
+| Paint admission | anchored rewrite (legacy growth, §1) | **refused:** `shared_flow.py:217-220` (`binding.anchors` must be `None`, no `decorates` relation), `shared_flow.py:243` (`decoration_ranges == []`), `source_ownership.BODY_OPERATORS` = text operators only (`grammar()` rejects `re f`, `test_source_ownership.py::test_body_grammar_rejects_foreign_operators_and_nested_groups`), semantic payload has no decoration field |
+
+Consequences:
+
+- Nothing in L1–L3 changed the ordinary editable runtime. **Every §15/§16 blocker is still open there**, exactly as
+  recorded.
+- On the semantic surface the layout blockers are closed. There is nothing to paint, though, and source text with an
+  underline cannot enter that surface at all (`test_source_ownership.py::test_text_only_scope_remains_closed`).
+- A narrow paint implementation therefore has to choose a surface first. Porting L1–L3 to ordinary editable is a
+  second layout implementation, so it is rejected for v1. The semantic surface is the only candidate.
+
+### 26.2 Blocker mapping
+
+Status is given for the semantic surface. The ordinary editable surface keeps its §15/§16 status unchanged.
+
+| Blocker (origin) | L1–L3 element that answers it | Status |
+|---|---|---|
+| **B1** paint feedback loop: rendered bounds → `_candidates` → median offset/thickness → `_rect_commands` (§2, §14) | The exact plan is `_derive(payload, asset, region)`. A recipe fixed at creation never reads rendered paint. | **Resolved by construction** for derived geometry. Evidence in §26.4. |
+| **B1** numeric formatter / output decimal rule (§15.2) | `semantic_island.decimal` (one way, ≤6 places, ties-to-even, no exponent, no −0) | **Resolved**, reusable |
+| **B1-L** L1/L2/L3 advance authority (§15.9, §16.1) | `semantic_measure` nominal metrics; no trace, no retained/new split | **Resolved** in scope |
+| **B1-L-M** trace ink fallback (§16.1) | Static simple TT outlines only; Base-14 and unknown programs refused | **Resolved** in scope |
+| **B1-L-V** vertical asymmetry (§17.1) | One hhea + ink rule for all glyphs and empty lines | **Resolved** in scope |
+| **B1-L-S** style ratchet (§17.1) | Exact rational payload flows one way; physical values are verification only (§17.5, §20) | **Resolved** |
+| **B1-L-I** Tw / positioning intent (§17.6) | Option B: confirmed, not physically witnessed (§18, §21.3) | **Resolved** under P4, with that stated limit |
+| **B1-L-C** confirmation authority (§18) | P4: trusted caller plus explicit request (§19.1) | **Resolved** |
+| **B1-L-O** runtime surface / owner co-publication (§19.9) | shared-flow v3, two artifacts (§19.10, §20) | **Resolved** |
+| **B-L2-S** style/font reinterpretation (§21.6) | Current semantic authority layer (§21.8) | **Resolved** |
+| **B2** zero-paint / revival (§12, §15.4) | none; NARROW V1 made it a non-feature | **Still excluded.** The text surface supports empty → regrow, so paint must define termination on empty (P-EMPTY, §26.3). |
+| **B3** dormant boundary / active isolation (§12, §15.4) | The island entry context is proven each revision: identity CTM, unclipped, opaque, no ExtGState, default black (§20.3 step 8) | **Partial.** Context proof exists for the text island. The paint group's own entry = exit isolation depends on P-SURF. |
+| **B4** single owner per PDF / inventory (§14, §15.5) | One flow, one owned slot, whole-PDF SHA bound; the v3 opener validates the whole sidecar | **Dissolves** if paint is owned by the slot's existing owner (option A, §26.3), because no second marker inventory exists. **Open** if a separate paint marker domain is added. |
+| **O1** legacy/ordinary mutation overlapping paint (§15.11 N2) | `MutationProgram` owner overlap inside one plan; any foreign save changes the whole-PDF SHA, so the semantic bundle reopens `needs_confirmation` | **Partial.** Fail-closed by staleness. An explicit pre-mutation refusal by ordinary/anchored paths over an owned island is not evidenced, so a test is needed. |
+| **O2** creation recipe from source decimal path + exact S (§15.11 N3) | identity CTM only (S = identity); no source underline can exist on this surface | **Open, and its form changes.** With no source path to derive from, the recipe must be a caller-confirmed exact value (P-REC). Source adoption is a separate capability (P-ADOPT). |
+| **O3** termination lexical gate (§15.11 N4) | Exact canonical re-serialization of the whole owned body is already checked (`_island` → `canonical`) | **Subsumed** under option A: termination is re-serialization without the group, and is verified byte-exact. **Open** under option B. |
+| **O4** cross-page fixture (§15.11 N5) | Single slot on one page; whole-PDF SHA binding | **Open (low).** The policy holds by scope; the refusal fixture is still absent. |
+| **O5** clip proof CTM vs paint S (§15.11 N6) | Unclipped, identity-CTM entry context required | **Dissolved by scope** (clips refused) |
+| External original (§24.5) | Windows synthetic PASS; LibreOffice **NOT PERFORMED** | Not a paint blocker by itself. No real-world source has gone through the semantic lifecycle. |
+
+### 26.3 Remaining and new blockers
+
+| ID | Question that must be decided before implementation | Why it is design, not implementation |
+|---|---|---|
+| **P-SURF** paint ownership domain on the semantic slot | **A:** paint lives inside the slot's source-output body, after the text group, as `q (x y m x y l x y l x y l h f)+ Q`. **B:** a sibling `pdfengine-paint-v1` island (§15 grammar and marker pair) owned by the same slot record. **C:** ordinary editable (rejected, §26.1). | A changes the source-output grammar that v3 currently reuses *unchanged* from v2 (§20.3 step 3). It therefore needs a versioned v3-only grammar/projection adapter, so that v2 stays byte-for-byte and v2 never accepts paint. B keeps v2 untouched but brings back a second domain, marker inventory, B4 and the termination lexical gate (O3). This decides write authority and the verifier boundary. **Recommendation: A**, versioned: one owner, one exact re-serialization covering text and paint, no new marker domain, so B4 and O3 dissolve. |
+| **P-SEM** decoration semantic authority | `payload.decorations` (range, affinities, kind `underline`, recipe) and its N/D/E/R classes. **D:** remap on edit and growth inside the range; shrink on deletion; terminate the group when its range collapses. **E:** add, remove or change the recipe. **R:** revival, reuse of an old ID, overlap, mixed kinds. Identity is current-state only (like `current:i`), with no `anchor_id` history, because option A needs no marker. | This is the same class of decision as B1-L-C/B-L2-S: which fields may change, and under which request. |
+| **P-REC** recipe authority | Caller-confirmed exact rational offset/thickness: absolute pt or em-relative? The evidence (§26.4) shows an absolute offset keeps y = 58.7 after 12 → 37/3 pt. Fill must equal the text fill (the entry context is default black), so a colored underline is refused. | It defines what a style change means for paint (E-class side effects) and what must be confirmed. |
+| **P-ADOPT** source underline adoption | Shared-flow refuses source decorations, so an existing underline can neither be kept anchored nor consumed. Consuming it means mutating foreign bytes outside the owned span. | **v1 should refuse it explicitly.** v1 then means "caller-declared underline on semantic text", not "keep an existing source underline anchored". Adoption is a later, separate authority. |
+| **P-EMPTY** empty text with decorations | §15.1 refused full empty for a paint-owning paragraph. On the semantic surface, empty → regrow already works for text. Under A, termination is record removal plus re-serialization, so refusal is unnecessary. | It must be stated explicitly: either terminate all groups with no dormant state, or refuse. |
+| **P-VER** verifier/Transaction obligations (implementation once P-SURF is decided) | The canonical island check covers text and paint. Transaction declares island paint as owned (`paint_changes`). The planned pixel area includes the removed old rectangles (§23.4 lesson). The v2 projection with the paint stripped validates. Underline vs glyph placement accuracy ≤0.002 pt stays a separate gate. | Not a design question once A/B is chosen; listed so that it is not lost. |
+
+The §15.8 acceptance matrix still applies where it is surface-independent: bytes KPI, fresh-process, tamper/reseal,
+foreign injection, late rollback. Rows tied to ordinary editable or legacy reconfirmation become refusals on the
+semantic surface: source terminal consumption, legacy growth, scale CTM and clip.
+
+### 26.4 Evidence (`tests/test_paint_reassessment.py`, 10 tests)
+
+A prototype formatter **inside the test** derives one rectangle per line over the painted glyphs of a range. It trims
+boundary spaces (§15.2 rule), uses the line baseline, a fixed exact recipe (`offset 13/10`, `thickness 7/10`) and
+`semantic_island.decimal`. Its only inputs are the stored sidecar (`_derive` over the payload, the current asset and
+the confirmed region) and the current page frame (MediaBox top, the constant the island writer reads). It reads no
+rendered path, trace, earlier PDF or report. It is not an owned writer, grammar, verifier or accuracy proof.
+
+It runs over a real L2 chain built from runtime APIs: save×3, edit `A B` → `AA B`, no-op, an explicit 37/3 pt + scale
+4/5 + tracking 1/4 with two no-ops, Tw 6/5 → no-op, Tw → edge → no-op, and font A → B → no-op.
+
+| Check | Result |
+|---|---|
+| No-op fixed point (6 groups × 3 ranges, including first → noop and the scaled style) | Byte-identical in every group. This is the comparison that failed in §15.2 and §16.5 (there with identity and 0.83/0.91 CTMs; this surface admits the identity CTM only, and "scaled" here is a 4/5 horizontal-scale style). |
+| Semantic change | Base, growth and scaled bodies are all different. Tw 6/5 moves the end from 44.43 to 45.63; font B gives 41.683333. |
+| Tw vs confirmed edge | Identical paint, as for text (§21.4) |
+| Current-only | A fresh process with only the sidecar, asset and page top reproduces the bytes for three revisions |
+| Read-only | Every revision still reopens `restored` and canonical |
+| Code facts | `BODY_OPERATORS` has no path operators; `grammar()` rejects a paint group after the text group |
+
+Sample (base `A B`, 12 pt): `q 20 58.7 m 41.6 58.7 l 41.6 58 l 20 58 l h f Q`. At 37/3 pt the y stays 58.7, which is
+the P-REC question.
+
+**Interpretation.** On this surface the fixed point holds *by construction*: the plan is a pure function of the
+semantic payload, the asset and the region, so equal semantic state gives equal geometry. The test shows that real
+stored candidates satisfy this, and that no physical observation is needed. It does not show that such paint can be
+owned, verified or published. That is P-SURF/P-SEM/P-VER.
+
+Validation: `tests/test_paint_reassessment.py` **10 passed** (Windows, Python 3.12.14). Full suite: not run (no runtime
+change). The runtime digest is unchanged.
+
+### 26.5 Verdict and next scope
+
+- **Layout-side paint blockers** (B1 loop and formatter, B1-L L1–L3, B1-L-M, B1-L-V, B1-L-S, B1-L-I, B1-L-C, B1-L-O,
+  B-L2-S): **resolved on the shared-flow v3 semantic surface** within its narrow scope. On the ordinary editable
+  surface they remain open.
+- **B2 excluded; B3 partial; B4/O3 dissolve under option A; O1 partial; O2 changes into P-REC; O4 open (low); O5
+  dissolved by scope.**
+- **New blockers:** P-SURF, P-SEM, P-REC and P-EMPTY are design decisions. P-ADOPT is a recommended explicit refusal;
+  P-VER covers implementation obligations.
+- **Paint runtime: NOT READY.** The cause is no longer layout drift. The paint ownership domain and the decoration
+  semantics on the only surface with a validated layout are undefined. Prior reviews required this class of decision
+  (B1-L-O, B-L2-S) to be closed at the design level before implementation.
+
+**Next minimal scope (one design/evidence PR):** "semantic underline contract" on the single owned slot.
+
+- Choose P-SURF A with a versioned v3-only source-output grammar adapter.
+- Define `payload.decorations` and its N/D/E/R classes (P-SEM).
+- Fix P-REC (recommendation: em-relative or explicitly re-confirmed on a size change; same fill as text).
+- State P-EMPTY (terminate) and refuse P-ADOPT.
+- Add read-only probes: a candidate body with a paint group accepted by a prototype adapter and refused by v2; the
+  projection with paint stripped validates through the unchanged v2 validator; tamper/reseal of the decorations;
+  removed-ink planned area.
+
+Once that is reviewed, a **narrow paint implementation PR** (decorations + canonical text+paint island writer +
+verifier, scope unchanged otherwise) is the next step. Do not start it before that review.
