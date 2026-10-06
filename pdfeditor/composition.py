@@ -151,7 +151,10 @@ def _state_contract(events):
     return first, state, matrix
 
 
-def _check_obstacles(content, selected, resolved, ink, layout_bounds, *, exclude_glyphs=frozenset()):
+def _check_obstacles(content, selected, resolved, ink, layout_bounds, *, exclude_glyphs=frozenset(),
+                     exclude_paint_seqnos=frozenset()):
+    # exclude_paint_seqnos: only a semantic island's own proven old underline
+    # paint (replaced by the same plan); every other drawing stays an obstacle.
     original = glyph_observations(content.page)
     empty_spaces = _empty_space_indices(content, original)
     # An empty logical element has no observed paint order. Without a
@@ -167,6 +170,8 @@ def _check_obstacles(content, selected, resolved, ink, layout_bounds, *, exclude
             if rect.intersects(Rect(*image["bbox"]), .01):
                 raise PdfError("composed text intersects an image")
         for drawing in content.page.get_drawings():
+            if drawing.get("seqno") in exclude_paint_seqnos:
+                continue
             bounds = Rect(*drawing["rect"])
             rectangle = len(drawing["items"]) == 1 and drawing["items"][0][0] == "re"
             if drawing.get("fill") is not None:

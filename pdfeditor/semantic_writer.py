@@ -15,6 +15,14 @@ current bundle and an explicit request. Authority chain, nothing new:
   `open_semantic_flow` again from disk, plus exact canonical-body equality and
   trace accuracy.
 
+Semantic record version 3 (§27): the same body is the canonical text group
+followed by the canonical underline group. The island's own old underline is
+owned only when the catalog paths inside the verified owned body are proven,
+one paint index each, equal to the verified current rectangles; it is then
+declared replaced/removed (`paint_changes`), a first underline is declared as
+`paint_insertions` after the island's last glyph paint, the planned area holds
+old and new rectangles, and only that old paint is excluded from obstacles.
+
 No public publication, pointer, receipt or history is produced (L3).
 """
 from copy import deepcopy
@@ -31,6 +39,7 @@ import pymupdf
 from .backend import PdfError
 from .composition import _check_obstacles
 from .content_stream import ContentPage
+from .paint_provenance import prove_path_paint
 from .destination_style import bind_destination_styles
 from .document_flow import _reseal
 from .editable import bind_document_edit, document_edit_options
@@ -44,6 +53,7 @@ from .style_confirmation import confirm_paragraph
 from .transaction import Plan, Transaction
 from . import semantic_island as island
 from . import semantic_layout as semantic
+from . import semantic_paint as paint
 from . import shared_flow
 from . import source_ownership as owned
 from . import story_styles as styles
@@ -94,7 +104,8 @@ def _writable(plan):
         raise PdfError('a reopen needs no candidate')
     if plan['classification'] == 'E':
         changed = set(plan['request']['changes'])
-        writable = WRITABLE_REINTERPRETATIONS if plan['version'] != 1 else LEGACY_WRITABLE_REINTERPRETATIONS
+        writable = (WRITABLE_REINTERPRETATIONS | {'decorations'} if plan['version'] != 1
+                    else LEGACY_WRITABLE_REINTERPRETATIONS)
         if changed - writable:
             raise PdfError('B-L2-S: semantic version 1 binds style/font to the source registry; explicit version 2 '
                            'confirmation is needed before reinterpreting: ' + ', '.join(sorted(changed - writable)))
@@ -144,18 +155,91 @@ def _ink_rects(font, style, emitted):
     return rects
 
 
-def _removed_ink(state, slot, current):
-    """Exact ink of the island being replaced, from the verified current semantic state and its asset.
+def _removed(state, slot, current):
+    """Exact ink and underline rectangles of the island being replaced (verified current state).
 
     The renderer box of the old glyphs (``resolved.bbox``) is not an ink bound: it uses normalized
     ascender/descender and, under Tz, a horizontally scaled size, so outline overshoot can lie outside it.
+    Old underline rectangles come from the verified current decorations, never from renderer bounds.
     """
     font = semantic._asset(state, slot, current['semantic'], current['authority'])
     try:
         _, plan = semantic._derive(state, slot, current['semantic'], font)
-        return _ink_rects(font, current['semantic']['style'], plan['emitted'])
+        rects = (paint.rectangles(plan, current['semantic']['style'], current['semantic']['decorations'])
+                 if current['version'] == semantic.DECORATED_VERSION else [])
+        return _ink_rects(font, current['semantic']['style'], plan['emitted']), rects
     finally:
         font.font.close()
+
+
+def _rect(value):
+    return Rect(*(float(v) for v in value))
+
+
+def _old_owned_paint(page, start, end, old_rects):
+    """(path IDs, paint indices, seqnos) of the island's own old underline paint.
+
+    Owned only if the catalog paths inside the verified owned body are, in
+    order, proven one-to-one to fill paints whose bounds are the verified
+    current canonical rectangles. Anything else inside the body refuses.
+    """
+    catalog = page.catalog
+    inside = []
+    for path in catalog['paths']:
+        a, b = path['merged_range']
+        if start <= a and b <= end:
+            inside.append(path)
+        elif a < end and start < b:
+            raise PdfError('a source path crosses the owned source output body')
+    inside.sort(key=lambda p: p['merged_range'][0])
+    if len(inside) != len(old_rects):
+        raise PdfError('owned island paint differs from the verified current underline state')
+    ids, indices, seqnos = [], [], []
+    for path, rect in zip(inside, old_rects):
+        proof = prove_path_paint(page.source, page.number, path['id'], catalog=catalog)
+        if proof['status'] != 'proven' or len(proof['paint_indices']) != 1:
+            raise PdfError('owned island underline paint is not proven to one paint')
+        index = proof['paint_indices'][0]
+        event = page.observation['events'][index]
+        if event['kind'] != 'fill-path' or any(abs(float(v) - w) > .002 for v, w in zip(rect, event['bounds'])):
+            raise PdfError('owned island paint is not the verified canonical underline rectangle')
+        ids.append(path['id'])
+        indices.append(index)
+        seqnos.append(event['seqno'])
+    drawings = {d.get('seqno'): d for d in page.content.page.get_drawings()}
+    for seqno, rect in zip(seqnos, old_rects):
+        if seqno not in drawings or any(abs(float(v) - w) > .002 for v, w in zip(rect, drawings[seqno]['rect'])):
+            raise PdfError('owned island underline paint is not identified among the page drawings')
+    return ids, indices, seqnos
+
+
+def _underline_paints(rects, template):
+    """Expected interpreted fill paints of the new rectangles (page y-down), for the Transaction.
+
+    Context fields come from the island's own glyph paint (`template`): same
+    entry context, same CTM, same fill operator values.
+    """
+    result = []
+    for rect in rects:
+        x0, y0, x1, y1 = (float(v) for v in rect)
+        result.append(dict(kind='fill-path', clips=deepcopy(template['clips']), groups=deepcopy(template['groups']),
+                           layers=list(template['layers']),
+                           geometry=[['m', x0, y0], ['l', x1, y0], ['l', x1, y1], ['l', x0, y1], ['h']],
+                           matrix=list(template['matrix']), even_odd=False, bounds=[x0, y0, x1, y1],
+                           colorspace=template['colorspace'], components=list(template['components']),
+                           opacity=template['opacity'], color_params=dict(template['color_params'])))
+    return result
+
+
+def _island_glyph_paint(page, selected):
+    """(index, event) of the old island's last glyph paint in the page observation."""
+    if not selected:
+        raise PdfError('an underline needs painted island glyphs')
+    last = max(page.content.actual[i]['span']['seqno'] for i in selected)
+    found = [(i, e) for i, e in enumerate(page.observation['events']) if e['seqno'] == last and e['kind'] == 'fill-text']
+    if not found:
+        raise PdfError('island glyph paint is not observed')
+    return found[-1]
 
 
 def _current_paragraph(state, slot, payload, authority):
@@ -165,8 +249,10 @@ def _current_paragraph(state, slot, payload, authority):
             semantic.current_confirmations(state, slot, payload, authority))
 
 
-def _plan_island(page, state, sid, payload, authority, derived_plan, request, logical, removed_ink):
+def _plan_island(page, state, sid, payload, authority, derived_plan, request, logical, removed, *,
+                 current_version=semantic.SEMANTIC_VERSION, next_version=semantic.SEMANTIC_VERSION):
     """Serialize the canonical body and plan its single owned-body Mutation."""
+    removed_ink, old_rects = removed
     from .mutation import Mutation
     slot = state['slots'][sid]
     pid = slot['paragraph_id']
@@ -184,7 +270,12 @@ def _plan_island(page, state, sid, payload, authority, derived_plan, request, lo
         result.paragraph = paragraph
         typing = 'logical:' + p['logical']['typing_style_id']
         style = paragraph.styles[typing]
-        start, end = owned.owned_body(content, record, snapshot)  # write authority for these bytes only
+        # Write authority for these bytes only; a version 3 body is proven with the v3 grammar.
+        start, end = owned.owned_body(content, record, snapshot, **owned.injected(
+            paint.body_grammar if current_version == semantic.DECORATED_VERSION else None))
+        # Only a version 3 body can hold owned paint; version 1/2 writes keep their exact v2 path.
+        old_ids, old_indices, old_seqnos = (_old_owned_paint(page, start, end, old_rects)
+                                            if current_version == semantic.DECORATED_VERSION else ([], [], []))
         selected = set(paragraph.selection['glyph_ids'])
         provider = p['style_registry'][p['logical']['typing_style_id']]['reflow_provider']
         font = ShapedFont(provider['path'])
@@ -202,6 +293,9 @@ def _plan_island(page, state, sid, payload, authority, derived_plan, request, lo
         top = _page_top(content)
         data, anchors = island.body(payload['style'], emitted, alias=alias, codes=codes, fill=fill,
                                     page_top=top, origin=(region['x'], region['baseline']))
+        new_rects = (paint.rectangles(derived_plan, payload['style'], payload['decorations'])
+                     if next_version == semantic.DECORATED_VERSION else [])
+        data += paint.paint_group(new_rects, fill, top)  # text group stays a byte prefix (anchors unchanged)
         mutation = Mutation(start, end, data, kind=owned.REWRITE, anchors=anchors, owner=sid)
         result.mutations.append(mutation)
         result.first_mutation = mutation
@@ -222,16 +316,31 @@ def _plan_island(page, state, sid, payload, authority, derived_plan, request, lo
             result.slot = True
             result.empty_style_names = {typing: 'slot'}
         resolved = paragraph.resolved
+        underlines = [_rect(r) for r in new_rects]
         ink_bounds = Rect(float(F(region['x'])), float(F(region['baseline'])), float(F(region['x'])), float(F(region['baseline'])))
-        for ink in inks:
+        for ink in inks + underlines:
             ink_bounds = ink_bounds.union(ink)
-        result._check = lambda exclude: _check_obstacles(content, selected, resolved, inks, ink_bounds, exclude_glyphs=exclude)
+        # New underline rectangles meet every obstacle new ink meets; only this
+        # island's own proven old underline paint is excluded (it is replaced).
+        result._check = lambda exclude: _check_obstacles(content, selected, resolved, inks + underlines, ink_bounds,
+                                                         exclude_glyphs=exclude, exclude_paint_seqnos=frozenset(old_seqnos))
         result.consumed = selected
+        result.consumed_paths = set(old_ids)
         result.new_glyphs = new_glyphs
-        result.final_rects = list(inks)
+        result.final_rects = list(inks) + underlines
         result.affected = resolved.bbox.union(ink_bounds)
-        for ink in removed_ink:  # the planned area also covers the exact ink this rewrite removes
+        for ink in removed_ink + [_rect(r) for r in old_rects]:
+            # The planned area also covers the exact ink and old underline this rewrite removes.
             result.affected = result.affected.union(ink)
+        if new_rects:
+            index, template = _island_glyph_paint(page, selected)
+            values = _underline_paints(new_rects, template)
+        if old_indices:
+            # Owned old paint: the first index becomes the new paint list, the others are removed.
+            result.paint_changes = {i: None for i in old_indices}
+            result.paint_changes[old_indices[0]] = values if new_rects else None
+        elif new_rects:
+            result.paint_insertions = {index: values}
         result.font_builders = {alias: resource.build}
         result.font_subsets = {alias: hashlib.sha256(resource.program).hexdigest()}
         result.font_records = {alias: dict(subset_sha256=hashlib.sha256(resource.program).hexdigest(),
@@ -268,7 +377,7 @@ def _verify_candidate(pdf, sidecar, plan, body):
     if opened['status'] != 'restored':
         raise PdfError('candidate does not verify: ' + opened['reason'])
     if (opened['semantic'] != plan['next'] or opened['derived'] != plan['next_derived']
-            or opened['authority'] != plan['next_authority']):
+            or opened['authority'] != plan['next_authority'] or opened['version'] != plan['next_version']):
         raise PdfError('candidate semantic state differs from the authorized plan')
     if not opened['island']['canonical']:
         raise PdfError('candidate island is not the exact canonical body')
@@ -333,7 +442,7 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
     if derived != plan['next_derived']:
         raise PdfError('writer derivation differs from the authorized plan')
     logical = _logical(state, pid, plan['request'], payload['text'])
-    removed_ink = _removed_ink(state, slot, opened)
+    removed = _removed(state, slot, opened)
     root = Path(workspace)
     root.mkdir(parents=True, exist_ok=True)
     private = Path(tempfile.mkdtemp(prefix='semantic-candidate-', dir=root))
@@ -351,7 +460,8 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
                                  max_bottom=region['bounds'][3], first_line_indent=state['paragraph_policies'][pid]['first_line_indent'],
                                  min_line_height=state['paragraph_policies'][pid]['min_line_height'])
             island_plan, lines, body = _plan_island(page, state, sid, payload, authority, exact, plan['request'], logical,
-                                                    removed_ink)
+                                                    removed, current_version=plan['version'],
+                                                    next_version=plan['next_version'])
             p, _ = _current_paragraph(state, slot, payload, authority)
             island_plan.document_context = dict(fonts=styles.providers(p),
                 options=document_edit_options(slot['binding'], wanted_layout), previous_state=slot['binding'])
@@ -380,7 +490,9 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
                     empty=not payload['text'])
                 slot['style_binding']['pdf_sha256'] = source_sha(target)
                 slot['source_output'] = owned.rebind(result.identity(number).after, initial['slots'][sid]['source_output'],
-                                                     initial['slots'][sid]['source_output']['current']['entry_context_sha256'])
+                                                     initial['slots'][sid]['source_output']['current']['entry_context_sha256'],
+                                                     **owned.injected(paint.body_grammar if plan['next_version'] ==
+                                                                      semantic.DECORATED_VERSION else None))
                 state['generated_fonts'] = shared_flow._generated_fonts(initial, state, result, source_sha(target))
             finally:
                 result.close()
@@ -389,7 +501,7 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
         state['physical_breaks'] = shared_flow._breaks(state)
         for current in state['slots'].values():
             current.pop('semantic', None)
-        candidate = semantic._attach(state, sid, payload, authority, source=target)
+        candidate = semantic._attach(state, sid, payload, authority, source=target, version=plan['next_version'])
         sidecar = private / 'shared-flow.json'
         sidecar.write_bytes((json.dumps(candidate, ensure_ascii=False, indent=2) + '\n').encode('utf-8'))
         verified, accuracy = _verify_candidate(target, sidecar, plan, body)

@@ -165,10 +165,12 @@ def _policies(state):
         raise PdfError('paragraph boundaries are identity relations, not Unicode or physical breaks')
 
 
-def _validate(source,value,current_styles=None):
+def _validate(source,value,current_styles=None,current_body=None):
     # current_styles is used only by the shared-flow-3 opener (semantic_layout):
     # per paragraph, the in-memory current-style registry its current fragments
     # are bound to. The source registry is still validated as creation evidence.
+    # current_body is the semantic record version 3 owned-body grammar (text
+    # group + underline group); None keeps the text-only v2 grammar.
     state=deepcopy(value);checksum=state.pop('model_sha256',None)
     if state.get('schema') not in (SCHEMA,LEGACY_SCHEMA) or checksum!=digest(state):raise PdfError('shared flow model version or checksum differs')
     state['model_sha256']=checksum
@@ -264,7 +266,7 @@ def _validate(source,value,current_styles=None):
     destinations.validate_destinations(source,state)
     _verify_generated_fonts(source,state)
     if state['schema']==SCHEMA:
-        source_ownership.validate(source,state)
+        source_ownership.validate(source,state,**source_ownership.injected(current_body))
     elif any('source_output' in slot for slot in state['slots'].values()):
         raise PdfError('legacy shared flow cannot acquire source output ownership')
     if state['physical_breaks']!=_breaks(state):raise PdfError('physical breaks differ from paragraph fragment allocation')
@@ -338,7 +340,7 @@ def open_shared_flow(source,model):
 
 
 @proof_session
-def _open_current_flow(source,model,current_styles):
+def _open_current_flow(source,model,current_styles,current_body=None):
     """Internal to shared-flow-3: the v2 validator with current fragments bound to current styles.
 
     Not a v2 entry point: v2 sidecars always open through open_shared_flow.
@@ -352,7 +354,7 @@ def _open_current_flow(source,model,current_styles):
         for pid,registry in current_styles.items():
             if set(registry)!=set(value['paragraphs'][pid]['style_registry']):
                 raise PdfError('current style binding changes logical style identities')
-        return dict(status='restored',state=_validate(source,value,current_styles))
+        return dict(status='restored',state=_validate(source,value,current_styles,current_body))
     except (OSError,ValueError,TypeError,KeyError,IndexError,AttributeError,PdfError) as exc:
         return dict(status='needs_confirmation',reason=str(exc),semantics='unknown')
 
