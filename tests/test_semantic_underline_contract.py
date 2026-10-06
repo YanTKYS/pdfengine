@@ -1,44 +1,39 @@
-"""Semantic underline contract (§27): read-only design evidence. No paint runtime.
+"""Semantic underline contract (§27): design evidence, now run against the production runtime (§28).
 
-Everything named `prototype` lives in this file only. It fixes the contract the
-next (implementation) PR must meet on the shared-flow v3 single owned slot:
+PR #49 fixed the contract with in-file prototypes; §28 implements it, so every
+probe below now calls the production functions instead:
 
-* P-SURF A: the underline group lives inside the existing owned source-output
-  body, after the text group (`q BT … ET Q` then `q <fill> (x y m x y l x y l
-  x y l h f)+ Q`); no new marker domain.
-* P-SEM: `payload.decorations` (semantic record version 3), current-state only,
-  `current:i` positional labels, logical [start, end) ranges with outside/outside
-  boundary affinity, D remap, E add/remove/recipe, R refusals.
-* P-REC: exact em-relative recipe; fill = current text fill.
-* P-EMPTY: a decoration that has no visible character left terminates; empty text
-  therefore terminates all decorations; nothing is ever revived.
-* P-VER: v2 grammar unchanged; v3 current-body grammar + exact canonical
-  text+paint body; owned paint declared to the Transaction.
+* P-SEM: `semantic_paint.validate/remap/reinterpret/renumber` and
+  `semantic_layout._next_decorations` (decoration E policy, mixing refusal);
+* P-REC: `semantic_paint.rectangles` (exact em recipe, line-box rule);
+* serialization: `semantic_paint.paint_group` (the one canonical serializer);
+* P-VER: `semantic_paint.body_grammar` (v3 current-body grammar), the production
+  owner witness with the injected v3 grammar, `semantic_layout.canonical_body`
+  (canonical text + underline body), and the production writer/Transaction.
 
 Inputs are the stored sidecar, the current asset and the current page frame
-(the same inputs as §26.4); actual PDFs are only written to `tmp_path` copies.
-`pdfeditor/` is not modified and no runtime path accepts paint.
+(the same inputs as §26.4); tampered PDFs are only written to `tmp_path` copies.
+End-to-end lifecycle, Transaction, publication and raster evidence lives in
+`test_semantic_underline.py`.
 """
 from copy import deepcopy
 from fractions import Fraction as F
 
 import pymupdf
 import pytest
-from uniseg.graphemecluster import grapheme_cluster_boundaries
 
-from pdfeditor import semantic_island as island
 from pdfeditor import semantic_layout as semantic
+from pdfeditor import semantic_paint as paint
 from pdfeditor import semantic_writer as writer
+from pdfeditor import shared_flow
 from pdfeditor import source_ownership as owned
 from pdfeditor import story_styles as styles
-from pdfeditor import transaction
 from pdfeditor.backend import PdfError
 from pdfeditor.composition import _check_obstacles, _pixels_equal
 from pdfeditor.content_stream import ContentPage, operators
 from pdfeditor.editable import _seal
 from pdfeditor.elements import inspect_element
 from pdfeditor.model import Rect
-from pdfeditor.operator_nesting import audit
 from pdfeditor.paint_provenance import _load_catalog, interpreted_paints, prove_path_paint
 from pdfeditor.selection import make_selection, resolve_selection, source_sha
 from test_paint_reassessment import RECIPE as PR48_RECIPE
@@ -48,18 +43,17 @@ from test_paint_reassessment import underline as pr48_underline
 # Caller-confirmed default candidate for this evidence only (not a standard): at 12 pt it is the
 # PR #48 prototype's 13/10 pt offset and 7/10 pt thickness.
 RECIPE = {'offset_em': '13/120', 'thickness_em': '7/120'}
-KEYS = frozenset({'id', 'kind', 'start', 'end', 'start_affinity', 'end_affinity', 'recipe'})
-ADD_KEYS = KEYS - {'id'}
-RECIPE_KEYS = frozenset({'offset_em', 'thickness_em'})
-FILL_ARITY = {'g': 1, 'rg': 3, 'k': 4}
-RECT_SHAPE = (('m', 2), ('l', 2), ('l', 2), ('l', 2), ('h', 0), ('f', 0))
 
 
-# ---------------------------------------------------------------- prototype P-SEM
+# ---------------------------------------------------------------- production P-SEM / P-REC / P-VER
 
 
-def visible(text):
-    return any(c not in ' \n' for c in text)
+visible = paint.visible
+renumber = paint.renumber
+validate = paint.validate
+rectangles = paint.rectangles
+paint_group = paint.paint_group
+body_grammar = paint.body_grammar
 
 
 def decoration(start, end, recipe=RECIPE, index=0):
@@ -67,193 +61,14 @@ def decoration(start, end, recipe=RECIPE, index=0):
                 start_affinity='outside', end_affinity='outside', recipe=dict(recipe))
 
 
-def renumber(decorations):
-    ordered = sorted(decorations, key=lambda d: (d['start'], d['end']))
-    return [dict(d, id=f'current:{i}') for i, d in enumerate(ordered)]
-
-
-def validate(text, decorations):
-    """Prototype schema check of `payload.decorations` against the current text."""
-    if not isinstance(decorations, list):
-        raise PdfError('decorations must be an explicit list')
-    limits = {0, len(text), *grapheme_cluster_boundaries(text)}
-    previous = 0
-    for index, d in enumerate(decorations):
-        if not isinstance(d, dict) or set(d) != KEYS:
-            raise PdfError('decoration needs exactly id, kind, start, end, affinities and recipe')
-        if d['id'] != f'current:{index}':
-            raise PdfError('decoration id is not its current canonical position')
-        if d['kind'] != 'underline':
-            raise PdfError('unsupported decoration kind')
-        if d['start_affinity'] != 'outside' or d['end_affinity'] != 'outside':
-            raise PdfError('v1 boundary affinity is outside/outside')
-        s, e = d['start'], d['end']
-        if (type(s) is not int or type(e) is not int or not 0 <= s < e <= len(text)
-                or s not in limits or e not in limits):
-            raise PdfError('decoration range must be ordered grapheme boundaries inside the text')
-        if not visible(text[s:e]):
-            raise PdfError('decoration range has no visible character')
-        if s < previous:
-            raise PdfError('decorations overlap or are not in canonical order')
-        previous = e
-        recipe = d['recipe']
-        if not isinstance(recipe, dict) or set(recipe) != RECIPE_KEYS:
-            raise PdfError('underline recipe needs exactly offset_em and thickness_em')
-        offset, thickness = (semantic._exact(recipe[k]) for k in ('offset_em', 'thickness_em'))
-        if not (0 <= offset <= 1 and 0 < thickness <= 1):
-            raise PdfError('underline recipe is outside its exact bounds')
-
-
 def remap(text, decorations, start, end, inserted):
     """D: one semantic edit {start, end, text}. Returns (next text, next decorations)."""
-    n, shift = len(inserted), len(inserted) - (end - start)
-    after = text[:start] + inserted + text[end:]
-    kept = []
-    for d in decorations:
-        s, e = d['start'], d['end']
-        members = [i for i in range(s, e) if i < start] + [i + shift for i in range(s, e) if i >= end]
-        inside = (s <= start and end <= e) if start < end else s < start < e
-        if inside:
-            members += range(start, start + n)
-        if not members:
-            continue  # collapsed: terminated, never stored as zero-length
-        lo, hi = min(members), max(members) + 1
-        assert sorted(members) == list(range(lo, hi))
-        if visible(after[lo:hi]):
-            kept.append(dict(d, start=lo, end=hi))
-        # else: no visible character left -> terminated (no dormant decoration)
-    result = renumber(kept)
-    validate(after, result)
-    return after, result
+    return text[:start] + inserted + text[end:], paint.remap(text, decorations, start, end, inserted)
 
 
 def reinterpret(text, decorations, changes):
-    """E: exactly one decoration action; never mixed with style/font/edge changes."""
-    if not isinstance(changes, dict) or set(changes) != {'decorations'}:
-        raise PdfError('a decoration change is its own explicit reinterpretation')
-    action = changes['decorations']
-    if not isinstance(action, dict) or len(action) != 1:
-        raise PdfError('exactly one decoration action per request')
-    (verb, item), = action.items()
-    current = deepcopy(decorations)
-    if verb == 'add':
-        if not isinstance(item, dict) or set(item) != ADD_KEYS:
-            raise PdfError('underline add needs exactly kind, start, end, affinities and recipe')
-        current.append(dict(deepcopy(item), id='new'))
-    elif verb in ('remove', 'recipe'):
-        keys = {'id', 'start', 'end'} | ({'recipe'} if verb == 'recipe' else set())
-        if not isinstance(item, dict) or set(item) != keys:
-            raise PdfError('decoration reference needs exactly id, start and end')
-        match = [d for d in current if d['id'] == item['id']]
-        if not match or (match[0]['start'], match[0]['end']) != (item['start'], item['end']):
-            raise PdfError('decoration reference is not the current decoration at that id and range')
-        if verb == 'remove':
-            current.remove(match[0])
-        elif item['recipe'] == match[0]['recipe']:
-            raise PdfError('recipe change must differ from the current recipe')
-        else:
-            match[0]['recipe'] = deepcopy(item['recipe'])
-    else:
-        raise PdfError('unsupported decoration action: ' + str(verb))
-    result = renumber(current)
-    validate(text, result)
-    return result
-
-
-# ---------------------------------------------------------------- prototype P-REC geometry + serialization
-
-
-def rectangles(plan, style, decorations):
-    """Exact page y-down rectangles: decorations in canonical order, then lines top to bottom."""
-    size = F(style['font_size'])
-    rects = []
-    for d in decorations:
-        offset, thickness = (F(d['recipe'][k]) * size for k in ('offset_em', 'thickness_em'))
-        for line in plan['lines']:
-            glyphs = [g for g in plan['emitted']
-                      if line['start'] <= g['offset'] < line['end'] and d['start'] <= g['offset'] < d['end']]
-            while glyphs and glyphs[0]['text'] == ' ':
-                glyphs.pop(0)
-            while glyphs and glyphs[-1]['text'] == ' ':
-                glyphs.pop()
-            if not glyphs:
-                continue
-            baselines = {F(g['origin'][1]) for g in glyphs}  # line baseline + rise
-            if len(baselines) != 1:
-                raise PdfError('underline line has more than one glyph baseline')
-            upper = baselines.pop() + offset
-            left = F(glyphs[0]['origin'][0])
-            right = F(glyphs[-1]['origin'][0]) + F(glyphs[-1]['advance'])
-            box_top = F(line['baseline']) - F(line['ascent'])
-            box_bottom = F(line['baseline']) + F(line['descent'])
-            if not (box_top <= upper and upper + thickness <= box_bottom):
-                raise PdfError('underline exceeds its line box')
-            if not left < right:
-                raise PdfError('underline has no positive width')
-            rects.append((left, upper, right, upper + thickness))
-    return rects
-
-
-def paint_group(rects, fill, top):
-    """Canonical paint group bytes (empty when there is nothing to paint)."""
-    if not rects:
-        return b''
-    op, values = fill
-    if op not in FILL_ARITY or len(values) != FILL_ARITY[op]:
-        raise PdfError('underline needs the text device gray/RGB/CMYK fill')
-    d, top = island.decimal, F(top)
-    out = 'q ' + ' '.join(d(F(str(v))) for v in values) + f' {op}\n'
-    for left, upper, right, lower in rects:
-        x0, x1, y0, y1 = d(left), d(right), d(top - upper), d(top - lower)
-        if F(x0) >= F(x1) or F(y1) >= F(y0):
-            raise PdfError('zero-area underline after the output decimal policy')
-        out += f'{x0} {y0} m {x1} {y0} l {x1} {y1} l {x0} {y1} l h f\n'
-    return (out + 'Q\n').encode('ascii')
-
-
-# ---------------------------------------------------------------- prototype P-VER current-body grammar/verifier
-
-
-def _number(value):
-    return isinstance(value, (int, float)) and not isinstance(value, bool)
-
-
-def body_grammar(body, text_grammar=owned.grammar):
-    """v3 current-body grammar: one canonical text group, then at most one underline group.
-
-    The text group is checked by the unchanged v2 `source_ownership.grammar`. Returns
-    (text group bytes, paint group bytes). Canonicity is a separate exact byte check.
-    """
-    if b'%' in body:
-        raise PdfError('comments are not allowed in source output body')
-    ops = list(operators(body))
-    if audit(body)['violations']:
-        raise PdfError('invalid v3 source output body grammar')
-    closes = [i for i, op in enumerate(ops) if op.name == 'Q']
-    if not closes:
-        raise PdfError('v3 body needs a text group')
-    split = ops[closes[0] + 1].start if closes[0] + 1 < len(ops) else len(body)
-    text, paint = body[:split], body[split:]
-    text_grammar(text)  # the unchanged v2 grammar (bound at import time)
-    if [op.name for op in operators(text)].count('BT') != 1:
-        raise PdfError('v3 body has exactly one text group')
-    if not paint:
-        return text, paint
-    ops = list(operators(paint))
-    names = [op.name for op in ops]
-    if (len(ops) < 9 or names[0] != 'q' or ops[0].args or names[-1] != 'Q' or ops[-1].args
-            or names[1] not in FILL_ARITY or len(ops[1].args) != FILL_ARITY[names[1]]
-            or not all(_number(v) for v in ops[1].args) or (len(ops) - 3) % 6):
-        raise PdfError('invalid v3 underline group grammar')
-    for k in range(2, len(ops) - 1, 6):
-        rect = ops[k:k + 6]
-        if [(op.name, len(op.args)) for op in rect] != list(RECT_SHAPE) or not all(
-                _number(v) for op in rect for v in op.args):
-            raise PdfError('invalid v3 underline rectangle grammar')
-        (x0, y0), (x1, y1), (x2, y2), (x3, y3) = ([F(str(v)) for v in op.args] for op in rect[:4])
-        if not (y1 == y0 and x2 == x1 and y3 == y2 and x3 == x0 and x0 < x1 and y2 < y0):
-            raise PdfError('v3 underline path is not one axis-aligned rectangle')
-    return text, paint
+    """E: the production decoration policy of `plan_semantic_transition` (version 3 record)."""
+    return semantic._next_decorations(dict(text=text, decorations=decorations), changes, semantic.DECORATED_VERSION)
 
 
 def revision(chain, name):
@@ -287,7 +102,11 @@ def painted(rev, out, paint, *, first=False, before=b'', after=b''):
 
 
 def verify_current_body(pdf, rev, decorations):
-    """Prototype v3 current-body verifier over an actual PDF; returns the unchanged witness shape."""
+    """Production v3 current-body checks over an actual PDF (§27.15 steps 3, 4, 7); returns the witness.
+
+    The owner witness is recomputed with the injected v3 grammar (unchanged witness shape),
+    then containment, decoration schema and the exact canonical text + underline body.
+    """
     content = ContentPage(pdf, 1)
     try:
         data = content.streams[-content.page.xref]
@@ -295,19 +114,22 @@ def verify_current_body(pdf, rev, decorations):
         if set(spans) != {rev['marker']}:
             raise PdfError('source output marker inventory differs from the owned slot')
         span = spans[rev['marker']]
-        text, paint = body_grammar(data[span[1]:span[2]])
-        before = owned.context(owned._boundary(content, span[1]))
-        after = owned.context(owned._boundary(content, span[2]))
-        if not before == after == rev['slot']['source_output']['current']['entry_context_sha256']:
+        record = rev['slot']['source_output']
+        witness = owned.witness(content, record, span, body_grammar=paint.body_grammar)
+        if witness['entry_context_sha256'] != record['current']['entry_context_sha256']:
             raise PdfError('semantic island entry/exit context differs')
         owned.containment(content, rev['slot']['binding']['paragraph'], span)
         validate(rev['payload']['text'], decorations)
+        body = data[span[1]:span[2]]
+        text, _ = body_grammar(body)
         if text != rev['body']:
             raise PdfError('text group is not the canonical text body')
-        if paint != canonical_paint(rev, decorations):
+        events = [e for e in content.events if not e.invocation and span[1] <= e.operator.start < e.operator.end <= span[2]]
+        payload = dict(rev['payload'], decorations=decorations)
+        if body != semantic.canonical_body(content, rev['state'], 'slot-0', payload, rev['plan'], events, body,
+                                           decorations):
             raise PdfError('underline group is not the canonical serialization of the decorations')
-        return dict(program_sha256=owned.sha(data), range=[span[0], span[3]],
-                    block_sha256=owned.sha(data[span[0]:span[3]]), entry_context_sha256=before)
+        return witness
     finally:
         content.close()
 
@@ -386,13 +208,18 @@ def test_unchanged_v2_grammar_rejects_the_same_painted_body(chain, tmp_path):
     assert semantic.open_semantic_flow(pdf, rev['state'])['status'] == 'needs_confirmation'
 
 
-def test_current_runtime_refuses_decorations_and_a_version_3_record(chain):
-    """Nothing is implicitly accepted before the implementation: no v2 payload extension, no v3 record."""
+def test_decorations_exist_only_in_semantic_version_3(chain):
+    """No v2 payload extension; version 3 is a known record whose payload must carry decorations."""
     rev = revision(chain, 'save3')
     with pytest.raises(PdfError, match='exactly text, style, font'):
         semantic._payload(dict(rev['payload'], decorations=full(rev)), rev['slot'])
     slot = deepcopy(rev['slot'])
     slot['semantic']['version'] = 3
+    semantic._record(slot)
+    with pytest.raises(PdfError, match='version 3 payload needs exactly'):
+        semantic._payload(rev['payload'], rev['slot'], semantic.DECORATED_VERSION)
+    semantic._payload(dict(rev['payload'], decorations=full(rev)), rev['slot'], semantic.DECORATED_VERSION)
+    slot['semantic']['version'] = 4
     with pytest.raises(PdfError, match='no valid semantic payload'):
         semantic._record(slot)
 
@@ -754,25 +581,30 @@ def test_owned_paint_is_identified_by_the_catalog_between_foreign_paint(chain, t
 
 
 def test_existing_obstacle_check_would_treat_old_owned_paint_as_foreign(chain, tmp_path):
-    """Obligation: the v3 writer must exclude its own old island paint from obstacles (and nothing else)."""
+    """Obligation (implemented): only the island's own old paint is excluded from obstacles."""
     rev = revision(chain, 'save3')
     glyph_inks = inks(rev)
     bounds = glyph_inks[0]
     for ink in glyph_inks[1:]:
         bounds = bounds.union(ink)
 
-    def check(pdf, rects):
+    def check(pdf, rects, exclude=frozenset()):
         selection = make_selection(pdf, glyph_ids=[0, 1, 2], explicit_width=150)
         content = ContentPage(pdf, 1)
         try:
-            _check_obstacles(content, {0, 1, 2}, resolve_selection(pdf, selection), rects, bounds)
+            _check_obstacles(content, {0, 1, 2}, resolve_selection(pdf, selection), rects, bounds,
+                             exclude_paint_seqnos=exclude)
         finally:
             content.close()
+
+    def seqnos(pdf):
+        return frozenset(e['seqno'] for e in interpreted_paints(str(pdf), 1)['events'] if e['kind'] == 'fill-path')
 
     check(rev['pdf'], glyph_inks)
     owned_paint = painted(rev, tmp_path / 'owned.pdf', canonical_paint(rev, full(rev)))
     with pytest.raises(PdfError, match='filled vector'):
         check(owned_paint, glyph_inks)  # the island's own old underline vs the B descender ink
+    check(owned_paint, glyph_inks, seqnos(owned_paint))  # excluded by its proven seqno only
     # Foreign paint stays an obstacle for a new underline, and only where it is actually hit.
     new_rects = as_rects(rectangles(rev['plan'], rev['payload']['style'], full(rev)))
     near = painted(rev, tmp_path / 'near.pdf', b'', before=b' q 0 0 1 rg 22 58.2 4 0.3 re f Q')
@@ -798,63 +630,33 @@ def test_v2_element_observation_infers_a_relation_for_owned_paint(chain, tmp_pat
     assert start <= a < b <= end
 
 
-# ---------------------------------------------------------------- which runtime gates a painted writer candidate hits
+# ---------------------------------------------------------------- the runtime gates a painted candidate meets (implemented)
 
 
-def test_only_the_named_gates_refuse_a_painted_writer_candidate(chain, tmp_path, monkeypatch):
-    """Design evidence for the v2/v3 split, with in-process patches only (undone after the test).
+def test_the_production_runtime_passes_every_gate_for_a_painted_candidate(chain, tmp_path):
+    """PR #49 named the gates a painted candidate hit; §28 implements each obligation:
 
-    The L2 writer is made to append a full-range canonical underline group. Then:
-    1. with the v2 grammar call replaced by the prototype v3 grammar, the candidate is refused by
-       exactly one more gate, the Transaction non-text paint plan (owned paint is not declared);
-    2. once that paint is declared, every other part of the unchanged shared-flow/semantic stack
-       (creation evidence, open_editable binding, generated fonts, placement, containment, context,
-       exact canonical check) accepts the painted candidate;
-    3. that candidate's slot binding records the owned path as an inferred decoration relation;
-    4. the next save from it is refused by the obstacle check (its own old underline is a foreign
-       "filled vector"), and the next edit by the Transaction paint plan (old paint not declared).
-    Each refusal is a named P-VER obligation in §27; nothing else needed to change.
+    1. v3 grammar injected only for semantic version 3 (v2 grammar unchanged);
+    2. the Transaction declares the owned island paint (insertion, then replacement);
+    3. the element observation still records an inferred `decoration_candidate`, without authority;
+    4. the next save excludes only the island's own old underline from obstacles, and the next edit
+       declares the old paint replaced.
     """
-    text_body = island.body
-
-    def body(style, emitted, **kwargs):
-        data, anchors = text_body(style, emitted, **kwargs)
-        plan = dict(lines=[dict(start=0, end=len(emitted) + 1, baseline=emitted[0]['origin'][1],
-                                ascent='1000', descent='1000')], emitted=[dict(g) for g in emitted])
-        rects = rectangles(plan, style, [decoration(0, max(g['offset'] for g in emitted) + 1)])
-        return data + paint_group(rects, kwargs['fill'], kwargs['page_top']), anchors
-
     rev = revision(chain, 'save3')
-    monkeypatch.setattr(island, 'body', body)
-    monkeypatch.setattr(owned, 'grammar', body_grammar)
-    with pytest.raises(PdfError, match='saved non-text paint differs from the transaction plan'):
-        writer.build_semantic_candidate(rev['pdf'], chain['save3']['sidecar'], dict(operation='save'),
-                                        workspace=tmp_path / 'refused')
-    verify = transaction.Transaction._verify
-
-    def declared(self, document, kept, new, paints, *args):
-        for number in paints:  # stand-in for the Plan declaring its owned island paint
-            observed = interpreted_paints(document.tobytes(), number)['events']
-            paints[number] = list(paints[number]) + [{k: v for k, v in e.items() if k != 'seqno'}
-                                                     for e in observed if e['kind'] == 'fill-path']
-        return verify(self, document, kept, new, paints, *args)
-
-    with monkeypatch.context() as patch:
-        patch.setattr(transaction.Transaction, '_verify', declared)
-        candidate = writer.build_semantic_candidate(rev['pdf'], chain['save3']['sidecar'], dict(operation='save'),
-                                                    workspace=tmp_path / 'painted')
-        opened = semantic.open_semantic_flow(candidate['pdf'], candidate['sidecar'])
-        assert opened['status'] == 'restored' and opened['island']['canonical']
-        assert candidate['body'] == rev['body'] + canonical_paint(rev, full(rev))
-        (path,) = opened['state']['slots']['slot-0']['binding']['element']['paths']
-        assert path['relationship']['hypothesis'] == 'decoration_candidate'
-        with pytest.raises(PdfError, match='composed text intersects a filled vector'):
-            writer.build_semantic_candidate(candidate['pdf'], candidate['sidecar'], dict(operation='save'),
+    add = dict(operation='reinterpret', changes={'decorations': {'add': dict(
+        kind='underline', start=0, end=3, start_affinity='outside', end_affinity='outside', recipe=dict(RECIPE))}})
+    candidate = writer.build_semantic_candidate(rev['pdf'], chain['save3']['sidecar'], add, workspace=tmp_path / 'add')
+    opened = semantic.open_semantic_flow(candidate['pdf'], candidate['sidecar'])
+    assert opened['status'] == 'restored' and opened['island']['canonical'] and opened['version'] == 3
+    assert candidate['body'] == rev['body'] + canonical_paint(rev, full(rev))
+    (path,) = opened['state']['slots']['slot-0']['binding']['element']['paths']
+    assert path['relationship']['hypothesis'] == 'decoration_candidate'
+    saved = writer.build_semantic_candidate(candidate['pdf'], candidate['sidecar'], dict(operation='save'),
                                             workspace=tmp_path / 'next')
-    with pytest.raises(PdfError, match='saved non-text paint differs from the transaction plan'):
-        writer.build_semantic_candidate(candidate['pdf'], candidate['sidecar'],
-                                        dict(operation='edit', start=1, end=1, text='A'), workspace=tmp_path / 'edit')
-    monkeypatch.undo()
-    # With the real (v2) grammar restored, the painted candidate no longer opens.
-    refused = semantic.open_semantic_flow(candidate['pdf'], candidate['sidecar'])
+    assert saved['body'] == candidate['body']
+    edited = writer.build_semantic_candidate(candidate['pdf'], candidate['sidecar'],
+                                             dict(operation='edit', start=1, end=1, text='A'), workspace=tmp_path / 'edit')
+    assert semantic.open_semantic_flow(edited['pdf'], edited['sidecar'])['semantic']['decorations'][0]['end'] == 4
+    # The v2 path (unchanged grammar) still refuses the painted candidate.
+    refused = shared_flow.open_shared_flow(candidate['pdf'], semantic._project_v2(opened['state']))
     assert refused['status'] == 'needs_confirmation' and 'source output body grammar' in refused['reason']

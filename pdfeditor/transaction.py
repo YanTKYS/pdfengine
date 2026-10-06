@@ -49,9 +49,12 @@ class Plan:
     same operation with only removals, for a removal checkpoint. ``consumed``
     are source glyph IDs that disappear, ``moved`` maps glyph IDs to their
     translation, ``paint_changes`` maps interpreted paint indices to their
-    planned replacements (``None`` removes one), ``new_glyphs`` are expected
-    generated glyphs in stream order, ``affected`` is the area whose pixels may
-    change and ``final_rects`` are the areas the plan occupies afterwards.
+    planned replacements (``None`` removes one), ``paint_insertions`` maps an
+    interpreted paint index to new paints planned immediately after it (owned
+    paint added where no old paint exists to replace), ``new_glyphs`` are
+    expected generated glyphs in stream order, ``affected`` is the area whose
+    pixels may change and ``final_rects`` are the areas the plan occupies
+    afterwards.
     """
     kind = 'plan'
 
@@ -63,6 +66,7 @@ class Plan:
         self.consumed = set()
         self.moved = {}
         self.paint_changes = {}
+        self.paint_insertions = {}
         self.planned_paths = {}
         self.path_anchors = {}
         self.consumed_paths = set()
@@ -275,14 +279,26 @@ class PageTransaction:
                 kept.append(glyph)
         return kept
 
+    def _insertions(self):
+        insertions = {}
+        for plan in self.plans:
+            if set(insertions) & set(plan.paint_insertions):
+                raise PdfError('two plans insert paint after the same interpreted paint')
+            insertions.update(plan.paint_insertions)
+        if any(type(i) is not int or not 0 <= i < len(self.observation['events']) for i in insertions):
+            raise PdfError('paint insertion anchor is not an interpreted paint of this page')
+        return insertions
+
     def expected_paints(self):
         _, _, changes = self._merged()
+        insertions = self._insertions()
         result = []
         for index, event in enumerate(self.observation['events']):
             if index in changes:
                 result.extend({k: v for k, v in value.items() if k != 'seqno'} for value in (changes[index] or []))
             else:
                 result.append(event)
+            result.extend({k: v for k, v in value.items() if k != 'seqno'} for value in insertions.get(index, []))
         return result
 
     def masks(self):

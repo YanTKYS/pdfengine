@@ -24,6 +24,11 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def injected(body_grammar):
+    """Keyword arguments for an injected v3 body grammar; v2 call sites pass nothing."""
+    return {} if body_grammar is None else dict(body_grammar=body_grammar)
+
+
 def _hex(value):
     return isinstance(value, str) and len(value) == 64 and all(c in '0123456789abcdef' for c in value)
 
@@ -166,12 +171,14 @@ def initial_context(content, paragraph):
     return context(_boundary(content, paragraph.first.operator.end), split=True)
 
 
-def witness(content, record, span):
+def witness(content, record, span, *, body_grammar=None):
+    """Current owner witness. `body_grammar` is injected only for semantic record
+    version 3 (text group + underline group); None is the text-only v2 grammar."""
     data = content.streams[-content.page.xref]
     start, body_start, body_end, end = span
     if content.errors:
         raise PdfError('source output program has interpreter errors')
-    grammar(data[body_start:body_end])
+    (body_grammar or grammar)(data[body_start:body_end])
     before = context(_boundary(content, body_start))
     after = context(_boundary(content, body_end))
     if before != after:
@@ -235,7 +242,7 @@ def record_identity(state, sid):
     return record
 
 
-def validate(source, state):
+def validate(source, state, *, body_grammar=None):
     groups = {}
     for sid, slot in state['slots'].items():
         if slot.get('destination_id') is not None:
@@ -255,28 +262,29 @@ def validate(source, state):
                 raise PdfError('source output marker inventory differs from owned slots')
             for slot, record in owned:
                 span = spans[record['marker_id']]
-                if record['current'] != witness(content, record, span):
+                if record['current'] != witness(content, record, span, **injected(body_grammar)):
                     raise PdfError('source output program/block/range/context witness mismatch')
                 containment(content, slot['binding']['paragraph'], span)
         finally:
             content.close()
 
 
-def owned_body(content, record, snapshot):
+def owned_body(content, record, snapshot, *, body_grammar=None):
     spans = inventory(content.streams[-content.page.xref])
     span = spans.get(record['marker_id'])
-    if span is None or record['state'] != 'owned' or record['current'] != witness(content, record, span):
+    if (span is None or record['state'] != 'owned'
+            or record['current'] != witness(content, record, span, **injected(body_grammar))):
         raise PdfError('source output ownership is not proven for this revision')
     containment(content, snapshot, span)
     return span[1:3]
 
 
-def rebind(content, record, expected_context):
+def rebind(content, record, expected_context, *, body_grammar=None):
     updated = deepcopy(record)
     span = inventory(content.streams[-content.page.xref]).get(record['marker_id'])
     if span is None:
         raise PdfError('source output marker missing after transaction')
-    current = witness(content, record, span)
+    current = witness(content, record, span, **injected(body_grammar))
     if current['entry_context_sha256'] != expected_context:
         raise PdfError('source output entry context changed during transaction')
     updated.update(state='owned', current=current)

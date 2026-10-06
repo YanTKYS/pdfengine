@@ -1611,3 +1611,29 @@ unchanged (`dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`).
 - **Next PR:** narrow semantic underline runtime implementation (§27.20 scope).
 
 [§27](anchored-paint-ownership.md#27-semantic-underline-contract--2026-10-05).
+
+
+## Narrow semantic underline runtime — 2026-10-06
+
+From main `e793f30a59c8798779e71b4ce6c1d3088d83708c` (PR #49 merged). Implements the §27 contract as written. Runtime
+digest `dd4fff7b…` → `4b6f9925159160c9ad63cee19f082728bfadf8c70548678fd89d40a3665659e3`.
+
+- **Verdict: NARROW SEMANTIC UNDERLINE RUNTIME COMPLETE** — the caller-declared underline on the single owned semantic
+  slot only (not paint runtime in general, not source underline editing, not Acrobat-like editing).
+- **Semantic record version 3:** version 2 keys + `payload.decorations`; schema string unchanged; entered only by the
+  first explicit `decorations.add`, never left; open/confirm never upgrade; version 1 refuses decoration requests.
+- **N/D/E/R:** N exact; D remap (§27.7; equals `project_range` outside/outside for non-crossing edits); E exactly one
+  add/remove/recipe with `(id, start, end)` compare-and-swap; R refusals incl. line-box violations and adoption.
+- **New pure module `semantic_paint`:** schema, remap, E actions, exact em geometry, the one canonical serializer,
+  the v3 body grammar. Body = L2 text group, then one `q <text fill> (rect h f)+ Q` group.
+- **v2/v3 split:** `body_grammar`/`current_body` injected only for version 3; v2 call sites pass nothing; the v2
+  opener and grammar are unchanged and refuse a painted body.
+- **Transaction:** owned old paint = proven catalog paths inside the owned body equal to the verified rectangles;
+  replacement/removal via `paint_changes`, first add via the new additive `Plan.paint_insertions`; planned area holds
+  old and new rectangles; only the island's own old paint is excluded from obstacles; foreign paint stays protected.
+- Tests: new `test_semantic_underline.py` (106), the 91 PR #49 probes now run on production code; full suite
+  @@FULL@@. MuPDF and Poppler 144 dpi: no-op identical, add/remove differ as expected, removed = text-only baseline.
+- **WINDOWS UNDERLINE VALIDATION NOT RUN; LibreOffice not addressed.** Next: Windows semantic underline validation
+  (harness stages for add/no-op/edit/recipe/remove/publish).
+
+[§28](anchored-paint-ownership.md#28-narrow-semantic-underline-runtime-implementation--2026-10-06).

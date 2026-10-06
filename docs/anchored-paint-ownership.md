@@ -4127,3 +4127,245 @@ one owned slot, one region, one body style, left, static TT, A/B/space/newline, 
 
 Out of scope there: ordinary editable paint, source underline adoption, colours, strike/overline/other kinds,
 cross-page, multiple slots, transparency, ink-skipping.
+
+## 28. Narrow semantic underline runtime implementation — 2026-10-06
+
+Starting main `e793f30a59c8798779e71b4ce6c1d3088d83708c` (PR #49 merged: SEMANTIC UNDERLINE CONTRACT READY). §1–§27
+are preserved as historical records. **This section implements §27 as written; it does not redesign it.** Runtime
+digest: `dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e` → `4b6f9925159160c9ad63cee19f082728bfadf8c70548678fd89d40a3665659e3`.
+
+**Verdict: NARROW SEMANTIC UNDERLINE RUNTIME COMPLETE** (§28.12). This covers the caller-declared underline on the
+single owned semantic slot only. It is not paint runtime in general, not arbitrary vector editing, not source
+underline editing and not Acrobat-like editing.
+
+### 28.1 Scope
+
+Implemented, on the existing L1–L3 surface (one paragraph, one owned slot, one region, one body style, left, static
+TT, A/B/space/newline, ≤ 256 characters, identity/unclipped/opaque/default-black entry context):
+
+| Area | Implementation |
+|---|---|
+| Semantic record version 3 + `payload.decorations` | `semantic_layout` (`DECORATED_VERSION`, `_payload(…, version)`, `_record`, `_attach(…, version)`) |
+| N/D/E/R | `semantic_layout._next_payload` / `_next_decorations`, `plan_semantic_transition` (`next_version`, line-box refusal before any write) |
+| Pure underline module | **new** `pdfeditor/semantic_paint.py`: schema validation, D remap, E actions, exact geometry, the one canonical serializer, the v3 body grammar |
+| v2/v3 validation split | `source_ownership.witness/validate/owned_body/rebind(…, body_grammar=None)`, `shared_flow._validate/_open_current_flow(…, current_body=None)` |
+| v3 verifier | `semantic_layout._verify` → `_open_current_flow(…, current_body=semantic_paint.body_grammar)`, `_island(…, decorations)`, `_owned_paint` |
+| Canonical text + underline writer | `semantic_writer._plan_island` (body = L2 text group + `paint_group`) |
+| Transaction | `Plan.paint_insertions` (new, additive), `PageTransaction.expected_paints`; `paint_changes` for owned replacement/removal; `consumed_paths` |
+| Obstacles | `composition._check_obstacles(…, exclude_paint_seqnos=frozenset())` |
+| Owner/semantic rebind, publication | unchanged code paths, v3 grammar injected for version 3 only; L3 unchanged |
+
+Not implemented (out of scope, all refused or absent): ordinary editable paint, source underline adoption, arbitrary
+path adoption or migration, any kind but `underline`, underline colour, strikeout/highlight/borders, cross-page,
+multiple slots, dormant state, revival, legacy paint migration, transparency, LibreOffice adaptation.
+
+### 28.2 Semantic record version 3
+
+- `semantic.version = 3`; record keys equal version 2 (`version, payload, current, derived, binding`); payload keys
+  = version 2 keys + `decorations`. The shared-flow schema string stays `pdfengine-shared-flow-3`.
+- `decorations` exactly as §27.5: `{id, kind, start, end, start_affinity, end_affinity, recipe{offset_em,
+  thickness_em}}`, `id = current:i` (checked, never chosen), `kind = underline`, `outside/outside`, logical `[start,
+  end)` code-point offsets on grapheme boundaries, ≥ 1 visible character, sorted, disjoint (touching kept), canonical
+  exact rationals with `0 ≤ offset_em ≤ 1`, `0 < thickness_em ≤ 1`. No history, no tombstone, no extra sidecar field,
+  no new sidecar.
+- **Version rule.** `confirm_semantic_layout` still produces version 2 and refuses a `decorations` field. Opening
+  never upgrades. The plan reports `version` and `next_version`; `next_version = 3` only when the current record is
+  version 3 or the request is the explicit `decorations.add` on version 2 (`remove`/`recipe` on version 2 refuse:
+  "only an explicit decorations.add enters version 3"). Version 1 refuses every decoration request ("confirm version 1
+  as version 2 first"). A version 3 record stays version 3 with `decorations = []`; its body is then byte-identical to
+  the version 2 text-only body. A version 3 bundle is not a confirmation input, so there is no downgrade path.
+- Current style/font authority (`semantic.current`) is unchanged by decoration requests.
+
+### 28.3 Transitions
+
+- **N** (`reopen`): decorations exact; no write.
+- **D** (`save`, `reflow`, `edit`): `save`/`reflow` keep decorations. `edit` maps each decoration through
+  `semantic_paint.remap`, the §27.7 rule: members are retained positions plus inserted text when the edit is a
+  replacement inside the range (including exactly the range) or a strict interior insertion; edge insertions are
+  outside; crossing edits shrink and the inserted text is outside; no members or no visible character →
+  terminated; IDs re-derived. For every non-crossing edit the result equals `anchors.project_range(…, outside,
+  outside)` (exhaustive test over `AA B`); crossing edits are where §27.7 deliberately differs (`project_range`
+  refuses, a D edit never refuses because of a decoration).
+- **E** (`reinterpret` with only `decorations`): exactly one of `add {kind, start, end, start_affinity,
+  end_affinity, recipe}`, `remove {id, start, end}`, `recipe {id, start, end, recipe}`; `(id, start, end)` is a
+  compare-and-swap reference; a recipe change must differ. Mixed with any other change → refused.
+- **R**: revival/`revive`, `adopt`, `source_id`/path fields, caller-chosen ID, stale or old `(id, range)`, other
+  kinds, `inside` affinity, overlap/nesting, zero-length, no visible character (all-space, newline-only), missing
+  or `auto` recipe, non-canonical/out-of-bounds recipe, mixed request, version 1 request, and any next state whose
+  underline breaks the exact line-box rule (also a font or size E change: a 1/10 em-descent font is refused for a
+  1/6 em recipe, admitted without the underline).
+- **Empty:** text → empty terminates every decoration (`[]`, no paint group, no dormant state); regrowth never
+  revives; only an explicit `add` underlines again.
+
+### 28.4 Canonical body and grammar
+
+```
+% pdfengine-source-slot-v1 begin <marker_id>
+q BT /PRF1 12 Tf 100 Tz 0 Tc 0 Tw 0 Ts 0 g      L2 canonical text group (unchanged bytes, still a prefix)
+1 0 0 1 20 60 Tm <0002> Tj …
+ET Q
+q 0 g                                             one underline group, only when ≥ 1 rectangle
+20 58.7 m 41.6 58.7 l 41.6 58 l 20 58 l h f       one rectangle per decoration per line, one f each
+Q
+% pdfengine-source-slot-v1 end <marker_id>
+```
+
+- Geometry (`semantic_paint.rectangles`, exact rationals, page y-down): `upper = glyph baseline (incl. rise) +
+  font_size·offset_em`, `thickness = font_size·thickness_em`, `left` = first painted glyph origin, `right` = last
+  painted glyph origin + exact advance (tracking, Tw, confirmed edges and glyph positions come from the exact plan);
+  per-line boundary spaces trimmed; newline never painted; `horizontal_scale` never scales the vertical geometry;
+  font tables are never read. Each rectangle must satisfy the exact line-box rule.
+- Fill = the current text fill, spelled like the text group's fill and set by the group itself (`q <fill> … Q`);
+  there is no underline colour field.
+- Serialization (`semantic_paint.paint_group`, the only serializer): `semantic_island.decimal`; zero-area after
+  decimals refused; decorations in canonical order, then lines top to bottom; no group when there is nothing to paint.
+- v3 grammar (`semantic_paint.body_grammar`): exactly one text group accepted by the unchanged
+  `source_ownership.grammar`, then at most one `q (g|rg|k) (x0 yu m x1 yu l x1 yl l x0 yl l h f)+ Q` group of
+  axis-aligned rectangles. Refused: `re`, strokes, clips, curves, `cm`, `gs`, images/XObjects, nested `q`, empty
+  group, comments, non-rectangles, paint before text.
+
+### 28.5 v2/v3 validation split
+
+- `source_ownership.grammar` and `BODY_OPERATORS` are unchanged. `witness`, `validate`, `owned_body` and `rebind` take
+  a keyword-only `body_grammar=None`; `source_ownership.injected()` passes the keyword **only** when a v3 grammar is
+  injected, so every v2 call site calls exactly as before (an existing test that replaces `witness` with a
+  positional-only stub still passes unchanged).
+- `shared_flow._validate`/`_open_current_flow` take `current_body=None` and hand it to `source_ownership.validate`.
+  `open_shared_flow` has no such parameter: the v2 opener never accepts paint, with any sidecar.
+- `semantic_layout._verify` injects `semantic_paint.body_grammar` only for semantic record version 3. Versions 1 and 2
+  stay text-only. No virtual paint-stripped PDF is built.
+
+### 28.6 v3 verifier (order of §27.15)
+
+1. integrity (`model_sha256`), scope, record version 3 shape (explicit current authority required), payload incl.
+   `decorations`, current authority;
+2. Layer A + fragment binding: the unchanged `shared_flow._validate` through `_open_current_flow(…, current_body=v3)`,
+   which also runs (3) marker inventory = exactly the owned marker, `record_identity`, the witness recomputed with the
+   v3 grammar (`program_sha256`, `range`, `block_sha256`, `entry_context_sha256`; unchanged shape — the block SHA
+   covers the paint), exit context = entry context, and (4) glyph containment;
+5. co-binding (`semantic.binding`) unchanged;
+6. exact derivation from the current asset, island text = plan, generated-font checks unchanged; entry context
+   identity/unclipped/opaque/default black;
+7. body = canonical text group **followed by** the canonical underline group — exact bytes, otherwise "semantic
+   version 3 body is not the canonical text and underline body";
+8. element classification (`_owned_paint`): the slot binding's element snapshot (re-inspected and compared with the
+   current PDF by `open_editable`) has, inside the owned body, exactly the canonical rectangles in order — proven,
+   one fill paint each, bounds ≤ 0.002 pt; no path crosses the body edge; no relation names them. The observation
+   still records an inferred `decoration_candidate`; it has no authority.
+
+### 28.7 Writer and Transaction
+
+- **Owned old paint** (`semantic_writer._old_owned_paint`, version 3 bodies only; version 1/2 writes keep their exact
+  path): the catalog paths inside the verified owned body must equal, in count and order, the canonical rectangles of
+  the verified current state, each proven by `prove_path_paint` to one fill paint with bounds ≤ 0.002 pt; their
+  drawings must be found at the proven seqnos. Anything else inside the body refuses. Owned path IDs are declared
+  `consumed_paths`, so no relation can be carried onto them.
+- **Replacement/removal:** old owned indices → `paint_changes` (first index → the new paint list, others → `None`;
+  all `None` on removal).
+- **First underline:** `Plan.paint_insertions = {index: [paints]}` — new, additive, empty by default; `index` is the
+  old island's last glyph paint (found by its trace seqno). `PageTransaction.expected_paints` inserts after that
+  event; two plans inserting at one anchor, or an anchor outside the observation, refuse.
+- **Expected paint values** are predicted, never observed from the output: geometry/bounds from the exact rectangles;
+  CTM, clips, groups, layers, colour space, components, opacity and colour parameters from the island's own glyph
+  paint (same entry context, same fill operator values). A wrong geometry, colour, a missing or an extra paint each
+  refuse with "saved non-text paint differs from the transaction plan".
+- **Planned area:** `resolved bbox ∪ new ink ∪ new rectangles ∪ removed ink ∪ old rectangles` (old rectangles from the
+  verified current state); `final_rects` += new rectangles. With only the glyph-ink box as the area, adding and
+  removing an underline both refuse ("changed pixels outside its planned areas").
+- **Obstacles:** new rectangles are checked like new ink (foreign glyphs, images, filled vectors, vector borders,
+  links/annotations via the widened layout bounds). Only the island's own proven old underline drawings are excluded
+  (`exclude_paint_seqnos`); without that exclusion the next save is refused by its own old underline crossing the
+  B descender ink.
+- **Rebind:** `source_ownership.rebind(…, body_grammar=v3)` for version 3; `marker_id`, `created_from`, entry context
+  unchanged; then `semantic._attach(…, version=plan['next_version'])` and the fresh-from-disk candidate check (now
+  also `version == next_version`).
+- Unchanged: foreign paint list equality, glyph protection, image/vector protection, pixel-outside-area check, font
+  ownership, source revision guard, L3 publication.
+
+### 28.8 Ownership boundary
+
+Only the canonical underline inside the owned markers is owned. Foreign paint keeps its bytes and order (a foreign
+rectangle before the island stays first through add and remove), and a foreign rectangle under a new underline is an
+obstacle ("filled vector"). Source paint is never detected, inferred, matched, adopted or migrated: confirmation and
+opening never produce decorations; the first underline is always the explicit E `add`; a foreign path moved into the
+owned body is refused by the canonical check. O1: the shared-flow v2 editor cannot open a painted revision (grammar),
+and a foreign save changes the whole-PDF revision, so the version 3 bundle needs confirmation.
+
+### 28.9 Publication and reopen
+
+L3 is unchanged: `publish_semantic_bundle` stages, verifies through `open_semantic_flow` (which dispatches version
+3), renames once and reopens. Candidate and published bytes are identical; a published bundle is the next revision's
+input; mixed PDF/sidecar pairs are refused; a fresh process reopens each bundle as `restored`, version 3, with the
+same decorations. A no-op save rewrites the owned body byte-identically, so the no-op PDF is the same revision.
+
+### 28.10 Changes to existing tests
+
+`tests/test_semantic_underline_contract.py` (91 probes) now runs on the production code: the in-file prototypes
+(`validate`, `remap`, `reinterpret`, `rectangles`, `paint_group`, `body_grammar`, `verify_current_body`) are replaced
+by `semantic_paint`, `semantic_layout._next_decorations`, the production witness with the injected v3 grammar and
+`semantic_layout.canonical_body`. Two probes asserted the pre-implementation state and were rewritten for the
+implemented state: `test_current_runtime_refuses_decorations_and_a_version_3_record` →
+`test_decorations_exist_only_in_semantic_version_3` (v2 payload still refuses `decorations`; version 3 is a known
+record that requires them; version 4 refused), and `test_only_the_named_gates_refuse_a_painted_writer_candidate`
+(monkeypatched writer) → `test_the_production_runtime_passes_every_gate_for_a_painted_candidate` (real add → save →
+edit; v2 path still refuses). The obstacle probe additionally shows the seqno exclusion. No other existing test
+changed.
+
+### 28.11 Tests and validation
+
+New `tests/test_semantic_underline.py`, **106 tests**: lifecycle (v2 text-only reopen, explicit add → version 3,
+add, D remap, style, font, recipe, remove, multiple/touching, newline, empty/regrow, no-op fixed point incl. operators
+and sidecar semantic fields, Tw = edge bytes); version rules and no downgrade; `project_range` equivalence;
+20-case R matrix through both the plan and the writer; line-box refusal on a font change; version 1 refusal;
+v2/v3 split (v2 opener, v2/v1 records over a painted body, version 3 without current authority, unchanged
+signatures); 8 resealed semantic tampers;
+stale/mismatched pairs; 15 body tampers (geometry, fill, extra/missing path, `re`, stroke, clip, curve, `cm`,
+ExtGState, nested `q`, empty group, comment, non-rectangle, image) and paint-first / foreign path / paint without
+decorations through the production `_island`; 5 element-classification tampers; Transaction declarations
+(insertion, replacement, removal, none), owned-paint identification, 4 mis-declared paint faults, planned area
+(necessity and containment), obstacle exclusion; foreign paint kept / obstacle / never adopted; O1; publication,
+next revision, fresh process; MuPDF and Poppler raster; 7 failure-injection points + publication failure.
+
+Validation (Linux, Python 3.13.16, PyMuPDF 1.27.2.3, Poppler `pdftoppm` 24.02.0, pytest-xdist 4 workers):
+
+- new file **106 passed**; contract file **91 passed**;
+- focused (underline, contract, semantic writer/layout/authority/publication/lifecycle, source ownership, paint
+  reassessment, transaction, shared flow, composition): **@@FOCUSED@@**;
+- full suite on the final HEAD (whole `tests/` tree, `--dist loadfile`): **@@FULL@@**. Baseline on main
+  `e793f30` in the same environment: 1,715 passed, 19 skipped, 0 failed.
+- **MuPDF 144 dpi:** text-only baseline ≠ underline added; add = no-op 1 = no-op 2; recipe, style and font changes
+  differ; font no-op identical; underline removed = text-only baseline; candidate = published (bytes identical).
+  **Poppler 144 dpi** (available here): add = no-op 1 = no-op 2; add ≠ baseline; removed = baseline.
+
+### 28.12 Completion criteria
+
+| Criterion | Evidence |
+|---|---|
+| explicit add works | `add` revision, `test_opening_never_upgrades_and_only_the_explicit_add_enters_version_3` |
+| v2 → v3 only by add | same; `remove` on version 2 refused; confirm/open never produce decorations |
+| D remapping | edit revision, contract D matrix (17), `project_range` equivalence |
+| E add/remove/recipe | add, recipe, removed, multi revisions |
+| refusal matrix | 20 R cases (plan + writer), contract E refusals (17), all-space/newline, line box, version 1 |
+| canonical paint writer | canonical body test, Tw = edge, multiple/newline |
+| current verifier | tamper matrices (semantic, body, element), stale pairs |
+| Transaction ownership | declaration, identification, mis-declaration, planned area, obstacle tests |
+| foreign paint protected | foreign kept/obstacle/never adopted, O1 |
+| no-op stable | fixed-point tests (5 groups), raster |
+| publication / published reopen / next revision | publication test (incl. fresh process) |
+| tamper refuses | resealed semantic, body and element tampers |
+| full suite 0 failed | §28.11 |
+
+**NARROW SEMANTIC UNDERLINE RUNTIME COMPLETE.**
+
+### 28.13 Remaining boundaries and next step
+
+- Stated limits carried over from §27: ranges differing only in trimmed boundary spaces paint identical bytes
+  (confirmed, not physically witnessed), as Tw vs edge (§21.4).
+- The planned-area necessity check with a glyph-ink box cannot show a recipe-only change, because the B descender
+  makes that box cover the whole descent band; the per-rectangle mask evidence of §27.17
+  (`test_old_and_new_rectangles_bound_every_changed_pixel`) covers it.
+- **WINDOWS UNDERLINE VALIDATION NOT RUN.** §25 validated the text-only semantic lifecycle on Windows; it does not
+  cover version 3. **LibreOffice: not addressed** (separate axis, §24.5/§25.3 unchanged).
+- Next recommended PR: **Windows semantic underline validation** — extend the §24 harness with underline stages
+  (explicit add, no-op ×2, edit remap, recipe, remove, publish A/B, reopen from the published bundle, MuPDF/Poppler
+  raster) and run it once on Windows. No runtime scope change.
