@@ -1698,3 +1698,25 @@ From main `778b1587c329eb7d8c23b055c5841fdef8664ce8` (PR #52 merged). Design/evi
 - **Next PR:** narrow semantic strikeout runtime (version 4), §31.15.
 
 [§31](anchored-paint-ownership.md#31-semantic-strikeout-contract--2026-10-06).
+
+
+## Narrow semantic strikeout runtime — 2026-10-06
+
+From main `beb567498ef0354337ecb9171dfac6736af724d7` (PR #53 merged). Implements §31 in the existing
+`semantic_paint` / `semantic_layout` / `semantic_writer`. Runtime digest `4b6f9925…` → `98e71404148d8e69779103a27922c40a65c8f04fed04b2d5adbb8a40d34c23d6`.
+
+- **Verdict: NARROW SEMANTIC STRIKEOUT RUNTIME COMPLETE.**
+- **Version 4** = v3 + `kind = strikeout` (`MIXED_DECORATION_VERSION`; `DECORATED_VERSION = 3` kept, underline-only).
+  - Routes: v2 strikeout add → 4; v3 strikeout add → 4 (underlines carried); underline add v2 → 3 (unchanged).
+  - No open/save upgrade, no downgrade (v4 stays v4 after the last strikeout); v1 refused.
+  - The whole §31.2 matrix is checked through the production planner.
+- **Kinds:** kind-aware `recipe`, explicit `kinds` in `validate`/`remap`/`reinterpret`, and the §31.6 separation
+  rule before any write. One paint group in `current:i` order; disjoint mixed kinds; touching kept; overlap refused.
+- **Reuse:** verifier, owner witness, Transaction (insert/replace/remove), the planned area, obstacles (own glyphs
+  allowed, own old strikeout by seqno only, foreign gap paint refused) and L3 publication are unchanged.
+- **Tests:** new `test_semantic_strikeout.py` (116); the contract probes now run on production code; 3 existing tests
+  were adjusted only where §31 changed the meaning (§32.8). Full suite **2,049 passed, 19 skipped, 0 failed** (main: 1,933 passed; +116 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression).
+- **WINDOWS STRIKEOUT VALIDATION NOT YET PERFORMED.** Next: Windows semantic strikeout validation (harness mode,
+  then Windows evidence).
+
+[§32](anchored-paint-ownership.md#32-narrow-semantic-strikeout-runtime-implementation--2026-10-06).

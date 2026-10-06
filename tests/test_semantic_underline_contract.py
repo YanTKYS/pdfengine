@@ -208,8 +208,9 @@ def test_unchanged_v2_grammar_rejects_the_same_painted_body(chain, tmp_path):
     assert semantic.open_semantic_flow(pdf, rev['state'])['status'] == 'needs_confirmation'
 
 
-def test_decorations_exist_only_in_semantic_version_3(chain):
-    """No v2 payload extension; version 3 is a known record whose payload must carry decorations."""
+def test_decorations_exist_only_in_semantic_versions_3_and_4(chain):
+    """No v2 payload extension; version 3 (and, since §32, version 4) is a known record whose payload
+    must carry decorations; version 5 is unknown."""
     rev = revision(chain, 'save3')
     with pytest.raises(PdfError, match='exactly text, style, font'):
         semantic._payload(dict(rev['payload'], decorations=full(rev)), rev['slot'])
@@ -220,6 +221,8 @@ def test_decorations_exist_only_in_semantic_version_3(chain):
         semantic._payload(rev['payload'], rev['slot'], semantic.DECORATED_VERSION)
     semantic._payload(dict(rev['payload'], decorations=full(rev)), rev['slot'], semantic.DECORATED_VERSION)
     slot['semantic']['version'] = 4
+    semantic._record(slot)
+    slot['semantic']['version'] = 5
     with pytest.raises(PdfError, match='no valid semantic payload'):
         semantic._record(slot)
 
@@ -391,7 +394,7 @@ def test_e_add_remove_and_recipe_change():
 
 
 @pytest.mark.parametrize('changes, reason', [
-    (add(3, 4, kind='strikeout'), 'unsupported decoration kind'),
+    (add(3, 4, kind='highlight'), 'unsupported decoration kind'),  # §32: a strikeout add is the v4 route
     (add(3, 4, id='current:7'), 'exactly kind'),                                   # caller-chosen ID
     (add(3, 4, source_id='path-1'), 'exactly kind'),                               # source path adoption
     (add(3, 4, recipe='auto'), 'offset_em and thickness_em'),                      # hidden recipe inference
