@@ -4369,3 +4369,148 @@ Validation (Linux, Python 3.13.16, PyMuPDF 1.27.2.3, Poppler `pdftoppm` 24.02.0,
 - Next recommended PR: **Windows semantic underline validation** — extend the §24 harness with underline stages
   (explicit add, no-op ×2, edit remap, recipe, remove, publish A/B, reopen from the published bundle, MuPDF/Poppler
   raster) and run it once on Windows. No runtime scope change.
+
+## 29. Windows semantic underline validation preparation — 2026-10-06
+
+Starting main `ae82d16ca5e45dd1342cede8404fbf565b9412e8` (PR #50 merged: NARROW SEMANTIC UNDERLINE RUNTIME COMPLETE).
+§1–§28 are preserved.
+
+> **Windows underline execution has not been performed by this PR.** Cloud runs (Linux, synthetic fixtures) test the
+> harness only and are not Windows evidence. LibreOffice is not part of this validation.
+
+**Runtime changes: none.** Runtime digest `4b6f9925159160c9ad63cee19f082728bfadf8c70548678fd89d40a3665659e3`, the
+same as PR #50. Semantic version 3, the decoration schema, the paint grammar, the Transaction and ownership are
+unchanged.
+
+### 29.1 Harness extension
+
+The §24 harness (`evaluations/semantic_lifecycle/windows_validation.py`) is extended, not replaced. `run --mode
+underline` reuses its preparation (`prepare-fonts`, `prepare-synthetic`, `prepare`), environment capture, input SHA
+preservation, partial `result.json` after every stage, `report.md`, L3 publication, fresh-process reopen, MuPDF and
+Poppler rendering, PASS/REFUSED/SKIPPED/FAIL statuses, verdicts and exit codes. **`run` without `--mode` is the
+text-only lifecycle exactly as before** (same 16 stages, same plan, same report; `result.json` only gains the
+additive `mode`, `validation_kind` and `underline_runtime` keys). Commands, stages and the schema are in the
+[harness README](../evaluations/semantic_lifecycle/README.md#underline-mode-run---mode-underline-docs-29).
+
+### 29.2 Underline lifecycle
+
+```
+preflight → baseline → confirm (version 2) → text_baseline (L2 save, version 2, text-only)
+  → add (explicit decorations.add: E, 2 → 3) → noop_1 → noop_2 → edit_remap (D) → recipe (E) → style (E)
+  → font (E, font A → B) → publish_a → remove_from_bundle_a (input = bundle-a/*, E remove, stays 3)
+  → publish_b → negatives → tamper → continuity → text_only_control → raster_mupdf → raster_poppler (optional)
+  → inputs_preserved (always)
+```
+
+The default validation recipe is the §27/§28 recipe (`13/120`, `7/120`). Each built revision records its transition
+(`classification`, `version`, `next_version`, authority preserved) and the observed paint transition (`insert`,
+`replace`, `remove`, `none`) from the parent's and the candidate's underline groups. That is output evidence: the
+harness does not reach into `Plan`.
+
+Per revision, `revisions{name}.underline` records the semantic version, decorations (count, ranges, recipes), the
+written rectangles, the paint fill, the text-group `Tm` coordinates, the body SHA, the text-group and paint-group SHAs
+(split by the runtime's own v3 body grammar; `paint_body_sha256 = null` when there is no underline group) and the
+MuPDF 144 dpi raster SHA. The owner witness and provider SHA stay in the existing `owner`/`semantic` records.
+
+Checks (all exact; any mismatch is FAIL):
+
+- **add:** version 2 → 3, E, current authority unchanged, `current:0` with the requested range and recipe, text group
+  unchanged.
+- **no-op ×2:** owned body, operators, rectangles, decorations, semantic payload/authority/derived, owner block SHA and
+  raster identical. The PDF bytes are identical too (recorded).
+- **edit remap:** decorations equal the §27.7 remap (default `[0,3)` → `[0,4)`; the rectangle's right edge 41.6 → 48.8).
+- **recipe:** the text and x endpoints are unchanged, the y geometry changes, the authority is unchanged.
+- **style:** the decorations are unchanged, only `style.*` changes, and the em geometry from the written bytes is
+  exact (`Tm y − yu = rise + size·offset_em`, `yu − yl = size·thickness_em`, within the 1e-6 output decimal; measured
+  error 0).
+- **font:**
+  - the provider and the generated font are font B;
+  - the recipe and the y geometry are unchanged;
+  - the left edges lie on the new glyph origins.
+- **publications:**
+  - candidate and published bytes are identical;
+  - fresh-process reopen succeeds;
+  - version and decorations are restored;
+  - the raster is identical;
+  - bundle A is unchanged after bundle B.
+- **remove:** the input is `artifacts/bundle-a/*`; version stays 3; `decorations = []`; there is no underline group;
+  the text group is unchanged.
+- **raster (MuPDF 144 dpi):**
+  - baseline ≠ add;
+  - add = no-op 1 = no-op 2;
+  - recipe, style and font each ≠ previous (for the default plan, each moves painted geometry by ≥ 0.1 pt; a custom
+    plan that moves no pixel FAILs, it never passes silently);
+  - removed = the text-only control (the same edit/style/font requests on version 2, never decorated);
+  - candidate A = bundle A, candidate B = bundle B.
+- **raster (Poppler, optional):** the same identities and baseline ≠ add.
+- **expected refusals:**
+  - mixed A.pdf+B.json and B.pdf+A.json;
+  - on copies, a resealed decoration-recipe tamper ("not the canonical text and underline body");
+  - a paint-geometry tamper ("PDF revision changed").
+
+### 29.3 Synthetic cloud results (harness only, not Windows evidence)
+
+Linux, Python 3.13.16, PyMuPDF 1.27.2.3, Poppler `pdftoppm` 24.02.0, synthetic fonts and the synthetic control:
+
+| Run | Verdict | Exit | Notes |
+|---|---|---|---|
+| `run --mode underline`, in-scope control | `PASS` | 0 | **UNDERLINE HARNESS PASS**: all 21 stages pass incl. Poppler; 15 revisions; ≈ 6.5 s |
+| `run --mode underline`, LibreOffice page shape | `UNSUPPORTED_TARGET` | 3 | `confirm` refused (unclipped entry context); later stages SKIPPED; inputs preserved |
+| `run` (text mode), in-scope control | `PASS` | 0 | the unchanged 16-stage text lifecycle |
+| `run` (text mode), LibreOffice page shape | `UNSUPPORTED_TARGET` | 3 | unchanged expected refusal |
+
+Recorded synthetic values:
+
+| Revision | Range | Rectangle (PDF `x0 yu x1 yl`) |
+|---|---|---|
+| add | `[0,3)` | `20 58.7 41.6 58` |
+| edit | `[0,4)` | `20 58.7 48.8 58` |
+| recipe `1/10`, `1/20` | `[0,4)` | `20 58.8 48.8 58.2` |
+| style 13 pt, tracking 1/4 | `[0,4)` | `20 58.7 51.95 58.05` |
+| font B | `[0,4)` | `20 58.7 46.75 58.05` |
+| remove / bundle B | none | (text group identical to the text-only control's) |
+
+### 29.4 Tests and validation
+
+- **New** `tests/test_semantic_windows_underline_harness.py`: 20 tests.
+  - The underline lifecycle, v2 → v3, the no-ops, the remap, the recipe, style and font, publication A,
+    bundle-A reuse, remove, publication B and the fresh-process reopen.
+  - Expected refusals and tamper, the raster expectations, input preservation, the schema additions and the report
+    section.
+  - Text-mode compatibility (no `--mode` and `--mode text`), an unknown mode as a usage error, a partial FAIL with
+    retained evidence, Poppler optional, missing font B → INCOMPLETE, the LibreOffice shape → UNSUPPORTED_TARGET, a
+    plan-override refusal and the CLI in a fresh process.
+- The existing `tests/test_semantic_windows_harness.py` (18 tests) is unchanged and passes.
+- Focused: **323 passed** (`test_semantic_windows_harness`, `test_semantic_windows_underline_harness`, `test_semantic_underline`, `test_semantic_underline_contract`, `test_semantic_publication`, `test_semantic_lifecycle`).
+- Full suite on the final HEAD: **1,841 passed, 19 skipped, 0 failed** (PR #50: 1,821 passed; +20 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression).
+
+### 29.5 Windows procedure (next evidence PR)
+
+On Windows, only the synthetic control is run. LibreOffice stays a separate axis (§24.5 step 2, §25.3).
+
+1. Clean checkout of this PR's merge commit.
+2. Environment setup (Python 3.12, lockfile).
+3. `prepare-fonts` (Arial/Times A/B/space unhinted subsets).
+4. `prepare-synthetic`.
+5. `prepare`.
+6. `run --mode underline`.
+7. Check `result.json`/`report.md`: `windows_execution: true`, `mode: underline`.
+8. Commit only `result.json` and `report.md` under
+   `evaluations/semantic_lifecycle/runs/windows-underline-synthetic-<date>/`.
+
+The exact PowerShell command is in the README (array splat, `& $P @H …`). Expected outcome: `PASS`, exit 0. It is
+**not claimed** until it has run, and any other outcome is recorded as it is.
+
+### 29.6 Verdict
+
+**WINDOWS SEMANTIC UNDERLINE VALIDATION READY:**
+- the harness is extended;
+- the text-only mode regression passes;
+- the underline synthetic lifecycle passes;
+- the result/report schema works;
+- publication A/B, bundle reuse, failure recording and input preservation work in the harness;
+- the Windows command is documented;
+- the full suite passes;
+- no Windows PASS is claimed.
+
+Windows underline execution: **NOT RUN**. LibreOffice: **not part of this validation**.

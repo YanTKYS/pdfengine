@@ -100,3 +100,89 @@ runtime sidecar.
 | `stages[]` | {id, required, status, error, details}; `details` holds stage evidence (requests, diffs, byte identity, fresh-process status, expected refusals, raster hashes, creation-evidence digests) |
 | `revisions{name}` | pdf/sidecar paths relative to the output dir, their SHA-256 and sizes; `owner` {marker_id, created_from_sha256, program_sha256, block_sha256, range, pdf_sha256}; `semantic` {text, font_sha256, provider_sha256, provider_name, font_size, tracking, rise, horizontal_scale, word_spacing, edges, provenance, version, canonical}; `island` {sha256, size, operators} |
 | `verdict` | as above |
+
+## Underline mode (`run --mode underline`, docs §29)
+
+> **Windows underline execution has not been performed by the PR that added this mode (2026-10-06).** Cloud runs
+> (Linux, synthetic fixtures) test the harness only. A run is Windows evidence only when its `result.json` has
+> `"windows_execution": true`; an underline run also has `"mode": "underline"` and `"underline_runtime": true`.
+
+`run` without `--mode` (or with `--mode text`) is the text-only lifecycle above, unchanged. `--mode underline` runs the
+narrow semantic underline lifecycle (docs §28) on the same `prepare` output. It calls the same runtime APIs only and
+never changes semantic version 3, the decoration schema, the paint grammar, the Transaction or ownership.
+
+### Windows command (copy as is; PowerShell)
+
+```powershell
+# Clean checkout of the merge commit, Python 3.12, lockfile (as in the repository README).
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.lock.txt
+.\.venv\Scripts\python.exe -m pip install -e ".[test]"
+
+$P = ".\.venv\Scripts\python.exe"
+$H = "-m", "evaluations.semantic_lifecycle.windows_validation"
+$W = "tmp\semantic-underline-windows"
+$RUN = "evaluations\semantic_lifecycle\runs\windows-underline-synthetic-$(Get-Date -Format yyyyMMdd)"
+& $P @H prepare-fonts --output-dir "$W\fonts" --from-a C:\Windows\Fonts\arial.ttf --from-b C:\Windows\Fonts\times.ttf
+& $P @H prepare-synthetic --output-dir "$W\src"
+& $P @H prepare --source-pdf "$W\src\source.pdf" --spec "$W\src\spec.json" --font-a "$W\fonts\font-a.ttf" --output-dir "$W\prep"
+# Optional: Poppler for the second renderer, for this session only (raster_poppler is SKIPPED without it).
+# $env:PATH = "C:\path\to\poppler\Library\bin;$env:PATH"
+& $P @H run --mode underline --pdf "$W\prep\document.pdf" --sidecar "$W\prep\shared-flow.json" --font-a "$W\fonts\font-a.ttf" --font-b "$W\fonts\font-b.ttf" --output-dir $RUN
+$LASTEXITCODE
+```
+
+Expected for this synthetic control on Windows: `PASS`, exit 0 (not claimed until it has run). Commit only
+`$RUN\result.json` and `$RUN\report.md`; never rerun into an existing directory and never edit `result.json`.
+
+### Default underline plan
+
+```json
+{"underline_add": {"start": 0, "end": 3, "recipe": {"offset_em": "13/120", "thickness_em": "7/120"}},
+ "underline_edit": {"start": 1, "end": 1, "text": "A"},
+ "underline_recipe": {"offset_em": "1/10", "thickness_em": "1/20"},
+ "underline_style": {"font_size": "13", "tracking": "1/4"}}
+```
+
+The add recipe is the §27/§28 validation recipe. `--plan` overrides any of these keys; a request the runtime refuses
+(for example a recipe that breaks the line box) is recorded as `REFUSED`.
+
+### Underline stages
+
+`preflight`, `baseline`, `confirm` (as in text mode), then:
+
+| Stage | Revision | Expectation (else FAIL) |
+|---|---|---|
+| `text_baseline` | `u00-text-baseline` | canonical L2 save, semantic version 2, no decorations, no underline group |
+| `add` | `u01-add` | explicit `decorations.add`: E, version 2 → 3, current authority unchanged, decoration `current:0` exactly as requested, underline group inserted, text group unchanged |
+| `noop_1`, `noop_2` | `u02-noop-1`, `u03-noop-2` | D, version 3; owned body, operators, rectangles, decorations, semantic payload/authority/derived, owner block SHA and MuPDF raster identical (PDF byte identity recorded) |
+| `edit_remap` | `u04-edit-remap` | D; decorations equal the §27.7 remap of the edit (default `[0,3)` → `[0,4)`) |
+| `recipe` | `u05-recipe` | E; text and x endpoints unchanged, y geometry changed, authority unchanged |
+| `style` | `u06-style` | E; decorations unchanged, only `style.*` changed, exact em geometry from the written bytes |
+| `font` | `u07-font-b` | E with `--font-b`; provider = font B, generated font = font B, recipe and y geometry unchanged, left edges on the new glyph origins (SKIPPED without `--font-b` → `INCOMPLETE`) |
+| `publish_a` | `bundle-a` | L3 publication of the last candidate; byte identity, fresh-process reopen, version 3 and decorations restored, raster identical |
+| `remove_from_bundle_a` | `u08-remove-from-bundle-a` | input is `artifacts/bundle-a/*`; explicit `decorations.remove`; version stays 3, `decorations = []`, no underline group, text group unchanged |
+| `publish_b` | `bundle-b` | as `publish_a`; bundle A unchanged; version 3 text-only body |
+| `negatives` | — | A.pdf+B.json and B.pdf+A.json refused |
+| `tamper` | — | on copies under `artifacts/tamper/`: a resealed decoration-recipe tamper and a paint-geometry tamper are refused |
+| `continuity` | — | creation evidence and owner identity constant |
+| `text_only_control` | `control-0N-*` | the same edit/style/font requests on version 2, never decorated |
+| `raster_mupdf` | — | 144 dpi: baseline ≠ add; add = no-op 1 = no-op 2; recipe, style and font each ≠ previous; removed = text-only control; candidate A = bundle A; candidate B = bundle B |
+| `raster_poppler` | — | optional (SKIPPED without `pdftoppm`): baseline ≠ add, add = no-ops, candidates = bundles, removed = control |
+| `inputs_preserved` | — | always |
+
+The "differs" expectations hold for the default plan, whose recipe, size and font changes each move painted geometry
+by at least 0.1 pt. A custom `--plan` that does not move pixels makes that check FAIL; it never passes silently.
+
+### `result.json` additions (still `schema_version` 1; additive)
+
+| Key | Content |
+|---|---|
+| `mode`, `validation_kind`, `underline_runtime` | `text`/`semantic-text-lifecycle`/`false` or `underline`/`semantic-underline-lifecycle`/`true` (also present in text mode) |
+| `underline_disclaimer` | underline mode only |
+| `revisions{name}.underline` | `semantic_version`, `decorations` (`null` for version 1/2), `decoration_count`, `ranges`, `recipes`, `rectangle_count`, `rectangles_pdf` (the written `x0 yu x1 yl` operands), `paint_fill`, `text_tm_y`, `text_tm_x`, `body_sha256`, `body_split`, `text_body_sha256`, `paint_body_sha256` (`null` when there is no underline group), `paint_body_size` (0 then), `raster_mupdf_sha256` |
+| `revisions{name}.transition` | built revisions only: `parent`, `classification`, `version`, `next_version`, `authority_preserved` |
+| `stages[].details` | per stage: the checks in the table above, `paint_transition` (`insert`/`replace`/`remove`/`none`, observed from the parent and candidate underline groups), ranges/rectangles before and after, expected refusal reasons, raster digests |
+
+The text and underline groups are split with the runtime's own v3 body grammar; rectangles are read from the written
+bytes, not from internal plans.
