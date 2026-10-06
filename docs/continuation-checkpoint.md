@@ -1656,3 +1656,22 @@ From main `ae82d16ca5e45dd1342cede8404fbf565b9412e8` (PR #50 merged). **No runti
   README PowerShell command once on Windows and commit `result.json` + `report.md`.
 
 [§29](anchored-paint-ownership.md#29-windows-semantic-underline-validation-preparation--2026-10-06).
+
+
+## Windows semantic underline evidence — 2026-10-06
+
+This is the first Windows run of `run --mode underline` (§29), on Windows 11 / Python 3.12.14 from main
+`769a0a9f4b4b497d1c157ece1129167d1f8ec838`. **Runtime changes: none**; the runtime digest is unchanged
+(`4b6f9925159160c9ad63cee19f082728bfadf8c70548678fd89d40a3665659e3`).
+
+- The Arial/Times subset fixture gave **PASS, exit 0**, `windows_execution: true`, `mode: underline`, with all 21
+  stages passing, including Poppler 26.07.0.
+- The run covers v2 → v3 add (E), no-op ×2 identical, remap `[0,3)` → `[0,4)`, recipe, style and font, publication A
+  → remove from bundle A (stays version 3, `decorations = []`) → publication B, bundle A unchanged, and mixed-pair and
+  tamper refusals.
+- MuPDF and Poppler raster expectations held, and inputs were preserved.
+- The rectangle edges follow the Arial metrics (20.017578 / 39.359375 → 47.363281), not the cloud synthetic font's
+  41.6 → 48.8.
+- Windows full suite: 1,853 passed / 7 environment skips / 0 failed.
+- **WINDOWS NARROW SEMANTIC UNDERLINE LIFECYCLE VALIDATED.**
+  [§30](anchored-paint-ownership.md#30-windows-semantic-underline-external-validation--2026-10-06).

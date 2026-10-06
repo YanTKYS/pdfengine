@@ -1,0 +1,3113 @@
+{
+  "schema_version": 1,
+  "executed_at": "2026-10-06T10:06:32.238915+00:00",
+  "disclaimer": "Windows execution has not been performed by the PR that added this harness. This report is evidence only for the execution it describes.",
+  "mode": "underline",
+  "validation_kind": "semantic-underline-lifecycle",
+  "underline_runtime": true,
+  "stages": [
+    {
+      "id": "preflight",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "plan": {
+          "underline_add": {
+            "start": 0,
+            "end": 3,
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            }
+          },
+          "underline_edit": {
+            "start": 1,
+            "end": 1,
+            "text": "A"
+          },
+          "underline_recipe": {
+            "offset_em": "1/10",
+            "thickness_em": "1/20"
+          },
+          "underline_style": {
+            "font_size": "13",
+            "tracking": "1/4"
+          }
+        }
+      }
+    },
+    {
+      "id": "baseline",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "schema": "pdfengine-shared-flow-2",
+        "creation_evidence": {
+          "style_registry": "e2656d3dbd586b8b5252c56f922a5fb92bd5e8afb11d6bdbd540b4a770f10be0",
+          "source_observations": "e797f91464929257f0e72d73c2e1899a368b1e0e73aa8f1ee7d6fa80eb78fd12",
+          "source_provider": "323f32bd020e82d5f29c648493302e0ff6f689b2f6b36c01bde2f34c92e32608",
+          "source_model_sha256": "6d2c7fb608d28b1c19e35d0388ca7ef8b58ab46893d6d7096fd543ea4a4ef1a6",
+          "source_snapshot_sha256": "ce80ebc3a20a7f7e23d09d4fbed502a41377affd44759d14148217293065c573",
+          "created_from": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+          "contract_sha256": "52962a02b90a8626394ebcd54c17e167df712f209a3164224f28980ec7464c2e"
+        }
+      }
+    },
+    {
+      "id": "confirm",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "mode": "confirmed from shared-flow-2 (statement = source-confirmed registry values)",
+        "revision": {
+          "pdf": "document.pdf",
+          "sidecar": "artifacts/confirmed/shared-flow.json",
+          "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+          "sidecar_sha256": "5844327d23601a891c7e18776209b7d70ef55774a844d70ddfbc6c6eb7d7e4f6",
+          "pdf_size": 3756,
+          "sidecar_size": 39439,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "93757518a1c005eff9c6c8e447e0dff69060add99c7753b9f4a58a78cf53d1fd",
+            "block_sha256": "e0938be9022945d3d550fe26197606aa64e27e16fb23085b661a95649efe2501",
+            "range": [
+              45,
+              478
+            ],
+            "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 2,
+            "canonical": false
+          },
+          "island": {
+            "sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+            "size": 238,
+            "operators": 28
+          },
+          "underline": {
+            "semantic_version": 2,
+            "decorations": null,
+            "decoration_count": null,
+            "ranges": null,
+            "recipes": null,
+            "rectangle_count": 0,
+            "rectangles_pdf": [],
+            "paint_fill": null,
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.0175781",
+              "28.0214844",
+              "31.3554688"
+            ],
+            "body_sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+            "paint_body_sha256": null,
+            "paint_body_size": 0,
+            "raster_mupdf_sha256": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8"
+          }
+        }
+      }
+    },
+    {
+      "id": "text_baseline",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "save"
+        },
+        "classification": "D",
+        "diff": {},
+        "revision": {
+          "pdf": "artifacts/u00-text-baseline/semantic-candidate-kkxbl09k/document.pdf",
+          "sidecar": "artifacts/u00-text-baseline/semantic-candidate-kkxbl09k/shared-flow.json",
+          "pdf_sha256": "cee22a4b2a24d02b7022d2ffb8bc2d2729ac98e0de0c43044ba8cae5da79fdae",
+          "sidecar_sha256": "8bcc21328022907311f50b14da8a8f6b5c41cd408f265e9d3d004daba12f1fc0",
+          "pdf_size": 3914,
+          "sidecar_size": 33121,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "918ebeb99b974bd2c0ab79878824342c265e9f58419738d9492b322f15cf249d",
+            "block_sha256": "1f293abe0c57d197890317683a23f0ed524b9001400ec68654e49651239757d2",
+            "range": [
+              45,
+              390
+            ],
+            "pdf_sha256": "cee22a4b2a24d02b7022d2ffb8bc2d2729ac98e0de0c43044ba8cae5da79fdae"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "size": 150,
+            "operators": 16
+          },
+          "underline": {
+            "semantic_version": 2,
+            "decorations": null,
+            "decoration_count": null,
+            "ranges": null,
+            "recipes": null,
+            "rectangle_count": 0,
+            "rectangles_pdf": [],
+            "paint_fill": null,
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "31.355469"
+            ],
+            "body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "paint_body_sha256": null,
+            "paint_body_size": 0,
+            "raster_mupdf_sha256": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8"
+          },
+          "transition": {
+            "parent": "confirmed",
+            "classification": "D",
+            "version": 2,
+            "next_version": 2,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "none"
+      }
+    },
+    {
+      "id": "add",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "add": {
+                "kind": "underline",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                }
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": null,
+            "after": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ]
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/u01-add/semantic-candidate-1_sr4nrv/document.pdf",
+          "sidecar": "artifacts/u01-add/semantic-candidate-1_sr4nrv/shared-flow.json",
+          "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1",
+          "sidecar_sha256": "b9caf2e9b24155771327ddb187581dc52c1ce2e2d64c56df3c1eafd11f923d39",
+          "pdf_size": 3924,
+          "sidecar_size": 50213,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "dddd941f18dd65a864f232b00d97c1a9e6ca2fc955dc52cf71d7e67748872d35",
+            "block_sha256": "a189d03ed2f8615bb1b5e3d1548849d61102e20034845ec9f1ef5e66f6a0a46c",
+            "range": [
+              45,
+              466
+            ],
+            "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+            "size": 226,
+            "operators": 25
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                3
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "58.7",
+                "39.359375",
+                "58"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "31.355469"
+            ],
+            "body_sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "paint_body_sha256": "a7c898bfc2f6f560e11a7e130970f181d47b31a748e81397fbdf70ee2b0b750f",
+            "paint_body_size": 76,
+            "raster_mupdf_sha256": "bc359c7fca2a8656e32d7d9d4e3e8e18f56912f1be9eca503f0ea9037b1b31f1"
+          },
+          "transition": {
+            "parent": "u00-text-baseline",
+            "classification": "E",
+            "version": 2,
+            "next_version": 3,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "insert",
+        "version_transition": [
+          2,
+          3
+        ],
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "noop_1",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "save"
+        },
+        "classification": "D",
+        "diff": {},
+        "revision": {
+          "pdf": "artifacts/u02-noop-1/semantic-candidate-w1dxz9su/document.pdf",
+          "sidecar": "artifacts/u02-noop-1/semantic-candidate-w1dxz9su/shared-flow.json",
+          "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1",
+          "sidecar_sha256": "b672a963dcd06b1ef0b97d6c2773f2a47838c48dac6d43c05671bff7d080d081",
+          "pdf_size": 3924,
+          "sidecar_size": 50213,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "dddd941f18dd65a864f232b00d97c1a9e6ca2fc955dc52cf71d7e67748872d35",
+            "block_sha256": "a189d03ed2f8615bb1b5e3d1548849d61102e20034845ec9f1ef5e66f6a0a46c",
+            "range": [
+              45,
+              466
+            ],
+            "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+            "size": 226,
+            "operators": 25
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                3
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "58.7",
+                "39.359375",
+                "58"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "31.355469"
+            ],
+            "body_sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "paint_body_sha256": "a7c898bfc2f6f560e11a7e130970f181d47b31a748e81397fbdf70ee2b0b750f",
+            "paint_body_size": 76,
+            "raster_mupdf_sha256": "bc359c7fca2a8656e32d7d9d4e3e8e18f56912f1be9eca503f0ea9037b1b31f1"
+          },
+          "transition": {
+            "parent": "u01-add",
+            "classification": "D",
+            "version": 3,
+            "next_version": 3,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "pdf_bytes_identical": true,
+        "operators_identical": true,
+        "owner_block_identical": true,
+        "semantic_identical": true,
+        "underline_identical": true
+      }
+    },
+    {
+      "id": "noop_2",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "save"
+        },
+        "classification": "D",
+        "diff": {},
+        "revision": {
+          "pdf": "artifacts/u03-noop-2/semantic-candidate-lr21d6pt/document.pdf",
+          "sidecar": "artifacts/u03-noop-2/semantic-candidate-lr21d6pt/shared-flow.json",
+          "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1",
+          "sidecar_sha256": "6af7bd1fc53397485d51f287de259222212b5b48e9b5866111e979d9a9c6abed",
+          "pdf_size": 3924,
+          "sidecar_size": 50213,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "dddd941f18dd65a864f232b00d97c1a9e6ca2fc955dc52cf71d7e67748872d35",
+            "block_sha256": "a189d03ed2f8615bb1b5e3d1548849d61102e20034845ec9f1ef5e66f6a0a46c",
+            "range": [
+              45,
+              466
+            ],
+            "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+            "size": 226,
+            "operators": 25
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                3
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "58.7",
+                "39.359375",
+                "58"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "31.355469"
+            ],
+            "body_sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "paint_body_sha256": "a7c898bfc2f6f560e11a7e130970f181d47b31a748e81397fbdf70ee2b0b750f",
+            "paint_body_size": 76,
+            "raster_mupdf_sha256": "bc359c7fca2a8656e32d7d9d4e3e8e18f56912f1be9eca503f0ea9037b1b31f1"
+          },
+          "transition": {
+            "parent": "u02-noop-1",
+            "classification": "D",
+            "version": 3,
+            "next_version": 3,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "pdf_bytes_identical": true,
+        "operators_identical": true,
+        "owner_block_identical": true,
+        "semantic_identical": true,
+        "underline_identical": true
+      }
+    },
+    {
+      "id": "edit_remap",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "edit",
+          "start": 1,
+          "end": 1,
+          "text": "A"
+        },
+        "classification": "D",
+        "diff": {
+          "decorations": {
+            "before": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "after": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ]
+          },
+          "text": {
+            "before": "A B",
+            "after": "AA B"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/u04-edit-remap/semantic-candidate-z0g5bosb/document.pdf",
+          "sidecar": "artifacts/u04-edit-remap/semantic-candidate-z0g5bosb/shared-flow.json",
+          "pdf_sha256": "9eb0438a30a861f392304e19d053b9daf80cb62afc408729ac1978dace728692",
+          "sidecar_sha256": "871c8a8924484bfa1a5653bbf7cfe8f45de17dbfe25256d44b6f9ad6ffff6852",
+          "pdf_size": 3930,
+          "sidecar_size": 52467,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "21e69b0961236cd78d28fa9745ba90bb528b6c11c4ef0221a20c14d0bd6cceb9",
+            "block_sha256": "3ccbe315bc9932ca2be8db3957002bab2a2b53c77953b7bdba49a4563de06524",
+            "range": [
+              45,
+              500
+            ],
+            "pdf_sha256": "9eb0438a30a861f392304e19d053b9daf80cb62afc408729ac1978dace728692"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "663859f5f16c34ef41ce8070021ebe18c71425fb4bc900665e135c882f976c58",
+            "size": 260,
+            "operators": 27
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "58.7",
+                "47.363281",
+                "58"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "36.025391",
+              "39.359375"
+            ],
+            "body_sha256": "663859f5f16c34ef41ce8070021ebe18c71425fb4bc900665e135c882f976c58",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+            "paint_body_sha256": "a2a795ccf1eeb1661198b9f2ee069be16c98ce252a2fb4e37a8a974f6fa1bc96",
+            "paint_body_size": 76,
+            "raster_mupdf_sha256": "dc796a779cb3e605d37d0ea58e57d058b1f5d98aa23ff7b27e3e6dde5e118ead"
+          },
+          "transition": {
+            "parent": "u03-noop-2",
+            "classification": "D",
+            "version": 3,
+            "next_version": 3,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "before_ranges": [
+          [
+            0,
+            3
+          ]
+        ],
+        "after_ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "before_rectangles": [
+          [
+            "20.017578",
+            "58.7",
+            "39.359375",
+            "58"
+          ]
+        ],
+        "after_rectangles": [
+          [
+            "20.017578",
+            "58.7",
+            "47.363281",
+            "58"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "recipe",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "recipe": {
+                "id": "current:0",
+                "start": 0,
+                "end": 4,
+                "recipe": {
+                  "offset_em": "1/10",
+                  "thickness_em": "1/20"
+                }
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "after": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "1/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ]
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/u05-recipe/semantic-candidate-m32f6x52/document.pdf",
+          "sidecar": "artifacts/u05-recipe/semantic-candidate-m32f6x52/shared-flow.json",
+          "pdf_sha256": "504e9266ec7ce9d05cc47a8f8fa1cc604bddd8b99100c24d67f1ef0eadb5a5a7",
+          "sidecar_sha256": "e6c602ee2837f55687b850bf1c73b90a03c3a7548ec15588b5b175822d0add1a",
+          "pdf_size": 3931,
+          "sidecar_size": 52502,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "39f20e834dfec0b7d68aa538104561d77634cbd67a4e6064117b7ebe20c5be85",
+            "block_sha256": "24e6af820a9f018ae1bbc50e8a7a5b70f3524b002a8e7e162cc17814464ceb79",
+            "range": [
+              45,
+              504
+            ],
+            "pdf_sha256": "504e9266ec7ce9d05cc47a8f8fa1cc604bddd8b99100c24d67f1ef0eadb5a5a7"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "6e8fe6415430a7a7430d373ebc904845fe0842c119101b0323db2317814a9f77",
+            "size": 264,
+            "operators": 27
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "1/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "1/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "58.8",
+                "47.363281",
+                "58.2"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "36.025391",
+              "39.359375"
+            ],
+            "body_sha256": "6e8fe6415430a7a7430d373ebc904845fe0842c119101b0323db2317814a9f77",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+            "paint_body_sha256": "243cfe3b0429fb8c27e56cf4e4ef4a7a90fcc7aa1d6236e7b8486ff50bc65319",
+            "paint_body_size": 80,
+            "raster_mupdf_sha256": "2a2618804299a001cdbf3f9bb8a8babdb3ac20c063e735a730253a4c45d01883"
+          },
+          "transition": {
+            "parent": "u04-edit-remap",
+            "classification": "E",
+            "version": 3,
+            "next_version": 3,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "text_unchanged": true,
+        "text_group_unchanged": true,
+        "horizontal_endpoints_unchanged": true,
+        "vertical_geometry_changed": true,
+        "authority_preserved": true,
+        "recipe_applied": true
+      }
+    },
+    {
+      "id": "style",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "font_size": "13",
+            "tracking": "1/4"
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "style.font_size": {
+            "before": "12",
+            "after": "13"
+          },
+          "style.tracking": {
+            "before": "0",
+            "after": "1/4"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/u06-style/semantic-candidate-90cs00ho/document.pdf",
+          "sidecar": "artifacts/u06-style/semantic-candidate-90cs00ho/shared-flow.json",
+          "pdf_sha256": "3beb79a4d06d3a02c6b6489f73ca498a794e617df7161b457b304b67ab8a1c9a",
+          "sidecar_sha256": "e908a62c31cf03da8999fb880b17473d91b8875f8b0985c2f96be6f2240ccb45",
+          "pdf_size": 3936,
+          "sidecar_size": 52973,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "985e6a71360d5a47fff09c6f733ec988471aedce97a481f6f2bbf6f68cf5f22f",
+            "block_sha256": "0c3e143442fe917b28d86283bceb5305862de2a4afa55e2186ef7216c44d3f6c",
+            "range": [
+              45,
+              508
+            ],
+            "pdf_sha256": "3beb79a4d06d3a02c6b6489f73ca498a794e617df7161b457b304b67ab8a1c9a"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "47809991c611c92fe5095dfc6cbbb3a7750049c4d17f821aefe2aef1ba38b1ef",
+            "size": 268,
+            "operators": 27
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "1/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "1/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.019043",
+                "58.7",
+                "50.393555",
+                "58.05"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.019043",
+              "28.939941",
+              "37.86084",
+              "41.722656"
+            ],
+            "body_sha256": "47809991c611c92fe5095dfc6cbbb3a7750049c4d17f821aefe2aef1ba38b1ef",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+            "paint_body_sha256": "3c794ec59f898bfe3a3d56ca352beab81f98a11e7c7154a9be9f23b689280128",
+            "paint_body_size": 82,
+            "raster_mupdf_sha256": "b640f4b93c11ddd4bcf8f62d52fc06e10cbf3a3c8e8962d4d8865f4cccf4fd3d"
+          },
+          "transition": {
+            "parent": "u05-recipe",
+            "classification": "E",
+            "version": 3,
+            "next_version": 3,
+            "authority_preserved": false
+          }
+        },
+        "paint_transition": "replace",
+        "decorations_preserved": true,
+        "em_geometry_max_error_pt": 0.0
+      }
+    },
+    {
+      "id": "font",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "font": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "font.sha": {
+            "before": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "after": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/u07-font-b/semantic-candidate-osnay701/document.pdf",
+          "sidecar": "artifacts/u07-font-b/semantic-candidate-osnay701/shared-flow.json",
+          "pdf_sha256": "4e75aae0536957256f784ecc44b6669accce6b4f23decd34806a5af75f9ea257",
+          "sidecar_sha256": "eb19fb6740c148b53f52293aed7512c3d7565d94a5369a16f895188832eaa683",
+          "pdf_size": 4058,
+          "sidecar_size": 52905,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "aa40a8e11d34ba3e058d3e0638e4a4410efd039113c22491a1e8e395f34f1b8b",
+            "block_sha256": "5e3bb81925c18982db2f3367ec0179a6699399efa40594df135fe0313ce61470",
+            "range": [
+              45,
+              488
+            ],
+            "pdf_sha256": "4e75aae0536957256f784ecc44b6669accce6b4f23decd34806a5af75f9ea257"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "37ba2be92eca385becf0b86f0e95d64f3655b7e3cb429ff15287bddccc80c5f3",
+            "size": 248,
+            "operators": 27
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "1/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "1/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20",
+                "58.7",
+                "51.447266",
+                "58.05"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "37ba2be92eca385becf0b86f0e95d64f3655b7e3cb429ff15287bddccc80c5f3",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": "ec58687ff23f1f85fea1321fc613275314a1bf4946284de6fe96bd59b7a7a488",
+            "paint_body_size": 68,
+            "raster_mupdf_sha256": "c0bf17e5b9849bd67b153e8d5b021d1410d89151d631d0449e74aeeae2bba83a"
+          },
+          "transition": {
+            "parent": "u06-style",
+            "classification": "E",
+            "version": 3,
+            "next_version": 3,
+            "authority_preserved": false
+          }
+        },
+        "paint_transition": "replace",
+        "provider_is_font_b": true,
+        "recipe_preserved": true,
+        "vertical_geometry_unchanged": true,
+        "endpoints_on_new_glyphs": true,
+        "generated_font_is_font_b": true,
+        "em_geometry_max_error_pt": 0.0,
+        "right_endpoints": [
+          [
+            "50.393555"
+          ],
+          [
+            "51.447266"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "publish_a",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "candidate": "u07-font-b",
+        "directory": "artifacts/bundle-a",
+        "artifacts": [
+          "document.pdf",
+          "shared-flow.json"
+        ],
+        "staged_and_public_reopen": "restored",
+        "candidate_bytes_identical": true,
+        "revision": {
+          "pdf": "artifacts/bundle-a/document.pdf",
+          "sidecar": "artifacts/bundle-a/shared-flow.json",
+          "pdf_sha256": "4e75aae0536957256f784ecc44b6669accce6b4f23decd34806a5af75f9ea257",
+          "sidecar_sha256": "eb19fb6740c148b53f52293aed7512c3d7565d94a5369a16f895188832eaa683",
+          "pdf_size": 4058,
+          "sidecar_size": 52905,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "aa40a8e11d34ba3e058d3e0638e4a4410efd039113c22491a1e8e395f34f1b8b",
+            "block_sha256": "5e3bb81925c18982db2f3367ec0179a6699399efa40594df135fe0313ce61470",
+            "range": [
+              45,
+              488
+            ],
+            "pdf_sha256": "4e75aae0536957256f784ecc44b6669accce6b4f23decd34806a5af75f9ea257"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "37ba2be92eca385becf0b86f0e95d64f3655b7e3cb429ff15287bddccc80c5f3",
+            "size": 248,
+            "operators": 27
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "1/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "1/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20",
+                "58.7",
+                "51.447266",
+                "58.05"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "37ba2be92eca385becf0b86f0e95d64f3655b7e3cb429ff15287bddccc80c5f3",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": "ec58687ff23f1f85fea1321fc613275314a1bf4946284de6fe96bd59b7a7a488",
+            "paint_body_size": 68,
+            "raster_mupdf_sha256": "c0bf17e5b9849bd67b153e8d5b021d1410d89151d631d0449e74aeeae2bba83a"
+          }
+        },
+        "fresh_process": "restored",
+        "version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "1/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "candidate_published_raster_identical": true
+      }
+    },
+    {
+      "id": "remove_from_bundle_a",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "remove": {
+                "id": "current:0",
+                "start": 0,
+                "end": 4
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "1/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "after": []
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/u08-remove-from-bundle-a/semantic-candidate-m202os32/document.pdf",
+          "sidecar": "artifacts/u08-remove-from-bundle-a/semantic-candidate-m202os32/shared-flow.json",
+          "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd",
+          "sidecar_sha256": "9caa42ea976e78582fbf9f3dd0d8f16f9d32f187c91ffd129d85d7d59ed7c781",
+          "pdf_size": 4009,
+          "sidecar_size": 35820,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "058b4dd5bb0ddfa467f7603d225535129ad72f402e9ba7e391a7993febcfed54",
+            "block_sha256": "33d84e6f62de43c66d929e89762d7e5d6e3df6258757d3efaa5ec85bd9a766af",
+            "range": [
+              45,
+              420
+            ],
+            "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "size": 180,
+            "operators": 18
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [],
+            "decoration_count": 0,
+            "ranges": [],
+            "recipes": [],
+            "rectangle_count": 0,
+            "rectangles_pdf": [],
+            "paint_fill": null,
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": null,
+            "paint_body_size": 0,
+            "raster_mupdf_sha256": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+          },
+          "transition": {
+            "parent": "bundle-a",
+            "classification": "E",
+            "version": 3,
+            "next_version": 3,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "remove",
+        "input": [
+          "artifacts/bundle-a/document.pdf",
+          "artifacts/bundle-a/shared-flow.json"
+        ],
+        "decorations_empty": true,
+        "version_stays_3": true,
+        "paint_group_absent": true,
+        "text_group_unchanged": true
+      }
+    },
+    {
+      "id": "publish_b",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "candidate": "u08-remove-from-bundle-a",
+        "directory": "artifacts/bundle-b",
+        "artifacts": [
+          "document.pdf",
+          "shared-flow.json"
+        ],
+        "staged_and_public_reopen": "restored",
+        "candidate_bytes_identical": true,
+        "revision": {
+          "pdf": "artifacts/bundle-b/document.pdf",
+          "sidecar": "artifacts/bundle-b/shared-flow.json",
+          "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd",
+          "sidecar_sha256": "9caa42ea976e78582fbf9f3dd0d8f16f9d32f187c91ffd129d85d7d59ed7c781",
+          "pdf_size": 4009,
+          "sidecar_size": 35820,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "058b4dd5bb0ddfa467f7603d225535129ad72f402e9ba7e391a7993febcfed54",
+            "block_sha256": "33d84e6f62de43c66d929e89762d7e5d6e3df6258757d3efaa5ec85bd9a766af",
+            "range": [
+              45,
+              420
+            ],
+            "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 3,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "size": 180,
+            "operators": 18
+          },
+          "underline": {
+            "semantic_version": 3,
+            "decorations": [],
+            "decoration_count": 0,
+            "ranges": [],
+            "recipes": [],
+            "rectangle_count": 0,
+            "rectangles_pdf": [],
+            "paint_fill": null,
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": null,
+            "paint_body_size": 0,
+            "raster_mupdf_sha256": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+          }
+        },
+        "fresh_process": "restored",
+        "version": 3,
+        "decorations": [],
+        "candidate_published_raster_identical": true,
+        "bundle_a_unchanged": true,
+        "text_only_body": true
+      }
+    },
+    {
+      "id": "negatives",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "expected_refusals": {
+          "A.pdf+B.json": "source output ownership: shared flow PDF revision changed",
+          "B.pdf+A.json": "source output ownership: shared flow PDF revision changed"
+        }
+      }
+    },
+    {
+      "id": "tamper",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "expected_refusals": {
+          "resealed decoration recipe tamper": "semantic version 3 body is not the canonical text and underline body",
+          "paint geometry tamper": "source output ownership: shared flow PDF revision changed"
+        }
+      }
+    },
+    {
+      "id": "continuity",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "creation_evidence": {
+          "style_registry": "e2656d3dbd586b8b5252c56f922a5fb92bd5e8afb11d6bdbd540b4a770f10be0",
+          "source_observations": "e797f91464929257f0e72d73c2e1899a368b1e0e73aa8f1ee7d6fa80eb78fd12",
+          "source_provider": "323f32bd020e82d5f29c648493302e0ff6f689b2f6b36c01bde2f34c92e32608",
+          "source_model_sha256": "6d2c7fb608d28b1c19e35d0388ca7ef8b58ab46893d6d7096fd543ea4a4ef1a6",
+          "source_snapshot_sha256": "ce80ebc3a20a7f7e23d09d4fbed502a41377affd44759d14148217293065c573",
+          "created_from": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+          "contract_sha256": "52962a02b90a8626394ebcd54c17e167df712f209a3164224f28980ec7464c2e"
+        },
+        "owner_marker_constant": true,
+        "created_from_constant": true,
+        "revisions": 12
+      }
+    },
+    {
+      "id": "text_only_control",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "revisions": [
+          "control-01-edit",
+          "control-02-style",
+          "control-03-font-b"
+        ],
+        "final": "control-03-font-b",
+        "text_group_identical_to_removed": true
+      }
+    },
+    {
+      "id": "raster_mupdf",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "baseline_differs_from_add": true,
+        "add_equals_noop_1_and_2": true,
+        "recipe_differs_from_previous": true,
+        "style_differs_from_previous": true,
+        "font_differs_from_previous": true,
+        "removed_equals_text_only_control": true,
+        "candidate_a_equals_bundle_a": true,
+        "candidate_b_equals_bundle_b": true,
+        "dpi": 144,
+        "sha256": {
+          "u00-text-baseline": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8",
+          "u01-add": "bc359c7fca2a8656e32d7d9d4e3e8e18f56912f1be9eca503f0ea9037b1b31f1",
+          "u02-noop-1": "bc359c7fca2a8656e32d7d9d4e3e8e18f56912f1be9eca503f0ea9037b1b31f1",
+          "u03-noop-2": "bc359c7fca2a8656e32d7d9d4e3e8e18f56912f1be9eca503f0ea9037b1b31f1",
+          "u04-edit-remap": "dc796a779cb3e605d37d0ea58e57d058b1f5d98aa23ff7b27e3e6dde5e118ead",
+          "u05-recipe": "2a2618804299a001cdbf3f9bb8a8babdb3ac20c063e735a730253a4c45d01883",
+          "u06-style": "b640f4b93c11ddd4bcf8f62d52fc06e10cbf3a3c8e8962d4d8865f4cccf4fd3d",
+          "u07-font-b": "c0bf17e5b9849bd67b153e8d5b021d1410d89151d631d0449e74aeeae2bba83a",
+          "bundle-a": "c0bf17e5b9849bd67b153e8d5b021d1410d89151d631d0449e74aeeae2bba83a",
+          "u08-remove-from-bundle-a": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae",
+          "bundle-b": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae",
+          "control-03-font-b": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+        },
+        "control": "control-03-font-b"
+      }
+    },
+    {
+      "id": "raster_poppler",
+      "required": false,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "baseline_differs_from_add": true,
+        "add_equals_noop_1_and_2": true,
+        "candidate_a_equals_bundle_a": true,
+        "candidate_b_equals_bundle_b": true,
+        "removed_equals_text_only_control": true,
+        "dpi": 144,
+        "sha256": {
+          "u00-text-baseline": "4473a5e6bd030ca3038335333dab6d553adc1bac86f1d033a6e8f0970d22b6e0",
+          "u01-add": "c8951a321266596f3c229125bbaa9fbeaa91f44761695c5b69efa200e17c8e53",
+          "u02-noop-1": "c8951a321266596f3c229125bbaa9fbeaa91f44761695c5b69efa200e17c8e53",
+          "u03-noop-2": "c8951a321266596f3c229125bbaa9fbeaa91f44761695c5b69efa200e17c8e53",
+          "u07-font-b": "575bd690a5cd7316371e43fa1a131b6bcd316b3e1a5faf5ed85e46f3e8d9263f",
+          "bundle-a": "575bd690a5cd7316371e43fa1a131b6bcd316b3e1a5faf5ed85e46f3e8d9263f",
+          "u08-remove-from-bundle-a": "b8b0b053163e316e5ee51f08d9f043d0a78f1ce194030324c5bb3084e6359569",
+          "bundle-b": "b8b0b053163e316e5ee51f08d9f043d0a78f1ce194030324c5bb3084e6359569",
+          "control-03-font-b": "b8b0b053163e316e5ee51f08d9f043d0a78f1ce194030324c5bb3084e6359569"
+        }
+      }
+    },
+    {
+      "id": "inputs_preserved",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "inputs_unchanged": true,
+        "sha256": {
+          "pdf": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+          "sidecar": "6637f79c18b423be162ccea1d8f5fb1eca55de2ab5fba0a289536344d91e43f0",
+          "font_a": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+          "font_b": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+        }
+      }
+    }
+  ],
+  "revisions": {
+    "confirmed": {
+      "pdf": "document.pdf",
+      "sidecar": "artifacts/confirmed/shared-flow.json",
+      "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+      "sidecar_sha256": "5844327d23601a891c7e18776209b7d70ef55774a844d70ddfbc6c6eb7d7e4f6",
+      "pdf_size": 3756,
+      "sidecar_size": 39439,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "93757518a1c005eff9c6c8e447e0dff69060add99c7753b9f4a58a78cf53d1fd",
+        "block_sha256": "e0938be9022945d3d550fe26197606aa64e27e16fb23085b661a95649efe2501",
+        "range": [
+          45,
+          478
+        ],
+        "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 2,
+        "canonical": false
+      },
+      "island": {
+        "sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+        "size": 238,
+        "operators": 28
+      },
+      "underline": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.0175781",
+          "28.0214844",
+          "31.3554688"
+        ],
+        "body_sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "raster_mupdf_sha256": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8"
+      }
+    },
+    "u00-text-baseline": {
+      "pdf": "artifacts/u00-text-baseline/semantic-candidate-kkxbl09k/document.pdf",
+      "sidecar": "artifacts/u00-text-baseline/semantic-candidate-kkxbl09k/shared-flow.json",
+      "pdf_sha256": "cee22a4b2a24d02b7022d2ffb8bc2d2729ac98e0de0c43044ba8cae5da79fdae",
+      "sidecar_sha256": "8bcc21328022907311f50b14da8a8f6b5c41cd408f265e9d3d004daba12f1fc0",
+      "pdf_size": 3914,
+      "sidecar_size": 33121,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "918ebeb99b974bd2c0ab79878824342c265e9f58419738d9492b322f15cf249d",
+        "block_sha256": "1f293abe0c57d197890317683a23f0ed524b9001400ec68654e49651239757d2",
+        "range": [
+          45,
+          390
+        ],
+        "pdf_sha256": "cee22a4b2a24d02b7022d2ffb8bc2d2729ac98e0de0c43044ba8cae5da79fdae"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "size": 150,
+        "operators": 16
+      },
+      "underline": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "raster_mupdf_sha256": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8"
+      },
+      "transition": {
+        "parent": "confirmed",
+        "classification": "D",
+        "version": 2,
+        "next_version": 2,
+        "authority_preserved": true
+      }
+    },
+    "u01-add": {
+      "pdf": "artifacts/u01-add/semantic-candidate-1_sr4nrv/document.pdf",
+      "sidecar": "artifacts/u01-add/semantic-candidate-1_sr4nrv/shared-flow.json",
+      "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1",
+      "sidecar_sha256": "b9caf2e9b24155771327ddb187581dc52c1ce2e2d64c56df3c1eafd11f923d39",
+      "pdf_size": 3924,
+      "sidecar_size": 50213,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "dddd941f18dd65a864f232b00d97c1a9e6ca2fc955dc52cf71d7e67748872d35",
+        "block_sha256": "a189d03ed2f8615bb1b5e3d1548849d61102e20034845ec9f1ef5e66f6a0a46c",
+        "range": [
+          45,
+          466
+        ],
+        "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+        "size": 226,
+        "operators": 25
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            3
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "58.7",
+            "39.359375",
+            "58"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": "a7c898bfc2f6f560e11a7e130970f181d47b31a748e81397fbdf70ee2b0b750f",
+        "paint_body_size": 76,
+        "raster_mupdf_sha256": "bc359c7fca2a8656e32d7d9d4e3e8e18f56912f1be9eca503f0ea9037b1b31f1"
+      },
+      "transition": {
+        "parent": "u00-text-baseline",
+        "classification": "E",
+        "version": 2,
+        "next_version": 3,
+        "authority_preserved": true
+      }
+    },
+    "u02-noop-1": {
+      "pdf": "artifacts/u02-noop-1/semantic-candidate-w1dxz9su/document.pdf",
+      "sidecar": "artifacts/u02-noop-1/semantic-candidate-w1dxz9su/shared-flow.json",
+      "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1",
+      "sidecar_sha256": "b672a963dcd06b1ef0b97d6c2773f2a47838c48dac6d43c05671bff7d080d081",
+      "pdf_size": 3924,
+      "sidecar_size": 50213,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "dddd941f18dd65a864f232b00d97c1a9e6ca2fc955dc52cf71d7e67748872d35",
+        "block_sha256": "a189d03ed2f8615bb1b5e3d1548849d61102e20034845ec9f1ef5e66f6a0a46c",
+        "range": [
+          45,
+          466
+        ],
+        "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+        "size": 226,
+        "operators": 25
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            3
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "58.7",
+            "39.359375",
+            "58"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": "a7c898bfc2f6f560e11a7e130970f181d47b31a748e81397fbdf70ee2b0b750f",
+        "paint_body_size": 76,
+        "raster_mupdf_sha256": "bc359c7fca2a8656e32d7d9d4e3e8e18f56912f1be9eca503f0ea9037b1b31f1"
+      },
+      "transition": {
+        "parent": "u01-add",
+        "classification": "D",
+        "version": 3,
+        "next_version": 3,
+        "authority_preserved": true
+      }
+    },
+    "u03-noop-2": {
+      "pdf": "artifacts/u03-noop-2/semantic-candidate-lr21d6pt/document.pdf",
+      "sidecar": "artifacts/u03-noop-2/semantic-candidate-lr21d6pt/shared-flow.json",
+      "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1",
+      "sidecar_sha256": "6af7bd1fc53397485d51f287de259222212b5b48e9b5866111e979d9a9c6abed",
+      "pdf_size": 3924,
+      "sidecar_size": 50213,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "dddd941f18dd65a864f232b00d97c1a9e6ca2fc955dc52cf71d7e67748872d35",
+        "block_sha256": "a189d03ed2f8615bb1b5e3d1548849d61102e20034845ec9f1ef5e66f6a0a46c",
+        "range": [
+          45,
+          466
+        ],
+        "pdf_sha256": "7b2717682e7a22b0e8d4260727be9a50dbd435891fafc36985fb7c308ff757f1"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+        "size": 226,
+        "operators": 25
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            3
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "58.7",
+            "39.359375",
+            "58"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "624e84b2a027b1b15775e4bd37070cd9bd13887baf7cfd7a0479c1cb88080435",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": "a7c898bfc2f6f560e11a7e130970f181d47b31a748e81397fbdf70ee2b0b750f",
+        "paint_body_size": 76,
+        "raster_mupdf_sha256": "bc359c7fca2a8656e32d7d9d4e3e8e18f56912f1be9eca503f0ea9037b1b31f1"
+      },
+      "transition": {
+        "parent": "u02-noop-1",
+        "classification": "D",
+        "version": 3,
+        "next_version": 3,
+        "authority_preserved": true
+      }
+    },
+    "u04-edit-remap": {
+      "pdf": "artifacts/u04-edit-remap/semantic-candidate-z0g5bosb/document.pdf",
+      "sidecar": "artifacts/u04-edit-remap/semantic-candidate-z0g5bosb/shared-flow.json",
+      "pdf_sha256": "9eb0438a30a861f392304e19d053b9daf80cb62afc408729ac1978dace728692",
+      "sidecar_sha256": "871c8a8924484bfa1a5653bbf7cfe8f45de17dbfe25256d44b6f9ad6ffff6852",
+      "pdf_size": 3930,
+      "sidecar_size": 52467,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "21e69b0961236cd78d28fa9745ba90bb528b6c11c4ef0221a20c14d0bd6cceb9",
+        "block_sha256": "3ccbe315bc9932ca2be8db3957002bab2a2b53c77953b7bdba49a4563de06524",
+        "range": [
+          45,
+          500
+        ],
+        "pdf_sha256": "9eb0438a30a861f392304e19d053b9daf80cb62afc408729ac1978dace728692"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "663859f5f16c34ef41ce8070021ebe18c71425fb4bc900665e135c882f976c58",
+        "size": 260,
+        "operators": 27
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "58.7",
+            "47.363281",
+            "58"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "36.025391",
+          "39.359375"
+        ],
+        "body_sha256": "663859f5f16c34ef41ce8070021ebe18c71425fb4bc900665e135c882f976c58",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "paint_body_sha256": "a2a795ccf1eeb1661198b9f2ee069be16c98ce252a2fb4e37a8a974f6fa1bc96",
+        "paint_body_size": 76,
+        "raster_mupdf_sha256": "dc796a779cb3e605d37d0ea58e57d058b1f5d98aa23ff7b27e3e6dde5e118ead"
+      },
+      "transition": {
+        "parent": "u03-noop-2",
+        "classification": "D",
+        "version": 3,
+        "next_version": 3,
+        "authority_preserved": true
+      }
+    },
+    "u05-recipe": {
+      "pdf": "artifacts/u05-recipe/semantic-candidate-m32f6x52/document.pdf",
+      "sidecar": "artifacts/u05-recipe/semantic-candidate-m32f6x52/shared-flow.json",
+      "pdf_sha256": "504e9266ec7ce9d05cc47a8f8fa1cc604bddd8b99100c24d67f1ef0eadb5a5a7",
+      "sidecar_sha256": "e6c602ee2837f55687b850bf1c73b90a03c3a7548ec15588b5b175822d0add1a",
+      "pdf_size": 3931,
+      "sidecar_size": 52502,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "39f20e834dfec0b7d68aa538104561d77634cbd67a4e6064117b7ebe20c5be85",
+        "block_sha256": "24e6af820a9f018ae1bbc50e8a7a5b70f3524b002a8e7e162cc17814464ceb79",
+        "range": [
+          45,
+          504
+        ],
+        "pdf_sha256": "504e9266ec7ce9d05cc47a8f8fa1cc604bddd8b99100c24d67f1ef0eadb5a5a7"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "6e8fe6415430a7a7430d373ebc904845fe0842c119101b0323db2317814a9f77",
+        "size": 264,
+        "operators": 27
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "1/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "1/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "58.8",
+            "47.363281",
+            "58.2"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "36.025391",
+          "39.359375"
+        ],
+        "body_sha256": "6e8fe6415430a7a7430d373ebc904845fe0842c119101b0323db2317814a9f77",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "paint_body_sha256": "243cfe3b0429fb8c27e56cf4e4ef4a7a90fcc7aa1d6236e7b8486ff50bc65319",
+        "paint_body_size": 80,
+        "raster_mupdf_sha256": "2a2618804299a001cdbf3f9bb8a8babdb3ac20c063e735a730253a4c45d01883"
+      },
+      "transition": {
+        "parent": "u04-edit-remap",
+        "classification": "E",
+        "version": 3,
+        "next_version": 3,
+        "authority_preserved": true
+      }
+    },
+    "u06-style": {
+      "pdf": "artifacts/u06-style/semantic-candidate-90cs00ho/document.pdf",
+      "sidecar": "artifacts/u06-style/semantic-candidate-90cs00ho/shared-flow.json",
+      "pdf_sha256": "3beb79a4d06d3a02c6b6489f73ca498a794e617df7161b457b304b67ab8a1c9a",
+      "sidecar_sha256": "e908a62c31cf03da8999fb880b17473d91b8875f8b0985c2f96be6f2240ccb45",
+      "pdf_size": 3936,
+      "sidecar_size": 52973,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "985e6a71360d5a47fff09c6f733ec988471aedce97a481f6f2bbf6f68cf5f22f",
+        "block_sha256": "0c3e143442fe917b28d86283bceb5305862de2a4afa55e2186ef7216c44d3f6c",
+        "range": [
+          45,
+          508
+        ],
+        "pdf_sha256": "3beb79a4d06d3a02c6b6489f73ca498a794e617df7161b457b304b67ab8a1c9a"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "47809991c611c92fe5095dfc6cbbb3a7750049c4d17f821aefe2aef1ba38b1ef",
+        "size": 268,
+        "operators": 27
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "1/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "1/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.019043",
+            "58.7",
+            "50.393555",
+            "58.05"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.019043",
+          "28.939941",
+          "37.86084",
+          "41.722656"
+        ],
+        "body_sha256": "47809991c611c92fe5095dfc6cbbb3a7750049c4d17f821aefe2aef1ba38b1ef",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+        "paint_body_sha256": "3c794ec59f898bfe3a3d56ca352beab81f98a11e7c7154a9be9f23b689280128",
+        "paint_body_size": 82,
+        "raster_mupdf_sha256": "b640f4b93c11ddd4bcf8f62d52fc06e10cbf3a3c8e8962d4d8865f4cccf4fd3d"
+      },
+      "transition": {
+        "parent": "u05-recipe",
+        "classification": "E",
+        "version": 3,
+        "next_version": 3,
+        "authority_preserved": false
+      }
+    },
+    "u07-font-b": {
+      "pdf": "artifacts/u07-font-b/semantic-candidate-osnay701/document.pdf",
+      "sidecar": "artifacts/u07-font-b/semantic-candidate-osnay701/shared-flow.json",
+      "pdf_sha256": "4e75aae0536957256f784ecc44b6669accce6b4f23decd34806a5af75f9ea257",
+      "sidecar_sha256": "eb19fb6740c148b53f52293aed7512c3d7565d94a5369a16f895188832eaa683",
+      "pdf_size": 4058,
+      "sidecar_size": 52905,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "aa40a8e11d34ba3e058d3e0638e4a4410efd039113c22491a1e8e395f34f1b8b",
+        "block_sha256": "5e3bb81925c18982db2f3367ec0179a6699399efa40594df135fe0313ce61470",
+        "range": [
+          45,
+          488
+        ],
+        "pdf_sha256": "4e75aae0536957256f784ecc44b6669accce6b4f23decd34806a5af75f9ea257"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "37ba2be92eca385becf0b86f0e95d64f3655b7e3cb429ff15287bddccc80c5f3",
+        "size": 248,
+        "operators": 27
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "1/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "1/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20",
+            "58.7",
+            "51.447266",
+            "58.05"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "37ba2be92eca385becf0b86f0e95d64f3655b7e3cb429ff15287bddccc80c5f3",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": "ec58687ff23f1f85fea1321fc613275314a1bf4946284de6fe96bd59b7a7a488",
+        "paint_body_size": 68,
+        "raster_mupdf_sha256": "c0bf17e5b9849bd67b153e8d5b021d1410d89151d631d0449e74aeeae2bba83a"
+      },
+      "transition": {
+        "parent": "u06-style",
+        "classification": "E",
+        "version": 3,
+        "next_version": 3,
+        "authority_preserved": false
+      }
+    },
+    "bundle-a": {
+      "pdf": "artifacts/bundle-a/document.pdf",
+      "sidecar": "artifacts/bundle-a/shared-flow.json",
+      "pdf_sha256": "4e75aae0536957256f784ecc44b6669accce6b4f23decd34806a5af75f9ea257",
+      "sidecar_sha256": "eb19fb6740c148b53f52293aed7512c3d7565d94a5369a16f895188832eaa683",
+      "pdf_size": 4058,
+      "sidecar_size": 52905,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "aa40a8e11d34ba3e058d3e0638e4a4410efd039113c22491a1e8e395f34f1b8b",
+        "block_sha256": "5e3bb81925c18982db2f3367ec0179a6699399efa40594df135fe0313ce61470",
+        "range": [
+          45,
+          488
+        ],
+        "pdf_sha256": "4e75aae0536957256f784ecc44b6669accce6b4f23decd34806a5af75f9ea257"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "37ba2be92eca385becf0b86f0e95d64f3655b7e3cb429ff15287bddccc80c5f3",
+        "size": 248,
+        "operators": 27
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "1/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "1/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20",
+            "58.7",
+            "51.447266",
+            "58.05"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "37ba2be92eca385becf0b86f0e95d64f3655b7e3cb429ff15287bddccc80c5f3",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": "ec58687ff23f1f85fea1321fc613275314a1bf4946284de6fe96bd59b7a7a488",
+        "paint_body_size": 68,
+        "raster_mupdf_sha256": "c0bf17e5b9849bd67b153e8d5b021d1410d89151d631d0449e74aeeae2bba83a"
+      }
+    },
+    "u08-remove-from-bundle-a": {
+      "pdf": "artifacts/u08-remove-from-bundle-a/semantic-candidate-m202os32/document.pdf",
+      "sidecar": "artifacts/u08-remove-from-bundle-a/semantic-candidate-m202os32/shared-flow.json",
+      "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd",
+      "sidecar_sha256": "9caa42ea976e78582fbf9f3dd0d8f16f9d32f187c91ffd129d85d7d59ed7c781",
+      "pdf_size": 4009,
+      "sidecar_size": 35820,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "058b4dd5bb0ddfa467f7603d225535129ad72f402e9ba7e391a7993febcfed54",
+        "block_sha256": "33d84e6f62de43c66d929e89762d7e5d6e3df6258757d3efaa5ec85bd9a766af",
+        "range": [
+          45,
+          420
+        ],
+        "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "size": 180,
+        "operators": 18
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [],
+        "decoration_count": 0,
+        "ranges": [],
+        "recipes": [],
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "raster_mupdf_sha256": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+      },
+      "transition": {
+        "parent": "bundle-a",
+        "classification": "E",
+        "version": 3,
+        "next_version": 3,
+        "authority_preserved": true
+      }
+    },
+    "bundle-b": {
+      "pdf": "artifacts/bundle-b/document.pdf",
+      "sidecar": "artifacts/bundle-b/shared-flow.json",
+      "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd",
+      "sidecar_sha256": "9caa42ea976e78582fbf9f3dd0d8f16f9d32f187c91ffd129d85d7d59ed7c781",
+      "pdf_size": 4009,
+      "sidecar_size": 35820,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "058b4dd5bb0ddfa467f7603d225535129ad72f402e9ba7e391a7993febcfed54",
+        "block_sha256": "33d84e6f62de43c66d929e89762d7e5d6e3df6258757d3efaa5ec85bd9a766af",
+        "range": [
+          45,
+          420
+        ],
+        "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "size": 180,
+        "operators": 18
+      },
+      "underline": {
+        "semantic_version": 3,
+        "decorations": [],
+        "decoration_count": 0,
+        "ranges": [],
+        "recipes": [],
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "raster_mupdf_sha256": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+      }
+    },
+    "control-01-edit": {
+      "pdf": "artifacts/control-01-edit/semantic-candidate-twayfdb2/document.pdf",
+      "sidecar": "artifacts/control-01-edit/semantic-candidate-twayfdb2/shared-flow.json",
+      "pdf_sha256": "d9f33d3e91df8897776dda6ab77d04e0dea0aa6d31c8e4de12a32b4f9fc63c1e",
+      "sidecar_sha256": "0455ba0663740fc9fb88b41b0aaf9178b8f381418a7e2e2c41f25b07b7b96c3f",
+      "pdf_size": 3902,
+      "sidecar_size": 35368,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "39eb2bec9a62ca0ed4e478909ab97ad772c7ea66fdf0b19270f4208df0f5e174",
+        "block_sha256": "d1687deb8e2bd33accd961ded5b354e81c82da4a3d146edf60c2d66c556aa3a3",
+        "range": [
+          45,
+          424
+        ],
+        "pdf_sha256": "d9f33d3e91df8897776dda6ab77d04e0dea0aa6d31c8e4de12a32b4f9fc63c1e"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "size": 184,
+        "operators": 18
+      },
+      "underline": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "36.025391",
+          "39.359375"
+        ],
+        "body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "raster_mupdf_sha256": "915fc976108d8880f3ce40b0a09b58494716cb06fa341b7040908ca0c21a9427"
+      },
+      "transition": {
+        "parent": "u00-text-baseline",
+        "classification": "D",
+        "version": 2,
+        "next_version": 2,
+        "authority_preserved": true
+      }
+    },
+    "control-02-style": {
+      "pdf": "artifacts/control-02-style/semantic-candidate-i_fjfpq9/document.pdf",
+      "sidecar": "artifacts/control-02-style/semantic-candidate-i_fjfpq9/shared-flow.json",
+      "pdf_sha256": "0abf6ae1fd55ca46cad8234d933ea5fbc02120123486528753b1e2669905098f",
+      "sidecar_sha256": "3c1f3e27fe9c1845d1bf75c0357883a3c051ffa505d745ff1eed8c3f98eb35c6",
+      "pdf_size": 3906,
+      "sidecar_size": 35827,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "defc8d46efbe5e390dacd124bc35603d67a2a04587fcbe6227556f013f43d5e4",
+        "block_sha256": "ead868ae5e50b36728d6291228a0c20a69153c0b0b2767c0847ad1c159eab3e5",
+        "range": [
+          45,
+          426
+        ],
+        "pdf_sha256": "0abf6ae1fd55ca46cad8234d933ea5fbc02120123486528753b1e2669905098f"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+        "size": 186,
+        "operators": 18
+      },
+      "underline": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.019043",
+          "28.939941",
+          "37.86084",
+          "41.722656"
+        ],
+        "body_sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "raster_mupdf_sha256": "bc315cc391b2fad4f8c5f677990d788d30efa3cdddbedd87425e71781b1fb1b2"
+      },
+      "transition": {
+        "parent": "control-01-edit",
+        "classification": "E",
+        "version": 2,
+        "next_version": 2,
+        "authority_preserved": false
+      }
+    },
+    "control-03-font-b": {
+      "pdf": "artifacts/control-03-font-b/semantic-candidate-641nrczb/document.pdf",
+      "sidecar": "artifacts/control-03-font-b/semantic-candidate-641nrczb/shared-flow.json",
+      "pdf_sha256": "3aaafbd3203fd3c6d9e70f92fbd1db1750ad898648878c928a4739f223e7c76b",
+      "sidecar_sha256": "296d4951082b85520c76aa74400f9ac40703d66c89433ee2f3684c1914d859a2",
+      "pdf_size": 4028,
+      "sidecar_size": 35792,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "058b4dd5bb0ddfa467f7603d225535129ad72f402e9ba7e391a7993febcfed54",
+        "block_sha256": "33d84e6f62de43c66d929e89762d7e5d6e3df6258757d3efaa5ec85bd9a766af",
+        "range": [
+          45,
+          420
+        ],
+        "pdf_sha256": "3aaafbd3203fd3c6d9e70f92fbd1db1750ad898648878c928a4739f223e7c76b"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "size": 180,
+        "operators": 18
+      },
+      "underline": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "raster_mupdf_sha256": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+      },
+      "transition": {
+        "parent": "control-02-style",
+        "classification": "E",
+        "version": 2,
+        "next_version": 2,
+        "authority_preserved": false
+      }
+    }
+  },
+  "verdict": "PASS",
+  "underline_disclaimer": "Windows underline execution has not been performed by the PR that added the underline mode.",
+  "environment": {
+    "os": {
+      "system": "Windows",
+      "release": "11",
+      "version": "10.0.26200",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "machine": "AMD64"
+    },
+    "python": "3.12.14",
+    "pymupdf": "1.27.2.3",
+    "fonttools": "4.64.0",
+    "uharfbuzz": "0.55.0",
+    "pypdf": "6.10.0",
+    "poppler": {
+      "available": true,
+      "version": "pdftoppm version 26.07.0"
+    },
+    "libreoffice": "unavailable",
+    "repository": {
+      "commit": "769a0a9f4b4b497d1c157ece1129167d1f8ec838",
+      "dirty": false,
+      "runtime_digest": "4b6f9925159160c9ad63cee19f082728bfadf8c70548678fd89d40a3665659e3"
+    }
+  },
+  "windows_execution": true,
+  "inputs": {
+    "pdf": {
+      "filename": "document.pdf",
+      "sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+      "page_count": 1,
+      "producer": "pypdf",
+      "creator": null,
+      "libreoffice_claimed": false
+    },
+    "sidecar": {
+      "filename": "shared-flow.json",
+      "sha256": "6637f79c18b423be162ccea1d8f5fb1eca55de2ab5fba0a289536344d91e43f0"
+    },
+    "fonts": {
+      "font_a": {
+        "filename": "font-a.ttf",
+        "sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2"
+      },
+      "font_b": {
+        "filename": "font-b.ttf",
+        "sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+      }
+    }
+  },
+  "plan": {
+    "underline_add": {
+      "start": 0,
+      "end": 3,
+      "recipe": {
+        "offset_em": "13/120",
+        "thickness_em": "7/120"
+      }
+    },
+    "underline_edit": {
+      "start": 1,
+      "end": 1,
+      "text": "A"
+    },
+    "underline_recipe": {
+      "offset_em": "1/10",
+      "thickness_em": "1/20"
+    },
+    "underline_style": {
+      "font_size": "13",
+      "tracking": "1/4"
+    }
+  },
+  "target": {
+    "slot_id": "slot-0",
+    "page": 1,
+    "paragraph_id": "A",
+    "region_id": "R",
+    "sidecar_schema": "pdfengine-shared-flow-2",
+    "semantic_version": null,
+    "owner_state": "owned",
+    "source_font_name": "Courier",
+    "generated_fonts": [
+      "/PRF1"
+    ],
+    "text_length": 3
+  },
+  "finished_at": "2026-10-06T10:06:50.945693+00:00"
+}
