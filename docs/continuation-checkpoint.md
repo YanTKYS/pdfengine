@@ -1597,3 +1597,17 @@ unchanged (`dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`).
   implementation.
 
 [§26](anchored-paint-ownership.md#26-paint-runtime-blocker-reassessment-after-l1l3--2026-10-05).
+
+
+## Semantic underline contract — 2026-10-05
+
+From main `55f2c8633bf68c764966a732580507ff5d6d6a3b` (PR #48 merged). Design/evidence only; the runtime digest is
+unchanged (`dd4fff7b3e70fb65804fc7a82fdd1f2253bca8b52d47079ec265df4395aeb84e`).
+
+- **Verdict: SEMANTIC UNDERLINE CONTRACT READY.**
+- **P-SURF: option A.** The underline group lives in the existing owned source-output body, after the text group,
+  under the same marker pair; semantic record version 3 alone uses a v3 current-body grammar, while v2 creation
+  evidence and the v2 opener stay unchanged.
+- **Next PR:** narrow semantic underline runtime implementation (§27.20 scope).
+
+[§27](anchored-paint-ownership.md#27-semantic-underline-contract--2026-10-05).
