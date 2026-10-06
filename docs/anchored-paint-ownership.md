@@ -4514,3 +4514,128 @@ The exact PowerShell command is in the README (array splat, `& $P @H …`). Expe
 - no Windows PASS is claimed.
 
 Windows underline execution: **NOT RUN**. LibreOffice: **not part of this validation**.
+
+
+## 30. Windows semantic underline external validation — 2026-10-06
+
+Starting main `769a0a9f4b4b497d1c157ece1129167d1f8ec838` (PR #51 merged 2026-10-06: WINDOWS SEMANTIC UNDERLINE
+VALIDATION READY). §1–§29 are preserved. This is the first Windows execution of the §29 `run --mode underline`
+lifecycle. **This section is evidence only. Runtime changes: none. Harness, expected values, fixtures and tolerances
+are unchanged.**
+
+### 30.1 Environment
+
+| Item | Value |
+|---|---|
+| OS | Windows 11 Home 10.0.26200 (AMD64), `Windows-11-10.0.26200-SP0`, cp932 locale |
+| Python | 3.12.14 (MSC v.1944, 64 bit), fresh `.venv` from `requirements.lock.txt` + `pip install -e ".[test]"` |
+| PyMuPDF / fontTools / uharfbuzz (HarfBuzz) / pypdf / pytest | 1.27.2.3 / 4.64.0 / 0.55.0 (14.2.1) / 6.10.0 / 9.1.1 |
+| Poppler | `pdftoppm` 26.07.0. It was already installed on the machine (the §25 binary) and was added to `PATH` for this session only; nothing was installed. |
+| LibreOffice | unavailable; not part of this validation (§29.5) |
+| Checkout | clean worktree at `769a0a9`; `result.json` records `dirty: false` |
+| Runtime digest | `4b6f9925159160c9ad63cee19f082728bfadf8c70548678fd89d40a3665659e3`, before the run, after the run and after the full suite (unchanged) |
+
+### 30.2 Command (exactly the §29.5 / README sequence)
+
+```powershell
+$P = ".\.venv\Scripts\python.exe"
+$H = "-m", "evaluations.semantic_lifecycle.windows_validation"
+$W = "tmp\semantic-underline-windows"
+$RUN = "evaluations\semantic_lifecycle\runs\windows-underline-synthetic-$(Get-Date -Format yyyyMMdd)"
+& $P @H prepare-fonts --output-dir "$W\fonts" --from-a C:\Windows\Fonts\arial.ttf --from-b C:\Windows\Fonts\times.ttf
+& $P @H prepare-synthetic --output-dir "$W\src"
+& $P @H prepare --source-pdf "$W\src\source.pdf" --spec "$W\src\spec.json" --font-a "$W\fonts\font-a.ttf" --output-dir "$W\prep"
+& $P @H run --mode underline --pdf "$W\prep\document.pdf" --sidecar "$W\prep\shared-flow.json" `
+  --font-a "$W\fonts\font-a.ttf" --font-b "$W\fonts\font-b.ttf" --output-dir $RUN
+```
+
+Neither the work directory nor the run directory existed before. All four commands exited 0, and the harness ran once.
+
+| Input | SHA-256 |
+|---|---|
+| font A (unhinted A/B/space subset of `arial.ttf`, source `b3658ead…6476a`) | `ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2` |
+| font B (same, from `times.ttf`, source `931c5de5…d58c5`) | `bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc` |
+| synthetic source PDF | `05d24a2bda0181ea8da694ad73470e53cb8814a6cee18fa13d39d95caf76f652` |
+| prepared `document.pdf` / `shared-flow.json` | `037893f6…f9971` / `6637f79c…e43f0` |
+
+The font subsets are byte-identical to the §25 Windows run.
+
+### 30.3 Result
+
+Run: `evaluations/semantic_lifecycle/runs/windows-underline-synthetic-20261006/`.
+
+- **Verdict `PASS`, exit 0**, executed 10:06:32 → 10:06:50 UTC.
+- `windows_execution: true`, `mode: underline`, `validation_kind: semantic-underline-lifecycle`,
+  `underline_runtime: true`.
+- Target: slot `slot-0`, page 1, `pdfengine-shared-flow-2`, generated font `/PRF1`.
+
+All 21 stages **PASS**: preflight, baseline, confirm, text_baseline, add, noop_1, noop_2, edit_remap, recipe, style,
+font, publish_a, remove_from_bundle_a, publish_b, negatives, tamper, continuity, text_only_control, raster_mupdf,
+raster_poppler (optional; it ran and passed) and inputs_preserved.
+
+| Stage | Recorded evidence |
+|---|---|
+| add | Request `reinterpret` / `decorations.add`; classification **E**; version **2 → 3** (`version 2`, `next_version 3`); authority preserved (source-confirmed); decoration `current:0`, `[0,3)`, affinities outside/outside, recipe `13/120` / `7/120`. The text group SHA is unchanged (`ea99442e…` = text_baseline). Paint transition `insert`. |
+| noop_1 / noop_2 | D, 3 → 3. PDF bytes, owned body, operator count, owner block SHA, semantic payload + current authority + derived state, decorations, rectangles and the MuPDF raster are all identical. Both no-ops give PDF `7b271768…` = add. |
+| edit_remap | D, text `A B` → `AA B`, decoration **`[0,3)` → `[0,4)`**. Rectangle `20.017578 58.7 39.359375 58` → `20.017578 58.7 47.363281 58` (see §30.4). |
+| recipe | E, recipe `13/120,7/120` → `1/10,1/20`. Text and text group unchanged; horizontal endpoints unchanged; vertical geometry changed (`58.8 / 58.2`); authority preserved; version 3. |
+| style | E. The semantic diff is exactly `style.font_size` 12 → 13 and `style.tracking` 0 → 1/4. Decorations preserved; em geometry error 0.0 pt. Authority becomes `caller-confirmed-current-semantic`, as §21.8 specifies for an explicit style change. |
+| font | E. Diff exactly `font.sha` A → B. Provider and generated font are font B; recipe and ranges preserved; vertical geometry unchanged (`58.7 / 58.05`); endpoints on the new glyph origins; right edge 50.393555 → 51.447266; version 3. |
+| publish_a | Candidate `u07-font-b` → `artifacts/bundle-a` = exactly `document.pdf` + `shared-flow.json`. Staged and public reopen `restored`; candidate bytes = published bytes (PDF and sidecar); fresh process `restored`; version 3; decoration restored; candidate/published MuPDF raster identical. |
+| remove_from_bundle_a | Input is **`artifacts/bundle-a/document.pdf` + `artifacts/bundle-a/shared-flow.json`** (not the candidate). E `decorations.remove`, version stays 3, `decorations = []`, paint group absent, text group unchanged (`398918b4…`). |
+| publish_b | Bytes identical, staged/public/fresh reopen `restored`, version 3, `decorations = []`, text-only physical body, **bundle A unchanged**. |
+| negatives | Refused: A.pdf + B.json → `source output ownership: shared flow PDF revision changed`; B.pdf + A.json → the same reason |
+| tamper | Refused: resealed decoration recipe tamper → `semantic version 3 body is not the canonical text and underline body`; paint geometry tamper → `source output ownership: shared flow PDF revision changed` |
+| continuity | Creation evidence (registry, observations, provider, `source_model_sha256`, `source_snapshot_sha256`, `created_from`, `contract_sha256`) constant; owner marker and `created_from` constant over 12 revisions |
+| text_only_control | The same edit/style/font requests on version 2, never decorated: its final text group equals the removed revision's |
+| raster_mupdf (144 dpi) | baseline ≠ add; add = noop 1 = noop 2; recipe, style and font each ≠ previous; removed = text-only control; candidate A = bundle A; candidate B = bundle B |
+| raster_poppler (144 dpi) | baseline ≠ add; add = noop 1 = noop 2; candidate A = bundle A; candidate B = bundle B; removed = text-only control |
+| inputs_preserved | The prepared PDF, sidecar, font A and font B SHA-256 values are the same at the end as at the start |
+
+Final bundle state: semantic version 3, `decorations = []`, paint group absent.
+
+### 30.4 Windows geometry vs the cloud synthetic values
+
+§29.2/§29.3 quote the cloud synthetic font's rectangle edges (`41.6 → 48.8`, left edge 20). The Windows run uses
+the Arial/Times subsets, so the numbers differ. The harness checks the §27.7 range remap and the §27.8 geometry rule,
+not those literal values. The Windows values follow §27.8 exactly from font A's metrics (upem 2048; advances A 1366,
+space 569, B 1366; A's left side bearing −3):
+
+- left edge = first glyph origin = 20 + 3/2048 · 12 = **20.017578** (the layout inset of A's negative bearing);
+- `A B` right edge = origin + 1366 + 569 + 1366 units at 12 pt = **39.359375**;
+- `AA B` right edge = **47.363281**.
+
+These were recomputed independently from the font tables. The vertical values (58.7 / 58, then 58.8 / 58.2 for the
+recipe) equal the cloud ones, because the recipe is em-relative and the size is the same. This is a fixture-font
+difference, not a deviation.
+
+### 30.5 Full suite on Windows
+
+Whole `tests/` tree in four file-balanced parallel shards, with Poppler on `PATH`, after the validation run (the run
+directory was not touched): **1,853 passed, 7 skipped, 0 failed**. Skips: 2 AES provider unavailable, 5 external corpus
+not downloaded (both environment-only). Total 1,860 = Linux 1,841 passed + 19 skipped (§29.4). The Windows-only
+Arial/Noto/Poppler tests that are skipped on Linux ran here and passed. There are no Windows-specific failures.
+
+### 30.6 Evidence committed and verdict
+
+- Committed: `evaluations/semantic_lifecycle/runs/windows-underline-synthetic-20261006/result.json` and `report.md`,
+  as generated, with no hand edits. Both were checked for usernames, home directories and absolute local paths: none
+  are present.
+- Not committed: PDFs, fonts, PNGs, `logs/harness.log`, bundles, `tmp/`, `.venv`.
+
+**WINDOWS NARROW SEMANTIC UNDERLINE LIFECYCLE VALIDATED.** All 21 stages pass on Windows, including the optional
+Poppler stage, with exit 0. The authority, ownership, Transaction and publication contracts hold as in the cloud run:
+
+- the explicit v2 → v3 add;
+- canonical no-ops;
+- the remap;
+- the em recipe, style and font transitions;
+- publication A/B through `os.rename`, with bundle A reused as the next input and left unchanged;
+- the remove that keeps version 3;
+- mixed-pair and tamper refusals;
+- creation-evidence continuity;
+- dual-renderer raster expectations;
+- input preservation.
+
+Scope is unchanged: the narrow single owned slot. This is not general paint support. LibreOffice is still a separate,
+not-performed axis (§25.3), and source underline adoption is still refused (§27.11).
