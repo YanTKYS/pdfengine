@@ -4881,8 +4881,8 @@ remap check).
 
 Validation (Linux, Python 3.13.16, PyMuPDF 1.27.2.3):
 - new file: **92 passed**;
-- focused: @@FOCUSED31@@;
-- full suite on the final HEAD: @@FULL31@@;
+- focused: **386 passed** (`test_semantic_strikeout_contract`, `test_semantic_underline_contract`, `test_semantic_underline`, `test_paint_reassessment`, `test_semantic_writer`, `test_source_ownership`);
+- full suite on the final HEAD: **1,933 passed, 19 skipped, 0 failed** (main: 1,841 passed; +92 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression);
 - runtime digest unchanged.
 
 ### 31.12 Backward compatibility (all required)

@@ -1694,7 +1694,7 @@ From main `778b1587c329eb7d8c23b055c5841fdef8664ce8` (PR #52 merged). Design/evi
 - **Mixed kinds:** one disjoint list; touching kept; overlap across kinds refused (future stacking blocker).
 - **Reuse:** remap, E actions, CAS without kind, verifier, owner witness, Transaction (incl. own-glyph crossing and
   seqno exclusion) and publication are all unchanged.
-- Tests: new `test_semantic_strikeout_contract.py` (92). Full suite @@FULL31@@.
+- Tests: new `test_semantic_strikeout_contract.py` (92). Full suite **1,933 passed, 19 skipped, 0 failed** (main: 1,841 passed; +92 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression).
 - **Next PR:** narrow semantic strikeout runtime (version 4), §31.15.
 
 [§31](anchored-paint-ownership.md#31-semantic-strikeout-contract--2026-10-06).
