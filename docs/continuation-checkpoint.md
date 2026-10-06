@@ -1632,7 +1632,7 @@ digest `dd4fff7b…` → `4b6f9925159160c9ad63cee19f082728bfadf8c70548678fd89d40
   replacement/removal via `paint_changes`, first add via the new additive `Plan.paint_insertions`; planned area holds
   old and new rectangles; only the island's own old paint is excluded from obstacles; foreign paint stays protected.
 - Tests: new `test_semantic_underline.py` (106), the 91 PR #49 probes now run on production code; full suite
-  @@FULL@@. MuPDF and Poppler 144 dpi: no-op identical, add/remove differ as expected, removed = text-only baseline.
+  1,821 passed, 19 skipped, 0 failed (1,715 baseline + 106 new; the 19 skips are the same environment-only skips as the baseline: Windows Arial/Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression). MuPDF and Poppler 144 dpi: no-op identical, add/remove differ as expected, removed = text-only baseline.
 - **WINDOWS UNDERLINE VALIDATION NOT RUN; LibreOffice not addressed.** Next: Windows semantic underline validation
   (harness stages for add/no-op/edit/recipe/remove/publish).
 

@@ -4330,8 +4330,8 @@ Validation (Linux, Python 3.13.16, PyMuPDF 1.27.2.3, Poppler `pdftoppm` 24.02.0,
 
 - new file **106 passed**; contract file **91 passed**;
 - focused (underline, contract, semantic writer/layout/authority/publication/lifecycle, source ownership, paint
-  reassessment, transaction, shared flow, composition): **@@FOCUSED@@**;
-- full suite on the final HEAD (whole `tests/` tree, `--dist loadfile`): **@@FULL@@**. Baseline on main
+  reassessment, transaction, shared flow, composition): **547 passed, 1 skipped**;
+- full suite on the final HEAD (whole `tests/` tree, `--dist loadfile`): **1,821 passed, 19 skipped, 0 failed (1,715 baseline + 106 new; the 19 skips are the same environment-only skips as the baseline: Windows Arial/Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression)**. Baseline on main
   `e793f30` in the same environment: 1,715 passed, 19 skipped, 0 failed.
 - **MuPDF 144 dpi:** text-only baseline ≠ underline added; add = no-op 1 = no-op 2; recipe, style and font changes
   differ; font no-op identical; underline removed = text-only baseline; candidate = published (bytes identical).
