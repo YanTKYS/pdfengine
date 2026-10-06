@@ -1675,3 +1675,26 @@ This is the first Windows run of `run --mode underline` (§29), on Windows 11 / 
 - Windows full suite: 1,853 passed / 7 environment skips / 0 failed.
 - **WINDOWS NARROW SEMANTIC UNDERLINE LIFECYCLE VALIDATED.**
   [§30](anchored-paint-ownership.md#30-windows-semantic-underline-external-validation--2026-10-06).
+
+
+## Semantic strikeout contract — 2026-10-06
+
+From main `778b1587c329eb7d8c23b055c5841fdef8664ce8` (PR #52 merged). Design/evidence only; runtime digest unchanged
+(`4b6f9925…59e3`).
+
+- **Verdict: SEMANTIC STRIKEOUT CONTRACT READY.**
+- **Versioning:** semantic record version 4 = v3 + `kind = strikeout`. Version 3 stays underline-only (Windows
+  validated, never rewritten). Entering v4: the explicit strikeout `add` from v2 or v3. An underline add keeps
+  v2 → v3. No open/save upgrade, no downgrade, v1 refused.
+- **Schema / recipe:** the §27.5 record, same recipe keys, kind-specific offset bounds (underline `[0, 1]`, strikeout
+  `[−1, 0)`), thickness `(0, 1]`. The strikeout's serialized upper edge must be strictly above its baseline, so the
+  kinds never serialize the same rectangle.
+- **Geometry / body:** the §27.8 rule unchanged; text group then one paint group; `current:i` then lines. Text-first
+  and paint-first are pixel-identical (MuPDF 144 dpi); text-first is kept.
+- **Mixed kinds:** one disjoint list; touching kept; overlap across kinds refused (future stacking blocker).
+- **Reuse:** remap, E actions, CAS without kind, verifier, owner witness, Transaction (incl. own-glyph crossing and
+  seqno exclusion) and publication are all unchanged.
+- Tests: new `test_semantic_strikeout_contract.py` (92). Full suite **1,933 passed, 19 skipped, 0 failed** (main: 1,841 passed; +92 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression).
+- **Next PR:** narrow semantic strikeout runtime (version 4), §31.15.
+
+[§31](anchored-paint-ownership.md#31-semantic-strikeout-contract--2026-10-06).

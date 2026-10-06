@@ -4639,3 +4639,346 @@ Poppler stage, with exit 0. The authority, ownership, Transaction and publicatio
 
 Scope is unchanged: the narrow single owned slot. This is not general paint support. LibreOffice is still a separate,
 not-performed axis (§25.3), and source underline adoption is still refused (§27.11).
+
+## 31. Semantic strikeout contract — 2026-10-06
+
+Starting main `778b1587c329eb7d8c23b055c5841fdef8664ce8` (PR #52 merged: WINDOWS NARROW SEMANTIC UNDERLINE LIFECYCLE
+VALIDATED). §1–§30 are preserved. **This section is design/evidence only.** There is no strikeout runtime and no
+`pdfeditor/` change. The runtime digest is unchanged: `4b6f9925159160c9ad63cee19f082728bfadf8c70548678fd89d40a3665659e3`.
+
+**Verdict: SEMANTIC STRIKEOUT CONTRACT READY** (§31.16). Evidence: `tests/test_semantic_strikeout_contract.py`.
+
+### 31.1 Why strikeout, and what it does not bring
+
+A strikeout is the underline's physical model with a different vertical position:
+- one horizontal, axis-aligned, opaque rectangle per decoration per line;
+- filled with the current text fill;
+- exact em-relative geometry from a caller-confirmed recipe;
+- generated owned paint inside the existing owned body;
+- current semantic authority.
+
+It needs no z-order below the text, no transparency and no blend state, so highlight-class questions are not opened.
+It crosses the glyphs, so the z-order and obstacle questions are checked explicitly (§31.7, §31.10).
+
+### 31.2 Versioning: semantic record version 4 (option B)
+
+| | A: extend version 3 with `strikeout` | **B: new version 4** |
+|---|---|---|
+| Frozen contract | changes the meaning of a Windows-validated version (§30) | version 3 keeps `kind = underline` only |
+| Backward compatibility | an old v3 reader would see an unknown kind inside a valid v3 record | old v3 records are untouched; v3 code keeps refusing `strikeout` (evidence: a resealed v3 claiming a strikeout, or an underline recipe above the baseline, is refused today) |
+| Explicit upgrade | none, so the change is silent | only the first explicit strikeout `add` enters version 4 |
+| Reopen determinism | the meaning of v3 depends on the code version | the version names the decoration vocabulary |
+| Sidecar meaning | ambiguous across releases | exact |
+| Future kinds | every kind re-opens v3 | the next kind takes the next version under the same rule |
+
+**Decision: B.** Version 4 = version 3 record keys and payload keys, with `kind ∈ {underline, strikeout}`. Nothing
+else is added: no sidecar field, no schema string change (`pdfengine-shared-flow-3`), no new sidecar.
+
+**Migration matrix** (evidence: `test_version_migration_matrix`; rows that exist today are compared with the
+production planner in `test_matrix_rows_that_exist_today_match_the_production_plan`):
+
+| Current | Request | Result |
+|---|---|---|
+| v1 | any decoration request (underline or strikeout) | **REFUSE** (confirm v1 → v2 first, unchanged) |
+| v2 | underline `add` | **UPGRADE → v3** (unchanged, the shipped route) |
+| v2 | strikeout `add` | **UPGRADE → v4** |
+| v2 | `remove` / `recipe` | **REFUSE** (nothing to reference) |
+| v3 | underline `add` / `remove` / `recipe` | **KEEP v3** |
+| v3 | strikeout `add` | **UPGRADE → v4** (existing underlines carried unchanged) |
+| v3 | strikeout `remove` / `recipe` | **REFUSE** (no strikeout exists; stale CAS) |
+| v4 | underline or strikeout `add` / `remove` / `recipe` | **KEEP v4** (also when the last strikeout is removed) |
+| v1–v4 | open, `reopen`, `save`, `reflow`, `edit`, style/font E | **KEEP** (never an upgrade or downgrade) |
+
+- **v2 → v4 directly:** the version is decided by the kind of the first explicit add, by the same mechanics as
+  v2 → v3. Nobody has to add an underline first (`test_strikeout_from_version_2_needs_no_underline_first`).
+- **An underline add never moves a record to v4.** The Windows-validated v2 → v3 route is unchanged, so an
+  underline-only state can be v3 or, after a strikeout was removed, v4. A v4 record with only underlines has the same
+  body bytes as the v3 one. Re-sealing it as v3 is semantically equal and cannot hide a strikeout, because a v3 record
+  refuses the strikeout kind and an underline recipe cannot describe a rectangle above the baseline (§31.6).
+- No automatic v3 → v4, no open/save upgrade, no downgrade, no direct decoration on v1.
+
+### 31.3 Schema
+
+Exactly the §27.5 record:
+
+```json
+{"id": "current:1", "kind": "strikeout", "start": 3, "end": 4,
+ "start_affinity": "outside", "end_affinity": "outside",
+ "recipe": {"offset_em": "-3/10", "thickness_em": "1/20"}}
+```
+
+The rules are those of §27.5, unchanged:
+- the same keys, exactly;
+- `current:i` positional IDs that are checked and never chosen;
+- logical `[start, end)` grapheme-boundary ranges with at least one visible character;
+- outside/outside affinity;
+- sorted and disjoint, with touching allowed.
+
+Kinds: version 3 accepts `underline` only, version 4 accepts `underline` and `strikeout`. Anything else is refused,
+including `highlight`, `overline`, case variants and extra keys such as `color`, `z_index` or `source_id`.
+
+### 31.4 Recipe and bounds
+
+The recipe keys stay `offset_em`, `thickness_em`, as canonical exact rationals. The bounds depend on the kind:
+
+| Kind | `offset_em` | `thickness_em` |
+|---|---|---|
+| underline | `0 ≤ offset ≤ 1` (unchanged) | `0 < t ≤ 1` |
+| strikeout | `−1 ≤ offset < 0` | `0 < t ≤ 1` |
+
+- A recipe change is validated against the **referenced** decoration's kind. A strikeout cannot take an underline
+  recipe, and the reverse is also refused.
+- A kind change is not an action: it is a `remove` followed by an `add`.
+- The evidence recipe `{−3/10, 1/20}` is a caller-confirmed candidate for the evidence, not a standard. At 12 pt it
+  spans 3.6 → 3.0 pt above the baseline and crosses both synthetic glyph boxes (0 → 7.2 pt).
+- Font tables (OS/2 strikeout position/size, renderer heuristics) are **never** authority. A tool may propose a value
+  from them; the stored recipe is what the runtime uses.
+
+### 31.5 Geometry
+
+The §27.8 rule is unchanged for both kinds (page y-down, exact):
+
+```
+upper     = glyph baseline (line baseline + rise) + font_size · offset_em      (offset < 0 → above the baseline)
+thickness = font_size · thickness_em
+left/right = first painted glyph origin / last painted glyph origin + advance (per line, boundary spaces trimmed)
+```
+
+**Line-box rule (R):** `baseline − ascent ≤ upper` and `upper + thickness ≤ baseline + descent`, checked exactly per
+rectangle. With the synthetic 0.6 em ascent:
+- `−3/5` is admitted and `−31/50` is refused (top overflow);
+- `{−1/20, 1/4}` is admitted and `{−1/20, 3/10}` is refused (a strikeout crossing the baseline into the descent);
+- both hold at 12, 37/3 and 24 pt.
+
+Evidence for the transitions:
+- **Size:** offset and thickness scale exactly with the size.
+- **Rise:** −1 moves the baseline and the rectangle by exactly −1.
+- **Horizontal scale:** never scales the vertical geometry.
+- **Endpoints:** they follow tracking, Tw, confirmed edges and the font B advances (e.g. 37/3 pt, scale 4/5,
+  tracking 1/4: right edge `20 + 3(a + 1/4) + a`). Tw and the equivalent edge give identical bytes.
+- **Font A → B:** keeps the vertical geometry.
+- **Newline / wrap:** split one strikeout into per-line rectangles. The newline and trailing spaces are not painted.
+
+### 31.6 Physical separation of the kinds
+
+The semantic bounds alone are not enough, because serialization rounds to 6 places: a strikeout at `−1/10⁹ em` would
+write the same `yu` as an underline at offset 0. Rule (R): **a strikeout's serialized upper edge must be strictly
+above its serialized glyph baseline.**
+
+An underline (offset ≥ 0) is at or below the baseline by construction, since the decimal policy is monotone. So an
+underline and a strikeout can never serialize the same rectangle, and the physical bytes identify the kind of every
+rectangle relative to its line's baseline.
+
+Evidence (`test_strikeout_and_underline_never_serialize_the_same_rectangle`):
+- `−1/10⁹` is refused;
+- `−1/1000` is admitted and differs from an underline at offset 0;
+- every admitted strikeout is strictly above, and every underline is at or below.
+
+### 31.7 Body grammar, order and paint group
+
+- **Grammar:** the §27.3 rectangle grammar and the one serializer (`semantic_paint.paint_group`) are reused unchanged.
+  The production `body_grammar` already accepts `text group + strikeout group`, and the v2 grammar still refuses it.
+  There is no strikeout-specific PDF operator.
+- **Order: text group, then paint group** (unchanged). Evidence `test_text_then_strikeout_is_pixel_equivalent_and_keeps_the_text_prefix`:
+  - the strikeout crosses the A and B glyph inks;
+  - text-first and paint-first are **pixel-identical** at MuPDF 144 dpi (one opaque fill colour: source-over
+    commutes);
+  - the text traces are identical;
+  - the strikeout differs from the text-only page;
+  - text-first keeps the text group a byte prefix.
+
+  Paint-first stays refused by the grammar.
+- **One paint group** for all kinds. A second group would add nothing: the owner, block SHA, Transaction and
+  canonical check already cover any number of rectangles in one group. It would only add a second grammar slot and
+  ordering rule.
+- **Rectangle order:** decorations in canonical order (sorted by `(start, end)`, i.e. `current:i`), then lines top to
+  bottom, one `f` per rectangle. Kinds need no tie-break, because disjoint non-empty ranges never share `(start, end)`.
+  Mixed example `underline [0,1)`, `strikeout [3,4)` gives `current:0` underline below the baseline, then `current:1`
+  strikeout above it, in one `q 0 g … Q`.
+
+### 31.8 Mixed kinds, overlap, touching
+
+- **One** sorted, disjoint decoration list across kinds. Mixed disjoint kinds are allowed; touching ranges are allowed
+  and never merged (`underline [0,1)` + `strikeout [1,2)` gives adjacent rectangles).
+- **Overlap across kinds is refused:** same range, partial overlap and nesting, in validation and in E `add`. So
+  "underline and strikeout on the same characters" is out of scope. It needs an overlap/stacking model (layers,
+  z-index, per-character decoration sets), which is a recorded **future blocker** and is not introduced here.
+
+### 31.9 Transitions and empty lifecycle
+
+- **N:** all decorations exact.
+- **D:** the production §27.7 membership rule is kind-independent. The evidence is exhaustive over `AA B`:
+  - every edit gives the same ranges for a strikeout as `semantic_paint.remap` gives for an underline;
+  - kinds and recipes are carried;
+  - mixed kinds remap independently.
+
+  There is no strikeout-specific remap. Empty text terminates every decoration.
+- **E:** the same `add` / `remove` / `recipe` actions, one per request, never mixed with other changes. The `(id,
+  start, end)` CAS is unchanged and does **not** include `kind`:
+  - within one revision, a positional ID plus its exact range already identify exactly one decoration, because ranges
+    are disjoint across kinds;
+  - a stale request across revisions is the same hazard class as for underline alone (remove then re-add on the same
+    range), already bounded by the revision the caller supplies;
+  - adding `kind` would fork the version 3 request shape for no gain.
+- **R:**
+  - unknown kind, caller ID, `inside` affinity, overlap;
+  - source/`adopt`/path fields, `revive`;
+  - inferred (`auto`) or missing recipe;
+  - wrong offset sign for the kind, non-canonical or out-of-bounds values;
+  - line-box violation, physical-separation violation;
+  - no visible character, zero-length range;
+  - stale CAS;
+  - a version-incompatible request (see the matrix).
+- **Empty:** collapse or no visible character terminates; there is no dormant state and no revival (§27.10 unchanged).
+
+### 31.10 Ownership, verifier, Transaction, publication (reuse)
+
+- **Owner witness:** unchanged. The strikeout group is inside `[begin, end]`, so the block and program SHA cover it.
+  The production witness with the injected v3 body grammar accepts a strikeout body with the unchanged witness shape.
+  No new witness field or marker domain.
+- **Verifier:** the §27.15 / §28.6 steps apply unchanged, with version 4 selecting the kind set:
+  - decorations → exact canonical rectangles → exact body bytes;
+  - element classification (count, order, proven, one fill paint each, bounds ≤ 0.002 pt, no relation).
+
+  Evidence: in a mixed underline + strikeout body between foreign paint, the catalog paths inside the owned body are
+  proven one-to-one, in order, to the canonical rectangles of both kinds.
+- **Transaction:** unchanged machinery:
+  - `paint_insertions`, `paint_changes`, `consumed_paths`;
+  - exact old/new rectangles;
+  - the planned area (glyph inks ∪ old ∪ new rectangles bounds every changed pixel for strikeout add, remove, recipe,
+    edit, size/scale/tracking, font and mixed-kind add);
+  - obstacles.
+
+  The strikeout crosses the island's **own** glyphs, which are selected and are not obstacles. Its own old strikeout
+  is excluded only by its proven seqno; without that exclusion the old strikeout crossing the new ink is refused.
+- **Foreign paint:** still an obstacle exactly where it is hit. A foreign rectangle in the inter-glyph gap passes the
+  glyph-only check and is refused once the new strikeout crosses it. Foreign vectors, images, glyphs and pixels
+  outside the mask are not relaxed.
+- **Source adoption: refused.** Horizontal lines in a source PDF are never detected, classified, inferred, adopted or
+  migrated. A foreign path at a strikeout position stays foreign. The first strikeout is always an explicit `add`.
+- **Publication:** L3 unchanged (`open_semantic_flow` dispatches the version).
+
+### 31.11 Evidence (`tests/test_semantic_strikeout_contract.py`, 92 tests)
+
+The prototypes in the test file:
+- `recipe_v4`, `validate_v4`, `remap_v4`, `reinterpret_v4`, `rectangles_v4`;
+- `paint_group_v4`, which wraps the production serializer;
+- `next_version`.
+
+On underline-only input they equal the production `validate`, `rectangles`, `paint_group` and `remap` (exhaustive
+remap check).
+
+| Area | Tests |
+|---|---|
+| implementation-before state | production refuses strikeout in `validate`, `recipe`, plan and writer (v2 and v3 bundles, no candidate written) and refuses a version 4 record; v3 cannot absorb a strikeout (resealed kind / recipe) |
+| versioning | 23-row migration matrix; 6 rows checked against the production planner; v2 → v4 without an underline |
+| schema / bounds | schema reuse, extra keys and unknown kinds refused, 14 recipe-bound cases, `auto` / missing recipe |
+| geometry | negative offset above the baseline crossing the glyphs (exact bytes `20 63.6 m 41.6 63.6 l 41.6 63 l 20 63 l h f`), line-box top/bottom overflow at 3 sizes, physical separation |
+| style / font | size and rise only for the vertical geometry; scale ignored; endpoints vs tracking/Tw/edge/font B; Tw = edge bytes for 3 range sets; font A → B vertical unchanged |
+| lines / no-op | newline/wrap per-line rectangles; canonical bytes fixed across 6 no-op groups × (strikeout, underline, mixed) |
+| mixed / D / E / R | one group in range order; overlap refused (3 shapes); touching kept separate; kind-independent D remap; E add/remove/recipe with kind-checked recipes; 13 R refusals; line-box R |
+| body / z-order / ownership / Transaction | production v3 grammar + unchanged witness shape; text-first = paint-first pixels, text prefix; owned paths proven one-to-one in a mixed body between foreign paint; obstacles (own glyphs, own old paint by seqno, foreign gap paint); planned area for 7 transition pairs |
+
+Validation (Linux, Python 3.13.16, PyMuPDF 1.27.2.3):
+- new file: **92 passed**;
+- focused: **386 passed** (`test_semantic_strikeout_contract`, `test_semantic_underline_contract`, `test_semantic_underline`, `test_paint_reassessment`, `test_semantic_writer`, `test_source_ownership`);
+- full suite on the final HEAD: **1,933 passed, 19 skipped, 0 failed** (main: 1,841 passed; +92 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression);
+- runtime digest unchanged.
+
+### 31.12 Backward compatibility (all required)
+
+- **v1, v2:** behaviour unchanged.
+- **v3 underline bundles:** open, save and every underline transition stay version 3, with byte-identical behaviour.
+  The Windows-validated §30 lifecycle keeps its meaning, and no v3 sidecar is rewritten.
+- **v3 code:** keeps refusing the strikeout kind.
+- **Shared-flow v2:** the opener and grammar are unchanged.
+
+### 31.13 Final contract
+
+| # | Item | Decision |
+|---|---|---|
+| 1 | semantic version | 4 (v3 stays underline-only) |
+| 2 | v2 → strikeout | explicit strikeout `add` → v4 |
+| 3 | v3 → strikeout | explicit strikeout `add` → v4, underlines carried |
+| 4 | schema | the §27.5 record, unchanged |
+| 5 | kinds | v3 `{underline}`, v4 `{underline, strikeout}` |
+| 6 | recipe | `{offset_em, thickness_em}`, caller-confirmed exact rationals |
+| 7 | offset bounds | underline `[0, 1]`, strikeout `[−1, 0)`, plus serialized strict separation for strikeout |
+| 8 | thickness bounds | `(0, 1]` for both |
+| 9 | geometry | §27.8 rule unchanged, line-box rule exact |
+| 10 | fill | current text fill, set by the group; no colour field |
+| 11 | body order | text group, then paint group |
+| 12 | paint groups | one |
+| 13 | rectangle order | canonical decoration order (`current:i`), then lines |
+| 14 | mixed kinds | allowed when disjoint |
+| 15 | overlap | refused across kinds (future blocker: stacking model) |
+| 16 | touching | allowed, never merged |
+| 17 | N/D/E/R | §31.9 |
+| 18 | empty | terminate, no dormant state, no revival |
+| 19 | adoption | refused |
+| 20 | verifier | §27.15 steps, kind set by version |
+| 21 | owner witness | unchanged |
+| 22 | Transaction | unchanged |
+| 23 | publication | unchanged |
+| 24 | next scope | §31.15 |
+
+### 31.14 Remaining limits (stated, not blockers)
+
+- Underline and strikeout on overlapping characters is out of scope (stacking model, §31.8).
+- Ranges differing only in trimmed boundary spaces paint identical bytes (§27.6, unchanged).
+- Windows has validated version 3 only. A version 4 runtime needs its own Windows run (harness mode) after
+  implementation.
+
+### 31.15 Next PR: narrow semantic strikeout runtime (version 4) — exact scope
+
+The same narrow scope as §28: one paragraph, one owned slot, one region, one body style, left, static TT,
+A/B/space/newline, default context.
+
+1. **Payload:** semantic record version 4 (`DECORATED_V4 = 4`); `_record` and `_payload` accept it; the kind set is
+   selected by version (v3 `{underline}`, v4 `{underline, strikeout}`).
+2. **`semantic_paint`, generalized in place (no rename to `semantic_decoration`):**
+   - `recipe(value, kind)` with the §31.4 bounds;
+   - `validate(text, decorations, kinds)`;
+   - kind-aware `rectangles`;
+   - the strikeout strict-separation check before `paint_group`;
+   - the `remap` and `reinterpret` validation take the kind set.
+3. **`plan_semantic_transition`:** the §31.2 matrix and `next_version`. A strikeout `add` from v2/v3 → 4; an
+   underline add keeps the v2 → v3 route; v3 refuses strikeout references; v1 refuses.
+4. **v4 verifier:** `body_grammar` injected for versions 3 and 4; canonical body and element classification
+   unchanged.
+5. **Writer:**
+   - rectangles of all kinds;
+   - old/new rectangles from the verified state;
+   - `_old_owned_paint` and `_plan_island` for versions 3 and 4;
+   - rebind with the grammar for versions 3 and 4.
+6. **Transaction:** unchanged machinery; tests for strikeout insert/replace/remove, the planned area, the own-glyph
+   crossing, own old strikeout exclusion and foreign gap paint.
+7. **Tests:**
+   - lifecycle v2 → v4 and v3 → v4 (underlines carried), then no-op ×2, edit remap, recipe, style, font, remove,
+     mixed disjoint, touching;
+   - overlap / R refusals;
+   - physical separation;
+   - tamper (semantic and body), v3 refusing v4 content, version matrix through the production planner;
+   - publication A/B and reopen;
+   - MuPDF/Poppler raster;
+   - failure isolation;
+   - v1/v2/v3 compatibility (all existing tests unchanged).
+8. Then a Windows strikeout validation (harness mode) as a separate PR.
+
+Out of scope there: overlap/stacking, highlight, transparency, colours, other kinds, source adoption, cross-page,
+multiple slots.
+
+### 31.16 Verdict
+
+**SEMANTIC STRIKEOUT CONTRACT READY.** All of the following are settled and evidenced:
+- versioning (v4, explicit routes, no implicit change);
+- geometry authority (the §27.8 rule, caller recipe, no font tables);
+- kind-specific recipe bounds and physical separation;
+- canonical order (text → one group → `current:i` → lines, z-order evidence);
+- the mixed-kind policy (disjoint, touching kept, overlap refused);
+- v3 backward compatibility (v3 refuses strikeout; routes unchanged);
+- verifier, owner witness, Transaction and publication reuse;
+- no source adoption;
+- 92 evidence tests pass.
+
+The next PR is the narrow semantic strikeout runtime (§31.15). It is not started here.
