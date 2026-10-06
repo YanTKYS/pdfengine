@@ -1637,3 +1637,22 @@ digest `dd4fff7b…` → `4b6f9925159160c9ad63cee19f082728bfadf8c70548678fd89d40
   (harness stages for add/no-op/edit/recipe/remove/publish).
 
 [§28](anchored-paint-ownership.md#28-narrow-semantic-underline-runtime-implementation--2026-10-06).
+
+
+## Windows semantic underline validation preparation — 2026-10-06
+
+From main `ae82d16ca5e45dd1342cede8404fbf565b9412e8` (PR #50 merged). **No runtime change**; runtime digest unchanged
+(`4b6f9925…59e3`).
+
+- The §24 harness gains `run --mode underline`; `run` without `--mode` is the unchanged text-only lifecycle.
+- Underline lifecycle: v2 text-only → explicit `decorations.add` (2 → 3) → no-op ×2 → edit remap → recipe → style →
+  font → publish A → remove from bundle A (stays version 3, `decorations = []`) → publish B, plus mixed-pair and
+  tamper refusals, a text-only control and MuPDF/Poppler raster expectations. Evidence per revision is in
+  `revisions{name}.underline` (text/paint group SHAs, rectangles, decorations, raster SHA).
+- Cloud synthetic run: **UNDERLINE HARNESS PASS** (21 stages, exit 0). This is not Windows evidence. Text-mode
+  regression: PASS; the LibreOffice shape stays `UNSUPPORTED_TARGET` in both modes.
+- Tests: new `test_semantic_windows_underline_harness.py` (20). Full suite: @@FULL29@@.
+- **Verdict: WINDOWS SEMANTIC UNDERLINE VALIDATION READY. Windows underline execution: NOT RUN.** Next: run the
+  README PowerShell command once on Windows and commit `result.json` + `report.md`.
+
+[§29](anchored-paint-ownership.md#29-windows-semantic-underline-validation-preparation--2026-10-06).

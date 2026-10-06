@@ -11,6 +11,11 @@ refusal into success.
     python -m evaluations.semantic_lifecycle.windows_validation prepare-fonts --output-dir FONTS [--from-a TTF --from-b TTF]
     python -m evaluations.semantic_lifecycle.windows_validation prepare --source-pdf PDF --spec SPEC.json --font-a A.ttf --output-dir PREP
     python -m evaluations.semantic_lifecycle.windows_validation run --pdf PDF --sidecar JSON --font-a A.ttf --font-b B.ttf --output-dir OUT
+    python -m evaluations.semantic_lifecycle.windows_validation run --mode underline --pdf PDF --sidecar JSON --font-a A.ttf --font-b B.ttf --output-dir OUT
+
+`run` without `--mode` is the text-only lifecycle (§24) exactly as before. `--mode underline` runs the
+narrow semantic underline lifecycle (§28) on the same preparation: explicit `decorations.add` (version 2 → 3),
+two no-ops, edit remap, recipe, style, font, publication A, removal from bundle A, publication B.
 
 Stage statuses: PASS (expected success), REFUSED (runtime refused for a scope or
 safety reason), SKIPPED (not applicable or a prerequisite did not pass), FAIL
@@ -18,7 +23,8 @@ safety reason), SKIPPED (not applicable or a prerequisite did not pass), FAIL
 error / output collision, 3 REFUSED or UNSUPPORTED_TARGET, 4 INCOMPLETE.
 
 The PR that added this harness did not execute it on Windows; a result is
-Windows evidence only when `result.json` says `windows_execution: true`.
+Windows evidence only when `result.json` says `windows_execution: true`. The PR that added the underline
+mode did not execute it on Windows either.
 """
 import argparse
 from copy import deepcopy
@@ -43,6 +49,14 @@ DEFAULT_PLAN = dict(edit=dict(start=0, end=0, text='A'), style=dict(tracking='1/
                     next_edit=dict(start=0, end=0, text='B'))
 DISCLAIMER = ('Windows execution has not been performed by the PR that added this harness. '
               'This report is evidence only for the execution it describes.')
+# Underline mode (§28). The recipe is the §27/§28 caller-confirmed validation recipe, not a new default.
+RECIPE = {'offset_em': '13/120', 'thickness_em': '7/120'}
+DEFAULT_UNDERLINE_PLAN = dict(underline_add=dict(start=0, end=3, recipe=dict(RECIPE)),
+                              underline_edit=dict(start=1, end=1, text='A'),
+                              underline_recipe={'offset_em': '1/10', 'thickness_em': '1/20'},
+                              underline_style=dict(font_size='13', tracking='1/4'))
+UNDERLINE_DISCLAIMER = 'Windows underline execution has not been performed by the PR that added the underline mode.'
+VALIDATION_KIND = dict(text='semantic-text-lifecycle', underline='semantic-underline-lifecycle')
 
 
 class Failure(Exception):
@@ -355,6 +369,66 @@ def island(pdf, state, sid):
     return dict(sha256=hashlib.sha256(body).hexdigest(), size=len(body), operators=len(list(operators(body))))
 
 
+def owned_body(pdf, state, sid):
+    from pdfeditor import source_ownership as owned
+    from pdfeditor.content_stream import ContentPage
+    slot = state['slots'][sid]
+    content = ContentPage(pdf, state['regions'][slot['region_id']]['page'])
+    try:
+        data = content.streams[-content.page.xref]
+        span = owned.inventory(data)[slot['source_output']['marker_id']]
+        return data[span[1]:span[2]]
+    finally:
+        content.close()
+
+
+def underline_evidence(pdf, state, sid, opened):
+    """Physical + semantic underline evidence of one revision, read from the output (read-only).
+
+    The owned body is split by the runtime's own v3 body grammar into the text group and the
+    underline group; rectangles are the operands actually written (PDF y-up, as serialized).
+    `paint_body_sha256` is null when the body has no underline group.
+    """
+    from pdfeditor import semantic_paint as paint
+    from pdfeditor.content_stream import operators
+    body = owned_body(pdf, state, sid)
+    payload = opened['semantic']
+    decorations = payload.get('decorations')
+    try:
+        text, group = paint.body_grammar(body)
+        split = 'v3 body grammar'
+    except Exception as error:  # noqa: BLE001 - e.g. a pre-L2 confirmed island; recorded, never hidden
+        text, group, split = None, None, f'not split: {type(error).__name__}: {error}'
+    rectangles, fill, baselines, origins = [], None, [], []
+    if group:
+        ops = list(operators(group))
+        fill = [ops[1].name, *map(str, ops[1].args)]
+        for k in range(2, len(ops) - 1, 6):
+            (x0, yu), (x1, _), _, (_, yl) = (op.args for op in ops[k:k + 4])
+            rectangles.append([str(x0), str(yu), str(x1), str(yl)])
+    if text:
+        baselines = sorted({str(op.args[5]) for op in operators(text) if op.name == 'Tm'})
+        origins = [str(op.args[4]) for op in operators(text) if op.name == 'Tm']
+    return dict(semantic_version=opened['version'], decorations=decorations,
+                decoration_count=None if decorations is None else len(decorations),
+                ranges=None if decorations is None else [[d['start'], d['end']] for d in decorations],
+                recipes=None if decorations is None else [d['recipe'] for d in decorations],
+                rectangle_count=len(rectangles), rectangles_pdf=rectangles, paint_fill=fill,
+                text_tm_y=baselines, text_tm_x=origins, body_sha256=hashlib.sha256(body).hexdigest(), body_split=split,
+                text_body_sha256=hashlib.sha256(text).hexdigest() if text is not None else None,
+                paint_body_sha256=hashlib.sha256(group).hexdigest() if group else None,
+                paint_body_size=len(group) if group else 0)
+
+
+def mupdf_raster(pdf, page, png=None):
+    import pymupdf
+    with pymupdf.open(pdf) as document:
+        pixmap = document[page - 1].get_pixmap(dpi=144, alpha=False)
+        if png is not None:
+            pixmap.save(png)
+        return hashlib.sha256(pixmap.samples).hexdigest()
+
+
 # --- the run -----------------------------------------------------------------------------------------------------
 
 class Run:
@@ -365,8 +439,12 @@ class Run:
         self.inputs = {'pdf': Path(args.pdf), 'sidecar': Path(args.sidecar), 'font_a': Path(args.font_a)}
         if args.font_b:
             self.inputs['font_b'] = Path(args.font_b)
+        self.mode = getattr(args, 'mode', None) or 'text'
         self.result = dict(schema_version=SCHEMA_VERSION, executed_at=datetime.now(timezone.utc).isoformat(),
-                           disclaimer=DISCLAIMER, stages=[], revisions={}, verdict=None)
+                           disclaimer=DISCLAIMER, mode=self.mode, validation_kind=VALIDATION_KIND[self.mode],
+                           underline_runtime=self.mode == 'underline', stages=[], revisions={}, verdict=None)
+        if self.mode == 'underline':
+            self.result['underline_disclaimer'] = UNDERLINE_DISCLAIMER
         self.revisions = {}  # name -> dict(pdf, sidecar)
 
     # bookkeeping
@@ -423,6 +501,9 @@ class Run:
         evidence = dict(pdf=self.rel(pdf), sidecar=self.rel(sidecar), pdf_sha256=sha(pdf), sidecar_sha256=sha(sidecar),
                         pdf_size=Path(pdf).stat().st_size, sidecar_size=Path(sidecar).stat().st_size,
                         owner=owner_summary(state, sid), semantic=semantic_summary(opened), island=island(pdf, state, sid))
+        if self.mode == 'underline':
+            evidence['underline'] = dict(underline_evidence(pdf, state, sid, opened),
+                                         raster_mupdf_sha256=mupdf_raster(pdf, self.result['target']['page']))
         self.revisions[name] = dict(pdf=Path(pdf), sidecar=Path(sidecar), opened=opened, state=state)
         self.result['revisions'][name] = evidence
         return evidence
@@ -437,6 +518,11 @@ class Run:
         evidence = self.record(name, result['pdf'], result['sidecar'])
         if load(result['sidecar'])['slots'][self.sid]['semantic']['payload'] != plan['next']:
             raise Failure(f'{name} semantic payload differs from the authorized plan')
+        self.last_plan = plan
+        if self.mode == 'underline':
+            evidence['transition'] = dict(parent=parent, classification=plan['classification'],
+                                          version=plan['version'], next_version=plan.get('next_version'),
+                                          authority_preserved=plan['next_authority'] == plan['authority'])
         return dict(request=request, classification=plan['classification'], diff=plan['diff'], revision=evidence)
 
     # stages
@@ -448,7 +534,7 @@ class Run:
                                      fonts={k: dict(filename=v.name, sha256=sha(v)) for k, v in self.inputs.items()
                                             if k.startswith('font_')})
         self.before = {k: sha(v) for k, v in self.inputs.items()}
-        plan = deepcopy(DEFAULT_PLAN)
+        plan = deepcopy(DEFAULT_UNDERLINE_PLAN if self.mode == 'underline' else DEFAULT_PLAN)
         if self.args.plan:
             plan.update(load(self.args.plan))
         self.plan = plan
@@ -678,6 +764,325 @@ class Run:
             raise Failure('Poppler raster differs across a no-op or publication: ' + canonical(checks))
         return dict(checks, sha256=digests)
 
+    # --- underline mode (§28) ----------------------------------------------------------------------------------
+
+    def ul(self, name):
+        return self.result['revisions'][name]['underline']
+
+    def u_build(self, name, parent, request, asset=None, *, expect, paint):
+        """Build one revision and check its transition, version and observed paint transition.
+
+        `expect` = (classification, next_version); `paint` = insert | replace | remove | none, judged from the
+        observed underline groups of the parent and the candidate (output evidence, not the internal Plan).
+        """
+        details = self.build(name, parent, request, asset)
+        transition = details['revision']['transition']
+        if (transition['classification'], transition['next_version']) != expect:
+            raise Failure(f'{name}: transition {transition} differs from the expected {expect}')
+        if details['revision']['semantic']['version'] != expect[1]:
+            raise Failure(f'{name} reopens as semantic version {details["revision"]["semantic"]["version"]}')
+        before, after = bool(self.ul(parent)['paint_body_sha256']), bool(self.ul(name)['paint_body_sha256'])
+        observed = {(False, True): 'insert', (True, True): 'replace', (True, False): 'remove',
+                    (False, False): 'none'}[(before, after)]
+        if observed != paint:
+            raise Failure(f'{name}: observed paint transition {observed}, expected {paint}')
+        if self.ul(name)['rectangle_count'] != self.last_plan['next_underline_rectangles']:
+            raise Failure(f'{name}: written rectangles differ from the authorized plan')
+        return dict(details, paint_transition=observed)
+
+    def u_text_baseline(self):
+        """A canonical version 2 text-only revision (L2 save of the confirmed state)."""
+        details = self.u_build('u00-text-baseline', 'confirmed', dict(operation='save'), expect=('D', 2), paint='none')
+        if 'decorations' in self.revisions['u00-text-baseline']['opened']['semantic']:
+            raise Failure('a version 2 revision carries decorations')
+        return details
+
+    def u_add(self):
+        spec = self.plan['underline_add']
+        item = dict(kind='underline', start=spec['start'], end=spec['end'], start_affinity='outside',
+                    end_affinity='outside', recipe=deepcopy(spec['recipe']))
+        request = dict(operation='reinterpret', changes={'decorations': {'add': item}})
+        details = self.u_build('u01-add', 'u00-text-baseline', request, expect=('E', 3), paint='insert')
+        transition = details['revision']['transition']
+        if transition['version'] != 2 or not transition['authority_preserved']:
+            raise Failure('the first add is not version 2 → 3 with unchanged current authority')
+        expected = [dict(item, id='current:0')]
+        if self.ul('u01-add')['decorations'] != expected:
+            raise Failure('added decoration differs from the canonical current:0 record')
+        if self.ul('u01-add')['text_body_sha256'] != self.ul('u00-text-baseline')['text_body_sha256']:
+            raise Failure('the text group changed when only an underline was added')
+        return dict(details, version_transition=[transition['version'], transition['next_version']],
+                    decorations=expected)
+
+    def u_noop(self, name, parent):
+        details = self.u_build(name, parent, dict(operation='save'), expect=('D', 3), paint='replace')
+        a, b = self.result['revisions'][parent], self.result['revisions'][name]
+        old, new = self.revisions[parent]['opened'], self.revisions[name]['opened']
+        keys = ('body_sha256', 'text_body_sha256', 'paint_body_sha256', 'rectangle_count', 'rectangles_pdf',
+                'decorations', 'raster_mupdf_sha256')
+        checks = dict(pdf_bytes_identical=a['pdf_sha256'] == b['pdf_sha256'],
+                      operators_identical=a['island']['operators'] == b['island']['operators'],
+                      owner_block_identical=a['owner']['block_sha256'] == b['owner']['block_sha256'],
+                      semantic_identical=(old['semantic'], old['authority'], old['derived']) ==
+                      (new['semantic'], new['authority'], new['derived']),
+                      underline_identical={k: a['underline'][k] for k in keys} == {k: b['underline'][k] for k in keys})
+        if not all(v for k, v in checks.items() if k != 'pdf_bytes_identical'):
+            raise Failure(f'{name} is not a canonical no-op: ' + canonical(checks))
+        return dict(details, **checks)
+
+    def u_noop_1(self):
+        return self.u_noop('u02-noop-1', 'u01-add')
+
+    def u_noop_2(self):
+        return self.u_noop('u03-noop-2', 'u02-noop-1')
+
+    def u_edit(self):
+        from pdfeditor import semantic_paint as paint
+        edit = self.plan['underline_edit']
+        before = self.revisions['u03-noop-2']['opened']['semantic']
+        details = self.u_build('u04-edit-remap', 'u03-noop-2', dict(operation='edit', **edit), expect=('D', 3),
+                               paint='replace')
+        expected = paint.remap(before['text'], before['decorations'], edit['start'], edit['end'], edit['text'])
+        after = self.ul('u04-edit-remap')
+        if after['decorations'] != expected:
+            raise Failure('edit remap differs from the §27.7 contract: ' + canonical(after['decorations']))
+        return dict(details, before_ranges=self.ul('u03-noop-2')['ranges'], after_ranges=after['ranges'],
+                    before_rectangles=self.ul('u03-noop-2')['rectangles_pdf'], after_rectangles=after['rectangles_pdf'])
+
+    def u_recipe(self):
+        old = self.ul('u04-edit-remap')
+        d = old['decorations'][0]
+        request = dict(operation='reinterpret', changes={'decorations': {'recipe': dict(
+            id=d['id'], start=d['start'], end=d['end'], recipe=deepcopy(self.plan['underline_recipe']))}})
+        details = self.u_build('u05-recipe', 'u04-edit-remap', request, expect=('E', 3), paint='replace')
+        new = self.ul('u05-recipe')
+        same_text = (self.revisions['u05-recipe']['opened']['semantic']['text'] ==
+                     self.revisions['u04-edit-remap']['opened']['semantic']['text'])
+        horizontal = [r[0::2] for r in old['rectangles_pdf']] == [r[0::2] for r in new['rectangles_pdf']]
+        vertical = [r[1::2] for r in old['rectangles_pdf']] != [r[1::2] for r in new['rectangles_pdf']]
+        checks = dict(text_unchanged=same_text, text_group_unchanged=old['text_body_sha256'] == new['text_body_sha256'],
+                      horizontal_endpoints_unchanged=horizontal, vertical_geometry_changed=vertical,
+                      authority_preserved=details['revision']['transition']['authority_preserved'],
+                      recipe_applied=new['recipes'][0] == self.plan['underline_recipe'])
+        if not all(checks.values()):
+            raise Failure('recipe change: ' + canonical(checks))
+        return dict(details, **checks)
+
+    def em_check(self, name):
+        """Exact em geometry from the written bytes: Tm y − upper = rise + size·offset, upper − lower = size·thickness.
+
+        Serialized decimals carry at most 6 places (ties to even), so each side is exact to 1e-6.
+        """
+        u = self.ul(name)
+        style = self.revisions[name]['opened']['semantic']['style']
+        size, rise = F(style['font_size']), F(style['rise'])
+        recipe = u['recipes'][0]
+        tm = [F(v) for v in u['text_tm_y']]
+        errors = []
+        for x0, yu, x1, yl in u['rectangles_pdf']:
+            offset = min(abs(t - F(yu) - rise - size * F(recipe['offset_em'])) for t in tm)
+            thickness = abs(F(yu) - F(yl) - size * F(recipe['thickness_em']))
+            errors.append(max(offset, thickness))
+        worst = max(errors, default=F(0))
+        if worst > F(2, 10**6):
+            raise Failure(f'{name}: em recipe geometry is off by {float(worst)} pt')
+        return float(worst)
+
+    def u_style(self):
+        details = self.u_build('u06-style', 'u05-recipe', dict(operation='reinterpret',
+                               changes=deepcopy(self.plan['underline_style'])), expect=('E', 3), paint='replace')
+        old, new = self.ul('u05-recipe'), self.ul('u06-style')
+        if (old['ranges'], old['recipes']) != (new['ranges'], new['recipes']):
+            raise Failure('style change changed the decorations')
+        drift = sorted(k for k in details['diff'] if not k.startswith('style.'))
+        if drift:
+            raise Failure('style change drifted unrelated semantics: ' + ', '.join(drift))
+        return dict(details, decorations_preserved=True, em_geometry_max_error_pt=self.em_check('u06-style'))
+
+    def u_font(self):
+        if 'font_b' not in self.inputs:
+            raise Skip('--font-b not supplied')
+        details = self.u_build('u07-font-b', 'u06-style', dict(operation='reinterpret',
+                               changes=dict(font=sha(self.inputs['font_b']))), self.inputs['font_b'],
+                               expect=('E', 3), paint='replace')
+        old, new = self.ul('u06-style'), self.ul('u07-font-b')
+        checks = dict(provider_is_font_b=details['revision']['semantic']['provider_sha256'] == sha(self.inputs['font_b']),
+                      recipe_preserved=old['recipes'] == new['recipes'] and old['ranges'] == new['ranges'],
+                      vertical_geometry_unchanged=[r[1::2] for r in old['rectangles_pdf']] ==
+                      [r[1::2] for r in new['rectangles_pdf']],
+                      # Left edges sit on a written glyph origin of the new text group; widths stay positive.
+                      endpoints_on_new_glyphs=all(r[0] in new['text_tm_x'] and F(r[2]) > F(r[0])
+                                                  for r in new['rectangles_pdf']),
+                      generated_font_is_font_b=self.generated_font_sources('u07-font-b') == {sha(self.inputs['font_b'])})
+        if not all(checks.values()):
+            raise Failure('font change: ' + canonical(checks))
+        return dict(details, **checks, em_geometry_max_error_pt=self.em_check('u07-font-b'),
+                    right_endpoints=[[r[2] for r in old['rectangles_pdf']], [r[2] for r in new['rectangles_pdf']]])
+
+    def generated_font_sources(self, name):
+        state = self.revisions[name]['state']
+        fonts = state.get('generated_fonts', {}).get(str(self.result['target']['page']), {})
+        return {r['provider']['source_sha256'] for r in fonts.values() if r.get('slot_id') == self.sid}
+
+    def u_last(self):
+        return 'u07-font-b' if 'u07-font-b' in self.revisions else 'u06-style'
+
+    def u_publish(self, name, parent):
+        details = self.publish(name, parent)
+        details.update(self.fresh(name))
+        a, b = self.result['revisions'][parent], self.result['revisions'][name]
+        if (b['semantic']['version'], b['underline']['decorations']) != (a['semantic']['version'],
+                                                                         a['underline']['decorations']):
+            raise Failure(f'{name} does not restore the candidate version and decorations')
+        raster = a['underline']['raster_mupdf_sha256'] == b['underline']['raster_mupdf_sha256']
+        if not raster:
+            raise Failure(f'{name} MuPDF raster differs from its candidate')
+        return dict(details, version=b['semantic']['version'], decorations=b['underline']['decorations'],
+                    candidate_published_raster_identical=raster)
+
+    def u_publish_a(self):
+        details = self.u_publish('bundle-a', self.u_last())
+        self.bundle_a = {p.name: sha(p) for p in (self.art / 'bundle-a').iterdir()}
+        return details
+
+    def u_remove(self):
+        bundle = self.revisions['bundle-a']
+        if (bundle['pdf'].parent != self.art / 'bundle-a' or
+                sorted(p.name for p in bundle['pdf'].parent.iterdir()) != ['document.pdf', 'shared-flow.json']):
+            raise Failure('the removal does not start from the published bundle A')
+        d = self.ul('bundle-a')['decorations'][0]
+        request = dict(operation='reinterpret', changes={'decorations': {'remove': dict(
+            id=d['id'], start=d['start'], end=d['end'])}})
+        details = self.u_build('u08-remove-from-bundle-a', 'bundle-a', request, expect=('E', 3), paint='remove')
+        new = self.ul('u08-remove-from-bundle-a')
+        checks = dict(input=[self.rel(bundle['pdf']), self.rel(bundle['sidecar'])], decorations_empty=new['decorations'] == [],
+                      version_stays_3=new['semantic_version'] == 3, paint_group_absent=new['paint_body_sha256'] is None,
+                      text_group_unchanged=new['text_body_sha256'] == self.ul('bundle-a')['text_body_sha256'])
+        if not all(checks.values()):
+            raise Failure('removal: ' + canonical(checks))
+        return dict(details, **checks)
+
+    def u_publish_b(self):
+        details = self.u_publish('bundle-b', 'u08-remove-from-bundle-a')
+        if {p.name: sha(p) for p in (self.art / 'bundle-a').iterdir()} != self.bundle_a:
+            raise Failure('bundle A changed after bundle B')
+        b = self.ul('bundle-b')
+        if (b['semantic_version'], b['decorations'], b['paint_body_sha256']) != (3, [], None):
+            raise Failure('bundle B is not a version 3 text-only body without decorations')
+        return dict(details, bundle_a_unchanged=True, text_only_body=True)
+
+    def u_tamper(self):
+        """Two expected refusals on validation copies (never on the bundles): a resealed decoration
+        tamper and a paint-geometry tamper of the PDF. A PASS here means the runtime refused."""
+        import pymupdf
+        from pdfeditor import semantic_layout as semantic
+        from pdfeditor.editable import _seal
+        bundle = self.revisions['bundle-a']
+        directory = self.art / 'tamper'
+        directory.mkdir()
+        outcomes = {}
+        state = deepcopy(bundle['state'])
+        state.pop('model_sha256')
+        decoration = state['slots'][self.sid]['semantic']['payload']['decorations'][0]
+        decoration['recipe']['thickness_em'] = '1/30' if decoration['recipe']['thickness_em'] != '1/30' else '1/40'
+        (directory / 'decoration-tamper.json').write_text(json.dumps(_seal(state), indent=2) + '\n', encoding='utf-8')
+        opened = semantic.open_semantic_flow(bundle['pdf'], directory / 'decoration-tamper.json')
+        outcomes['resealed decoration recipe tamper'] = opened.get('reason', 'restored')
+        if opened['status'] == 'restored':
+            raise Failure('a resealed decoration tamper was accepted')
+        body = owned_body(bundle['pdf'], bundle['state'], self.sid)
+        x0, yu, x1, yl = self.ul('bundle-a')['rectangles_pdf'][0]
+        line = f'{x0} {yu} m {x1} {yu} l {x1} {yl} l'.encode()
+        if body.count(line) != 1:
+            raise Failure('underline rectangle bytes not found once in the owned body')
+        with pymupdf.open(bundle['pdf']) as document:
+            xref = document[self.result['target']['page'] - 1].get_contents()[-1]
+            data = document.xref_stream(xref)
+            document.update_stream(xref, data.replace(line, f'{x0} {yu} m {x1} {yu} l {x1} {F(yl) - 1} l'.encode(), 1))
+            document.save(directory / 'geometry-tamper.pdf')
+        opened = semantic.open_semantic_flow(directory / 'geometry-tamper.pdf', bundle['sidecar'])
+        outcomes['paint geometry tamper'] = opened.get('reason', 'restored')
+        if opened['status'] == 'restored':
+            raise Failure('a paint geometry tamper was accepted')
+        return dict(expected_refusals=outcomes)
+
+    def u_control(self):
+        """Text-only control: the same text/style/font transitions on version 2, never decorated."""
+        steps = [('control-01-edit', dict(operation='edit', **self.plan['underline_edit']), None),
+                 ('control-02-style', dict(operation='reinterpret', changes=deepcopy(self.plan['underline_style'])), None)]
+        if 'u07-font-b' in self.revisions:
+            steps.append(('control-03-font-b', dict(operation='reinterpret', changes=dict(
+                font=sha(self.inputs['font_b']))), self.inputs['font_b']))
+        parent = 'u00-text-baseline'
+        for name, request, asset in steps:
+            self.u_build(name, parent, request, asset, expect=(request['operation'] == 'edit' and 'D' or 'E', 2),
+                         paint='none')
+            parent = name
+        self.control = parent
+        removed = self.ul('u08-remove-from-bundle-a') if 'u08-remove-from-bundle-a' in self.revisions else None
+        return dict(revisions=[s[0] for s in steps], final=parent, text_group_identical_to_removed=
+                    None if removed is None else removed['text_body_sha256'] == self.ul(parent)['text_body_sha256'])
+
+    def u_raster_mupdf(self):
+        directory = self.art / 'raster'
+        directory.mkdir(parents=True, exist_ok=True)
+        page = self.result['target']['page']
+        names = ['u00-text-baseline', 'u01-add', 'u02-noop-1', 'u03-noop-2', 'u04-edit-remap', 'u05-recipe',
+                 'u06-style', *(['u07-font-b'] if 'u07-font-b' in self.revisions else []), 'bundle-a',
+                 'u08-remove-from-bundle-a', 'bundle-b', self.control]
+        digests = {n: mupdf_raster(self.revisions[n]['pdf'], page, directory / f'mupdf-{n}.png') for n in names}
+        if any(digests[n] != self.ul(n)['raster_mupdf_sha256'] for n in names):
+            raise Failure('MuPDF raster is not deterministic between two renders')
+        last = self.u_last()
+        checks = dict(baseline_differs_from_add=digests['u00-text-baseline'] != digests['u01-add'],
+                      add_equals_noop_1_and_2=digests['u01-add'] == digests['u02-noop-1'] == digests['u03-noop-2'],
+                      recipe_differs_from_previous=digests['u05-recipe'] != digests['u04-edit-remap'],
+                      style_differs_from_previous=digests['u06-style'] != digests['u05-recipe'],
+                      font_differs_from_previous=(digests['u07-font-b'] != digests['u06-style']
+                                                  if 'u07-font-b' in digests else None),
+                      removed_equals_text_only_control=digests['u08-remove-from-bundle-a'] == digests[self.control],
+                      candidate_a_equals_bundle_a=digests[last] == digests['bundle-a'],
+                      candidate_b_equals_bundle_b=digests['u08-remove-from-bundle-a'] == digests['bundle-b'])
+        if not all(v for v in checks.values() if v is not None):
+            raise Failure('MuPDF raster expectations: ' + canonical(checks))
+        return dict(checks, dpi=144, sha256=digests, control=self.control)
+
+    def u_raster_poppler(self):
+        renderer = shutil.which('pdftoppm')
+        if renderer is None:
+            raise Skip('Poppler (pdftoppm) unavailable')
+        directory = self.art / 'raster'
+        directory.mkdir(parents=True, exist_ok=True)
+        page = str(self.result['target']['page'])
+        digests = {}
+        for name in ('u00-text-baseline', 'u01-add', 'u02-noop-1', 'u03-noop-2', self.u_last(), 'bundle-a',
+                     'u08-remove-from-bundle-a', 'bundle-b', self.control):
+            prefix = directory / f'poppler-{name}'
+            subprocess.run([renderer, '-f', page, '-l', page, '-r', '144', '-png', '-singlefile',
+                            str(self.revisions[name]['pdf']), str(prefix)], check=True, capture_output=True, timeout=600)
+            digests[name] = sha(prefix.with_suffix('.png'))
+        checks = dict(baseline_differs_from_add=digests['u00-text-baseline'] != digests['u01-add'],
+                      add_equals_noop_1_and_2=digests['u01-add'] == digests['u02-noop-1'] == digests['u03-noop-2'],
+                      candidate_a_equals_bundle_a=digests[self.u_last()] == digests['bundle-a'],
+                      candidate_b_equals_bundle_b=digests['u08-remove-from-bundle-a'] == digests['bundle-b'],
+                      removed_equals_text_only_control=digests['u08-remove-from-bundle-a'] == digests[self.control])
+        if not all(checks.values()):
+            raise Failure('Poppler raster expectations: ' + canonical(checks))
+        return dict(checks, dpi=144, sha256=digests)
+
+    def underline_lifecycle(self):
+        return [
+            ('text_baseline', self.u_text_baseline, ('confirm',)), ('add', self.u_add, ('text_baseline',)),
+            ('noop_1', self.u_noop_1, ('add',)), ('noop_2', self.u_noop_2, ('noop_1',)),
+            ('edit_remap', self.u_edit, ('noop_2',)), ('recipe', self.u_recipe, ('edit_remap',)),
+            ('style', self.u_style, ('recipe',)), ('font', self.u_font, ('style',)),
+            ('publish_a', self.u_publish_a, ('style',)), ('remove_from_bundle_a', self.u_remove, ('publish_a',)),
+            ('publish_b', self.u_publish_b, ('remove_from_bundle_a',)), ('negatives', self.negatives, ('publish_b',)),
+            ('tamper', self.u_tamper, ('publish_a',)), ('continuity', self.continuity, ('publish_b',)),
+            ('text_only_control', self.u_control, ('text_baseline',)),
+            ('raster_mupdf', self.u_raster_mupdf, ('publish_b', 'text_only_control')),
+        ]
+
     def preserved(self):
         after = {k: sha(v) for k, v in self.inputs.items()}
         if after != self.before:
@@ -691,18 +1096,17 @@ class Run:
         self.save()
         lifecycle = [
             ('preflight', self.preflight, ()), ('baseline', self.baseline, ('preflight',)),
-            ('confirm', self.confirm, ('baseline',)), ('edit', self.edit, ('confirm',)),
-            ('style', self.style, ('edit',)), ('font', self.font, ('edit',)),
-            ('noop', self.noop, ('edit',)), ('publish_a', self.publish_a, ('noop',)),
-            ('edit_from_bundle_a', self.edit_b, ('publish_a',)), ('font_back', self.font_back, ('edit_from_bundle_a',)),
-            ('publish_b', self.publish_b, ('edit_from_bundle_a',)), ('negatives', self.negatives, ('publish_b',)),
-            ('continuity', self.continuity, ('publish_b',)),
-            ('raster_mupdf', self.raster_mupdf, ('publish_b',)),
-        ]
+            ('confirm', self.confirm, ('baseline',))]
+        if self.mode == 'underline':
+            lifecycle += self.underline_lifecycle()
+            optional = ('raster_poppler', self.u_raster_poppler, ('publish_b', 'text_only_control'))
+        else:
+            optional = ('raster_poppler', self.raster_poppler, ('publish_b',))
+            lifecycle += self.text_lifecycle()
         try:
             for name, function, needs in lifecycle:
                 self.stage(name, function, needs=needs)
-            self.stage('raster_poppler', self.raster_poppler, required=False, needs=('publish_b',))
+            self.stage(optional[0], optional[1], required=False, needs=optional[2])
         finally:
             if hasattr(self, 'before'):
                 self.stage('inputs_preserved', self.preserved)
@@ -711,6 +1115,17 @@ class Run:
             self.save()
             (self.out / 'report.md').write_text(report(self.result), encoding='utf-8')
         return EXIT[self.result['verdict']]
+
+    def text_lifecycle(self):
+        return [
+            ('edit', self.edit, ('confirm',)),
+            ('style', self.style, ('edit',)), ('font', self.font, ('edit',)),
+            ('noop', self.noop, ('edit',)), ('publish_a', self.publish_a, ('noop',)),
+            ('edit_from_bundle_a', self.edit_b, ('publish_a',)), ('font_back', self.font_back, ('edit_from_bundle_a',)),
+            ('publish_b', self.publish_b, ('edit_from_bundle_a',)), ('negatives', self.negatives, ('publish_b',)),
+            ('continuity', self.continuity, ('publish_b',)),
+            ('raster_mupdf', self.raster_mupdf, ('publish_b',)),
+        ]
 
 
 def verdict(stages):
@@ -768,10 +1183,87 @@ def report(result):
             lines.append(f'| `{name}` | `{m["text"]}` | {m["font_size"]} | {m["tracking"]} | {m["word_spacing"]} | '
                          f'{m["edges"]} | `{m["font_sha256"][:12]}` | {m["provenance"]} | {r["island"]["operators"]} | '
                          f'`{r["pdf_sha256"][:12]}` |')
+    if result.get('mode') == 'underline':
+        lines += underline_report(result, windows)
+    candidates = ('`u0N-*/`, `control-0N-*/` (semantic-candidate-*), `bundle-a/`, `bundle-b/`, `tamper/`, `raster/`'
+                  if result.get('mode') == 'underline' else
+                  'candidates (`candidate-*/semantic-candidate-*/`), `bundle-a/`, `bundle-b/`, `raster/`')
     lines += ['', '## Artifacts', '', '- `result.json` — machine-readable result (schema in the README)',
-              '- `artifacts/` — candidates (`candidate-*/semantic-candidate-*/`), `bundle-a/`, `bundle-b/`, `raster/`',
+              f'- `artifacts/` — {candidates}',
               '- `logs/harness.log` — stage log with tracebacks of refused/failed stages', '']
     return '\n'.join(lines)
+
+
+def underline_report(result, windows):
+    """Underline section (mode underline): version transition, decoration lifecycle, checks, final state."""
+    stages = {s['id']: s for s in result['stages']}
+    details = lambda name: stages.get(name, {}).get('details') or {}  # noqa: E731
+    flag = lambda value: ('yes' if value is True else '**no**' if value is False else 'n/a' if value is None  # noqa: E731
+                          else value)
+    lines = ['', '## Underline lifecycle', '', f'> {result.get("underline_disclaimer", UNDERLINE_DISCLAIMER)}', '',
+             f'- **Validation kind:** `{result.get("validation_kind")}`; **Windows underline execution:** '
+             f'{"yes — this run executed on Windows" if windows else "NO — not Windows evidence"}',
+             f'- **Semantic version transition:** {details("add").get("version_transition")} (explicit '
+             f'`decorations.add`)', '']
+    lines += ['| Revision | Transition | Version | Decorations | Rectangles (PDF x0 yu x1 yl) | Paint group | '
+              'Text group | MuPDF |', '|---|---|---|---|---|---|---|---|']
+    for name, r in result['revisions'].items():
+        u, t = r.get('underline'), r.get('transition') or {}
+        if not u:
+            continue
+        ranges = ', '.join(f'[{a},{b})' for a, b in u['ranges'] or []) or ('—' if u['ranges'] is None else 'none')
+        rects = '; '.join(' '.join(v) for v in u['rectangles_pdf']) or '—'
+        lines.append(f'| `{name}` | {t.get("classification", "")} {t.get("version", "")}→{t.get("next_version", "")} | '
+                     f'{u["semantic_version"]} | {ranges} | {rects} | '
+                     f'`{(u["paint_body_sha256"] or "none")[:12]}` | `{(u["text_body_sha256"] or "?")[:12]}` | '
+                     f'`{u["raster_mupdf_sha256"][:12]}` |')
+    checks = [
+        ('no-op #1 / #2', [details('noop_1').get(k) and details('noop_2').get(k) for k in
+                           ('pdf_bytes_identical', 'owner_block_identical', 'semantic_identical', 'underline_identical')],
+         'PDF bytes, owner block, semantic state, underline evidence identical'),
+        ('edit remap', [details('edit_remap').get('before_ranges'), details('edit_remap').get('after_ranges')],
+         'before → after ranges'),
+        ('recipe', [details('recipe').get(k) for k in ('horizontal_endpoints_unchanged', 'vertical_geometry_changed',
+                                                      'authority_preserved')], 'x unchanged, y changed, authority kept'),
+        ('style', [details('style').get('decorations_preserved'), details('style').get('em_geometry_max_error_pt')],
+         'decorations kept; max em geometry error (pt)'),
+        ('font', [details('font').get(k) for k in ('provider_is_font_b', 'recipe_preserved',
+                                                    'vertical_geometry_unchanged', 'generated_font_is_font_b')],
+         'provider B, recipe kept, y unchanged, generated font B'),
+        ('publication A', [details('publish_a').get(k) for k in ('candidate_bytes_identical', 'fresh_process',
+                                                                 'candidate_published_raster_identical')],
+         'bytes, fresh process, raster'),
+        ('remove (from bundle A)', [details('remove_from_bundle_a').get(k) for k in
+                                    ('decorations_empty', 'version_stays_3', 'paint_group_absent', 'text_group_unchanged')],
+         'decorations [], version 3, no paint group, text group kept'),
+        ('publication B', [details('publish_b').get(k) for k in ('candidate_bytes_identical', 'fresh_process',
+                                                                 'bundle_a_unchanged', 'text_only_body')],
+         'bytes, fresh process, bundle A immutable, text-only'),
+    ]
+    lines += ['', '| Check | Result | Meaning |', '|---|---|---|']
+    for label, values, meaning in checks:
+        text = ', '.join(str(flag(v)) for v in values).replace('|', '\\|')
+        lines.append(f'| {label} | {text[:300]} | {meaning} |')
+    for stage, renderer in (('raster_mupdf', 'MuPDF'), ('raster_poppler', 'Poppler')):
+        entry = stages.get(stage)
+        if not entry:
+            continue
+        if entry['status'] == SKIPPED:
+            lines.append(f'| {renderer} 144 dpi | SKIPPED | {entry["error"]} |')
+            continue
+        values = {k: v for k, v in (entry['details'] or {}).items() if isinstance(v, bool) or v is None}
+        lines.append(f'| {renderer} 144 dpi | {", ".join(f"{k}: {flag(v)}" for k, v in values.items())} | '
+                     f'{entry["status"]} |')
+    refusals = {**(details('negatives').get('expected_refusals') or {}), **(details('tamper').get('expected_refusals') or {})}
+    if refusals:
+        lines += ['', 'Expected refusals (the runtime must refuse each):', '']
+        lines += [f'- {label}: `{reason}`' for label, reason in refusals.items()]
+    final = next((r['underline'] for n, r in reversed(list(result['revisions'].items()))
+                  if n.startswith('bundle-') and r.get('underline')), None)
+    if final:
+        lines += ['', f'- **Final state (last bundle):** semantic version {final["semantic_version"]}, decorations '
+                  f'{final["decorations"]}, paint group {"absent" if final["paint_body_sha256"] is None else "present"}']
+    return lines
 
 
 def usage(message):
@@ -803,7 +1295,9 @@ def main(argv=None):
     run.add_argument('--font-b')
     run.add_argument('--output-dir', required=True)
     run.add_argument('--slot-id')
-    run.add_argument('--plan', help='JSON overriding edit/style/next_edit requests')
+    run.add_argument('--plan', help='JSON overriding edit/style/next_edit (text) or underline_* (underline) requests')
+    run.add_argument('--mode', choices=('text', 'underline'), default='text',
+                     help='text (default): the §24 text-only lifecycle; underline: the §28 underline lifecycle')
     args = parser.parse_args(argv)
     if args.command == 'prepare-synthetic':
         return prepare_synthetic(args)
