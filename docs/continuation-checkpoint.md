@@ -1720,3 +1720,26 @@ From main `beb567498ef0354337ecb9171dfac6736af724d7` (PR #53 merged). Implements
   then Windows evidence).
 
 [§32](anchored-paint-ownership.md#32-narrow-semantic-strikeout-runtime-implementation--2026-10-06).
+
+
+## Windows semantic strikeout evidence — 2026-10-06
+
+From main `eb3cc71c6acb0ac73d1fd5ed71b12d86dcb9a6dd` (PR #54 merged). **Runtime changes: none**; the runtime digest is
+unchanged (`98e71404148d8e69779103a27922c40a65c8f04fed04b2d5adbb8a40d34c23d6`).
+
+- **Commit 1 (`8d3ddbf`):** the harness gains `run --mode strikeout` (additive `strikeout_runtime` and
+  `decoration_evidence`). Text and underline modes are unchanged. New harness tests: 23; the three harness files give
+  61 passed.
+- **Windows run of commit 1:** the Arial/Times fixture gave **PASS, exit 0**, `windows_execution: true`, with all 27
+  stages passing, including Poppler 26.07.0. It covered:
+  - v2 → v4 strikeout add;
+  - two byte-identical no-ops and the remap `[0,3)` → `[0,4)`;
+  - recipe, style and font;
+  - publication A → remove (stays v4) → mixed underline `[0,1)` + strikeout `[3,4)` → mixed no-op → strikeout remove →
+    publication B (v4 underline-only), with bundle A unchanged;
+  - the v2 → v3 → v4 control;
+  - overlap, sign and separation refusals, stale pairs, and semantic and body tamper (including the canonical check);
+  - MuPDF and Poppler expectations, and input preservation.
+- Windows full suite: 2,084 passed / 7 environment skips / 0 failed.
+- **WINDOWS NARROW SEMANTIC STRIKEOUT LIFECYCLE VALIDATED.**
+  [§33](anchored-paint-ownership.md#33-windows-semantic-strikeout-external-validation--2026-10-06).

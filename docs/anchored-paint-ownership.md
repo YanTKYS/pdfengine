@@ -5264,3 +5264,105 @@ on `PATH`. It reproduced the §32.3 bytes:
 - recipe `20 63 48.8 62.4`.
 
 That run is harness development, not Windows evidence; the evidence run uses the Arial/Times subsets (§33.5).
+
+### 33.5 Windows execution: environment and command
+
+| Item | Value |
+|---|---|
+| Harness commit (executed) | `8d3ddbf5fdda8b997ed4aab7f13518b0c2ff5225` ("Prepare semantic strikeout Windows validation"); `result.json` records `dirty: false` |
+| OS | Windows 11 Home 10.0.26200 (build 26200.9457), AMD64, `Windows-11-10.0.26200-SP0`, cp932 locale |
+| Python | 3.12.14 (MSC v.1944, 64 bit), fresh `.venv` from `requirements.lock.txt` + `pip install -e ".[test]"` |
+| PyMuPDF / fontTools / uharfbuzz (HarfBuzz) / pypdf / pytest | 1.27.2.3 / 4.64.0 / 0.55.0 (14.2.1) / 6.10.0 / 9.1.1 |
+| Poppler | `pdftoppm` 26.07.0, already on the machine (§25/§30 binary), added to `PATH` for the session only |
+| LibreOffice | unavailable; not part of this validation |
+| Runtime digest | `98e71404148d8e69779103a27922c40a65c8f04fed04b2d5adbb8a40d34c23d6`: before the run, recorded by the run, after the run and after the full suite |
+
+The README §33 PowerShell sequence was run once, unchanged:
+1. `prepare-fonts` (Arial/Times A/B/space unhinted subsets);
+2. `prepare-synthetic`;
+3. `prepare`;
+4. `run --mode strikeout --output-dir evaluations\semantic_lifecycle\runs\windows-strikeout-synthetic-20261006`.
+
+Neither the work directory nor the run directory existed before, and every command exited 0.
+
+| Input | SHA-256 |
+|---|---|
+| font A / font B | `ab1a678f…8317f2` / `bf5783fb…30c9bc` (byte-identical to §25/§30) |
+| synthetic source PDF | `05d24a2b…6f652` (as §30) |
+| prepared `document.pdf` | `037893f6…f9971` (as §30) |
+| prepared `shared-flow.json` | `b8ea31ee…548e2`. This differs from §30's `6637f79c…` only because the sidecar records the provider asset's absolute local path, and this run used a different working copy. |
+
+### 33.6 Result
+
+**Verdict `PASS`, exit 0.** The run recorded:
+
+- `"windows_execution": true`, `"mode": "strikeout"`, `"validation_kind": "semantic-strikeout-lifecycle"`,
+  `"strikeout_runtime": true`;
+- 27 stages. All 26 required stages **PASS**, and the optional `raster_poppler` ran and **PASS**ed.
+
+| Area | Recorded evidence |
+|---|---|
+| v2 baseline | `s00-text-baseline`: D 2 → 2, no decorations |
+| v2 → v4 add | E, `version 2` → `next_version 4`, authority preserved, `current:0` strikeout `[0,3)` `{−3/10, 1/20}`, text group unchanged (`ea99442e…`), paint inserted. Rectangle `20.017578 63.6 39.359375 63`. |
+| physical separation | upper 63.6 > serialized baseline 60 (also 63 after the recipe, 63.25 after style/font, 63.9 for the mixed strikeout); every underline at or below |
+| no-op #1 / #2 | D 4 → 4; **PDF bytes identical** (required), plus the operator sequence, owner block SHA, payload/authority/derived, decorations, rectangles, sides, body/text/paint SHAs and MuPDF raster |
+| edit remap | insert `A` at 1: `A B` → `AA B`; production remap `[0,3)` → `[0,4)`; rectangle right edge 39.359375 → 47.363281 |
+| recipe | `{−3/10, 1/20}` → `{−1/4, 1/20}`: text and x unchanged, y 63.6/63 → 63/62.4, kind strikeout, version 4, authority preserved |
+| style | diff exactly `style.font_size` 12 → 13 and `style.tracking` 0 → 1/4; decorations preserved; em geometry error 0.0 pt; right edge 47.363281 → 50.393555 |
+| font A → B | provider = generated font = font B; recipe, range and kind preserved; y unchanged (63.25/62.6); endpoints on the new glyph origins; right edge 50.393555 → 51.447266; version 4 |
+| publication A | candidate `s07-font-b` → `artifacts/bundle-a` (exactly two files). PDF and sidecar byte-identical; staged/public/fresh-process reopen `restored`; version 4, strikeout, owner, provider and canonical body restored; raster identical. |
+| bundle A reuse | the next input is `artifacts/bundle-a/document.pdf` + `artifacts/bundle-a/shared-flow.json` |
+| strikeout remove | E; version **stays 4**; `decorations = []`; paint group absent; text group unchanged |
+| underline add | E 4 → 4, `current:0` underline `[0,1)` |
+| mixed strikeout add | E 4 → 4. One list: `current:0` underline `[0,1)`, `current:1` strikeout `[3,4)`; one paint group in that order. Underline `20 58.591667 29.638184 57.833333` (at or below), strikeout `42.776367 63.9 51.447266 63.25` (above). The underline rectangle and the text group are unchanged. |
+| mixed no-op | D 4 → 4. Order, paint, body, owner block and raster stable; PDF bytes identical (recorded) |
+| mixed strikeout remove | E 4 → 4, underline-only. The underline record is kept; the body equals the earlier underline-only revision (`s09`). |
+| publication B | candidate/published byte identity, fresh reopen `restored`, version 4 underline-only with no strikeout, **bundle A unchanged** |
+| v3 → v4 control | from `s00`: underline add **2 → 3**, then strikeout `[2,3)` **3 → 4**. The underline record and rectangle are exact, the mixed body is canonical with underline below and strikeout above, and the v3 revision's files are unchanged and still reopen as version 3. |
+| overlap | strikeout `[0,1)` on the underline `[0,1)` and strikeout `[0,2)` nesting it: refused by the planner and the writer (`decorations overlap or are not in canonical order`); nothing written |
+| recipe sign | strikeout `+3/10` → `strikeout recipe is outside its exact bounds`; underline `−13/120` → `underline recipe is outside its exact bounds` (planner and writer) |
+| separation | strikeout `−1/1000000000` em → `strikeout is not physically above its baseline after the output decimal policy` (planner and writer) |
+| stale pairs | A.pdf+B.json, B.pdf+A.json, mixed.pdf+underline-only.json and underline-only.pdf+mixed.json → `source output ownership: shared flow PDF revision changed` |
+| semantic tamper | resealed copies of bundle A: kind strikeout → underline → `underline recipe is outside its exact bounds`; recipe sign flipped → `strikeout recipe is outside its exact bounds` |
+| body tamper | lower edge 1 pt down → `shared flow PDF revision changed`. The same bytes with the owner witness rebound in memory → production island check `semantic version 4 body is not the canonical text and decoration body`. |
+| continuity | creation evidence, owner marker and `created_from` constant over the 18 revisions recorded when the stage ran (the three text-only controls are built afterwards) |
+| MuPDF 144 dpi | text-only ≠ strikeout; strikeout = no-op 1 = no-op 2; recipe, style and font each ≠ previous; removed = text-only control (`640d42c3…`, the same raster as §30's removed state); mixed ≠ underline-only; mixed ≠ strikeout-only; mixed = mixed no-op; strikeout removal = underline-only; candidate A = bundle A; candidate B = bundle B |
+| Poppler 144 dpi | text-only ≠ strikeout; strikeout = no-ops; removed = control; mixed ≠ underline-only; mixed = mixed no-op; removal = underline-only; candidates = bundles |
+| input preservation | prepared PDF, sidecar, font A and font B unchanged (no plan file was used) |
+
+The rectangle x values follow font A's Arial metrics (left edge 20.017578 from A's −3/2048 em bearing), as in §30.4.
+They are not the synthetic-font values of §32.3. The y values equal the synthetic run's, because the recipe is
+em-relative at the same size.
+
+The report's fixed disclaimer line ("…not been performed by the PR that added the strikeout mode") is the static
+harness text. The line after it records `Windows strikeout execution: yes — this run executed on Windows`.
+
+### 33.7 Full suite on Windows
+
+The whole `tests/` tree ran in four file-balanced parallel shards, with Poppler on `PATH`, on the commit 1 code (the
+evidence commit adds no code). The run directory was not touched. Result: **2,084 passed, 7 skipped, 0 failed**.
+
+- Skips (environment-only): 2 AES provider unavailable, 5 external corpus not downloaded.
+- Total 2,091 = §32 Linux 2,049 passed + 19 skipped + 23 new harness tests.
+- The Windows-only Arial/Noto/Poppler tests that Linux skips ran here and passed.
+- No Windows-specific failure.
+
+### 33.8 Evidence and verdict
+
+- Committed exactly as generated, with no hand edits:
+  `evaluations/semantic_lifecycle/runs/windows-strikeout-synthetic-20261006/result.json` and `report.md`. Both were
+  checked for usernames, home directories and absolute local paths: none are present.
+- Not committed: PDFs, fonts, PNGs, logs, bundles, `tmp/`, `.venv`.
+
+**WINDOWS NARROW SEMANTIC STRIKEOUT LIFECYCLE VALIDATED.** On Windows, the run had exit 0, all required stages PASS,
+`windows_execution: true`, MuPDF and Poppler PASS, inputs preserved, the full suite 0 failed and the runtime digest
+unchanged. Semantic version 4 behaves as specified for:
+
+- v2 → v4, v3 → v4 and disjoint mixed decorations;
+- the kind-specific recipe authority and physical separation;
+- ownership, Transaction, publication and fresh reopen;
+- stale-pair and tamper refusals;
+- the dual-renderer raster.
+
+Scope is unchanged: single owned slot. Overlapping decorations, other kinds, colours and source adoption stay out of
+scope, and LibreOffice is still a separate axis.
