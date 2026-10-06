@@ -5173,3 +5173,94 @@ All criteria hold, each with production evidence:
   add, no-op ×2, edit, recipe, style, font, publish A, then from bundle A: v4 mixed with an underline, remove, publish
   B, negatives/tamper, raster with a text-only control). Run it in the cloud as a harness check, then once on Windows
   in a separate evidence PR.
+
+
+## 33. Windows semantic strikeout external validation — 2026-10-06
+
+Starting main `eb3cc71c6acb0ac73d1fd5ed71b12d86dcb9a6dd` (PR #54 merged: NARROW SEMANTIC STRIKEOUT RUNTIME COMPLETE).
+§1–§32 are preserved. **Runtime changes: none.** The runtime digest is
+`98e71404148d8e69779103a27922c40a65c8f04fed04b2d5adbb8a40d34c23d6`, the same as PR #54.
+
+This section has two parts, committed separately so that they can be audited:
+1. the harness strikeout mode and its procedure (§33.1–§33.4);
+2. the Windows evidence produced by running that commit (§33.5 onward, added in the evidence commit).
+
+### 33.1 Harness extension
+
+The §24/§29 harness (`evaluations/semantic_lifecycle/windows_validation.py`) is extended, not replaced. The new
+`run --mode strikeout` reuses everything the earlier modes use:
+
+- preparation (`prepare-fonts`, `prepare-synthetic`, `prepare`);
+- environment capture and input SHA preservation;
+- the partial `result.json` after every stage, and `report.md`;
+- L3 publication, the fresh-process reopen and MuPDF/Poppler rendering;
+- statuses, verdicts and exit codes.
+
+`run` without `--mode` and `run --mode underline` are unchanged. They keep the same stages, plans, evidence keys and
+reports, and their 38 existing harness tests pass unmodified.
+
+Strikeout-mode results gain these additive keys:
+
+- `strikeout_runtime: true` and `strikeout_disclaimer`;
+- `revisions{name}.decoration_evidence`: the underline evidence keys plus `kinds`, `rectangle_sides` and
+  `provider_sha256`.
+
+The text and underline results do not gain these keys. Commands, stages and the schema are in the
+[harness README](../evaluations/semantic_lifecycle/README.md#strikeout-mode-run---mode-strikeout-docs-33).
+
+The harness reads every geometric fact from the written bytes: the rectangles and the side of each rectangle
+relative to the serialized glyph baseline. Expected ranges come from the production `semantic_paint.remap`, never
+from a harness-specific table. Source underlines or strikeouts are never detected or adopted; every decoration is an
+explicit `add`.
+
+### 33.2 Lifecycle
+
+```
+v2 text-only → explicit strikeout add (E, 2 → 4) → no-op ×2 (PDF bytes required) → edit + remap → recipe −3/10 → −1/4
+  → style (13 pt, tracking 1/4) → font A → B → publish A (strikeout-only v4) → fresh reopen
+  → from bundle A: remove (v4, decorations []) → underline add [0,1) (stays v4) → strikeout add [3,4) (mixed v4)
+  → mixed no-op → strikeout remove (v4 underline-only) → publish B → fresh reopen
+control: v2 → underline add [0,1) (2 → 3) → strikeout add [2,3) (3 → 4), v3 revision untouched
+refusals (planner + writer, nothing written): −1/10⁹ em separation, strikeout +3/10, underline −13/120,
+  strikeout on / nesting the underline
+tamper (copies of bundle A): resealed kind change, resealed recipe sign, paint geometry, geometry with the owner witness
+  rebound (production canonical check)
+stale pairs: A/B both ways, mixed/underline-only both ways
+text-only control: the same edit/style/font on v2; MuPDF (+ Poppler) raster expectations; input preservation
+```
+
+The plan in this harness differs from the PR request in one detail:
+- The mixed strikeout is placed on `B` (`[3,4)` of `AA B`), not `[2,3)`. Index 2 is the space, which has no visible
+  character, and the runtime refuses such a range (§31.9).
+- This matches the §31.7 example (`underline [0,1)`, `strikeout [3,4)`).
+
+### 33.3 Harness tests
+
+- New `tests/test_semantic_windows_strikeout_harness.py`: **23 tests**. They cover:
+  - the lifecycle and v2 → v4;
+  - physical separation, read from the bytes;
+  - the byte-stable no-ops and the production remap;
+  - recipe, style and font;
+  - publication A, bundle-A reuse and remove;
+  - the mixed v4 state and its no-op;
+  - publication B with the fresh reopen and bundle A immutable;
+  - the v3 → v4 control;
+  - the overlap/sign/separation refusals, stale pairs and tamper;
+  - raster expectations and input preservation;
+  - the additive schema and the report;
+  - text/underline compatibility;
+  - partial failure, optional Poppler, missing font B and the LibreOffice shape;
+  - plan refusal with plan-file preservation, and the CLI in a fresh process.
+- Existing harness tests are unchanged and pass: text 18, underline 20.
+- All three files run on Windows with Poppler on `PATH`: **61 passed**.
+
+### 33.4 Synthetic control (harness only, not evidence)
+
+A scratch run on Windows with the synthetic fonts (not committed) gave `PASS`, with Poppler skipped because it was not
+on `PATH`. It reproduced the §32.3 bytes:
+
+- strikeout `20 63.6 41.6 63`;
+- edit `20 63.6 48.8 63`;
+- recipe `20 63 48.8 62.4`.
+
+That run is harness development, not Windows evidence; the evidence run uses the Arial/Times subsets (§33.5).
