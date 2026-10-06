@@ -4481,8 +4481,8 @@ Recorded synthetic values:
     retained evidence, Poppler optional, missing font B → INCOMPLETE, the LibreOffice shape → UNSUPPORTED_TARGET, a
     plan-override refusal and the CLI in a fresh process.
 - The existing `tests/test_semantic_windows_harness.py` (18 tests) is unchanged and passes.
-- Focused: @@FOCUSED29@@.
-- Full suite on the final HEAD: @@FULL29@@.
+- Focused: **323 passed** (`test_semantic_windows_harness`, `test_semantic_windows_underline_harness`, `test_semantic_underline`, `test_semantic_underline_contract`, `test_semantic_publication`, `test_semantic_lifecycle`).
+- Full suite on the final HEAD: **1,841 passed, 19 skipped, 0 failed** (PR #50: 1,821 passed; +20 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression).
 
 ### 29.5 Windows procedure (next evidence PR)
 

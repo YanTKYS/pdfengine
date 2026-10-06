@@ -1651,7 +1651,7 @@ From main `ae82d16ca5e45dd1342cede8404fbf565b9412e8` (PR #50 merged). **No runti
   `revisions{name}.underline` (text/paint group SHAs, rectangles, decorations, raster SHA).
 - Cloud synthetic run: **UNDERLINE HARNESS PASS** (21 stages, exit 0). This is not Windows evidence. Text-mode
   regression: PASS; the LibreOffice shape stays `UNSUPPORTED_TARGET` in both modes.
-- Tests: new `test_semantic_windows_underline_harness.py` (20). Full suite: @@FULL29@@.
+- Tests: new `test_semantic_windows_underline_harness.py` (20). Full suite: **1,841 passed, 19 skipped, 0 failed** (PR #50: 1,821 passed; +20 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression).
 - **Verdict: WINDOWS SEMANTIC UNDERLINE VALIDATION READY. Windows underline execution: NOT RUN.** Next: run the
   README PowerShell command once on Windows and commit `result.json` + `report.md`.
 
