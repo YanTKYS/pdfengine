@@ -1715,7 +1715,7 @@ From main `beb567498ef0354337ecb9171dfac6736af724d7` (PR #53 merged). Implements
 - **Reuse:** verifier, owner witness, Transaction (insert/replace/remove), the planned area, obstacles (own glyphs
   allowed, own old strikeout by seqno only, foreign gap paint refused) and L3 publication are unchanged.
 - **Tests:** new `test_semantic_strikeout.py` (116); the contract probes now run on production code; 3 existing tests
-  were adjusted only where §31 changed the meaning (§32.8). Full suite @@FULL32@@.
+  were adjusted only where §31 changed the meaning (§32.8). Full suite **2,049 passed, 19 skipped, 0 failed** (main: 1,933 passed; +116 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression).
 - **WINDOWS STRIKEOUT VALIDATION NOT YET PERFORMED.** Next: Windows semantic strikeout validation (harness mode,
   then Windows evidence).
 

@@ -5147,8 +5147,8 @@ production planner.
   - failure isolation (9 + publication);
   - v2/v3 write paths.
 - **Contract file:** 92 tests on production code.
-- **Focused:** @@FOCUSED32@@.
-- **Full suite on the final HEAD:** @@FULL32@@.
+- **Focused:** **727 passed** (strikeout production + contract, underline production + contract, semantic layout / writer / authority / publication / lifecycle, underline harness, source ownership).
+- **Full suite on the final HEAD:** **2,049 passed, 19 skipped, 0 failed** (main: 1,933 passed; +116 new; the 19 skips are the same environment-only skips: Windows Arial / Noto Sans JP absent, external corpus not downloaded, one Windows-path Poppler regression).
 
 ### 32.10 Completion
 
