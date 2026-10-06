@@ -33,6 +33,14 @@ text group: the v2 validator runs with the injected v3 body grammar
 (`semantic_paint.body_grammar`), then the body must equal the canonical text
 group followed by the canonical underline group, and the slot binding's
 element paths inside the owned body must be exactly those rectangles.
+
+Semantic record version 4 (§31, narrow semantic strikeout) is version 3 with
+the decoration kind set `{underline, strikeout}`; version 3 stays
+underline-only. The first explicit strikeout `decorations.add` (from version 2
+or 3) is the only way into version 4; an underline add keeps the version 2 → 3
+route; opening or saving never changes the version and nothing is downgraded.
+Both versions share the body grammar, the canonical body rule, the element
+classification, the owner witness and the writer; only the kind set differs.
 """
 from copy import deepcopy
 from fractions import Fraction as F
@@ -58,6 +66,8 @@ from . import story_styles as styles
 SCHEMA = 'pdfengine-shared-flow-3'
 SEMANTIC_VERSION = 2
 DECORATED_VERSION = 3  # §27: version 2 keys + payload.decorations; only an explicit decorations.add enters it
+MIXED_DECORATION_VERSION = 4  # §31: version 3 + kind strikeout; only an explicit strikeout add enters it
+DECORATION_KINDS = {DECORATED_VERSION: paint.UNDERLINE_KINDS, MIXED_DECORATION_VERSION: paint.MIXED_KINDS}
 SEMANTIC_KEYS = frozenset({'version', 'payload', 'current', 'derived', 'binding'})
 LEGACY_SEMANTIC_KEYS = frozenset({'version', 'payload', 'derived', 'binding'})  # version 1 (PR #41/#42)
 CURRENT_KEYS = frozenset({'provenance', 'provider'})
@@ -133,12 +143,13 @@ def _scope(state):
 def _payload(payload, slot, version=SEMANTIC_VERSION):
     """Shape of an explicit semantic statement; values are never inferred.
 
-    Only semantic record version 3 carries (and requires) `decorations`.
+    Only semantic record versions 3 and 4 carry (and require) `decorations`; the
+    version selects the allowed kinds.
     """
-    if version == DECORATED_VERSION:
+    if version in DECORATION_KINDS:
         if not isinstance(payload, dict) or set(payload) != DECORATED_PAYLOAD_KEYS:
-            raise PdfError('semantic version 3 payload needs exactly text, style, font, body_style_id, edges, '
-                           'region_id and decorations')
+            raise PdfError(f'semantic version {version} payload needs exactly text, style, font, body_style_id, '
+                           'edges, region_id and decorations')
     elif not isinstance(payload, dict) or set(payload) != PAYLOAD_KEYS:
         raise PdfError('semantic payload needs exactly text, style, font, body_style_id, edges and region_id')
     text = payload['text']
@@ -161,8 +172,8 @@ def _payload(payload, slot, version=SEMANTIC_VERSION):
     measure.validate_edges(text, payload['edges'])
     if payload['region_id'] != slot['region_id']:
         raise PdfError('semantic region must be the slot confirmed region')
-    if version == DECORATED_VERSION:
-        paint.validate(text, payload['decorations'])
+    if version in DECORATION_KINDS:
+        paint.validate(text, payload['decorations'], DECORATION_KINDS[version])
 
 
 def _region(state, slot):
@@ -378,7 +389,8 @@ def _current_font(state, sid, payload, plan, font, alias, codes):
         raise PdfError('island glyph codes differ from the current semantic font asset')
 
 
-def _island(source, state, sid, payload, plan, current=None, asset_font=None, decorations=None):
+def _island(source, state, sid, payload, plan, current=None, asset_font=None, decorations=None,
+            version=DECORATED_VERSION):
     """Island-scoped physical binding through the existing owner contract only.
 
     `decorations` is given only for semantic record version 3: the witness then
@@ -417,7 +429,8 @@ def _island(source, state, sid, payload, plan, current=None, asset_font=None, de
         body = data[span[1]:span[2]]
         canonical = body == canonical_body(content, state, sid, payload, plan, events, body, decorations)
         if decorations is not None and not canonical:
-            raise PdfError('semantic version 3 body is not the canonical text and underline body')
+            raise PdfError(f'semantic version {version} body is not the canonical text and '
+                           f'{"underline" if version == DECORATED_VERSION else "decoration"} body')
         if (F(payload['style']['word_spacing']) != 0 or payload['edges']) and not canonical:
             raise PdfError('Tw or positioning-edge intent needs a canonical island written for it')
         result = dict(body_span=[span[1], span[2]], entry_exit_context=before, canonical=canonical)
@@ -462,7 +475,7 @@ def canonical_body(content, state, sid, payload, plan, events, body_bytes, decor
                        origin=(region['x'], region['baseline']))[0]
     if decorations is None:
         return text
-    return text + paint.paint_group(paint.rectangles(plan, payload['style'], decorations), fill, box[3])
+    return text + paint.serialize(plan, payload['style'], decorations, fill, box[3])
 
 
 def _owned_paint(slot, span, rects):
@@ -501,8 +514,8 @@ def _record(slot):
     """(semantic record, payload, current authority or None for version 1)."""
     semantic = slot.get('semantic')
     version = semantic.get('version') if isinstance(semantic, dict) else None
-    keys = ({1: LEGACY_SEMANTIC_KEYS, SEMANTIC_VERSION: SEMANTIC_KEYS, DECORATED_VERSION: SEMANTIC_KEYS}.get(version)
-            if type(version) is int else None)
+    keys = ({1: LEGACY_SEMANTIC_KEYS, SEMANTIC_VERSION: SEMANTIC_KEYS, DECORATED_VERSION: SEMANTIC_KEYS,
+             MIXED_DECORATION_VERSION: SEMANTIC_KEYS}.get(version) if type(version) is int else None)
     if keys is None or set(semantic) != keys:
         raise PdfError('owned slot carries no valid semantic payload')
     return semantic, semantic['payload'], semantic.get('current')
@@ -517,9 +530,9 @@ def _verify(source, state):
     sid, slot = _scope(state)
     semantic, payload, current = _record(slot)
     version = semantic['version']
-    decorated = version == DECORATED_VERSION
+    decorated = version in DECORATION_KINDS
     if decorated and current is None:
-        raise PdfError('semantic version 3 needs explicit current style/font authority')
+        raise PdfError(f'semantic version {version} needs explicit current style/font authority')
     if current is None:
         restored = shared_flow.open_shared_flow(source, _project_v2(state))
     else:
@@ -548,7 +561,7 @@ def _verify(source, state):
         if set(semantic['derived']) != DERIVED_KEYS or semantic['derived'] != derived:
             raise PdfError('derived semantic state differs from its payload')
         island = _island(source, state, sid, payload, plan, current, font,
-                         payload['decorations'] if decorated else None)
+                         payload['decorations'] if decorated else None, version)
     finally:
         font.font.close()
     if current is not None and binding != _binding(state, sid, (island['font_resource'], island['font_subset_sha256'])):
@@ -678,16 +691,36 @@ def _next_authority(current, request, asset):
     return dict(provenance=CALLER_CONFIRMED, provider=provider)
 
 
+def _next_version(version, changes):
+    """§31.2 migration: the next semantic record version of an explicit request (pure).
+
+    A strikeout `add` moves version 2 or 3 to version 4; an underline `add` moves
+    version 2 to 3 (the shipped route) and keeps 3 or 4; every other request keeps
+    the version. Refusals (version 1, references on version 2) are `_next_decorations`'.
+    """
+    if not isinstance(changes, dict) or 'decorations' not in changes:
+        return version
+    action = changes['decorations']
+    item = action.get('add') if isinstance(action, dict) and set(action) == {'add'} else None
+    if isinstance(item, dict) and item.get('kind') == paint.STRIKEOUT:
+        return MIXED_DECORATION_VERSION
+    return version if version in DECORATION_KINDS else DECORATED_VERSION
+
+
 def _next_decorations(payload, changes, version):
-    """E: one explicit decoration action (§27.7); never mixed, never on version 1."""
+    """E: one explicit decoration action (§27.7, §31.9); never mixed, never on version 1.
+
+    The action is validated with the kind set of the version it leads to.
+    """
     if set(changes) != {'decorations'}:
         raise PdfError('a decoration change is its own explicit reinterpretation')
     if version == 1:
-        raise PdfError('a decoration request needs semantic version 2 or 3; confirm version 1 as version 2 first')
+        raise PdfError('a decoration request needs semantic version 2, 3 or 4; confirm version 1 as version 2 first')
     action = changes['decorations']
     if version == SEMANTIC_VERSION and not (isinstance(action, dict) and set(action) == {'add'}):
-        raise PdfError('semantic version 2 has no decoration; only an explicit decorations.add enters version 3')
-    return paint.reinterpret(payload['text'], payload.get('decorations', []), action)
+        raise PdfError('semantic version 2 has no decoration; only an explicit decorations.add enters version 3 or 4')
+    kinds = DECORATION_KINDS[_next_version(version, changes)]
+    return paint.reinterpret(payload['text'], payload.get('decorations', []), action, kinds)
 
 
 def _next_payload(state, slot, payload, request, asset, version=SEMANTIC_VERSION):
@@ -715,7 +748,7 @@ def _next_payload(state, slot, payload, request, asset, version=SEMANTIC_VERSION
             raise PdfError('semantic edit range is invalid')
         nxt['edges'] = measure.edit_edges(nxt['edges'], a, b, len(text))
         if 'decorations' in nxt:
-            nxt['decorations'] = paint.remap(nxt['text'], nxt['decorations'], a, b, text)
+            nxt['decorations'] = paint.remap(nxt['text'], nxt['decorations'], a, b, text, DECORATION_KINDS[version])
         nxt['text'] = nxt['text'][:a] + text + nxt['text'][b:]
         return 'D', nxt, region
     if operation == 'reflow':
@@ -767,8 +800,9 @@ def plan_semantic_transition(source, model, request, *, asset=None):
     if asset is not None and not (request.get('operation') == 'reinterpret' and 'font' in request.get('changes', {})):
         raise PdfError('an asset may only accompany an explicit font reinterpretation')
     classification, nxt, region = _next_payload(value, slot, current['semantic'], request, asset, current['version'])
-    # Version 3 is entered only by the first explicit decorations.add and never left.
-    next_version = DECORATED_VERSION if 'decorations' in nxt else current['version']
+    # Versions 3 and 4 are entered only by an explicit decorations.add and never left (§31.2).
+    next_version = (_next_version(current['version'], request.get('changes'))
+                    if classification == 'E' else current['version'])
     _payload(nxt, slot, next_version)
     authority = _next_authority(current['authority'], request, asset)
     if authority is not None:
@@ -779,15 +813,31 @@ def plan_semantic_transition(source, model, request, *, asset=None):
         derived, plan = _derive(value, slot, nxt, font, region)
     finally:
         font.font.close()
-    # R: a next state whose underline breaks the exact line-box rule is refused before any write.
-    rects = paint.rectangles(plan, nxt['style'], nxt['decorations']) if next_version == DECORATED_VERSION else []
+    # R: a next state whose decoration breaks the exact line-box rule or (strikeout) the physical
+    # separation rule is refused before any write.
+    rects, underlines = [], 0
+    if next_version in DECORATION_KINDS:
+        rects = paint.rectangles(plan, nxt['style'], nxt['decorations'])
+        paint.separation(plan, nxt['style'], nxt['decorations'], _page_top(source, value, slot))
+        underlines = len(paint.rectangles(plan, nxt['style'], [d for d in nxt['decorations']
+                                                                if d['kind'] == paint.KIND]))
     return dict(classification=classification, slot_id=sid, request=json.loads(_canonical(request)),
                 current=current['semantic'], next=nxt, next_derived=derived, version=current['version'],
-                next_version=next_version, next_underline_rectangles=len(rects),
+                next_version=next_version, next_underline_rectangles=underlines,
+                next_decoration_rectangles=len(rects),
                 authority=current['authority'], next_authority=authority,
                 diff=semantic_diff(current['semantic'], nxt),
                 executable_now=classification == 'N', requires=None if classification == 'N' else WRITER,
                 next_plan=dict(lines=plan['lines'], emitted=len(plan['emitted'])))
+
+
+def _page_top(source, state, slot):
+    """MediaBox top of the slot page (the constant the island writer serializes against)."""
+    content = ContentPage(source, state['regions'][slot['region_id']]['page'])
+    try:
+        return [F(str(v)) for v in content.pdf_page.mediabox][3]
+    finally:
+        content.close()
 
 
 def require_authorized_payload(plan, candidate):

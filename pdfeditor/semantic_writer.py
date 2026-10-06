@@ -22,6 +22,8 @@ one paint index each, equal to the verified current rectangles; it is then
 declared replaced/removed (`paint_changes`), a first underline is declared as
 `paint_insertions` after the island's last glyph paint, the planned area holds
 old and new rectangles, and only that old paint is excluded from obstacles.
+Semantic record version 4 (§31) uses the same path for underline and strikeout
+rectangles in one group; no kind is inferred from a path.
 
 No public publication, pointer, receipt or history is produced (L3).
 """
@@ -166,7 +168,7 @@ def _removed(state, slot, current):
     try:
         _, plan = semantic._derive(state, slot, current['semantic'], font)
         rects = (paint.rectangles(plan, current['semantic']['style'], current['semantic']['decorations'])
-                 if current['version'] == semantic.DECORATED_VERSION else [])
+                 if current['version'] in semantic.DECORATION_KINDS else [])
         return _ink_rects(font, current['semantic']['style'], plan['emitted']), rects
     finally:
         font.font.close()
@@ -272,10 +274,10 @@ def _plan_island(page, state, sid, payload, authority, derived_plan, request, lo
         style = paragraph.styles[typing]
         # Write authority for these bytes only; a version 3 body is proven with the v3 grammar.
         start, end = owned.owned_body(content, record, snapshot, **owned.injected(
-            paint.body_grammar if current_version == semantic.DECORATED_VERSION else None))
-        # Only a version 3 body can hold owned paint; version 1/2 writes keep their exact v2 path.
+            paint.body_grammar if current_version in semantic.DECORATION_KINDS else None))
+        # Only a version 3/4 body can hold owned paint; version 1/2 writes keep their exact v2 path.
         old_ids, old_indices, old_seqnos = (_old_owned_paint(page, start, end, old_rects)
-                                            if current_version == semantic.DECORATED_VERSION else ([], [], []))
+                                            if current_version in semantic.DECORATION_KINDS else ([], [], []))
         selected = set(paragraph.selection['glyph_ids'])
         provider = p['style_registry'][p['logical']['typing_style_id']]['reflow_provider']
         font = ShapedFont(provider['path'])
@@ -293,9 +295,11 @@ def _plan_island(page, state, sid, payload, authority, derived_plan, request, lo
         top = _page_top(content)
         data, anchors = island.body(payload['style'], emitted, alias=alias, codes=codes, fill=fill,
                                     page_top=top, origin=(region['x'], region['baseline']))
-        new_rects = (paint.rectangles(derived_plan, payload['style'], payload['decorations'])
-                     if next_version == semantic.DECORATED_VERSION else [])
-        data += paint.paint_group(new_rects, fill, top)  # text group stays a byte prefix (anchors unchanged)
+        decorated = next_version in semantic.DECORATION_KINDS
+        new_rects = paint.rectangles(derived_plan, payload['style'], payload['decorations']) if decorated else []
+        if decorated:  # text group stays a byte prefix (anchors unchanged); §31.6 separation first
+            paint.separation(derived_plan, payload['style'], payload['decorations'], top)
+            data += paint.paint_group(new_rects, fill, top)
         mutation = Mutation(start, end, data, kind=owned.REWRITE, anchors=anchors, owner=sid)
         result.mutations.append(mutation)
         result.first_mutation = mutation
@@ -491,8 +495,8 @@ def build_semantic_candidate(source, model, request, *, workspace, asset=None):
                 slot['style_binding']['pdf_sha256'] = source_sha(target)
                 slot['source_output'] = owned.rebind(result.identity(number).after, initial['slots'][sid]['source_output'],
                                                      initial['slots'][sid]['source_output']['current']['entry_context_sha256'],
-                                                     **owned.injected(paint.body_grammar if plan['next_version'] ==
-                                                                      semantic.DECORATED_VERSION else None))
+                                                     **owned.injected(paint.body_grammar if plan['next_version'] in
+                                                                      semantic.DECORATION_KINDS else None))
                 state['generated_fonts'] = shared_flow._generated_fonts(initial, state, result, source_sha(target))
             finally:
                 result.close()

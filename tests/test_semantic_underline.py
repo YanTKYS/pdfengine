@@ -367,7 +367,7 @@ def r_base(ul, tmp_path_factory):
 
 
 @pytest.mark.parametrize('request_, reason', [
-    (add(3, 4, kind='strikeout'), 'unsupported decoration kind'),
+    (add(3, 4, kind='highlight'), 'unsupported decoration kind'),  # §32: a strikeout add is the v4 route
     (add(3, 4, id='current:7'), 'exactly kind'),
     (add(3, 4, source_id='path-1'), 'exactly kind'),
     (add(3, 4, recipe='auto'), 'offset_em and thickness_em'),

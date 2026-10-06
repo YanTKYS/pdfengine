@@ -4982,3 +4982,194 @@ multiple slots.
 - 92 evidence tests pass.
 
 The next PR is the narrow semantic strikeout runtime (§31.15). It is not started here.
+
+## 32. Narrow semantic strikeout runtime implementation — 2026-10-06
+
+Starting main `beb567498ef0354337ecb9171dfac6736af724d7` (PR #53 merged: SEMANTIC STRIKEOUT CONTRACT READY). §1–§31
+are preserved. **This section implements §31 as written.** Runtime digest: `4b6f9925…59e3` → `98e71404148d8e69779103a27922c40a65c8f04fed04b2d5adbb8a40d34c23d6`.
+
+**Verdict: NARROW SEMANTIC STRIKEOUT RUNTIME COMPLETE** (§32.10). This covers the caller-declared strikeout on the
+single owned semantic slot, alone or disjoint from underlines. It is not paint runtime in general, not overlapping
+decorations, not highlight, and not source strikeout editing.
+
+### 32.1 Implementation (three modules, generalized in place)
+
+| Module | Change |
+|---|---|
+| `semantic_paint` (not renamed) | `STRIKEOUT`, `UNDERLINE_KINDS` (v3, the default everywhere), `MIXED_KINDS` (v4). `recipe(value, kind)` applies the kind-specific bounds. `validate`, `remap` and `reinterpret` take an explicit `kinds` parameter, with no global mode. `_items` gives (kind, glyph baseline, rectangle) and `rectangles` is unchanged for callers. New: `separation(plan, style, decorations, page_top)` (§31.6) and `serialize` (separation, then the one `paint_group`). The range semantics (remap membership, E actions, CAS) are not duplicated. |
+| `semantic_layout` | `DECORATED_VERSION = 3` is kept. New `MIXED_DECORATION_VERSION = 4` and `DECORATION_KINDS = {3: UNDERLINE_KINDS, 4: MIXED_KINDS}`. `_record`, `_payload` and `_verify` accept 4 with its kind set. `_next_version` implements the §31.2 matrix. `plan_semantic_transition` reports `next_version`, `next_underline_rectangles` (underline only, its v3 meaning) and the new `next_decoration_rectangles`, and refuses line-box and separation violations before any write (MediaBox top read from the current PDF). |
+| `semantic_writer` | Every v3 path now applies to versions 3 and 4: old rectangles from the verified current state, `_old_owned_paint`, owned-body grammar, new rectangles, rebind grammar. Serialization runs `paint.separation`, then `paint.paint_group`. |
+| `transaction`, `source_ownership`, `shared_flow`, `composition`, `semantic_publication` | unchanged |
+
+Schema string `pdfengine-shared-flow-3` unchanged. Persistent artifacts: PDF + `shared-flow.json`.
+
+### 32.2 Versions and migration
+
+| | Behaviour |
+|---|---|
+| v1 | unchanged; every decoration request refused ("confirm version 1 as version 2 first") |
+| v2 | unchanged; underline `add` → v3 (unchanged route); **strikeout `add` → v4**; references refused |
+| v3 | unchanged; underline-only; underline actions keep v3; **strikeout `add` → v4** with the underlines carried exactly; strikeout references refused; a resealed v3 claiming a strikeout, or a v4 relabelled v3, is refused (`unsupported decoration kind`) |
+| v4 | every underline/strikeout action keeps v4; removing the last strikeout keeps v4; no downgrade |
+| all | open, reopen, save, reflow, edit, style and font E keep the version |
+
+The production planner is checked against **every row** of the §31.2 matrix (33 cases on production v1/v2/v3/v4
+bundles), and each decoration row agrees with the §31 contract table.
+
+### 32.3 Geometry, separation, body
+
+- **Recipe:** underline `0 ≤ offset ≤ 1`, strikeout `−1 ≤ offset < 0`, thickness `0 < t ≤ 1`, canonical exact
+  rationals. A recipe change is checked against the referenced decoration's kind.
+- **Geometry:** the §27.8 rule unchanged. The v2 → v4 add on `A B` at 12 pt writes exactly
+  `q 0 g\n20 63.6 m 41.6 63.6 l 41.6 63 l 20 63 l h f\nQ\n` (3.6 → 3.0 pt above the baseline, crossing A and B).
+  - size, rise and recipe are the only vertical inputs: 37/3 pt scales exactly; rise −1 moves by exactly −1;
+    horizontal scale 4/5 is ignored;
+  - endpoints follow tracking/Tw/edges/font B;
+  - a recipe change keeps x;
+  - font A → B keeps y.
+- **Separation:** `−1/10⁹` is refused by the planner and the writer, and nothing is written. `−1/1000` is admitted.
+- **Body:** the L2 text group, then one paint group with both kinds in `current:i` order (the v3 → v4 example writes
+  the underline rectangle, then the strikeout rectangle). There is no new operator, group or marker domain. The
+  newline case gives one rectangle per line.
+
+### 32.4 Mixed decorations and N/D/E/R
+
+- **Mixed lifecycle on `AA B`:**
+  - underline `[0,1)` + strikeout `[1,2)` (touching, adjacent rectangles, never merged);
+  - remove the underline, then add it again (body byte-identical to before);
+  - remove the strikeout, then add a strikeout at `[3,4)`.
+
+  Everything stays v4 after the first strikeout.
+- **Overlap** (same range, partial, nesting) is refused across kinds.
+- **D:** remap is kind-independent. The v3 → v4 edit keeps the underline at `[0,1)` (insert at its end is outside)
+  and shifts the strikeout `[2,3)` → `[3,4)`. An empty edit terminates every decoration and keeps v4.
+- **E:** add/remove/recipe with the unchanged `(id, start, end)` CAS (no `kind`).
+- **R (22 cases through the planner and the writer, inputs untouched, no candidate written):**
+  - unknown kind, caller ID, `inside` affinity;
+  - overlap (4 shapes);
+  - `source_id`, adopt, revive;
+  - `auto` / missing recipe, wrong offset sign (both kinds), out-of-bounds thickness;
+  - line-box overflow, separation failure;
+  - no visible character, stale CAS;
+  - kind-checked recipe changes (both directions);
+  - mixed request.
+
+  Plus a v3 strikeout reference and v1 strikeout.
+
+### 32.5 Verifier, owner witness, writer, Transaction
+
+- **Verifier:** the §27.15 steps for versions 3 and 4, with only the kind set differing. A resealed v4 is refused for
+  kind swap, recipe sign, recipe value, kind order, range, missing and extra. On the production verifier
+  (`_island`, owner witness rebound to the tampered bytes), body tampers are refused: geometry, rectangle order,
+  missing, extra, a strikeout rewritten at underline height, paint-first. Stale PDF/sidecar pairs are refused.
+- **Owner witness:** the shape is unchanged; the block SHA binds the mixed body.
+- **Transaction:** reused unchanged.
+
+  | Case | Declaration |
+  |---|---|
+  | first strikeout | `paint_insertions` (1) |
+  | no-op | replacement (1 → 1) |
+  | removal | `None` |
+  | v3 → v4 | the old underline paint is replaced by 2 paints |
+  | mixed removal | `[1, None]`, with 2 `consumed_paths` |
+
+  - The planned area contains every old and new rectangle.
+  - With only the glyph-ink box as the area, a strikeout add/remove is refused: it runs over the space between A
+    and B, outside every glyph ink.
+- **Own glyphs:** the strikeout crosses the island's own A/B ink and is admitted (they are selected).
+- **Own old strikeout:** excluded **only** by its proven seqno; without the exclusion the next save is refused.
+- **Foreign paint:**
+  - a confirmed `unrelated`/`fixed-to-page` foreign rectangle in the inter-glyph gap at strikeout height refuses the
+    strikeout add (`filled vector`), while a save and an underline add (below the baseline) are admitted;
+  - far foreign paint keeps its bytes and order through add and remove;
+  - nothing is adopted.
+
+### 32.6 Publication, no-op, raster
+
+- **Publication:** bundle A (v3 → v4 mixed) is published; the next revision from bundle A removes the strikeout;
+  bundle B is v4, underline-only.
+  - candidate and published bytes are identical;
+  - bundle A is unchanged;
+  - mixed pairs are refused;
+  - a fresh process reopens both with version 4, decorations, provider, owner marker and a canonical body.
+- **No-op (8 groups):** strikeout-only, after edit/style/font, v3 → v4 mixed, touching mixed, removed and
+  underline-only v4. In each, these are identical: owned body, operators, semantic payload/authority/derived,
+  version, owner block SHA, rectangles and MuPDF raster. The PDF bytes are identical too. The exception is the first
+  save after a font change, which compacts the PDF once (also on plain v2 text-only islands: 4062 → 4045 bytes, the
+  same fonts). The following no-ops are then byte-identical.
+- **MuPDF 144 dpi:**
+  - text-only ≠ strikeout; strikeout = no-op 1 = no-op 2;
+  - recipe, style and font each ≠ previous;
+  - strikeout removed = text-only;
+  - removing the strikeout from the mixed body changes pixels; mixed ≠ underline-only ≠ text-only;
+  - candidate = published.
+- **Poppler 144 dpi:** strikeout = no-ops, ≠ text-only, removed = text-only, mixed ≠ underline-only.
+
+### 32.7 Failure isolation
+
+Failures are injected at 9 points:
+- the planner;
+- recipe validation;
+- the writer's geometry, separation and serializer;
+- the Transaction paint declaration;
+- owner rebind, semantic rebind and candidate reopen.
+
+Each one leaves the source PDF, the sidecar and the workspace unchanged. A publication failure leaves the previous
+bundle unchanged and creates no destination.
+
+### 32.8 Changes to existing tests (contract-mandated)
+
+§31.2 turns a strikeout `add` on v2/v3 into the v4 route, and version 4 into a known record. Three existing tests
+asserted the pre-§31 state and were adjusted minimally:
+
+- the "other decoration kinds" refusal case in `test_semantic_underline.py` and `test_semantic_underline_contract.py`
+  now uses `highlight` (still unknown in every version). A strikeout add on v3 is the upgrade route, refused only by
+  its recipe;
+- `test_decorations_exist_only_in_semantic_version_3` → `…_versions_3_and_4` (v4 accepted, v5 refused).
+
+No v3 expected value, geometry or byte assertion changed.
+
+`test_semantic_strikeout_contract.py` now calls the production functions: its `*_v4` names are thin aliases. Its
+implementation-before probe became `test_production_accepts_strikeout_only_through_version_4`, and the recipe
+messages are the production ones. Its `next_version` table stays a contract table and is checked against the
+production planner.
+
+### 32.9 Tests and validation
+
+- **New `tests/test_semantic_strikeout.py`, 116 tests:**
+  - routes, the matrix (33), v3 compatibility, v1;
+  - geometry, separation, style/rise/scale/font, Tw/edge for strikeout and mixed bodies, newline;
+  - mixed/touching/remove/re-add, remap, R (22);
+  - no-op (8 groups), resealed v4 tampers (7), v4→v3 relabel, body tampers (6), stale pairs;
+  - Transaction declarations (5), affected area, planned-area necessity (2), own glyphs and own old strikeout, foreign
+    gap and far paint;
+  - publication with fresh process, MuPDF, Poppler;
+  - failure isolation (9 + publication);
+  - v2/v3 write paths.
+- **Contract file:** 92 tests on production code.
+- **Focused:** @@FOCUSED32@@.
+- **Full suite on the final HEAD:** @@FULL32@@.
+
+### 32.10 Completion
+
+All criteria hold, each with production evidence:
+- v2 → v4, v3 → v4, v4 reopen (fresh process);
+- strikeout geometry, physical separation;
+- mixed disjoint decorations, touching, overlap refusal;
+- N/D/E/R;
+- Transaction, foreign paint protection;
+- publication, tamper refusal, no-op stability;
+- v3 compatibility;
+- full suite 0 failed.
+
+**NARROW SEMANTIC STRIKEOUT RUNTIME COMPLETE.**
+
+### 32.11 Remaining scope and next step
+
+- Out of scope as before: overlap/stacking (underline and strikeout on the same characters), highlight,
+  transparency, colours, other kinds, source adoption, multiple slots, cross-page.
+- **WINDOWS STRIKEOUT VALIDATION NOT YET PERFORMED.** §30 validated version 3 only.
+- **Next PR:** Windows semantic strikeout validation. Extend the §29 harness with a strikeout mode (v2 → v4 strikeout
+  add, no-op ×2, edit, recipe, style, font, publish A, then from bundle A: v4 mixed with an underline, remove, publish
+  B, negatives/tamper, raster with a text-only control). Run it in the cloud as a harness check, then once on Windows
+  in a separate evidence PR.

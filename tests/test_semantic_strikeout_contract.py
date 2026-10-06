@@ -1,7 +1,8 @@
-"""Semantic strikeout contract (§31): read-only design evidence. No strikeout runtime.
+"""Semantic strikeout contract (§31), now run against the production runtime (§32).
 
-Everything named `*_v4` is a prototype in this file only. It fixes the contract the next
-(implementation) PR must meet, on top of the Windows-validated semantic underline (version 3):
+PR #53 fixed the contract with in-file prototypes; §32 implements it in the existing
+`semantic_paint` / `semantic_layout` / `semantic_writer`, so the `*_v4` names below are thin
+aliases of the production functions (no second implementation). The contract:
 
 * versioning: semantic record version 4 = version 3 + `kind = strikeout`; version 3 keeps
   `underline` only; the first explicit `decorations.add` of a strikeout (from version 2 or 3) is the
@@ -14,10 +15,9 @@ Everything named `*_v4` is a prototype in this file only. It fixes the contract 
   one paint group, decorations in canonical order then lines;
 * mixed kinds: one sorted, disjoint decoration list across kinds (touching allowed, overlap refused).
 
-Prototypes reuse the production functions wherever the contract does not change them
-(`semantic_paint.paint_group`, `body_grammar`, `remap` membership, `rectangles` line splitting) and
-are shown equal to them on underline-only input. Inputs are the stored sidecar, the current asset and
-the page frame; PDFs are only written to `tmp_path` copies. `pdfeditor/` is not modified.
+`next_version` stays a contract table; `test_semantic_strikeout.py` checks the production planner
+against every row. Inputs are the stored sidecar, the current asset and the page frame; PDFs are only
+written to `tmp_path` copies. End-to-end lifecycle evidence lives in `test_semantic_strikeout.py`.
 """
 from copy import deepcopy
 from fractions import Fraction as F
@@ -26,7 +26,6 @@ from pathlib import Path
 
 import pymupdf
 import pytest
-from uniseg.graphemecluster import grapheme_cluster_boundaries
 
 from pdfeditor import semantic_island as island
 from pdfeditor import semantic_layout as semantic
@@ -45,8 +44,8 @@ from test_semantic_underline_contract import as_rects, derive, inks, painted, re
 
 UNDERLINE = {'offset_em': '13/120', 'thickness_em': '7/120'}   # the §27/§28 validation recipe
 STRIKE = {'offset_em': '-3/10', 'thickness_em': '1/20'}        # caller-confirmed evidence recipe (not a standard)
-KINDS_V3 = frozenset({'underline'})
-KINDS_V4 = frozenset({'underline', 'strikeout'})
+KINDS_V3 = paint.UNDERLINE_KINDS
+KINDS_V4 = paint.MIXED_KINDS
 
 
 def deco(kind, start, end, recipe=None, index=0):
@@ -60,144 +59,31 @@ def numbered(*items):
     return paint.renumber([deco(*item) for item in items])
 
 
-# ---------------------------------------------------------------- prototype (version 4 contract)
+# ---------------------------------------------------------------- production (version 4), §32
+# The §31 prototypes are replaced by the production functions they specified; only `next_version`
+# stays a contract-level table here and is compared with the production planner in
+# `test_semantic_strikeout.py`.
 
 
 def recipe_v4(value, kind):
-    """Kind-specific exact bounds; the recipe keys are the version 3 keys."""
-    if not isinstance(value, dict) or set(value) != paint.RECIPE_KEYS:
-        raise PdfError('decoration recipe needs exactly offset_em and thickness_em')
-    offset, thickness = paint._exact(value['offset_em']), paint._exact(value['thickness_em'])
-    if not 0 < thickness <= 1:
-        raise PdfError('decoration thickness is outside its exact bounds')
-    if kind == 'underline' and not 0 <= offset <= 1:
-        raise PdfError('underline offset must satisfy 0 <= offset_em <= 1')
-    if kind == 'strikeout' and not -1 <= offset < 0:
-        raise PdfError('strikeout offset must satisfy -1 <= offset_em < 0')
-    return offset, thickness
+    return paint.recipe(value, kind)
 
 
 def validate_v4(text, decorations, kinds=KINDS_V4):
-    """`semantic_paint.validate` with a version-dependent kind set and kind-specific recipe bounds."""
-    if not isinstance(decorations, list):
-        raise PdfError('decorations must be an explicit list')
-    limits = {0, len(text), *grapheme_cluster_boundaries(text)}
-    previous = 0
-    for index, d in enumerate(decorations):
-        if not isinstance(d, dict) or set(d) != paint.KEYS:
-            raise PdfError('decoration needs exactly id, kind, start, end, affinities and recipe')
-        if d['id'] != f'current:{index}':
-            raise PdfError('decoration id is not its current canonical position')
-        if d['kind'] not in kinds:
-            raise PdfError('unsupported decoration kind')
-        if d['start_affinity'] != 'outside' or d['end_affinity'] != 'outside':
-            raise PdfError('v1 boundary affinity is outside/outside')
-        s, e = d['start'], d['end']
-        if (type(s) is not int or type(e) is not int or not 0 <= s < e <= len(text)
-                or s not in limits or e not in limits):
-            raise PdfError('decoration range must be ordered grapheme boundaries inside the text')
-        if not paint.visible(text[s:e]):
-            raise PdfError('decoration range has no visible character')
-        if s < previous:
-            raise PdfError('decorations overlap or are not in canonical order')
-        previous = e
-        recipe_v4(d['recipe'], d['kind'])
+    return paint.validate(text, decorations, kinds)
 
 
 def remap_v4(text, decorations, start, end, inserted):
-    """The production §27.7 membership rule, unchanged and kind-independent; only validation differs."""
-    shift = len(inserted) - (end - start)
-    after = text[:start] + inserted + text[end:]
-    kept = []
-    for d in decorations:
-        s, e = d['start'], d['end']
-        members = [i for i in range(s, e) if i < start] + [i + shift for i in range(s, e) if i >= end]
-        inside = (s <= start and end <= e) if start < end else s < start < e
-        if inside:
-            members += range(start, start + len(inserted))
-        if not members:
-            continue
-        lo, hi = min(members), max(members) + 1
-        if paint.visible(after[lo:hi]):
-            kept.append(dict(deepcopy(d), start=lo, end=hi))
-    result = paint.renumber(kept)
-    validate_v4(after, result)
-    return result
+    return paint.remap(text, decorations, start, end, inserted, KINDS_V4)
 
 
 def reinterpret_v4(text, decorations, action, kinds=KINDS_V4):
-    """The production E actions (add/remove/recipe, (id, start, end) CAS) with version 4 validation."""
-    if not isinstance(action, dict) or len(action) != 1:
-        raise PdfError('exactly one decoration action per request')
-    (verb, item), = action.items()
-    current = deepcopy(decorations)
-    if verb == 'add':
-        if not isinstance(item, dict) or set(item) != paint.ADD_KEYS:
-            raise PdfError('decoration add needs exactly kind, start, end, affinities and recipe')
-        current.append(dict(deepcopy(item), id='new'))
-    elif verb in ('remove', 'recipe'):
-        keys = paint.REFERENCE_KEYS | ({'recipe'} if verb == 'recipe' else set())
-        if not isinstance(item, dict) or set(item) != keys:
-            raise PdfError('decoration reference needs exactly id, start and end')
-        match = [d for d in current if d['id'] == item['id']]
-        if not match or (match[0]['start'], match[0]['end']) != (item['start'], item['end']):
-            raise PdfError('decoration reference is not the current decoration at that id and range')
-        if verb == 'remove':
-            current.remove(match[0])
-        elif item['recipe'] == match[0]['recipe']:
-            raise PdfError('recipe change must differ from the current recipe')
-        else:
-            match[0]['recipe'] = deepcopy(item['recipe'])  # validated against the referenced kind below
-    else:
-        raise PdfError('unsupported decoration action: ' + str(verb))
-    result = paint.renumber(current)
-    validate_v4(text, result, kinds)
-    return result
+    return paint.reinterpret(text, decorations, action, kinds)
 
 
 def rectangles_v4(plan, style, decorations):
-    """`semantic_paint.rectangles` with `recipe_v4`; returns (kind, glyph baseline, rect) per rectangle."""
-    size = F(style['font_size'])
-    items = []
-    for d in decorations:
-        offset, thickness = (value * size for value in recipe_v4(d['recipe'], d['kind']))
-        for line in plan['lines']:
-            glyphs = [g for g in plan['emitted']
-                      if line['start'] <= g['offset'] < line['end'] and d['start'] <= g['offset'] < d['end']]
-            while glyphs and glyphs[0]['text'] == ' ':
-                glyphs.pop(0)
-            while glyphs and glyphs[-1]['text'] == ' ':
-                glyphs.pop()
-            if not glyphs:
-                continue
-            baselines = {F(g['origin'][1]) for g in glyphs}
-            if len(baselines) != 1:
-                raise PdfError('decoration line has more than one glyph baseline')
-            baseline = baselines.pop()
-            upper = baseline + offset
-            left = F(glyphs[0]['origin'][0])
-            right = F(glyphs[-1]['origin'][0]) + F(glyphs[-1]['advance'])
-            if not (F(line['baseline']) - F(line['ascent']) <= upper
-                    and upper + thickness <= F(line['baseline']) + F(line['descent'])):
-                raise PdfError('decoration exceeds its line box')
-            if not left < right:
-                raise PdfError('decoration has no positive width')
-            items.append((d['kind'], baseline, (left, upper, right, upper + thickness)))
-    return items
-
-
-def paint_group_v4(items, fill, top):
-    """The production serializer, after the physical kind-separation rule.
-
-    A strikeout's serialized upper edge must be strictly above its serialized glyph baseline. An
-    underline (offset ≥ 0) is at or below it by construction (the decimal policy is monotone), so an
-    underline and a strikeout never serialize the same rectangle.
-    """
-    d, top = island.decimal, F(top)
-    for kind, baseline, (_, upper, _, _) in items:
-        if kind == 'strikeout' and not F(d(top - upper)) > F(d(top - baseline)):
-            raise PdfError('strikeout is not physically above its baseline after the output decimal policy')
-    return paint.paint_group([rect for _, _, rect in items], fill, top)
+    """(kind, glyph baseline, rect) per rectangle (the production rectangle items)."""
+    return paint._items(plan, style, decorations)
 
 
 def next_version(version, request):
@@ -217,8 +103,7 @@ def next_version(version, request):
 
 
 def canonical(rev, decorations):
-    items = rectangles_v4(rev['plan'], rev['payload']['style'], decorations)
-    return paint_group_v4(items, rev['fill'], rev['top'])
+    return paint.serialize(rev['plan'], rev['payload']['style'], decorations, rev['fill'], rev['top'])
 
 
 def rects(rev, decorations):
@@ -249,23 +134,23 @@ def bundles(chain, tmp_path_factory):
 # ---------------------------------------------------------------- 1. the current runtime refuses strikeout
 
 
-def test_current_runtime_refuses_strikeout_everywhere(bundles, tmp_path):
-    """Implementation-before state: no strikeout is accepted by any production path today."""
+def test_production_accepts_strikeout_only_through_version_4(bundles):
+    """§32 implemented state (was the implementation-before probe of PR #53): the version 3 defaults
+    still refuse a strikeout; a strikeout add on version 2 or 3 plans version 4; version 5 is unknown."""
     with pytest.raises(PdfError, match='unsupported decoration kind'):
-        paint.validate('A B', [deco('strikeout', 0, 1)])
+        paint.validate('A B', [deco('strikeout', 0, 1)])  # the version 3 kind set is the default
     with pytest.raises(PdfError, match='exact bounds'):
-        paint.recipe(STRIKE)
-    for name in ('v2', 'v3'):
-        b = bundles[name]
-        before = (Path(b['pdf']).read_bytes(), Path(b['sidecar']).read_bytes())
-        with pytest.raises(PdfError, match='unsupported decoration kind'):
-            semantic.plan_semantic_transition(b['pdf'], b['sidecar'], add('strikeout', 0, 1))
-        with pytest.raises(PdfError, match='unsupported decoration kind'):
-            writer.build_semantic_candidate(b['pdf'], b['sidecar'], add('strikeout', 0, 1), workspace=tmp_path)
-        assert (Path(b['pdf']).read_bytes(), Path(b['sidecar']).read_bytes()) == before
-    assert not any(tmp_path.iterdir())
+        paint.recipe(STRIKE)  # the default kind is underline
+    paint.validate('A B', [deco('strikeout', 0, 1)], paint.MIXED_KINDS)
+    v2, v3 = bundles['v2'], bundles['v3']
+    plan = semantic.plan_semantic_transition(v2['pdf'], v2['sidecar'], add('strikeout', 0, 1))
+    assert (plan['version'], plan['next_version'], plan['classification']) == (2, 4, 'E')
+    with pytest.raises(PdfError, match='overlap'):  # the v3 → v4 route keeps one disjoint list ([0,3) is underlined)
+        semantic.plan_semantic_transition(v3['pdf'], v3['sidecar'], add('strikeout', 0, 1))
     slot = deepcopy(json.loads(Path(bundles['v3']['sidecar']).read_text())['slots']['slot-0'])
     slot['semantic']['version'] = 4
+    semantic._record(slot)
+    slot['semantic']['version'] = 5
     with pytest.raises(PdfError, match='no valid semantic payload'):
         semantic._record(slot)
 
@@ -558,9 +443,9 @@ def test_e_add_remove_recipe_reuse_the_same_actions():
     lower = {'offset_em': '-1/4', 'thickness_em': '1/20'}
     changed = reinterpret_v4(text, two, {'recipe': dict(id='current:1', start=3, end=4, recipe=lower)})
     assert changed[1]['recipe'] == lower and changed[1]['kind'] == 'strikeout'
-    with pytest.raises(PdfError, match='strikeout offset'):  # the recipe is checked against the referenced kind
+    with pytest.raises(PdfError, match='strikeout recipe is outside'):  # the recipe is checked against the referenced kind
         reinterpret_v4(text, two, {'recipe': dict(id='current:1', start=3, end=4, recipe=dict(UNDERLINE))})
-    with pytest.raises(PdfError, match='underline offset'):
+    with pytest.raises(PdfError, match='underline recipe is outside'):
         reinterpret_v4(text, two, {'recipe': dict(id='current:0', start=0, end=2, recipe=dict(STRIKE))})
     removed = reinterpret_v4(text, changed, {'remove': dict(id='current:0', start=0, end=2)})
     assert [(d['id'], d['kind'], d['start']) for d in removed] == [('current:0', 'strikeout', 3)]
@@ -575,8 +460,8 @@ def test_e_add_remove_recipe_reuse_the_same_actions():
     ({'adopt': dict(source_id='p1')}, 'unsupported decoration action'),
     ({'add': dict(kind='strikeout', start=3, end=4, start_affinity='outside', end_affinity='outside', recipe='auto')}, 'offset_em and thickness_em'),
     ({'add': dict(kind='strikeout', start=3, end=4, start_affinity='outside', end_affinity='outside')}, 'exactly kind'),
-    ({'add': dict(kind='strikeout', start=3, end=4, start_affinity='outside', end_affinity='outside', recipe=dict(UNDERLINE))}, 'strikeout offset'),
-    ({'add': dict(kind='underline', start=3, end=4, start_affinity='outside', end_affinity='outside', recipe=dict(STRIKE))}, 'underline offset'),
+    ({'add': dict(kind='strikeout', start=3, end=4, start_affinity='outside', end_affinity='outside', recipe=dict(UNDERLINE))}, 'strikeout recipe is outside'),
+    ({'add': dict(kind='underline', start=3, end=4, start_affinity='outside', end_affinity='outside', recipe=dict(STRIKE))}, 'underline recipe is outside'),
     ({'add': dict(kind='strikeout', start=2, end=3, start_affinity='outside', end_affinity='outside', recipe=dict(STRIKE))}, 'no visible character'),
     ({'remove': dict(id='current:0', start=0, end=3)}, 'not the current decoration'),   # stale CAS
     ({'revive': dict(id='current:0')}, 'unsupported decoration action'),

@@ -14,6 +14,14 @@ the same marker pair. Nothing here reads a PDF, mutates bytes or publishes.
   current style and the stored recipe; font tables are never authority;
 * one canonical serializer (`paint_group`) and the v3 current-body grammar
   (`body_grammar`): one canonical text group, then at most one underline group.
+
+Semantic record version 4 (§31, narrow semantic strikeout) reuses all of it with
+a second kind. The allowed kinds are an explicit parameter chosen by the record
+version (`UNDERLINE_KINDS` for version 3, the default; `MIXED_KINDS` for
+version 4); recipes are checked against their decoration's kind (underline
+`0 ≤ offset ≤ 1`, strikeout `−1 ≤ offset < 0`); and `serialize` refuses a
+strikeout whose serialized upper edge is not strictly above its serialized glyph
+baseline, so an underline and a strikeout never write the same rectangle.
 """
 from copy import deepcopy
 from fractions import Fraction as F
@@ -28,6 +36,9 @@ from . import semantic_measure as measure
 from . import source_ownership as owned
 
 KIND = 'underline'
+STRIKEOUT = 'strikeout'
+UNDERLINE_KINDS = frozenset({KIND})              # semantic record version 3 (unchanged)
+MIXED_KINDS = frozenset({KIND, STRIKEOUT})       # semantic record version 4
 OUTSIDE = 'outside'
 KEYS = frozenset({'id', 'kind', 'start', 'end', 'start_affinity', 'end_affinity', 'recipe'})
 ADD_KEYS = KEYS - {'id'}
@@ -55,18 +66,27 @@ def renumber(decorations):
     return [dict(d, id=f'current:{i}') for i, d in enumerate(ordered)]
 
 
-def recipe(value):
-    """(offset_em, thickness_em) of an explicit exact recipe; never inferred."""
+def recipe(value, kind=KIND):
+    """(offset_em, thickness_em) of an explicit exact recipe for `kind`; never inferred.
+
+    Underline `0 ≤ offset ≤ 1`; strikeout `−1 ≤ offset < 0` (above the baseline); both `0 < thickness ≤ 1`.
+    """
+    if kind not in MIXED_KINDS:
+        raise PdfError('unsupported decoration kind')
     if not isinstance(value, dict) or set(value) != RECIPE_KEYS:
-        raise PdfError('underline recipe needs exactly offset_em and thickness_em')
+        raise PdfError(f'{kind} recipe needs exactly offset_em and thickness_em')
     offset, thickness = _exact(value['offset_em']), _exact(value['thickness_em'])
-    if not (0 <= offset <= 1 and 0 < thickness <= 1):
-        raise PdfError('underline recipe is outside its exact bounds')
+    bounded = 0 <= offset <= 1 if kind == KIND else -1 <= offset < 0
+    if not (bounded and 0 < thickness <= 1):
+        raise PdfError(f'{kind} recipe is outside its exact bounds')
     return offset, thickness
 
 
-def validate(text, decorations):
-    """Schema of `payload.decorations` against the current semantic text (§27.5)."""
+def validate(text, decorations, kinds=UNDERLINE_KINDS):
+    """Schema of `payload.decorations` against the current semantic text (§27.5, §31.3).
+
+    `kinds` is the version's kind set; ranges are disjoint across kinds.
+    """
     if not isinstance(decorations, list):
         raise PdfError('decorations must be an explicit list')
     limits = {0, len(text), *grapheme_cluster_boundaries(text)}
@@ -76,7 +96,7 @@ def validate(text, decorations):
             raise PdfError('decoration needs exactly id, kind, start, end, affinities and recipe')
         if d['id'] != f'current:{index}':
             raise PdfError('decoration id is not its current canonical position')
-        if d['kind'] != KIND:
+        if d['kind'] not in kinds:
             raise PdfError('unsupported decoration kind')
         if d['start_affinity'] != OUTSIDE or d['end_affinity'] != OUTSIDE:
             raise PdfError('v1 boundary affinity is outside/outside')
@@ -89,10 +109,10 @@ def validate(text, decorations):
         if s < previous:
             raise PdfError('decorations overlap or are not in canonical order')
         previous = e
-        recipe(d['recipe'])
+        recipe(d['recipe'], d['kind'])
 
 
-def remap(text, decorations, start, end, inserted):
+def remap(text, decorations, start, end, inserted, kinds=UNDERLINE_KINDS):
     """D: map every decoration through one semantic edit `{start, end, text}` (§27.7).
 
     Membership follows the `anchors.project_range` convention with outside/outside
@@ -101,7 +121,8 @@ def remap(text, decorations, start, end, inserted):
     surviving members). Where `project_range` refuses an edit crossing an edge,
     §27.7 shrinks instead: the deleted part leaves and the inserted text is
     outside, because a D edit never refuses because of a decoration. No members or
-    no visible character left terminates the decoration (no dormant state).
+    no visible character left terminates the decoration (no dormant state). The
+    rule does not depend on the kind; `kinds` only selects the version's validation.
     """
     shift = len(inserted) - (end - start)
     after = text[:start] + inserted + text[end:]
@@ -120,16 +141,18 @@ def remap(text, decorations, start, end, inserted):
         if visible(after[lo:hi]):
             kept.append(dict(deepcopy(d), start=lo, end=hi))
     result = renumber(kept)
-    validate(after, result)
+    validate(after, result, kinds)
     return result
 
 
-def reinterpret(text, decorations, action):
+def reinterpret(text, decorations, action, kinds=UNDERLINE_KINDS):
     """E: exactly one explicit add/remove/recipe action; returns the next decorations.
 
     `remove` and `recipe` name `(id, start, end)` of the current state
     (compare-and-swap), so a stale label refuses. `add` always creates a new
-    decoration; nothing is revived and the caller never chooses an ID.
+    decoration; nothing is revived and the caller never chooses an ID. A recipe
+    change is checked against the referenced decoration's kind; `kind` is not part
+    of the reference (ranges are disjoint across kinds, §31.9).
     """
     if not isinstance(action, dict) or len(action) != 1:
         raise PdfError('exactly one decoration action per request')
@@ -155,23 +178,28 @@ def reinterpret(text, decorations, action):
     else:
         raise PdfError('unsupported decoration action: ' + str(verb))
     result = renumber(current)
-    validate(text, result)
+    validate(text, result, kinds)
     return result
 
 
 def rectangles(plan, style, decorations):
-    """Exact page y-down rectangles `(left, upper, right, lower)` (§27.8, §27.13).
+    """Exact page y-down rectangles `(left, upper, right, lower)` (§27.8, §27.13, §31.5).
 
     Decorations in canonical order, then lines top to bottom; per line the
     painted glyphs of the range without that line's boundary spaces. The upper
-    edge is the glyph baseline (line baseline + rise) plus `font_size · offset_em`;
-    the thickness is `font_size · thickness_em`. Every rectangle must lie in its
-    line box exactly.
+    edge is the glyph baseline (line baseline + rise) plus `font_size · offset_em`
+    (a strikeout's negative offset is above the baseline); the thickness is
+    `font_size · thickness_em`. Every rectangle must lie in its line box exactly.
     """
+    return [rect for _, _, rect in _items(plan, style, decorations)]
+
+
+def _items(plan, style, decorations):
+    """(kind, glyph baseline, rectangle) per rectangle, in canonical order."""
     size = F(style['font_size'])
-    rects = []
+    items = []
     for d in decorations:
-        offset, thickness = (value * size for value in recipe(d['recipe']))
+        offset, thickness = (value * size for value in recipe(d['recipe'], d['kind']))
         for line in plan['lines']:
             glyphs = [g for g in plan['emitted']
                       if line['start'] <= g['offset'] < line['end'] and d['start'] <= g['offset'] < d['end']]
@@ -183,18 +211,19 @@ def rectangles(plan, style, decorations):
                 continue
             baselines = {F(g['origin'][1]) for g in glyphs}
             if len(baselines) != 1:
-                raise PdfError('underline line has more than one glyph baseline')
-            upper = baselines.pop() + offset
+                raise PdfError(f"{d['kind']} line has more than one glyph baseline")
+            baseline = baselines.pop()
+            upper = baseline + offset
             left = F(glyphs[0]['origin'][0])
             right = F(glyphs[-1]['origin'][0]) + F(glyphs[-1]['advance'])
             box_top = F(line['baseline']) - F(line['ascent'])
             box_bottom = F(line['baseline']) + F(line['descent'])
             if not (box_top <= upper and upper + thickness <= box_bottom):
-                raise PdfError('underline exceeds its line box')
+                raise PdfError(f"{d['kind']} exceeds its line box")
             if not left < right:
-                raise PdfError('underline has no positive width')
-            rects.append((left, upper, right, upper + thickness))
-    return rects
+                raise PdfError(f"{d['kind']} has no positive width")
+            items.append((d['kind'], baseline, (left, upper, right, upper + thickness)))
+    return items
 
 
 def paint_group(rects, fill, page_top):
@@ -212,6 +241,24 @@ def paint_group(rects, fill, page_top):
             raise PdfError('zero-area underline after the output decimal policy')
         out += f'{x0} {y0} m {x1} {y0} l {x1} {y1} l {x0} {y1} l h f\n'
     return (out + 'Q\n').encode('ascii')
+
+
+def separation(plan, style, decorations, page_top):
+    """§31.6: a strikeout's serialized upper edge must be strictly above its serialized glyph baseline.
+
+    An underline (offset ≥ 0) is at or below its baseline by construction (the decimal policy is
+    monotone), so the two kinds never serialize the same rectangle. Nothing to check without a strikeout.
+    """
+    d, top = island.decimal, F(page_top)
+    for kind, baseline, (_, upper, _, _) in _items(plan, style, decorations):
+        if kind == STRIKEOUT and not F(d(top - upper)) > F(d(top - baseline)):
+            raise PdfError('strikeout is not physically above its baseline after the output decimal policy')
+
+
+def serialize(plan, style, decorations, fill, page_top):
+    """The canonical decoration group of a semantic state (separation rule, then the one serializer)."""
+    separation(plan, style, decorations, page_top)
+    return paint_group(rectangles(plan, style, decorations), fill, page_top)
 
 
 def _number(value):
