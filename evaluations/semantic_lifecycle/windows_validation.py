@@ -12,10 +12,15 @@ refusal into success.
     python -m evaluations.semantic_lifecycle.windows_validation prepare --source-pdf PDF --spec SPEC.json --font-a A.ttf --output-dir PREP
     python -m evaluations.semantic_lifecycle.windows_validation run --pdf PDF --sidecar JSON --font-a A.ttf --font-b B.ttf --output-dir OUT
     python -m evaluations.semantic_lifecycle.windows_validation run --mode underline --pdf PDF --sidecar JSON --font-a A.ttf --font-b B.ttf --output-dir OUT
+    python -m evaluations.semantic_lifecycle.windows_validation run --mode strikeout --pdf PDF --sidecar JSON --font-a A.ttf --font-b B.ttf --output-dir OUT
 
 `run` without `--mode` is the text-only lifecycle (§24) exactly as before. `--mode underline` runs the
 narrow semantic underline lifecycle (§28) on the same preparation: explicit `decorations.add` (version 2 → 3),
 two no-ops, edit remap, recipe, style, font, publication A, removal from bundle A, publication B.
+`--mode strikeout` runs the narrow semantic strikeout lifecycle (§32, version 4): explicit strikeout add
+(version 2 → 4), two no-ops, edit remap, recipe, style, font, publication A, removal from bundle A, a disjoint
+underline + strikeout mixed state, its no-op, strikeout removal (stays version 4), publication B, a small
+v2 → v3 → v4 route control, recipe-sign/separation/overlap refusals and tampering.
 
 Stage statuses: PASS (expected success), REFUSED (runtime refused for a scope or
 safety reason), SKIPPED (not applicable or a prerequisite did not pass), FAIL
@@ -24,7 +29,8 @@ error / output collision, 3 REFUSED or UNSUPPORTED_TARGET, 4 INCOMPLETE.
 
 The PR that added this harness did not execute it on Windows; a result is
 Windows evidence only when `result.json` says `windows_execution: true`. The PR that added the underline
-mode did not execute it on Windows either.
+mode did not execute it on Windows either. For the strikeout mode, too, only a result with
+`windows_execution: true` is Windows evidence.
 """
 import argparse
 from copy import deepcopy
@@ -56,7 +62,21 @@ DEFAULT_UNDERLINE_PLAN = dict(underline_add=dict(start=0, end=3, recipe=dict(REC
                               underline_recipe={'offset_em': '1/10', 'thickness_em': '1/20'},
                               underline_style=dict(font_size='13', tracking='1/4'))
 UNDERLINE_DISCLAIMER = 'Windows underline execution has not been performed by the PR that added the underline mode.'
-VALIDATION_KIND = dict(text='semantic-text-lifecycle', underline='semantic-underline-lifecycle')
+# Strikeout mode (§31/§32, semantic version 4). The recipe is the §31/§32 caller-confirmed evidence recipe, not a
+# standard. Ranges are chosen on the synthetic text: `A B` (add), `AA B` after the edit; the mixed state uses
+# disjoint visible characters (underline on the first A, strikeout on B).
+STRIKEOUT_RECIPE = {'offset_em': '-3/10', 'thickness_em': '1/20'}
+DEFAULT_STRIKEOUT_PLAN = dict(strikeout_add=dict(start=0, end=3, recipe=dict(STRIKEOUT_RECIPE)),
+                              strikeout_edit=dict(start=1, end=1, text='A'),
+                              strikeout_recipe={'offset_em': '-1/4', 'thickness_em': '1/20'},
+                              strikeout_style=dict(font_size='13', tracking='1/4'),
+                              mixed_underline=dict(start=0, end=1, recipe=dict(RECIPE)),
+                              mixed_strikeout=dict(start=3, end=4, recipe=dict(STRIKEOUT_RECIPE)),
+                              control_underline=dict(start=0, end=1, recipe=dict(RECIPE)),
+                              control_strikeout=dict(start=2, end=3, recipe=dict(STRIKEOUT_RECIPE)))
+STRIKEOUT_DISCLAIMER = 'Windows strikeout execution has not been performed by the PR that added the strikeout mode.'
+VALIDATION_KIND = dict(text='semantic-text-lifecycle', underline='semantic-underline-lifecycle',
+                       strikeout='semantic-strikeout-lifecycle')
 
 
 class Failure(Exception):
@@ -420,6 +440,26 @@ def underline_evidence(pdf, state, sid, opened):
                 paint_body_size=len(group) if group else 0)
 
 
+def decoration_evidence(pdf, state, sid, opened):
+    """Strikeout-mode evidence: the underline evidence plus kinds and the physical side of every rectangle.
+
+    `rectangle_sides` is read from the written bytes only: `above` when the serialized upper edge is
+    strictly above the serialized glyph baseline (PDF y-up: Tm y − rise), `at_or_below` otherwise (§31.6).
+    Each rectangle is compared with the nearest written baseline (the synthetic fixture is one line).
+    """
+    value = underline_evidence(pdf, state, sid, opened)
+    decorations = value['decorations']
+    rise = F(opened['semantic']['style']['rise'])
+    baselines = [F(y) - rise for y in value['text_tm_y']]
+    sides = []
+    for _, yu, _, _ in value['rectangles_pdf']:
+        baseline = min(baselines, key=lambda b: abs(b - F(yu))) if baselines else None
+        sides.append(None if baseline is None else 'above' if F(yu) > baseline else 'at_or_below')
+    provider = (opened['authority'] or {}).get('provider') or {}
+    return dict(value, kinds=None if decorations is None else [d['kind'] for d in decorations],
+                rectangle_sides=sides, provider_sha256=provider.get('sha256'))
+
+
 def mupdf_raster(pdf, page, png=None):
     import pymupdf
     with pymupdf.open(pdf) as document:
@@ -440,11 +480,17 @@ class Run:
         if args.font_b:
             self.inputs['font_b'] = Path(args.font_b)
         self.mode = getattr(args, 'mode', None) or 'text'
+        if self.mode == 'strikeout' and args.plan:
+            self.inputs['plan'] = Path(args.plan)  # strikeout mode also preserves an optional plan file
         self.result = dict(schema_version=SCHEMA_VERSION, executed_at=datetime.now(timezone.utc).isoformat(),
                            disclaimer=DISCLAIMER, mode=self.mode, validation_kind=VALIDATION_KIND[self.mode],
                            underline_runtime=self.mode == 'underline', stages=[], revisions={}, verdict=None)
         if self.mode == 'underline':
             self.result['underline_disclaimer'] = UNDERLINE_DISCLAIMER
+        if self.mode == 'strikeout':
+            # Additive keys only for the strikeout mode: text/underline results keep their schema exactly.
+            self.result['strikeout_runtime'] = True
+            self.result['strikeout_disclaimer'] = STRIKEOUT_DISCLAIMER
         self.revisions = {}  # name -> dict(pdf, sidecar)
 
     # bookkeeping
@@ -504,6 +550,9 @@ class Run:
         if self.mode == 'underline':
             evidence['underline'] = dict(underline_evidence(pdf, state, sid, opened),
                                          raster_mupdf_sha256=mupdf_raster(pdf, self.result['target']['page']))
+        if self.mode == 'strikeout':
+            evidence['decoration_evidence'] = dict(decoration_evidence(pdf, state, sid, opened),
+                                                   raster_mupdf_sha256=mupdf_raster(pdf, self.result['target']['page']))
         self.revisions[name] = dict(pdf=Path(pdf), sidecar=Path(sidecar), opened=opened, state=state)
         self.result['revisions'][name] = evidence
         return evidence
@@ -519,7 +568,7 @@ class Run:
         if load(result['sidecar'])['slots'][self.sid]['semantic']['payload'] != plan['next']:
             raise Failure(f'{name} semantic payload differs from the authorized plan')
         self.last_plan = plan
-        if self.mode == 'underline':
+        if self.mode in ('underline', 'strikeout'):
             evidence['transition'] = dict(parent=parent, classification=plan['classification'],
                                           version=plan['version'], next_version=plan.get('next_version'),
                                           authority_preserved=plan['next_authority'] == plan['authority'])
@@ -534,7 +583,8 @@ class Run:
                                      fonts={k: dict(filename=v.name, sha256=sha(v)) for k, v in self.inputs.items()
                                             if k.startswith('font_')})
         self.before = {k: sha(v) for k, v in self.inputs.items()}
-        plan = deepcopy(DEFAULT_UNDERLINE_PLAN if self.mode == 'underline' else DEFAULT_PLAN)
+        plan = deepcopy(dict(underline=DEFAULT_UNDERLINE_PLAN, strikeout=DEFAULT_STRIKEOUT_PLAN).get(self.mode,
+                                                                                                     DEFAULT_PLAN))
         if self.args.plan:
             plan.update(load(self.args.plan))
         self.plan = plan
@@ -1083,6 +1133,552 @@ class Run:
             ('raster_mupdf', self.u_raster_mupdf, ('publish_b', 'text_only_control')),
         ]
 
+    # --- strikeout mode (§31/§32, semantic version 4) -----------------------------------------------------------
+
+    def dl(self, name):
+        return self.result['revisions'][name]['decoration_evidence']
+
+    def s_text(self, name):
+        return self.revisions[name]['opened']['semantic']['text']
+
+    def s_sides(self, name):
+        """Physical side of every written rectangle against its kind (§31.6): strikeout strictly above the
+        serialized glyph baseline, underline at or below. One rectangle per decoration on this one-line text."""
+        d = self.dl(name)
+        kinds = d['kinds'] or []
+        if d['rectangle_count'] != len(kinds):
+            raise Failure(f'{name}: {d["rectangle_count"]} rectangles for {len(kinds)} decorations on a one-line text')
+        expected = ['above' if k == 'strikeout' else 'at_or_below' for k in kinds]
+        if d['rectangle_sides'] != expected:
+            raise Failure(f'{name}: rectangle sides {d["rectangle_sides"]} differ from the kinds {kinds}')
+        return dict(kinds=kinds, rectangle_sides=d['rectangle_sides'])
+
+    def s_build(self, name, parent, request, asset=None, *, expect, paint):
+        """Build one revision; check transition, version, observed paint transition, rectangle count and sides."""
+        details = self.build(name, parent, request, asset)
+        transition = details['revision']['transition']
+        if (transition['classification'], transition['next_version']) != expect:
+            raise Failure(f'{name}: transition {transition} differs from the expected {expect}')
+        if details['revision']['semantic']['version'] != expect[1]:
+            raise Failure(f'{name} reopens as semantic version {details["revision"]["semantic"]["version"]}')
+        before, after = bool(self.dl(parent)['paint_body_sha256']), bool(self.dl(name)['paint_body_sha256'])
+        observed = {(False, True): 'insert', (True, True): 'replace', (True, False): 'remove',
+                    (False, False): 'none'}[(before, after)]
+        if observed != paint:
+            raise Failure(f'{name}: observed paint transition {observed}, expected {paint}')
+        if self.dl(name)['rectangle_count'] != self.last_plan['next_decoration_rectangles']:
+            raise Failure(f'{name}: written rectangles differ from the authorized plan')
+        if self.dl(name)['decorations']:
+            self.s_sides(name)
+        return dict(details, paint_transition=observed)
+
+    def s_item(self, kind, spec):
+        return dict(kind=kind, start=spec['start'], end=spec['end'], start_affinity='outside', end_affinity='outside',
+                    recipe=deepcopy(spec['recipe']))
+
+    def s_text_baseline(self):
+        details = self.s_build('s00-text-baseline', 'confirmed', dict(operation='save'), expect=('D', 2), paint='none')
+        if 'decorations' in self.revisions['s00-text-baseline']['opened']['semantic']:
+            raise Failure('a version 2 revision carries decorations')
+        return details
+
+    def s_add(self):
+        item = self.s_item('strikeout', self.plan['strikeout_add'])
+        request = dict(operation='reinterpret', changes={'decorations': {'add': item}})
+        details = self.s_build('s01-add', 's00-text-baseline', request, expect=('E', 4), paint='insert')
+        transition = details['revision']['transition']
+        if transition['version'] != 2 or not transition['authority_preserved']:
+            raise Failure('the first strikeout add is not version 2 → 4 with unchanged current authority')
+        expected = [dict(item, id='current:0')]
+        new, base = self.dl('s01-add'), self.dl('s00-text-baseline')
+        if new['decorations'] != expected:
+            raise Failure('added strikeout differs from the canonical current:0 record')
+        if new['text_body_sha256'] != base['text_body_sha256']:
+            raise Failure('the text group changed when only a strikeout was added')
+        return dict(details, version_transition=[transition['version'], transition['next_version']],
+                    decorations=expected, text_group_unchanged=True, separation=self.s_separation('s01-add'))
+
+    def s_separation(self, name):
+        """Serialized upper edge vs serialized glyph baseline per strikeout rectangle (PDF y-up)."""
+        d = self.dl(name)
+        rise = F(self.revisions[name]['opened']['semantic']['style']['rise'])
+        rows = []
+        for (x0, yu, x1, yl), kind in zip(d['rectangles_pdf'], d['kinds']):
+            baseline = min((F(y) - rise for y in d['text_tm_y']), key=lambda b: abs(b - F(yu)))
+            rows.append(dict(kind=kind, upper=yu, lower=yl, baseline=str(baseline),
+                             upper_above_baseline=F(yu) > baseline, lower_above_baseline=F(yl) > baseline))
+        if not all(r['upper_above_baseline'] for r in rows if r['kind'] == 'strikeout'):
+            raise Failure(f'{name}: a strikeout is not physically above its baseline')
+        return rows
+
+    def s_noop(self, name, parent, *, require_pdf_bytes):
+        details = self.s_build(name, parent, dict(operation='save'), expect=('D', 4), paint='replace')
+        a, b = self.result['revisions'][parent], self.result['revisions'][name]
+        old, new = self.revisions[parent]['opened'], self.revisions[name]['opened']
+        keys = ('semantic_version', 'decorations', 'kinds', 'body_sha256', 'text_body_sha256', 'paint_body_sha256',
+                'rectangle_count', 'rectangles_pdf', 'rectangle_sides', 'raster_mupdf_sha256')
+        ops = lambda r: [(o.name, o.args) for o in self.body_operators(r)]  # noqa: E731
+        checks = dict(pdf_bytes_identical=a['pdf_sha256'] == b['pdf_sha256'],
+                      operator_sequence_identical=ops(parent) == ops(name),
+                      owner_block_identical=a['owner']['block_sha256'] == b['owner']['block_sha256'],
+                      semantic_identical=(old['semantic'], old['authority'], old['derived']) ==
+                      (new['semantic'], new['authority'], new['derived']),
+                      decoration_evidence_identical={k: a['decoration_evidence'][k] for k in keys} ==
+                      {k: b['decoration_evidence'][k] for k in keys})
+        required = [k for k in checks if k != 'pdf_bytes_identical' or require_pdf_bytes]
+        if not all(checks[k] for k in required):
+            raise Failure(f'{name} is not a canonical no-op: ' + canonical(checks))
+        return dict(details, **checks, pdf_bytes_required=require_pdf_bytes)
+
+    def body_operators(self, name):
+        from pdfeditor.content_stream import operators
+        revision = self.revisions[name]
+        return list(operators(owned_body(revision['pdf'], revision['state'], self.sid)))
+
+    def s_noop_1(self):
+        return self.s_noop('s02-noop-1', 's01-add', require_pdf_bytes=True)
+
+    def s_noop_2(self):
+        return self.s_noop('s03-noop-2', 's02-noop-1', require_pdf_bytes=True)
+
+    def s_edit(self):
+        from pdfeditor import semantic_paint as paint
+        edit = self.plan['strikeout_edit']
+        before = self.revisions['s03-noop-2']['opened']['semantic']
+        details = self.s_build('s04-edit-remap', 's03-noop-2', dict(operation='edit', **edit), expect=('D', 4),
+                               paint='replace')
+        # The production §27.7/§31.9 rule (kind-independent), never a harness-specific expectation.
+        expected = paint.remap(before['text'], before['decorations'], edit['start'], edit['end'], edit['text'],
+                               paint.MIXED_KINDS)
+        after = self.dl('s04-edit-remap')
+        if after['decorations'] != expected:
+            raise Failure('edit remap differs from the production rule: ' + canonical(after['decorations']))
+        if after['kinds'] != ['strikeout']:
+            raise Failure('edit changed the decoration kind')
+        return dict(details, edit=dict(edit, before_text=before['text'], after_text=self.s_text('s04-edit-remap')),
+                    before_ranges=self.dl('s03-noop-2')['ranges'], after_ranges=after['ranges'],
+                    before_rectangles=self.dl('s03-noop-2')['rectangles_pdf'], after_rectangles=after['rectangles_pdf'])
+
+    def s_recipe(self):
+        old = self.dl('s04-edit-remap')
+        d = old['decorations'][0]
+        request = dict(operation='reinterpret', changes={'decorations': {'recipe': dict(
+            id=d['id'], start=d['start'], end=d['end'], recipe=deepcopy(self.plan['strikeout_recipe']))}})
+        details = self.s_build('s05-recipe', 's04-edit-remap', request, expect=('E', 4), paint='replace')
+        new = self.dl('s05-recipe')
+        checks = dict(text_unchanged=self.s_text('s05-recipe') == self.s_text('s04-edit-remap'),
+                      text_group_unchanged=old['text_body_sha256'] == new['text_body_sha256'],
+                      horizontal_endpoints_unchanged=[r[0::2] for r in old['rectangles_pdf']] ==
+                      [r[0::2] for r in new['rectangles_pdf']],
+                      vertical_geometry_changed=[r[1::2] for r in old['rectangles_pdf']] !=
+                      [r[1::2] for r in new['rectangles_pdf']],
+                      kind_kept=new['kinds'] == ['strikeout'], version_4=new['semantic_version'] == 4,
+                      authority_preserved=details['revision']['transition']['authority_preserved'],
+                      recipe_applied=new['recipes'][0] == self.plan['strikeout_recipe'])
+        if not all(checks.values()):
+            raise Failure('recipe change: ' + canonical(checks))
+        return dict(details, **checks, separation=self.s_separation('s05-recipe'))
+
+    def s_em_check(self, name):
+        """Exact em geometry from the written bytes, per rectangle and its own decoration recipe (to 1e-6):
+        Tm y − upper = rise + size·offset (negative for a strikeout), upper − lower = size·thickness."""
+        d = self.dl(name)
+        style = self.revisions[name]['opened']['semantic']['style']
+        size, rise = F(style['font_size']), F(style['rise'])
+        tm = [F(v) for v in d['text_tm_y']]
+        errors = []
+        for (x0, yu, x1, yl), recipe in zip(d['rectangles_pdf'], d['recipes']):
+            offset = min(abs(t - F(yu) - rise - size * F(recipe['offset_em'])) for t in tm)
+            errors.append(max(offset, abs(F(yu) - F(yl) - size * F(recipe['thickness_em']))))
+        worst = max(errors, default=F(0))
+        if worst > F(2, 10**6):
+            raise Failure(f'{name}: em recipe geometry is off by {float(worst)} pt')
+        return float(worst)
+
+    def s_style(self):
+        details = self.s_build('s06-style', 's05-recipe', dict(operation='reinterpret',
+                               changes=deepcopy(self.plan['strikeout_style'])), expect=('E', 4), paint='replace')
+        old, new = self.dl('s05-recipe'), self.dl('s06-style')
+        if (old['ranges'], old['recipes'], old['kinds']) != (new['ranges'], new['recipes'], new['kinds']):
+            raise Failure('style change changed the decorations')
+        drift = sorted(k for k in details['diff'] if not k.startswith('style.'))
+        if drift:
+            raise Failure('style change drifted unrelated semantics: ' + ', '.join(drift))
+        return dict(details, decorations_preserved=True, em_geometry_max_error_pt=self.s_em_check('s06-style'),
+                    right_endpoints=[[r[2] for r in old['rectangles_pdf']], [r[2] for r in new['rectangles_pdf']]],
+                    separation=self.s_separation('s06-style'))
+
+    def s_font(self):
+        if 'font_b' not in self.inputs:
+            raise Skip('--font-b not supplied')
+        details = self.s_build('s07-font-b', 's06-style', dict(operation='reinterpret',
+                               changes=dict(font=sha(self.inputs['font_b']))), self.inputs['font_b'],
+                               expect=('E', 4), paint='replace')
+        old, new = self.dl('s06-style'), self.dl('s07-font-b')
+        checks = dict(provider_is_font_b=new['provider_sha256'] == sha(self.inputs['font_b']),
+                      generated_font_is_font_b=self.generated_font_sources('s07-font-b') == {sha(self.inputs['font_b'])},
+                      recipe_preserved=old['recipes'] == new['recipes'] and old['kinds'] == new['kinds'],
+                      range_preserved=old['ranges'] == new['ranges'],
+                      vertical_geometry_unchanged=[r[1::2] for r in old['rectangles_pdf']] ==
+                      [r[1::2] for r in new['rectangles_pdf']],
+                      endpoints_on_new_glyphs=all(r[0] in new['text_tm_x'] and F(r[2]) > F(r[0])
+                                                  for r in new['rectangles_pdf']),
+                      horizontal_endpoints_follow_font=[r[2] for r in old['rectangles_pdf']] !=
+                      [r[2] for r in new['rectangles_pdf']],
+                      version_4=new['semantic_version'] == 4)
+        if not all(checks.values()):
+            raise Failure('font change: ' + canonical(checks))
+        return dict(details, **checks, em_geometry_max_error_pt=self.s_em_check('s07-font-b'),
+                    right_endpoints=[[r[2] for r in old['rectangles_pdf']], [r[2] for r in new['rectangles_pdf']]])
+
+    def s_last(self):
+        return 's07-font-b' if 's07-font-b' in self.revisions else 's06-style'
+
+    def s_publish(self, name, parent):
+        details = self.publish(name, parent)
+        details.update(self.fresh(name))
+        a, b = self.result['revisions'][parent], self.result['revisions'][name]
+        da, db = a['decoration_evidence'], b['decoration_evidence']
+        checks = dict(pdf_identical=a['pdf_sha256'] == b['pdf_sha256'],
+                      sidecar_identical=a['sidecar_sha256'] == b['sidecar_sha256'],
+                      version_restored=(db['semantic_version'], b['semantic']['version']) == (da['semantic_version'],) * 2,
+                      decorations_restored=db['decorations'] == da['decorations'],
+                      owner_restored=a['owner'] == b['owner'],
+                      provider_restored=da['provider_sha256'] == db['provider_sha256'] is not None,
+                      canonical_body=b['semantic']['canonical'] is True and db['body_sha256'] == da['body_sha256'],
+                      candidate_published_raster_identical=da['raster_mupdf_sha256'] == db['raster_mupdf_sha256'])
+        if not all(checks.values()):
+            raise Failure(f'{name}: ' + canonical(checks))
+        return dict(details, **checks, version=db['semantic_version'], decorations=db['decorations'])
+
+    def s_publish_a(self):
+        details = self.s_publish('bundle-a', self.s_last())
+        self.bundle_a = {p.name: sha(p) for p in (self.art / 'bundle-a').iterdir()}
+        if self.dl('bundle-a')['kinds'] != ['strikeout'] or self.dl('bundle-a')['semantic_version'] != 4:
+            raise Failure('bundle A is not a version 4 strikeout-only state')
+        return details
+
+    def s_remove(self):
+        bundle = self.revisions['bundle-a']
+        if (bundle['pdf'].parent != self.art / 'bundle-a' or
+                sorted(p.name for p in bundle['pdf'].parent.iterdir()) != ['document.pdf', 'shared-flow.json']):
+            raise Failure('the removal does not start from the published bundle A')
+        d = self.dl('bundle-a')['decorations'][0]
+        request = dict(operation='reinterpret', changes={'decorations': {'remove': dict(
+            id=d['id'], start=d['start'], end=d['end'])}})
+        details = self.s_build('s08-remove-from-bundle-a', 'bundle-a', request, expect=('E', 4), paint='remove')
+        new = self.dl('s08-remove-from-bundle-a')
+        checks = dict(input=[self.rel(bundle['pdf']), self.rel(bundle['sidecar'])], decorations_empty=new['decorations'] == [],
+                      version_stays_4=new['semantic_version'] == 4, paint_group_absent=new['paint_body_sha256'] is None,
+                      text_group_unchanged=new['text_body_sha256'] == self.dl('bundle-a')['text_body_sha256'])
+        if not all(checks.values()):
+            raise Failure('removal: ' + canonical(checks))
+        return dict(details, **checks)
+
+    def s_underline_add(self):
+        item = self.s_item('underline', self.plan['mixed_underline'])
+        details = self.s_build('s09-underline-add', 's08-remove-from-bundle-a', dict(operation='reinterpret', changes={
+            'decorations': {'add': item}}), expect=('E', 4), paint='insert')
+        new = self.dl('s09-underline-add')
+        if new['decorations'] != [dict(item, id='current:0')] or new['semantic_version'] != 4:
+            raise Failure('the underline add on version 4 is not the canonical current:0 record in version 4')
+        return dict(details, decorations=new['decorations'], stays_version_4=True)
+
+    def s_mixed_add(self):
+        item = self.s_item('strikeout', self.plan['mixed_strikeout'])
+        details = self.s_build('s10-mixed-strikeout-add', 's09-underline-add', dict(operation='reinterpret', changes={
+            'decorations': {'add': item}}), expect=('E', 4), paint='replace')
+        old, new = self.dl('s09-underline-add'), self.dl('s10-mixed-strikeout-add')
+        expected = sorted([*old['decorations'], item], key=lambda d: (d['start'], d['end']))
+        expected = [dict({k: v for k, v in d.items() if k != 'id'}, id=f'current:{i}') for i, d in enumerate(expected)]
+        checks = dict(version_4=new['semantic_version'] == 4, one_decorations_list=new['decorations'] == expected,
+                      canonical_ids=[d['id'] for d in new['decorations']] == [f'current:{i}' for i in
+                                                                             range(len(expected))],
+                      one_paint_group=new['body_split'] == 'v3 body grammar' and new['paint_body_sha256'] is not None,
+                      paint_order_follows_decorations=new['kinds'] == [d['kind'] for d in expected],
+                      underline_below_strikeout_above=new['rectangle_sides'] == [
+                          'above' if d['kind'] == 'strikeout' else 'at_or_below' for d in expected],
+                      underline_rectangle_unchanged=new['rectangles_pdf'][[d['kind'] for d in expected].index(
+                          'underline')] == old['rectangles_pdf'][0],
+                      text_group_unchanged=new['text_body_sha256'] == old['text_body_sha256'])
+        if not all(checks.values()):
+            raise Failure('mixed state: ' + canonical(checks))
+        return dict(details, **checks, decorations=new['decorations'], rectangles=new['rectangles_pdf'],
+                    separation=self.s_separation('s10-mixed-strikeout-add'))
+
+    def s_mixed_noop(self):
+        return self.s_noop('s11-mixed-noop', 's10-mixed-strikeout-add', require_pdf_bytes=False)
+
+    def s_mixed_remove(self):
+        old = self.dl('s11-mixed-noop')
+        d = next(x for x in old['decorations'] if x['kind'] == 'strikeout')
+        details = self.s_build('s12-mixed-strikeout-remove', 's11-mixed-noop', dict(operation='reinterpret', changes={
+            'decorations': {'remove': dict(id=d['id'], start=d['start'], end=d['end'])}}), expect=('E', 4),
+            paint='replace')
+        new, before = self.dl('s12-mixed-strikeout-remove'), self.dl('s09-underline-add')
+        checks = dict(version_stays_4=new['semantic_version'] == 4, underline_only=new['kinds'] == ['underline'],
+                      underline_record_kept=new['decorations'] == before['decorations'],
+                      same_body_as_underline_only_state=new['body_sha256'] == before['body_sha256'],
+                      text_group_unchanged=new['text_body_sha256'] == old['text_body_sha256'])
+        if not all(checks.values()):
+            raise Failure('mixed strikeout removal: ' + canonical(checks))
+        return dict(details, **checks, removed=d)
+
+    def s_publish_b(self):
+        details = self.s_publish('bundle-b', 's12-mixed-strikeout-remove')
+        if {p.name: sha(p) for p in (self.art / 'bundle-a').iterdir()} != self.bundle_a:
+            raise Failure('bundle A changed after bundle B')
+        b = self.dl('bundle-b')
+        if (b['semantic_version'], b['kinds']) != (4, ['underline']):
+            raise Failure('bundle B is not a version 4 underline-only state')
+        return dict(details, bundle_a_unchanged=True, underline_only=True, no_strikeout=True)
+
+    def s_v3_control(self):
+        """Small route control from the same version 2 baseline: underline add (2 → 3), then a disjoint
+        strikeout add (3 → 4). The version 3 revision is never rewritten."""
+        first = self.s_item('underline', self.plan['control_underline'])
+        self.s_build('v3c-01-underline-add', 's00-text-baseline', dict(operation='reinterpret', changes={
+            'decorations': {'add': first}}), expect=('E', 3), paint='insert')
+        v3 = self.revisions['v3c-01-underline-add']
+        v3_files = (sha(v3['pdf']), sha(v3['sidecar']))
+        second = self.s_item('strikeout', self.plan['control_strikeout'])
+        details = self.s_build('v3c-02-strikeout-add', 'v3c-01-underline-add', dict(operation='reinterpret', changes={
+            'decorations': {'add': second}}), expect=('E', 4), paint='replace')
+        from pdfeditor import semantic_layout as semantic
+        a, b = self.dl('v3c-01-underline-add'), self.dl('v3c-02-strikeout-add')
+        reopened = semantic.open_semantic_flow(v3['pdf'], v3['sidecar'])
+        index = b['kinds'].index('underline')
+        checks = dict(v2_to_v3=self.result['revisions']['v3c-01-underline-add']['transition']['version'] == 2 and
+                      a['semantic_version'] == 3,
+                      v3_to_v4=details['revision']['transition']['version'] == 3 and b['semantic_version'] == 4,
+                      underline_exact=b['decorations'][index] == a['decorations'][0] and
+                      b['rectangles_pdf'][index] == a['rectangles_pdf'][0],
+                      mixed_canonical=self.result['revisions']['v3c-02-strikeout-add']['semantic']['canonical'] is True,
+                      mixed_sides=b['rectangle_sides'] == ['above' if k == 'strikeout' else 'at_or_below'
+                                                           for k in b['kinds']],
+                      no_v3_rewrite=(sha(v3['pdf']), sha(v3['sidecar'])) == v3_files and
+                      reopened['status'] == 'restored' and reopened['version'] == 3)
+        if not all(checks.values()):
+            raise Failure('v3 → v4 control: ' + canonical(checks))
+        return dict(details, **checks, decorations=b['decorations'], rectangles=b['rectangles_pdf'])
+
+    def s_negatives(self):
+        """Expected stale-pair refusals: publications A/B and the mixed/underline-only candidates."""
+        from pdfeditor import semantic_layout as semantic
+        pairs = [('A.pdf+B.json', 'bundle-a', 'bundle-b'), ('B.pdf+A.json', 'bundle-b', 'bundle-a'),
+                 ('mixed.pdf+underline-only.json', 's10-mixed-strikeout-add', 's12-mixed-strikeout-remove'),
+                 ('underline-only.pdf+mixed.json', 's12-mixed-strikeout-remove', 's10-mixed-strikeout-add')]
+        outcomes = {}
+        for label, pdf, sidecar in pairs:
+            opened = semantic.open_semantic_flow(self.revisions[pdf]['pdf'], self.revisions[sidecar]['sidecar'])
+            outcomes[label] = opened.get('reason', 'restored')
+            if opened['status'] == 'restored':
+                raise Failure(f'stale revision pair {label} was accepted')
+        return dict(expected_refusals=outcomes)
+
+    def s_refusals(self):
+        """Expected R refusals through the planner and the writer, without a write: physical separation,
+        recipe sign per kind, overlap across kinds. A PASS here means the runtime refused each one."""
+        from pdfeditor import semantic_layout as semantic
+        from pdfeditor import semantic_writer as writer
+        from pdfeditor.backend import PdfError
+        base, mixed = 's00-text-baseline', 's09-underline-add'
+        cases = [
+            ('strikeout separation (-1/1000000000 em)', base,
+             dict(kind='strikeout', start=0, end=3, recipe={'offset_em': '-1/1000000000', 'thickness_em': '1/20'})),
+            ('strikeout with a positive offset', base,
+             dict(kind='strikeout', start=0, end=3, recipe={'offset_em': '3/10', 'thickness_em': '1/20'})),
+            ('underline with a negative offset', base,
+             dict(kind='underline', start=0, end=3, recipe={'offset_em': '-13/120', 'thickness_em': '7/120'})),
+            ('overlap: strikeout on the underline range', mixed,
+             dict(kind='strikeout', start=0, end=1, recipe=dict(STRIKEOUT_RECIPE))),
+            ('overlap: strikeout nesting the underline', mixed,
+             dict(kind='strikeout', start=0, end=2, recipe=dict(STRIKEOUT_RECIPE))),
+        ]
+        outcomes = {}
+        for label, parent, spec in cases:
+            item = dict(spec, start_affinity='outside', end_affinity='outside')
+            request = dict(operation='reinterpret', changes={'decorations': {'add': item}})
+            source = self.revisions[parent]
+            before = (sha(source['pdf']), sha(source['sidecar']))
+            workspace = self.art / 'refusals' / f'case-{len(outcomes)}'
+            workspace.mkdir(parents=True)
+            reasons = []
+            for call in (lambda: semantic.plan_semantic_transition(source['pdf'], source['sidecar'], request),
+                         lambda: writer.build_semantic_candidate(source['pdf'], source['sidecar'], request,
+                                                                 workspace=workspace)):
+                try:
+                    call()
+                except PdfError as error:
+                    reasons.append(str(error))
+                else:
+                    raise Failure(f'{label} was accepted')
+            if any(workspace.iterdir()) or (sha(source['pdf']), sha(source['sidecar'])) != before:
+                raise Failure(f'{label}: a refused request wrote a candidate or changed its input')
+            outcomes[label] = dict(planner=reasons[0], writer=reasons[1], parent=parent)
+        return dict(expected_refusals=outcomes)
+
+    def s_tamper(self):
+        """Expected refusals on copies of bundle A (never on the bundles): two resealed semantic tampers, a
+        paint-geometry tamper of the PDF, and the same geometry tamper with the owner witness rebound in memory so
+        that the production island check reaches its canonical-body comparison."""
+        import pymupdf
+        from pdfeditor import semantic_layout as semantic
+        from pdfeditor import semantic_paint as paint
+        from pdfeditor import source_ownership as owned
+        from pdfeditor.backend import PdfError
+        from pdfeditor.content_stream import ContentPage
+        from pdfeditor.editable import _seal
+        bundle = self.revisions['bundle-a']
+        directory = self.art / 'tamper'
+        directory.mkdir()
+        outcomes = {}
+        for label, change in (('resealed kind change (strikeout → underline)', lambda d: d.update(kind='underline')),
+                              ('resealed recipe sign change', lambda d: d['recipe'].update(
+                                  offset_em=str(-F(d['recipe']['offset_em']))))):
+            state = deepcopy(bundle['state'])
+            state.pop('model_sha256')
+            change(state['slots'][self.sid]['semantic']['payload']['decorations'][0])
+            path = directory / ('semantic-' + str(len(outcomes)) + '.json')
+            path.write_text(json.dumps(_seal(state), indent=2) + '\n', encoding='utf-8')
+            opened = semantic.open_semantic_flow(bundle['pdf'], path)
+            outcomes[label] = opened.get('reason', 'restored')
+            if opened['status'] == 'restored':
+                raise Failure(f'{label} was accepted')
+        body = owned_body(bundle['pdf'], bundle['state'], self.sid)
+        x0, yu, x1, yl = self.dl('bundle-a')['rectangles_pdf'][0]
+        line = f'{x0} {yu} m {x1} {yu} l {x1} {yl} l {x0} {yl} l'.encode()
+        if body.count(line) != 1:
+            raise Failure('strikeout rectangle bytes not found once in the owned body')
+        tampered = directory / 'geometry-tamper.pdf'
+        from pdfeditor.semantic_island import decimal
+        lower = decimal(F(yl) - 1)  # the whole lower edge 1 pt down: still one axis-aligned rectangle
+        with pymupdf.open(bundle['pdf']) as document:
+            xref = document[self.result['target']['page'] - 1].get_contents()[-1]
+            data = document.xref_stream(xref)
+            moved = f'{x0} {yu} m {x1} {yu} l {x1} {lower} l {x0} {lower} l'.encode()
+            document.update_stream(xref, data.replace(line, moved, 1))
+            document.save(tampered)
+        opened = semantic.open_semantic_flow(tampered, bundle['sidecar'])
+        outcomes['paint geometry tamper'] = opened.get('reason', 'restored')
+        if opened['status'] == 'restored':
+            raise Failure('a paint geometry tamper was accepted')
+        # Rebound witness (in memory only): reach the production canonical-body comparison of `_island`.
+        value = deepcopy(bundle['state'])
+        slot = value['slots'][self.sid]
+        content = ContentPage(tampered, self.result['target']['page'])
+        try:  # the tampered body is still grammatical, so the witness can be rebound to it
+            span = owned.inventory(content.streams[-content.page.xref])[slot['source_output']['marker_id']]
+            slot['source_output']['current'] = owned.witness(content, slot['source_output'], span,
+                                                             **owned.injected(paint.body_grammar))
+        finally:
+            content.close()
+        payload, current = slot['semantic']['payload'], slot['semantic']['current']
+        font = semantic._asset(value, slot, payload, current)
+        try:
+            _, plan = semantic._derive(value, slot, payload, font)
+            semantic._island(tampered, value, self.sid, payload, plan, current, font, payload['decorations'],
+                             slot['semantic']['version'])
+        except PdfError as error:
+            outcomes['paint geometry tamper, owner witness rebound (production island check)'] = str(error)
+        else:
+            raise Failure('a rebound paint geometry tamper passed the production island check')
+        finally:
+            font.font.close()
+        return dict(expected_refusals=outcomes)
+
+    def s_control(self):
+        """Text-only control: the same edit/style/font transitions on version 2, never decorated."""
+        steps = [('control-01-edit', dict(operation='edit', **self.plan['strikeout_edit']), None),
+                 ('control-02-style', dict(operation='reinterpret', changes=deepcopy(self.plan['strikeout_style'])), None)]
+        if 's07-font-b' in self.revisions:
+            steps.append(('control-03-font-b', dict(operation='reinterpret', changes=dict(
+                font=sha(self.inputs['font_b']))), self.inputs['font_b']))
+        parent = 's00-text-baseline'
+        for name, request, asset in steps:
+            self.s_build(name, parent, request, asset, expect=(request['operation'] == 'edit' and 'D' or 'E', 2),
+                         paint='none')
+            parent = name
+        self.control = parent
+        removed = self.dl('s08-remove-from-bundle-a') if 's08-remove-from-bundle-a' in self.revisions else None
+        return dict(revisions=[s[0] for s in steps], final=parent, text_group_identical_to_removed=
+                    None if removed is None else removed['text_body_sha256'] == self.dl(parent)['text_body_sha256'])
+
+    S_RASTER = ['s00-text-baseline', 's01-add', 's02-noop-1', 's03-noop-2', 's04-edit-remap', 's05-recipe', 's06-style',
+                's07-font-b', 'bundle-a', 's08-remove-from-bundle-a', 's09-underline-add', 's10-mixed-strikeout-add',
+                's11-mixed-noop', 's12-mixed-strikeout-remove', 'bundle-b']
+
+    def s_raster_checks(self, d):
+        last = self.s_last()
+        return dict(text_only_differs_from_strikeout=d['s00-text-baseline'] != d['s01-add'],
+                    strikeout_equals_noop_1_and_2=d['s01-add'] == d['s02-noop-1'] == d['s03-noop-2'],
+                    recipe_differs_from_previous=d['s05-recipe'] != d['s04-edit-remap'] if 's05-recipe' in d else None,
+                    style_differs_from_previous=d['s06-style'] != d['s05-recipe'] if 's06-style' in d else None,
+                    font_differs_from_previous=d['s07-font-b'] != d['s06-style'] if 's07-font-b' in d else None,
+                    removed_equals_text_only_control=d['s08-remove-from-bundle-a'] == d[self.control],
+                    mixed_differs_from_underline_only=d['s10-mixed-strikeout-add'] != d['s09-underline-add'],
+                    mixed_differs_from_strikeout_only=d['s10-mixed-strikeout-add'] != d['bundle-a'],
+                    mixed_equals_mixed_noop=d['s11-mixed-noop'] == d['s10-mixed-strikeout-add'],
+                    strikeout_removal_returns_to_underline_only=d['s12-mixed-strikeout-remove'] == d['s09-underline-add'],
+                    candidate_a_equals_bundle_a=d[last] == d['bundle-a'],
+                    candidate_b_equals_bundle_b=d['s12-mixed-strikeout-remove'] == d['bundle-b'])
+
+    def s_raster_mupdf(self):
+        directory = self.art / 'raster'
+        directory.mkdir(parents=True, exist_ok=True)
+        page = self.result['target']['page']
+        names = [n for n in self.S_RASTER if n in self.revisions] + [self.control]
+        digests = {n: mupdf_raster(self.revisions[n]['pdf'], page, directory / f'mupdf-{n}.png') for n in names}
+        if any(digests[n] != self.dl(n)['raster_mupdf_sha256'] for n in names):
+            raise Failure('MuPDF raster is not deterministic between two renders')
+        checks = self.s_raster_checks(digests)
+        if not all(v for v in checks.values() if v is not None):
+            raise Failure('MuPDF raster expectations: ' + canonical(checks))
+        return dict(checks, dpi=144, sha256=digests, control=self.control)
+
+    def s_raster_poppler(self):
+        renderer = shutil.which('pdftoppm')
+        if renderer is None:
+            raise Skip('Poppler (pdftoppm) unavailable')
+        directory = self.art / 'raster'
+        directory.mkdir(parents=True, exist_ok=True)
+        page = str(self.result['target']['page'])
+        digests = {}
+        for name in [n for n in self.S_RASTER if n in self.revisions] + [self.control]:
+            prefix = directory / f'poppler-{name}'
+            subprocess.run([renderer, '-f', page, '-l', page, '-r', '144', '-png', '-singlefile',
+                            str(self.revisions[name]['pdf']), str(prefix)], check=True, capture_output=True, timeout=600)
+            digests[name] = sha(prefix.with_suffix('.png'))
+        # Identities only, plus the differences the contract guarantees in pixels (§32.6 Poppler list).
+        full = self.s_raster_checks(digests)
+        keys = ('text_only_differs_from_strikeout', 'strikeout_equals_noop_1_and_2', 'removed_equals_text_only_control',
+                'mixed_differs_from_underline_only', 'mixed_equals_mixed_noop',
+                'strikeout_removal_returns_to_underline_only', 'candidate_a_equals_bundle_a',
+                'candidate_b_equals_bundle_b')
+        checks = {k: full[k] for k in keys}
+        if not all(checks.values()):
+            raise Failure('Poppler raster expectations: ' + canonical(checks))
+        return dict(checks, dpi=144, sha256=digests)
+
+    def strikeout_lifecycle(self):
+        return [
+            ('text_baseline', self.s_text_baseline, ('confirm',)), ('add', self.s_add, ('text_baseline',)),
+            ('noop_1', self.s_noop_1, ('add',)), ('noop_2', self.s_noop_2, ('noop_1',)),
+            ('edit_remap', self.s_edit, ('noop_2',)), ('recipe', self.s_recipe, ('edit_remap',)),
+            ('style', self.s_style, ('recipe',)), ('font', self.s_font, ('style',)),
+            ('publish_a', self.s_publish_a, ('style',)), ('remove_from_bundle_a', self.s_remove, ('publish_a',)),
+            ('underline_add', self.s_underline_add, ('remove_from_bundle_a',)),
+            ('mixed_strikeout_add', self.s_mixed_add, ('underline_add',)),
+            ('mixed_noop', self.s_mixed_noop, ('mixed_strikeout_add',)),
+            ('mixed_strikeout_remove', self.s_mixed_remove, ('mixed_noop',)),
+            ('publish_b', self.s_publish_b, ('mixed_strikeout_remove',)),
+            ('v3_to_v4_control', self.s_v3_control, ('text_baseline',)),
+            ('negatives', self.s_negatives, ('publish_b',)), ('refusals', self.s_refusals, ('underline_add',)),
+            ('tamper', self.s_tamper, ('publish_a',)), ('continuity', self.continuity, ('publish_b',)),
+            ('text_only_control', self.s_control, ('text_baseline',)),
+            ('raster_mupdf', self.s_raster_mupdf, ('publish_b', 'text_only_control')),
+        ]
+
     def preserved(self):
         after = {k: sha(v) for k, v in self.inputs.items()}
         if after != self.before:
@@ -1100,6 +1696,9 @@ class Run:
         if self.mode == 'underline':
             lifecycle += self.underline_lifecycle()
             optional = ('raster_poppler', self.u_raster_poppler, ('publish_b', 'text_only_control'))
+        elif self.mode == 'strikeout':
+            lifecycle += self.strikeout_lifecycle()
+            optional = ('raster_poppler', self.s_raster_poppler, ('publish_b', 'text_only_control'))
         else:
             optional = ('raster_poppler', self.raster_poppler, ('publish_b',))
             lifecycle += self.text_lifecycle()
@@ -1185,8 +1784,12 @@ def report(result):
                          f'`{r["pdf_sha256"][:12]}` |')
     if result.get('mode') == 'underline':
         lines += underline_report(result, windows)
+    if result.get('mode') == 'strikeout':
+        lines += strikeout_report(result, windows)
     candidates = ('`u0N-*/`, `control-0N-*/` (semantic-candidate-*), `bundle-a/`, `bundle-b/`, `tamper/`, `raster/`'
                   if result.get('mode') == 'underline' else
+                  '`s0N-*/`, `s1N-*/`, `v3c-0N-*/`, `control-0N-*/` (semantic-candidate-*), `bundle-a/`, `bundle-b/`, '
+                  '`refusals/`, `tamper/`, `raster/`' if result.get('mode') == 'strikeout' else
                   'candidates (`candidate-*/semantic-candidate-*/`), `bundle-a/`, `bundle-b/`, `raster/`')
     lines += ['', '## Artifacts', '', '- `result.json` — machine-readable result (schema in the README)',
               f'- `artifacts/` — {candidates}',
@@ -1266,6 +1869,104 @@ def underline_report(result, windows):
     return lines
 
 
+def strikeout_report(result, windows):
+    """Strikeout section (mode strikeout): versions, decoration lifecycle with kinds and sides, checks, refusals."""
+    stages = {s['id']: s for s in result['stages']}
+    details = lambda name: stages.get(name, {}).get('details') or {}  # noqa: E731
+    flag = lambda value: ('yes' if value is True else '**no**' if value is False else 'n/a' if value is None  # noqa: E731
+                          else value)
+    lines = ['', '## Strikeout lifecycle', '', f'> {result.get("strikeout_disclaimer", STRIKEOUT_DISCLAIMER)}', '',
+             f'- **Validation kind:** `{result.get("validation_kind")}`; **strikeout runtime:** '
+             f'{result.get("strikeout_runtime")}; **Windows strikeout execution:** '
+             f'{"yes — this run executed on Windows" if windows else "NO — not Windows evidence"}',
+             f'- **Semantic version transition:** {details("add").get("version_transition")} (explicit strikeout '
+             f'`decorations.add`)', '']
+    lines += ['| Revision | Transition | Version | Decorations (kind range) | Rectangles (PDF x0 yu x1 yl) | Sides | '
+              'Paint group | Text group | MuPDF |', '|---|---|---|---|---|---|---|---|---|']
+    for name, r in result['revisions'].items():
+        d, t = r.get('decoration_evidence'), r.get('transition') or {}
+        if not d:
+            continue
+        decorations = ', '.join(f'{x["kind"]} [{x["start"]},{x["end"]})' for x in d['decorations'] or []) or (
+            '—' if d['decorations'] is None else 'none')
+        rects = '; '.join(' '.join(v) for v in d['rectangles_pdf']) or '—'
+        sides = ', '.join(s or '?' for s in d['rectangle_sides']) or '—'
+        lines.append(f'| `{name}` | {t.get("classification", "")} {t.get("version", "")}→{t.get("next_version", "")} | '
+                     f'{d["semantic_version"]} | {decorations} | {rects} | {sides} | '
+                     f'`{(d["paint_body_sha256"] or "none")[:12]}` | `{(d["text_body_sha256"] or "?")[:12]}` | '
+                     f'`{d["raster_mupdf_sha256"][:12]}` |')
+    noop_keys = ('pdf_bytes_identical', 'operator_sequence_identical', 'owner_block_identical', 'semantic_identical',
+                 'decoration_evidence_identical')
+    checks = [
+        ('no-op #1 / #2', [details('noop_1').get(k) and details('noop_2').get(k) for k in noop_keys],
+         'PDF bytes, operators, owner block, semantic state, decoration evidence identical'),
+        ('edit remap', [details('edit_remap').get('before_ranges'), details('edit_remap').get('after_ranges')],
+         'before → after ranges (production rule)'),
+        ('recipe', [details('recipe').get(k) for k in ('horizontal_endpoints_unchanged', 'vertical_geometry_changed',
+                                                      'kind_kept', 'authority_preserved')],
+         'x unchanged, y changed, kind kept, authority kept'),
+        ('style', [details('style').get('decorations_preserved'), details('style').get('em_geometry_max_error_pt')],
+         'decorations kept; max em geometry error (pt)'),
+        ('font', [details('font').get(k) for k in ('provider_is_font_b', 'generated_font_is_font_b', 'recipe_preserved',
+                                                    'range_preserved', 'vertical_geometry_unchanged',
+                                                    'horizontal_endpoints_follow_font')],
+         'provider B, generated font B, recipe/range kept, y unchanged, x follows B'),
+        ('publication A', [details('publish_a').get(k) for k in ('pdf_identical', 'sidecar_identical', 'fresh_process',
+                                                                 'version_restored', 'decorations_restored',
+                                                                 'owner_restored', 'provider_restored', 'canonical_body',
+                                                                 'candidate_published_raster_identical')],
+         'bytes, fresh process, version, decorations, owner, provider, canonical, raster'),
+        ('remove (from bundle A)', [details('remove_from_bundle_a').get(k) for k in
+                                    ('decorations_empty', 'version_stays_4', 'paint_group_absent', 'text_group_unchanged')],
+         'decorations [], version 4, no paint group, text group kept'),
+        ('mixed v4', [details('mixed_strikeout_add').get(k) for k in
+                      ('version_4', 'one_decorations_list', 'canonical_ids', 'one_paint_group',
+                       'paint_order_follows_decorations', 'underline_below_strikeout_above')],
+         'v4, one list, current:i, one group, order, underline below / strikeout above'),
+        ('mixed no-op', [details('mixed_noop').get(k) for k in noop_keys], 'as no-op #1/#2 (PDF bytes recorded)'),
+        ('mixed strikeout remove', [details('mixed_strikeout_remove').get(k) for k in
+                                    ('version_stays_4', 'underline_only', 'same_body_as_underline_only_state')],
+         'v4, underline only, body equals the underline-only state'),
+        ('publication B', [details('publish_b').get(k) for k in ('pdf_identical', 'sidecar_identical', 'fresh_process',
+                                                                 'bundle_a_unchanged', 'underline_only')],
+         'bytes, fresh process, bundle A immutable, underline only'),
+        ('v3 → v4 control', [details('v3_to_v4_control').get(k) for k in
+                             ('v2_to_v3', 'v3_to_v4', 'underline_exact', 'mixed_canonical', 'no_v3_rewrite')],
+         'v2→v3, v3→v4, underline exact, canonical, v3 not rewritten'),
+    ]
+    lines += ['', '| Check | Result | Meaning |', '|---|---|---|']
+    for label, values, meaning in checks:
+        text = ', '.join(str(flag(v)) for v in values).replace('|', '\\|')
+        lines.append(f'| {label} | {text[:300]} | {meaning} |')
+    for stage, renderer in (('raster_mupdf', 'MuPDF'), ('raster_poppler', 'Poppler')):
+        entry = stages.get(stage)
+        if not entry:
+            continue
+        if entry['status'] == SKIPPED:
+            lines.append(f'| {renderer} 144 dpi | SKIPPED | {entry["error"]} |')
+            continue
+        values = {k: v for k, v in (entry['details'] or {}).items() if isinstance(v, bool) or v is None}
+        lines.append(f'| {renderer} 144 dpi | {", ".join(f"{k}: {flag(v)}" for k, v in values.items())} | '
+                     f'{entry["status"]} |')
+    separation = details('add').get('separation') or []
+    if separation:
+        lines += ['', 'Physical separation (§31.6, PDF y-up, serialized): ' + '; '.join(
+            f'{r["kind"]} upper {r["upper"]} > baseline {r["baseline"]}: {flag(r["upper_above_baseline"])}'
+            for r in separation)]
+    refusals = {**(details('negatives').get('expected_refusals') or {}), **(details('tamper').get('expected_refusals') or {})}
+    rules = details('refusals').get('expected_refusals') or {}
+    if refusals or rules:
+        lines += ['', 'Expected refusals (the runtime must refuse each):', '']
+        lines += [f'- {label}: `{reason}`' for label, reason in refusals.items()]
+        lines += [f'- {label} (planner): `{r["planner"]}`' for label, r in rules.items()]
+    final = next((r['decoration_evidence'] for n, r in reversed(list(result['revisions'].items()))
+                  if n.startswith('bundle-') and r.get('decoration_evidence')), None)
+    if final:
+        lines += ['', f'- **Final state (last bundle):** semantic version {final["semantic_version"]}, decorations '
+                  f'{final["decorations"]}, paint group {"absent" if final["paint_body_sha256"] is None else "present"}']
+    return lines
+
+
 def usage(message):
     print('error: ' + message, file=sys.stderr)
     return EXIT['USAGE']
@@ -1295,9 +1996,11 @@ def main(argv=None):
     run.add_argument('--font-b')
     run.add_argument('--output-dir', required=True)
     run.add_argument('--slot-id')
-    run.add_argument('--plan', help='JSON overriding edit/style/next_edit (text) or underline_* (underline) requests')
-    run.add_argument('--mode', choices=('text', 'underline'), default='text',
-                     help='text (default): the §24 text-only lifecycle; underline: the §28 underline lifecycle')
+    run.add_argument('--plan', help='JSON overriding edit/style/next_edit (text), underline_* (underline) or '
+                                    'strikeout_*/mixed_*/control_* (strikeout) requests')
+    run.add_argument('--mode', choices=('text', 'underline', 'strikeout'), default='text',
+                     help='text (default): the §24 text-only lifecycle; underline: the §28 underline lifecycle; '
+                          'strikeout: the §32 strikeout (semantic version 4) lifecycle')
     args = parser.parse_args(argv)
     if args.command == 'prepare-synthetic':
         return prepare_synthetic(args)

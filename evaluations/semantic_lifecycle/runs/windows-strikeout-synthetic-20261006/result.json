@@ -1,0 +1,5342 @@
+{
+  "schema_version": 1,
+  "executed_at": "2026-10-06T14:47:40.862667+00:00",
+  "disclaimer": "Windows execution has not been performed by the PR that added this harness. This report is evidence only for the execution it describes.",
+  "mode": "strikeout",
+  "validation_kind": "semantic-strikeout-lifecycle",
+  "underline_runtime": false,
+  "stages": [
+    {
+      "id": "preflight",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "plan": {
+          "strikeout_add": {
+            "start": 0,
+            "end": 3,
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            }
+          },
+          "strikeout_edit": {
+            "start": 1,
+            "end": 1,
+            "text": "A"
+          },
+          "strikeout_recipe": {
+            "offset_em": "-1/4",
+            "thickness_em": "1/20"
+          },
+          "strikeout_style": {
+            "font_size": "13",
+            "tracking": "1/4"
+          },
+          "mixed_underline": {
+            "start": 0,
+            "end": 1,
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            }
+          },
+          "mixed_strikeout": {
+            "start": 3,
+            "end": 4,
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            }
+          },
+          "control_underline": {
+            "start": 0,
+            "end": 1,
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            }
+          },
+          "control_strikeout": {
+            "start": 2,
+            "end": 3,
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "baseline",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "schema": "pdfengine-shared-flow-2",
+        "creation_evidence": {
+          "style_registry": "34f32f98f750ff2a12f8556e71c71f98f1c1c0b82c3995638d21c51f0255fd27",
+          "source_observations": "e797f91464929257f0e72d73c2e1899a368b1e0e73aa8f1ee7d6fa80eb78fd12",
+          "source_provider": "323f32bd020e82d5f29c648493302e0ff6f689b2f6b36c01bde2f34c92e32608",
+          "source_model_sha256": "d31000d6dc5bc97884457dd000c1db78923e5bb768b2d09752906e82b527ba6f",
+          "source_snapshot_sha256": "ce80ebc3a20a7f7e23d09d4fbed502a41377affd44759d14148217293065c573",
+          "created_from": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+          "contract_sha256": "9296c07e01ba3ad88619292d0827cfbb06cde25a3263b6491d3011a94b9d4beb"
+        }
+      }
+    },
+    {
+      "id": "confirm",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "mode": "confirmed from shared-flow-2 (statement = source-confirmed registry values)",
+        "revision": {
+          "pdf": "document.pdf",
+          "sidecar": "artifacts/confirmed/shared-flow.json",
+          "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+          "sidecar_sha256": "278cd4353a1f8bdbfa45384aca5ead347411ff476808f451c390ac30f92c3d33",
+          "pdf_size": 3756,
+          "sidecar_size": 39439,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "93757518a1c005eff9c6c8e447e0dff69060add99c7753b9f4a58a78cf53d1fd",
+            "block_sha256": "e0938be9022945d3d550fe26197606aa64e27e16fb23085b661a95649efe2501",
+            "range": [
+              45,
+              478
+            ],
+            "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 2,
+            "canonical": false
+          },
+          "island": {
+            "sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+            "size": 238,
+            "operators": 28
+          },
+          "decoration_evidence": {
+            "semantic_version": 2,
+            "decorations": null,
+            "decoration_count": null,
+            "ranges": null,
+            "recipes": null,
+            "rectangle_count": 0,
+            "rectangles_pdf": [],
+            "paint_fill": null,
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.0175781",
+              "28.0214844",
+              "31.3554688"
+            ],
+            "body_sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+            "paint_body_sha256": null,
+            "paint_body_size": 0,
+            "kinds": null,
+            "rectangle_sides": [],
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "raster_mupdf_sha256": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8"
+          }
+        }
+      }
+    },
+    {
+      "id": "text_baseline",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "save"
+        },
+        "classification": "D",
+        "diff": {},
+        "revision": {
+          "pdf": "artifacts/s00-text-baseline/semantic-candidate-181t31lk/document.pdf",
+          "sidecar": "artifacts/s00-text-baseline/semantic-candidate-181t31lk/shared-flow.json",
+          "pdf_sha256": "cee22a4b2a24d02b7022d2ffb8bc2d2729ac98e0de0c43044ba8cae5da79fdae",
+          "sidecar_sha256": "b30a0ca0d4be059b748c03ad70a4451738447ea0bf27b68b495b044d7d671c58",
+          "pdf_size": 3914,
+          "sidecar_size": 33121,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "918ebeb99b974bd2c0ab79878824342c265e9f58419738d9492b322f15cf249d",
+            "block_sha256": "1f293abe0c57d197890317683a23f0ed524b9001400ec68654e49651239757d2",
+            "range": [
+              45,
+              390
+            ],
+            "pdf_sha256": "cee22a4b2a24d02b7022d2ffb8bc2d2729ac98e0de0c43044ba8cae5da79fdae"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 2,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "size": 150,
+            "operators": 16
+          },
+          "decoration_evidence": {
+            "semantic_version": 2,
+            "decorations": null,
+            "decoration_count": null,
+            "ranges": null,
+            "recipes": null,
+            "rectangle_count": 0,
+            "rectangles_pdf": [],
+            "paint_fill": null,
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "31.355469"
+            ],
+            "body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "paint_body_sha256": null,
+            "paint_body_size": 0,
+            "kinds": null,
+            "rectangle_sides": [],
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "raster_mupdf_sha256": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8"
+          },
+          "transition": {
+            "parent": "confirmed",
+            "classification": "D",
+            "version": 2,
+            "next_version": 2,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "none"
+      }
+    },
+    {
+      "id": "add",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "add": {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                }
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": null,
+            "after": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ]
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/s01-add/semantic-candidate-j_8_kwmf/document.pdf",
+          "sidecar": "artifacts/s01-add/semantic-candidate-j_8_kwmf/shared-flow.json",
+          "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a",
+          "sidecar_sha256": "bac0d8c6547c663368cdc6cda22e686f2f00510d50cdeecc13bd5c8a91460202",
+          "pdf_size": 3922,
+          "sidecar_size": 50210,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "8365f99e9ed2b25e578fdc2e7324c15bd779e1a6a6759e01ff821aed616d0f09",
+            "block_sha256": "768fbb08501721da34f6e777a9973d9cfb8b0b3d03310dd4b8d00db1545ac7ea",
+            "range": [
+              45,
+              466
+            ],
+            "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+            "size": 226,
+            "operators": 25
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                3
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "-3/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "63.6",
+                "39.359375",
+                "63"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "31.355469"
+            ],
+            "body_sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "paint_body_sha256": "ae5329bfe172a4dccf0035ec073730dc6abc88979ed1df4449ae925aea0044d7",
+            "paint_body_size": 76,
+            "kinds": [
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "above"
+            ],
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "raster_mupdf_sha256": "2f15ae5c42626aff68c9a2bd1f9144d37526e04934fb12bc84a23bbe34eda52a"
+          },
+          "transition": {
+            "parent": "s00-text-baseline",
+            "classification": "E",
+            "version": 2,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "insert",
+        "version_transition": [
+          2,
+          4
+        ],
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "text_group_unchanged": true,
+        "separation": [
+          {
+            "kind": "strikeout",
+            "upper": "63.6",
+            "lower": "63",
+            "baseline": "60",
+            "upper_above_baseline": true,
+            "lower_above_baseline": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "noop_1",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "save"
+        },
+        "classification": "D",
+        "diff": {},
+        "revision": {
+          "pdf": "artifacts/s02-noop-1/semantic-candidate-paz2hdtg/document.pdf",
+          "sidecar": "artifacts/s02-noop-1/semantic-candidate-paz2hdtg/shared-flow.json",
+          "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a",
+          "sidecar_sha256": "24be8e5442d4120ae6392b73eed09784292fa71b249f731981b67fa25cd6f513",
+          "pdf_size": 3922,
+          "sidecar_size": 50210,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "8365f99e9ed2b25e578fdc2e7324c15bd779e1a6a6759e01ff821aed616d0f09",
+            "block_sha256": "768fbb08501721da34f6e777a9973d9cfb8b0b3d03310dd4b8d00db1545ac7ea",
+            "range": [
+              45,
+              466
+            ],
+            "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+            "size": 226,
+            "operators": 25
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                3
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "-3/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "63.6",
+                "39.359375",
+                "63"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "31.355469"
+            ],
+            "body_sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "paint_body_sha256": "ae5329bfe172a4dccf0035ec073730dc6abc88979ed1df4449ae925aea0044d7",
+            "paint_body_size": 76,
+            "kinds": [
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "above"
+            ],
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "raster_mupdf_sha256": "2f15ae5c42626aff68c9a2bd1f9144d37526e04934fb12bc84a23bbe34eda52a"
+          },
+          "transition": {
+            "parent": "s01-add",
+            "classification": "D",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "pdf_bytes_identical": true,
+        "operator_sequence_identical": true,
+        "owner_block_identical": true,
+        "semantic_identical": true,
+        "decoration_evidence_identical": true,
+        "pdf_bytes_required": true
+      }
+    },
+    {
+      "id": "noop_2",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "save"
+        },
+        "classification": "D",
+        "diff": {},
+        "revision": {
+          "pdf": "artifacts/s03-noop-2/semantic-candidate-lo6_s2uc/document.pdf",
+          "sidecar": "artifacts/s03-noop-2/semantic-candidate-lo6_s2uc/shared-flow.json",
+          "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a",
+          "sidecar_sha256": "1e3d632d671959b58e6b03f0049c28268c58a3e96c4a5c0ff218ac352be8bda2",
+          "pdf_size": 3922,
+          "sidecar_size": 50210,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "8365f99e9ed2b25e578fdc2e7324c15bd779e1a6a6759e01ff821aed616d0f09",
+            "block_sha256": "768fbb08501721da34f6e777a9973d9cfb8b0b3d03310dd4b8d00db1545ac7ea",
+            "range": [
+              45,
+              466
+            ],
+            "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+            "size": 226,
+            "operators": 25
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                3
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "-3/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "63.6",
+                "39.359375",
+                "63"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "31.355469"
+            ],
+            "body_sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "paint_body_sha256": "ae5329bfe172a4dccf0035ec073730dc6abc88979ed1df4449ae925aea0044d7",
+            "paint_body_size": 76,
+            "kinds": [
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "above"
+            ],
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "raster_mupdf_sha256": "2f15ae5c42626aff68c9a2bd1f9144d37526e04934fb12bc84a23bbe34eda52a"
+          },
+          "transition": {
+            "parent": "s02-noop-1",
+            "classification": "D",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "pdf_bytes_identical": true,
+        "operator_sequence_identical": true,
+        "owner_block_identical": true,
+        "semantic_identical": true,
+        "decoration_evidence_identical": true,
+        "pdf_bytes_required": true
+      }
+    },
+    {
+      "id": "edit_remap",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "edit",
+          "start": 1,
+          "end": 1,
+          "text": "A"
+        },
+        "classification": "D",
+        "diff": {
+          "decorations": {
+            "before": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "after": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ]
+          },
+          "text": {
+            "before": "A B",
+            "after": "AA B"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/s04-edit-remap/semantic-candidate-dmj9utr5/document.pdf",
+          "sidecar": "artifacts/s04-edit-remap/semantic-candidate-dmj9utr5/shared-flow.json",
+          "pdf_sha256": "96d7fa51008cec43a1ac91a9cab058b3678aff8b83ad52d263fb06fedc04a9b3",
+          "sidecar_sha256": "735ee45ed79e2434babd7f2cc736d44309ff66f3d94c4fc41e15434995418ab3",
+          "pdf_size": 3930,
+          "sidecar_size": 52464,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "11b09d600a9a2876f1493f9b2699440d4e20da83e95a06e6f149642d55db64c9",
+            "block_sha256": "a49fb2dd149714b8d2ad5461a452e996a9f1e4f83a8f68fe90a60826eaea4a6c",
+            "range": [
+              45,
+              500
+            ],
+            "pdf_sha256": "96d7fa51008cec43a1ac91a9cab058b3678aff8b83ad52d263fb06fedc04a9b3"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "e1569f5a687e1a233bd49538edb5053087596864232b3dc94371ab5f5ba10bd5",
+            "size": 260,
+            "operators": 27
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "-3/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "63.6",
+                "47.363281",
+                "63"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "36.025391",
+              "39.359375"
+            ],
+            "body_sha256": "e1569f5a687e1a233bd49538edb5053087596864232b3dc94371ab5f5ba10bd5",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+            "paint_body_sha256": "00fc7ccbee626bc6e8376f5d1a46cdba8f468c7f010dcee89db3bba6732e4c9f",
+            "paint_body_size": 76,
+            "kinds": [
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "above"
+            ],
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "raster_mupdf_sha256": "f647f09853bf7cd6a1087e8bfdc6f02ddd102cb5ac90e30d1b6f97ebce4303c1"
+          },
+          "transition": {
+            "parent": "s03-noop-2",
+            "classification": "D",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "edit": {
+          "start": 1,
+          "end": 1,
+          "text": "A",
+          "before_text": "A B",
+          "after_text": "AA B"
+        },
+        "before_ranges": [
+          [
+            0,
+            3
+          ]
+        ],
+        "after_ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "before_rectangles": [
+          [
+            "20.017578",
+            "63.6",
+            "39.359375",
+            "63"
+          ]
+        ],
+        "after_rectangles": [
+          [
+            "20.017578",
+            "63.6",
+            "47.363281",
+            "63"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "recipe",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "recipe": {
+                "id": "current:0",
+                "start": 0,
+                "end": 4,
+                "recipe": {
+                  "offset_em": "-1/4",
+                  "thickness_em": "1/20"
+                }
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "after": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-1/4",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ]
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/s05-recipe/semantic-candidate-1_54xd10/document.pdf",
+          "sidecar": "artifacts/s05-recipe/semantic-candidate-1_54xd10/shared-flow.json",
+          "pdf_sha256": "95eb92533eb97f8c650cdb7262b2e0b78a90fc7e127128eef96c9d8c80162ce3",
+          "sidecar_sha256": "f33fafb77f9d7dc7a35f945d165d75c0e23226a762f3c4763101d9a79536a4af",
+          "pdf_size": 3930,
+          "sidecar_size": 52463,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "fc845985034565805b42dd748c5c193b7de4c290c4e74b3c53996c8dc38949a4",
+            "block_sha256": "344f4f9f33ff36ff4e4fc105ae2a19c632807c478b7342c0ee14001390042b12",
+            "range": [
+              45,
+              500
+            ],
+            "pdf_sha256": "95eb92533eb97f8c650cdb7262b2e0b78a90fc7e127128eef96c9d8c80162ce3"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "de5b9655e2c0ee84fc29e21563af7afe907e5fa135744cccfd06606fb653a575",
+            "size": 260,
+            "operators": 27
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-1/4",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "-1/4",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "63",
+                "47.363281",
+                "62.4"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "36.025391",
+              "39.359375"
+            ],
+            "body_sha256": "de5b9655e2c0ee84fc29e21563af7afe907e5fa135744cccfd06606fb653a575",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+            "paint_body_sha256": "ffb20cfdf7e7aeaecee26aa63120f528dac96afb8289d46477b4897ab70442db",
+            "paint_body_size": 76,
+            "kinds": [
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "above"
+            ],
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "raster_mupdf_sha256": "7c59a22fbf3cfd9a261d99317abd452050bf6b6ea3609301bde2ad6db55f7875"
+          },
+          "transition": {
+            "parent": "s04-edit-remap",
+            "classification": "E",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "text_unchanged": true,
+        "text_group_unchanged": true,
+        "horizontal_endpoints_unchanged": true,
+        "vertical_geometry_changed": true,
+        "kind_kept": true,
+        "version_4": true,
+        "authority_preserved": true,
+        "recipe_applied": true,
+        "separation": [
+          {
+            "kind": "strikeout",
+            "upper": "63",
+            "lower": "62.4",
+            "baseline": "60",
+            "upper_above_baseline": true,
+            "lower_above_baseline": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "style",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "font_size": "13",
+            "tracking": "1/4"
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "style.font_size": {
+            "before": "12",
+            "after": "13"
+          },
+          "style.tracking": {
+            "before": "0",
+            "after": "1/4"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/s06-style/semantic-candidate-_ufolteb/document.pdf",
+          "sidecar": "artifacts/s06-style/semantic-candidate-_ufolteb/shared-flow.json",
+          "pdf_sha256": "b68cf6ae63f0cfe6a5a9370d2d0e0c364f927a380e93391eef74dd7253cb3ffb",
+          "sidecar_sha256": "57491f3b9bd1dbc4e650fdfde2ac88d43fd5d6c8c72f6e35c8ef5284f6c4ba88",
+          "pdf_size": 3936,
+          "sidecar_size": 52937,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "5e2461640bba8fcb6e845e22348b3f05d991cf561097be0c7b6d4c5b9a86656c",
+            "block_sha256": "f9e023b01487d98a36efc801c436cd2b5124cafd8592ca84f8bfecbf5a4e331f",
+            "range": [
+              45,
+              508
+            ],
+            "pdf_sha256": "b68cf6ae63f0cfe6a5a9370d2d0e0c364f927a380e93391eef74dd7253cb3ffb"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "461c46b7b05e537b75fae18fa5b9d3a0979f5984a6bc3447b9501d5d874f7f23",
+            "size": 268,
+            "operators": 27
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-1/4",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "-1/4",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20.019043",
+                "63.25",
+                "50.393555",
+                "62.6"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.019043",
+              "28.939941",
+              "37.86084",
+              "41.722656"
+            ],
+            "body_sha256": "461c46b7b05e537b75fae18fa5b9d3a0979f5984a6bc3447b9501d5d874f7f23",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+            "paint_body_sha256": "81328d2a5f073417cfc8d01c5ee936fdd5ec26d90aecc3ebf5a6390b623fcf91",
+            "paint_body_size": 82,
+            "kinds": [
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "above"
+            ],
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "raster_mupdf_sha256": "10ecfe1b8569a4d31af92314762aaf86607c50e4d9b76ff03b19d840257c3442"
+          },
+          "transition": {
+            "parent": "s05-recipe",
+            "classification": "E",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": false
+          }
+        },
+        "paint_transition": "replace",
+        "decorations_preserved": true,
+        "em_geometry_max_error_pt": 0.0,
+        "right_endpoints": [
+          [
+            "47.363281"
+          ],
+          [
+            "50.393555"
+          ]
+        ],
+        "separation": [
+          {
+            "kind": "strikeout",
+            "upper": "63.25",
+            "lower": "62.6",
+            "baseline": "60",
+            "upper_above_baseline": true,
+            "lower_above_baseline": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "font",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "font": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "font.sha": {
+            "before": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "after": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/s07-font-b/semantic-candidate-dbfgw_w9/document.pdf",
+          "sidecar": "artifacts/s07-font-b/semantic-candidate-dbfgw_w9/shared-flow.json",
+          "pdf_sha256": "76307fcaa53f72a894cda815c8ce08bb9f8dbe8e87b95cf202d79c70e50b5cb5",
+          "sidecar_sha256": "55f71fdb888f9a45152dbdd0e64d2112a8bd6ed045b2f1ebd14d8b8483fc41d6",
+          "pdf_size": 4058,
+          "sidecar_size": 52869,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "09eafa527d96a2e76da921d2f421b8921bb45772c569bedf4e697ef1a97ef29d",
+            "block_sha256": "39001978cc89b24f94f69156583011de3260f48d6ef3c67beaab7bc9714a01fe",
+            "range": [
+              45,
+              488
+            ],
+            "pdf_sha256": "76307fcaa53f72a894cda815c8ce08bb9f8dbe8e87b95cf202d79c70e50b5cb5"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "709ac06459d2efec407bf263f4d21a6aabb7bfa9af06314c37621184bc71cc7a",
+            "size": 248,
+            "operators": 27
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-1/4",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "-1/4",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20",
+                "63.25",
+                "51.447266",
+                "62.6"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "709ac06459d2efec407bf263f4d21a6aabb7bfa9af06314c37621184bc71cc7a",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": "fb60ed8e46752e993e531d815a0bf188128b2a2b1c582831e1e1fa0cba588de0",
+            "paint_body_size": 68,
+            "kinds": [
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "above"
+            ],
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "raster_mupdf_sha256": "65dbbb4bfbfb99486e661468fdb280c5f16e651268446c8d37315e6b261a6d26"
+          },
+          "transition": {
+            "parent": "s06-style",
+            "classification": "E",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": false
+          }
+        },
+        "paint_transition": "replace",
+        "provider_is_font_b": true,
+        "generated_font_is_font_b": true,
+        "recipe_preserved": true,
+        "range_preserved": true,
+        "vertical_geometry_unchanged": true,
+        "endpoints_on_new_glyphs": true,
+        "horizontal_endpoints_follow_font": true,
+        "version_4": true,
+        "em_geometry_max_error_pt": 0.0,
+        "right_endpoints": [
+          [
+            "50.393555"
+          ],
+          [
+            "51.447266"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "publish_a",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "candidate": "s07-font-b",
+        "directory": "artifacts/bundle-a",
+        "artifacts": [
+          "document.pdf",
+          "shared-flow.json"
+        ],
+        "staged_and_public_reopen": "restored",
+        "candidate_bytes_identical": true,
+        "revision": {
+          "pdf": "artifacts/bundle-a/document.pdf",
+          "sidecar": "artifacts/bundle-a/shared-flow.json",
+          "pdf_sha256": "76307fcaa53f72a894cda815c8ce08bb9f8dbe8e87b95cf202d79c70e50b5cb5",
+          "sidecar_sha256": "55f71fdb888f9a45152dbdd0e64d2112a8bd6ed045b2f1ebd14d8b8483fc41d6",
+          "pdf_size": 4058,
+          "sidecar_size": 52869,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "09eafa527d96a2e76da921d2f421b8921bb45772c569bedf4e697ef1a97ef29d",
+            "block_sha256": "39001978cc89b24f94f69156583011de3260f48d6ef3c67beaab7bc9714a01fe",
+            "range": [
+              45,
+              488
+            ],
+            "pdf_sha256": "76307fcaa53f72a894cda815c8ce08bb9f8dbe8e87b95cf202d79c70e50b5cb5"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "709ac06459d2efec407bf263f4d21a6aabb7bfa9af06314c37621184bc71cc7a",
+            "size": 248,
+            "operators": 27
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-1/4",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "-1/4",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20",
+                "63.25",
+                "51.447266",
+                "62.6"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "709ac06459d2efec407bf263f4d21a6aabb7bfa9af06314c37621184bc71cc7a",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": "fb60ed8e46752e993e531d815a0bf188128b2a2b1c582831e1e1fa0cba588de0",
+            "paint_body_size": 68,
+            "kinds": [
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "above"
+            ],
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "raster_mupdf_sha256": "65dbbb4bfbfb99486e661468fdb280c5f16e651268446c8d37315e6b261a6d26"
+          }
+        },
+        "fresh_process": "restored",
+        "pdf_identical": true,
+        "sidecar_identical": true,
+        "version_restored": true,
+        "decorations_restored": true,
+        "owner_restored": true,
+        "provider_restored": true,
+        "canonical_body": true,
+        "candidate_published_raster_identical": true,
+        "version": 4,
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-1/4",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ]
+      }
+    },
+    {
+      "id": "remove_from_bundle_a",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "remove": {
+                "id": "current:0",
+                "start": 0,
+                "end": 4
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": [
+              {
+                "kind": "strikeout",
+                "start": 0,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-1/4",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:0"
+              }
+            ],
+            "after": []
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/s08-remove-from-bundle-a/semantic-candidate-n8tf65_k/document.pdf",
+          "sidecar": "artifacts/s08-remove-from-bundle-a/semantic-candidate-n8tf65_k/shared-flow.json",
+          "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd",
+          "sidecar_sha256": "b5eed127a2d0590807a8f08d65d35d6b56465bd47cb7ab753a838aae0cab8331",
+          "pdf_size": 4009,
+          "sidecar_size": 35820,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "058b4dd5bb0ddfa467f7603d225535129ad72f402e9ba7e391a7993febcfed54",
+            "block_sha256": "33d84e6f62de43c66d929e89762d7e5d6e3df6258757d3efaa5ec85bd9a766af",
+            "range": [
+              45,
+              420
+            ],
+            "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "size": 180,
+            "operators": 18
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [],
+            "decoration_count": 0,
+            "ranges": [],
+            "recipes": [],
+            "rectangle_count": 0,
+            "rectangles_pdf": [],
+            "paint_fill": null,
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": null,
+            "paint_body_size": 0,
+            "kinds": [],
+            "rectangle_sides": [],
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "raster_mupdf_sha256": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+          },
+          "transition": {
+            "parent": "bundle-a",
+            "classification": "E",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "remove",
+        "input": [
+          "artifacts/bundle-a/document.pdf",
+          "artifacts/bundle-a/shared-flow.json"
+        ],
+        "decorations_empty": true,
+        "version_stays_4": true,
+        "paint_group_absent": true,
+        "text_group_unchanged": true
+      }
+    },
+    {
+      "id": "underline_add",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "add": {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                }
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": [],
+            "after": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ]
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/s09-underline-add/semantic-candidate-nun6ou51/document.pdf",
+          "sidecar": "artifacts/s09-underline-add/semantic-candidate-nun6ou51/shared-flow.json",
+          "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e",
+          "sidecar_sha256": "63bcdc10b0f1feb1e5c6899bbda63c57d2a2dc54e74491545789ff2c0ae43258",
+          "pdf_size": 4040,
+          "sidecar_size": 52913,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "cdab9b463198d86d1139b90a0b6041ed1b848b81eeca9cc801f33e0570f38bba",
+            "block_sha256": "09e670f58ef7c56628932859dd31323f927548073e285be797cf5b186655532f",
+            "range": [
+              45,
+              506
+            ],
+            "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+            "size": 266,
+            "operators": 27
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                1
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20",
+                "58.591667",
+                "29.638184",
+                "57.833333"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": "62931f5221fa2b3ca014c4608639057fe75c05e8e0d0868b5b1e3ae4885e45db",
+            "paint_body_size": 86,
+            "kinds": [
+              "underline"
+            ],
+            "rectangle_sides": [
+              "at_or_below"
+            ],
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "raster_mupdf_sha256": "83130fa1bc1862bec7695bb1684dd11316f490a7c7f3311ac0c66937cb4a4694"
+          },
+          "transition": {
+            "parent": "s08-remove-from-bundle-a",
+            "classification": "E",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "insert",
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "stays_version_4": true
+      }
+    },
+    {
+      "id": "mixed_strikeout_add",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "add": {
+                "kind": "strikeout",
+                "start": 3,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                }
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "after": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              },
+              {
+                "kind": "strikeout",
+                "start": 3,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:1"
+              }
+            ]
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/s10-mixed-strikeout-add/semantic-candidate-9_bkk5gj/document.pdf",
+          "sidecar": "artifacts/s10-mixed-strikeout-add/semantic-candidate-9_bkk5gj/shared-flow.json",
+          "pdf_sha256": "d7b1349fb9700f257acf5a3b966d2352e687ff7bdf7db460c265f32db0b3dabf",
+          "sidecar_sha256": "2be09f8ba27473f5ff677dc74e408c4b798b7d1bfdf73acce8d6d412b98d0c18",
+          "pdf_size": 4065,
+          "sidecar_size": 68700,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "a3320e5bcf2de9f27e6882316e6acf22be03115178b4c6e52b2c524cd7237bc3",
+            "block_sha256": "fa7400cc35fab3ccae6e92ea474a6323f4b2e78fd9aa0c01ba13f1b2fde08d33",
+            "range": [
+              45,
+              580
+            ],
+            "pdf_sha256": "d7b1349fb9700f257acf5a3b966d2352e687ff7bdf7db460c265f32db0b3dabf"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "9092300e412effffa29e531fcb1dc8369fa27e81f5af5906b43e979bf67b4e1d",
+            "size": 340,
+            "operators": 33
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              },
+              {
+                "kind": "strikeout",
+                "start": 3,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:1"
+              }
+            ],
+            "decoration_count": 2,
+            "ranges": [
+              [
+                0,
+                1
+              ],
+              [
+                3,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              },
+              {
+                "offset_em": "-3/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 2,
+            "rectangles_pdf": [
+              [
+                "20",
+                "58.591667",
+                "29.638184",
+                "57.833333"
+              ],
+              [
+                "42.776367",
+                "63.9",
+                "51.447266",
+                "63.25"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "9092300e412effffa29e531fcb1dc8369fa27e81f5af5906b43e979bf67b4e1d",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": "019bace279fc65e610358d8363d0403f31006b4e2975d7d6bc8bc856dda96fe8",
+            "paint_body_size": 160,
+            "kinds": [
+              "underline",
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "at_or_below",
+              "above"
+            ],
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "raster_mupdf_sha256": "185bee7517038e364b3ee8dbc997c842c7323d508031b7d4597c61b02ef7cc3c"
+          },
+          "transition": {
+            "parent": "s09-underline-add",
+            "classification": "E",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "version_4": true,
+        "one_decorations_list": true,
+        "canonical_ids": true,
+        "one_paint_group": true,
+        "paint_order_follows_decorations": true,
+        "underline_below_strikeout_above": true,
+        "underline_rectangle_unchanged": true,
+        "text_group_unchanged": true,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          },
+          {
+            "kind": "strikeout",
+            "start": 3,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:1"
+          }
+        ],
+        "rectangles": [
+          [
+            "20",
+            "58.591667",
+            "29.638184",
+            "57.833333"
+          ],
+          [
+            "42.776367",
+            "63.9",
+            "51.447266",
+            "63.25"
+          ]
+        ],
+        "separation": [
+          {
+            "kind": "underline",
+            "upper": "58.591667",
+            "lower": "57.833333",
+            "baseline": "60",
+            "upper_above_baseline": false,
+            "lower_above_baseline": false
+          },
+          {
+            "kind": "strikeout",
+            "upper": "63.9",
+            "lower": "63.25",
+            "baseline": "60",
+            "upper_above_baseline": true,
+            "lower_above_baseline": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "mixed_noop",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "save"
+        },
+        "classification": "D",
+        "diff": {},
+        "revision": {
+          "pdf": "artifacts/s11-mixed-noop/semantic-candidate-kua_7gvg/document.pdf",
+          "sidecar": "artifacts/s11-mixed-noop/semantic-candidate-kua_7gvg/shared-flow.json",
+          "pdf_sha256": "d7b1349fb9700f257acf5a3b966d2352e687ff7bdf7db460c265f32db0b3dabf",
+          "sidecar_sha256": "93a60b1ff2b69933511946241ad6a5d617276082bad8d6e83424d5cdc91a7339",
+          "pdf_size": 4065,
+          "sidecar_size": 68700,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "a3320e5bcf2de9f27e6882316e6acf22be03115178b4c6e52b2c524cd7237bc3",
+            "block_sha256": "fa7400cc35fab3ccae6e92ea474a6323f4b2e78fd9aa0c01ba13f1b2fde08d33",
+            "range": [
+              45,
+              580
+            ],
+            "pdf_sha256": "d7b1349fb9700f257acf5a3b966d2352e687ff7bdf7db460c265f32db0b3dabf"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "9092300e412effffa29e531fcb1dc8369fa27e81f5af5906b43e979bf67b4e1d",
+            "size": 340,
+            "operators": 33
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              },
+              {
+                "kind": "strikeout",
+                "start": 3,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:1"
+              }
+            ],
+            "decoration_count": 2,
+            "ranges": [
+              [
+                0,
+                1
+              ],
+              [
+                3,
+                4
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              },
+              {
+                "offset_em": "-3/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 2,
+            "rectangles_pdf": [
+              [
+                "20",
+                "58.591667",
+                "29.638184",
+                "57.833333"
+              ],
+              [
+                "42.776367",
+                "63.9",
+                "51.447266",
+                "63.25"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "9092300e412effffa29e531fcb1dc8369fa27e81f5af5906b43e979bf67b4e1d",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": "019bace279fc65e610358d8363d0403f31006b4e2975d7d6bc8bc856dda96fe8",
+            "paint_body_size": 160,
+            "kinds": [
+              "underline",
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "at_or_below",
+              "above"
+            ],
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "raster_mupdf_sha256": "185bee7517038e364b3ee8dbc997c842c7323d508031b7d4597c61b02ef7cc3c"
+          },
+          "transition": {
+            "parent": "s10-mixed-strikeout-add",
+            "classification": "D",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "pdf_bytes_identical": true,
+        "operator_sequence_identical": true,
+        "owner_block_identical": true,
+        "semantic_identical": true,
+        "decoration_evidence_identical": true,
+        "pdf_bytes_required": false
+      }
+    },
+    {
+      "id": "mixed_strikeout_remove",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "remove": {
+                "id": "current:1",
+                "start": 3,
+                "end": 4
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              },
+              {
+                "kind": "strikeout",
+                "start": 3,
+                "end": 4,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:1"
+              }
+            ],
+            "after": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ]
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/s12-mixed-strikeout-remove/semantic-candidate-si1ms2z9/document.pdf",
+          "sidecar": "artifacts/s12-mixed-strikeout-remove/semantic-candidate-si1ms2z9/shared-flow.json",
+          "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e",
+          "sidecar_sha256": "e7336b9b4a4843356d5a887d0c744c9a314df91e03313e21009ad627520ddcb8",
+          "pdf_size": 4040,
+          "sidecar_size": 52913,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "cdab9b463198d86d1139b90a0b6041ed1b848b81eeca9cc801f33e0570f38bba",
+            "block_sha256": "09e670f58ef7c56628932859dd31323f927548073e285be797cf5b186655532f",
+            "range": [
+              45,
+              506
+            ],
+            "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+            "size": 266,
+            "operators": 27
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                1
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20",
+                "58.591667",
+                "29.638184",
+                "57.833333"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": "62931f5221fa2b3ca014c4608639057fe75c05e8e0d0868b5b1e3ae4885e45db",
+            "paint_body_size": 86,
+            "kinds": [
+              "underline"
+            ],
+            "rectangle_sides": [
+              "at_or_below"
+            ],
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "raster_mupdf_sha256": "83130fa1bc1862bec7695bb1684dd11316f490a7c7f3311ac0c66937cb4a4694"
+          },
+          "transition": {
+            "parent": "s11-mixed-noop",
+            "classification": "E",
+            "version": 4,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "version_stays_4": true,
+        "underline_only": true,
+        "underline_record_kept": true,
+        "same_body_as_underline_only_state": true,
+        "text_group_unchanged": true,
+        "removed": {
+          "kind": "strikeout",
+          "start": 3,
+          "end": 4,
+          "start_affinity": "outside",
+          "end_affinity": "outside",
+          "recipe": {
+            "offset_em": "-3/10",
+            "thickness_em": "1/20"
+          },
+          "id": "current:1"
+        }
+      }
+    },
+    {
+      "id": "publish_b",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "candidate": "s12-mixed-strikeout-remove",
+        "directory": "artifacts/bundle-b",
+        "artifacts": [
+          "document.pdf",
+          "shared-flow.json"
+        ],
+        "staged_and_public_reopen": "restored",
+        "candidate_bytes_identical": true,
+        "revision": {
+          "pdf": "artifacts/bundle-b/document.pdf",
+          "sidecar": "artifacts/bundle-b/shared-flow.json",
+          "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e",
+          "sidecar_sha256": "e7336b9b4a4843356d5a887d0c744c9a314df91e03313e21009ad627520ddcb8",
+          "pdf_size": 4040,
+          "sidecar_size": 52913,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "cdab9b463198d86d1139b90a0b6041ed1b848b81eeca9cc801f33e0570f38bba",
+            "block_sha256": "09e670f58ef7c56628932859dd31323f927548073e285be797cf5b186655532f",
+            "range": [
+              45,
+              506
+            ],
+            "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e"
+          },
+          "semantic": {
+            "text": "AA B",
+            "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "provider_name": "font-b.ttf",
+            "font_size": "13",
+            "tracking": "1/4",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "caller-confirmed-current-semantic",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+            "size": 266,
+            "operators": 27
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "decoration_count": 1,
+            "ranges": [
+              [
+                0,
+                1
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              }
+            ],
+            "rectangle_count": 1,
+            "rectangles_pdf": [
+              [
+                "20",
+                "58.591667",
+                "29.638184",
+                "57.833333"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20",
+              "29.638184",
+              "39.276367",
+              "42.776367"
+            ],
+            "body_sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+            "paint_body_sha256": "62931f5221fa2b3ca014c4608639057fe75c05e8e0d0868b5b1e3ae4885e45db",
+            "paint_body_size": 86,
+            "kinds": [
+              "underline"
+            ],
+            "rectangle_sides": [
+              "at_or_below"
+            ],
+            "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+            "raster_mupdf_sha256": "83130fa1bc1862bec7695bb1684dd11316f490a7c7f3311ac0c66937cb4a4694"
+          }
+        },
+        "fresh_process": "restored",
+        "pdf_identical": true,
+        "sidecar_identical": true,
+        "version_restored": true,
+        "decorations_restored": true,
+        "owner_restored": true,
+        "provider_restored": true,
+        "canonical_body": true,
+        "candidate_published_raster_identical": true,
+        "version": 4,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "bundle_a_unchanged": true,
+        "underline_only": true,
+        "no_strikeout": true
+      }
+    },
+    {
+      "id": "v3_to_v4_control",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "request": {
+          "operation": "reinterpret",
+          "changes": {
+            "decorations": {
+              "add": {
+                "kind": "strikeout",
+                "start": 2,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                }
+              }
+            }
+          }
+        },
+        "classification": "E",
+        "diff": {
+          "decorations": {
+            "before": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              }
+            ],
+            "after": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              },
+              {
+                "kind": "strikeout",
+                "start": 2,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:1"
+              }
+            ]
+          }
+        },
+        "revision": {
+          "pdf": "artifacts/v3c-02-strikeout-add/semantic-candidate-91znc8yy/document.pdf",
+          "sidecar": "artifacts/v3c-02-strikeout-add/semantic-candidate-91znc8yy/shared-flow.json",
+          "pdf_sha256": "352746aeec11b23a2e8a3040a14c51afe6b9e5ecd6a074f852ebffba67036fe3",
+          "sidecar_sha256": "8a64101b03347f57fe87c385d9e8db373d735b7a83c9ae6926bcbd87669b7438",
+          "pdf_size": 3941,
+          "sidecar_size": 65991,
+          "owner": {
+            "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+            "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+            "program_sha256": "0631192686ca83f342fa148d6a003ba12c9f7ea7dfe9a5923debb14449f2bee9",
+            "block_sha256": "92a9a0b95facfa66a3374238cbc73327fb81c3ec93b3d3f966c6f9847809487a",
+            "range": [
+              45,
+              534
+            ],
+            "pdf_sha256": "352746aeec11b23a2e8a3040a14c51afe6b9e5ecd6a074f852ebffba67036fe3"
+          },
+          "semantic": {
+            "text": "A B",
+            "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "provider_name": "font-a.ttf",
+            "font_size": "12",
+            "tracking": "0",
+            "rise": "0",
+            "horizontal_scale": "1",
+            "word_spacing": "0",
+            "edges": 0,
+            "provenance": "source-confirmed",
+            "version": 4,
+            "canonical": true
+          },
+          "island": {
+            "sha256": "e3fe92683f257297c056972050aa07086d23eb3a68b439de9e8e37fcdd1b80fe",
+            "size": 294,
+            "operators": 31
+          },
+          "decoration_evidence": {
+            "semantic_version": 4,
+            "decorations": [
+              {
+                "kind": "underline",
+                "start": 0,
+                "end": 1,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "13/120",
+                  "thickness_em": "7/120"
+                },
+                "id": "current:0"
+              },
+              {
+                "kind": "strikeout",
+                "start": 2,
+                "end": 3,
+                "start_affinity": "outside",
+                "end_affinity": "outside",
+                "recipe": {
+                  "offset_em": "-3/10",
+                  "thickness_em": "1/20"
+                },
+                "id": "current:1"
+              }
+            ],
+            "decoration_count": 2,
+            "ranges": [
+              [
+                0,
+                1
+              ],
+              [
+                2,
+                3
+              ]
+            ],
+            "recipes": [
+              {
+                "offset_em": "13/120",
+                "thickness_em": "7/120"
+              },
+              {
+                "offset_em": "-3/10",
+                "thickness_em": "1/20"
+              }
+            ],
+            "rectangle_count": 2,
+            "rectangles_pdf": [
+              [
+                "20.017578",
+                "58.7",
+                "28.021484",
+                "58"
+              ],
+              [
+                "31.355469",
+                "63.6",
+                "39.359375",
+                "63"
+              ]
+            ],
+            "paint_fill": [
+              "g",
+              "0"
+            ],
+            "text_tm_y": [
+              "60"
+            ],
+            "text_tm_x": [
+              "20.017578",
+              "28.021484",
+              "31.355469"
+            ],
+            "body_sha256": "e3fe92683f257297c056972050aa07086d23eb3a68b439de9e8e37fcdd1b80fe",
+            "body_split": "v3 body grammar",
+            "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+            "paint_body_sha256": "9ed877caf86761487e0d6836d41c117ea14ca1549b65bd044237b72a4812ab4e",
+            "paint_body_size": 144,
+            "kinds": [
+              "underline",
+              "strikeout"
+            ],
+            "rectangle_sides": [
+              "at_or_below",
+              "above"
+            ],
+            "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+            "raster_mupdf_sha256": "0d6aed431e048e9b6c09879856565ae103cef36e30c17a0dad21034697d68aee"
+          },
+          "transition": {
+            "parent": "v3c-01-underline-add",
+            "classification": "E",
+            "version": 3,
+            "next_version": 4,
+            "authority_preserved": true
+          }
+        },
+        "paint_transition": "replace",
+        "v2_to_v3": true,
+        "v3_to_v4": true,
+        "underline_exact": true,
+        "mixed_canonical": true,
+        "mixed_sides": true,
+        "no_v3_rewrite": true,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          },
+          {
+            "kind": "strikeout",
+            "start": 2,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:1"
+          }
+        ],
+        "rectangles": [
+          [
+            "20.017578",
+            "58.7",
+            "28.021484",
+            "58"
+          ],
+          [
+            "31.355469",
+            "63.6",
+            "39.359375",
+            "63"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "negatives",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "expected_refusals": {
+          "A.pdf+B.json": "source output ownership: shared flow PDF revision changed",
+          "B.pdf+A.json": "source output ownership: shared flow PDF revision changed",
+          "mixed.pdf+underline-only.json": "source output ownership: shared flow PDF revision changed",
+          "underline-only.pdf+mixed.json": "source output ownership: shared flow PDF revision changed"
+        }
+      }
+    },
+    {
+      "id": "refusals",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "expected_refusals": {
+          "strikeout separation (-1/1000000000 em)": {
+            "planner": "strikeout is not physically above its baseline after the output decimal policy",
+            "writer": "strikeout is not physically above its baseline after the output decimal policy",
+            "parent": "s00-text-baseline"
+          },
+          "strikeout with a positive offset": {
+            "planner": "strikeout recipe is outside its exact bounds",
+            "writer": "strikeout recipe is outside its exact bounds",
+            "parent": "s00-text-baseline"
+          },
+          "underline with a negative offset": {
+            "planner": "underline recipe is outside its exact bounds",
+            "writer": "underline recipe is outside its exact bounds",
+            "parent": "s00-text-baseline"
+          },
+          "overlap: strikeout on the underline range": {
+            "planner": "decorations overlap or are not in canonical order",
+            "writer": "decorations overlap or are not in canonical order",
+            "parent": "s09-underline-add"
+          },
+          "overlap: strikeout nesting the underline": {
+            "planner": "decorations overlap or are not in canonical order",
+            "writer": "decorations overlap or are not in canonical order",
+            "parent": "s09-underline-add"
+          }
+        }
+      }
+    },
+    {
+      "id": "tamper",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "expected_refusals": {
+          "resealed kind change (strikeout → underline)": "underline recipe is outside its exact bounds",
+          "resealed recipe sign change": "strikeout recipe is outside its exact bounds",
+          "paint geometry tamper": "source output ownership: shared flow PDF revision changed",
+          "paint geometry tamper, owner witness rebound (production island check)": "semantic version 4 body is not the canonical text and decoration body"
+        }
+      }
+    },
+    {
+      "id": "continuity",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "creation_evidence": {
+          "style_registry": "34f32f98f750ff2a12f8556e71c71f98f1c1c0b82c3995638d21c51f0255fd27",
+          "source_observations": "e797f91464929257f0e72d73c2e1899a368b1e0e73aa8f1ee7d6fa80eb78fd12",
+          "source_provider": "323f32bd020e82d5f29c648493302e0ff6f689b2f6b36c01bde2f34c92e32608",
+          "source_model_sha256": "d31000d6dc5bc97884457dd000c1db78923e5bb768b2d09752906e82b527ba6f",
+          "source_snapshot_sha256": "ce80ebc3a20a7f7e23d09d4fbed502a41377affd44759d14148217293065c573",
+          "created_from": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+          "contract_sha256": "9296c07e01ba3ad88619292d0827cfbb06cde25a3263b6491d3011a94b9d4beb"
+        },
+        "owner_marker_constant": true,
+        "created_from_constant": true,
+        "revisions": 18
+      }
+    },
+    {
+      "id": "text_only_control",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "revisions": [
+          "control-01-edit",
+          "control-02-style",
+          "control-03-font-b"
+        ],
+        "final": "control-03-font-b",
+        "text_group_identical_to_removed": true
+      }
+    },
+    {
+      "id": "raster_mupdf",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "text_only_differs_from_strikeout": true,
+        "strikeout_equals_noop_1_and_2": true,
+        "recipe_differs_from_previous": true,
+        "style_differs_from_previous": true,
+        "font_differs_from_previous": true,
+        "removed_equals_text_only_control": true,
+        "mixed_differs_from_underline_only": true,
+        "mixed_differs_from_strikeout_only": true,
+        "mixed_equals_mixed_noop": true,
+        "strikeout_removal_returns_to_underline_only": true,
+        "candidate_a_equals_bundle_a": true,
+        "candidate_b_equals_bundle_b": true,
+        "dpi": 144,
+        "sha256": {
+          "s00-text-baseline": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8",
+          "s01-add": "2f15ae5c42626aff68c9a2bd1f9144d37526e04934fb12bc84a23bbe34eda52a",
+          "s02-noop-1": "2f15ae5c42626aff68c9a2bd1f9144d37526e04934fb12bc84a23bbe34eda52a",
+          "s03-noop-2": "2f15ae5c42626aff68c9a2bd1f9144d37526e04934fb12bc84a23bbe34eda52a",
+          "s04-edit-remap": "f647f09853bf7cd6a1087e8bfdc6f02ddd102cb5ac90e30d1b6f97ebce4303c1",
+          "s05-recipe": "7c59a22fbf3cfd9a261d99317abd452050bf6b6ea3609301bde2ad6db55f7875",
+          "s06-style": "10ecfe1b8569a4d31af92314762aaf86607c50e4d9b76ff03b19d840257c3442",
+          "s07-font-b": "65dbbb4bfbfb99486e661468fdb280c5f16e651268446c8d37315e6b261a6d26",
+          "bundle-a": "65dbbb4bfbfb99486e661468fdb280c5f16e651268446c8d37315e6b261a6d26",
+          "s08-remove-from-bundle-a": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae",
+          "s09-underline-add": "83130fa1bc1862bec7695bb1684dd11316f490a7c7f3311ac0c66937cb4a4694",
+          "s10-mixed-strikeout-add": "185bee7517038e364b3ee8dbc997c842c7323d508031b7d4597c61b02ef7cc3c",
+          "s11-mixed-noop": "185bee7517038e364b3ee8dbc997c842c7323d508031b7d4597c61b02ef7cc3c",
+          "s12-mixed-strikeout-remove": "83130fa1bc1862bec7695bb1684dd11316f490a7c7f3311ac0c66937cb4a4694",
+          "bundle-b": "83130fa1bc1862bec7695bb1684dd11316f490a7c7f3311ac0c66937cb4a4694",
+          "control-03-font-b": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+        },
+        "control": "control-03-font-b"
+      }
+    },
+    {
+      "id": "raster_poppler",
+      "required": false,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "text_only_differs_from_strikeout": true,
+        "strikeout_equals_noop_1_and_2": true,
+        "removed_equals_text_only_control": true,
+        "mixed_differs_from_underline_only": true,
+        "mixed_equals_mixed_noop": true,
+        "strikeout_removal_returns_to_underline_only": true,
+        "candidate_a_equals_bundle_a": true,
+        "candidate_b_equals_bundle_b": true,
+        "dpi": 144,
+        "sha256": {
+          "s00-text-baseline": "4473a5e6bd030ca3038335333dab6d553adc1bac86f1d033a6e8f0970d22b6e0",
+          "s01-add": "724b607f4448d5519b5e5e5fd33878ac796af032a60f8625c0f31c363e32a102",
+          "s02-noop-1": "724b607f4448d5519b5e5e5fd33878ac796af032a60f8625c0f31c363e32a102",
+          "s03-noop-2": "724b607f4448d5519b5e5e5fd33878ac796af032a60f8625c0f31c363e32a102",
+          "s04-edit-remap": "18fb29f9ff8d3101a78c4b775c74926af80965612cba777b73a07284be08b9d5",
+          "s05-recipe": "8c5374e317f60a098f7357dc3c46a12a9969539f226fbcfdc727bfa642aa4c61",
+          "s06-style": "787a6e2aa3b7f1244572628f833e5a6f57da154bc65dd5e26ddadbaa9190cd02",
+          "s07-font-b": "23ced8c08d05eb40bf3d52f4f2fd7f1ceebb167411bc9c609b9c208491f8f23a",
+          "bundle-a": "23ced8c08d05eb40bf3d52f4f2fd7f1ceebb167411bc9c609b9c208491f8f23a",
+          "s08-remove-from-bundle-a": "b8b0b053163e316e5ee51f08d9f043d0a78f1ce194030324c5bb3084e6359569",
+          "s09-underline-add": "8d1d84f949d5ff98715c5a5634b70c3066aafc2473eb91fb53318b5cc2941866",
+          "s10-mixed-strikeout-add": "cad9dc345ce9fe16adf15d688635aa6d2b1a0d758612ce1b47ad1bb40a380428",
+          "s11-mixed-noop": "cad9dc345ce9fe16adf15d688635aa6d2b1a0d758612ce1b47ad1bb40a380428",
+          "s12-mixed-strikeout-remove": "8d1d84f949d5ff98715c5a5634b70c3066aafc2473eb91fb53318b5cc2941866",
+          "bundle-b": "8d1d84f949d5ff98715c5a5634b70c3066aafc2473eb91fb53318b5cc2941866",
+          "control-03-font-b": "b8b0b053163e316e5ee51f08d9f043d0a78f1ce194030324c5bb3084e6359569"
+        }
+      }
+    },
+    {
+      "id": "inputs_preserved",
+      "required": true,
+      "status": "PASS",
+      "error": null,
+      "details": {
+        "inputs_unchanged": true,
+        "sha256": {
+          "pdf": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+          "sidecar": "b8ea31eeb91630305f305eba623f6405c67c4f64a2a89156a0f85e5607e548e2",
+          "font_a": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+          "font_b": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+        }
+      }
+    }
+  ],
+  "revisions": {
+    "confirmed": {
+      "pdf": "document.pdf",
+      "sidecar": "artifacts/confirmed/shared-flow.json",
+      "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+      "sidecar_sha256": "278cd4353a1f8bdbfa45384aca5ead347411ff476808f451c390ac30f92c3d33",
+      "pdf_size": 3756,
+      "sidecar_size": 39439,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "93757518a1c005eff9c6c8e447e0dff69060add99c7753b9f4a58a78cf53d1fd",
+        "block_sha256": "e0938be9022945d3d550fe26197606aa64e27e16fb23085b661a95649efe2501",
+        "range": [
+          45,
+          478
+        ],
+        "pdf_sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 2,
+        "canonical": false
+      },
+      "island": {
+        "sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+        "size": 238,
+        "operators": 28
+      },
+      "decoration_evidence": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.0175781",
+          "28.0214844",
+          "31.3554688"
+        ],
+        "body_sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "6602eaaad89884d1e54e64d8ea77f165be5562532645fc419c91aacfa5e7c8e3",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "kinds": null,
+        "rectangle_sides": [],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8"
+      }
+    },
+    "s00-text-baseline": {
+      "pdf": "artifacts/s00-text-baseline/semantic-candidate-181t31lk/document.pdf",
+      "sidecar": "artifacts/s00-text-baseline/semantic-candidate-181t31lk/shared-flow.json",
+      "pdf_sha256": "cee22a4b2a24d02b7022d2ffb8bc2d2729ac98e0de0c43044ba8cae5da79fdae",
+      "sidecar_sha256": "b30a0ca0d4be059b748c03ad70a4451738447ea0bf27b68b495b044d7d671c58",
+      "pdf_size": 3914,
+      "sidecar_size": 33121,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "918ebeb99b974bd2c0ab79878824342c265e9f58419738d9492b322f15cf249d",
+        "block_sha256": "1f293abe0c57d197890317683a23f0ed524b9001400ec68654e49651239757d2",
+        "range": [
+          45,
+          390
+        ],
+        "pdf_sha256": "cee22a4b2a24d02b7022d2ffb8bc2d2729ac98e0de0c43044ba8cae5da79fdae"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "size": 150,
+        "operators": 16
+      },
+      "decoration_evidence": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "kinds": null,
+        "rectangle_sides": [],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "88755aad520ce259938ec7f05fa36a8635f8b2da01dc29b9661db9e14ef5c5d8"
+      },
+      "transition": {
+        "parent": "confirmed",
+        "classification": "D",
+        "version": 2,
+        "next_version": 2,
+        "authority_preserved": true
+      }
+    },
+    "s01-add": {
+      "pdf": "artifacts/s01-add/semantic-candidate-j_8_kwmf/document.pdf",
+      "sidecar": "artifacts/s01-add/semantic-candidate-j_8_kwmf/shared-flow.json",
+      "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a",
+      "sidecar_sha256": "bac0d8c6547c663368cdc6cda22e686f2f00510d50cdeecc13bd5c8a91460202",
+      "pdf_size": 3922,
+      "sidecar_size": 50210,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "8365f99e9ed2b25e578fdc2e7324c15bd779e1a6a6759e01ff821aed616d0f09",
+        "block_sha256": "768fbb08501721da34f6e777a9973d9cfb8b0b3d03310dd4b8d00db1545ac7ea",
+        "range": [
+          45,
+          466
+        ],
+        "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+        "size": 226,
+        "operators": 25
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            3
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "-3/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "63.6",
+            "39.359375",
+            "63"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": "ae5329bfe172a4dccf0035ec073730dc6abc88979ed1df4449ae925aea0044d7",
+        "paint_body_size": 76,
+        "kinds": [
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "above"
+        ],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "2f15ae5c42626aff68c9a2bd1f9144d37526e04934fb12bc84a23bbe34eda52a"
+      },
+      "transition": {
+        "parent": "s00-text-baseline",
+        "classification": "E",
+        "version": 2,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "s02-noop-1": {
+      "pdf": "artifacts/s02-noop-1/semantic-candidate-paz2hdtg/document.pdf",
+      "sidecar": "artifacts/s02-noop-1/semantic-candidate-paz2hdtg/shared-flow.json",
+      "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a",
+      "sidecar_sha256": "24be8e5442d4120ae6392b73eed09784292fa71b249f731981b67fa25cd6f513",
+      "pdf_size": 3922,
+      "sidecar_size": 50210,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "8365f99e9ed2b25e578fdc2e7324c15bd779e1a6a6759e01ff821aed616d0f09",
+        "block_sha256": "768fbb08501721da34f6e777a9973d9cfb8b0b3d03310dd4b8d00db1545ac7ea",
+        "range": [
+          45,
+          466
+        ],
+        "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+        "size": 226,
+        "operators": 25
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            3
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "-3/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "63.6",
+            "39.359375",
+            "63"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": "ae5329bfe172a4dccf0035ec073730dc6abc88979ed1df4449ae925aea0044d7",
+        "paint_body_size": 76,
+        "kinds": [
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "above"
+        ],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "2f15ae5c42626aff68c9a2bd1f9144d37526e04934fb12bc84a23bbe34eda52a"
+      },
+      "transition": {
+        "parent": "s01-add",
+        "classification": "D",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "s03-noop-2": {
+      "pdf": "artifacts/s03-noop-2/semantic-candidate-lo6_s2uc/document.pdf",
+      "sidecar": "artifacts/s03-noop-2/semantic-candidate-lo6_s2uc/shared-flow.json",
+      "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a",
+      "sidecar_sha256": "1e3d632d671959b58e6b03f0049c28268c58a3e96c4a5c0ff218ac352be8bda2",
+      "pdf_size": 3922,
+      "sidecar_size": 50210,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "8365f99e9ed2b25e578fdc2e7324c15bd779e1a6a6759e01ff821aed616d0f09",
+        "block_sha256": "768fbb08501721da34f6e777a9973d9cfb8b0b3d03310dd4b8d00db1545ac7ea",
+        "range": [
+          45,
+          466
+        ],
+        "pdf_sha256": "2561a2d3d76764fe09e7813c2cdb6bdf417da02df175cfea2284834a73821f8a"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+        "size": 226,
+        "operators": 25
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            3
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "-3/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "63.6",
+            "39.359375",
+            "63"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "0c774fb2c0205dd938da364d21420bd07aec033bccd22f31d77bcc8740c97fd1",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": "ae5329bfe172a4dccf0035ec073730dc6abc88979ed1df4449ae925aea0044d7",
+        "paint_body_size": 76,
+        "kinds": [
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "above"
+        ],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "2f15ae5c42626aff68c9a2bd1f9144d37526e04934fb12bc84a23bbe34eda52a"
+      },
+      "transition": {
+        "parent": "s02-noop-1",
+        "classification": "D",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "s04-edit-remap": {
+      "pdf": "artifacts/s04-edit-remap/semantic-candidate-dmj9utr5/document.pdf",
+      "sidecar": "artifacts/s04-edit-remap/semantic-candidate-dmj9utr5/shared-flow.json",
+      "pdf_sha256": "96d7fa51008cec43a1ac91a9cab058b3678aff8b83ad52d263fb06fedc04a9b3",
+      "sidecar_sha256": "735ee45ed79e2434babd7f2cc736d44309ff66f3d94c4fc41e15434995418ab3",
+      "pdf_size": 3930,
+      "sidecar_size": 52464,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "11b09d600a9a2876f1493f9b2699440d4e20da83e95a06e6f149642d55db64c9",
+        "block_sha256": "a49fb2dd149714b8d2ad5461a452e996a9f1e4f83a8f68fe90a60826eaea4a6c",
+        "range": [
+          45,
+          500
+        ],
+        "pdf_sha256": "96d7fa51008cec43a1ac91a9cab058b3678aff8b83ad52d263fb06fedc04a9b3"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "e1569f5a687e1a233bd49538edb5053087596864232b3dc94371ab5f5ba10bd5",
+        "size": 260,
+        "operators": 27
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "-3/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "63.6",
+            "47.363281",
+            "63"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "36.025391",
+          "39.359375"
+        ],
+        "body_sha256": "e1569f5a687e1a233bd49538edb5053087596864232b3dc94371ab5f5ba10bd5",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "paint_body_sha256": "00fc7ccbee626bc6e8376f5d1a46cdba8f468c7f010dcee89db3bba6732e4c9f",
+        "paint_body_size": 76,
+        "kinds": [
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "above"
+        ],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "f647f09853bf7cd6a1087e8bfdc6f02ddd102cb5ac90e30d1b6f97ebce4303c1"
+      },
+      "transition": {
+        "parent": "s03-noop-2",
+        "classification": "D",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "s05-recipe": {
+      "pdf": "artifacts/s05-recipe/semantic-candidate-1_54xd10/document.pdf",
+      "sidecar": "artifacts/s05-recipe/semantic-candidate-1_54xd10/shared-flow.json",
+      "pdf_sha256": "95eb92533eb97f8c650cdb7262b2e0b78a90fc7e127128eef96c9d8c80162ce3",
+      "sidecar_sha256": "f33fafb77f9d7dc7a35f945d165d75c0e23226a762f3c4763101d9a79536a4af",
+      "pdf_size": 3930,
+      "sidecar_size": 52463,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "fc845985034565805b42dd748c5c193b7de4c290c4e74b3c53996c8dc38949a4",
+        "block_sha256": "344f4f9f33ff36ff4e4fc105ae2a19c632807c478b7342c0ee14001390042b12",
+        "range": [
+          45,
+          500
+        ],
+        "pdf_sha256": "95eb92533eb97f8c650cdb7262b2e0b78a90fc7e127128eef96c9d8c80162ce3"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "de5b9655e2c0ee84fc29e21563af7afe907e5fa135744cccfd06606fb653a575",
+        "size": 260,
+        "operators": 27
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-1/4",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "-1/4",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "63",
+            "47.363281",
+            "62.4"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "36.025391",
+          "39.359375"
+        ],
+        "body_sha256": "de5b9655e2c0ee84fc29e21563af7afe907e5fa135744cccfd06606fb653a575",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "paint_body_sha256": "ffb20cfdf7e7aeaecee26aa63120f528dac96afb8289d46477b4897ab70442db",
+        "paint_body_size": 76,
+        "kinds": [
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "above"
+        ],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "7c59a22fbf3cfd9a261d99317abd452050bf6b6ea3609301bde2ad6db55f7875"
+      },
+      "transition": {
+        "parent": "s04-edit-remap",
+        "classification": "E",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "s06-style": {
+      "pdf": "artifacts/s06-style/semantic-candidate-_ufolteb/document.pdf",
+      "sidecar": "artifacts/s06-style/semantic-candidate-_ufolteb/shared-flow.json",
+      "pdf_sha256": "b68cf6ae63f0cfe6a5a9370d2d0e0c364f927a380e93391eef74dd7253cb3ffb",
+      "sidecar_sha256": "57491f3b9bd1dbc4e650fdfde2ac88d43fd5d6c8c72f6e35c8ef5284f6c4ba88",
+      "pdf_size": 3936,
+      "sidecar_size": 52937,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "5e2461640bba8fcb6e845e22348b3f05d991cf561097be0c7b6d4c5b9a86656c",
+        "block_sha256": "f9e023b01487d98a36efc801c436cd2b5124cafd8592ca84f8bfecbf5a4e331f",
+        "range": [
+          45,
+          508
+        ],
+        "pdf_sha256": "b68cf6ae63f0cfe6a5a9370d2d0e0c364f927a380e93391eef74dd7253cb3ffb"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "461c46b7b05e537b75fae18fa5b9d3a0979f5984a6bc3447b9501d5d874f7f23",
+        "size": 268,
+        "operators": 27
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-1/4",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "-1/4",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.019043",
+            "63.25",
+            "50.393555",
+            "62.6"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.019043",
+          "28.939941",
+          "37.86084",
+          "41.722656"
+        ],
+        "body_sha256": "461c46b7b05e537b75fae18fa5b9d3a0979f5984a6bc3447b9501d5d874f7f23",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+        "paint_body_sha256": "81328d2a5f073417cfc8d01c5ee936fdd5ec26d90aecc3ebf5a6390b623fcf91",
+        "paint_body_size": 82,
+        "kinds": [
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "above"
+        ],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "10ecfe1b8569a4d31af92314762aaf86607c50e4d9b76ff03b19d840257c3442"
+      },
+      "transition": {
+        "parent": "s05-recipe",
+        "classification": "E",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": false
+      }
+    },
+    "s07-font-b": {
+      "pdf": "artifacts/s07-font-b/semantic-candidate-dbfgw_w9/document.pdf",
+      "sidecar": "artifacts/s07-font-b/semantic-candidate-dbfgw_w9/shared-flow.json",
+      "pdf_sha256": "76307fcaa53f72a894cda815c8ce08bb9f8dbe8e87b95cf202d79c70e50b5cb5",
+      "sidecar_sha256": "55f71fdb888f9a45152dbdd0e64d2112a8bd6ed045b2f1ebd14d8b8483fc41d6",
+      "pdf_size": 4058,
+      "sidecar_size": 52869,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "09eafa527d96a2e76da921d2f421b8921bb45772c569bedf4e697ef1a97ef29d",
+        "block_sha256": "39001978cc89b24f94f69156583011de3260f48d6ef3c67beaab7bc9714a01fe",
+        "range": [
+          45,
+          488
+        ],
+        "pdf_sha256": "76307fcaa53f72a894cda815c8ce08bb9f8dbe8e87b95cf202d79c70e50b5cb5"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "709ac06459d2efec407bf263f4d21a6aabb7bfa9af06314c37621184bc71cc7a",
+        "size": 248,
+        "operators": 27
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-1/4",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "-1/4",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20",
+            "63.25",
+            "51.447266",
+            "62.6"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "709ac06459d2efec407bf263f4d21a6aabb7bfa9af06314c37621184bc71cc7a",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": "fb60ed8e46752e993e531d815a0bf188128b2a2b1c582831e1e1fa0cba588de0",
+        "paint_body_size": 68,
+        "kinds": [
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "above"
+        ],
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "raster_mupdf_sha256": "65dbbb4bfbfb99486e661468fdb280c5f16e651268446c8d37315e6b261a6d26"
+      },
+      "transition": {
+        "parent": "s06-style",
+        "classification": "E",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": false
+      }
+    },
+    "bundle-a": {
+      "pdf": "artifacts/bundle-a/document.pdf",
+      "sidecar": "artifacts/bundle-a/shared-flow.json",
+      "pdf_sha256": "76307fcaa53f72a894cda815c8ce08bb9f8dbe8e87b95cf202d79c70e50b5cb5",
+      "sidecar_sha256": "55f71fdb888f9a45152dbdd0e64d2112a8bd6ed045b2f1ebd14d8b8483fc41d6",
+      "pdf_size": 4058,
+      "sidecar_size": 52869,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "09eafa527d96a2e76da921d2f421b8921bb45772c569bedf4e697ef1a97ef29d",
+        "block_sha256": "39001978cc89b24f94f69156583011de3260f48d6ef3c67beaab7bc9714a01fe",
+        "range": [
+          45,
+          488
+        ],
+        "pdf_sha256": "76307fcaa53f72a894cda815c8ce08bb9f8dbe8e87b95cf202d79c70e50b5cb5"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "709ac06459d2efec407bf263f4d21a6aabb7bfa9af06314c37621184bc71cc7a",
+        "size": 248,
+        "operators": 27
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "strikeout",
+            "start": 0,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-1/4",
+              "thickness_em": "1/20"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "-1/4",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20",
+            "63.25",
+            "51.447266",
+            "62.6"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "709ac06459d2efec407bf263f4d21a6aabb7bfa9af06314c37621184bc71cc7a",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": "fb60ed8e46752e993e531d815a0bf188128b2a2b1c582831e1e1fa0cba588de0",
+        "paint_body_size": 68,
+        "kinds": [
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "above"
+        ],
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "raster_mupdf_sha256": "65dbbb4bfbfb99486e661468fdb280c5f16e651268446c8d37315e6b261a6d26"
+      }
+    },
+    "s08-remove-from-bundle-a": {
+      "pdf": "artifacts/s08-remove-from-bundle-a/semantic-candidate-n8tf65_k/document.pdf",
+      "sidecar": "artifacts/s08-remove-from-bundle-a/semantic-candidate-n8tf65_k/shared-flow.json",
+      "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd",
+      "sidecar_sha256": "b5eed127a2d0590807a8f08d65d35d6b56465bd47cb7ab753a838aae0cab8331",
+      "pdf_size": 4009,
+      "sidecar_size": 35820,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "058b4dd5bb0ddfa467f7603d225535129ad72f402e9ba7e391a7993febcfed54",
+        "block_sha256": "33d84e6f62de43c66d929e89762d7e5d6e3df6258757d3efaa5ec85bd9a766af",
+        "range": [
+          45,
+          420
+        ],
+        "pdf_sha256": "0eb267e8f1952c5f92d4ddf852b270cc4ee66e6ff5d3db152125772f07ac7dcd"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "size": 180,
+        "operators": 18
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [],
+        "decoration_count": 0,
+        "ranges": [],
+        "recipes": [],
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "kinds": [],
+        "rectangle_sides": [],
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "raster_mupdf_sha256": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+      },
+      "transition": {
+        "parent": "bundle-a",
+        "classification": "E",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "s09-underline-add": {
+      "pdf": "artifacts/s09-underline-add/semantic-candidate-nun6ou51/document.pdf",
+      "sidecar": "artifacts/s09-underline-add/semantic-candidate-nun6ou51/shared-flow.json",
+      "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e",
+      "sidecar_sha256": "63bcdc10b0f1feb1e5c6899bbda63c57d2a2dc54e74491545789ff2c0ae43258",
+      "pdf_size": 4040,
+      "sidecar_size": 52913,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "cdab9b463198d86d1139b90a0b6041ed1b848b81eeca9cc801f33e0570f38bba",
+        "block_sha256": "09e670f58ef7c56628932859dd31323f927548073e285be797cf5b186655532f",
+        "range": [
+          45,
+          506
+        ],
+        "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+        "size": 266,
+        "operators": 27
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            1
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20",
+            "58.591667",
+            "29.638184",
+            "57.833333"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": "62931f5221fa2b3ca014c4608639057fe75c05e8e0d0868b5b1e3ae4885e45db",
+        "paint_body_size": 86,
+        "kinds": [
+          "underline"
+        ],
+        "rectangle_sides": [
+          "at_or_below"
+        ],
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "raster_mupdf_sha256": "83130fa1bc1862bec7695bb1684dd11316f490a7c7f3311ac0c66937cb4a4694"
+      },
+      "transition": {
+        "parent": "s08-remove-from-bundle-a",
+        "classification": "E",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "s10-mixed-strikeout-add": {
+      "pdf": "artifacts/s10-mixed-strikeout-add/semantic-candidate-9_bkk5gj/document.pdf",
+      "sidecar": "artifacts/s10-mixed-strikeout-add/semantic-candidate-9_bkk5gj/shared-flow.json",
+      "pdf_sha256": "d7b1349fb9700f257acf5a3b966d2352e687ff7bdf7db460c265f32db0b3dabf",
+      "sidecar_sha256": "2be09f8ba27473f5ff677dc74e408c4b798b7d1bfdf73acce8d6d412b98d0c18",
+      "pdf_size": 4065,
+      "sidecar_size": 68700,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "a3320e5bcf2de9f27e6882316e6acf22be03115178b4c6e52b2c524cd7237bc3",
+        "block_sha256": "fa7400cc35fab3ccae6e92ea474a6323f4b2e78fd9aa0c01ba13f1b2fde08d33",
+        "range": [
+          45,
+          580
+        ],
+        "pdf_sha256": "d7b1349fb9700f257acf5a3b966d2352e687ff7bdf7db460c265f32db0b3dabf"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "9092300e412effffa29e531fcb1dc8369fa27e81f5af5906b43e979bf67b4e1d",
+        "size": 340,
+        "operators": 33
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          },
+          {
+            "kind": "strikeout",
+            "start": 3,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:1"
+          }
+        ],
+        "decoration_count": 2,
+        "ranges": [
+          [
+            0,
+            1
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          },
+          {
+            "offset_em": "-3/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 2,
+        "rectangles_pdf": [
+          [
+            "20",
+            "58.591667",
+            "29.638184",
+            "57.833333"
+          ],
+          [
+            "42.776367",
+            "63.9",
+            "51.447266",
+            "63.25"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "9092300e412effffa29e531fcb1dc8369fa27e81f5af5906b43e979bf67b4e1d",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": "019bace279fc65e610358d8363d0403f31006b4e2975d7d6bc8bc856dda96fe8",
+        "paint_body_size": 160,
+        "kinds": [
+          "underline",
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "at_or_below",
+          "above"
+        ],
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "raster_mupdf_sha256": "185bee7517038e364b3ee8dbc997c842c7323d508031b7d4597c61b02ef7cc3c"
+      },
+      "transition": {
+        "parent": "s09-underline-add",
+        "classification": "E",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "s11-mixed-noop": {
+      "pdf": "artifacts/s11-mixed-noop/semantic-candidate-kua_7gvg/document.pdf",
+      "sidecar": "artifacts/s11-mixed-noop/semantic-candidate-kua_7gvg/shared-flow.json",
+      "pdf_sha256": "d7b1349fb9700f257acf5a3b966d2352e687ff7bdf7db460c265f32db0b3dabf",
+      "sidecar_sha256": "93a60b1ff2b69933511946241ad6a5d617276082bad8d6e83424d5cdc91a7339",
+      "pdf_size": 4065,
+      "sidecar_size": 68700,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "a3320e5bcf2de9f27e6882316e6acf22be03115178b4c6e52b2c524cd7237bc3",
+        "block_sha256": "fa7400cc35fab3ccae6e92ea474a6323f4b2e78fd9aa0c01ba13f1b2fde08d33",
+        "range": [
+          45,
+          580
+        ],
+        "pdf_sha256": "d7b1349fb9700f257acf5a3b966d2352e687ff7bdf7db460c265f32db0b3dabf"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "9092300e412effffa29e531fcb1dc8369fa27e81f5af5906b43e979bf67b4e1d",
+        "size": 340,
+        "operators": 33
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          },
+          {
+            "kind": "strikeout",
+            "start": 3,
+            "end": 4,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:1"
+          }
+        ],
+        "decoration_count": 2,
+        "ranges": [
+          [
+            0,
+            1
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          },
+          {
+            "offset_em": "-3/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 2,
+        "rectangles_pdf": [
+          [
+            "20",
+            "58.591667",
+            "29.638184",
+            "57.833333"
+          ],
+          [
+            "42.776367",
+            "63.9",
+            "51.447266",
+            "63.25"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "9092300e412effffa29e531fcb1dc8369fa27e81f5af5906b43e979bf67b4e1d",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": "019bace279fc65e610358d8363d0403f31006b4e2975d7d6bc8bc856dda96fe8",
+        "paint_body_size": 160,
+        "kinds": [
+          "underline",
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "at_or_below",
+          "above"
+        ],
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "raster_mupdf_sha256": "185bee7517038e364b3ee8dbc997c842c7323d508031b7d4597c61b02ef7cc3c"
+      },
+      "transition": {
+        "parent": "s10-mixed-strikeout-add",
+        "classification": "D",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "s12-mixed-strikeout-remove": {
+      "pdf": "artifacts/s12-mixed-strikeout-remove/semantic-candidate-si1ms2z9/document.pdf",
+      "sidecar": "artifacts/s12-mixed-strikeout-remove/semantic-candidate-si1ms2z9/shared-flow.json",
+      "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e",
+      "sidecar_sha256": "e7336b9b4a4843356d5a887d0c744c9a314df91e03313e21009ad627520ddcb8",
+      "pdf_size": 4040,
+      "sidecar_size": 52913,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "cdab9b463198d86d1139b90a0b6041ed1b848b81eeca9cc801f33e0570f38bba",
+        "block_sha256": "09e670f58ef7c56628932859dd31323f927548073e285be797cf5b186655532f",
+        "range": [
+          45,
+          506
+        ],
+        "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+        "size": 266,
+        "operators": 27
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            1
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20",
+            "58.591667",
+            "29.638184",
+            "57.833333"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": "62931f5221fa2b3ca014c4608639057fe75c05e8e0d0868b5b1e3ae4885e45db",
+        "paint_body_size": 86,
+        "kinds": [
+          "underline"
+        ],
+        "rectangle_sides": [
+          "at_or_below"
+        ],
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "raster_mupdf_sha256": "83130fa1bc1862bec7695bb1684dd11316f490a7c7f3311ac0c66937cb4a4694"
+      },
+      "transition": {
+        "parent": "s11-mixed-noop",
+        "classification": "E",
+        "version": 4,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "bundle-b": {
+      "pdf": "artifacts/bundle-b/document.pdf",
+      "sidecar": "artifacts/bundle-b/shared-flow.json",
+      "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e",
+      "sidecar_sha256": "e7336b9b4a4843356d5a887d0c744c9a314df91e03313e21009ad627520ddcb8",
+      "pdf_size": 4040,
+      "sidecar_size": 52913,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "cdab9b463198d86d1139b90a0b6041ed1b848b81eeca9cc801f33e0570f38bba",
+        "block_sha256": "09e670f58ef7c56628932859dd31323f927548073e285be797cf5b186655532f",
+        "range": [
+          45,
+          506
+        ],
+        "pdf_sha256": "a0191da45abbfdc1977d666c98bfbb97bb25581259d621c0f3459a6fc9f3d13e"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+        "size": 266,
+        "operators": 27
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            1
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20",
+            "58.591667",
+            "29.638184",
+            "57.833333"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "4e42177e2d5a930b6c0adc0b7035f410ef87064d246c012887081699541deb2f",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": "62931f5221fa2b3ca014c4608639057fe75c05e8e0d0868b5b1e3ae4885e45db",
+        "paint_body_size": 86,
+        "kinds": [
+          "underline"
+        ],
+        "rectangle_sides": [
+          "at_or_below"
+        ],
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "raster_mupdf_sha256": "83130fa1bc1862bec7695bb1684dd11316f490a7c7f3311ac0c66937cb4a4694"
+      }
+    },
+    "v3c-01-underline-add": {
+      "pdf": "artifacts/v3c-01-underline-add/semantic-candidate-rxcph3de/document.pdf",
+      "sidecar": "artifacts/v3c-01-underline-add/semantic-candidate-rxcph3de/shared-flow.json",
+      "pdf_sha256": "99a48d82e44fa485ddfad32e57a582f9d018a658530b54087d9603bc143a6732",
+      "sidecar_sha256": "ed29000c8b616ac9255cf102393375cf8da6e509c2a7f7e3c4de7466a8765db7",
+      "pdf_size": 3920,
+      "sidecar_size": 50222,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "1b2e3a8833e787e2e357b975e73a2602dc7bbb84ae424710aa979f0b96e573a9",
+        "block_sha256": "de0e69453d0f74fd7bcd23040bbbc67b644ed18f804414c651de2f718c0bf4c1",
+        "range": [
+          45,
+          466
+        ],
+        "pdf_sha256": "99a48d82e44fa485ddfad32e57a582f9d018a658530b54087d9603bc143a6732"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 3,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "6b403c2bedfd3f2a2132797e82be15f1cd8eb037f252dbac01ecfd99a0bbeab6",
+        "size": 226,
+        "operators": 25
+      },
+      "decoration_evidence": {
+        "semantic_version": 3,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          }
+        ],
+        "decoration_count": 1,
+        "ranges": [
+          [
+            0,
+            1
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          }
+        ],
+        "rectangle_count": 1,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "58.7",
+            "28.021484",
+            "58"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "6b403c2bedfd3f2a2132797e82be15f1cd8eb037f252dbac01ecfd99a0bbeab6",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": "fe05d2df6d87934f1a63e8d50efc1ed492f2b13bdd6916eb0d279ca3fa772ee5",
+        "paint_body_size": 76,
+        "kinds": [
+          "underline"
+        ],
+        "rectangle_sides": [
+          "at_or_below"
+        ],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "08880d6ac407b19d702481799d7e0a8fe2ecf566fd63e59614a7641d9f4bd80e"
+      },
+      "transition": {
+        "parent": "s00-text-baseline",
+        "classification": "E",
+        "version": 2,
+        "next_version": 3,
+        "authority_preserved": true
+      }
+    },
+    "v3c-02-strikeout-add": {
+      "pdf": "artifacts/v3c-02-strikeout-add/semantic-candidate-91znc8yy/document.pdf",
+      "sidecar": "artifacts/v3c-02-strikeout-add/semantic-candidate-91znc8yy/shared-flow.json",
+      "pdf_sha256": "352746aeec11b23a2e8a3040a14c51afe6b9e5ecd6a074f852ebffba67036fe3",
+      "sidecar_sha256": "8a64101b03347f57fe87c385d9e8db373d735b7a83c9ae6926bcbd87669b7438",
+      "pdf_size": 3941,
+      "sidecar_size": 65991,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "0631192686ca83f342fa148d6a003ba12c9f7ea7dfe9a5923debb14449f2bee9",
+        "block_sha256": "92a9a0b95facfa66a3374238cbc73327fb81c3ec93b3d3f966c6f9847809487a",
+        "range": [
+          45,
+          534
+        ],
+        "pdf_sha256": "352746aeec11b23a2e8a3040a14c51afe6b9e5ecd6a074f852ebffba67036fe3"
+      },
+      "semantic": {
+        "text": "A B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 4,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "e3fe92683f257297c056972050aa07086d23eb3a68b439de9e8e37fcdd1b80fe",
+        "size": 294,
+        "operators": 31
+      },
+      "decoration_evidence": {
+        "semantic_version": 4,
+        "decorations": [
+          {
+            "kind": "underline",
+            "start": 0,
+            "end": 1,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "13/120",
+              "thickness_em": "7/120"
+            },
+            "id": "current:0"
+          },
+          {
+            "kind": "strikeout",
+            "start": 2,
+            "end": 3,
+            "start_affinity": "outside",
+            "end_affinity": "outside",
+            "recipe": {
+              "offset_em": "-3/10",
+              "thickness_em": "1/20"
+            },
+            "id": "current:1"
+          }
+        ],
+        "decoration_count": 2,
+        "ranges": [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "recipes": [
+          {
+            "offset_em": "13/120",
+            "thickness_em": "7/120"
+          },
+          {
+            "offset_em": "-3/10",
+            "thickness_em": "1/20"
+          }
+        ],
+        "rectangle_count": 2,
+        "rectangles_pdf": [
+          [
+            "20.017578",
+            "58.7",
+            "28.021484",
+            "58"
+          ],
+          [
+            "31.355469",
+            "63.6",
+            "39.359375",
+            "63"
+          ]
+        ],
+        "paint_fill": [
+          "g",
+          "0"
+        ],
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "31.355469"
+        ],
+        "body_sha256": "e3fe92683f257297c056972050aa07086d23eb3a68b439de9e8e37fcdd1b80fe",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "ea99442e3b9122e552653f4a1eb59a6e9adc4487fdd43d80485d6e551262eafb",
+        "paint_body_sha256": "9ed877caf86761487e0d6836d41c117ea14ca1549b65bd044237b72a4812ab4e",
+        "paint_body_size": 144,
+        "kinds": [
+          "underline",
+          "strikeout"
+        ],
+        "rectangle_sides": [
+          "at_or_below",
+          "above"
+        ],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "0d6aed431e048e9b6c09879856565ae103cef36e30c17a0dad21034697d68aee"
+      },
+      "transition": {
+        "parent": "v3c-01-underline-add",
+        "classification": "E",
+        "version": 3,
+        "next_version": 4,
+        "authority_preserved": true
+      }
+    },
+    "control-01-edit": {
+      "pdf": "artifacts/control-01-edit/semantic-candidate-1ujq88_v/document.pdf",
+      "sidecar": "artifacts/control-01-edit/semantic-candidate-1ujq88_v/shared-flow.json",
+      "pdf_sha256": "d9f33d3e91df8897776dda6ab77d04e0dea0aa6d31c8e4de12a32b4f9fc63c1e",
+      "sidecar_sha256": "9be018b4da2f7644a196a4b2b52f277af32b4926beba62b5d0b227a68556f043",
+      "pdf_size": 3902,
+      "sidecar_size": 35368,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "39eb2bec9a62ca0ed4e478909ab97ad772c7ea66fdf0b19270f4208df0f5e174",
+        "block_sha256": "d1687deb8e2bd33accd961ded5b354e81c82da4a3d146edf60c2d66c556aa3a3",
+        "range": [
+          45,
+          424
+        ],
+        "pdf_sha256": "d9f33d3e91df8897776dda6ab77d04e0dea0aa6d31c8e4de12a32b4f9fc63c1e"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "12",
+        "tracking": "0",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "source-confirmed",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "size": 184,
+        "operators": 18
+      },
+      "decoration_evidence": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.017578",
+          "28.021484",
+          "36.025391",
+          "39.359375"
+        ],
+        "body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "0a275874520e340bc1fdcdff22ab8b833a57c44af3082e0b6d0ec6856eed6cc8",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "kinds": null,
+        "rectangle_sides": [],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "915fc976108d8880f3ce40b0a09b58494716cb06fa341b7040908ca0c21a9427"
+      },
+      "transition": {
+        "parent": "s00-text-baseline",
+        "classification": "D",
+        "version": 2,
+        "next_version": 2,
+        "authority_preserved": true
+      }
+    },
+    "control-02-style": {
+      "pdf": "artifacts/control-02-style/semantic-candidate-ldojoe7h/document.pdf",
+      "sidecar": "artifacts/control-02-style/semantic-candidate-ldojoe7h/shared-flow.json",
+      "pdf_sha256": "0abf6ae1fd55ca46cad8234d933ea5fbc02120123486528753b1e2669905098f",
+      "sidecar_sha256": "a0f370897bf337a1122de75be7dea78b403f11f5a6bf1b23f42151b7259f1b5d",
+      "pdf_size": 3906,
+      "sidecar_size": 35827,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "defc8d46efbe5e390dacd124bc35603d67a2a04587fcbe6227556f013f43d5e4",
+        "block_sha256": "ead868ae5e50b36728d6291228a0c20a69153c0b0b2767c0847ad1c159eab3e5",
+        "range": [
+          45,
+          426
+        ],
+        "pdf_sha256": "0abf6ae1fd55ca46cad8234d933ea5fbc02120123486528753b1e2669905098f"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "provider_name": "font-a.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+        "size": 186,
+        "operators": 18
+      },
+      "decoration_evidence": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20.019043",
+          "28.939941",
+          "37.86084",
+          "41.722656"
+        ],
+        "body_sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "9fc58909b344e663bd418809963b38f0085db6e814660d0f149d757e99c1c6a1",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "kinds": null,
+        "rectangle_sides": [],
+        "provider_sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2",
+        "raster_mupdf_sha256": "bc315cc391b2fad4f8c5f677990d788d30efa3cdddbedd87425e71781b1fb1b2"
+      },
+      "transition": {
+        "parent": "control-01-edit",
+        "classification": "E",
+        "version": 2,
+        "next_version": 2,
+        "authority_preserved": false
+      }
+    },
+    "control-03-font-b": {
+      "pdf": "artifacts/control-03-font-b/semantic-candidate-zgppyxqg/document.pdf",
+      "sidecar": "artifacts/control-03-font-b/semantic-candidate-zgppyxqg/shared-flow.json",
+      "pdf_sha256": "3aaafbd3203fd3c6d9e70f92fbd1db1750ad898648878c928a4739f223e7c76b",
+      "sidecar_sha256": "dc5fea77b88b4310a7bba77772cd60c8602758b2054c0366350ce710a48a1ed3",
+      "pdf_size": 4028,
+      "sidecar_size": 35792,
+      "owner": {
+        "marker_id": "ed711af799e07ab89ea002ee7e338fbaaf93e6b3a16af260eba2922b6634b09e",
+        "created_from_sha256": "aa8ac726259473fde3ff21272f2d083866100230f70d2e203b812827819c8f5a",
+        "program_sha256": "058b4dd5bb0ddfa467f7603d225535129ad72f402e9ba7e391a7993febcfed54",
+        "block_sha256": "33d84e6f62de43c66d929e89762d7e5d6e3df6258757d3efaa5ec85bd9a766af",
+        "range": [
+          45,
+          420
+        ],
+        "pdf_sha256": "3aaafbd3203fd3c6d9e70f92fbd1db1750ad898648878c928a4739f223e7c76b"
+      },
+      "semantic": {
+        "text": "AA B",
+        "font_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "provider_name": "font-b.ttf",
+        "font_size": "13",
+        "tracking": "1/4",
+        "rise": "0",
+        "horizontal_scale": "1",
+        "word_spacing": "0",
+        "edges": 0,
+        "provenance": "caller-confirmed-current-semantic",
+        "version": 2,
+        "canonical": true
+      },
+      "island": {
+        "sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "size": 180,
+        "operators": 18
+      },
+      "decoration_evidence": {
+        "semantic_version": 2,
+        "decorations": null,
+        "decoration_count": null,
+        "ranges": null,
+        "recipes": null,
+        "rectangle_count": 0,
+        "rectangles_pdf": [],
+        "paint_fill": null,
+        "text_tm_y": [
+          "60"
+        ],
+        "text_tm_x": [
+          "20",
+          "29.638184",
+          "39.276367",
+          "42.776367"
+        ],
+        "body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "body_split": "v3 body grammar",
+        "text_body_sha256": "398918b4a9b8f273a1bec138a4485fafcf7069ff47b5bcb717036faa17b7b4f3",
+        "paint_body_sha256": null,
+        "paint_body_size": 0,
+        "kinds": null,
+        "rectangle_sides": [],
+        "provider_sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc",
+        "raster_mupdf_sha256": "640d42c376fc60db7a063cfc04b5816654e8521c537c54f5abcff92aa0eb31ae"
+      },
+      "transition": {
+        "parent": "control-02-style",
+        "classification": "E",
+        "version": 2,
+        "next_version": 2,
+        "authority_preserved": false
+      }
+    }
+  },
+  "verdict": "PASS",
+  "strikeout_runtime": true,
+  "strikeout_disclaimer": "Windows strikeout execution has not been performed by the PR that added the strikeout mode.",
+  "environment": {
+    "os": {
+      "system": "Windows",
+      "release": "11",
+      "version": "10.0.26200",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "machine": "AMD64"
+    },
+    "python": "3.12.14",
+    "pymupdf": "1.27.2.3",
+    "fonttools": "4.64.0",
+    "uharfbuzz": "0.55.0",
+    "pypdf": "6.10.0",
+    "poppler": {
+      "available": true,
+      "version": "pdftoppm version 26.07.0"
+    },
+    "libreoffice": "unavailable",
+    "repository": {
+      "commit": "8d3ddbf5fdda8b997ed4aab7f13518b0c2ff5225",
+      "dirty": false,
+      "runtime_digest": "98e71404148d8e69779103a27922c40a65c8f04fed04b2d5adbb8a40d34c23d6"
+    }
+  },
+  "windows_execution": true,
+  "inputs": {
+    "pdf": {
+      "filename": "document.pdf",
+      "sha256": "037893f6ddc5aab9977f0f545e26b4ce4d8392453ec7c819447ada9cb66f9971",
+      "page_count": 1,
+      "producer": "pypdf",
+      "creator": null,
+      "libreoffice_claimed": false
+    },
+    "sidecar": {
+      "filename": "shared-flow.json",
+      "sha256": "b8ea31eeb91630305f305eba623f6405c67c4f64a2a89156a0f85e5607e548e2"
+    },
+    "fonts": {
+      "font_a": {
+        "filename": "font-a.ttf",
+        "sha256": "ab1a678f8f5ddf565ac313e203f7fde276cc75a10cee7d68b223025eaf8317f2"
+      },
+      "font_b": {
+        "filename": "font-b.ttf",
+        "sha256": "bf5783fb6fded1696e9350a1cd7a611cf4398c941cc17819a906ce8c7a30c9bc"
+      }
+    }
+  },
+  "plan": {
+    "strikeout_add": {
+      "start": 0,
+      "end": 3,
+      "recipe": {
+        "offset_em": "-3/10",
+        "thickness_em": "1/20"
+      }
+    },
+    "strikeout_edit": {
+      "start": 1,
+      "end": 1,
+      "text": "A"
+    },
+    "strikeout_recipe": {
+      "offset_em": "-1/4",
+      "thickness_em": "1/20"
+    },
+    "strikeout_style": {
+      "font_size": "13",
+      "tracking": "1/4"
+    },
+    "mixed_underline": {
+      "start": 0,
+      "end": 1,
+      "recipe": {
+        "offset_em": "13/120",
+        "thickness_em": "7/120"
+      }
+    },
+    "mixed_strikeout": {
+      "start": 3,
+      "end": 4,
+      "recipe": {
+        "offset_em": "-3/10",
+        "thickness_em": "1/20"
+      }
+    },
+    "control_underline": {
+      "start": 0,
+      "end": 1,
+      "recipe": {
+        "offset_em": "13/120",
+        "thickness_em": "7/120"
+      }
+    },
+    "control_strikeout": {
+      "start": 2,
+      "end": 3,
+      "recipe": {
+        "offset_em": "-3/10",
+        "thickness_em": "1/20"
+      }
+    }
+  },
+  "target": {
+    "slot_id": "slot-0",
+    "page": 1,
+    "paragraph_id": "A",
+    "region_id": "R",
+    "sidecar_schema": "pdfengine-shared-flow-2",
+    "semantic_version": null,
+    "owner_state": "owned",
+    "source_font_name": "Courier",
+    "generated_fonts": [
+      "/PRF1"
+    ],
+    "text_length": 3
+  },
+  "finished_at": "2026-10-06T14:48:09.310518+00:00"
+}
