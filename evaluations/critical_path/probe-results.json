@@ -1,0 +1,343 @@
+[
+ {
+  "scenario": "S1 申請書→各種申請書",
+  "path": "edit_paragraph",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "max_bottom",
+   "font file for new text"
+  ],
+  "detail": [
+   [
+    700.0,
+    "各種申請書を提出してください。"
+   ]
+  ]
+ },
+ {
+  "scenario": "S1 without explicit width",
+  "path": "edit_paragraph",
+  "status": "REFUSED",
+  "caller_declarations": [
+   "selection line id",
+   "max_bottom",
+   "font file for new text"
+  ],
+  "detail": "WidthUnknownError: available width is unknown; supply an explicit width before reflow (observed content width is not an available width)"
+ },
+ {
+  "scenario": "S1 without font for new text",
+  "path": "edit_paragraph",
+  "status": "REFUSED",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "max_bottom"
+  ],
+  "detail": "PdfError: new text needs an explicit font for s0"
+ },
+ {
+  "scenario": "S2 1 line -> 2 lines",
+  "path": "edit_paragraph",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "max_bottom",
+   "font file for new text"
+  ],
+  "detail": [
+   [
+    700.0,
+    "各種申請書および添付資料を"
+   ],
+   [
+    716.8,
+    "提出してください。"
+   ]
+  ]
+ },
+ {
+  "scenario": "S1 persistent",
+  "path": "shared flow v2",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "container bounds/layout",
+   "style provider font file",
+   "style assignment",
+   "shared region bounds",
+   "paragraph policies",
+   "follows gap"
+  ],
+  "detail": {
+   "reopened": "restored twice",
+   "lines": [
+    [
+     120.0,
+     "再各種申請書を提出してください。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S2 persistent wrap",
+  "path": "shared flow v2",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "container bounds/layout",
+   "style provider font file",
+   "style assignment",
+   "shared region bounds",
+   "paragraph policies",
+   "follows gap"
+  ],
+  "detail": {
+   "reopened": "restored twice",
+   "lines": [
+    [
+     120.0,
+     "再各種申請書および添付資料一式ならびに関係書類の写"
+    ],
+    [
+     136.0,
+     "しを含むすべての書類を提出してください。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S4 Japanese mid-sentence, different length",
+  "path": "shared flow v2",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "container bounds/layout",
+   "style provider font file",
+   "style assignment",
+   "shared region bounds",
+   "paragraph policies",
+   "follows gap"
+  ],
+  "detail": {
+   "reopened": "restored twice",
+   "lines": [
+    [
+     120.0,
+     "再申請書を必ず提出してください。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S3 mixed sizes in one paragraph (one-shot)",
+  "path": "edit_paragraph",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "max_bottom",
+   "font file for new text"
+  ],
+  "detail": [
+   [
+    120.0,
+    "本日は重要なおご案内事項あります。"
+   ]
+  ]
+ },
+ {
+  "scenario": "S3 mixed sizes in one paragraph (persistent)",
+  "path": "shared flow v2",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "container bounds/layout",
+   "style provider font file",
+   "style assignment",
+   "shared region bounds",
+   "paragraph policies",
+   "follows gap"
+  ],
+  "detail": {
+   "reopened": "restored twice",
+   "lines": [
+    [
+     120.0,
+     "再本日は重要なおご案内事項あります。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S5 upper paragraph grows, lower follows",
+  "path": "shared flow v2",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "container bounds/layout",
+   "style provider font file",
+   "style assignment",
+   "shared region bounds",
+   "paragraph policies",
+   "follows gap"
+  ],
+  "detail": {
+   "reopened": "restored twice",
+   "lines": [
+    [
+     120.0,
+     "再各種申請書および添付資料一式ならびに関係書類の写"
+    ],
+    [
+     136.0,
+     "しを含むすべての書類を提出してください。"
+    ],
+    [
+     166.0,
+     "期限は十月十五日です。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S1 on tagged (BDC/EMC) page (one-shot)",
+  "path": "edit_paragraph",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "max_bottom",
+   "font file for new text"
+  ],
+  "detail": [
+   [
+    120.0,
+    "各種申請書を提出してください。"
+   ]
+  ]
+ },
+ {
+  "scenario": "S1 on tagged (BDC/EMC) page (persistent)",
+  "path": "shared flow v2",
+  "status": "REFUSED",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "container bounds/layout",
+   "style provider font file",
+   "style assignment",
+   "shared region bounds",
+   "paragraph policies",
+   "follows gap"
+  ],
+  "detail": "PdfError: source output needs an unmarked, path-free page-level context"
+ },
+ {
+  "scenario": "S1 on page clip page (one-shot)",
+  "path": "edit_paragraph",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "max_bottom",
+   "font file for new text"
+  ],
+  "detail": [
+   [
+    120.0,
+    "各種申請書を提出してください。"
+   ]
+  ]
+ },
+ {
+  "scenario": "S1 on page clip page (persistent)",
+  "path": "shared flow v2",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "container bounds/layout",
+   "style provider font file",
+   "style assignment",
+   "shared region bounds",
+   "paragraph policies",
+   "follows gap"
+  ],
+  "detail": {
+   "reopened": "restored twice",
+   "lines": [
+    [
+     120.0,
+     "再各種申請書を提出してください。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S1 on y-flip CTM page (one-shot)",
+  "path": "edit_paragraph",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "max_bottom",
+   "font file for new text"
+  ],
+  "detail": [
+   [
+    120.0,
+    "各種申請書を提出してください。"
+   ]
+  ]
+ },
+ {
+  "scenario": "S1 on y-flip CTM page (persistent)",
+  "path": "shared flow v2",
+  "status": "PASS-with-declarations",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "container bounds/layout",
+   "style provider font file",
+   "style assignment",
+   "shared region bounds",
+   "paragraph policies",
+   "follows gap"
+  ],
+  "detail": {
+   "reopened": "restored twice",
+   "lines": [
+    [
+     120.0,
+     "再各種申請書を提出してください。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S1 text in the semantic layer",
+  "path": "confirm_semantic_layout",
+  "status": "REFUSED",
+  "caller_declarations": [
+   "selection line id",
+   "explicit width",
+   "container bounds/layout",
+   "style provider font file",
+   "style assignment",
+   "shared region bounds",
+   "paragraph policies",
+   "follows gap",
+   "complete semantic statement"
+  ],
+  "detail": "PdfError: semantic text is outside the A/B/space/newline scope"
+ }
+]
