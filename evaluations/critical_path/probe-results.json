@@ -324,6 +324,115 @@
   }
  },
  {
+  "scenario": "S0/S1 intent only: 申請書→各種申請書, then grow to wrap",
+  "path": "B1 propose/accept + shared flow v2",
+  "status": "PASS-intent-only",
+  "caller_declarations": [
+   "PDF",
+   "page",
+   "find text",
+   "replacement text",
+   "font candidate set (discovery input)"
+  ],
+  "detail": {
+   "reopened": "restored after 2 edit(s)",
+   "lines": [
+    [
+     120.0,
+     "各種申請書および添付資料一式ならびに関係書類の写しを含むすべての書類を提出"
+    ],
+    [
+     132.0,
+     "してください。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S4 intent only: 提出→必ず提出",
+  "path": "B1 propose/accept + shared flow v2",
+  "status": "PASS-intent-only",
+  "caller_declarations": [
+   "PDF",
+   "page",
+   "find text",
+   "replacement text",
+   "font candidate set (discovery input)"
+  ],
+  "detail": {
+   "reopened": "restored after 1 edit(s)",
+   "lines": [
+    [
+     120.0,
+     "申請書を必ず提出してください。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S3 intent only: mixed sizes, お知らせ→ご案内事項",
+  "path": "B1 propose/accept + shared flow v2",
+  "status": "PASS-intent-only",
+  "caller_declarations": [
+   "PDF",
+   "page",
+   "find text",
+   "replacement text",
+   "font candidate set (discovery input)"
+  ],
+  "detail": {
+   "reopened": "restored after 1 edit(s)",
+   "lines": [
+    [
+     120.0,
+     "本日は重要なご案内事項があります。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S5 intent only: upper paragraph grows, lower follows",
+  "path": "B1 propose/accept + shared flow v2",
+  "status": "PASS-intent-only",
+  "caller_declarations": [
+   "PDF",
+   "page",
+   "find text",
+   "replacement text",
+   "font candidate set (discovery input)"
+  ],
+  "detail": {
+   "reopened": "restored after 1 edit(s)",
+   "lines": [
+    [
+     120.0,
+     "各種申請書および添付資料一式ならびに関係書類の写しを含むすべての書類を提出"
+    ],
+    [
+     132.0,
+     "してください。"
+    ],
+    [
+     162.0,
+     "期限は十月十五日です。"
+    ]
+   ]
+  }
+ },
+ {
+  "scenario": "S6 intent only on a tagged page",
+  "path": "B1 propose/accept + shared flow v2",
+  "status": "REFUSED",
+  "caller_declarations": [
+   "PDF",
+   "page",
+   "find text",
+   "replacement text",
+   "font candidate set (discovery input)"
+  ],
+  "detail": "RuntimeError: proposal refused: unsupported-for-persistent-flow: tagged-page: source output needs an unmarked, path-free page-level context"
+ },
+ {
   "scenario": "S1 text in the semantic layer",
   "path": "confirm_semantic_layout",
   "status": "REFUSED",

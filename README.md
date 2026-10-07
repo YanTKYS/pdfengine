@@ -19,6 +19,7 @@
 | `edit-paragraph --editable-state` → `edit-document` | 確認した文章・改行・装飾範囲・領域を保存し、同じ意味で再編集 | 通常のPDFとSHA-256で結び付いたsidecar。生成した折返しを論理改行へ変換しない |
 | `confirm_document` → `edit_flow`（Python API） | 複数の段落IDと明示した追従関係を保持して編集 | 固定コンテナ内で、確認した子孫とその所有paintだけを平行移動。空の段落でもIDと関係を保持 |
 | `Transaction` / `IdentityMap`（Python API） | 複数の編集を1回の保存・1回の検証で適用し、revisionをまたぐ要素の対応を byte mutation で追跡 | [stable-identity-transaction.md](docs/stable-identity-transaction.md)。flow系の中間PDF保存を廃止 |
+| `propose-page` → `accept-page` → `replace-text` | 普通のページを、座標・選択ID・fontパスを手書きせずに編集し、保存・再オープン・再編集する | 根拠付きの提案を1回明示承認すると、既存のshared flow v2状態になる。fontはインストール済みfontから字幅で照合し、名前では決めない。[現在の対象範囲](docs/acrobat-critical-path.md) |
 | `inspect` / `review` continuation boundary → `confirm_continuation_destination`（Python API） | 既存ページの明示した空き領域へparagraphの続きを置くため、安全な描画境界を観測・整理し、callerが選んだ境界とboundsを明示確認する | 境界の自動選択・自動ページ追加なし。[caller workflow](docs/confirmed-continuation.md#caller-workflow) |
 
 書式を保持する経路では、LibreOffice本文の英字12pt・日本語10.5ptを残した2行→1行、元の68文字を残して66文字を追加する2行→3行、仮想プリンタPDFの通常体・斜体を残す部分置換を確認しました。[書式付き編集の評価と境界](docs/attributed-editing.md)を参照してください。全文font代替経路でのWord・Chrome等の結果は [composition.md](docs/composition.md) にあります。指定fontで描く部分は、元書体と同一とは限りません。
@@ -34,6 +35,22 @@ python -m venv .venv
 ```
 
 macOS/Linuxでは `.venv/bin/python` を使います。この版の実PDF評価はWindowsで行っています。
+
+## 普通のページを提案→承認→置換で編集する
+
+```powershell
+# 読み取り専用。段落・幅・領域・行間・段落間隔・font候補を根拠付きで提案する（PDFは変更しない）
+.\.venv\Scripts\python.exe -m pdfeditor propose-page input.pdf --page 1 --json proposal.json
+# proposal.jsonを確認し、1回だけ明示的に承認する。結果は既存のshared flow v2状態
+.\.venv\Scripts\python.exe -m pdfeditor accept-page input.pdf --proposal proposal.json --json flow.json --receipt receipt.json
+# 一意に見つかった文字列を置換して保存。続けて編集するときは出力PDFとstate-outputを入力にする
+.\.venv\Scripts\python.exe -m pdfeditor replace-text input.pdf edited.pdf --state flow.json --state-output edited.json --find "申請書" --replacement "各種申請書"
+```
+
+- fontはインストール済みfont（Windowsは `%WINDIR%\Fonts` と利用者font）から探し、埋め込みfontと字幅・グリフが一致するものだけを候補にします。名前だけでは採用しません。候補が複数なら `accept-page --provider style-1=<SHA-256>` で選びます。`--font-root` / `--font` で探索先を指定できます。
+- 幅は観測した文字幅をそのまま使わず、折返し位置・左右余白の対称性・周辺要素から決め、未編集のページを同じ位置に再現できる場合だけ提案します。
+- 現在の対象は、tagなし・横書き・1段組・左揃えのページです。tag付きPDF、両端揃えで字間が広がった行、複数段組、同じ字幅のfontがない場合は、編集せずに理由を返します。
+- 提案の値を変える場合は `--overrides overrides.json`（`width`、`region_top`、`region_bottom`、`paragraph_starts`）で明示し、`--paragraph P2` で承認する段落を選べます。変更点は受領記録に残ります。
 
 ## 範囲を確認して編集する
 

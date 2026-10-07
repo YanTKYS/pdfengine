@@ -7,12 +7,14 @@ representative scenarios through the current entry points:
 * one-shot attributed edit (`paragraph.edit_paragraph`);
 * persistent shared flow v2 (`confirm_story` -> `confirm_shared_flow` ->
   `edit_shared_flow` -> `open_shared_flow` -> second edit);
-* semantic layout entry (`semantic_layout.confirm_semantic_layout`).
+* semantic layout entry (`semantic_layout.confirm_semantic_layout`);
+* intent only through the B1 front door (`propose_page_flow` -> `accept_page_flow`
+  -> `replace_in_flow` -> `edit_shared_flow` -> reopen -> second edit).
 
-Every call supplies the caller declarations those APIs require today
-(glyph selection, width, region bounds, policies, font provider). The probe
-records which declarations were needed; it does not claim user-intent-only
-editing.
+The hand-written routes supply every caller declaration those APIs require
+(glyph selection, width, region bounds, policies, font provider). The B1 route
+supplies only the PDF, the page, find/replacement text and a font candidate set.
+The probe records which declarations each route needed.
 
 Usage: python -I evaluations/critical_path/scenario_probe.py OUT_DIR --font PATH.ttf
 The font must be a TrueType (glyf) font with Japanese coverage (e.g. IPAGothic).
@@ -26,6 +28,7 @@ import pymupdf
 from fontTools.ttLib import TTFont
 
 from pdfeditor.attributed import inspect_paragraph
+from pdfeditor.page_proposal import accept_page_flow, propose_page_flow, replace_in_flow
 from pdfeditor.paragraph import edit_paragraph
 from pdfeditor.selection import make_selection
 from pdfeditor.shared_flow import confirm_shared_flow, edit_shared_flow, open_shared_flow
@@ -71,9 +74,9 @@ class Probe:
         doc.close()
         return path
 
-    def record(self, scenario, path, declarations, fn):
+    def record(self, scenario, path, declarations, fn, *, success='PASS-with-declarations'):
         try:
-            detail, status = fn(), 'PASS-with-declarations'
+            detail, status = fn(), success
         except Exception as exc:  # noqa: BLE001 - classification probe
             detail, status = f'{type(exc).__name__}: {exc}', 'REFUSED'
         self.results.append(dict(scenario=scenario, path=path, status=status,
@@ -132,6 +135,24 @@ class Probe:
             body_style_id='body', edges=[], region_id='R')
         return semantic.confirm_semantic_layout(pdf, model, slot_id='slot-0', semantic=statement)['slots']['slot-0']['semantic']['version']
 
+    def intent(self, src, tag, first, second=None):
+        """B1: PDF + page + find/replacement (+ font candidates); no coordinates, IDs or providers."""
+        proposal = propose_page_flow(src, 1, font_candidates=[self.font])
+        if proposal['status'] != 'proposed':
+            raise RuntimeError('proposal ' + proposal['status'] + ': ' + '; '.join(
+                f"{r['code']}: {r.get('detail', '')}" for r in proposal['refusals'] + proposal['unresolved']))
+        state = accept_page_flow(src, proposal)
+        current, steps = src, [first] + ([second] if second else [])
+        for n, (find, replacement) in enumerate(steps, 1):
+            out = self.root / f'{tag}-intent{n}'
+            edit_shared_flow(current, state, out.with_suffix('.pdf'), out.with_suffix('.json'),
+                             replace_in_flow(state, find, replacement))
+            opened = open_shared_flow(out.with_suffix('.pdf'), json.loads(out.with_suffix('.json').read_text()))
+            if opened['status'] != 'restored':
+                raise RuntimeError(f'edit {n} does not reopen')
+            current, state = out.with_suffix('.pdf'), opened['state']
+        return dict(reopened=f'restored after {len(steps)} edit(s)', lines=self.lines(current))
+
     @staticmethod
     def lines(path):
         with pymupdf.open(path) as doc:
@@ -181,6 +202,18 @@ def main():
                                                      fonts, 'v-' + t, 400))
         p.record(f'S1 on {name} page (persistent)', 'shared flow v2', flow,
                  lambda v=variant, t=tag: p.shared(v, 'v-' + t, {'A': ('p1-l1', 120)}, ('A', 0, 3, '各種申請書')))
+    intent = ['PDF', 'page', 'find text', 'replacement text', 'font candidate set (discovery input)']
+    p.record('S0/S1 intent only: 申請書→各種申請書, then grow to wrap', 'B1 propose/accept + shared flow v2', intent,
+             lambda: p.intent(top, 'b1-s1', ('申請書', '各種申請書'), ('各種申請書', LONG)), success='PASS-intent-only')
+    p.record('S4 intent only: 提出→必ず提出', 'B1 propose/accept + shared flow v2', intent,
+             lambda: p.intent(top, 'b1-s4', ('提出', '必ず提出')), success='PASS-intent-only')
+    p.record('S3 intent only: mixed sizes, お知らせ→ご案内事項', 'B1 propose/accept + shared flow v2', intent,
+             lambda: p.intent(mixed, 'b1-s3', ('お知らせ', 'ご案内事項')), success='PASS-intent-only')
+    p.record('S5 intent only: upper paragraph grows, lower follows', 'B1 propose/accept + shared flow v2', intent,
+             lambda: p.intent(two, 'b1-s5', ('申請書', LONG)), success='PASS-intent-only')
+    tagged = args.out / 'variant-tagged.pdf'
+    p.record('S6 intent only on a tagged page', 'B1 propose/accept + shared flow v2', intent,
+             lambda: p.intent(tagged, 'b1-s6', ('申請書', '各種申請書')), success='PASS-intent-only')
     p.record('S1 text in the semantic layer', 'confirm_semantic_layout', flow + ['complete semantic statement'],
              lambda: p.semantic(args.out / 's1-rev1.pdf', args.out / 's1-rev1.json'))
     (args.out / 'results.json').write_text(json.dumps(p.results, ensure_ascii=False, indent=1))
