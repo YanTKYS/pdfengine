@@ -1743,3 +1743,27 @@ unchanged (`98e71404148d8e69779103a27922c40a65c8f04fed04b2d5adbb8a40d34c23d6`).
 - Windows full suite: 2,084 passed / 7 environment skips / 0 failed.
 - **WINDOWS NARROW SEMANTIC STRIKEOUT LIFECYCLE VALIDATED.**
   [§33](anchored-paint-ownership.md#33-windows-semantic-strikeout-external-validation--2026-10-06).
+
+
+## Acrobat critical path reset — 2026-10-07
+
+From main `7ea0cf94410494c35585c84e1caa4200d18d9941` (PR #55 merged). **Runtime changes: none.**
+
+- New current-state document: [acrobat-critical-path.md](acrobat-critical-path.md). It holds the summit definition,
+  the scenarios, the ranked blockers, the next PR and the DO NOT REDESIGN list.
+- Finding: real Japanese text, mixed styles, rewrapping, paragraph push-down, saving, reopening and re-editing already
+  work in shared flow v2 (T2). They work only when the caller hand-writes the selection, width, region, policies and a
+  font file for every style. The semantic layer (T3) admits only `A`, `B`, space and newline, so it is not on the
+  replacement critical path. Tagged PDFs are refused by persistent source ownership.
+- Read-only probe: [evaluations/critical_path](../evaluations/critical_path/README.md). S1–S5 are BOUNDED, S0
+  (intent only) is UNSUPPORTED, and S6 (tagged, persistent) is REFUSED.
+- **NEXT BLOCKER: B1 — ordinary-page editable-state bootstrap**:
+  - `propose_page_flow` produces an evidence-labelled proposal with metric-verified font providers;
+  - `accept_page_flow` is the single explicit acceptance and returns an unchanged `pdfengine-shared-flow-2` state;
+  - `replace_in_flow` turns a find string into an edit request.
+- Full suite on Linux (Python 3.12.3, lockfile, `-n 4`): **2,070 passed, 21 skipped, 0 failed**. Every skip is
+  environment-only:
+  - Windows Arial and Noto Sans JP are absent (11);
+  - the external corpus is not downloaded (5);
+  - Poppler is absent (3);
+  - no pypdf AES provider (2).
