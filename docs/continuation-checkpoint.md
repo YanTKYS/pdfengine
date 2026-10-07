@@ -1767,3 +1767,35 @@ From main `7ea0cf94410494c35585c84e1caa4200d18d9941` (PR #55 merged). **Runtime 
   - the external corpus is not downloaded (5);
   - Poppler is absent (3);
   - no pypdf AES provider (2).
+
+
+## B1 ordinary-page bootstrap — 2026-10-07
+
+From main `30e5fe74b7426989d04ce1f915790cdedd6e9a5b` (PR #56 merged).
+
+- **ORDINARY-PAGE EDITABLE-STATE BOOTSTRAP COMPLETE** for the scope in
+  [acrobat-critical-path.md §4](acrobat-critical-path.md#4-representative-scenarios). The scope is one page of
+  horizontal text in one column, untagged, left-aligned with natural spacing, with the body font installed at identical
+  metrics.
+- New `pdfeditor/page_proposal.py`:
+  - `propose_page_flow` — read-only, evidence-labelled, bound to the source SHA, the page observation hash and a digest;
+  - `accept_page_flow` — the one explicit acceptance; returns the unchanged `pdfengine-shared-flow-2` state;
+  - `replace_in_flow` — turns a unique find into an edit request.
+- CLI `propose-page` / `accept-page` / `replace-text`.
+- No change to ownership, Transaction, shared-flow validators, T3 or any sidecar schema.
+- Width comes from observed bounds plus page geometry, never from the content width. A break the measure cannot
+  explain becomes a paragraph boundary.
+- Fonts qualify only by glyph presence, the embedded em advance and the PDF widths. Names only order candidates.
+- A proposal must reproduce the unedited page through the T2 no-op plan.
+- Fixture (generated Word-like Japanese A4 page): propose → accept → "申請書" → "各種申請書" → save → `restored` →
+  second edit wraps P2 → P3 moves 232 → 250 pt → `restored`. Title and footer pixels are unchanged.
+- Probe with IPAGothic: S0–S5 `PASS-intent-only`; S6 tagged REFUSED.
+- Tests: new `test_page_proposal.py` (19). Full suite on Linux: **2,089 passed, 21 skipped, 0 failed** (main 2,070 +
+  19). The skips are environment-only:
+  - Windows Arial and Noto Sans JP are absent (11);
+  - the external corpus is not downloaded (5);
+  - Poppler is absent (3);
+  - no pypdf AES provider (2).
+- **Windows / real-PDF validation: not performed** (cloud only).
+- **NEXT BLOCKER: B2 — tagged (marked-content) pages in the persistent route.** B6 (justified 両端揃え source
+  paragraphs) is ranked second, pending real-PDF measurement.
