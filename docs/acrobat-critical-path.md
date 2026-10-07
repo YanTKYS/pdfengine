@@ -407,5 +407,6 @@ produce a state that a person accepted; it cannot bypass any guard.
 
 ## 12. Baseline
 
-The full suite on main `7ea0cf9` (Linux, Python 3.12.3, lockfile, `-n 4`) is recorded in
-[continuation-checkpoint.md](continuation-checkpoint.md#acrobat-critical-path-reset--2026-10-07).
+Full suite on main `7ea0cf9` (Linux, Python 3.12.3, lockfile, `-n 4`): **2,070 passed, 21 skipped, 0 failed**.
+All skips are environment-only: Windows/Noto fonts, external corpus, Poppler and the pypdf AES provider are absent.
+See [continuation-checkpoint.md](continuation-checkpoint.md#acrobat-critical-path-reset--2026-10-07).
