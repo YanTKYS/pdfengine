@@ -137,6 +137,33 @@ def parser() -> argparse.ArgumentParser:
     move.add_argument("--dy", type=float, default=0)
     move.add_argument("--report", type=Path)
     move.add_argument("--removal-output", type=Path)
+    proposal = sub.add_parser("propose-page", help="read-only: propose an editable shared flow for one ordinary page")
+    proposal.add_argument("input", type=Path)
+    proposal.add_argument("--page", type=int, default=1, help="1-based page number")
+    proposal.add_argument("--json", type=Path, required=True, dest="json_path", help="new proposal JSON path")
+    proposal.add_argument("--font-root", type=Path, action="append", dest="font_roots",
+                          help="font directory to search instead of the installed-font roots; repeatable")
+    proposal.add_argument("--font", type=Path, action="append", dest="font_candidates",
+                          help="explicit candidate font file instead of discovery; repeatable")
+    accept = sub.add_parser("accept-page", help="explicitly accept a page proposal as a shared-flow v2 state")
+    accept.add_argument("input", type=Path)
+    accept.add_argument("--proposal", type=Path, required=True)
+    accept.add_argument("--json", type=Path, required=True, dest="json_path", help="new shared-flow state path")
+    accept.add_argument("--receipt", type=Path, help="new acceptance receipt path")
+    accept.add_argument("--paragraph", action="append", dest="paragraph_ids", help="accepted paragraph ID; repeatable")
+    accept.add_argument("--provider", action="append", default=[], metavar="STYLE=SHA256[:INDEX]",
+                        help="choose one metric-verified provider for an ambiguous style")
+    accept.add_argument("--overrides", type=Path, help="JSON object of explicit overrides")
+    replace = sub.add_parser("replace-text", help="replace a unique text occurrence in an accepted flow and save")
+    replace.add_argument("input", type=Path)
+    replace.add_argument("output", type=Path)
+    replace.add_argument("--state", type=Path, required=True)
+    replace.add_argument("--state-output", type=Path, required=True)
+    replace.add_argument("--find", required=True)
+    replace.add_argument("--replacement", required=True)
+    replace.add_argument("--paragraph", dest="paragraph_id")
+    replace.add_argument("--style", dest="style_id")
+    replace.add_argument("--report", type=Path)
     return result
 
 
@@ -231,6 +258,45 @@ def main(argv: list[str] | None = None) -> int:
             if args.report:
                 write_json(args.report, report)
             print(json.dumps(report, ensure_ascii=False, indent=2))
+        elif args.command == "propose-page":
+            from .page_proposal import propose_page_flow
+            check_new_outputs([args.json_path], [args.input])
+            report = propose_page_flow(args.input, args.page, font_candidates=args.font_candidates,
+                                       font_roots=args.font_roots)
+            write_json(args.json_path, report)
+            print(json.dumps({k: report[k] for k in ("status", "refusals", "unresolved", "digest")},
+                             ensure_ascii=False, indent=2))
+        elif args.command == "accept-page":
+            from .page_proposal import accept_page_flow_report
+            check_new_outputs([args.json_path, args.receipt], [args.input, args.proposal, args.overrides])
+            choices = {}
+            for item in args.provider:
+                style, _, value = item.partition("=")
+                sha, _, index = value.partition(":")
+                if not style or not sha or style in choices:
+                    raise ValueError("--provider needs STYLE=SHA256[:INDEX] once per style")
+                choices[style] = dict(sha256=sha, font_index=int(index or 0))
+            result = accept_page_flow_report(args.input, read_json(args.proposal), paragraph_ids=args.paragraph_ids,
+                provider_choices=choices or None, overrides=read_json(args.overrides) if args.overrides else None)
+            write_json(args.json_path, result["state"])
+            if args.receipt:
+                write_json(args.receipt, result["receipt"])
+            print(json.dumps(result["receipt"], ensure_ascii=False, indent=2))
+        elif args.command == "replace-text":
+            from .page_proposal import replace_in_flow
+            from .shared_flow import edit_shared_flow, open_shared_flow
+            check_new_outputs([args.output, args.state_output, args.report], [args.input, args.state])
+            opened = open_shared_flow(args.input, read_json(args.state))
+            if opened["status"] != "restored":
+                raise ValueError("shared flow requires confirmation: " + opened["reason"])
+            changes = replace_in_flow(opened["state"], args.find, args.replacement,
+                                      paragraph_id=args.paragraph_id, style_id=args.style_id)
+            report = edit_shared_flow(args.input, opened["state"], args.output, args.state_output, changes)
+            summary = {"changes": changes, "pdf_sha256": report["pdf_sha256"], "model_sha256": report["model_sha256"],
+                       "saves": report["saves"]}
+            if args.report:
+                write_json(args.report, summary)
+            print(json.dumps(summary, ensure_ascii=False, indent=2))
         elif args.command == "inspect-paragraph":
             from .attributed import inspect_paragraph
             check_new_outputs([args.json_path], [args.input, args.selection])
