@@ -1,0 +1,1196 @@
+{
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "mode": "read-only structure validation; no real Word edit lifecycle",
+  "results": [
+    {
+      "file": "word_takeo_notice.pdf",
+      "page": 2,
+      "source_sha256": "245011456ebb025d852fa0dae0ca60d96162a25acb7b850894e663da5660637d",
+      "complete": true,
+      "scopes": 169,
+      "statuses": {
+        "orphan_mcid": 169
+      },
+      "tags": {
+        "/P": 169
+      },
+      "nested_scopes": 0,
+      "supported_owner_bundles": [],
+      "refusal_counts": {},
+      "example_scopes": [
+        {
+          "stream_xref": -66,
+          "invocation": [],
+          "id": "mc0",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 66,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-66-o0",
+          "begin_byte_range": [
+            1,
+            19
+          ],
+          "end_byte_range": [
+            114,
+            117
+          ],
+          "content_byte_range": [
+            19,
+            114
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/P",
+          "properties": {
+            "/MCID": 0
+          },
+          "association": {
+            "status": "orphan_mcid",
+            "mcid": 0,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 66,
+                "generation": 0
+              }
+            },
+            "evidence": "observed source properties",
+            "reason": "document has no StructureTree"
+          }
+        },
+        {
+          "stream_xref": -66,
+          "invocation": [],
+          "id": "mc1",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 66,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-66-o11",
+          "begin_byte_range": [
+            119,
+            137
+          ],
+          "end_byte_range": [
+            248,
+            251
+          ],
+          "content_byte_range": [
+            137,
+            248
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/P",
+          "properties": {
+            "/MCID": 1
+          },
+          "association": {
+            "status": "orphan_mcid",
+            "mcid": 1,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 66,
+                "generation": 0
+              }
+            },
+            "evidence": "observed source properties",
+            "reason": "document has no StructureTree"
+          }
+        },
+        {
+          "stream_xref": -66,
+          "invocation": [],
+          "id": "mc2",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 66,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-66-o22",
+          "begin_byte_range": [
+            253,
+            271
+          ],
+          "end_byte_range": [
+            542,
+            545
+          ],
+          "content_byte_range": [
+            271,
+            542
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/P",
+          "properties": {
+            "/MCID": 2
+          },
+          "association": {
+            "status": "orphan_mcid",
+            "mcid": 2,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 66,
+                "generation": 0
+              }
+            },
+            "evidence": "observed source properties",
+            "reason": "document has no StructureTree"
+          }
+        }
+      ]
+    },
+    {
+      "file": "word_osaka_guideline.pdf",
+      "page": 1,
+      "source_sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+      "complete": true,
+      "scopes": 97,
+      "statuses": {
+        "tree_backed": 97
+      },
+      "tags": {
+        "/P": 44,
+        "/Span": 53
+      },
+      "nested_scopes": 0,
+      "supported_owner_bundles": [],
+      "refusal_counts": {
+        "unsupported marked structure: requires plain /P MCID page envelopes and verified leaf /P owner": 88
+      },
+      "example_scopes": [
+        {
+          "stream_xref": -3,
+          "invocation": [],
+          "id": "mc0",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 3,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-3-o0",
+          "begin_byte_range": [
+            1,
+            19
+          ],
+          "end_byte_range": [
+            169,
+            172
+          ],
+          "content_byte_range": [
+            19,
+            169
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/P",
+          "properties": {
+            "/MCID": 0
+          },
+          "association": {
+            "status": "tree_backed",
+            "mcid": 0,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 3,
+                "generation": 0
+              }
+            },
+            "evidence": "ParentTree lookup and StructureTree K backlink",
+            "struct_parents": 0,
+            "owner_reference": {
+              "xref": 31,
+              "generation": 0
+            },
+            "ancestors": [
+              {
+                "reference": {
+                  "xref": 31,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Span",
+                  "mapped": "/Span"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 30,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/P",
+                  "mapped": "/P"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 29,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Document",
+                  "mapped": "/Document"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 25,
+                  "generation": 0
+                },
+                "type": "/StructTreeRoot",
+                "type_is_name": true,
+                "role": {
+                  "declared": null,
+                  "mapped": null
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": null,
+                "unsupported_semantics": []
+              }
+            ],
+            "owner_role": {
+              "declared": "/Span",
+              "mapped": "/Span"
+            },
+            "owner_children": [
+              0
+            ],
+            "backlink_verified": true,
+            "policy": "structural association only; editing ownership and flow remain undecided"
+          }
+        },
+        {
+          "stream_xref": -3,
+          "invocation": [],
+          "id": "mc1",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 3,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-3-o17",
+          "begin_byte_range": [
+            174,
+            208
+          ],
+          "end_byte_range": [
+            319,
+            322
+          ],
+          "content_byte_range": [
+            208,
+            319
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/Span",
+          "properties": {
+            "/MCID": 1,
+            "/Lang": {
+              "bytes_hex": "656e2d5553"
+            }
+          },
+          "association": {
+            "status": "tree_backed",
+            "mcid": 1,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 3,
+                "generation": 0
+              }
+            },
+            "evidence": "ParentTree lookup and StructureTree K backlink",
+            "struct_parents": 0,
+            "owner_reference": {
+              "xref": 34,
+              "generation": 0
+            },
+            "ancestors": [
+              {
+                "reference": {
+                  "xref": 34,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Span",
+                  "mapped": "/Span"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 1,
+                "unsupported_semantics": [
+                  "/ActualText"
+                ]
+              },
+              {
+                "reference": {
+                  "xref": 30,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/P",
+                  "mapped": "/P"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 29,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Document",
+                  "mapped": "/Document"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 25,
+                  "generation": 0
+                },
+                "type": "/StructTreeRoot",
+                "type_is_name": true,
+                "role": {
+                  "declared": null,
+                  "mapped": null
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": null,
+                "unsupported_semantics": []
+              }
+            ],
+            "owner_role": {
+              "declared": "/Span",
+              "mapped": "/Span"
+            },
+            "owner_children": [
+              1
+            ],
+            "backlink_verified": true,
+            "policy": "structural association only; editing ownership and flow remain undecided"
+          }
+        },
+        {
+          "stream_xref": -3,
+          "invocation": [],
+          "id": "mc2",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 3,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-3-o31",
+          "begin_byte_range": [
+            324,
+            358
+          ],
+          "end_byte_range": [
+            483,
+            486
+          ],
+          "content_byte_range": [
+            358,
+            483
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/Span",
+          "properties": {
+            "/MCID": 2,
+            "/Lang": {
+              "bytes_hex": "656e2d5553"
+            }
+          },
+          "association": {
+            "status": "tree_backed",
+            "mcid": 2,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 3,
+                "generation": 0
+              }
+            },
+            "evidence": "ParentTree lookup and StructureTree K backlink",
+            "struct_parents": 0,
+            "owner_reference": {
+              "xref": 35,
+              "generation": 0
+            },
+            "ancestors": [
+              {
+                "reference": {
+                  "xref": 35,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Span",
+                  "mapped": "/Span"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 2,
+                "unsupported_semantics": [
+                  "/ActualText"
+                ]
+              },
+              {
+                "reference": {
+                  "xref": 30,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/P",
+                  "mapped": "/P"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 29,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Document",
+                  "mapped": "/Document"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 25,
+                  "generation": 0
+                },
+                "type": "/StructTreeRoot",
+                "type_is_name": true,
+                "role": {
+                  "declared": null,
+                  "mapped": null
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": null,
+                "unsupported_semantics": []
+              }
+            ],
+            "owner_role": {
+              "declared": "/Span",
+              "mapped": "/Span"
+            },
+            "owner_children": [
+              2
+            ],
+            "backlink_verified": true,
+            "policy": "structural association only; editing ownership and flow remain undecided"
+          }
+        }
+      ]
+    },
+    {
+      "file": "word_osaka_fire_notice.pdf",
+      "page": 1,
+      "source_sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+      "complete": true,
+      "scopes": 47,
+      "statuses": {
+        "tree_backed": 47
+      },
+      "tags": {
+        "/Span": 45,
+        "/P": 2
+      },
+      "nested_scopes": 0,
+      "supported_owner_bundles": [],
+      "refusal_counts": {
+        "unsupported marked structure: requires plain /P MCID page envelopes and verified leaf /P owner": 42
+      },
+      "example_scopes": [
+        {
+          "stream_xref": -3,
+          "invocation": [],
+          "id": "mc0",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 3,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-3-o0",
+          "begin_byte_range": [
+            1,
+            35
+          ],
+          "end_byte_range": [
+            167,
+            170
+          ],
+          "content_byte_range": [
+            35,
+            167
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/Span",
+          "properties": {
+            "/MCID": 0,
+            "/Lang": {
+              "bytes_hex": "656e2d5553"
+            }
+          },
+          "association": {
+            "status": "tree_backed",
+            "mcid": 0,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 3,
+                "generation": 0
+              }
+            },
+            "evidence": "ParentTree lookup and StructureTree K backlink",
+            "struct_parents": 0,
+            "owner_reference": {
+              "xref": 23,
+              "generation": 0
+            },
+            "ancestors": [
+              {
+                "reference": {
+                  "xref": 23,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Span",
+                  "mapped": "/Span"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": "en",
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": [
+                  "/ActualText"
+                ]
+              },
+              {
+                "reference": {
+                  "xref": 22,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/P",
+                  "mapped": "/P"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 21,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Document",
+                  "mapped": "/Document"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 17,
+                  "generation": 0
+                },
+                "type": "/StructTreeRoot",
+                "type_is_name": true,
+                "role": {
+                  "declared": null,
+                  "mapped": null
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": null,
+                "unsupported_semantics": []
+              }
+            ],
+            "owner_role": {
+              "declared": "/Span",
+              "mapped": "/Span"
+            },
+            "owner_children": [
+              0
+            ],
+            "backlink_verified": true,
+            "policy": "structural association only; editing ownership and flow remain undecided"
+          }
+        },
+        {
+          "stream_xref": -3,
+          "invocation": [],
+          "id": "mc1",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 3,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-3-o16",
+          "begin_byte_range": [
+            172,
+            206
+          ],
+          "end_byte_range": [
+            452,
+            455
+          ],
+          "content_byte_range": [
+            206,
+            452
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/Span",
+          "properties": {
+            "/MCID": 1,
+            "/Lang": {
+              "bytes_hex": "6a612d4a50"
+            }
+          },
+          "association": {
+            "status": "tree_backed",
+            "mcid": 1,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 3,
+                "generation": 0
+              }
+            },
+            "evidence": "ParentTree lookup and StructureTree K backlink",
+            "struct_parents": 0,
+            "owner_reference": {
+              "xref": 22,
+              "generation": 0
+            },
+            "ancestors": [
+              {
+                "reference": {
+                  "xref": 22,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/P",
+                  "mapped": "/P"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 21,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Document",
+                  "mapped": "/Document"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 17,
+                  "generation": 0
+                },
+                "type": "/StructTreeRoot",
+                "type_is_name": true,
+                "role": {
+                  "declared": null,
+                  "mapped": null
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": null,
+                "unsupported_semantics": []
+              }
+            ],
+            "owner_role": {
+              "declared": "/P",
+              "mapped": "/P"
+            },
+            "owner_children": [
+              {
+                "reference": {
+                  "xref": 23,
+                  "generation": 0
+                }
+              },
+              1,
+              {
+                "reference": {
+                  "xref": 26,
+                  "generation": 0
+                }
+              },
+              {
+                "reference": {
+                  "xref": 27,
+                  "generation": 0
+                }
+              }
+            ],
+            "backlink_verified": true,
+            "policy": "structural association only; editing ownership and flow remain undecided"
+          }
+        },
+        {
+          "stream_xref": -3,
+          "invocation": [],
+          "id": "mc2",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 3,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-3-o43",
+          "begin_byte_range": [
+            457,
+            491
+          ],
+          "end_byte_range": [
+            605,
+            608
+          ],
+          "content_byte_range": [
+            491,
+            605
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/Span",
+          "properties": {
+            "/MCID": 2,
+            "/Lang": {
+              "bytes_hex": "656e2d5553"
+            }
+          },
+          "association": {
+            "status": "tree_backed",
+            "mcid": 2,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 3,
+                "generation": 0
+              }
+            },
+            "evidence": "ParentTree lookup and StructureTree K backlink",
+            "struct_parents": 0,
+            "owner_reference": {
+              "xref": 26,
+              "generation": 0
+            },
+            "ancestors": [
+              {
+                "reference": {
+                  "xref": 26,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Span",
+                  "mapped": "/Span"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": "en",
+                "parent_backlink_verified": true,
+                "parent_child_index": 2,
+                "unsupported_semantics": [
+                  "/ActualText"
+                ]
+              },
+              {
+                "reference": {
+                  "xref": 22,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/P",
+                  "mapped": "/P"
+                },
+                "page_reference": {
+                  "xref": 3,
+                  "generation": 0
+                },
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 21,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Document",
+                  "mapped": "/Document"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 17,
+                  "generation": 0
+                },
+                "type": "/StructTreeRoot",
+                "type_is_name": true,
+                "role": {
+                  "declared": null,
+                  "mapped": null
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": null,
+                "unsupported_semantics": []
+              }
+            ],
+            "owner_role": {
+              "declared": "/Span",
+              "mapped": "/Span"
+            },
+            "owner_children": [
+              2
+            ],
+            "backlink_verified": true,
+            "policy": "structural association only; editing ownership and flow remain undecided"
+          }
+        }
+      ]
+    },
+    {
+      "file": "print_ubiquiti.pdf",
+      "page": 1,
+      "source_sha256": "0a547f5879df8b2eb1eeb22b5a01c7c4187c49edcee7fd11f957c06d3a9bccff",
+      "complete": true,
+      "scopes": 1,
+      "statuses": {
+        "tree_backed": 1
+      },
+      "tags": {
+        "/P": 1
+      },
+      "nested_scopes": 0,
+      "supported_owner_bundles": [],
+      "refusal_counts": {},
+      "example_scopes": [
+        {
+          "stream_xref": -2,
+          "invocation": [],
+          "id": "mc0",
+          "namespace": {
+            "kind": "page",
+            "reference": {
+              "xref": 2,
+              "generation": 0
+            }
+          },
+          "begin_operator_id": "s-2-o341",
+          "begin_byte_range": [
+            5699,
+            5717
+          ],
+          "end_byte_range": [
+            5998,
+            6001
+          ],
+          "content_byte_range": [
+            5717,
+            5998
+          ],
+          "enclosing_scope_ids": [],
+          "tag": "/P",
+          "properties": {
+            "/MCID": 0
+          },
+          "association": {
+            "status": "tree_backed",
+            "mcid": 0,
+            "namespace": {
+              "kind": "page",
+              "reference": {
+                "xref": 2,
+                "generation": 0
+              }
+            },
+            "evidence": "ParentTree lookup and StructureTree K backlink",
+            "struct_parents": 0,
+            "owner_reference": {
+              "xref": 52,
+              "generation": 0
+            },
+            "ancestors": [
+              {
+                "reference": {
+                  "xref": 52,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/NonStruct",
+                  "mapped": "/NonStruct"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 51,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/H1",
+                  "mapped": "/H1"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 50,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/NonStruct",
+                  "mapped": "/NonStruct"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 49,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Div",
+                  "mapped": "/Div"
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 48,
+                  "generation": 0
+                },
+                "type": "/StructElem",
+                "type_is_name": true,
+                "role": {
+                  "declared": "/Document",
+                  "mapped": "/Document"
+                },
+                "page_reference": null,
+                "language": "en-CA",
+                "parent_backlink_verified": true,
+                "parent_child_index": 0,
+                "unsupported_semantics": []
+              },
+              {
+                "reference": {
+                  "xref": 47,
+                  "generation": 0
+                },
+                "type": "/StructTreeRoot",
+                "type_is_name": true,
+                "role": {
+                  "declared": null,
+                  "mapped": null
+                },
+                "page_reference": null,
+                "language": null,
+                "parent_backlink_verified": true,
+                "parent_child_index": null,
+                "unsupported_semantics": []
+              }
+            ],
+            "owner_role": {
+              "declared": "/NonStruct",
+              "mapped": "/NonStruct"
+            },
+            "owner_children": [
+              {
+                "/Type": "/MCR",
+                "/Pg": {
+                  "reference": {
+                    "xref": 2,
+                    "generation": 0
+                  }
+                },
+                "/MCID": 0
+              }
+            ],
+            "backlink_verified": true,
+            "policy": "structural association only; editing ownership and flow remain undecided"
+          }
+        }
+      ]
+    }
+  ]
+}

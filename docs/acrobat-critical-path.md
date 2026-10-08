@@ -3,14 +3,18 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: main `30e5fe74b7426989d04ce1f915790cdedd6e9a5b` plus the B1 front door (`pdfeditor/page_proposal.py`,
-  CLI `propose-page` / `accept-page` / `replace-text`), 2026-10-07.
-- **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope in §4.
-- Evidence: the source code; [tests/test_page_proposal.py](../tests/test_page_proposal.py) on a generated Word-like
-  Japanese A4 page; and a read-only probe that calls production APIs only, with a real font (IPAGothic)
-  ([scenario_probe.py](../evaluations/critical_path/scenario_probe.py),
-  [probe-results.json](../evaluations/critical_path/probe-results.json)). Linux, Python 3.12.3, lockfile versions.
-  **No Windows run and no real-world PDF corpus were used** (cloud only).
+- State: starting main `b395150d41e2cbddfb10b15d0eaeb9f5db202029` plus B2, 2026-10-08.
+- **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
+- **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
+  This does not claim support for arbitrary Office/PDF-UA structures.
+- Evidence: [B1 tests](../tests/test_page_proposal.py),
+  [B2 tests](../tests/test_tagged_page_proposal.py), and
+  [implementation/evidence report](tagged-persistent-editing.md).
+  The B2 fixture lifecycle ran on Windows. The existing real corpus received
+  [read-only structural inspection](../evaluations/tagged/structure-probe.json).
+  **No real Word edit lifecycle or Word application/export validation was performed.**
+- Earlier B1 Linux real-font probe: [scenario_probe.py](../evaluations/critical_path/scenario_probe.py)
+  / [probe-results.json](../evaluations/critical_path/probe-results.json). Its S6 refusal describes pre-B2 behavior.
 
 ## 1. Summit definition
 
@@ -62,7 +66,7 @@ not on the replacement path.
 
 ### 2.1 What the runtime builds automatically for a PDF opened for the first time
 
-For an untagged, horizontal, one-column page whose body font is installed with identical metrics, it builds everything
+For an untagged or supported tree-backed tagged, horizontal, one-column page whose body font is installed with identical metrics, it builds everything
 the T2 state needs:
 
 - the paragraphs and their order;
@@ -138,13 +142,13 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 | S3 | Mixed styles in one paragraph | **PASS** for mixed sizes of one font program (probe). Bold/regular with two font programs needs a verified provider for each; this was not probed. | Probe `S3 intent only` |
 | S4 | Japanese mid-sentence replacement of a different length | **PASS** | Probe "提出" → "必ず提出" |
 | S5 | The upper paragraph grows and the lower one keeps its relation | **PASS** | Fixture: P3 232 → 250 pt (27 pt gap kept); probe: P2 150 → 162 pt (30 pt gap) |
-| S6 | S1 on a tagged PDF (Word "Save as PDF" default) | **REFUSED** at proposal (`unsupported-for-persistent-flow: tagged-page`) | B2 |
+| S6 | Persistent tagged replacement, reflow and re-edit | **PASS** for the verified same-owner leaf-P subset; other patterns **REFUSED** | B2 lifecycle: MCID/tree identity plus pixels |
 
 **Supported scope of PASS:**
 
 - one page;
 - horizontal text in one column of non-overlapping paragraphs;
-- untagged;
+- untagged, or balanced page-level `/P` MCID scopes whose complete ordered bundle belongs to one leaf `/P` StructElem;
 - left-aligned, naturally spaced source lines;
 - every body font program installed with identical metrics;
 - no foreign content inside the column band.
@@ -156,7 +160,7 @@ saves.
 
 | Boundary | Where it is refused |
 |---|---|
-| Tagged pages: per-line MCID marked content breaks the common paragraph state (`attributed.py:115`), and source ownership refuses marked content (`source_ownership.py:134`) | Proposal refusal `paragraph-evidence` / `unsupported-for-persistent-flow` |
+| Tagged structures outside B2: unrelated owners, Span/run trees, MCR children, ActualText/OC, editable Artifact, extra properties, nested scopes, split lines, Forms, malformed trees or nonzero object generations | Structural proof refuses; no stripping, repair or tree mutation |
 | Justified or spaced source lines (Japanese Word's default body alignment is 両端揃え) | `layout-not-reproduced` or `shared-flow-confirmation` (varying tracking) |
 | No installed font with identical metrics (Linux servers, CFF/OTF fonts, missing fonts) | `unresolved: no-metric-verified-provider` |
 | Several columns, tables, or foreign content inside the column | `multiple-columns`, `region` |
@@ -165,34 +169,28 @@ saves.
 | Single-line-only columns: the line pitch evidence is the line box (no leading evidence) | Proposed with the label `observed-line-box` |
 | Rotated pages, vertical text beside the column | `rotated-page`, `nonhorizontal-text`, `no-horizontal-text` |
 
-## 6. Ranked blockers (after B1)
+## 6. Ranked blockers (after B1/B2)
 
 ### B1 — Ordinary-page editable-state bootstrap: COMPLETE
 
 Done for the supported scope in §4. Remaining B1-adjacent work is listed as its own blocker below, never by relaxing
 B1's proofs.
 
-### #1 B2 — Tagged (marked-content) pages in the persistent route
+### B2 — Tagged persistent editing: COMPLETE for the supported subset
 
-- **Current limit:** two existing guards refuse tagged pages.
-  - Per-line `/P <</MCID n>> BDC … EMC` gives each line a different non-inline state, so `inspect_paragraph` refuses a
-    multi-line paragraph.
-  - `source_ownership.context` refuses an owner inside marked content.
-- **What the user cannot do:** keep editing a Word "Save as PDF" document (tagged by default) or a PDF/UA public
-  document.
-- **Evidence:**
-  - fixture test `test_tagged_page_is_refused_for_the_persistent_route`;
-  - probe S6;
-  - the earlier real Word evidence in [attributed-editing.md](attributed-editing.md): a Takeo Word PDF was refused
-    because the MCID history changes inside the selection.
-- **PDFs unlocked:** tagged Word and Office exports and PDF/UA documents, the ordinary case for Japanese public
-  documents.
-- **Prerequisite:** B1 (done), so tagged pages are reachable without hand-written state.
-- **Risk:** medium. Marked content must be treated as structure, not paint state, and the island must keep its MCID
-  spans and the ParentTree backlink. `marked_content.py` already reads ParentTree read-only.
-- **Reuse:** the B1 proposal, T2, ownership witness and Transaction stay; only the marked-content rules change.
+- `marked_content.paragraph_structure` proves the ordered MCID bundle and existing tree links.
+- Only this proof separates structural scopes from attributed non-inline paint state.
+- Option B puts reflowed text in the first existing MCID; other same-owner sequences stay empty.
+  No MCID is invented and no StructTree/ParentTree object changes.
+- Current-revision source witnesses reobserve and bind the bundle; the unchanged T2 writer and
+  Transaction provide first save, reopen, wrap/push-down, second save and re-edit.
+- The save adapter uses pypdf's full-load, full-rewrite mode to preserve original indirect IDs
+  on supported tagged PDFs. Ordinary traversal cloning would renumber the tree on later saves.
+- Refusal boundaries remain explicit. Existing Osaka pages have per-run Span owners and
+  ActualText/mixed children; none of the four probed pages qualifies as a complete supported
+  bundle. A broader Office claim needs additional structure-preserving policies and evidence.
 
-### #2 B6 — Justified (両端揃え) source paragraphs in the proposal
+### #1 B6 — Justified (両端揃え) source paragraphs in the proposal
 
 - **Current limit:** B1 reproduces left-aligned, naturally spaced lines only. Spread lines fail reproduction, and
   varying per-line `Tc` makes tracking unknown.
@@ -203,10 +201,12 @@ B1's proofs.
   - `alignment.py` / [confirmed-alignment.md](confirmed-alignment.md) let T2 lay out `justify` / `character`.
 
   B6 is a proposal extension (propose the alignment and its evidence), not a new engine.
-- **Unverified:** how often real Word output is spread like this needs a Windows real-PDF run. That run would also
-  re-rank B2 against B6.
+- **Unverified:** real Word end-to-end coverage and justification prevalence remain unmeasured.
+  The Windows B2 corpus probe establishes structural boundaries only. B6 stays ahead of B3
+  because existing spacing/alignment machinery can address natural Word justification without
+  introducing a new font system; neither is implemented by B2.
 
-### #3 B3 — Font fidelity without an identical installed font
+### #2 B3 — Font fidelity without an identical installed font
 
 - **Current limit:** when no installed font has identical metrics, the proposal is `unresolved`. T2 also re-renders
   retained text with the provider. Only `glyf` TrueType providers are accepted.
@@ -214,12 +214,12 @@ B1's proofs.
   program.
 - **Reuse:** the retained-glyph path of `ParagraphShaper` and the identity map.
 
-### #4 B4 — Layout beyond one column and one region
+### #3 B4 — Layout beyond one column and one region
 
 Multi-column, tables, growth past the proposed region, and pushing foreign content. Acrobat parity does not require
 most of this.
 
-### #5 B5 — Real text in the semantic layer (T3)
+### #4 B5 — Real text in the semantic layer (T3)
 
 Not on the replacement path; decorations, publication and style reinterpretation on real text come after B3.
 
@@ -227,46 +227,34 @@ Not on the replacement path; decorations, publication and style reinterpretation
 
 ```
 B1 bootstrap (COMPLETE)
-├→ B2 tagged ownership ──────┐
-├→ B6 justified proposal ────┼→ Word/Office-produced Japanese PDFs edit at PASS
-├→ B3 font fidelity ─────────┘   (B3 also decides servers / CFF fonts)
-└→ B4 layout scope (partial)
+├→ B2 same-owner tagged ownership (COMPLETE, narrow subset)
+├→ B6 justified proposal (NEXT)
+├→ B3 font fidelity
+└→ B4 layout scope
         B3 → B5 semantic real text
 ```
+
+Real Office coverage additionally requires broader tagged structure patterns;
+that boundary is not solved by B6 or B3.
 
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: B2 — tagged (marked-content) pages in the persistent route
+NEXT BLOCKER: B6 — justified Japanese paragraphs in the proposal
 ```
 
-When it is removed, tagged ordinary documents (Word "Save as PDF", PDF/UA exports) move from REFUSED to the B1 path.
+B6 ranks ahead of B3 based on the existing source-spacing observer and confirmed
+justify layout support. The B2 work does not change justification, font fallback
+or CFF support. Current real-corpus structure evidence is too narrow to claim
+that most Word documents now reach PASS.
 
-It comes before B6 for three reasons:
+## 9. Next PR scope
 
-- it is backed by real-PDF evidence already in the repository;
-- it is refused by two independent existing guards;
-- B6 is an extension of the B1 proposal using existing justify support, and its real-world prevalence is not yet
-  measured.
-
-The next Windows real-PDF validation should measure both. If it shows that most target PDFs are untagged but
-justified, B6 goes first.
-
-## 9. Next PR (B2) — scope
-
-- **Paragraph state.** Treat a marked-content span that wraps whole lines as structure, not non-inline paint state.
-  The paragraph keeps one non-inline state when the only difference between lines is their MCID span.
-- **Ownership.** Allow the owned island inside marked content only with a structure-preserving rule:
-  - the rewritten text stays inside its original `BDC … EMC` spans, or one span chosen by an explicit rule;
-  - MCIDs and the ParentTree/StructTree backlinks are unchanged, verified by `marked_content.py`;
-  - the witness includes the marked-content context.
-- **Proposal.** `propose_page_flow` stops refusing tagged pages and labels the marked-content evidence.
-- **Acceptance criterion.** The tagged variant of the B1 fixture edits through propose → accept → replace → reopen →
-  second edit, and the structure tree still resolves every MCID.
-- **Refusals that stay:**
-  - ActualText and optional content;
-  - artifacts that cross paragraphs;
-  - marked content that splits a line.
+Propose and prove justified alignment using existing spacing evidence, then
+retain B1's no-edit reproduction gate. Do not weaken tag, font, width or
+ownership proofs to make justified pages pass. Broader tagged trees remain a
+separate, explicitly scoped follow-up: different MCIDs under different owners
+cannot be concentrated into one MCID without changing their logical ownership.
 
 ## 10. Not next (deliberately)
 
@@ -289,7 +277,8 @@ justified, B6 goes first.
 9. **Semantic authority layers, canonical writer, decoration paint ownership, L3 publication; exact rational layout in
    T3.**
 
-## 12. Baseline
+## 12. Validation
 
-The full suite for this state is recorded in
-[continuation-checkpoint.md](continuation-checkpoint.md#b1-ordinary-page-bootstrap--2026-10-07).
+B1 baseline: [continuation checkpoint](continuation-checkpoint.md#b1-ordinary-page-bootstrap--2026-10-07).
+B2 contract, reproducible commands, Windows evidence and limitations: [B2 report](tagged-persistent-editing.md).
+Final full-suite counts are recorded in the B2 PR and final report.

@@ -105,7 +105,7 @@ def layout(paragraphs=PARAGRAPHS, *, first_baseline=160.0):
     return result
 
 
-def make_page(path, full_font, *, lines=None, tagged=False, drawings=(), rotate=0, matrix=None):
+def make_page(path, full_font, *, lines=None, tagged=False, tree_backed=False, drawings=(), rotate=0, matrix=None):
     lines = layout() if lines is None else lines
     used = ''.join(line[3] for line in lines)
     embedded = subset_font(full_font, used)
@@ -122,7 +122,7 @@ def make_page(path, full_font, *, lines=None, tagged=False, drawings=(), rotate=
         tm = matrix(x, PAGE[1] - baseline) if matrix else f'1 0 0 1 {x:g} {PAGE[1] - baseline:g}'
         tc = f'{spacing[0]:g} Tc ' if spacing else ('0 Tc ' if any(len(l) > 4 for l in lines) else '')
         ops = f'BT /F1 {size:g} Tf {tc}{tm} Tm 0 g {codes} Tj ET'
-        body.append(f'/P <</MCID {index}>> BDC {ops} EMC' if tagged else ops)
+        body.append(f'/P <</MCID {index}>> BDC {ops} EMC' if tagged or tree_backed else ops)
     for x0, y0, x1, y1 in drawings:
         body.append(f'q 0.8 g {x0:g} {PAGE[1] - y1:g} {x1 - x0:g} {y1 - y0:g} re f Q')
     doc.update_stream(xref, ('\n'.join(body) + '\n').encode())
@@ -131,6 +131,32 @@ def make_page(path, full_font, *, lines=None, tagged=False, drawings=(), rotate=
     path = Path(path)
     doc.save(path)
     doc.close()
+    if tree_backed:
+        from pypdf import PdfReader, PdfWriter
+        from pypdf.generic import ArrayObject, DictionaryObject, NameObject, NumberObject
+        writer = PdfWriter(clone_from=PdfReader(path))
+        root = DictionaryObject({NameObject('/Type'): NameObject('/StructTreeRoot')})
+        root_ref = writer._add_object(root)
+        document = DictionaryObject({NameObject('/Type'): NameObject('/StructElem'),
+            NameObject('/S'): NameObject('/Document'), NameObject('/P'): root_ref})
+        document_ref = writer._add_object(document)
+        parents, owners = [], []
+        # Title, P1 (two lines), P2, P3 (two lines), footer.
+        for group in ([0], [1, 2], [3], [4, 5], [6]):
+            owner = DictionaryObject({NameObject('/Type'): NameObject('/StructElem'),
+                NameObject('/S'): NameObject('/P'), NameObject('/P'): document_ref,
+                NameObject('/Pg'): writer.pages[0].indirect_reference,
+                NameObject('/K'): ArrayObject([NumberObject(i) for i in group])})
+            ref = writer._add_object(owner)
+            owners.append(ref)
+            parents.extend([ref] * len(group))
+        document[NameObject('/K')] = ArrayObject(owners)
+        root[NameObject('/K')] = ArrayObject([document_ref])
+        root[NameObject('/ParentTree')] = writer._add_object(DictionaryObject({
+            NameObject('/Nums'): ArrayObject([NumberObject(0), ArrayObject(parents)])}))
+        writer.pages[0][NameObject('/StructParents')] = NumberObject(0)
+        writer._root_object[NameObject('/StructTreeRoot')] = root_ref
+        writer.write(path)
     return path
 
 

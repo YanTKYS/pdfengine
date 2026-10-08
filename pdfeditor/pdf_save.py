@@ -180,7 +180,15 @@ def program_pdf_bytes(source, page_number, data, *, font_builders: Mapping[str, 
     reader = PdfReader(source)
     if reader.is_encrypted and not reader.decrypt(""):
         raise PdfError("password required")
-    writer = PdfWriter(clone_from=reader)
+    # Tagged ownership binds actual indirect identities. Ordinary traversal
+    # cloning renumbers the tree on the next save when page fonts have grown.
+    # Pinned pypdf's public full-load mode preserves IDs while still producing
+    # a full rewrite, not incremental revisions. Reachability pruning below
+    # continues to discard superseded streams/resources.
+    tagged = '/StructTreeRoot' in reader.trailer['/Root']
+    preserve_ids = tagged and not any(generation not in (0, 65535) and entries
+                                     for generation, entries in reader.xref.items())
+    writer = PdfWriter(reader, full=True) if preserve_ids else PdfWriter(clone_from=reader)
     # Keep the source's PDF version. A clone otherwise writes pypdf's default
     # %PDF-1.3 header, which silently changes (usually lowers) the version the
     # written content is interpreted against. The catalog /Version is cloned.

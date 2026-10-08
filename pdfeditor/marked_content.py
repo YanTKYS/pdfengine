@@ -7,6 +7,7 @@ association. Even that association makes no claim about editing ownership.
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 from pypdf import PdfReader
@@ -50,6 +51,17 @@ def _plain(value, seen=None, depth=0):
     return str(value)
 
 
+def _child_evidence(value):
+    """Describe K operands without expanding referenced pages or tree cycles."""
+    if isinstance(value, IndirectObject):
+        return {'reference': _reference(value)}
+    if isinstance(value, dict):
+        return {str(k): _child_evidence(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_child_evidence(v) for v in value]
+    return _plain(value)
+
+
 class _Structure:
     def __init__(self, root):
         self.root = _object(root.get("/StructTreeRoot"))
@@ -88,12 +100,16 @@ class _Structure:
     def _role(self, role):
         declared = str(role) if role is not None else None
         resolved = declared
+        if role is not None and not isinstance(role, NameObject):
+            return {'declared': declared, 'mapped': None, 'error': 'structure role is not a PDF name'}
         roles = _object(self.root.get("/RoleMap", {}))
         visited = set()
         while resolved in roles:
             if resolved in visited:
                 return {"declared": declared, "mapped": None, "error": "RoleMap cycle"}
             visited.add(resolved)
+            if not isinstance(roles[resolved], NameObject):
+                return {'declared': declared, 'mapped': None, 'error': 'RoleMap target is not a PDF name'}
             resolved = str(roles[resolved])
         return {"declared": declared, "mapped": resolved}
 
@@ -105,9 +121,23 @@ class _Structure:
             if not isinstance(node, dict) or id(node) in seen or len(result) >= 128:
                 raise ValueError("invalid or cyclic StructureTree parent chain")
             seen.add(id(node))
+            parent = node.get('/P')
+            if parent is not None:
+                children = _object(_object(parent).get('/K', []))
+                children = children if isinstance(children, list) else [children]
+                reachable = sum(_same_reference(reference, child) for child in children) == 1
+            else:
+                reachable = _same_reference(reference, self.root)
+                children = []
             result.append({"reference": _reference(reference), "type": str(node.get("/Type")),
+                           "type_is_name": isinstance(node.get('/Type'), NameObject),
                            "role": self._role(node.get("/S")), "page_reference": _reference(node.get("/Pg")),
-                           "language": _plain(node.get("/Lang"))})
+                           "language": _plain(node.get("/Lang")),
+                           "parent_backlink_verified": reachable,
+                           "parent_child_index": next((i for i, child in enumerate(children)
+                                                       if _same_reference(reference, child)), None),
+                           "unsupported_semantics": sorted(k for k in ('/ActualText', '/Alt', '/E', '/A', '/C', '/OC',
+                                                                        '/NS', '/Phoneme', '/PhoneticAlphabet') if k in node)})
             if _same_reference(reference, self.root):
                 return result
             reference = node.get("/P")
@@ -154,6 +184,7 @@ class _Structure:
                 parent = obj.get("/P")
             children = _object(node.get("/K", []))
             children = children if isinstance(children, list) else [children]
+            result['owner_children'] = _child_evidence(children)
             matches = 0
             for child in children:
                 item = _object(child)
@@ -287,3 +318,103 @@ def observe_marked_content(source, page=1):
     result["page_program_sha256"] = hashlib.sha256(data).hexdigest()
     walk(pdf_page, _object(pdf_page.get("/Resources", {})), data, -page_ref["xref"], [], [], [], "page")
     return result
+
+
+def _digest(value):
+    return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False,
+                                     separators=(',', ':')).encode()).hexdigest()
+
+
+def paragraph_structure(content, selected, *, offset=None):
+    """Prove the narrow, leaf-/P, same-owner MCID bundle (never ownership).
+
+    All original envelopes stay in place. The first receives all new text;
+    subsequent envelopes remain empty. Thus visual lines never allocate MCIDs.
+    An offset is used only to reobserve an already owned island, including an
+    empty one; the caller separately proves marker and glyph containment.
+    """
+    if not any(b.operator.name in ('BDC', 'BMC', 'EMC') for b in content.boundaries):
+        return None
+    if not hasattr(content, '_marked_observation'):
+        content._marked_observation = observe_marked_content(content.source, content.page.number + 1)
+    observed = content._marked_observation
+    events = [e for e in content.events if any(set(c.source_orders) & selected for c in e.chars)]
+    scopes = observed['scopes']
+    def active(position):
+        return [s for s in scopes if not s['invocation'] and
+                s['content_byte_range'][0] <= position < s['content_byte_range'][1]]
+    stacks = [active(e.operator.start) for e in events]
+    if offset is not None:
+        stacks.append(active(offset))
+    if not any(stacks):
+        return None
+    def refuse(reason):
+        raise PdfError('unsupported marked structure: ' + reason)
+    if not observed['complete']:
+        refuse('malformed BDC/EMC')
+    if any(generation not in (0, 65535) and entries for generation, entries in content.reader.xref.items()):
+        refuse('persistent tagged output requires generation-zero object references')
+    if any(e.invocation for e in events) or any(len(s) != 1 for s in stacks):
+        refuse('nested, mixed unmarked, or Form content')
+    first = min((s[0] for s in stacks), key=lambda s: s['begin_byte_range'][0])
+    owner = first['association'].get('owner_reference')
+    if owner is None or any(s[0]['association'].get('owner_reference') != owner for s in stacks):
+        refuse('paragraph needs one tree-backed owner')
+    bundle = [s for s in scopes if s['association'].get('owner_reference') == owner]
+    if any(any(parent['id'] in s['enclosing_scope_ids'] for parent in bundle) for s in scopes):
+        refuse('nested marked content inside paragraph envelope')
+    mcids = []
+    for s in bundle:
+        a = s['association']
+        if (s['invocation'] or s['namespace']['kind'] != 'page' or s['enclosing_scope_ids'] or
+                s['end_byte_range'] is None or s['tag'] != '/P' or set(s['properties']) != {'/MCID'} or
+                a['status'] != 'tree_backed' or a.get('backlink_verified') is not True or
+                a.get('owner_role') != {'declared': '/P', 'mapped': '/P'}):
+            refuse('requires plain /P MCID page envelopes and verified leaf /P owner')
+        if any(not p['parent_backlink_verified'] or p['unsupported_semantics'] for p in a['ancestors']):
+            refuse('ancestor backlink or semantic/layout override')
+        ancestors = a['ancestors']
+        if (ancestors[-1]['type'] != '/StructTreeRoot' or any(not p['type_is_name'] for p in ancestors) or
+                any(p['type'] != '/StructElem' or
+                not isinstance(p['role']['mapped'], str) or not p['role']['mapped'].startswith('/')
+                for p in ancestors[:-1])):
+            refuse('invalid ancestor type or role')
+        mcids.append(a['mcid'])
+    if len(set(mcids)) != len(mcids):
+        refuse('duplicate MCID')
+    if any(sum(s['namespace'] == first['namespace'] and s['properties'].get('/MCID') == mcid
+               for s in scopes) != 1 for mcid in mcids):
+        refuse('duplicate MCID in namespace')
+    if first != bundle[0]:
+        refuse('paragraph does not start in its first MCID')
+    # Integer K only: MCR and mixed StructElem children remain observed, but
+    # are outside this writer's contract. Exact order proves logical order.
+    children = first['association']['owner_children']
+    if children != mcids or any(not isinstance(i, int) or isinstance(i, bool) for i in children):
+        refuse('owner K must be exactly the ordered integer MCID bundle')
+    for event in content.events:
+        if any(s in bundle for s in active(event.operator.start)) and not event.invocation:
+            ids = {i for c in event.chars for i in c.source_orders}
+            if event.error or any(not c.source_orders for c in event.chars) or ids - selected:
+                refuse('foreign or unproven text shares the owner')
+    # A scope may contain a whole line or several whole lines, never split a
+    # visual line across structural items.
+    line_scopes = {}
+    for event, stack in zip(events, stacks):
+        for c in event.chars:
+            for i in set(c.source_orders) & selected:
+                y = round(content.actual[i]['origin'][1], 4)
+                line_scopes.setdefault(y, set()).add(stack[0]['id'])
+    if any(len(s) != 1 for s in line_scopes.values()):
+        refuse('marked content splits a visual line')
+    # Unknown paints in an envelope cannot silently become text ownership.
+    allowed = set('q Q BT ET Tf Tz Tc Tw Ts TL Tr Tm Td TD T* Tj TJ g rg k G RG K BDC EMC'.split())
+    if any(o['operator'] not in allowed and any(s['id'] in o['active_scope_ids'] for s in bundle)
+           for o in observed['operators']):
+        refuse('non-text operator in structural envelope')
+    records = [{k: s[k] for k in ('id', 'tag', 'namespace', 'begin_byte_range', 'end_byte_range',
+                'content_byte_range', 'properties', 'association')} for s in bundle]
+    semantic = [{k: s[k] for k in ('tag', 'namespace', 'properties', 'association')} for s in bundle]
+    return dict(status='supported-tree-backed', policy='first-existing-mcid-with-empty-siblings',
+                scopes=records, mcids=mcids, identity_sha256=_digest(semantic),
+                bundle_sha256=_digest(records))
