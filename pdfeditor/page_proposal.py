@@ -532,17 +532,16 @@ def _observed_fonts(source, page, column, snapshots):
 
 
 def _persistent_route(source, page, column):
-    """The unchanged source-ownership guard, run read-only on each paragraph's first operator."""
+    """Read-only source context and tagged-bundle proof for each paragraph."""
     content = ContentPage(source, page)
     try:
         for para in column:
-            events = content.selected_events({g for line in para for g in line['glyph_ids']})
-            first = min(events, key=lambda e: e.operator.start)
             try:
-                source_ownership.initial_context(content, SimpleNamespace(first=first))
+                events = content.selected_events({g for line in para for g in line['glyph_ids']})
+                first = min(events, key=lambda e: e.operator.start)
+                source_ownership.initial_context(content, SimpleNamespace(first=first, events=events))
             except PdfError as exc:
-                tagged = any(b.marked_content_depth for b in content.boundaries
-                             if b.operator.end <= first.operator.end)
+                tagged = any(b.marked_content_depth for b in content.boundaries)
                 return dict(code='unsupported-for-persistent-flow',
                             detail=('tagged-page: ' if tagged else '') + str(exc), paragraph_first_line=para[0]['id'])
     finally:
@@ -632,6 +631,8 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
             style_spans=[dict(start=s['start'], end=s['end'], style_id=s['style_id']) for s in snapshot['spans']],
             policy=policy, evidence=('break-not-explained-by-width' if para[0]['id'] in width_splits else
                                      'inference line grouping and paragraph segmentation (candidate, not truth)')))
+        if 'marked_structure' in snapshot:
+            paragraphs[-1]['marked_content'] = snapshot['marked_structure']
     proposal['paragraphs'] = paragraphs
     if len(snapshots) != len(column):
         proposal['status'] = 'refused'

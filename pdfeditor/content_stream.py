@@ -254,6 +254,7 @@ class TextEvent:
 
 class ContentPage:
     def __init__(self,path,page_number):
+        self.source=path
         self.reader=PdfReader(path)
         if self.reader.is_encrypted:self.reader.decrypt("")
         self.pdf_page=self.reader.pages[page_number-1]

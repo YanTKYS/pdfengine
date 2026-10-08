@@ -1,6 +1,7 @@
 """B1 ordinary-page bootstrap: propose -> explicit accept -> existing shared-flow v2 editing."""
 from copy import deepcopy
 import json
+from pathlib import Path
 import shutil
 
 import pymupdf
@@ -258,7 +259,7 @@ def test_installed_font_roots_and_discovery_are_deterministic(tmp_path):
         (tmp_path / name).parent.mkdir(exist_ok=True)
         (tmp_path / name).write_bytes(b'')
     found = discover_font_files([str(tmp_path), str(tmp_path / 'missing')])
-    assert [f.replace(str(tmp_path), '') for f in found] == ['/a.ttc', '/b.TTF', '/c.otf', '/sub/d.ttf']
+    assert [Path(f).relative_to(tmp_path).as_posix() for f in found] == ['a.ttc', 'b.TTF', 'c.otf', 'sub/d.ttf']
 
 
 # -- layout refusals ---------------------------------------------------------------------------

@@ -92,8 +92,19 @@ class SourceParagraph:
             line_of = {g.source_order:n for n,line in enumerate(self.resolved.lines) for g in line.glyphs}
             event_specs = []
             spacing_by_line = {}
+            from .marked_content import paragraph_structure
+            try:
+                self.marked_structure = paragraph_structure(self.content, selected)
+            except PdfError:
+                # Existing one-shot editing keeps its stricter historical
+                # exact-state path. Persistent ownership separately requires
+                # this structural proof and propagates its refusal.
+                self.marked_structure = None
+            def paint_other(state):
+                return {k: v for k, v in state.other.items()
+                        if k != 'marked_content' or self.marked_structure is None}
             clip = _canonical(self.first.state.clip)
-            non_inline_state = _canonical(self.first.state.other)
+            non_inline_state = _canonical(paint_other(self.first.state))
             # Text remains in one paint context. Font/size/color are inline;
             # spacing is classified separately from clip/blend/marked semantics.
             for event in self.events:
@@ -106,7 +117,7 @@ class SourceParagraph:
                     raise PdfError("attributed composition requires opaque fill text")
                 if _canonical(state.clip) != clip:
                     raise PdfError("selected style spans have different active clips")
-                if _canonical(state.other) != non_inline_state:
+                if _canonical(paint_other(state)) != non_inline_state:
                     # The writer replays font, spacing, geometry and fill for
                     # each span under the first event's remaining state. The
                     # interpreter records other state conservatively; it does
@@ -119,7 +130,7 @@ class SourceParagraph:
                     if key.startswith("ExtGState:") and isinstance(value, dict):
                         if value.get("/SMask", "/None") != "/None" or value.get("/BM", "/Normal") != "/Normal":
                             raise PdfError("blend/mask semantics are not inline text styles")
-                    if key == "marked_content" and any(s in str(value) for s in ("/ActualText", "/OC")):
+                    if key == "marked_content" and self.marked_structure is None and any(s in str(value) for s in ("/ActualText", "/OC")):
                         raise PdfError("ActualText and optional-content spans need separate semantics")
                 size = state.size * matrix[3]
                 scale = matrix[0] / matrix[3] * state.tz / 100
@@ -242,6 +253,8 @@ class SourceParagraph:
                  "contract":"Review text, style intervals and line joining. Supply available width; edits use Unicode offsets, not PDF glyph IDs."}
         # JSON-normalize tuples so snapshots can be round-tripped directly.
         value = json.loads(json.dumps(value))
+        if self.marked_structure is not None:
+            value['marked_structure'] = self.marked_structure
         if self.logical is not None:
             value['logical']=self.logical
         value["snapshot_sha256"] = digest(value)

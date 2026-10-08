@@ -129,9 +129,10 @@ def _canonical(value):
     raise PdfError('unsupported source output context evidence')
 
 
-def context(boundary, *, split=False):
+def context(boundary, *, split=False, marked_structure=None):
     """Semantic State evidence, with strings preserved and location fields removed."""
-    if (boundary.text_object and not split or boundary.marked_content_depth
+    if (boundary.text_object and not split or
+            boundary.marked_content_depth != (1 if marked_structure else 0)
             or boundary.compatibility_depth or boundary.pending_path or boundary.pending_clip):
         raise PdfError('source output needs an unmarked, path-free page-level context')
     state = boundary.state
@@ -152,6 +153,8 @@ def context(boundary, *, split=False):
             raise PdfError('unsupported source output clip transform')
         clips.append(dict(rule=clip['rule'], path=clip['path']))
     value['clip'] = clips
+    if marked_structure is not None:
+        value['marked_structure'] = marked_structure['identity_sha256']
     value.update(q_depth=boundary.q_depth, text_object=False,
                  marked_content_depth=0, compatibility_depth=0, pending_path=False, pending_clip=False)
     return digest(_canonical(value))
@@ -168,7 +171,14 @@ def initial_context(content, paragraph):
     if content.errors or audit(content.streams[-content.page.xref])['violations']:
         raise PdfError('invalid source program for source output creation')
     require_text_object_split(content, paragraph.first.operator.end)
-    return context(_boundary(content, paragraph.first.operator.end), split=True)
+    from .marked_content import paragraph_structure
+    selected = (set(paragraph.selection['glyph_ids']) if hasattr(paragraph, 'selection') else
+                {i for e in paragraph.events for c in e.chars for i in c.source_orders})
+    try:
+        structure = paragraph_structure(content, selected)
+    except PdfError as exc:
+        raise PdfError('source output: ' + str(exc)) from exc
+    return context(_boundary(content, paragraph.first.operator.end), split=True, marked_structure=structure)
 
 
 def witness(content, record, span, *, body_grammar=None):
@@ -179,12 +189,19 @@ def witness(content, record, span, *, body_grammar=None):
     if content.errors:
         raise PdfError('source output program has interpreter errors')
     (body_grammar or grammar)(data[body_start:body_end])
-    before = context(_boundary(content, body_start))
-    after = context(_boundary(content, body_end))
+    from .marked_content import paragraph_structure
+    selected = {i for e in content.events if not e.invocation and body_start <= e.operator.start < body_end
+                for c in e.chars for i in c.source_orders}
+    structure = paragraph_structure(content, selected, offset=body_start)
+    before = context(_boundary(content, body_start), marked_structure=structure)
+    after = context(_boundary(content, body_end), marked_structure=structure)
     if before != after:
         raise PdfError('source output changes its surrounding context')
-    return dict(program_sha256=sha(data), range=[start, end], block_sha256=sha(data[start:end]),
-                entry_context_sha256=before)
+    result = dict(program_sha256=sha(data), range=[start, end], block_sha256=sha(data[start:end]),
+                  entry_context_sha256=before)
+    if structure is not None:
+        result['marked_structure'] = structure
+    return result
 
 
 def containment(content, snapshot, span):
@@ -233,7 +250,8 @@ def record_identity(state, sid):
     else:
         current = record['current']
         if (not isinstance(current, dict)
-                or set(current) != {'program_sha256', 'range', 'block_sha256', 'entry_context_sha256'}
+                or set(current) != ({'program_sha256', 'range', 'block_sha256', 'entry_context_sha256'} |
+                                    ({'marked_structure'} if 'marked_structure' in current else set()))
                 or not all(_hex(current[k]) for k in ('program_sha256', 'block_sha256', 'entry_context_sha256'))
                 or not isinstance(current['range'], list) or len(current['range']) != 2
                 or not all(type(v) is int for v in current['range'])
