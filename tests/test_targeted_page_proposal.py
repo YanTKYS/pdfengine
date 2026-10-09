@@ -94,7 +94,7 @@ def test_target_keeps_foreign_and_tagged_guards(world, tmp_path):
     assert any(r['code'] == 'unsupported-for-persistent-flow' for r in p['refusals'])
 
 
-def test_target_retains_irregular_position_refusal(world, tmp_path):
+def test_target_reproduces_witnessed_irregular_positions(world, tmp_path):
     _, font, _, rows = world
     # Like the real Okinawa body, independent Tm positions contract selected gaps.
     text = rows[5][3]
@@ -102,8 +102,18 @@ def test_target_retains_irregular_position_refusal(world, tmp_path):
                   for i, char in enumerate(text)]
     source = fx.make_page(tmp_path / 'positioned.pdf', font.read_bytes(), lines=rows[:5] + fragmented + rows[6:])
     p = propose_page_flow(source, font_candidates=[font], line_ids=['p1-l6'])
-    assert p['status'] == 'refused'
-    assert any(r['code'] == 'layout-not-reproduced' for r in p['refusals'])
+    assert p['status'] == 'proposed', p['refusals']
+    assert p['reproduction']['status'] == 'reproduced'
+    assert p['paragraphs'][0]['policy']['text_placement']['value'] == 'preserve-source-adjacency'
+    state = accept_page_flow(source, p)
+    for index, edit in enumerate((fx.FIRST_EDIT, fx.SECOND_EDIT), 1):
+        output, sidecar = tmp_path / f'edit-{index}.pdf', tmp_path / f'edit-{index}.json'
+        report = edit_shared_flow(source, state, output, sidecar, replace_in_flow(state, *edit))
+        assert report['steps'][0]['report']['retained_glyph_count'] > 0
+        opened = open_shared_flow(output, sidecar)
+        assert opened['status'] == 'restored', opened.get('reason')
+        source, state = output, opened['state']
+    assert report['steps'][0]['report']['new_line_count'] == 2
 
 
 def test_cli_target(world, tmp_path):

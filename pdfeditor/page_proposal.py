@@ -3,7 +3,8 @@
 A proposal is observation + evidence + a candidate interpretation of one page.
 It is never authority. Only `accept_page_flow`, an explicit caller act, turns
 it into the existing `confirm_story` / `confirm_shared_flow` arguments, and the
-unchanged shared-flow v2 validators decide the resulting state.
+shared-flow v2 validators decide the resulting state. Irregular source
+adjacency is an explicit optional paragraph policy, confirmed with the proposal.
 
 Nothing here writes a PDF or a sidecar, adds a sidecar schema, or relaxes a
 guard. Scope: one page, horizontal text, one column of non-overlapping
@@ -20,7 +21,8 @@ Evidence rules:
   half of the written decimal quantum). Names only order verified candidates.
 * Before a proposal is offered (and again on acceptance) the exact shared-flow
   state is built and planned with no edits; it must reproduce the observed line
-  breaks and baselines (`elements._close`, the shared-flow geometry tolerance).
+  breaks, baselines, widths and every painted glyph origin (`elements._close`,
+  the existing shared-flow geometry tolerance).
   A proposal that cannot reproduce the page is refused.
 """
 from copy import deepcopy
@@ -50,7 +52,7 @@ from .layout import _SPACES, _safe_boundary
 from .model import Rect
 from .selection import make_selection, observation_lines, page_observation_sha, source_sha
 from .shaped_font import FontError, ShapedFont
-from .shared_flow import confirm_shared_flow, plan_shared_flow
+from .shared_flow import SOURCE_PLACEMENT, confirm_shared_flow, plan_shared_flow
 from .story_flow import confirm_story
 from . import source_ownership
 
@@ -637,6 +639,12 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
             proposal['refusals'].append(dict(code='paragraph-evidence', detail=f'{pid} ({para[0]["id"]}): {exc}'))
             continue
         snapshots.append(snapshot)
+        spacing = snapshot['spacing']
+        if (any(line['distribution'] == 'irregular' for line in spacing['lines'])
+                and all(line['tc'] == [0.0] and line['tw'] == [0.0] for line in spacing['lines'])):
+            policy['text_placement'] = dict(value=SOURCE_PLACEMENT,
+                evidence='observed source glyph adjacency; not an inferred tracking or justify policy',
+                editing='retain existing codes and same-line adjacent source gaps; shape replacement and new boundaries normally')
         paragraphs.append(dict(id=pid, order=len(paragraphs) + 1, page=page, text=snapshot['text'],
             line_ids=[line['id'] for line in para], glyph_ids=glyph_ids, line_joiner=joiner,
             lines=[dict(id=line['id'], text=line['text'], baseline=line['baseline']) for line in para],
@@ -784,7 +792,8 @@ def _arguments(analysis, plan):
                             first_baseline=region['first_baseline'])},
         region_order=['R1'], slot_regions={pid: {'part': 'R1'} for pid in plan['ids']},
         paragraph_policies={pid: {k: policy[k]['value'] for k in ('min_line_height', 'first_line_indent', 'keep_together',
-                                                                  'break_before', 'break_after', 'empty')}
+                                                                  'break_before', 'break_after', 'empty', 'text_placement')
+                                  if k in policy}
                             for pid, policy in zip(plan['ids'], plan['policies'])},
         follows=[dict(before=f['before'], after=f['after'], minimum_baseline_gap=f['minimum_baseline_gap'],
                       region_start='reset-to-region-baseline') for f in plan['follows']],
@@ -800,7 +809,7 @@ def _confirm(analysis, plan):
 
 
 def _reproduce(source, state, plan):
-    """No-op shared-flow plan must place every observed line where it is (elements._close)."""
+    """No-op T2 must reproduce line allocation and each source glyph origin."""
     try:
         result = plan_shared_flow(source, state, {})
     except PdfError as exc:
@@ -826,8 +835,28 @@ def _reproduce(source, state, plan):
         if not _close([line['width'] for line in planned], [line['right'] - line['x'] for line in para]):
             return dict(status='not-reproduced', detail=f'{pid}: planned line widths differ from observed line widths '
                                                       '(justified or spaced source text)')
+        # Equal line extents alone do not prove reproduction: opposite gap
+        # errors can cancel. Compare every painted Unicode occurrence using
+        # its source offset, never a nearest-position or text search match.
+        from .logical_element import paragraph_from_snapshot
+        snapshot = state['slots'][by_paragraph[pid]]['binding']['paragraph']
+        paragraph = paragraph_from_snapshot(source, snapshot)
+        try:
+            painted = set()
+            for glyph in fragment['glyphs']:
+                start, end = glyph['start'], glyph['end']
+                unit = paragraph.units[start]
+                if (end != start + 1 or unit.observation is None or unit.text != glyph['text']
+                        or not _close(glyph['origin'], unit.observation['origin'])):
+                    return dict(status='not-reproduced', detail=f'{pid}: planned glyph position differs at Unicode {start}')
+                painted.add(start)
+            if any(i not in painted and unit.text not in _SPACES + '\r\n'
+                   for i, unit in enumerate(paragraph.units)):
+                return dict(status='not-reproduced', detail=f'{pid}: no-edit layout drops a painted character')
+        finally:
+            paragraph.close()
     return dict(status='reproduced', method='plan_shared_flow with no edits; line starts exact, baselines and line '
-                                            'widths within the shared-flow geometry tolerance (elements._close)',
+                                            'widths and each painted glyph origin within the shared-flow geometry tolerance (elements._close)',
                 lines=sum(len(p) for p in plan['column']))
 
 

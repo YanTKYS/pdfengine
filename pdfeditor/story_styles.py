@@ -215,3 +215,25 @@ def project(state, edits, typing_style_id=None):
 def replacement(binding, text, spans):
     return [dict(start=0,end=len(binding['paragraph']['text']),runs=[
         dict(text=text[s['start']:s['end']],style_id='logical:'+s['style_id']) for s in spans])]
+
+
+def source_edits(state, edits, typing_style_id=None):
+    """Translate validated logical edits without discarding untouched source identity.
+
+    Resolve each replacement's styles with the same projector as the whole
+    paragraph. No text matching: repeated characters keep their actual source
+    offsets, and newly inserted characters can never inherit a source gap.
+    """
+    project(state, edits, typing_style_id)  # validates the complete disjoint request first
+    result = []
+    original_length = len(state['logical']['text'])
+    for edit in sorted(edits, key=lambda e: (e['start'], e['end'])):
+        text, spans, _ = project(state, [edit], typing_style_id)
+        ids = style_ids(text, spans, state['style_registry'])
+        start, end = edit['start'], edit['end']
+        stop = start + len(text) - (original_length - (end - start))
+        inserted = text[start:stop]
+        runs = [dict(text=inserted[s['start']:s['end']], style_id='logical:'+s['style_id'])
+                for s in canonical_spans(ids[start:stop])]
+        result.append(dict(start=start, end=end, runs=runs))
+    return result
