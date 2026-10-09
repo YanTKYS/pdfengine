@@ -1,5 +1,8 @@
 # B2: structure-preserving persistent tagged editing
 
+Subsequent real-PDF evidence: [targeted Japanese persistent editing](real-japanese-persistent-editing.md)
+validates an untagged Kyoto heading through B1/T2. It does not widen this B2 structural subset.
+
 Starting main: `b395150d41e2cbddfb10b15d0eaeb9f5db202029` (PR #57).
 Branch: `codex/tagged-persistent-editing`. Implementer: GPT-6 Astra.
 

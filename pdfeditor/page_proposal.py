@@ -277,7 +277,8 @@ def _columns(paragraphs):
 class _Analysis:
     """Everything a proposal is derived from; recomputed (never trusted) on acceptance."""
 
-    def __init__(self, source, page):
+    def __init__(self, source, page, line_ids=None):
+        self.target_line_ids = None
         self.source, self.page = str(source), page
         self.refusals, self.unresolved = [], []
         with pymupdf.open(source) as doc:
@@ -293,6 +294,17 @@ class _Analysis:
         objects = observation_lines(model)
         self.lines = [_line_record(line, f'p{page}-l{i}') for i, line in enumerate(objects, 1)]
         by_id = {id(line): record for line, record in zip(objects, self.lines)}
+        if line_ids is not None:
+            observed = [line['id'] for line in self.lines]
+            if (not isinstance(line_ids, (list, tuple)) or not line_ids
+                    or any(not isinstance(i, str) or i not in observed for i in line_ids)
+                    or len(set(line_ids)) != len(line_ids)):
+                raise PdfError('line_ids must name distinct observed page lines')
+            positions = [observed.index(i) for i in line_ids]
+            if positions != list(range(positions[0], positions[-1] + 1)):
+                raise PdfError('line_ids must be consecutive in observed page order')
+            self.target_line_ids = list(line_ids)
+            objects = [objects[i] for i in positions]
         self.nonhorizontal = [g for g in model.glyphs
                               if abs(g.direction[0] - 1) > .001 or abs(g.direction[1]) > .001]
         self.obstacles = [dict(kind=o.kind, bounds=list(o.bbox.tuple())) for o in model.obstacles]
@@ -567,6 +579,8 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
         font_search=dict(font_roots=font_roots, font_candidates=None if font_roots is not None else font_files),
         refusals=list(analysis.refusals), unresolved=[], paragraphs=[], region=None, follows=[], styles=[],
         foreign_content=[], reproduction=dict(status='not-run'))
+    if analysis.target_line_ids is not None:
+        proposal['target'] = dict(line_ids=analysis.target_line_ids, provenance='caller-selected-observed-lines')
     if proposal['refusals']:
         proposal['status'] = 'refused'
         return proposal, None
@@ -835,14 +849,17 @@ def _seal(proposal):
     return value
 
 
-def propose_page_flow(source, page=1, *, font_candidates=None, font_roots=None):
+def propose_page_flow(source, page=1, *, font_candidates=None, font_roots=None, line_ids=None):
     """Read-only: an evidence-labelled shared-flow proposal for one ordinary page.
 
     `font_candidates` (explicit files) or `font_roots` (directories) inject the
     candidate set; by default the platform's installed-font roots are searched.
+    `line_ids` optionally selects consecutive observed lines as the candidate
+    region. Every other line and paint remains fixed foreign content; width,
+    fonts, source ownership and unchanged-layout reproduction still qualify it.
     """
     files, roots = _font_files(font_candidates, font_roots)
-    analysis = _Analysis(source, page)
+    analysis = _Analysis(source, page, line_ids=line_ids)
     proposal, _ = _build(analysis, font_files=files, font_roots=roots)
     return _seal(proposal)
 
@@ -858,7 +875,11 @@ def _recompute(source, proposal):
         raise PdfError('page-flow proposal belongs to another PDF revision')
     search = proposal['font_search']
     files, roots = _font_files(search['font_candidates'], search['font_roots'])
-    analysis = _Analysis(source, binding['page'])
+    target = proposal.get('target')
+    if target is not None and (not isinstance(target, dict) or set(target) != {'line_ids', 'provenance'}
+                               or target['provenance'] != 'caller-selected-observed-lines'):
+        raise PdfError('invalid page-flow target')
+    analysis = _Analysis(source, binding['page'], line_ids=target['line_ids'] if target else None)
     if analysis.observation_sha256 != binding['page_observation_sha256']:
         raise PdfError('page observation changed since the proposal')
     fresh, _ = _build(analysis, font_files=files, font_roots=roots)

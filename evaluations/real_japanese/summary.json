@@ -1,0 +1,238 @@
+{
+  "verdict": "FIRST REAL-WORLD JAPANESE PDF EDITING VALIDATED — PASS",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "source": {
+    "url": "https://www.city.kyoto.lg.jp/kankyo/cmsfiles/contents/0000311/311254/kaitou_hp.pdf",
+    "sha256": "61ef6bb9aaf0e6c6099fc7b4b67de804d311855ec0265d4648d197fb75dfad46",
+    "file": "word_kyoto_questions.pdf",
+    "page": 1
+  },
+  "target": {
+    "line_ids": [
+      "p1-l1"
+    ],
+    "text": "質問に対する回答 "
+  },
+  "original_sha_unchanged": true,
+  "whole_page_first_refusal": {
+    "code": "multiple-columns",
+    "detail": "text beside the main column (p1-l4) overlaps it vertically"
+  },
+  "targeted_status": "needs-choice",
+  "provider_choices": {
+    "style-1": {
+      "sha256": "4bde3e6392b96910fb59094c6c1a4dbfae18fee78d0bf13dc30616837c4f95db",
+      "font_index": 0
+    }
+  },
+  "provider_outline_evidence": [
+    {
+      "source_postscript_name": "MS-Gothic",
+      "source_version": "Version 5.32",
+      "checked_glyphs": 9,
+      "normalized_outline_coordinates_contours_flags": "exactly equal",
+      "provider_sha256": "4bde3e6392b96910fb59094c6c1a4dbfae18fee78d0bf13dc30616837c4f95db",
+      "font_index": 0
+    }
+  ],
+  "spacing": {
+    "schema": "pdfengine-spacing-evidence-1",
+    "lines": [
+      {
+        "index": 0,
+        "left": 85.08000183105469,
+        "right": 187.08379776269533,
+        "natural_width": 102.00383137499999,
+        "measured_width": 102.00379593164064,
+        "tc": [
+          0.0
+        ],
+        "tw": [
+          0.0
+        ],
+        "gaps": [
+          {
+            "measured": 12.000442504882812,
+            "nominal": 12.000450749999999,
+            "tc": 0.0,
+            "tw": 0.0,
+            "tj": -0.0,
+            "reposition": -8.245117186334028e-06,
+            "whitespace": false,
+            "repositioned": false
+          },
+          {
+            "measured": 12.000450134277344,
+            "nominal": 12.000450749999999,
+            "tc": 0.0,
+            "tw": 0.0,
+            "tj": -0.0,
+            "reposition": -6.157226550840278e-07,
+            "whitespace": false,
+            "repositioned": false
+          },
+          {
+            "measured": 12.000450134277344,
+            "nominal": 12.000450749999999,
+            "tc": 0.0,
+            "tw": 0.0,
+            "tj": -0.0,
+            "reposition": -6.157226550840278e-07,
+            "whitespace": false,
+            "repositioned": false
+          },
+          {
+            "measured": 12.000442504882812,
+            "nominal": 12.000450749999999,
+            "tc": 0.0,
+            "tw": 0.0,
+            "tj": -0.0,
+            "reposition": -8.245117186334028e-06,
+            "whitespace": false,
+            "repositioned": false
+          },
+          {
+            "measured": 12.000442504882812,
+            "nominal": 12.000450749999999,
+            "tc": 0.0,
+            "tw": 0.0,
+            "tj": -0.0,
+            "reposition": -8.245117186334028e-06,
+            "whitespace": false,
+            "repositioned": false
+          },
+          {
+            "measured": 12.000442504882812,
+            "nominal": 12.000450749999999,
+            "tc": 0.0,
+            "tw": 0.0,
+            "tj": -0.0,
+            "reposition": -8.245117186334028e-06,
+            "whitespace": false,
+            "repositioned": false
+          },
+          {
+            "measured": 12.000457763671875,
+            "nominal": 12.000450749999999,
+            "tc": 0.0,
+            "tw": 0.0,
+            "tj": -0.0,
+            "reposition": 7.013671876165972e-06,
+            "whitespace": false,
+            "repositioned": false
+          },
+          {
+            "measured": 12.000442504882812,
+            "nominal": 12.000450749999999,
+            "tc": 0.0,
+            "tw": 0.0,
+            "tj": -0.0,
+            "reposition": -8.245117186334028e-06,
+            "whitespace": false,
+            "repositioned": false
+          }
+        ],
+        "glyph_count": 9,
+        "distribution": "none",
+        "excess": -3.544335936567222e-05,
+        "excess_tracking": 0.0
+      }
+    ],
+    "tracking": {
+      "value": 0.0,
+      "provenance": "observed_source",
+      "requires_confirmation": false,
+      "evidence": {
+        "lines": 1
+      }
+    },
+    "alignment_candidates": [
+      {
+        "value": "unknown",
+        "provenance": "unknown",
+        "reason": "a single line cannot witness its alignment"
+      }
+    ],
+    "contract": "Evidence only; alignment and tracking need explicit confirmation."
+  },
+  "stages": [
+    {
+      "revision": 1,
+      "status": "restored",
+      "text": "寄せられた質問に対する回答 ",
+      "line_count": 1,
+      "audit": {
+        "mupdf_outside_changed_pixels": 0,
+        "other_pages_pixels_equal": true,
+        "foreign_text_equal": true,
+        "drawings_equal": true,
+        "images_equal": true,
+        "structure": "untagged before and after; no structure fabricated",
+        "all_pages_marked_content_complete": true,
+        "marked_scopes": 0,
+        "mcids": 0
+      }
+    },
+    {
+      "revision": 2,
+      "status": "restored",
+      "text": "寄せられた質問に対する回答について ",
+      "line_count": 1,
+      "audit": {
+        "mupdf_outside_changed_pixels": 0,
+        "other_pages_pixels_equal": true,
+        "foreign_text_equal": true,
+        "drawings_equal": true,
+        "images_equal": true,
+        "structure": "untagged before and after; no structure fabricated",
+        "all_pages_marked_content_complete": true,
+        "marked_scopes": 0,
+        "mcids": 0
+      }
+    }
+  ],
+  "accepted_region": {
+    "id": "R1",
+    "page": 1,
+    "bounds": [
+      85.08000183105469,
+      0.0,
+      510.24000549316406,
+      106.83955383300781
+    ],
+    "x": 85.08000183105469,
+    "width": 425.1600036621094,
+    "first_baseline": 98.39999389648438,
+    "evidence": {
+      "top": "page-edge",
+      "bottom": "foreign-content-boundary",
+      "left": "column-left-edge",
+      "right": "available-width",
+      "x": "paragraph-left-edge",
+      "width": "margin-symmetry",
+      "first_baseline": "first-paragraph-baseline"
+    },
+    "width_interval": {
+      "lower": 96.00358581542969,
+      "upper": null,
+      "cap": 510.24000549316406,
+      "candidates": [
+        {
+          "evidence": "margin-symmetry",
+          "value": 425.1600036621094,
+          "consistent": true
+        }
+      ],
+      "evidence_basis": [
+        "observed-line-right-edges"
+      ]
+    }
+  },
+  "no_external_pdf_or_font_committed": true,
+  "optional_wrap": {
+    "status": "refused",
+    "reason": "paragraphs exceed all explicitly confirmed shared regions",
+    "outputs_written": false
+  }
+}
