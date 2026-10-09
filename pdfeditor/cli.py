@@ -145,6 +145,8 @@ def parser() -> argparse.ArgumentParser:
                           help="font directory to search instead of the installed-font roots; repeatable")
     proposal.add_argument("--font", type=Path, action="append", dest="font_candidates",
                           help="explicit candidate font file instead of discovery; repeatable")
+    proposal.add_argument("--line", action="append", dest="line_ids",
+                          help="target observed line ID in page order; repeat for consecutive lines")
     accept = sub.add_parser("accept-page", help="explicitly accept a page proposal as a shared-flow v2 state")
     accept.add_argument("input", type=Path)
     accept.add_argument("--proposal", type=Path, required=True)
@@ -262,7 +264,7 @@ def main(argv: list[str] | None = None) -> int:
             from .page_proposal import propose_page_flow
             check_new_outputs([args.json_path], [args.input])
             report = propose_page_flow(args.input, args.page, font_candidates=args.font_candidates,
-                                       font_roots=args.font_roots)
+                                       font_roots=args.font_roots, line_ids=args.line_ids)
             write_json(args.json_path, report)
             print(json.dumps({k: report[k] for k in ("status", "refusals", "unresolved", "digest")},
                              ensure_ascii=False, indent=2))

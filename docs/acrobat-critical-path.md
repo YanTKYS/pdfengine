@@ -3,7 +3,7 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `b395150d41e2cbddfb10b15d0eaeb9f5db202029` plus B2, 2026-10-08.
+- State: starting main `7ce8cd43912510325bfcd43be444383e8a4b580c` plus targeted proposals, 2026-10-09.
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -12,7 +12,14 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   [implementation/evidence report](tagged-persistent-editing.md).
   The B2 fixture lifecycle ran on Windows. The existing real corpus received
   [read-only structural inspection](../evaluations/tagged/structure-probe.json).
-  **No real Word edit lifecycle or Word application/export validation was performed.**
+- **FIRST REAL-WORLD JAPANESE PDF EDITING VALIDATED — PASS**, bounded to one
+  existing Kyoto City PDF heading: `質問に対する回答` on page 1. A caller-selected
+  observed line goes through public propose → accept → replace → edit → restored
+  reopen → second edit → restored reopen. Both edits change text length.
+  [Measured report](real-japanese-persistent-editing.md) / [reproducible runner](../evaluations/real_japanese/evaluate.py).
+  The original PDF is unchanged; foreign text, drawings, images, all outside-region
+  MuPDF pixels and the entire second page are unchanged. This is a heading result,
+  **not a body-paragraph, justified-text, arbitrary-tagged-PDF or Word-export claim**.
 - Earlier B1 Linux real-font probe: [scenario_probe.py](../evaluations/critical_path/scenario_probe.py)
   / [probe-results.json](../evaluations/critical_path/probe-results.json). Its S6 refusal describes pre-B2 behavior.
 
@@ -43,19 +50,22 @@ open an ordinary existing PDF (never prepared for pdfengine)
 
 ```
 ordinary PDF
-→ propose_page_flow(pdf, page)            read-only proposal: observation + evidence + candidate interpretation
+→ propose_page_flow(pdf, page, line_ids=...)  optional observed target; read-only evidence + interpretation
 → accept_page_flow(pdf, proposal)          the one explicit act; returns the unchanged pdfengine-shared-flow-2 state
 → replace_in_flow(state, find, replacement)   edit request only; writes nothing
 → edit_shared_flow(...)                    the existing T2 writer: Transaction, ownership, one save, one verification
 → open_shared_flow(...) == restored        → next replace_in_flow / edit_shared_flow
 ```
 
-The CLI is the same path: `propose-page` → `accept-page` → `replace-text` (README).
+The CLI is the same path: `propose-page [--line ID ...]` → `accept-page` → `replace-text` (README).
+Target IDs come from `inspect_selection_source`; they must be distinct, consecutive observed lines in page order.
+Targeting chooses only the candidate text. Every unselected line and paint stays foreign, including content
+elsewhere on a multi-column/table page. All width, region, source, font and reproduction guards still run.
 
 | Stage | Code | What it now does without hand-written input | What still needs the caller |
 |---|---|---|---|
 | Observe | `backend.extract_page`, `selection.observation_lines`, `inference._line_groups/_paragraphs` | Lines, paragraph candidates, the main column, foreign content (other text, paths, images) | — |
-| Propose | `page_proposal._build` | Paragraph selections, column x, available width (§3.1), region bounds, line pitch, first-line indent, follows gaps, logical styles, metric-verified font providers | Review only |
+| Propose | `page_proposal._build` | Paragraph selections, column x, available width (§3.1), region bounds, line pitch, first-line indent, follows gaps, logical styles, metric-verified font providers | Review; optionally choose consecutive observed lines |
 | Verify the proposal | `page_proposal._reproduce` → `shared_flow.plan_shared_flow(state, {})` | The exact T2 state is built and planned with no edits. It must reproduce every observed line break, baseline and line width, or the proposal is refused. | — |
 | Accept | `accept_page_flow` → `confirm_story` → `confirm_shared_flow` | Rechecks the binding, recomputes the proposal, applies explicit choices and overrides, and returns the T2 state | One call; a provider choice only when several fonts verify |
 | Edit | `replace_in_flow` → `edit_shared_flow` | Finds the unique occurrence across the flow, takes its single logical style, and writes through the unchanged T2 path | Find and replacement text |
@@ -66,7 +76,7 @@ not on the replacement path.
 
 ### 2.1 What the runtime builds automatically for a PDF opened for the first time
 
-For an untagged or supported tree-backed tagged, horizontal, one-column page whose body font is installed with identical metrics, it builds everything
+For untagged or supported tree-backed tagged horizontal text in one column, either inferred from the page or selected by observed line IDs, whose font is installed with identical metrics, it builds everything
 the T2 state needs:
 
 - the paragraphs and their order;
@@ -123,6 +133,7 @@ The caller only accepts. Every value carries an evidence label. None of them is 
   and every baseline and line width within `elements._close`, the shared-flow geometry tolerance. Otherwise the
   proposal is refused, and nothing on the page can move silently.
 - **Binding.** The proposal carries the source SHA-256, the page, the page observation hash and a canonical digest.
+  Optional target line IDs and their caller-selected provenance are included and re-observed at acceptance.
   Acceptance recomputes the proposal from the PDF and the recorded font inputs and requires the same digest. An
   edited proposal is refused, even when re-sealed. Changes are explicit `overrides`:
   - `width` — must stay inside the observed bounds;
@@ -163,7 +174,7 @@ saves.
 | Tagged structures outside B2: unrelated owners, Span/run trees, MCR children, ActualText/OC, editable Artifact, extra properties, nested scopes, split lines, Forms, malformed trees or nonzero object generations | Structural proof refuses; no stripping, repair or tree mutation |
 | Justified or spaced source lines (Japanese Word's default body alignment is 両端揃え) | `layout-not-reproduced` or `shared-flow-confirmation` (varying tracking) |
 | No installed font with identical metrics (Linux servers, CFF/OTF fonts, missing fonts) | `unresolved: no-metric-verified-provider` |
-| Several columns, tables, or foreign content inside the column | `multiple-columns`, `region` |
+| Several columns/tables inside the selected candidate, or foreign content inside its region | `multiple-columns`, `region`; explicit target lines can isolate a safe heading/body elsewhere |
 | Growth past the proposed region (margin symmetry or foreign boundary) | Existing T2 overflow refusal |
 | Headings in another size, footers and other blocks are foreign, not editable in the same flow | By design (one column) |
 | Single-line-only columns: the line pitch evidence is the line box (no leading evidence) | Proposed with the label `observed-line-box` |
@@ -190,21 +201,22 @@ B1's proofs.
   ActualText/mixed children; none of the four probed pages qualifies as a complete supported
   bundle. A broader Office claim needs additional structure-preserving policies and evidence.
 
-### #1 B6 — Justified (両端揃え) source paragraphs in the proposal
+### #1 B6 — Reproduce real Japanese body spacing in the proposal
 
-- **Current limit:** B1 reproduces left-aligned, naturally spaced lines only. Spread lines fail reproduction, and
-  varying per-line `Tc` makes tracking unknown.
-- **Why it ranks here:** Japanese Word's default body alignment is 両端揃え. At an A4 / 30 mm measure, 40 full-width
-  10.5 pt characters leave 5.2 pt of slack, which justification spreads over the line.
-- **Reuse:** high. The machinery already exists:
-  - `spacing.py` proves justify candidates from operator evidence;
-  - `alignment.py` / [confirmed-alignment.md](confirmed-alignment.md) let T2 lay out `justify` / `character`.
-
-  B6 is a proposal extension (propose the alignment and its evidence), not a new engine.
-- **Unverified:** real Word end-to-end coverage and justification prevalence remain unmeasured.
-  The Windows B2 corpus probe establishes structural boundaries only. B6 stays ahead of B3
-  because existing spacing/alignment machinery can address natural Word justification without
-  introducing a new font system; neither is implemented by B2.
+- **Measured blocker:** after explicit targeting, Okinawa page 2 item (7) has safe
+  ownership/region evidence and exact MS Mincho/Arial font metrics, but the no-edit
+  plan fails observed-width reproduction. Its zero-Tc/Tw source uses irregular Tm
+  placement: roughly 0.12 pt contractions, punctuation compression and a mixed-font
+  space; measured width is about 7.37 pt below nominal including trailing space.
+- **Current success boundary:** the naturally spaced Kyoto heading passes the actual
+  two-edit persistent lifecycle. This does not validate Japanese body text or justify.
+- **Reuse:** `spacing.py` separates operators and repositioning; `alignment.py` and
+  [confirmed-alignment.md](confirmed-alignment.md) already support proven justify
+  policies. The observed Okinawa pattern is irregular, so it cannot be labelled
+  justify merely because Word often justifies body paragraphs.
+- **Next evidence:** select a real body paragraph, prove its exact spacing model and
+  reproduce its unedited geometry before offering edits. Keep the current no-edit
+  reproduction, source, font and structural guards. Broader Office tags remain separate.
 
 ### #2 B3 — Font fidelity without an identical installed font
 
@@ -228,7 +240,7 @@ Not on the replacement path; decorations, publication and style reinterpretation
 ```
 B1 bootstrap (COMPLETE)
 ├→ B2 same-owner tagged ownership (COMPLETE, narrow subset)
-├→ B6 justified proposal (NEXT)
+├→ B6 real-body source spacing reproduction (NEXT)
 ├→ B3 font fidelity
 └→ B4 layout scope
         B3 → B5 semantic real text
@@ -240,18 +252,20 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: B6 — justified Japanese paragraphs in the proposal
+NEXT BLOCKER: B6 — evidence-backed reproduction of real Japanese body spacing
 ```
 
-B6 ranks ahead of B3 based on the existing source-spacing observer and confirmed
-justify layout support. The B2 work does not change justification, font fallback
-or CFF support. Current real-corpus structure evidence is too narrow to claim
-that most Word documents now reach PASS.
+B6 ranks ahead of B3 based on measured real-source spacing refusals and existing
+source-spacing/confirmed-alignment machinery. The targeted Kyoto heading is the first
+real Japanese persistent-edit result. It does not establish body-paragraph coverage,
+font fallback, CFF support or broader Office structures. Irregular Tm placement in
+Okinawa is not a license to treat every Word line as justified.
 
 ## 9. Next PR scope
 
-Propose and prove justified alignment using existing spacing evidence, then
-retain B1's no-edit reproduction gate. Do not weaken tag, font, width or
+Measure a real body paragraph and prove its source spacing policy using existing
+spacing evidence; use justified alignment only when that evidence supports it.
+Retain B1's no-edit reproduction gate. Do not weaken tag, font, width or
 ownership proofs to make justified pages pass. Broader tagged trees remain a
 separate, explicitly scoped follow-up: different MCIDs under different owners
 cannot be concentrated into one MCID without changing their logical ownership.
@@ -281,4 +295,8 @@ cannot be concentrated into one MCID without changing their logical ownership.
 
 B1 baseline: [continuation checkpoint](continuation-checkpoint.md#b1-ordinary-page-bootstrap--2026-10-07).
 B2 contract, reproducible commands, Windows evidence and limitations: [B2 report](tagged-persistent-editing.md).
-Final full-suite counts are recorded in the B2 PR and final report.
+Current targeted/B1/B2 focused regression: **69 passed** (12 + 19 + 38), Windows.
+The [real-case report](real-japanese-persistent-editing.md) and
+[measured summary](../evaluations/real_japanese/summary.json) record both actual saved
+revisions, restored reopen, exact provider outlines and independent preservation audits.
+Final full-suite counts and the exact tested commit are recorded in the current PR.
