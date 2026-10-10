@@ -166,20 +166,21 @@ and the linked OFL font in `tmp/b3/fonts/`; verify the SHAs above. Run from the 
 The output directory must be new. The runner invokes production embedded-font
 discovery, not an evaluation-only extraction/provider injection. It writes the
 proposal, explicit acceptance receipt, two revisions/reports, full-page images
-and summary. `font-coverage-summary.json` records the actual local evaluation2 run.
+and summary. `font-coverage-summary.json` records the actual local evaluation3 run.
 
-`tests/test_font_coverage.py` generates tiny TrueType fonts. Its 11 cases cover
+`tests/test_font_coverage.py` generates tiny TrueType fonts. Its 12 cases cover
 missing subset characters, metric-mismatched new providers, equal-metric alternate
 outlines, ambiguity/explicit choice, no-op raster identity, two edits and push-down,
 missing glyph atomic refusal, restricted embedding, malformed fonts/TTC headers,
-invalid face indices, provider/selection tampering and revocation, and the CLI.
+invalid face indices, provider/selection tampering and revocation, the CLI, and
+the recorded default axes of a discovered variable TrueType provider.
 The focused command also covers B1/B2, adjacency, B4 and shaping:
 
 ```sh
 .venv/bin/python -m pytest -q -ra -n 4 tests/test_font_coverage.py \
   tests/test_page_proposal.py tests/test_body_reflow.py tests/test_source_adjacency_flow.py \
   tests/test_targeted_page_proposal.py tests/test_tagged_page_proposal.py tests/test_shaped_font.py
-.venv/bin/python -m pytest -q -ra -n 4
+.venv/bin/python -m pytest -q -ra -n 5
 ```
 
 Final-HEAD test counts and skips are recorded in the PR. No third-party binaries

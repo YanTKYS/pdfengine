@@ -281,7 +281,7 @@ def _coverage_candidates(pool, files, text):
                     shaped.shape(run)
                 ps, family = _font_names(font)
                 entry = dict(path=path, sha256=shaped.source_sha256, font_index=index,
-                    instance_sha256=shaped.instance_sha256, postscript_name=ps, family=family,
+                    instance_sha256=shaped.instance_sha256, variations=shaped.variations, postscript_name=ps, family=family,
                     checked_text=text, qualification='editable embedding + actual HarfBuzz shaping + visible glyphs; no source-metric equivalence claim')
                 key = (entry['sha256'], index)
                 if key not in candidates or path < candidates[key]['path']:
@@ -956,6 +956,8 @@ def _arguments(analysis, plan):
             styles[lid] = dict(provider=provider,
                 provider_relation='substituted' if how == 'caller-substitution' else 'confirmed_reflow_provider')
             if how == 'caller-substitution':
+                if candidate['variations']:
+                    provider['variations'] = dict(candidate['variations'])
                 styles[lid]['provider_selection'] = dict(provenance='explicit-new-glyph-substitution',
                     sha256=candidate['sha256'], font_index=candidate['font_index'],
                     instance_sha256=candidate['instance_sha256'], checked_text=candidate['checked_text'],

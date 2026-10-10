@@ -137,7 +137,7 @@ def validate_registry(state):
                     or choice['qualification'] != 'editable embedding + actual HarfBuzz shaping + visible glyphs; no source-metric equivalence claim'):
                 raise PdfError('new-glyph provider differs from its explicit choice')
             from .shaped_font import ShapedFont
-            checked = ShapedFont(font['path'],font_index=choice['font_index'])
+            checked = ShapedFont(font['path'],font_index=choice['font_index'],variations=font.get('variations'))
             try:
                 if checked.instance_sha256 != choice['instance_sha256']:
                     raise PdfError('new-glyph provider face identity changed')

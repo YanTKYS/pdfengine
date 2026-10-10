@@ -185,3 +185,21 @@ def test_cli_requires_explicit_substitute_choice(coverage,tmp_path,capsys):
     assert main(['replace-text',str(source),str(pdf),'--state',str(state),'--state-output',str(sidecar),
                  '--find','申請書','--replacement',NEW])==0
     assert open_shared_flow(pdf,sidecar)['status']=='restored'
+
+
+def test_discovered_default_variable_instance_survives_reopen(coverage,tmp_path):
+    from fontTools.ttLib import newTable
+    from fontTools.ttLib.tables._f_v_a_r import Axis
+    source,fonts=coverage
+    font=TTFont(fonts['different'])
+    font['fvar']=newTable('fvar');font['fvar'].axes=[];font['fvar'].instances=[]
+    axis=Axis();axis.axisTag='wght';axis.minValue=100;axis.defaultValue=400;axis.maxValue=900
+    axis.flags=0;axis.axisNameID=256;font['fvar'].axes.append(axis)
+    font['gvar']=newTable('gvar');font['gvar'].variations={name:[] for name in font.getGlyphOrder()}
+    provider=tmp_path/'variable.ttf';font.save(provider);font.close()
+    p=propose(source,[provider],tmp_path/'cache')
+    state=accept_page_flow(source,p,provider_choices=choice(provider))
+    assert state['paragraphs']['P2']['style_registry']['style-1']['reflow_provider']['variations']=={'wght':400}
+    pdf,sidecar=tmp_path/'saved.pdf',tmp_path/'saved.json'
+    edit_shared_flow(source,state,pdf,sidecar,replace_in_flow(state,'申請書',NEW,paragraph_id='P2'))
+    assert open_shared_flow(pdf,sidecar)['status']=='restored'

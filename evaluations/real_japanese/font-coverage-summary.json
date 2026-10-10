@@ -21,6 +21,7 @@
       "sha256": "468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2",
       "font_index": 0,
       "instance_sha256": "468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2",
+      "variations": {},
       "postscript_name": "BIZUDMincho-Regular",
       "family": "BIZ UDMincho",
       "checked_text": "応募に関する申請期限、受付窓口及び郵送書類の確認その他詳細仕様書の追加内容",
@@ -33,14 +34,14 @@
     "appearance": "explicit different font for new glyphs; not source outline equivalence",
     "source_programs": [
       {
-        "path": "/workspace/pdfengine/tmp/b3/evaluation2/font-cache/88c3a4ac5ab893810a6ed5f43efa21bab83bb5d58a2de0e8e4ad432a98439e49.ttf",
+        "path": "/workspace/pdfengine/tmp/b3/evaluation3/font-cache/88c3a4ac5ab893810a6ed5f43efa21bab83bb5d58a2de0e8e4ad432a98439e49.ttf",
         "sha256": "88c3a4ac5ab893810a6ed5f43efa21bab83bb5d58a2de0e8e4ad432a98439e49",
         "font_index": 0,
         "source_xref": 22,
         "provenance": "unmodified-embedded-program"
       },
       {
-        "path": "/workspace/pdfengine/tmp/b3/evaluation2/font-cache/bb244b70b266bd673ca80299643fecf5ee95377ce47daa9b6f4b48132ce76013.ttf",
+        "path": "/workspace/pdfengine/tmp/b3/evaluation3/font-cache/bb244b70b266bd673ca80299643fecf5ee95377ce47daa9b6f4b48132ce76013.ttf",
         "sha256": "bb244b70b266bd673ca80299643fecf5ee95377ce47daa9b6f4b48132ce76013",
         "font_index": 0,
         "source_xref": 27,
