@@ -1,0 +1,559 @@
+{
+  "verdict": "REAL-WORLD MULTI-REGION PDF EDITING VALIDATED — PASS",
+  "source": {
+    "url": "https://www.city.kyoto.lg.jp/kankyo/cmsfiles/contents/0000311/311254/kaitou_hp.pdf",
+    "sha256": "61ef6bb9aaf0e6c6099fc7b4b67de804d311855ec0265d4648d197fb75dfad46",
+    "line_ids": [
+      "p1-l34",
+      "p1-l35"
+    ],
+    "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。 "
+  },
+  "source_reproduction": {
+    "status": "reproduced",
+    "method": "plan_shared_flow with no edits; line starts exact, baselines and line widths and each painted glyph origin within the shared-flow geometry tolerance (elements._close)",
+    "lines": 2
+  },
+  "regions": {
+    "R1": {
+      "page": 1,
+      "bounds": [
+        106.08000183105469,
+        684.39990234375,
+        505.36783599853516,
+        753.838752746582
+      ],
+      "x": 106.08000183105469,
+      "width": 399.28783416748047,
+      "first_baseline": 700.9199829101562,
+      "provenance": "explicitly_confirmed"
+    },
+    "R2": {
+      "page": 2,
+      "bounds": [
+        106.08000183105469,
+        54,
+        505.36783599853516,
+        82
+      ],
+      "x": 106.08000183105469,
+      "width": 399.28783416748047,
+      "first_baseline": 70.91998291015625,
+      "provenance": "explicitly_confirmed"
+    }
+  },
+  "boundary": {
+    "boundary_id": "boundary-27fb754e59372a9018418486",
+    "ordinal": 0,
+    "previous_operator": "cm",
+    "next_operator": "q",
+    "operator_context": "cm -> boundary -> q",
+    "q_depth": 0,
+    "scope_policy": null,
+    "has_scope_binding": false,
+    "scope_operators": [],
+    "has_ctm_compensation": true,
+    "has_rectangular_clip_constraint": false,
+    "review_requirements": [
+      "ctm-compensation"
+    ],
+    "review_attributes": {
+      "rectangular_clip": false,
+      "ctm_compensation": true,
+      "q_depth": 0
+    },
+    "authority_digests": {
+      "graphics_state": "1326902fffadafd36a83e87e3ff537b0ae107feea2d30967b83dbb209975cbd5",
+      "graphics_state_scope": null,
+      "ctm_compensation": "8602c00c52856f7eb849ddd3216fa9e7fe40f72863524b34667de3c4b39c6fce",
+      "clip_constraint": null
+    },
+    "geometry": {
+      "destination_empty": true,
+      "clip_check_required": false,
+      "bounds_inside_inherited_clip": true,
+      "checks_passed": true
+    }
+  },
+  "destination_authority": {
+    "position": "confirmed-page-program-boundary",
+    "boundary_id": "boundary-27fb754e59372a9018418486",
+    "source_program_sha256": "28550a4260b94e711bd1c2ddffff9431e7343765b35f61b0e562d02127b2d4fe",
+    "boundary": {
+      "offset": 59,
+      "ordinal": 0,
+      "previous": {
+        "ordinal": 0,
+        "operator": "cm",
+        "start": 0,
+        "end": 59,
+        "sha256": "7a8d6fc5c9d5f9eb13b2046f28f367bedf957f2ba59f477677f0b6fe6b074b77"
+      },
+      "next": {
+        "ordinal": 1,
+        "operator": "q",
+        "start": 60,
+        "end": 61,
+        "sha256": "8e35c2cd3bf6641bdb0e2050b76932cbb2e6034a0ddacc1d9bea82a6ba57f7cf"
+      },
+      "scope": {
+        "q_depth": 0,
+        "text_object": false,
+        "marked_content_depth": 0,
+        "compatibility_depth": 0,
+        "pending_path": false,
+        "pending_clip": false
+      }
+    },
+    "z_order": {
+      "semantics": "after-all-paint-of-the-confirmed-prefix-before-all-paint-of-the-confirmed-suffix",
+      "prefix_paint_operators": 0,
+      "suffix_paint_operators": 38
+    },
+    "graphics_state": {
+      "ctm": [
+        0.75,
+        0.0,
+        0.0,
+        -0.75,
+        0.0,
+        841.9200439453125
+      ],
+      "font_resource": null,
+      "font_size": 0,
+      "character_spacing": 0,
+      "word_spacing": 0,
+      "horizontal_scale": 100,
+      "leading": 0,
+      "rise": 0,
+      "rendering_mode": 0,
+      "fill": [
+        "g",
+        [
+          0
+        ]
+      ],
+      "stroke": [
+        "G",
+        [
+          0
+        ]
+      ],
+      "opacity": 1,
+      "stroke_opacity": 1,
+      "clip": [],
+      "other": {}
+    },
+    "graphics_state_contract": "witnessed page-level state; the block cancels the witnessed CTM with the recorded inverse, sets its own font, text state and fill and restores every parameter with its own q ... Q",
+    "page_group": null,
+    "page_transform": [
+      1.0,
+      0.0,
+      0.0,
+      -1.0,
+      0.0,
+      841.9200439453125
+    ],
+    "page_bounds": [
+      0.0,
+      0.0,
+      595.3200073242188,
+      841.9200439453125
+    ],
+    "initial_clip": "page-crop-box",
+    "isolation": "q-cm-BT-ET-Q",
+    "font_policy": "explicit-paragraph-style-providers",
+    "ctm_compensation": {
+      "policy": "inverse-ctm-inside-block-save",
+      "inverse_basis": "source-decimal-operands",
+      "confirmed_ctm": [
+        0.75,
+        0.0,
+        0.0,
+        -0.75,
+        0.0,
+        841.9200439453125
+      ],
+      "matrix": [
+        "1.33333333333",
+        "0",
+        "0",
+        "-1.33333333333",
+        "0",
+        "1122.56005867"
+      ],
+      "operator": "1.33333333333 0 0 -1.33333333333 0 1122.56005867 cm",
+      "proof": {
+        "source_ctm": [
+          "3/4",
+          "0",
+          "0",
+          "-3/4",
+          "0",
+          "210480011/250000"
+        ],
+        "page_box": [
+          0.0,
+          0.0,
+          595.3200073242188,
+          841.9200439453125
+        ],
+        "models": {
+          "source": {
+            "residual": [
+              0.9999999999975,
+              0.0,
+              0.0,
+              0.9999999999975,
+              0.0,
+              -2.5e-09
+            ],
+            "displacement_bound": 0.001237383612367112
+          },
+          "interpreted": {
+            "residual": [
+              0.9999999999975,
+              0.0,
+              0.0,
+              0.9999999999975,
+              0.0,
+              -5.71875e-08
+            ],
+            "displacement_bound": 0.0012374368413398211
+          }
+        },
+        "arithmetic": "binary32",
+        "unit_roundoff": 5.960464477539063e-08,
+        "rounding_steps": 8,
+        "displacement_bound": 0.0012374368413398211,
+        "tolerance": 0.002
+      }
+    }
+  },
+  "provider": {
+    "sha256": "468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2",
+    "face": 0,
+    "appearance": "explicit substitution; no source equivalence claim"
+  },
+  "stages": [
+    {
+      "stage": "grow",
+      "reopen": "restored",
+      "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発送する場合も、送付物の数量及び発送方法について事前に確認してください。 ",
+      "edit": [
+        "この限りではありません。",
+        "この限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発送する場合も、送付物の数量及び発送方法について事前に確認してください。"
+      ],
+      "audit": {
+        "placements": [
+          {
+            "slot": "slot-0",
+            "page": 1,
+            "range": [
+              0,
+              113
+            ],
+            "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発",
+            "lines": [
+              "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部",
+              "に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある",
+              "場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発"
+            ],
+            "baselines": [
+              700.9199829101562,
+              718.9199829101562,
+              736.9199829101562
+            ],
+            "glyphs": 113,
+            "retained": 49,
+            "provided": 64,
+            "dormant": false
+          },
+          {
+            "slot": "continuation-635a4b031517e67a558b525b",
+            "page": 2,
+            "range": [
+              113,
+              149
+            ],
+            "text": "送する場合も、送付物の数量及び発送方法について事前に確認してください。 ",
+            "lines": [
+              "送する場合も、送付物の数量及び発送方法について事前に確認してください。"
+            ],
+            "baselines": [
+              70.91998291015625
+            ],
+            "glyphs": 35,
+            "retained": 0,
+            "provided": 35,
+            "dormant": false
+          }
+        ],
+        "max_origin_error_pt": 4.455566380556775e-05,
+        "retained_glyphs": 49,
+        "provided_glyphs": 99,
+        "retained_codes_resources_gids_programs_equal": true,
+        "new_outlines_advances_equal_provider": true,
+        "unicode_mupdf_and_pypdf": "exact (pypdf whitespace normalized)",
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_equal": true,
+        "all_glyph_bounds_inside_regions": true,
+        "structure": "untagged; valid PDF 1.x operator nesting"
+      }
+    },
+    {
+      "stage": "second",
+      "reopen": "restored",
+      "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発送する場合も、送付物の数量及び発送方法について事前に確認をお願いします。 ",
+      "edit": [
+        "事前に確認してください。",
+        "事前に確認をお願いします。"
+      ],
+      "audit": {
+        "placements": [
+          {
+            "slot": "slot-0",
+            "page": 1,
+            "range": [
+              0,
+              113
+            ],
+            "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発",
+            "lines": [
+              "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部",
+              "に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある",
+              "場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発"
+            ],
+            "baselines": [
+              700.9199829101562,
+              718.9199829101562,
+              736.9199829101562
+            ],
+            "glyphs": 113,
+            "retained": 113,
+            "provided": 0,
+            "dormant": false
+          },
+          {
+            "slot": "continuation-635a4b031517e67a558b525b",
+            "page": 2,
+            "range": [
+              113,
+              150
+            ],
+            "text": "送する場合も、送付物の数量及び発送方法について事前に確認をお願いします。 ",
+            "lines": [
+              "送する場合も、送付物の数量及び発送方法について事前に確認をお願いします。"
+            ],
+            "baselines": [
+              70.91998291015625
+            ],
+            "glyphs": 36,
+            "retained": 23,
+            "provided": 13,
+            "dormant": false
+          }
+        ],
+        "max_origin_error_pt": 3.0517578125e-05,
+        "retained_glyphs": 136,
+        "provided_glyphs": 13,
+        "retained_codes_resources_gids_programs_equal": true,
+        "new_outlines_advances_equal_provider": true,
+        "unicode_mupdf_and_pypdf": "exact (pypdf whitespace normalized)",
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_equal": true,
+        "all_glyph_bounds_inside_regions": true,
+        "structure": "untagged; valid PDF 1.x operator nesting"
+      }
+    },
+    {
+      "stage": "shorten",
+      "reopen": "restored",
+      "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。 ",
+      "edit": [
+        "この限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発送する場合も、送付物の数量及び発送方法について事前に確認をお願いします。",
+        "この限りではありません。"
+      ],
+      "audit": {
+        "placements": [
+          {
+            "slot": "slot-0",
+            "page": 1,
+            "range": [
+              0,
+              62
+            ],
+            "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。 ",
+            "lines": [
+              "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部",
+              "に一括送付する場合はこの限りではありません。"
+            ],
+            "baselines": [
+              700.9199829101562,
+              718.9199829101562
+            ],
+            "glyphs": 61,
+            "retained": 49,
+            "provided": 12,
+            "dormant": false
+          },
+          {
+            "slot": "continuation-635a4b031517e67a558b525b",
+            "page": 2,
+            "range": [
+              62,
+              62
+            ],
+            "text": "",
+            "lines": [],
+            "baselines": [],
+            "glyphs": 0,
+            "retained": 0,
+            "provided": 0,
+            "dormant": true
+          }
+        ],
+        "max_origin_error_pt": 2.0141601595469183e-05,
+        "retained_glyphs": 49,
+        "provided_glyphs": 12,
+        "retained_codes_resources_gids_programs_equal": true,
+        "new_outlines_advances_equal_provider": true,
+        "unicode_mupdf_and_pypdf": "exact (pypdf whitespace normalized)",
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_equal": true,
+        "all_glyph_bounds_inside_regions": true,
+        "structure": "untagged; valid PDF 1.x operator nesting"
+      }
+    },
+    {
+      "stage": "regrow",
+      "reopen": "restored",
+      "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発送する場合も、送付物の数量及び発送方法について事前に確認してください。 ",
+      "edit": [
+        "この限りではありません。",
+        "この限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発送する場合も、送付物の数量及び発送方法について事前に確認してください。"
+      ],
+      "audit": {
+        "placements": [
+          {
+            "slot": "slot-0",
+            "page": 1,
+            "range": [
+              0,
+              113
+            ],
+            "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発",
+            "lines": [
+              "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部",
+              "に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある",
+              "場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発"
+            ],
+            "baselines": [
+              700.9199829101562,
+              718.9199829101562,
+              736.9199829101562
+            ],
+            "glyphs": 113,
+            "retained": 49,
+            "provided": 64,
+            "dormant": false
+          },
+          {
+            "slot": "continuation-635a4b031517e67a558b525b",
+            "page": 2,
+            "range": [
+              113,
+              149
+            ],
+            "text": "送する場合も、送付物の数量及び発送方法について事前に確認してください。 ",
+            "lines": [
+              "送する場合も、送付物の数量及び発送方法について事前に確認してください。"
+            ],
+            "baselines": [
+              70.91998291015625
+            ],
+            "glyphs": 35,
+            "retained": 0,
+            "provided": 35,
+            "dormant": false
+          }
+        ],
+        "max_origin_error_pt": 4.455566380556775e-05,
+        "retained_glyphs": 49,
+        "provided_glyphs": 99,
+        "retained_codes_resources_gids_programs_equal": true,
+        "new_outlines_advances_equal_provider": true,
+        "unicode_mupdf_and_pypdf": "exact (pypdf whitespace normalized)",
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_equal": true,
+        "all_glyph_bounds_inside_regions": true,
+        "structure": "untagged; valid PDF 1.x operator nesting"
+      }
+    },
+    {
+      "stage": "noop",
+      "reopen": "restored",
+      "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発送する場合も、送付物の数量及び発送方法について事前に確認してください。 ",
+      "edit": null,
+      "audit": {
+        "placements": [
+          {
+            "slot": "slot-0",
+            "page": 1,
+            "range": [
+              0,
+              113
+            ],
+            "text": "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発",
+            "lines": [
+              "100ｇ以内／店舗ですが、送付物が変更となる可能性があるほか、複数店舗分を本部",
+              "に一括送付する場合はこの限りではありません。送付物の内容や数量に変更がある",
+              "場合は、発送前に本市と必要な資料を確認してください。複数店舗分をまとめて発"
+            ],
+            "baselines": [
+              700.9199829101562,
+              718.9199829101562,
+              736.9199829101562
+            ],
+            "glyphs": 113,
+            "retained": 113,
+            "provided": 0,
+            "dormant": false
+          },
+          {
+            "slot": "continuation-635a4b031517e67a558b525b",
+            "page": 2,
+            "range": [
+              113,
+              149
+            ],
+            "text": "送する場合も、送付物の数量及び発送方法について事前に確認してください。 ",
+            "lines": [
+              "送する場合も、送付物の数量及び発送方法について事前に確認してください。"
+            ],
+            "baselines": [
+              70.91998291015625
+            ],
+            "glyphs": 35,
+            "retained": 35,
+            "provided": 0,
+            "dormant": false
+          }
+        ],
+        "max_origin_error_pt": 3.0517578125e-05,
+        "retained_glyphs": 148,
+        "provided_glyphs": 0,
+        "retained_codes_resources_gids_programs_equal": true,
+        "new_outlines_advances_equal_provider": true,
+        "unicode_mupdf_and_pypdf": "exact (pypdf whitespace normalized)",
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_equal": true,
+        "all_glyph_bounds_inside_regions": true,
+        "structure": "untagged; valid PDF 1.x operator nesting"
+      }
+    }
+  ],
+  "overflow_refusal": "paragraphs exceed all explicitly confirmed shared regions",
+  "poppler": "both pages rendered for before/after inspection",
+  "original_sha_unchanged": true
+}

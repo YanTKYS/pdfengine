@@ -3,7 +3,7 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `a740f6fe848f4eef756803731248d6f28922a5ab` plus explicit new-glyph font coverage, 2026-10-10.
+- State: starting main `348856eac4c40e71789f82d8c18778d51b833fb4` plus verified source-adjacency continuation, 2026-10-10.
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -27,6 +27,12 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   characters absent from the source subset. Both saved revisions restore, including B4 wrap/push-down.
   Retained codes, GIDs and font program bytes remain original; added glyphs have the selected provider
   outlines, with no claim of source appearance equivalence. [Font coverage report](../evaluations/real_japanese/font-coverage-report.md).
+- **REAL-WORLD MULTI-REGION PDF EDITING VALIDATED — PASS** for Kyoto City's unmodified Q&A PDF.
+  The final two lines of the page-1 shipping note grow to three lines plus one on page 2, above the
+  untouched next section. The caller explicitly confirms that region and its nonidentity-CTM boundary.
+  Five revisions (grow, generated-slot edit, shorten, regrow, no-op) restore; region-exterior raster is
+  identical throughout. This is **BOUNDED caller-confirmed continuation**, not automatic destination discovery.
+  [Measured continuation report](../evaluations/real_japanese/continuation-report.md).
 - **FIRST REAL-WORLD JAPANESE PDF EDITING VALIDATED — PASS**, previously bounded to one
   existing Kyoto City PDF heading: `質問に対する回答` on page 1. A caller-selected
   observed line goes through public propose → accept → replace → edit → restored
@@ -67,12 +73,13 @@ open an ordinary existing PDF (never prepared for pdfengine)
 ordinary PDF
 → propose_page_flow(pdf, page, line_ids=...)  optional observed target; source unchanged, derived font cache
 → accept_page_flow(pdf, proposal)          the one explicit act; returns the unchanged pdfengine-shared-flow-2 state
+→ optional continuation review → explicit destination confirmation → confirm_shared_flow_continuations(...)
 → replace_in_flow(state, find, replacement)   edit request only; writes nothing
 → edit_shared_flow(...)                    the existing T2 writer: Transaction, ownership, one save, one verification
 → open_shared_flow(...) == restored        → next replace_in_flow / edit_shared_flow
 ```
 
-The CLI is the same path: `propose-page [--line ID ...]` → `accept-page` → `replace-text` (README).
+The continuation attachment is a module API; the ordinary B1 CLI is: `propose-page [--line ID ...]` → `accept-page` → `replace-text` (README).
 Target IDs come from `inspect_selection_source`; they must be distinct, consecutive observed lines in page order.
 Targeting chooses only the candidate text. Every unselected line and paint stays foreign, including content
 elsewhere on a multi-column/table page. All width, region, source, font and reproduction guards still run.
@@ -133,7 +140,7 @@ The caller only accepts. Every value carries an evidence label. None of them is 
   Only explicitly selected lines are included. No-edit reproduction proves every line and glyph; acceptance
   remains explicit. A selection that leaves any chosen line outside the candidate column is refused.
   The existing signed first-line offset places the marker left of the continuation x; a negative T2 policy
-  requires the one-region source-adjacency path and an origin inside the accepted bounds. Width comes from
+  requires source adjacency and an origin inside every accepted region's bounds. Width comes from
   the existing wrap interval, line pitch from the witnessed continuation, and follows from source baselines.
 - **Fonts.** Candidates come from the installed-font roots of the platform (Windows `%WINDIR%\Fonts` and the per-user
   font folder; macOS system, library and user folders; Linux XDG data dirs and `~/.fonts`), or from injected
@@ -171,12 +178,16 @@ The caller only accepts. Every value carries an evidence label. None of them is 
   their logical Unicode; non-whitespace glyphs cannot disappear.
 - **Irregular source spacing.** With observed zero Tc/Tw and irregular source gaps, the proposal exposes
   `text_placement=preserve-source-adjacency`. Explicit acceptance records this optional paragraph policy in
-  the v2 contract. A paragraph has one current source slot in one region, default left layout and no continuation
-  destinations. Existing glyph codes/resources and gaps between still-adjacent same-source-line characters
-  use `ParagraphShaper`'s retained path. Replacement text and new boundaries use qualified providers and
+  the v2 contract, with default left layout. Current owned slots can span explicitly confirmed regions.
+  Validated logical edits project occurrence offsets into each allocated fragment: only glyphs already owned
+  by that current physical slot retain source codes/resources and same-source-line adjacency through
+  `ParagraphShaper`. Text crossing a slot boundary uses the confirmed provider; source resource names
+  never confer destination drawing authority. Saved generated slots become current sources on reopen. Replacement text and new boundaries use qualified providers and
   nominal/source inline metrics. Gap adjustments are not transported across an edit or a newly wrapped edge.
   The source is re-observed on every revision; no unchecked gap array is trusted from a sidecar. Existing
-  real Okinawa items (7)/(8) now demonstrate wrap/push-down in a jointly accepted region.
+  real Okinawa items (7)/(8) demonstrate wrap/push-down in a jointly accepted region. Kyoto demonstrates
+  cross-page continuation, local generated-slot re-edit and dormant-slot deletion/reactivation. Tagged
+  source adjacency still cannot cross independently owned continuation regions.
 - **Binding.** The proposal carries the source SHA-256, the page, the page observation hash and a canonical digest.
   Optional target line IDs and their caller-selected provenance are included and re-observed at acceptance.
   Acceptance recomputes the proposal from the PDF and the recorded font inputs and requires the same digest. An
@@ -202,7 +213,7 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 
 **Supported scope of PASS:**
 
-- one page;
+- one page for intent-only B1; an explicitly reviewed and confirmed additional region for bounded continuation;
 - horizontal text in one column of non-overlapping paragraphs;
 - untagged, or balanced page-level `/P` MCID scopes whose complete ordered bundle belongs to one leaf `/P` StructElem;
 - left-aligned naturally spaced lines, or individually reproduced zero-Tc/Tw irregular source adjacency;
@@ -221,7 +232,7 @@ saves.
 | Spacing not reproducible by qualified natural shaping or the witnessed-adjacency path; varying/unknown tracking | `layout-not-reproduced` or `shared-flow-confirmation`; no automatic justify |
 | No covering, embedding-permitted TrueType new-glyph provider; unsupported CFF/OTF provider; no reproducible retained path | `unresolved` / qualification refusal; no silent fallback |
 | Several columns/tables inside the selected candidate, or foreign content inside its region | `multiple-columns`, `region`; explicit target lines can isolate a safe heading/body elsewhere |
-| Growth past the proposed region (margin symmetry or foreign boundary) | Existing T2 overflow refusal |
+| Growth past all explicitly accepted regions | Existing T2 overflow refusal; continuation requires independent destination authority |
 | Headings in another size, footers and other blocks are foreign, not editable in the same flow | By design (one column) |
 | Single-line-only columns: the line pitch evidence is the line box (no leading evidence) | Proposed with the label `observed-line-box` |
 | Rotated pages, vertical text beside the column | `rotated-page`, `nonhorizontal-text`, `no-horizontal-text` |
@@ -287,7 +298,19 @@ B1's proofs.
 - Remaining font boundaries: CFF/OTF new-glyph providers, unsupported shaping, nonzero-Tc/Tw substitution,
   and portable provider recovery. These do not block the demonstrated TrueType source-retention path.
 
-### #2 B5 — Real text in the semantic layer (T3)
+### Verified-region continuation: COMPLETE for the bounded untagged source-adjacency path
+
+- `confirm_shared_flow_continuations` attaches caller-supplied, already confirmed destinations to an
+  accepted uncomposed v2 flow. It revalidates source/program authority, preserves existing ownership,
+  and requires exactly unchanged no-edit fragments with no new slots. No inferred whitespace is authority.
+- The existing allocator, paragraph writer, generated-block ownership, Transaction and readback are reused.
+  Per-slot edits retain only current local occurrences; cross-slot text is generated with the accepted provider.
+- Shortening empties the existing generated block; regrowth reuses its identity. The Kyoto lifecycle proves
+  restored reopen five times, source-retained identity, CTM compensation and zero foreign raster changes.
+- Bounds, clip, stale ownership, output ink, capacity and tagged structure guards remain. No new page,
+  foreign-content movement or mid-composition destination attachment is implemented.
+
+### B5 — Real text in the semantic layer (T3)
 
 Not on the replacement path; decorations, publication and style reinterpretation on real text come after B3.
 
@@ -298,7 +321,8 @@ B1 bootstrap (COMPLETE)
 ├→ B2 same-owner tagged ownership (COMPLETE, narrow subset)
 ├→ B6 witnessed real-body source adjacency (COMPLETE, bounded)
 ├→ B3 explicit new-glyph coverage (COMPLETE, bounded TrueType path)
-└→ B4 real body wrap + following-paragraph capacity (COMPLETE, bounded)
+├→ B4 real body wrap + following-paragraph capacity (COMPLETE, bounded)
+└→ verified existing-region continuation (COMPLETE, bounded untagged path)
         B3 → B5 semantic real text
 ```
 
@@ -308,20 +332,21 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: real document continuation beyond one accepted region
+NEXT BLOCKER: obtain editable capacity when the next region is occupied
 ```
 
-The demonstrated font-coverage blocker is removed without claiming identical appearance for substitutes.
-In this same Okinawa body, further growth hits the fixed page number: the current source-adjacency flow has
-one accepted region and no continuation destination. Crossing that boundary needs independently proved
-ownership/capacity on the next region/page, not a larger rectangle or movement of foreign content.
-Broader Office tagged trees and CFF-only provider availability remain separate concrete boundaries.
+Source-adjacency now continues into explicitly verified destinations. Kyoto's next-page top space has only
+one line of capacity; further growth reaches a fixed next-section heading and is refused. Okinawa's selected
+body ends on the last page above its fixed footer, with no existing next page. Neither case authorizes moving
+foreign text. The next practical boundary is proving additional existing paragraph ownership and preserving
+its relationships across pages, or confirming another genuinely available destination. Broader Office tagged
+trees and CFF-only provider availability remain separate boundaries.
 
 ## 9. Next PR scope
 
-Select a real multi-region/page body case and prove safe continuation using existing T2 ownership/allocation.
-Preserve B1 glyph-level reproduction, B3 explicit provider identities, B6 source adjacency and B4 paragraph
-relationships. Broader tagged trees or CFF support should be pursued only when the selected real case needs them.
+Select a real case whose next region is occupied by related text, prove which paragraphs may join the flow,
+and accept their ownership/relationships explicitly before allowing movement. Preserve existing foreign
+sections, tables, footers and B1/B2/B3/B4/B6 proofs. Do not manufacture capacity or pages.
 
 ## 10. Not next (deliberately)
 
@@ -355,4 +380,6 @@ not the result of this change; final-HEAD test counts are recorded in the pull r
 The [real-case report](real-japanese-persistent-editing.md) and
 [measured summary](../evaluations/real_japanese/summary.json) record both actual saved
 revisions, restored reopen, exact provider outlines and independent preservation audits.
+Current continuation evidence, regression coverage and reproducible commands:
+[continuation report](../evaluations/real_japanese/continuation-report.md).
 Final full-suite counts and the exact tested commit are recorded in the current PR.
