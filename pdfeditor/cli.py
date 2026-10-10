@@ -147,6 +147,10 @@ def parser() -> argparse.ArgumentParser:
                           help="explicit candidate font file instead of discovery; repeatable")
     proposal.add_argument("--line", action="append", dest="line_ids",
                           help="target observed line ID in page order; repeat for consecutive lines")
+    proposal.add_argument("--include-embedded-fonts", action="store_true", default=None,
+                          help="also discover unchanged embedded programs with an explicit font inventory")
+    proposal.add_argument("--font-cache", type=Path, help="derived embedded-font cache directory")
+    proposal.add_argument("--new-text", type=Path, help="JSON mapping logical style IDs to proposed new text")
     accept = sub.add_parser("accept-page", help="explicitly accept a page proposal as a shared-flow v2 state")
     accept.add_argument("input", type=Path)
     accept.add_argument("--proposal", type=Path, required=True)
@@ -155,6 +159,8 @@ def parser() -> argparse.ArgumentParser:
     accept.add_argument("--paragraph", action="append", dest="paragraph_ids", help="accepted paragraph ID; repeatable")
     accept.add_argument("--provider", action="append", default=[], metavar="STYLE=SHA256[:INDEX]",
                         help="choose one metric-verified provider for an ambiguous style")
+    accept.add_argument("--substitute-provider", action="append", default=[], metavar="STYLE=SHA256[:INDEX]",
+                        help="explicitly choose a different font for new glyphs; retain source glyphs")
     accept.add_argument("--overrides", type=Path, help="JSON object of explicit overrides")
     replace = sub.add_parser("replace-text", help="replace a unique text occurrence in an accepted flow and save")
     replace.add_argument("input", type=Path)
@@ -262,9 +268,11 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(report, ensure_ascii=False, indent=2))
         elif args.command == "propose-page":
             from .page_proposal import propose_page_flow
-            check_new_outputs([args.json_path], [args.input])
+            check_new_outputs([args.json_path], [args.input, args.new_text])
             report = propose_page_flow(args.input, args.page, font_candidates=args.font_candidates,
-                                       font_roots=args.font_roots, line_ids=args.line_ids)
+                                       font_roots=args.font_roots, line_ids=args.line_ids,
+                                       include_embedded_fonts=args.include_embedded_fonts, font_cache=args.font_cache,
+                                       new_text=read_json(args.new_text) if args.new_text else None)
             write_json(args.json_path, report)
             print(json.dumps({k: report[k] for k in ("status", "refusals", "unresolved", "digest")},
                              ensure_ascii=False, indent=2))
@@ -272,12 +280,13 @@ def main(argv: list[str] | None = None) -> int:
             from .page_proposal import accept_page_flow_report
             check_new_outputs([args.json_path, args.receipt], [args.input, args.proposal, args.overrides])
             choices = {}
-            for item in args.provider:
+            for item, relation in ([(v, 'confirmed_reflow_provider') for v in args.provider]
+                                   + [(v, 'substituted') for v in args.substitute_provider]):
                 style, _, value = item.partition("=")
                 sha, _, index = value.partition(":")
                 if not style or not sha or style in choices:
                     raise ValueError("--provider needs STYLE=SHA256[:INDEX] once per style")
-                choices[style] = dict(sha256=sha, font_index=int(index or 0))
+                choices[style] = dict(sha256=sha, font_index=int(index or 0), relation=relation)
             result = accept_page_flow_report(args.input, read_json(args.proposal), paragraph_ids=args.paragraph_ids,
                 provider_choices=choices or None, overrides=read_json(args.overrides) if args.overrides else None)
             write_json(args.json_path, result["state"])

@@ -1,0 +1,292 @@
+{
+  "verdict": "REAL-WORLD JAPANESE FONT COVERAGE EXPANDED — PASS",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "source": {
+    "url": "https://www.pref.okinawa.lg.jp/_res/projects/default_project/_page_/001/035/156/01_koukoku.pdf",
+    "sha256": "bbaa2b12eeaf1c7eac2dc91aca03c00da4ed948e7c14d99d879ff4c3083fd0b3",
+    "page": 2,
+    "line_ids": [
+      "p2-l44",
+      "p2-l45",
+      "p2-l46"
+    ],
+    "paragraphs": {
+      "P1": "(7) その他詳細は、「仕様書」及び「応募要領」による。 ",
+      "P2": "(8) 応募要領等については、沖縄県のWebサイト「沖縄県小中学校次世代型校務支援システム製品選定業務」のページからダウンロードすること。 "
+    }
+  },
+  "fonts": {
+    "selected_provider": {
+      "path": "tmp/b3/fonts/BIZUDMincho-Regular.ttf",
+      "sha256": "468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2",
+      "font_index": 0,
+      "instance_sha256": "468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2",
+      "variations": {},
+      "postscript_name": "BIZUDMincho-Regular",
+      "family": "BIZ UDMincho",
+      "checked_text": "応募に関する申請期限、受付窓口及び郵送書類の確認その他詳細仕様書の追加内容",
+      "qualification": "editable embedding + actual HarfBuzz shaping + visible glyphs; no source-metric equivalence claim",
+      "source_metric_qualified": true,
+      "source_program_identical": false
+    },
+    "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/bizudmincho/BIZUDMincho-Regular.ttf",
+    "license": "SIL OFL 1.1",
+    "appearance": "explicit different font for new glyphs; not source outline equivalence",
+    "source_programs": [
+      {
+        "path": "/workspace/pdfengine/tmp/b3/evaluation3/font-cache/88c3a4ac5ab893810a6ed5f43efa21bab83bb5d58a2de0e8e4ad432a98439e49.ttf",
+        "sha256": "88c3a4ac5ab893810a6ed5f43efa21bab83bb5d58a2de0e8e4ad432a98439e49",
+        "font_index": 0,
+        "source_xref": 22,
+        "provenance": "unmodified-embedded-program"
+      },
+      {
+        "path": "/workspace/pdfengine/tmp/b3/evaluation3/font-cache/bb244b70b266bd673ca80299643fecf5ee95377ce47daa9b6f4b48132ce76013.ttf",
+        "sha256": "bb244b70b266bd673ca80299643fecf5ee95377ce47daa9b6f4b48132ce76013",
+        "font_index": 0,
+        "source_xref": 27,
+        "provenance": "unmodified-embedded-program"
+      }
+    ],
+    "coverage": {
+      "source_cmap_characters": 346,
+      "characters_absent_from_original_pdf_and_subset": [
+        "受",
+        "口",
+        "期",
+        "確",
+        "窓",
+        "追",
+        "送",
+        "郵",
+        "限"
+      ],
+      "codepoints": [
+        "U+53D7",
+        "U+53E3",
+        "U+671F",
+        "U+78BA",
+        "U+7A93",
+        "U+8FFD",
+        "U+9001",
+        "U+90F5",
+        "U+9650"
+      ]
+    }
+  },
+  "region": {
+    "id": "R1",
+    "page": 2,
+    "bounds": [
+      70.91999816894531,
+      687.084228515625,
+      544.0797996520996,
+      768.6980590820312
+    ],
+    "x": 88.91999816894531,
+    "width": 455.1598014831543,
+    "first_baseline": 704.6400146484375,
+    "evidence": {
+      "top": "foreign-content-boundary",
+      "bottom": "foreign-content-boundary",
+      "left": "column-left-edge",
+      "right": "available-width",
+      "x": "continuation-line-left-edge",
+      "width": "wrapped-line-interval-midpoint",
+      "first_baseline": "first-paragraph-baseline"
+    },
+    "width_interval": {
+      "lower": 449.8798065185547,
+      "upper": 460.4397964477539,
+      "cap": 506.3560028076172,
+      "candidates": [
+        {
+          "evidence": "margin-symmetry",
+          "value": 417.4360046386719,
+          "consistent": false
+        }
+      ],
+      "evidence_basis": [
+        "observed-line-right-edges",
+        "wrapped-line-right-edge"
+      ]
+    }
+  },
+  "follows": [
+    {
+      "before": "P1",
+      "after": "P2",
+      "minimum_baseline_gap": 19.67999267578125,
+      "evidence": "observed-baseline-gap"
+    }
+  ],
+  "reproduction": {
+    "status": "reproduced",
+    "method": "plan_shared_flow with no edits; line starts exact, baselines and line widths and each painted glyph origin within the shared-flow geometry tolerance (elements._close)",
+    "lines": 3
+  },
+  "stages": [
+    {
+      "revision": 1,
+      "find": "その他詳細",
+      "replacement": "応募に関する申請期限、受付窓口及び郵送書類の確認その他詳細",
+      "replacement_lengths": [
+        5,
+        29
+      ],
+      "reopen": "restored",
+      "paragraphs": [
+        {
+          "id": "P1",
+          "text": "(7) 応募に関する申請期限、受付窓口及び郵送書類の確認その他詳細は、「仕様書」及び「応募要領」による。 ",
+          "visual_lines": [
+            "(7) 応募に関する申請期限、受付窓口及び郵送書類の確認その他詳細は、「仕様書」及び「応募要",
+            "領」による。"
+          ],
+          "baselines": [
+            704.6400146484375,
+            724.3202514648438
+          ],
+          "line_x": [
+            70.91999816894531,
+            88.91999816894531
+          ],
+          "retained": 23,
+          "provided": 29
+        },
+        {
+          "id": "P2",
+          "text": "(8) 応募要領等については、沖縄県のWebサイト「沖縄県小中学校次世代型校務支援システム製品選定業務」のページからダウンロードすること。 ",
+          "visual_lines": [
+            "(8) 応募要領等については、沖縄県のWebサイト「沖縄県小中学校次世代型校務支援システム製品選",
+            "定業務」のページからダウンロードすること。"
+          ],
+          "baselines": [
+            744.000244140625,
+            763.6804809570312
+          ],
+          "line_x": [
+            70.91999816894531,
+            88.91999816894531
+          ],
+          "retained": 69,
+          "provided": 0
+        }
+      ],
+      "following_push_down_pt": 19.68023681640625,
+      "preserved_baseline_gap_pt": 19.67999267578125,
+      "audit": {
+        "unicode_mupdf": "exact",
+        "unicode_pypdf": "exact ignoring extraction whitespace",
+        "max_origin_error_pt": 1.4822387811364024e-05,
+        "baselines": [
+          704.640015,
+          724.320251,
+          744.000244,
+          763.680481
+        ],
+        "all_trace_bounds_inside_region": true,
+        "mupdf_outside_changed_pixels": 0,
+        "other_pages_pixels_equal": true,
+        "foreign_text_origins_bounds_equal": true,
+        "drawings_equal": true,
+        "images_equal": true,
+        "structure": "untagged before/after; no tree manufactured or removed",
+        "operator_nesting": "valid PDF 1.x",
+        "fonts": {
+          "retained_codes_resources_gids_programs_equal": true,
+          "retained_glyphs": 92,
+          "provided_glyphs": 29,
+          "new_glyph_outlines_equal_selected_provider": true
+        },
+        "unchanged_follower_translation_error_pt": 0.0
+      }
+    },
+    {
+      "revision": 2,
+      "find": "仕様書",
+      "replacement": "仕様書の追加内容",
+      "replacement_lengths": [
+        3,
+        8
+      ],
+      "reopen": "restored",
+      "paragraphs": [
+        {
+          "id": "P1",
+          "text": "(7) 応募に関する申請期限、受付窓口及び郵送書類の確認その他詳細は、「仕様書の追加内容」及び「応募要領」による。 ",
+          "visual_lines": [
+            "(7) 応募に関する申請期限、受付窓口及び郵送書類の確認その他詳細は、「仕様書の追加内容」及び",
+            "「応募要領」による。"
+          ],
+          "baselines": [
+            704.6400146484375,
+            724.3202514648438
+          ],
+          "line_x": [
+            70.91999816894531,
+            88.91999816894531
+          ],
+          "retained": 49,
+          "provided": 8
+        },
+        {
+          "id": "P2",
+          "text": "(8) 応募要領等については、沖縄県のWebサイト「沖縄県小中学校次世代型校務支援システム製品選定業務」のページからダウンロードすること。 ",
+          "visual_lines": [
+            "(8) 応募要領等については、沖縄県のWebサイト「沖縄県小中学校次世代型校務支援システム製品選",
+            "定業務」のページからダウンロードすること。"
+          ],
+          "baselines": [
+            744.000244140625,
+            763.6804809570312
+          ],
+          "line_x": [
+            70.91999816894531,
+            88.91999816894531
+          ],
+          "retained": 69,
+          "provided": 0
+        }
+      ],
+      "following_push_down_pt": 19.68023681640625,
+      "preserved_baseline_gap_pt": 19.67999267578125,
+      "audit": {
+        "unicode_mupdf": "exact",
+        "unicode_pypdf": "exact ignoring extraction whitespace",
+        "max_origin_error_pt": 1.9836425735775265e-05,
+        "baselines": [
+          704.640015,
+          724.320251,
+          744.000244,
+          763.680481
+        ],
+        "all_trace_bounds_inside_region": true,
+        "mupdf_outside_changed_pixels": 0,
+        "other_pages_pixels_equal": true,
+        "foreign_text_origins_bounds_equal": true,
+        "drawings_equal": true,
+        "images_equal": true,
+        "structure": "untagged before/after; no tree manufactured or removed",
+        "operator_nesting": "valid PDF 1.x",
+        "fonts": {
+          "retained_codes_resources_gids_programs_equal": true,
+          "retained_glyphs": 118,
+          "provided_glyphs": 8,
+          "new_glyph_outlines_equal_selected_provider": true
+        },
+        "unchanged_follower_translation_error_pt": 0.0
+      }
+    }
+  ],
+  "overflow": {
+    "status": "refused",
+    "reason": "paragraphs exceed all explicitly confirmed shared regions"
+  },
+  "additional_refusals": {
+    "nonconsecutive_selection": "line_ids must be consecutive in observed page order",
+    "foreign_footer_collision": "page-flow proposal cannot be accepted: region: the column region collides with foreign content: p2-l47"
+  },
+  "original_sha_unchanged": true,
+  "poppler": "full page images rendered; visual inspection recorded separately"
+}

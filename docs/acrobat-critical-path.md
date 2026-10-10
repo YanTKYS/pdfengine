@@ -3,7 +3,7 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `546af051ad7f0739c6ccc5fdee8a24cc97d34495` plus bounded real-body reflow, 2026-10-10.
+- State: starting main `a740f6fe848f4eef756803731248d6f28922a5ab` plus explicit new-glyph font coverage, 2026-10-10.
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -22,6 +22,11 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   item (8) moves down 19.680237 pt, keeping its two lines, 18 pt hanging indent and
   19.679993 pt follows gap. Two saved revisions reopen `restored`; all region-exterior
   pixels remain identical. [Measured reflow report](../evaluations/real_japanese/body-reflow-report.md).
+- **REAL-WORLD JAPANESE FONT COVERAGE EXPANDED — PASS** on the same Okinawa body.
+  Source subsets are discovered automatically; an explicitly selected OFL BIZ UDMincho provider supplies
+  characters absent from the source subset. Both saved revisions restore, including B4 wrap/push-down.
+  Retained codes, GIDs and font program bytes remain original; added glyphs have the selected provider
+  outlines, with no claim of source appearance equivalence. [Font coverage report](../evaluations/real_japanese/font-coverage-report.md).
 - **FIRST REAL-WORLD JAPANESE PDF EDITING VALIDATED — PASS**, previously bounded to one
   existing Kyoto City PDF heading: `質問に対する回答` on page 1. A caller-selected
   observed line goes through public propose → accept → replace → edit → restored
@@ -60,7 +65,7 @@ open an ordinary existing PDF (never prepared for pdfengine)
 
 ```
 ordinary PDF
-→ propose_page_flow(pdf, page, line_ids=...)  optional observed target; read-only evidence + interpretation
+→ propose_page_flow(pdf, page, line_ids=...)  optional observed target; source unchanged, derived font cache
 → accept_page_flow(pdf, proposal)          the one explicit act; returns the unchanged pdfengine-shared-flow-2 state
 → replace_in_flow(state, find, replacement)   edit request only; writes nothing
 → edit_shared_flow(...)                    the existing T2 writer: Transaction, ownership, one save, one verification
@@ -77,7 +82,7 @@ elsewhere on a multi-column/table page. All width, region, source, font and repr
 | Observe | `backend.extract_page`, `selection.observation_lines`, `inference._line_groups/_paragraphs` | Lines, paragraph candidates, the main column, foreign content (other text, paths, images) | — |
 | Propose | `page_proposal._build` | Paragraph selections, column x, available width (§3.1), region bounds, line pitch, first-line indent, follows gaps, logical styles, metric-verified font providers | Review; optionally choose consecutive observed lines |
 | Verify the proposal | `page_proposal._reproduce` → `shared_flow.plan_shared_flow(state, {})` | The exact T2 state is built and planned with no edits. It must reproduce every observed line break, baseline, line width and painted glyph origin, or the proposal is refused. | — |
-| Accept | `accept_page_flow` → `confirm_story` → `confirm_shared_flow` | Rechecks the binding, recomputes the proposal, applies explicit choices and overrides, and returns the T2 state | One call; a provider choice only when several fonts verify |
+| Accept | `accept_page_flow` → `confirm_story` → `confirm_shared_flow` | Rechecks the binding, recomputes the proposal, applies explicit choices and overrides, and returns the T2 state | One call; choose ambiguous providers or explicitly approve a new-glyph substitute |
 | Edit | `replace_in_flow` → `edit_shared_flow` | Finds the unique occurrence across the flow, takes its single logical style, and writes through the unchanged T2 path | Find and replacement text |
 | Reopen and continue | `open_shared_flow` | `restored`, or `needs_confirmation` (fail closed) | — |
 
@@ -86,7 +91,7 @@ not on the replacement path.
 
 ### 2.1 What the runtime builds automatically for a PDF opened for the first time
 
-For untagged or supported tree-backed tagged horizontal text in one column, either inferred from the page or selected by observed line IDs, whose font is installed with identical metrics, it builds everything
+For untagged or supported tree-backed tagged horizontal text in one column, either inferred from the page or selected by observed line IDs, with metric-qualified source/installed programs or an explicitly selected new-glyph substitute on the retained path, it builds everything
 the T2 state needs:
 
 - the paragraphs and their order;
@@ -132,7 +137,9 @@ The caller only accepts. Every value carries an evidence label. None of them is 
   the existing wrap interval, line pitch from the witnessed continuation, and follows from source baselines.
 - **Fonts.** Candidates come from the installed-font roots of the platform (Windows `%WINDIR%\Fonts` and the per-user
   font folder; macOS system, library and user folders; Linux XDG data dirs and `~/.fonts`), or from injected
-  roots or files. A candidate qualifies only when, for every observed glyph of that font program, all of these hold:
+  roots or files. Default discovery also extracts unchanged embedded programs into a content-addressed
+  cache; explicit inventories opt in with `include_embedded_fonts=True`. A metric provider qualifies only
+  when, for every observed glyph of that font program, all of these hold:
   - the glyph is present with an outline;
   - its em advance equals the embedded program's `hmtx` advance (exact rational);
   - its PDF `/W` (or `/Widths`) equals `hmtx × 1000 / upem` within half of the written decimal quantum.
@@ -143,9 +150,20 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 
   | Verified candidates | Result |
   |---|---|
-  | One | Proposed |
+  | Byte-identical embedded source program among qualified candidates | Preferred automatically |
+  | One other candidate, no new-text substitution requested | Proposed under existing metric contract |
   | Several | `needs-choice`: the caller names one by SHA-256 |
-  | None | `unresolved` (B3) |
+  | None | `unresolved`, unless an explicitly chosen new-glyph substitute qualifies |
+
+  `new_text={logical_style: proposed_unicode}` additionally inventories actual coverage, HarfBuzz shaping,
+  visible outlines and editable embedding rights. A different program is never auto-selected in this mode,
+  even when its advances match. Acceptance requires SHA + face + `relation=substituted`; the resulting
+  source-adjacency policy retains unchanged glyphs and passes the same no-edit proof. The logical style
+  records selection provenance, SHA, face, serialized instance SHA, checked text and the absence of a
+  source-appearance equivalence claim. These identities and generated resources are rechecked on reopen.
+  The CLI exposes `--new-text`, `--font-cache`, `--include-embedded-fonts` and `--substitute-provider`.
+  Derived source programs and external providers must remain available at their recorded paths; missing
+  or changed bytes give `needs_confirmation`. Existing v2 states remain supported; old proposals must be regenerated.
 - **Reproduction.** The candidate T2 state, planned with no edits, must reproduce every observed line start exactly,
   and every baseline, line width and painted glyph origin within the unchanged `elements._close` tolerance.
   Glyph occurrences are matched by source Unicode offset, not nearest position or text search.
@@ -188,7 +206,8 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 - horizontal text in one column of non-overlapping paragraphs;
 - untagged, or balanced page-level `/P` MCID scopes whose complete ordered bundle belongs to one leaf `/P` StructElem;
 - left-aligned naturally spaced lines, or individually reproduced zero-Tc/Tw irregular source adjacency;
-- every body font program installed with identical metrics;
+- metric-qualified source/installed programs, or an explicitly selected covering TrueType provider for new glyphs
+  with witnessed zero-Tc/Tw retained-source placement;
 - no foreign content inside the column band.
 
 The title, header, footer, images and other text are fixed, and the fixture shows their pixels unchanged after two
@@ -200,7 +219,7 @@ saves.
 |---|---|
 | Tagged structures outside B2: unrelated owners, Span/run trees, MCR children, ActualText/OC, editable Artifact, extra properties, nested scopes, split lines, Forms, malformed trees or nonzero object generations | Structural proof refuses; no stripping, repair or tree mutation |
 | Spacing not reproducible by qualified natural shaping or the witnessed-adjacency path; varying/unknown tracking | `layout-not-reproduced` or `shared-flow-confirmation`; no automatic justify |
-| No installed font with identical metrics (Linux servers, CFF/OTF fonts, missing fonts) | `unresolved: no-metric-verified-provider` |
+| No covering, embedding-permitted TrueType new-glyph provider; unsupported CFF/OTF provider; no reproducible retained path | `unresolved` / qualification refusal; no silent fallback |
 | Several columns/tables inside the selected candidate, or foreign content inside its region | `multiple-columns`, `region`; explicit target lines can isolate a safe heading/body elsewhere |
 | Growth past the proposed region (margin symmetry or foreign boundary) | Existing T2 overflow refusal |
 | Headings in another size, footers and other blocks are foreign, not editable in the same flow | By design (one column) |
@@ -237,8 +256,8 @@ B1's proofs.
   -0.12 pt gaps, -5.40 pt punctuation contraction and mixed-font space remain measured facts.
 - `story_styles.source_edits` preserves source offsets; `ParagraphShaper` supplies existing
   code/GID/advance retention. T2 allocation, source ownership, Transaction and atomic validation stay active.
-- Source font programs are supplied explicitly, byte-identical to the PDF's embedded subsets, and pass
-  unchanged metric qualification. This is not automatic font discovery or general subset expansion.
+- Source font programs remain byte-identical and pass unchanged metric qualification. The B3 path below
+  discovers these programs automatically and separately authorizes new glyphs outside their coverage.
 
 ### B4 — Real body reflow and following-paragraph movement: COMPLETE for the bounded path
 
@@ -253,15 +272,20 @@ B1's proofs.
   no automatic page creation, footer movement or crossing an unaccepted region is claimed.
 - Evidence and exact scope: [body-reflow report](../evaluations/real_japanese/body-reflow-report.md).
 
-### #1 B3 — Font fidelity without an identical installed font
+### B3 — New glyphs beyond embedded subsets: COMPLETE for the bounded TrueType path
 
-- **Current limit:** when no supplied or installed font has identical metrics, the proposal is `unresolved`.
-  Natural T2 policies regenerate through the provider; the source-adjacency policy retains unchanged codes.
-  Only `glyf` TrueType providers are accepted. The real evaluation supplies unmodified embedded subsets,
-  whose coverage limits replacement characters; there is no implicit fallback or invented cmap.
-- **PDFs unlocked:** pages whose body font is not installed or is CFF/OTF. Untouched glyphs would keep their embedded
-  program.
-- **Reuse:** the retained-glyph path of `ParagraphShaper` and the identity map.
+- Production discovery inventories original embedded programs and OS fonts. Original programs are preferred
+  only after unchanged metric qualification. No manual subset extraction is needed by the new real runner.
+- An explicit SHA/face choice authorizes a different TrueType provider for new glyphs. Coverage, actual shaping,
+  editable embedding rights and outlines qualify that provider independently of source metrics; equal metrics
+  alone never prove equal appearance. Unchanged source glyphs keep their codes, GIDs, resources and adjacency.
+- Okinawa's 346-codepoint Japanese subset lacks the added characters. OFL BIZ UDMincho supplies them, with
+  two restored revisions and actual body wrap/push-down. Independent output audits compare original resources
+  and codes for retained glyphs and selected-provider outlines/advances for new glyphs.
+- SHA, face, instance and explicit-choice provenance survive save/reopen; absence, mutation or inconsistent
+  generated identity requires confirmation. No cache/provider file is bundled into the sidecar.
+- Remaining font boundaries: CFF/OTF new-glyph providers, unsupported shaping, nonzero-Tc/Tw substitution,
+  and portable provider recovery. These do not block the demonstrated TrueType source-retention path.
 
 ### #2 B5 — Real text in the semantic layer (T3)
 
@@ -273,7 +297,7 @@ Not on the replacement path; decorations, publication and style reinterpretation
 B1 bootstrap (COMPLETE)
 ├→ B2 same-owner tagged ownership (COMPLETE, narrow subset)
 ├→ B6 witnessed real-body source adjacency (COMPLETE, bounded)
-├→ B3 font fidelity
+├→ B3 explicit new-glyph coverage (COMPLETE, bounded TrueType path)
 └→ B4 real body wrap + following-paragraph capacity (COMPLETE, bounded)
         B3 → B5 semantic real text
 ```
@@ -284,19 +308,20 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: B3 — font fidelity and coverage beyond an available identical provider
+NEXT BLOCKER: real document continuation beyond one accepted region
 ```
 
-B4 now passes actual body wrap/push-down and two restored revisions. The runner explicitly supplies
-unmodified embedded subsets; missing replacement characters remain refused. This is not general font
-fallback, CFF support, arbitrary numbered-list inference, cross-page growth or broader Office ownership.
+The demonstrated font-coverage blocker is removed without claiming identical appearance for substitutes.
+In this same Okinawa body, further growth hits the fixed page number: the current source-adjacency flow has
+one accepted region and no continuation destination. Crossing that boundary needs independently proved
+ownership/capacity on the next region/page, not a larger rectangle or movement of foreign content.
+Broader Office tagged trees and CFF-only provider availability remain separate concrete boundaries.
 
 ## 9. Next PR scope
 
-Advance font fidelity/coverage on a concrete real editing case while retaining metric and outline proofs.
-Broader tagged trees and overflow into another proven region are separate bounded follow-ups; no fixed
-foreign content may move without accepted ownership. Preserve B1's glyph-level reproduction, B6's
-source adjacency and B4's paragraph relationships.
+Select a real multi-region/page body case and prove safe continuation using existing T2 ownership/allocation.
+Preserve B1 glyph-level reproduction, B3 explicit provider identities, B6 source adjacency and B4 paragraph
+relationships. Broader tagged trees or CFF support should be pursued only when the selected real case needs them.
 
 ## 10. Not next (deliberately)
 

@@ -72,6 +72,17 @@ def _verify_generated_fonts(source, state):
                     or alias not in page_fonts or embedded_font_sha256(page_fonts[alias]) != record['subset_sha256']
                     or page_fonts[alias].get_object().get('/BaseFont') != '/' + record['basefont']):
                 raise PdfError('generated font record differs from the saved page resources')
+            registry = state['paragraphs'][slot['paragraph_id']].get('style_registry', {})
+            if any('provider_selection' in e for e in registry.values()):
+                identity = record['provider']
+                matched = [e for e in registry.values()
+                    if identity.get('source_sha256') == e['reflow_provider']['sha256']
+                    and identity.get('font_index') == e['reflow_provider'].get('font_index',0)
+                    and identity.get('variations') == e['reflow_provider'].get('variations',{})]
+                if not matched or any('provider_selection' in e and
+                        identity.get('instance_sha256') != e['provider_selection']['instance_sha256'] for e in matched):
+                    raise PdfError('generated font provider differs from the explicitly selected face')
+
 
 
 def _generated_fonts(initial, state, result, output_sha256):
@@ -147,6 +158,9 @@ def _policies(state):
                 or not all(type(p[k]) in (int,float) and math.isfinite(p[k]) for k in ('min_line_height','first_line_indent'))
                 or p['min_line_height']<=0):
             raise PdfError('unsupported paragraph spacing or break policy')
+        if (any('provider_selection' in e for e in state['paragraphs'][pid]['style_registry'].values())
+                and p.get('text_placement') != SOURCE_PLACEMENT):
+            raise PdfError('explicit new-glyph substitution requires retained source placement')
         if 'text_placement' in p:
             if (p['text_placement'] != SOURCE_PLACEMENT or state['schema'] != SCHEMA
                     or len(_slots(state, pid)) != 1 or len(state['regions']) != 1
