@@ -145,7 +145,7 @@ def _policies(state):
         if (set(p)-{'text_placement'}!=POLICY_KEYS or type(p['keep_together']) is not bool
                 or p['break_before'] not in ('auto','next-region') or p['break_after'] not in ('auto','next-region')
                 or not all(type(p[k]) in (int,float) and math.isfinite(p[k]) for k in ('min_line_height','first_line_indent'))
-                or p['min_line_height']<=0 or p['first_line_indent']<0):
+                or p['min_line_height']<=0):
             raise PdfError('unsupported paragraph spacing or break policy')
         if 'text_placement' in p:
             if (p['text_placement'] != SOURCE_PLACEMENT or state['schema'] != SCHEMA
@@ -153,6 +153,13 @@ def _policies(state):
                     or state.get('continuation_destinations')
                     or state['paragraphs'][pid]['logical'].get('alignment', DEFAULT) != DEFAULT):
                 raise PdfError('source adjacency requires one current source slot, one region and left layout')
+        if p['first_line_indent'] < 0:
+            # Hanging starts are bounded by the very same accepted region;
+            # legacy/semantic flows and unconstrained overhang remain refused.
+            if (p.get('text_placement') != SOURCE_PLACEMENT
+                    or any(r['x'] + p['first_line_indent'] < r['bounds'][0]
+                           for r in state['regions'].values())):
+                raise PdfError('hanging first line requires source adjacency inside the confirmed region')
         e=p['empty']
         if (set(e)!={'kind','ascent','descent'} or e['kind']!='reserve-line'
                 or not all(type(e[k]) in (int,float) and math.isfinite(e[k]) and e[k]>=0 for k in ('ascent','descent'))

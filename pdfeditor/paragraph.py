@@ -472,7 +472,7 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             length += len(operand)
             ink = placed.ink
             if ink is not None:
-                if not Rect(x, 0, x + width, bottom).contains(ink, .001) or not Rect(*content.page.rect).contains(ink, .001):
+                if not Rect(min(x, x + indent), 0, x + width, bottom).contains(ink, .001) or not Rect(*content.page.rect).contains(ink, .001):
                     raise PdfError("styled glyph extends beyond the confirmed paragraph region")
                 allow_clip(state, ink, content.page.transformation_matrix)
                 inks.append(ink)

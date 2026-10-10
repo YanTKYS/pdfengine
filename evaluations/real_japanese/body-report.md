@@ -1,5 +1,9 @@
 # Real Japanese body editing: Okinawa item (7)
 
+This report records the PR #60 one-line milestone. The subsequent
+[body reflow report](body-reflow-report.md) validates items (7)/(8) together,
+including actual wrapping and following-paragraph movement.
+
 **FIRST REAL-WORLD JAPANESE BODY TEXT EDITING VALIDATED — PASS**
 
 Linux / Python 3.12.14, starting main `494f85def65ba5b76a44e56937b926541668b0f9`

@@ -255,6 +255,40 @@ def _first_unit_width(line):
     return line['right'] - line['x']
 
 
+def _numbered_column(lines):
+    """A narrow, evidence-only candidate for an explicitly selected hanging list.
+
+    Consecutive markers, equal marker/body origins and a witnessed continuation
+    are required. This never includes an unselected line. Font qualification,
+    structural ownership, foreign-region exclusion and glyph reproduction still
+    decide whether the candidate can be offered and accepted.
+    """
+    marker = re.compile(r'^\(([0-9]+)\) +(?=\S)')
+    groups, numbers, body_x = [], [], []
+    for line in lines:
+        match = marker.match(line['text'])
+        if match:
+            if len(line['starts']) != len(line['text']):
+                return None  # Multi-character glyphs need a separate marker-offset proof.
+            numbers.append(int(match[1]))
+            body_x.append(line['starts'][match.end()])
+            groups.append([line])
+        elif groups:
+            groups[-1].append(line)
+        else:
+            return None
+    if (len(groups) < 2 or numbers != list(range(numbers[0], numbers[0] + len(numbers)))
+            or not any(len(p) > 1 for p in groups)
+            or not all(_close(p[0]['x'], groups[0][0]['x']) for p in groups)
+            or not all(_close(x, body_x[0]) for x in body_x)
+            or body_x[0] <= groups[0][0]['x']
+            or not all(_close(l['size'], lines[0]['size']) for l in lines)
+            or not all(_close(l['x'], body_x[0]) for p in groups for l in p[1:])
+            or not all(a['bottom'] < b['top'] for a, b in zip(lines, lines[1:]))):
+        return None
+    return groups
+
+
 def _columns(paragraphs):
     """Greedy top-down chains of size-compatible, left-aligned paragraph candidates."""
     columns = []
@@ -316,6 +350,8 @@ class _Analysis:
             self.refusals.append(dict(code='no-horizontal-text', detail='no horizontal text lines on this page'))
             self.column = []
             return
+        self.numbered_column = (_numbered_column([by_id[id(line)] for line in objects])
+                                if self.target_line_ids is not None else None)
         candidates = [para for group in _line_groups(objects) for para in _paragraphs(group)[0]]
         lines_of = {id(p): [by_id[id(line)] for line in p.lines] for p in candidates}
         columns = sorted(([lines_of[id(p)] for p in column] for column in _columns(candidates)),
@@ -323,14 +359,17 @@ class _Analysis:
         weight = lambda column: sum(len(line['glyph_ids']) for para in column for line in para)
         heaviest = max(weight(c) for c in columns)
         main = [c for c in columns if weight(c) == heaviest]
-        if len(main) != 1:
+        if len(main) != 1 and not self.numbered_column:
             self.refusals.append(dict(code='ambiguous-main-column',
                                       detail='several columns hold the same amount of text'))
-        self.column = main[0]
+        self.column = self.numbered_column or main[0]
         self.other_columns = [c for c in columns if c is not main[0]]
+        if self.target_line_ids is not None and {l['id'] for p in self.column for l in p} != set(self.target_line_ids):
+            self.refusals.append(dict(code='selected-lines-outside-flow',
+                detail='every explicitly selected line must belong to the proposed column'))
         top = min(line['top'] for para in self.column for line in para)
         bottom = max(line['bottom'] for para in self.column for line in para)
-        for column in self.other_columns:
+        for column in ([] if self.numbered_column else self.other_columns):
             a = min(line['top'] for para in column for line in para)
             b = max(line['bottom'] for para in column for line in para)
             if a < bottom and b > top:
@@ -593,7 +632,7 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
         # Checked against the observed segmentation first, so an override can never re-segment paragraphs.
         _check_width(overrides['width'], _width(analysis, column, _column_x(column)[0],
                                                 analysis.foreign({l['id'] for p in column for l in p}))[1])
-    if 'paragraph_starts' not in overrides:
+    if 'paragraph_starts' not in overrides and not analysis.numbered_column:
         column, width_splits = _unexplained_breaks(analysis, column, overrides.get('width'))
     ids = [f'P{i}' for i in range(1, len(column) + 1)]
     if paragraph_ids is not None:
@@ -608,7 +647,7 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
     proposal['foreign_content'] = [dict(kind=f['kind'], bounds=f['bounds'], **({'text': f['text']} if 'text' in f else {}))
                                    for f in foreign]
     col_x, x_evidence = _column_x(column)
-    if any(para[0]['x'] < col_x for para in column):
+    if any(para[0]['x'] < col_x for para in column) and not analysis.numbered_column:
         proposal['refusals'].append(dict(code='hanging-indent', detail='a first line starts left of the column'))
     route = _persistent_route(source, page, column)
     if route:
@@ -651,7 +690,8 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
             bounds=[min(l['bbox'][0] for l in para), para[0]['top'], max(l['bbox'][2] for l in para), para[-1]['bottom']],
             first_baseline=para[0]['baseline'], last_baseline=para[-1]['baseline'],
             style_spans=[dict(start=s['start'], end=s['end'], style_id=s['style_id']) for s in snapshot['spans']],
-            policy=policy, evidence=('break-not-explained-by-width' if para[0]['id'] in width_splits else
+            policy=policy, evidence=('consecutive-numbered-markers-and-aligned-continuations' if analysis.numbered_column else
+                                    'break-not-explained-by-width' if para[0]['id'] in width_splits else
                                      'inference line grouping and paragraph segmentation (candidate, not truth)')))
         if 'marked_structure' in snapshot:
             paragraphs[-1]['marked_content'] = snapshot['marked_structure']
