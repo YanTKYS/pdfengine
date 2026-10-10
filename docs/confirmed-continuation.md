@@ -1,5 +1,42 @@
 # 既存ページ上の確認済みcontinuation destination
 
+## B1でacceptしたsource-adjacency flowへの接続
+
+`pdfeditor.shared_flow.confirm_shared_flow_continuations(source, model, *, regions,
+region_order, continuation_destinations)`で、B1 accept済み・未compositionのv2 flowに継続先を追加できる。
+下記のreview → caller decision → request → explicit confirmationを経たdestinationと、callerが選んだ
+新regionのgeometry・順序を渡す。空白からregionを自動選択するAPIではない。
+
+```python
+state = accept_page_flow(source, proposal, provider_choices=choices)
+review = review_continuation_geometry(source, next_page, bounds)
+request = build_continuation_boundary_confirmation_request(
+    review, boundary_id=caller_selected_boundary,
+    destination_id="next", paragraph_id="P1", region_id="R2",
+)
+destination = confirm_continuation_destination(source, **request["confirm_kwargs"])
+state = confirm_shared_flow_continuations(
+    source, state, regions={"R2": caller_selected_region}, region_order=["R2"],
+    continuation_destinations={"next": destination},
+)
+# 通常のreplace_in_flow → edit_shared_flow → open_shared_flowへ進む。
+```
+
+source SHA・program witness・geometry・既存ownershipを再検証し、追加前後のno-edit fragmentsが
+完全一致し、新slotが発生しないことも要求する。composition済みflowや既にdestinationを持つflowへの
+追加は対象外。既存の`confirm_shared_flow(..., continuation_destinations=...)`も維持する。
+
+`preserve-source-adjacency`では、編集後の各文字のsource occurrenceをcurrent slotのrangeへ投影する。
+同slotが既に所有するglyphだけがcode/resource・隣接gapを保持する。他slotから来た文字は確認済みproviderで
+生成し、継続先authorityの下で既存writerが描く。保存後はgenerated slotもcurrent sourceになり、再編集で
+そのglyphを保持できる。短文化でdormantにし、再長文化で同じslotを再利用する既存機構を使う。
+Tagged sourceが独立したslot/continuationへ出ることは拒否し、構造treeを付け替えない。
+
+**実PDF検証済み（2026-10-10）**: 京都市Q&Aの1ページ末尾の本文を3行＋次ページ1行へ長文化。
+元PDFを加工せず、次節の前の領域とnonidentity CTM境界を明示確認して、grow → generated-slot edit →
+shorten → regrow → no-opの5保存がすべて`restored`。領域外MuPDF差分0、短文化後の2ページ目は
+原本描画と一致。[評価・制約・実測値](../evaluations/real_japanese/continuation-report.md)。
+
 ## caller workflow
 
 既存ページの空き領域へparagraphのcontinuationを置く場合、callerは次の6段階でdestinationを確認する。段階ごとに別のmodule APIを使う。engineはboundaryを選ばない。
