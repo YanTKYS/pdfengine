@@ -198,7 +198,13 @@ def test_first_line_indent_does_not_restart_after_hard_or_blank_line():
         _layout("x", width=4, first_line_indent=3.5)
 
 
-@pytest.mark.parametrize("indent", [-1, 10, 11, nan, inf])
+@pytest.mark.parametrize("indent", [10, 11, nan, inf, -inf])
 def test_invalid_first_line_indent_refused(indent):
     with pytest.raises(LayoutError):
         _layout("x", first_line_indent=indent)
+
+
+def test_hanging_first_line_uses_signed_offset_and_continuation_width():
+    result = _layout("ab cd ef gh", width=5, first_line_indent=-3)
+    assert [(line.text, line.x) for line in result.lines] == [("ab cd ef", 7), ("gh", 10)]
+    assert result.bbox.x0 == 7

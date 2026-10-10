@@ -3,7 +3,7 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `494f85def65ba5b76a44e56937b926541668b0f9` plus witnessed source-adjacency editing, 2026-10-10.
+- State: starting main `546af051ad7f0739c6ccc5fdee8a24cc97d34495` plus bounded real-body reflow, 2026-10-10.
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -16,7 +16,12 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   procurement page 2, item (7). Two different-length edits use public B1/T2 and
   restore after each save. Irregular Td/Tm gaps are retained as source adjacency,
   not inferred tracking or justification. [Measured body report](../evaluations/real_japanese/body-report.md).
-  This is a one-line body result; real wrapping/push-down remains unvalidated.
+  The one-line result is now extended by B4 below.
+- **FIRST REAL-WORLD JAPANESE BODY REFLOW VALIDATED — PASS** for the same Okinawa
+  page, explicitly selected items (7) and (8). Item (7) grows from one to two lines;
+  item (8) moves down 19.680237 pt, keeping its two lines, 18 pt hanging indent and
+  19.679993 pt follows gap. Two saved revisions reopen `restored`; all region-exterior
+  pixels remain identical. [Measured reflow report](../evaluations/real_japanese/body-reflow-report.md).
 - **FIRST REAL-WORLD JAPANESE PDF EDITING VALIDATED — PASS**, previously bounded to one
   existing Kyoto City PDF heading: `質問に対する回答` on page 1. A caller-selected
   observed line goes through public propose → accept → replace → edit → restored
@@ -118,6 +123,13 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 - **Region.** The top and bottom come from the nearest foreign content above and below in the column band, or from
   margin symmetry. A region that would intersect any foreign content is refused. Every foreign item becomes a
   `fixed` protected region in the T2 state.
+- **Selected numbered body paragraphs.** Consecutive `(n)` markers with the same marker/body origins,
+  matching size, nonoverlapping lines and an existing aligned continuation can form a candidate hanging list.
+  Only explicitly selected lines are included. No-edit reproduction proves every line and glyph; acceptance
+  remains explicit. A selection that leaves any chosen line outside the candidate column is refused.
+  The existing signed first-line offset places the marker left of the continuation x; a negative T2 policy
+  requires the one-region source-adjacency path and an origin inside the accepted bounds. Width comes from
+  the existing wrap interval, line pitch from the witnessed continuation, and follows from source baselines.
 - **Fonts.** Candidates come from the installed-font roots of the platform (Windows `%WINDIR%\Fonts` and the per-user
   font folder; macOS system, library and user folders; Linux XDG data dirs and `~/.fonts`), or from injected
   roots or files. A candidate qualifies only when, for every observed glyph of that font program, all of these hold:
@@ -146,7 +158,7 @@ The caller only accepts. Every value carries an evidence label. None of them is 
   use `ParagraphShaper`'s retained path. Replacement text and new boundaries use qualified providers and
   nominal/source inline metrics. Gap adjustments are not transported across an edit or a newly wrapped edge.
   The source is re-observed on every revision; no unchecked gap array is trusted from a sidecar. Existing
-  synthetic cases demonstrate wrap/push-down; the real Okinawa region fits only one line.
+  real Okinawa items (7)/(8) now demonstrate wrap/push-down in a jointly accepted region.
 - **Binding.** The proposal carries the source SHA-256, the page, the page observation hash and a canonical digest.
   Optional target line IDs and their caller-selected provenance are included and re-observed at acceptance.
   Acceptance recomputes the proposal from the PDF and the recorded font inputs and requires the same digest. An
@@ -228,15 +240,20 @@ B1's proofs.
 - Source font programs are supplied explicitly, byte-identical to the PDF's embedded subsets, and pass
   unchanged metric qualification. This is not automatic font discovery or general subset expansion.
 
-### #1 B4 — Real body reflow with following-paragraph capacity
+### B4 — Real body reflow and following-paragraph movement: COMPLETE for the bounded path
 
-Item (7)'s accepted region ends at 715.249146 pt, before foreign item (8). Lengthening until
-wrapping is necessary is refused by the existing shared-region capacity rule, with no output.
-The next real target must include the following paragraphs with proven ownership/region evidence.
-Hanging list indents, multiple regions and intervening tables are separate layout boundaries;
-do not enlarge a region through fixed foreign content. Synthetic wrap/push-down is already tested.
+- Okinawa items (7)/(8), selected together, reproduce all three original lines and glyphs.
+- Consecutive numbered paragraphs with a witnessed hanging continuation are proposed as a complete column;
+  explicit selections cannot silently lose a line to another inferred column.
+- Existing attributed layout supports the signed first-line offset. T2 bounds the overhang to the accepted
+  region; its existing follows/allocation, ownership and Transaction handle push-down and both saves.
+- Item (7) grows to two lines, item (8) moves down one measured 19.680237 pt pitch. The original
+  19.679993 pt follows gap, the follower's breaks and all fixed foreign content remain unchanged.
+- The accepted region ends at the fixed footer (768.698059 pt). Additional growth is refused;
+  no automatic page creation, footer movement or crossing an unaccepted region is claimed.
+- Evidence and exact scope: [body-reflow report](../evaluations/real_japanese/body-reflow-report.md).
 
-### #2 B3 — Font fidelity without an identical installed font
+### #1 B3 — Font fidelity without an identical installed font
 
 - **Current limit:** when no supplied or installed font has identical metrics, the proposal is `unresolved`.
   Natural T2 policies regenerate through the provider; the source-adjacency policy retains unchanged codes.
@@ -246,7 +263,7 @@ do not enlarge a region through fixed foreign content. Synthetic wrap/push-down 
   program.
 - **Reuse:** the retained-glyph path of `ParagraphShaper` and the identity map.
 
-### #3 B5 — Real text in the semantic layer (T3)
+### #2 B5 — Real text in the semantic layer (T3)
 
 Not on the replacement path; decorations, publication and style reinterpretation on real text come after B3.
 
@@ -257,7 +274,7 @@ B1 bootstrap (COMPLETE)
 ├→ B2 same-owner tagged ownership (COMPLETE, narrow subset)
 ├→ B6 witnessed real-body source adjacency (COMPLETE, bounded)
 ├→ B3 font fidelity
-└→ B4 real body wrap + following-paragraph capacity (NEXT)
+└→ B4 real body wrap + following-paragraph capacity (COMPLETE, bounded)
         B3 → B5 semantic real text
 ```
 
@@ -267,20 +284,19 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: B4 — a proven real-body region that admits wrap and following-paragraph movement
+NEXT BLOCKER: B3 — font fidelity and coverage beyond an available identical provider
 ```
 
-B6 now passes the actual Okinawa body lifecycle. Its fixed lower foreign boundary prevents
-real wrapping. Neither this result nor synthetic push-down establishes arbitrary body reflow,
-font fallback, CFF support, broader Office structures or Windows execution of this change.
+B4 now passes actual body wrap/push-down and two restored revisions. The runner explicitly supplies
+unmodified embedded subsets; missing replacement characters remain refused. This is not general font
+fallback, CFF support, arbitrary numbered-list inference, cross-page growth or broader Office ownership.
 
 ## 9. Next PR scope
 
-Select a real multi-line paragraph and its following text, prove their usable shared region
-and any hanging-indent policy, then validate actual wrap/push-down and two reopened revisions.
-Retain B1's glyph-level no-edit reproduction and all source/font/ownership proofs. Broader tagged trees remain a
-separate, explicitly scoped follow-up: different MCIDs under different owners
-cannot be concentrated into one MCID without changing their logical ownership.
+Advance font fidelity/coverage on a concrete real editing case while retaining metric and outline proofs.
+Broader tagged trees and overflow into another proven region are separate bounded follow-ups; no fixed
+foreign content may move without accepted ownership. Preserve B1's glyph-level reproduction, B6's
+source adjacency and B4's paragraph relationships.
 
 ## 10. Not next (deliberately)
 
@@ -308,8 +324,8 @@ cannot be concentrated into one MCID without changing their logical ownership.
 B1 baseline: [continuation checkpoint](continuation-checkpoint.md#b1-ordinary-page-bootstrap--2026-10-07).
 B2 contract, reproducible commands, Windows evidence and limitations: [B2 report](tagged-persistent-editing.md).
 Current targeted/B1/B2 focused regression: **69 passed** (12 + 19 + 38), Windows.
-Current Linux body evidence and reproducible regression/full-suite commands:
-[body report](../evaluations/real_japanese/body-report.md). The earlier Windows count above is historical,
+Current Linux body reflow evidence and reproducible regression/full-suite commands:
+[body reflow report](../evaluations/real_japanese/body-reflow-report.md). The earlier Windows count above is historical,
 not the result of this change; final-HEAD test counts are recorded in the pull request.
 The [real-case report](real-japanese-persistent-editing.md) and
 [measured summary](../evaluations/real_japanese/summary.json) record both actual saved

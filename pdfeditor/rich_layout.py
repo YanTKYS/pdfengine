@@ -112,7 +112,9 @@ def layout_attributed(
     no lines. ``bbox`` encloses occupied line widths and their vertical metrics
     (including ink), rather than expanding to the entire available width.
     ``first_line_indent`` reserves space at the left of the first visual line
-    only; subsequent lines, including lines after a hard break, use full width.
+    only; a negative value is a hanging first line extending left of x.
+    Subsequent lines, including lines after a hard break, use full width.
+    The caller must contain that overhang in its confirmed region.
     """
     if not isinstance(text, str):
         raise LayoutError("Text must be a Unicode string.")
@@ -129,8 +131,8 @@ def layout_attributed(
         raise LayoutError("Layout coordinates and font metrics must be finite.")
     if width <= 0 or min_line_height <= 0:
         raise LayoutError("Text box width and minimum line height must be positive.")
-    if first_line_indent < 0 or first_line_indent >= width:
-        raise LayoutError("First-line indentation must be nonnegative and smaller than the width.")
+    if first_line_indent >= width:
+        raise LayoutError("First-line indentation must be smaller than the width.")
     if empty_ascent < 0 or empty_descent < 0 or empty_ascent + empty_descent <= 0:
         raise LayoutError("Empty-line ascent and descent must define a positive height.")
     if max_bottom is not None and not isfinite(max_bottom):

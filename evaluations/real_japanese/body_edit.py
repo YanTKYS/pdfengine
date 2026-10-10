@@ -60,7 +60,7 @@ def source_operators(snapshot):
         content.close()
 
 
-def independent_audit(source, output, bounds, expected, report):
+def independent_audit(source, output, bounds, expected, report, *, glyph_plan=None):
     region = pymupdf.Rect(bounds)
     with pymupdf.open(source) as original, pymupdf.open(output) as edited:
         assert len(original) == len(edited)
@@ -85,7 +85,7 @@ def independent_audit(source, output, bounds, expected, report):
             assert diff.getbbox() is None, 'MuPDF pixels changed outside accepted bounds'
         actual = chars(edited[PAGE-1], region)
         assert ''.join(chr(c[0]) for c in actual) == expected.rstrip(), 'target Unicode differs'
-        planned = report['steps'][0]['report']['glyph_plan']
+        planned = glyph_plan if glyph_plan is not None else report['steps'][0]['report']['glyph_plan']
         assert len(actual) == len(planned)
         error = max(abs(c[2][axis]-g['origin'][axis]) for c,g in zip(actual,planned) for axis in (0,1))
         assert error <= .002  # the existing writer/readback geometry contract
