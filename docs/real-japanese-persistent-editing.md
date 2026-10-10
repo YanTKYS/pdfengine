@@ -1,5 +1,19 @@
 # Real Japanese PDF persistent editing
 
+**FIRST REAL-WORLD JAPANESE BODY TEXT EDITING VALIDATED — PASS.** On main
+`494f85def65ba5b76a44e56937b926541668b0f9` plus the source-adjacency change, the same
+Okinawa procurement PDF's page 2 item (7) now passes public propose/accept,
+different-length replacement, save, restored reopen, second edit and restored reopen.
+The original zero-Tc/Tw irregular Td/Tm positions are reproduced glyph by glyph.
+No justify inference or tolerance change is used. The caller supplies byte-identical
+embedded source font programs; all existing metric qualification remains active.
+See [body report](../evaluations/real_japanese/body-report.md) and
+[reproducible runner](../evaluations/real_japanese/body_edit.py).
+The real result is one-line body editing on Linux. Real wrap/push-down is refused at
+the fixed foreign boundary and remains a separate next step.
+
+## Earlier heading milestone (PR #59)
+
 **FIRST REAL-WORLD JAPANESE PDF EDITING VALIDATED — PASS.** The validated case is
 one heading in an existing Kyoto City PDF. It is not a body-paragraph or general
 Word/tagged-PDF result. Runtime starts at main `7ce8cd43912510325bfcd43be444383e8a4b580c`.
@@ -41,7 +55,7 @@ removing that guard would not make them editable.
 | Osaka guideline p1 body, lines 13/16 | Readable Japanese | Several structure owners, Span/ActualText patterns; different non-inline state; line 16 also lacks a width candidate | Keep refused |
 | Osaka fire notice p1 body, lines 13–14 | Readable Japanese; title has duplicated extraction | Mixed P/Span/ActualText owners and different non-inline state | Keep refused |
 | Ubiquiti p1 | Lower-priority English document | Existing structural probe: NonStruct/MCR, not the B2 leaf-P subset | Not a Japanese success candidate |
-| Okinawa procurement p2 item (7), line 44 | Exact Japanese plus Arial space | Targeting resolves global geometry; exact MS Mincho/Arial metrics qualify; no-edit reproduction still refuses irregular Tm positioning | Do not reinterpret as uniform justification |
+| Okinawa procurement p2 item (7), line 44 | Exact Japanese plus Arial space | PR #59: no-edit reproduction refused irregular Tm positioning. Current source-adjacency path reproduces it and completes two real edits | Still no justification inference; see body report |
 | Kyoto questions p1 heading, line 1 | Exact original Japanese | Targeting resolves geometry; two fonts qualify metrically, so explicit provider choice is needed | Actual two-edit persistent lifecycle passes |
 
 The initial wider survey also inspected Wakayama, LibreOffice and Kyoto body lines.
@@ -53,8 +67,10 @@ by synthetic regression results.
 Okinawa item (7) has zero Tc/Tw but Tm adjustments including roughly 0.12 pt contractions,
 a 5.40 pt punctuation contraction and a differently positioned Arial space. Its total
 measured width is about 7.37 pt below nominal including trailing space. The source-spacing
-observer classifies this as irregular, not a justified-layout witness. The unchanged
-no-edit reproduction gate refuses it. B6 and broader tagged ownership remain work ahead.
+observer classifies this as irregular, not a justified-layout witness. PR #59's
+all-provider no-edit plan refused it. The current B6 path retains witnessed source
+adjacency and strengthens reproduction to include each glyph origin; broader
+tagged ownership and real multi-line body capacity remain separate work.
 
 ## Small reusable production change
 

@@ -14,7 +14,7 @@ import pymupdf
 from pypdf import PdfReader
 from uniseg.graphemecluster import grapheme_cluster_boundaries
 
-from .attributed import EditUnit, digest
+from .attributed import EditUnit, apply_edits, digest
 from .backend import PdfError
 from .destination_style import bind_destination_styles
 from .document_flow import _reseal
@@ -39,6 +39,7 @@ from . import source_ownership
 LEGACY_SCHEMA = 'pdfengine-shared-flow-1'
 SCHEMA = 'pdfengine-shared-flow-2'
 POLICY_KEYS = {'min_line_height', 'first_line_indent', 'keep_together', 'break_before', 'break_after', 'empty'}
+SOURCE_PLACEMENT = 'preserve-source-adjacency'
 GENERATED_FONT_KEYS = {'provenance', 'subset_sha256', 'basefont', 'provider', 'slot_id', 'paragraph_id', 'created_pdf_sha256'}
 
 
@@ -141,11 +142,17 @@ def _policies(state):
     order=state['flow']['paragraphs'];policies=state['paragraph_policies']
     if set(policies)!=set(order):raise PdfError('each paragraph needs its own confirmed layout policy')
     for pid,p in policies.items():
-        if (set(p)!=POLICY_KEYS or type(p['keep_together']) is not bool
+        if (set(p)-{'text_placement'}!=POLICY_KEYS or type(p['keep_together']) is not bool
                 or p['break_before'] not in ('auto','next-region') or p['break_after'] not in ('auto','next-region')
                 or not all(type(p[k]) in (int,float) and math.isfinite(p[k]) for k in ('min_line_height','first_line_indent'))
                 or p['min_line_height']<=0 or p['first_line_indent']<0):
             raise PdfError('unsupported paragraph spacing or break policy')
+        if 'text_placement' in p:
+            if (p['text_placement'] != SOURCE_PLACEMENT or state['schema'] != SCHEMA
+                    or len(_slots(state, pid)) != 1 or len(state['regions']) != 1
+                    or state.get('continuation_destinations')
+                    or state['paragraphs'][pid]['logical'].get('alignment', DEFAULT) != DEFAULT):
+                raise PdfError('source adjacency requires one current source slot, one region and left layout')
         e=p['empty']
         if (set(e)!={'kind','ascent','descent'} or e['kind']!='reserve-line'
                 or not all(type(e[k]) in (int,float) and math.isfinite(e[k]) and e[k]>=0 for k in ('ascent','descent'))
@@ -365,14 +372,18 @@ def _restore(source,model):
     return result['state']
 
 
-def _layout(source,state,pid,binding,text,ids,region,indent):
+def _layout(source,state,pid,binding,text,ids,region,indent,source_edits=None):
     p=state['paragraphs'][pid];paragraph=paragraph_from_snapshot(source,binding['paragraph']);shaper=None
     try:
         paragraph=bind_destination_styles(paragraph,styles.render_styles(p),styles.render_confirmations(p))
+        alignment=p['logical'].get('alignment',DEFAULT)
+        units = (apply_edits(paragraph, binding['paragraph'], source_edits) if source_edits is not None else
+                 [EditUnit(ch,'logical:'+sid,None,'logical:'+sid) for ch,sid in zip(text,ids)])
         from .style_confirmation import confirm_paragraph
         paragraph=confirm_paragraph(paragraph,styles.render_confirmations(p))
-        alignment=p['logical'].get('alignment',DEFAULT)
-        shaper=ParagraphShaper(paragraph,[EditUnit(ch,'logical:'+sid,None,'logical:'+sid) for ch,sid in zip(text,ids)],
+        if ''.join(u.text for u in units) != text:
+            raise PdfError('source-linked edits differ from the projected paragraph')
+        shaper=ParagraphShaper(paragraph,units,
                               styles.providers(p),alignment=alignment['value'])
         size=styles.properties(p['style_registry'][p['logical']['typing_style_id']])['font_size']
         return layout_attributed(text,shape=shaper.shape,x=region['x'],baseline=0,width=region['width'],
@@ -410,13 +421,15 @@ def _schedule(state,fragments):
 
 def _plan(source,state,changes):
     if not isinstance(changes,dict) or set(changes)-set(state['paragraphs']):raise PdfError('changes must name independent paragraph identities')
-    projected={}
+    projected={};source_edits={}
     for pid,p in state['paragraphs'].items():
         request=changes.get(pid,dict(edits=[]))
         if not isinstance(request,dict) or set(request)-{'edits','typing_style_id'} or 'edits' not in request:
             raise PdfError('each paragraph change needs local Unicode edits and optional typing style')
         text,spans,typing=styles.project(p,request['edits'],request.get('typing_style_id'))
         projected[pid]=dict(text=text,style_spans=spans,typing_style_id=typing,boundaries=_boundaries(text))
+        if state['paragraph_policies'][pid].get('text_placement') == SOURCE_PLACEMENT:
+            source_edits[pid] = styles.source_edits(p, request['edits'], request.get('typing_style_id'))
     working=deepcopy(state)
     for pid,value in projected.items():working['paragraphs'][pid]['logical'].update(value)
     fragments={};new_slots={};rids=state['flow']['regions'];ri=0;previous=None
@@ -448,7 +461,8 @@ def _plan(source,state,changes):
                     working['slots'][sid]=new_slots[sid]
             binding=working['slots'][sid or owned[0]]['binding']
             remaining=text[cursor:]
-            layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent)
+            linked = source_edits.get(pid)
+            layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent,linked)
             first_ascent=layout.lines[0].ascent if layout.lines else policy['empty']['ascent']
             if previous:baseline=previous['last_baseline']+max(incoming[pid]['minimum_baseline_gap'],previous['descent']+first_ascent)
             if baseline-first_ascent<region['bounds'][1]-.002:raise PdfError('first line exceeds the explicitly confirmed region top')
@@ -466,7 +480,10 @@ def _plan(source,state,changes):
             visible=remaining[:end];spans=styles.canonical_spans(ids[cursor:cursor+end])
             lines=[dict(**{k:getattr(line,k) for k in LINE_KEYS if k!='baseline'},baseline=baseline+line.baseline) for line in fitting]
             options=_layout_options(state,pid,rid,baseline,indent)
-            measured=plan_paragraph(source,binding['paragraph'],styles.replacement(binding,visible,spans),
+            if linked is not None and (cursor != 0 or end != len(text)):
+                raise PdfError('paragraphs exceed all explicitly confirmed shared regions')
+            edits = linked if linked is not None else styles.replacement(binding,visible,spans)
+            measured=plan_paragraph(source,binding['paragraph'],edits,
                 fonts=styles.providers(p),render_styles=styles.render_styles(p),paragraph_style=styles.render_confirmations(p),
                 paragraph_layout=alignment_request(p['logical'].get('alignment',DEFAULT)),
                 _paragraph_continues=continuation(remaining,end,cut),**options)
@@ -484,6 +501,12 @@ def _plan(source,state,changes):
                 descent=lines[-1]['descent'] if lines else policy['empty']['descent'],empty=not text)
             fragments[sid]=dict(range=[cursor,cursor+cut],render_end=cursor+end,text=visible,style_spans=spans,
                 lines=lines,layout=options,ink_bounds=ink,occupancy=occupancy)
+            fragments[sid]['glyphs'] = [dict(start=g.start, end=g.end, text=g.glyph.text,
+                origin=[g.x + g.glyph.payload['offset'][0],
+                        baseline + g.baseline + g.glyph.payload['offset'][1]])
+                for line in fitting for g in line.glyphs]
+            if linked is not None:
+                fragments[sid]['source_edits'] = linked
             cursor+=cut
             if cursor==len(text):previous=occupancy;break
             ri+=1;previous=None
@@ -574,7 +597,8 @@ def edit_shared_flow(source,model,output,model_output,changes):
                     _paragraph_continues=continuation(p['logical']['text'],wanted['render_end'],wanted['range'][1]),
                     _allow_empty_style_witnesses=bool(state.get('continuation_destinations')) or state['schema']==SCHEMA,
                     empty_style_id='logical:'+p['logical']['typing_style_id'],owner=sid,**wanted['layout'])
-                edits=styles.replacement(slot['binding'],wanted['text'],wanted['style_spans'])
+                edits=(wanted['source_edits'] if 'source_edits' in wanted else
+                       styles.replacement(slot['binding'],wanted['text'],wanted['style_spans']))
                 if sid in plan['new_slots']:
                     from .editable import plan_editable
                     plans[sid]=plan_editable(page,slot['binding']['paragraph'],edits,**options)

@@ -3,7 +3,7 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `7ce8cd43912510325bfcd43be444383e8a4b580c` plus targeted proposals, 2026-10-09.
+- State: starting main `494f85def65ba5b76a44e56937b926541668b0f9` plus witnessed source-adjacency editing, 2026-10-10.
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -12,7 +12,12 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   [implementation/evidence report](tagged-persistent-editing.md).
   The B2 fixture lifecycle ran on Windows. The existing real corpus received
   [read-only structural inspection](../evaluations/tagged/structure-probe.json).
-- **FIRST REAL-WORLD JAPANESE PDF EDITING VALIDATED — PASS**, bounded to one
+- **FIRST REAL-WORLD JAPANESE BODY TEXT EDITING VALIDATED — PASS** for Okinawa
+  procurement page 2, item (7). Two different-length edits use public B1/T2 and
+  restore after each save. Irregular Td/Tm gaps are retained as source adjacency,
+  not inferred tracking or justification. [Measured body report](../evaluations/real_japanese/body-report.md).
+  This is a one-line body result; real wrapping/push-down remains unvalidated.
+- **FIRST REAL-WORLD JAPANESE PDF EDITING VALIDATED — PASS**, previously bounded to one
   existing Kyoto City PDF heading: `質問に対する回答` on page 1. A caller-selected
   observed line goes through public propose → accept → replace → edit → restored
   reopen → second edit → restored reopen. Both edits change text length.
@@ -66,7 +71,7 @@ elsewhere on a multi-column/table page. All width, region, source, font and repr
 |---|---|---|---|
 | Observe | `backend.extract_page`, `selection.observation_lines`, `inference._line_groups/_paragraphs` | Lines, paragraph candidates, the main column, foreign content (other text, paths, images) | — |
 | Propose | `page_proposal._build` | Paragraph selections, column x, available width (§3.1), region bounds, line pitch, first-line indent, follows gaps, logical styles, metric-verified font providers | Review; optionally choose consecutive observed lines |
-| Verify the proposal | `page_proposal._reproduce` → `shared_flow.plan_shared_flow(state, {})` | The exact T2 state is built and planned with no edits. It must reproduce every observed line break, baseline and line width, or the proposal is refused. | — |
+| Verify the proposal | `page_proposal._reproduce` → `shared_flow.plan_shared_flow(state, {})` | The exact T2 state is built and planned with no edits. It must reproduce every observed line break, baseline, line width and painted glyph origin, or the proposal is refused. | — |
 | Accept | `accept_page_flow` → `confirm_story` → `confirm_shared_flow` | Rechecks the binding, recomputes the proposal, applies explicit choices and overrides, and returns the T2 state | One call; a provider choice only when several fonts verify |
 | Edit | `replace_in_flow` → `edit_shared_flow` | Finds the unique occurrence across the flow, takes its single logical style, and writes through the unchanged T2 path | Find and replacement text |
 | Reopen and continue | `open_shared_flow` | `restored`, or `needs_confirmation` (fail closed) | — |
@@ -95,7 +100,7 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 | Source proofs before writes: no-op replay, removal, foreign glyph preservation | `paragraph.plan_paragraph_edit` | Every write |
 | Attributed HarfBuzz shaping and Japanese wrap | `paragraph.ParagraphShaper`, `rich_layout` | Probe S1–S5 |
 | One Transaction: plan, mutate, save once, verify once, identity map | `transaction.py`, `mutation.py` | Every write |
-| Shared flow v2: multi-paragraph allocation, push-down by gap, fail-closed reopen, re-edit | `shared_flow.py` | Fixture: P3 moves 232 → 250 pt keeping the 27 pt gap |
+| Shared flow v2: multi-paragraph allocation, push-down by gap, fail-closed reopen, re-edit; optional source-adjacency retention | `shared_flow.py` | Existing flow fixtures and `test_source_adjacency_flow.py` |
 | Current-revision source ownership | `source_ownership.py` | Persistent re-edit |
 | Semantic authority layers, canonical island writer, decoration paint ownership, L3 publication | `semantic_*.py` | Windows lifecycle validations |
 
@@ -130,8 +135,18 @@ The caller only accepts. Every value carries an evidence label. None of them is 
   | Several | `needs-choice`: the caller names one by SHA-256 |
   | None | `unresolved` (B3) |
 - **Reproduction.** The candidate T2 state, planned with no edits, must reproduce every observed line start exactly,
-  and every baseline and line width within `elements._close`, the shared-flow geometry tolerance. Otherwise the
-  proposal is refused, and nothing on the page can move silently.
+  and every baseline, line width and painted glyph origin within the unchanged `elements._close` tolerance.
+  Glyph occurrences are matched by source Unicode offset, not nearest position or text search.
+  Opposite interior gap errors cannot cancel merely because line widths match. Layout-trimmed spaces keep
+  their logical Unicode; non-whitespace glyphs cannot disappear.
+- **Irregular source spacing.** With observed zero Tc/Tw and irregular source gaps, the proposal exposes
+  `text_placement=preserve-source-adjacency`. Explicit acceptance records this optional paragraph policy in
+  the v2 contract. A paragraph has one current source slot in one region, default left layout and no continuation
+  destinations. Existing glyph codes/resources and gaps between still-adjacent same-source-line characters
+  use `ParagraphShaper`'s retained path. Replacement text and new boundaries use qualified providers and
+  nominal/source inline metrics. Gap adjustments are not transported across an edit or a newly wrapped edge.
+  The source is re-observed on every revision; no unchecked gap array is trusted from a sidecar. Existing
+  synthetic cases demonstrate wrap/push-down; the real Okinawa region fits only one line.
 - **Binding.** The proposal carries the source SHA-256, the page, the page observation hash and a canonical digest.
   Optional target line IDs and their caller-selected provenance are included and re-observed at acceptance.
   Acceptance recomputes the proposal from the PDF and the recorded font inputs and requires the same digest. An
@@ -160,7 +175,7 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 - one page;
 - horizontal text in one column of non-overlapping paragraphs;
 - untagged, or balanced page-level `/P` MCID scopes whose complete ordered bundle belongs to one leaf `/P` StructElem;
-- left-aligned, naturally spaced source lines;
+- left-aligned naturally spaced lines, or individually reproduced zero-Tc/Tw irregular source adjacency;
 - every body font program installed with identical metrics;
 - no foreign content inside the column band.
 
@@ -172,7 +187,7 @@ saves.
 | Boundary | Where it is refused |
 |---|---|
 | Tagged structures outside B2: unrelated owners, Span/run trees, MCR children, ActualText/OC, editable Artifact, extra properties, nested scopes, split lines, Forms, malformed trees or nonzero object generations | Structural proof refuses; no stripping, repair or tree mutation |
-| Justified or spaced source lines (Japanese Word's default body alignment is 両端揃え) | `layout-not-reproduced` or `shared-flow-confirmation` (varying tracking) |
+| Spacing not reproducible by qualified natural shaping or the witnessed-adjacency path; varying/unknown tracking | `layout-not-reproduced` or `shared-flow-confirmation`; no automatic justify |
 | No installed font with identical metrics (Linux servers, CFF/OTF fonts, missing fonts) | `unresolved: no-metric-verified-provider` |
 | Several columns/tables inside the selected candidate, or foreign content inside its region | `multiple-columns`, `region`; explicit target lines can isolate a safe heading/body elsewhere |
 | Growth past the proposed region (margin symmetry or foreign boundary) | Existing T2 overflow refusal |
@@ -201,37 +216,37 @@ B1's proofs.
   ActualText/mixed children; none of the four probed pages qualifies as a complete supported
   bundle. A broader Office claim needs additional structure-preserving policies and evidence.
 
-### #1 B6 — Reproduce real Japanese body spacing in the proposal
+### B6 — Witnessed irregular source adjacency: COMPLETE for the bounded path
 
-- **Measured blocker:** after explicit targeting, Okinawa page 2 item (7) has safe
-  ownership/region evidence and exact MS Mincho/Arial font metrics, but the no-edit
-  plan fails observed-width reproduction. Its zero-Tc/Tw source uses irregular Tm
-  placement: roughly 0.12 pt contractions, punctuation compression and a mixed-font
-  space; measured width is about 7.37 pt below nominal including trailing space.
-- **Current success boundary:** the naturally spaced Kyoto heading passes the actual
-  two-edit persistent lifecycle. This does not validate Japanese body text or justify.
-- **Reuse:** `spacing.py` separates operators and repositioning; `alignment.py` and
-  [confirmed-alignment.md](confirmed-alignment.md) already support proven justify
-  policies. The observed Okinawa pattern is irregular, so it cannot be labelled
-  justify merely because Word often justifies body paragraphs.
-- **Next evidence:** select a real body paragraph, prove its exact spacing model and
-  reproduce its unedited geometry before offering edits. Keep the current no-edit
-  reproduction, source, font and structural guards. Broader Office tags remain separate.
+- Okinawa page 2 item (7) now reproduces every glyph and completes two length-changing edits,
+  save/reopen/re-edit through B1/T2. The old all-provider plan discarded observed adjacency:
+  visible nominal width 272.208455 pt versus witnessed 264.839803 pt.
+- `spacing.py` still classifies the source as irregular/unknown alignment. Its approximately
+  -0.12 pt gaps, -5.40 pt punctuation contraction and mixed-font space remain measured facts.
+- `story_styles.source_edits` preserves source offsets; `ParagraphShaper` supplies existing
+  code/GID/advance retention. T2 allocation, source ownership, Transaction and atomic validation stay active.
+- Source font programs are supplied explicitly, byte-identical to the PDF's embedded subsets, and pass
+  unchanged metric qualification. This is not automatic font discovery or general subset expansion.
+
+### #1 B4 — Real body reflow with following-paragraph capacity
+
+Item (7)'s accepted region ends at 715.249146 pt, before foreign item (8). Lengthening until
+wrapping is necessary is refused by the existing shared-region capacity rule, with no output.
+The next real target must include the following paragraphs with proven ownership/region evidence.
+Hanging list indents, multiple regions and intervening tables are separate layout boundaries;
+do not enlarge a region through fixed foreign content. Synthetic wrap/push-down is already tested.
 
 ### #2 B3 — Font fidelity without an identical installed font
 
-- **Current limit:** when no installed font has identical metrics, the proposal is `unresolved`. T2 also re-renders
-  retained text with the provider. Only `glyf` TrueType providers are accepted.
+- **Current limit:** when no supplied or installed font has identical metrics, the proposal is `unresolved`.
+  Natural T2 policies regenerate through the provider; the source-adjacency policy retains unchanged codes.
+  Only `glyf` TrueType providers are accepted. The real evaluation supplies unmodified embedded subsets,
+  whose coverage limits replacement characters; there is no implicit fallback or invented cmap.
 - **PDFs unlocked:** pages whose body font is not installed or is CFF/OTF. Untouched glyphs would keep their embedded
   program.
 - **Reuse:** the retained-glyph path of `ParagraphShaper` and the identity map.
 
-### #3 B4 — Layout beyond one column and one region
-
-Multi-column, tables, growth past the proposed region, and pushing foreign content. Acrobat parity does not require
-most of this.
-
-### #4 B5 — Real text in the semantic layer (T3)
+### #3 B5 — Real text in the semantic layer (T3)
 
 Not on the replacement path; decorations, publication and style reinterpretation on real text come after B3.
 
@@ -240,9 +255,9 @@ Not on the replacement path; decorations, publication and style reinterpretation
 ```
 B1 bootstrap (COMPLETE)
 ├→ B2 same-owner tagged ownership (COMPLETE, narrow subset)
-├→ B6 real-body source spacing reproduction (NEXT)
+├→ B6 witnessed real-body source adjacency (COMPLETE, bounded)
 ├→ B3 font fidelity
-└→ B4 layout scope
+└→ B4 real body wrap + following-paragraph capacity (NEXT)
         B3 → B5 semantic real text
 ```
 
@@ -252,21 +267,18 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: B6 — evidence-backed reproduction of real Japanese body spacing
+NEXT BLOCKER: B4 — a proven real-body region that admits wrap and following-paragraph movement
 ```
 
-B6 ranks ahead of B3 based on measured real-source spacing refusals and existing
-source-spacing/confirmed-alignment machinery. The targeted Kyoto heading is the first
-real Japanese persistent-edit result. It does not establish body-paragraph coverage,
-font fallback, CFF support or broader Office structures. Irregular Tm placement in
-Okinawa is not a license to treat every Word line as justified.
+B6 now passes the actual Okinawa body lifecycle. Its fixed lower foreign boundary prevents
+real wrapping. Neither this result nor synthetic push-down establishes arbitrary body reflow,
+font fallback, CFF support, broader Office structures or Windows execution of this change.
 
 ## 9. Next PR scope
 
-Measure a real body paragraph and prove its source spacing policy using existing
-spacing evidence; use justified alignment only when that evidence supports it.
-Retain B1's no-edit reproduction gate. Do not weaken tag, font, width or
-ownership proofs to make justified pages pass. Broader tagged trees remain a
+Select a real multi-line paragraph and its following text, prove their usable shared region
+and any hanging-indent policy, then validate actual wrap/push-down and two reopened revisions.
+Retain B1's glyph-level no-edit reproduction and all source/font/ownership proofs. Broader tagged trees remain a
 separate, explicitly scoped follow-up: different MCIDs under different owners
 cannot be concentrated into one MCID without changing their logical ownership.
 
@@ -274,7 +286,7 @@ cannot be concentrated into one MCID without changing their logical ownership.
 
 - More decoration kinds or variants.
 - Widening the T3 text scope.
-- Multi-column inference before B2/B6.
+- General multi-column/table inference beyond the selected real-body case.
 - T2 atomic publication.
 
 ## 11. DO NOT REDESIGN
@@ -296,6 +308,9 @@ cannot be concentrated into one MCID without changing their logical ownership.
 B1 baseline: [continuation checkpoint](continuation-checkpoint.md#b1-ordinary-page-bootstrap--2026-10-07).
 B2 contract, reproducible commands, Windows evidence and limitations: [B2 report](tagged-persistent-editing.md).
 Current targeted/B1/B2 focused regression: **69 passed** (12 + 19 + 38), Windows.
+Current Linux body evidence and reproducible regression/full-suite commands:
+[body report](../evaluations/real_japanese/body-report.md). The earlier Windows count above is historical,
+not the result of this change; final-HEAD test counts are recorded in the pull request.
 The [real-case report](real-japanese-persistent-editing.md) and
 [measured summary](../evaluations/real_japanese/summary.json) record both actual saved
 revisions, restored reopen, exact provider outlines and independent preservation audits.
