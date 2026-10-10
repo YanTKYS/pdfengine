@@ -47,6 +47,9 @@ class ShapedRun:
 class ShapedFont:
     def __init__(self, source: str | Path | bytes, *, font_index=0, variations=None):
         raw = source if isinstance(source, bytes) else Path(source).read_bytes()
+        face_count = int.from_bytes(raw[8:12], 'big') if raw[:4] == b'ttcf' and len(raw) >= 12 else 1
+        if type(font_index) is not int or not 0 <= font_index < face_count:
+            raise FontError('font face index is outside the supplied program')
         self.source_sha256 = hashlib.sha256(raw).hexdigest()
         self.font_index = font_index
         font = TTFont(BytesIO(raw), fontNumber=font_index, recalcTimestamp=False)

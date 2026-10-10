@@ -29,6 +29,9 @@ from copy import deepcopy
 from fractions import Fraction
 from io import BytesIO
 import json
+import hashlib
+from pathlib import Path
+import tempfile
 import math
 import ntpath
 import os
@@ -104,10 +107,12 @@ def _faces(path):
     try:
         with open(path, 'rb') as stream:
             head = stream.read(12)
+            size = os.fstat(stream.fileno()).st_size
     except OSError:
         return []
     if head[:4] == b'ttcf' and len(head) == 12:
-        return list(range(int.from_bytes(head[8:12], 'big')))
+        count = int.from_bytes(head[8:12], 'big')
+        return list(range(count)) if 0 < count <= (size - 12) // 4 else []
     return [0]
 
 
@@ -192,8 +197,11 @@ def _verify_providers(pool, files, needed, source_name):
         for index in _faces(path):
             evaluated += 1
             font = pool.get(path, index)
-            reason = _verify_face(font, needed)
-            ps, family = _font_names(font) if font is not None else ('', '')
+            try:
+                reason = _verify_face(font, needed)
+                ps, family = _font_names(font) if font is not None else ('', '')
+            except Exception:  # malformed discovered tables are not font authority
+                continue
             # Ranking only: a producer may append a style word to the subset BaseFont.
             matched = bool(wanted) and any(n and wanted.startswith(n) for n in (_normalized(ps), _normalized(family)))
             if reason is None:
@@ -214,6 +222,76 @@ def _verify_providers(pool, files, needed, source_name):
                                                        reason=reason))
     ordered = sorted(verified.values(), key=lambda c: (not c['name_match'], c['sha256'], c['font_index']))
     return ordered, sorted(rejected.values(), key=lambda c: (c['path'], c['font_index'])), evaluated
+
+
+def _embedded_candidates(source, programs, cache):
+    """Materialize unchanged source programs in a derived, content-addressed cache.
+
+    Cache bytes are never authority: both the source PDF and the candidate SHA
+    are rechecked on acceptance; persistent provider recipes verify them again.
+    A cache may be deleted, in which case an existing state needs confirmation.
+    """
+    result = []
+    with pymupdf.open(source) as doc:
+        for xref in sorted(programs):
+            data = doc.extract_font(xref)[3]
+            if not data:
+                continue
+            sha = hashlib.sha256(data).hexdigest()
+            root = Path(cache); root.mkdir(parents=True, exist_ok=True)
+            path = root / (sha + '.ttf')
+            if not path.exists():
+                # Publish complete bytes; concurrent proposals may derive the same program.
+                with tempfile.NamedTemporaryFile(dir=root, delete=False) as out:
+                    temp = Path(out.name)
+                    out.write(data)
+                try:
+                    os.replace(temp, path)
+                finally:
+                    temp.unlink(missing_ok=True)
+            if source_sha(path) != sha:
+                raise PdfError('embedded font cache differs from the bound source program')
+            result.append(dict(path=str(path.resolve()), sha256=sha, font_index=0,
+                               source_xref=xref, provenance='unmodified-embedded-program'))
+    return result
+
+
+def _coverage_candidates(pool, files, text):
+    """Qualify new input using actual shaping, independently of source metrics.
+
+    These are *alternatives*, never automatically accepted or labelled equal
+    to the source face. The normal writer enforces embedding rights and outlines.
+    """
+    candidates, rejected = {}, []
+    required = {ord(c) for c in text if c not in '\r\n'}
+    for path in files:
+        for index in _faces(path):
+            font = pool.get(path, index)
+            try:
+                if font is None or not {'glyf','hmtx','cmap','head'} <= set(font.keys()):
+                    continue
+                if not required <= set(font.getBestCmap() or {}):
+                    continue
+            except Exception:
+                continue
+            shaped = None
+            try:
+                shaped = ShapedFont(path, font_index=index)
+                for run in re.split(r'\r\n|\r|\n', text):
+                    shaped.shape(run)
+                ps, family = _font_names(font)
+                entry = dict(path=path, sha256=shaped.source_sha256, font_index=index,
+                    instance_sha256=shaped.instance_sha256, postscript_name=ps, family=family,
+                    checked_text=text, qualification='editable embedding + actual HarfBuzz shaping + visible glyphs; no source-metric equivalence claim')
+                key = (entry['sha256'], index)
+                if key not in candidates or path < candidates[key]['path']:
+                    candidates[key] = entry
+            except Exception as exc:  # discovered malformed programs are never candidates
+                rejected.append(dict(path=path, font_index=index, reason=str(exc)))
+            finally:
+                if shaped is not None:
+                    shaped.font.close()
+    return sorted(candidates.values(), key=lambda c: (c['sha256'], c['font_index'])), rejected
 
 
 # -- page analysis ---------------------------------------------------------------
@@ -576,6 +654,8 @@ def _observed_fonts(source, page, column, snapshots):
                         em = Fraction(embedded['hmtx'][embedded.getGlyphName(gid)][0], embedded['head'].unitsPerEm)
                 needed[char] = (width, em)
             program['needed'] = needed
+            program['program_sha256'] = hashlib.sha256(data).hexdigest() if data else None
+            program['cmap_codepoints'] = set(embedded.getBestCmap() or {}) if embedded is not None and 'cmap' in embedded else set()
             program['embedded_program'] = 'TrueType hmtx' if embedded is not None and 'hmtx' in embedded else None
             if embedded is not None:
                 embedded.close()
@@ -603,7 +683,7 @@ def _persistent_route(source, page, column):
 
 
 def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=None, provider_choices=None,
-           reproduce=True):
+           reproduce=True, include_embedded_fonts=False, font_cache=None, new_text=None):
     overrides = dict(overrides or {})
     if set(overrides) - OVERRIDE_KEYS:
         raise PdfError('unsupported override: ' + ', '.join(sorted(set(overrides) - OVERRIDE_KEYS)))
@@ -614,10 +694,14 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
                                                 and all(isinstance(v, str) for v in overrides['paragraph_starts'])):
         raise PdfError('override paragraph_starts must be a list of line ids')
     source, page = analysis.source, analysis.page
+    new_text = dict(new_text or {})
+    if any(not isinstance(k, str) or not isinstance(v, str) or not v for k,v in new_text.items()):
+        raise PdfError('new_text must map logical style IDs to nonempty proposed Unicode')
     proposal = dict(schema=SCHEMA, status='proposed',
         binding=dict(source_sha256=source_sha(source), page=page, page_observation_sha256=analysis.observation_sha256,
                      page_size=[analysis.width, analysis.height]),
-        font_search=dict(font_roots=font_roots, font_candidates=None if font_roots is not None else font_files),
+        font_search=dict(font_roots=font_roots, font_candidates=None if font_roots is not None else font_files,
+                         include_embedded_fonts=include_embedded_fonts, font_cache=font_cache, new_text=new_text),
         refusals=list(analysis.refusals), unresolved=[], paragraphs=[], region=None, follows=[], styles=[],
         foreign_content=[], reproduction=dict(status='not-run'))
     if analysis.target_line_ids is not None:
@@ -727,10 +811,17 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
             logical[key]['members'].append(f'{pid}:{style["id"]}')
             mapping[style['id']] = logical[key]['id']
         assignments.append(mapping)
-    pool, results = _FontPool(), {}
+    if set(new_text) - {e['id'] for e in logical.values()}:
+        raise PdfError('new_text names an unknown logical style')
+    embedded = _embedded_candidates(source, programs, font_cache) if include_embedded_fonts else []
+    proposal['embedded_fonts'] = embedded
+    font_files = sorted(set(font_files) | {e['path'] for e in embedded})
+    pool, results, coverage = _FontPool(), {}, {}
     try:
         for xref, program in sorted(programs.items()):
             results[xref] = _verify_providers(pool, font_files, program['needed'], program['name'])
+        for ident, text in new_text.items():
+            coverage[ident] = _coverage_candidates(pool, font_files, text)
     finally:
         pool.close()
     choices = dict(provider_choices or {})
@@ -744,30 +835,75 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
                    'ambiguous-metric-verified' if verified else 'no-metric-verified-provider')
         style = dict(id=entry['id'], observed=entry['observed'], physical_styles=entry['members'],
                      source_font=dict(name=program['name'], embedded_program=program['embedded_program'],
-                                      checked_characters=len(program['needed'])),
+                                      checked_characters=len(program['needed']), program_sha256=program['program_sha256'],
+                                      cmap_coverage=len(program['cmap_codepoints'])),
                      providers=dict(outcome=outcome, verified=verified, name_matched_rejections=rejected,
                                     evaluated_faces=evaluated,
                                     qualification='glyph presence/outline + embedded em advance (exact) + PDF width '
                                                   '(written decimal quantum); names only order candidates'))
-        if entry['id'] in choices:
-            choice = choices[entry['id']]
-            picked = [c for c in verified if c['sha256'] == choice.get('sha256')
-                      and c['font_index'] == choice.get('font_index', 0)]
-            if not picked:
-                raise PdfError(f'provider choice for {entry["id"]} is not a metric-verified candidate')
-            providers[entry['id']] = (picked[0], 'caller-choice')
-        elif len(verified) == 1:
-            providers[entry['id']] = (verified[0], 'unique-metric-verified')
+        ident = entry['id']
+        alternatives, coverage_rejections = coverage.get(ident, ([], []))
+        eligible = verified
+        if ident in new_text:
+            identities = {(c['sha256'], c['font_index']) for c in alternatives}
+            # Equal advances are not proof of equal outlines. For new-text
+            # discovery only the identical source program may be auto-selected;
+            # a full/other program still retains its exact metric result, but
+            # needs explicit approval to supply new glyphs.
+            eligible = [c for c in verified if (c['sha256'], c['font_index']) in identities
+                        and c['sha256'] == program['program_sha256']]
+            metric_ids = {(c['sha256'], c['font_index']) for c in verified}
+            alternatives = [dict(c, source_metric_qualified=(c['sha256'],c['font_index']) in metric_ids,
+                                 source_program_identical=False)
+                            for c in alternatives if c['sha256'] != program['program_sha256']]
+            style['source_font']['missing_new_characters'] = sorted(
+                {c for c in new_text[ident] if c not in '\r\n' and ord(c) not in program['cmap_codepoints']})
+            style['providers'].update(new_text=new_text[ident], covering_metric_providers=eligible,
+                substitutes=alternatives, coverage_rejections=coverage_rejections,
+                substitute_authority='explicit caller choice; only new glyphs; source appearance not claimed')
+        picked = None
+        if ident in choices:
+            choice = choices[ident]
+            if (not isinstance(choice, dict) or set(choice) - {'sha256','font_index','relation'}
+                    or type(choice.get('font_index',0)) is not int
+                    or choice.get('relation', 'confirmed_reflow_provider') not in ('confirmed_reflow_provider','substituted')):
+                raise PdfError('provider choice needs a SHA, face index and supported relationship')
+            substitute = choice.get('relation') == 'substituted'
+            pool_choices = alternatives if substitute else eligible
+            picked = next((c for c in pool_choices if c['sha256'] == choice.get('sha256')
+                           and c['font_index'] == choice.get('font_index', 0)), None)
+            if picked is None:
+                raise PdfError(f'provider choice for {ident} is not a ' +
+                               ('qualified substitute' if substitute else 'metric-verified candidate') + ' for the declared text')
+            if substitute:
+                # Every paragraph using this logical style must preserve its source glyphs.
+                # A provider choice never authorizes regenerating the old text in another face.
+                for mapping, policy, snapshot in zip(assignments, policies, snapshots):
+                    if ident not in mapping.values():
+                        continue
+                    if not all(l['tc'] == [0.0] and l['tw'] == [0.0] for l in snapshot['spacing']['lines']):
+                        raise PdfError('substitution requires witnessed zero-Tc/Tw source adjacency')
+                    policy['text_placement'] = dict(value=SOURCE_PLACEMENT,
+                        evidence='explicit new-glyph substitution; retain witnessed source glyphs')
+            providers[ident] = (picked, 'caller-substitution' if substitute else 'caller-choice')
+        elif any(c['sha256'] == program['program_sha256'] for c in eligible):
+            original = next(c for c in eligible if c['sha256'] == program['program_sha256'])
+            providers[ident] = (original, 'source-program-verified')
+            style['providers']['preferred_source_program'] = dict(sha256=original['sha256'],font_index=original['font_index'])
+        elif len(eligible) == 1:
+            providers[ident] = (eligible[0], 'unique-metric-verified')
         else:
-            proposal['unresolved'].append(dict(code=outcome, style=entry['id'],
-                detail='choose one verified candidate with provider_choices' if verified else
-                       'no installed font matches the embedded metrics (B3 boundary)'))
+            code = ('explicit-substitution-required' if not eligible and alternatives else
+                    'ambiguous-metric-verified' if eligible else
+                    'no-provider-for-new-text' if ident in new_text else outcome)
+            proposal['unresolved'].append(dict(code=code, style=ident,
+                detail='choose a qualified provider explicitly; substitution must name relation=substituted'))
         proposal['styles'].append(style)
     if proposal['refusals']:
         proposal['status'] = 'refused'
         return proposal, None
     if proposal['unresolved']:
-        proposal['status'] = 'needs-choice' if all(u['code'] == 'ambiguous-metric-verified'
+        proposal['status'] = 'needs-choice' if all(u['code'] in ('ambiguous-metric-verified', 'explicit-substitution-required')
                                                    for u in proposal['unresolved']) else 'unresolved'
         proposal['reproduction'] = dict(status='pending', detail='needs a width and one provider per style')
         return proposal, None
@@ -816,7 +952,14 @@ def _arguments(analysis, plan):
             provider = dict(path=candidate['path'])
             if candidate['font_index']:
                 provider['font_index'] = candidate['font_index']
-            styles[lid] = dict(provider=provider, provider_relation='confirmed_reflow_provider')
+            how = plan['providers'][lid][1]
+            styles[lid] = dict(provider=provider,
+                provider_relation='substituted' if how == 'caller-substitution' else 'confirmed_reflow_provider')
+            if how == 'caller-substitution':
+                styles[lid]['provider_selection'] = dict(provenance='explicit-new-glyph-substitution',
+                    sha256=candidate['sha256'], font_index=candidate['font_index'],
+                    instance_sha256=candidate['instance_sha256'], checked_text=candidate['checked_text'],
+                    qualification=candidate['qualification'], appearance='source-equivalence-not-proven')
         first_style = next(s['style_id'] for s in snapshot['spans'])
         stories[pid] = dict(
             containers={'part': dict(page=analysis.page, bounds=region['bounds'], paragraph=snapshot, paint_relations=[],
@@ -918,18 +1061,30 @@ def _seal(proposal):
     return value
 
 
-def propose_page_flow(source, page=1, *, font_candidates=None, font_roots=None, line_ids=None):
-    """Read-only: an evidence-labelled shared-flow proposal for one ordinary page.
+def propose_page_flow(source, page=1, *, font_candidates=None, font_roots=None, line_ids=None,
+                      include_embedded_fonts=None, font_cache=None, new_text=None):
+    """Observe the unchanged PDF and propose an evidence-labelled shared flow.
 
     `font_candidates` (explicit files) or `font_roots` (directories) inject the
     candidate set; by default the platform's installed-font roots are searched.
     `line_ids` optionally selects consecutive observed lines as the candidate
     region. Every other line and paint remains fixed foreign content; width,
     fonts, source ownership and unchanged-layout reproduction still qualify it.
+    Default discovery includes unchanged embedded programs in a derived cache;
+    explicit candidate/root inventories retain their scope unless include_embedded_fonts=True.
+    new_text maps observed logical style IDs to proposed replacement text. A
+    different source program requires provider_choices with relation='substituted' at
+    acceptance; the choice only supplies new glyphs and preserves source glyphs.
     """
+    if include_embedded_fonts is None:
+        include_embedded_fonts = font_candidates is None and font_roots is None
+    if type(include_embedded_fonts) is not bool:
+        raise PdfError('include_embedded_fonts must be a boolean')
+    font_cache = str(Path(font_cache or (Path(tempfile.gettempdir()) / 'pdfengine-font-cache')).resolve()) if include_embedded_fonts else None
     files, roots = _font_files(font_candidates, font_roots)
     analysis = _Analysis(source, page, line_ids=line_ids)
-    proposal, _ = _build(analysis, font_files=files, font_roots=roots)
+    proposal, _ = _build(analysis, font_files=files, font_roots=roots,
+                         include_embedded_fonts=include_embedded_fonts, font_cache=font_cache, new_text=new_text)
     return _seal(proposal)
 
 
@@ -943,6 +1098,8 @@ def _recompute(source, proposal):
     if source_sha(source) != binding['source_sha256']:
         raise PdfError('page-flow proposal belongs to another PDF revision')
     search = proposal['font_search']
+    if any(k not in search for k in ('include_embedded_fonts','font_cache','new_text')):
+        raise PdfError('page-flow proposal predates font discovery; propose again')
     files, roots = _font_files(search['font_candidates'], search['font_roots'])
     target = proposal.get('target')
     if target is not None and (not isinstance(target, dict) or set(target) != {'line_ids', 'provenance'}
@@ -951,7 +1108,8 @@ def _recompute(source, proposal):
     analysis = _Analysis(source, binding['page'], line_ids=target['line_ids'] if target else None)
     if analysis.observation_sha256 != binding['page_observation_sha256']:
         raise PdfError('page observation changed since the proposal')
-    fresh, _ = _build(analysis, font_files=files, font_roots=roots)
+    fresh, _ = _build(analysis, font_files=files, font_roots=roots,
+                      **{k:search[k] for k in ('include_embedded_fonts','font_cache','new_text')})
     if _seal(fresh)['digest'] != claimed:
         raise PdfError('page-flow proposal is stale: the page or the installed fonts changed; propose again')
     return analysis, files, roots
@@ -961,7 +1119,8 @@ def accept_page_flow_report(source, proposal, *, paragraph_ids=None, provider_ch
     """The single explicit acceptance; returns the shared-flow v2 state and an acceptance receipt."""
     analysis, files, roots = _recompute(source, proposal)
     built, plan = _build(analysis, font_files=files, font_roots=roots, paragraph_ids=paragraph_ids,
-                         overrides=overrides, provider_choices=provider_choices)
+                         overrides=overrides, provider_choices=provider_choices,
+                         **{k:proposal['font_search'][k] for k in ('include_embedded_fonts','font_cache','new_text')})
     if built['status'] != 'proposed' or plan is None:
         reasons = built['refusals'] + built['unresolved']
         raise PdfError('page-flow proposal cannot be accepted: ' + '; '.join(

@@ -92,7 +92,7 @@ def confirm_registry(source, fragments, definitions, assignments, typing_style_i
             styles=deepcopy(mapping),provenance='caller_confirmed_source_mapping')
     registry={}
     for ident,definition in definitions.items():
-        if (set(definition)-{'provider','provider_relation','language'} or not witnesses[ident]
+        if (set(definition)-{'provider','provider_relation','language','provider_selection'} or not witnesses[ident]
                 or definition['provider_relation'] not in ('confirmed_reflow_provider','substituted')):
             raise PdfError('logical style needs observed witnesses and an explicit provider relationship')
         observed=witnesses[ident];base=inline_properties(observed[0]['properties']);props=deepcopy(base)
@@ -107,6 +107,8 @@ def confirm_registry(source, fragments, definitions, assignments, typing_style_i
             source_observations=observed,reflow_provider=font,provider_relation=definition['provider_relation'],
             traits=dict(weight='unknown',italic='unknown',script='unknown',
                         language=dict(value=definition['language'],provenance='explicitly_confirmed') if 'language' in definition else 'unknown'))
+        if 'provider_selection' in definition:
+            registry[ident]['provider_selection'] = deepcopy(definition['provider_selection'])
     return registry,canonical_spans(ids)
 
 
@@ -123,6 +125,26 @@ def validate_registry(state):
                 or set(attrs)!=set(PROPERTIES) or entry['provider_relation'] not in ('confirmed_reflow_provider','substituted')
                 or source_sha(font['path'])!=font['sha256']):
             raise PdfError('logical style identity, provenance or supplied font changed')
+        if 'provider_selection' in entry:
+            choice = entry['provider_selection']
+            if (entry['provider_relation'] != 'substituted'
+                    or set(choice) != {'provenance','sha256','font_index','instance_sha256','checked_text','qualification','appearance'}
+                    or choice['provenance'] != 'explicit-new-glyph-substitution'
+                    or choice['appearance'] != 'source-equivalence-not-proven'
+                    or choice['sha256'] != font['sha256']
+                    or type(choice['font_index']) is not int or choice['font_index'] != font.get('font_index',0)
+                    or not isinstance(choice['checked_text'],str) or not choice['checked_text']
+                    or choice['qualification'] != 'editable embedding + actual HarfBuzz shaping + visible glyphs; no source-metric equivalence claim'):
+                raise PdfError('new-glyph provider differs from its explicit choice')
+            from .shaped_font import ShapedFont
+            checked = ShapedFont(font['path'],font_index=choice['font_index'])
+            try:
+                if checked.instance_sha256 != choice['instance_sha256']:
+                    raise PdfError('new-glyph provider face identity changed')
+                for run in re.split(r'\r\n|\r|\n',choice['checked_text']):
+                    checked.shape(run)
+            finally:
+                checked.font.close()
         for key,attribute in attrs.items():
             if (attribute['provenance']!='observed_source' or attribute['witnesses']!=[w['id'] for w in observed]
                     or any(not _close(attribute['value'],re.sub(r'^[A-Z]{6}\+','',w['properties'][key])
