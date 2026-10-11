@@ -163,10 +163,12 @@ def _policies(state):
             raise PdfError('explicit new-glyph substitution requires retained source placement')
         if 'text_placement' in p:
             if (p['text_placement'] != SOURCE_PLACEMENT or state['schema'] != SCHEMA
-                    or len(_slots(state, pid)) != 1 or len(state['regions']) != 1
-                    or state.get('continuation_destinations')
+                    or not _slots(state, pid)
                     or state['paragraphs'][pid]['logical'].get('alignment', DEFAULT) != DEFAULT):
-                raise PdfError('source adjacency requires one current source slot, one region and left layout')
+                raise PdfError('source adjacency requires current owned slots and left layout')
+            if (any('marked_structure' in state['slots'][sid]['binding']['paragraph'] for sid in _slots(state,pid))
+                    and (len(_slots(state,pid)) > 1 or any(d['paragraph_id']==pid for d in state.get('continuation_destinations',{}).values()))):
+                raise PdfError('tagged source adjacency cannot cross independently owned continuation regions')
         if p['first_line_indent'] < 0:
             # Hanging starts are bounded by the very same accepted region;
             # legacy/semantic flows and unconstrained overhang remain refused.
@@ -303,6 +305,19 @@ def _validate(source,value,current_styles=None,current_body=None):
     return state
 
 
+def _bind_confirmed_destinations(source, state, continuation_destinations):
+    from .content_stream import ContentPage
+    state['continuation_destinations']=deepcopy(continuation_destinations);state['destination_bindings']={}
+    for number,group in _destination_pages(state).items():
+        if any(d['source_pdf_sha256']!=state['pdf_sha256'] for d in group):
+            raise PdfError('continuation confirmation belongs to another PDF')
+        content=ContentPage(source,number)
+        try:state['destination_bindings'].update(destinations.page_witness(content,group,set())[0])
+        finally:content.close()
+        if any(state['destination_bindings'][d['destination_id']]['program_sha256']!=d['source_program_sha256'] for d in group):
+            raise PdfError('confirmed continuation source program differs')
+
+
 @proof_session
 def confirm_shared_flow(source, stories, *, flow_id, paragraph_order, regions, region_order,
                         slot_regions, paragraph_policies, follows, protected_regions, continuation_destinations=None):
@@ -342,20 +357,42 @@ def confirm_shared_flow(source, stories, *, flow_id, paragraph_order, regions, r
                     protected_regions=[dict(r,provenance='explicitly_confirmed') for r in protected_regions.get(str(i+1),[])]) for i in range(count)},
         allocation_provenance='observed-source-uncomposed',previous_model_sha256=None)
     if continuation_destinations:
-        from .content_stream import ContentPage
-        state['continuation_destinations']=deepcopy(continuation_destinations);state['destination_bindings']={}
-        for number,group in _destination_pages(state).items():
-            if any(d['source_pdf_sha256']!=state['pdf_sha256'] for d in group):
-                raise PdfError('continuation confirmation belongs to another PDF')
-            content=ContentPage(source,number)
-            try:state['destination_bindings'].update(destinations.page_witness(content,group,set())[0])
-            finally:content.close()
-            if any(state['destination_bindings'][d['destination_id']]['program_sha256']!=d['source_program_sha256'] for d in group):
-                raise PdfError('confirmed continuation source program differs')
+        _bind_confirmed_destinations(source,state,continuation_destinations)
     for sid in state['slots']:
         state['slots'][sid]['source_output']=source_ownership.seed(state,sid)
     state['contract_sha256']=_contract(state);state['physical_breaks']=_breaks(state)
     return _validate(source,_reseal(state))
+
+
+@proof_session
+def confirm_shared_flow_continuations(source, model, *, regions, region_order, continuation_destinations):
+    """Explicitly append reviewed destinations to an accepted, uncomposed T2 flow.
+
+    Region geometry is caller supplied, never inferred from empty space. Each
+    destination must already carry continuation.confirm_continuation_destination
+    authority for this source revision. Existing ownership and no-edit placement
+    remain unchanged. Subsequent edits use the ordinary allocator/Transaction.
+    """
+    state = _restore(source, model)
+    if (state['schema'] != SCHEMA or state['allocation_provenance'] != 'observed-source-uncomposed'
+            or state.get('continuation_destinations')):
+        raise PdfError('continuations must be attached to an accepted uncomposed v2 flow')
+    if (not regions or not continuation_destinations or set(regions) & set(state['regions'])
+            or len(region_order) != len(set(region_order)) or set(region_order) != set(regions)
+            or {d['region_id'] for d in continuation_destinations.values()} != set(regions)):
+        raise PdfError('new regions require an explicit order and confirmed destination authority')
+    before = _plan(source,state,{})
+    previous = state['model_sha256']
+    state['regions'].update({rid:dict(r,provenance='explicitly_confirmed') for rid,r in regions.items()})
+    state['flow']['regions'].extend(region_order)
+    _bind_confirmed_destinations(source,state,continuation_destinations)
+    state['previous_model_sha256'] = previous
+    state['contract_sha256'] = _contract(state)
+    state = _validate(source,_reseal(state))
+    after = _plan(source,state,{})
+    if after['new_slots'] or after['fragments'] != before['fragments']:
+        raise PdfError('continuation confirmation changes the reproduced source placement')
+    return state
 
 
 @proof_session
@@ -391,6 +428,46 @@ def _restore(source,model):
     result=open_shared_flow(source,model)
     if result['status']!='restored':raise PdfError('shared flow requires confirmation: '+result['reason'])
     return result['state']
+
+
+def _source_origins(paragraph, edits, typing_style_id=None):
+    """Project occurrence identity, never text equality, through validated edits."""
+    linked = styles.source_edits(paragraph, edits, typing_style_id)
+    origins = []; cursor = 0
+    for edit in linked:
+        origins.extend(range(cursor, edit['start']))
+        origins.extend([None] * sum(len(r['text']) for r in edit['runs']))
+        cursor = edit['end']
+    origins.extend(range(cursor, len(paragraph['logical']['text'])))
+    return origins
+
+
+def _fragment_source_edits(slot, text, ids, origins):
+    """Keep only occurrences already owned by this current physical slot.
+
+    Text arriving from another slot is generated by the confirmed provider.
+    Source codes/resources are page-local and cannot confer destination authority.
+    The writer receives ordinary local Unicode edits and re-proves its ownership.
+    """
+    old = slot['binding']['paragraph']['text']; base = slot.get('range', [0,0])[0]
+    edits = []; cursor = 0; pending_text = []; pending_ids = []
+    def flush(end):
+        if end != cursor or pending_text:
+            value = ''.join(pending_text)
+            edits.append(dict(start=cursor, end=end, runs=[
+                dict(text=value[s['start']:s['end']], style_id='logical:'+s['style_id'])
+                for s in styles.canonical_spans(pending_ids)]))
+        pending_text.clear(); pending_ids.clear()
+    for char, ident, origin in zip(text, ids, origins):
+        offset = origin - base if origin is not None else None
+        if offset is not None and 0 <= offset < len(old):
+            if offset < cursor or old[offset] != char:
+                raise PdfError('source occurrence projection differs from the current slot')
+            flush(offset); cursor = offset + 1
+        else:
+            pending_text.append(char); pending_ids.append(ident)
+    flush(len(old))
+    return edits
 
 
 def _layout(source,state,pid,binding,text,ids,region,indent,source_edits=None):
@@ -442,7 +519,7 @@ def _schedule(state,fragments):
 
 def _plan(source,state,changes):
     if not isinstance(changes,dict) or set(changes)-set(state['paragraphs']):raise PdfError('changes must name independent paragraph identities')
-    projected={};source_edits={}
+    projected={};source_origins={}
     for pid,p in state['paragraphs'].items():
         request=changes.get(pid,dict(edits=[]))
         if not isinstance(request,dict) or set(request)-{'edits','typing_style_id'} or 'edits' not in request:
@@ -450,7 +527,7 @@ def _plan(source,state,changes):
         text,spans,typing=styles.project(p,request['edits'],request.get('typing_style_id'))
         projected[pid]=dict(text=text,style_spans=spans,typing_style_id=typing,boundaries=_boundaries(text))
         if state['paragraph_policies'][pid].get('text_placement') == SOURCE_PLACEMENT:
-            source_edits[pid] = styles.source_edits(p, request['edits'], request.get('typing_style_id'))
+            source_origins[pid] = _source_origins(p, request['edits'], request.get('typing_style_id'))
     working=deepcopy(state)
     for pid,value in projected.items():working['paragraphs'][pid]['logical'].update(value)
     fragments={};new_slots={};rids=state['flow']['regions'];ri=0;previous=None
@@ -482,7 +559,9 @@ def _plan(source,state,changes):
                     working['slots'][sid]=new_slots[sid]
             binding=working['slots'][sid or owned[0]]['binding']
             remaining=text[cursor:]
-            linked = source_edits.get(pid)
+            origins = source_origins.get(pid)
+            linked = (_fragment_source_edits(working['slots'][sid or owned[0]], remaining, ids[cursor:], origins[cursor:])
+                      if origins is not None else None)
             layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent,linked)
             first_ascent=layout.lines[0].ascent if layout.lines else policy['empty']['ascent']
             if previous:baseline=previous['last_baseline']+max(incoming[pid]['minimum_baseline_gap'],previous['descent']+first_ascent)
@@ -501,9 +580,8 @@ def _plan(source,state,changes):
             visible=remaining[:end];spans=styles.canonical_spans(ids[cursor:cursor+end])
             lines=[dict(**{k:getattr(line,k) for k in LINE_KEYS if k!='baseline'},baseline=baseline+line.baseline) for line in fitting]
             options=_layout_options(state,pid,rid,baseline,indent)
-            if linked is not None and (cursor != 0 or end != len(text)):
-                raise PdfError('paragraphs exceed all explicitly confirmed shared regions')
-            edits = linked if linked is not None else styles.replacement(binding,visible,spans)
+            edits = (_fragment_source_edits(working['slots'][sid], visible, ids[cursor:cursor+end], origins[cursor:cursor+end])
+                     if origins is not None else styles.replacement(binding,visible,spans))
             measured=plan_paragraph(source,binding['paragraph'],edits,
                 fonts=styles.providers(p),render_styles=styles.render_styles(p),paragraph_style=styles.render_confirmations(p),
                 paragraph_layout=alignment_request(p['logical'].get('alignment',DEFAULT)),
@@ -527,7 +605,7 @@ def _plan(source,state,changes):
                         baseline + g.baseline + g.glyph.payload['offset'][1]])
                 for line in fitting for g in line.glyphs]
             if linked is not None:
-                fragments[sid]['source_edits'] = linked
+                fragments[sid]['source_edits'] = edits
             cursor+=cut
             if cursor==len(text):previous=occupancy;break
             ri+=1;previous=None
