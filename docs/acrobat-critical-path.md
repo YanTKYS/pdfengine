@@ -3,7 +3,7 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `5896ac5e5fdce1b311c1c605b3b4ab5c0923dca9` plus independent source-page paragraph reflow, 2026-10-11.
+- State: starting main `aff104134c41db7f00b85f8417234344303d442b` plus conditional joint-owner vacated-space reflow, 2026-10-12.
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -27,6 +27,15 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   characters absent from the source subset. Both saved revisions restore, including B4 wrap/push-down.
   Retained codes, GIDs and font program bytes remain original; added glyphs have the selected provider
   outlines, with no claim of source appearance equivalence. [Font coverage report](../evaluations/real_japanese/font-coverage-report.md).
+- **REAL-WORLD VACATED-SPACE REFLOW VALIDATED — PASS:** LibreOffice pages 8–9 explicitly own the complete
+  innovator paragraph A and all seven following adopter-category/conclusion paragraphs B–H, as eight distinct
+  source owners. All 27 original lines/glyphs reproduce. A grows 164 → 282 characters, four → six lines;
+  its second continued line occupies B's original glyph space, beyond the earlier one-line empty prefix.
+  B–H move 26.800024 pt in the first edit, preserving observed follows gaps and 1032 original follower glyphs.
+  Conditional authority binds B's current source ownership to its removal and safe final placement in the same
+  Transaction; the ordinary empty-destination check still refuses the occupied region. Original no-op and five
+  lifecycle saves restore, including second edit, shorten, regrow and no-op; all exterior pixels and foreign
+  content remain unchanged. [Measured vacated-space report](../evaluations/real_japanese/vacated-space-report.md).
 - **REAL-WORLD CROSS-PAGE PARAGRAPH REFLOW VALIDATED — PASS:** LibreOffice pages 8–9 contain independent
   innovator/early-adopter paragraphs (164 and 146 characters). An explicit source-page-break floor and caller
   same-page gap preserve all seven original lines/glyphs. A grows to 206 characters, from four to five lines,
@@ -387,7 +396,8 @@ B1 bootstrap (COMPLETE)
 ├→ B4 real body wrap + following-paragraph capacity (COMPLETE, bounded)
 ├→ verified existing-region continuation (COMPLETE, bounded untagged path)
 ├→ cross-page source paragraph joins (COMPLETE, bounded untagged path)
-└→ independent source-page paragraph reflow (COMPLETE, explicit floor/gap and empty prefix)
+├→ independent source-page paragraph reflow (COMPLETE, explicit floor/gap)
+└→ joint-owner vacated-space continuation (COMPLETE, explicit fixed capacity and Transaction obligations)
         B3 → B5 semantic real text
 ```
 
@@ -397,26 +407,31 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: continuation capacity when the next page has no independently empty region
+NEXT BLOCKER: choosing and extending safe joint capacity beyond the explicitly confirmed page regions
 ```
 
-Explicitly related independent source paragraphs can now cross a source page break without inventing an
-observed gap. B1 binds both source owners, an explicit same-page spacing policy and the follower's original
-region floor; joint no-edit reproduction still proves every original line and glyph. An empty continuation
-prefix is independently reviewed/confirmed for A, while B's source region is separately accepted for movement.
-T2 retains `break_before=next-region`, computes the same-page follows floor, and verifies it after saving.
+A continuation no longer needs an independently empty rectangle when its occupied text belongs to explicitly
+accepted subsequent source owners. The optional conditional destination records those exact owners and permits
+region overlap only with their source region. Each current binding and source-output witness is revalidated;
+foreign glyphs and nontext paint remain obstacles. The normal empty-destination API is unchanged.
 
-The current route does not consume B's occupied source slot or dynamically enlarge A's destination as B moves.
-When the independently confirmed prefix is full, further A growth is refused even if a larger redistribution
-might be typographically possible. Intervening unselected text, arbitrary tagged owners, unsupported providers
-and automatic page creation remain outside the scope. No-edit still refuses changes to original line allocation.
+T2 plans final allocations with the existing source-page-break floor and follows. Creation/rewrite plans carry
+current-revision release obligations into the Transaction: all named source-owner glyphs must be removed by their
+own matching plan in that transaction, and final paint must be disjoint. Removal proofs, graphics state, CTM,
+clip, paint envelopes, atomic save/readback and restored ownership remain in force. Shortening removes generated paint
+as the follower moves back; regrowth reuses the continuation slot.
+
+Capacity is still fixed, explicit and bounded. The implementation does not choose related paragraphs automatically,
+expand rectangles, infer ownership of intervening text, add pages or resolve cyclic source-occupancy dependencies.
+Tagged source owners cannot cross independent continuation regions. Missing final capacity still refuses.
 
 ## 9. Next PR scope
 
-Choose a real case where continuation needs capacity currently occupied by another explicitly accepted owner.
-Establish the authority for vacated space and its current-revision validation before drawing into it; preserve
-separate source identities, foreign content, graphics state/clip and atomic save/readback. Do not exempt an
-occupied paragraph from the existing empty-destination proof or silently expand its neighbor's region.
+Choose another real occupied-page case that exceeds the currently accepted joint capacity, and establish a
+reviewable proposal for additional existing source owners/regions without absorbing unrelated headings, tables,
+footnotes or sections. Preserve the conditional removal/final-placement contract and source identities; do not
+infer authority from newly available coordinates alone. The current API is bounded caller-confirmed editing,
+not automatic document-wide capacity discovery.
 
 ## 10. Not next (deliberately)
 

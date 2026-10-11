@@ -376,6 +376,17 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
     from .destination_style import bind_destination_styles
     source, content = page.source, page.content
     result = ParagraphPlan(owner)
+    from . import vacated_space
+    conditional = snapshot.get('destination') if snapshot.get('kind') == 'confirmed-continuation-input' else (
+        _generated_block.get('destination') if _generated_block else None)
+    if conditional and 'vacated_space' in conditional:
+        proof = (snapshot.get('vacated_space_proof') if snapshot.get('kind') == 'confirmed-continuation-input'
+                 else _generated_block.get('vacated_space_proof'))
+        vacated_space.glyphs(source,content,conditional,proof)
+        result.vacated_space = dict(destination=conditional, proof=proof)
+    if _source_output is not None:
+        from .source_ownership import immutable
+        result.source_output_identity = immutable(_source_output)
     try:
         paragraph = paragraph_from_snapshot(source, snapshot, content=content)
         result.paragraph = paragraph

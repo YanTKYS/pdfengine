@@ -33,7 +33,7 @@ from .story_flow import LINE_KEYS, _boundaries, open_story
 from . import story_styles as styles
 from .alignment import DEFAULT, request as alignment_request, options as alignment_options, continuation
 from . import continuation as destinations
-from . import source_ownership
+from . import source_ownership, vacated_space
 
 
 LEGACY_SCHEMA = 'pdfengine-shared-flow-1'
@@ -253,7 +253,8 @@ def _validate(source,value,current_styles=None,current_body=None):
                     or box.width<=0 or box.height<=0 or r['width']<=0 or not box.y0<r['first_baseline']<box.y1
                     or not box.x0<=r['x']<r['x']+r['width']<=box.x1 or not Rect(*doc[r['page']-1].rect).contains(box)):
                 raise PdfError('shared region needs explicit finite usable width, baseline and bounds')
-            others=[v['bounds'] for v in state['regions'].values() if v is not r and v['page']==r['page']]
+            others=[v['bounds'] for other,v in state['regions'].items() if other!=rid and v['page']==r['page']
+                    and not vacated_space.overlap_allowed(state,rid,other)]
             protected=state['pages'][str(r['page'])]['protected_regions']
             if any(box.intersects(Rect(*b)) for b in others+[v['bounds'] for v in protected]):
                 raise PdfError('shared regions must be disjoint and outside protected page content')
@@ -597,7 +598,7 @@ def _plan(source,state,changes):
                     new_slots[sid]=dict(paragraph_id=pid,region_id=rid,destination_id=d['destination_id'],page=d['page'],
                         creation_provenance=destinations.PROVENANCE,source_snapshot_sha256=None,
                         binding=dict(paragraph=destinations.snapshot(source,d,state['destination_bindings'][d['destination_id']],
-                            region,logical['typing_style_id'],entry)))
+                            region,logical['typing_style_id'],entry,vacated_space.evidence(state,d))))
                     working['slots'][sid]=new_slots[sid]
             binding=working['slots'][sid or owned[0]]['binding']
             remaining=text[cursor:]
@@ -760,7 +761,8 @@ def edit_shared_flow(source,model,output,model_output,changes):
                     bound=initial['destination_bindings'].get(ident) if ident is not None else None
                     if bound is not None and 'operator_nesting' in bound:
                         options['_generated_block']=dict(destination=initial['continuation_destinations'][ident],
-                                                         binding=bound)
+                                                         binding=bound,
+                            vacated_space_proof=vacated_space.evidence(initial,initial['continuation_destinations'][ident]))
                     if ident is None and state['schema']==SCHEMA:
                         options['_source_output']=initial['slots'][sid]['source_output']
                     plans[sid]=plan_document_edit(page,slot['binding'],edits,**options)
