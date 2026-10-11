@@ -921,3 +921,37 @@ pdfengineが書くcontent streamは、出力PDFのversionのoperator nesting規�
 回帰は[tests/test_continuation.py](../tests/test_continuation.py)、外部原本の系列評価は[evaluations/continuation](../evaluations/continuation/README.md)にある。元PDFの同文operator replayと、明示providerで再組版した出力のno-opは別々に評価する。外部原本では、regrowが同じ生成slotへ戻り、final no-opで全10ページがMuPDF・Popplerとも全画素一致した。page-entryのpaint順序は明示契約であり、任意のPDF抽出器の読み順をparagraph意味順へ変える仕組みではない。
 
 同一ページの複数destinationと、その順序契約、確認済みのpage level境界、page level境界でのCTMの相殺と矩形clipの継承、1つの`q ... Q` scopeの内側の境界は上記で扱った。LibreOffice原本の1ページ・10ページでは、深さ1・矩形clipの境界が候補になり、10ページで系列評価を行った。原本でidentity以外のCTMを持つ境界は、どれも各行・下線・画像の`q`が本文や図版の`q`の中にある深さ2で、残る拒否理由は`nested-graphics-state-save`だけである（10ページの6つは組み立て中のpathも持つ）。その後、この深さ2を、最大2段の明確に証明されたscope chainとして1段だけ緩めた（[上記](#2段のq--q-scope-chainの内側)。実装時は合成PDFで確認）。PR #18で原本10ページの系列・状態復帰を確認し、その後、source operandを基準にした逆行列と両モデルの上界証明で、残ったPoppler差をfocused評価の0画素まで解消した。構造の障壁としては、`q`の深さ4以上とExtGState（不透明度・blend・soft mask）が残る。新規ページの自動生成ではない。
+
+### Conditional space released by a joint source owner
+
+An ordinary `confirm_continuation_destination` still requires empty capacity. Occupied capacity is proposed through
+`propose_owned_flow(..., vacated_continuations=[request])` instead, and becomes authority only during joint acceptance:
+
+```python
+request = dict(
+    region_id='A-continued', before_region='page-9', region=reviewed_region,
+    release_paragraphs=['B'],
+    confirmation=dict(destination_id='A-vacated', paragraph_id='A', region_id='A-continued',
+        page=9, bounds=reviewed_region['bounds'], insertion='confirmed-page-program-boundary',
+        graphics_state='confirmed-boundary-state', boundary=explicitly_selected_boundary_id))
+```
+
+The request must name a previously selected independent source follower at an explicit source-page break.
+`release_paragraphs` selects exact source owners in that region, not all text intersecting the requested bounds.
+The region may overlap those owners' confirmed source region; other region/protected-content intersections refuse.
+The boundary's CTM, inherited clip, graphics state and paint order remain independently verified.
+
+Acceptance binds immutable source identities into the destination contract and proves unchanged no-edit placement.
+Every revision re-observes the owners' editable bindings and source-output witnesses. Only their current glyphs,
+and the continuation's own current generated glyphs, can be excluded from the capacity obstacle check. No other
+text paint, drawing or image is excluded. A mixed text paint containing foreign glyphs remains an obstacle.
+
+The existing paragraph writer places a conditional obligation on its Transaction plan. Before save, the Transaction
+requires a separate matching source-owner plan that removes every old owner glyph, plus nonoverlapping final
+placements. Existing source-removal proofs, final collision checks, pixel checks, atomic publication and readback
+still run. A certificate in the writer report identifies the current revision, source owners, removed glyphs and
+mutations, actual used bounds and the owners' final bounds. An absent owner plan or unsafe final placement refuses.
+
+Saved source owners and generated slots remain distinct. Shortening may leave the conditional slot dormant;
+regrowth rewrites the same block. The capacity is fixed and explicitly accepted: no page is added, no region is
+silently expanded, and arbitrary tagged source ownership is not admitted.

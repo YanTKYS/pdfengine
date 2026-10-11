@@ -252,6 +252,8 @@ class PageTransaction:
         return consumed, moved, changes
 
     def check(self):
+        from .vacated_space import check_transaction
+        for plan in self.plans:check_transaction(self,plan)
         consumed, moved, changes = self._merged()
         for plan in self.plans:
             others = (consumed | set(moved)) - plan.consumed - set(plan.moved)

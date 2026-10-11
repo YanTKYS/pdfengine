@@ -21,9 +21,11 @@ paints after all paint of the confirmed prefix and before all paint of the
 confirmed suffix. One destination owns one exact boundary.
 
 Each generated block starts from that state, not another paragraph's text
-context, and closes its own state again. Each destination's entire rectangle
-must be empty, including paint which will be moved/removed by another flow
-plan; only its own generated glyphs are exempt.
+context, and closes its own state again. Ordinary destinations' entire rectangles
+must be empty, including paint moved by another plan. The optional vacated_space
+contract is confirmed only through joint source ownership: those exact current
+owners may occupy its capacity, but every use requires their removal and safe
+final placement in the same Transaction. Foreign paint is never exempt.
 
 CTM compensation. At a boundary whose CTM M is not the identity, the block
 is ``q N cm BT ... ET Q``: N is the inverse of the source-operand CTM S,
@@ -892,6 +894,14 @@ def confirm_continuation_destination(source, *, destination_id, paragraph_id, re
 
     No PDF font is borrowed.
     """
+    return _confirm_destination(source, destination_id=destination_id, paragraph_id=paragraph_id,
+        region_id=region_id, page=page, bounds=bounds, insertion=insertion, graphics_state=graphics_state,
+        page_entry_order=page_entry_order, boundary=boundary)
+
+
+def _confirm_destination(source, *, destination_id, paragraph_id, region_id, page, bounds,
+                         insertion, graphics_state, page_entry_order=None, boundary=None,
+                         _vacated_space=None, _release_proof=None):
     if (insertion,graphics_state) not in ((PAGE_ENTRY,'isolated-pdf-initial-state'),(BOUNDARY,BOUNDARY_STATE)):
         raise PdfError('continuation requires explicit page-entry insertion and initial graphics-state authority')
     if (insertion==BOUNDARY)!=(boundary is not None):
@@ -906,10 +916,13 @@ def confirm_continuation_destination(source, *, destination_id, paragraph_id, re
     try:
         witness=context(content) if insertion==PAGE_ENTRY else _boundary_authority(content,page,boundary)
         require_inside_clip(dict(authority=witness,bounds=bounds))
-        require_empty(content,bounds)
+        conditional = dict(page=page, vacated_space=_vacated_space) if _vacated_space else dict(page=page)
+        from .vacated_space import glyphs
+        require_empty(content,bounds,glyphs(source,content,conditional,_release_proof))
         value=dict(destination_id=destination_id,paragraph_id=paragraph_id,region_id=region_id,page=page,
             bounds=list(bounds),provenance='explicitly_confirmed',authority=witness,
             source_pdf_sha256=source_sha(source),source_program_sha256=hashlib.sha256(program(content)).hexdigest())
+        if _vacated_space is not None:value['vacated_space']=deepcopy(_vacated_space)
         if page_entry_order is not None:value['page_entry_order']=page_entry_order
         return value
     finally:content.close()
@@ -1190,11 +1203,14 @@ def _validate_destination(content,state,d,binding,current,fonts,records):
     generated=state['slots'].get(sid)
     owned=set(generated['binding']['paragraph']['selection']['glyph_ids']) if generated else set()
     require_inside_clip(d)
-    # Only this destination's own generated glyphs are exempt; every other
-    # glyph, including another destination's generated text, is an obstacle.
-    # Paint the clip hides is still paint.
+    # Ordinary destinations exempt only their generated glyphs. Conditional
+    # capacity also proves the exact joint source owners, never a bare ID list.
+    # Paint hidden by clipping and every other glyph remain obstacles.
+    from .vacated_space import evidence, glyphs
+    owned |= glyphs(content.source,content,d,evidence(state,d)) if 'vacated_space' in d else set()
     require_empty(content,d['bounds'],owned)
     if not generated:return
+    owned=set(generated['binding']['paragraph']['selection']['glyph_ids'])
     if any(generated.get(k)!=v for k,v in dict(paragraph_id=pid,region_id=rid,destination_id=ident,
             page=d['page'],creation_provenance=PROVENANCE).items()):
         raise PdfError('generated slot destination or owner differs')
@@ -1245,7 +1261,7 @@ def _validate_destination(content,state,d,binding,current,fonts,records):
         if fonts-own:raise PdfError('generated block selects a font it does not own')
 
 
-def snapshot(source,destination,binding,region,typing,page_entry=None):
+def snapshot(source,destination,binding,region,typing,page_entry=None,release_proof=None):
     """Source-free writer input. ``page_entry`` is ``entry()``: a page-entry
     chain position, or for a page-program boundary its verified location."""
     position=({'boundary':deepcopy(page_entry)} if is_boundary(destination) else
@@ -1255,6 +1271,7 @@ def snapshot(source,destination,binding,region,typing,page_entry=None):
         text='',spans=[],styles=[],line_joiner='',destination=deepcopy(destination),destination_binding=deepcopy(binding),
         **position,typing_style_id='logical:'+typing,layout_suggestion=dict(x=region['x'],baseline=region['first_baseline'],
             first_line_indent=0,base_baselines=[],observed_baselines=[]))
+    if release_proof is not None:value['vacated_space_proof']=deepcopy(release_proof)
     value['snapshot_sha256']=digest(value)
     return value
 
@@ -1287,7 +1304,9 @@ class ContinuationParagraph:
                     raise PdfError('continuation insertion program changed')
                 self.entry=verify_entry(self.content,snapshot['destination'],snapshot['page_entry'])
             require_inside_clip(snapshot['destination'])
-            require_empty(self.content,snapshot['destination']['bounds'])
+            from .vacated_space import glyphs
+            released=glyphs(source,self.content,snapshot['destination'],snapshot.get('vacated_space_proof'))
+            require_empty(self.content,snapshot['destination']['bounds'],released)
             self.events=[];self.observations=_observations(self.content.page);self.styles={};self.units=[]
             self.text='';self.logical=None;self.line_joiner='';self.default_style_id=snapshot['typing_style_id']
             self.first=TextEvent('confirmed-page-entry',-self.content.page.xref,(),Operator(self.entry,self.entry,'TJ',[]),

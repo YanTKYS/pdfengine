@@ -56,7 +56,7 @@ def _selection(pages, paragraphs, relationship):
 
 
 def propose_owned_flow(source, page_proposals, *, paragraphs, relationship, page_breaks=None,
-                       page_overrides=None, continuations=None):
+                       page_overrides=None, continuations=None, vacated_continuations=None):
     """Propose caller-declared paragraph joins without accepting or editing the PDF.
 
     `paragraphs` is an ordered list of {id, parts: [{page, paragraph_id}]}.
@@ -69,6 +69,10 @@ def propose_owned_flow(source, page_proposals, *, paragraphs, relationship, page
     page_overrides contains ordinary B1 region-geometry overrides by page number.
     continuations lists {region_id, before_region, region, destination}: each
     destination must already have independent continuation confirmation authority.
+    vacated_continuations instead lists explicit source-owner release requests:
+    region_id, before_region, region, release_paragraphs and confirmation kwargs.
+    Acceptance binds those requests to the joint owners and re-proves no-edit
+    placement; painting remains conditional on the same Transaction's removals.
     """
     _selection(page_proposals, paragraphs, relationship)
     for page in page_proposals:
@@ -77,6 +81,7 @@ def propose_owned_flow(source, page_proposals, *, paragraphs, relationship, page
     if page_breaks is not None: options['page_breaks'] = page_breaks
     if page_overrides is not None: options['page_overrides'] = page_overrides
     if continuations is not None: options['continuations'] = continuations
+    if vacated_continuations is not None: options['vacated_continuations'] = vacated_continuations
     _options(page_proposals, paragraphs, options)
     return _seal(dict(schema=SCHEMA, source_sha256=source_sha(source),
         pages=page_proposals, paragraphs=paragraphs, relationship=relationship,
@@ -118,7 +123,11 @@ def _options(pages, paragraphs, proposal):
             raise PdfError('continuation needs a region, insertion order and confirmed destination')
     # Older readers refuse the independent page seam rather than silently
     # ignoring geometry or prefix choices on an otherwise supported old join.
-    if (overrides or continuations) and not breaks:
+    conditional = proposal.get('vacated_continuations', [])
+    if not isinstance(conditional, list) or any(not isinstance(v, dict) or set(v) != {
+            'region_id', 'before_region', 'region', 'release_paragraphs', 'confirmation'} for v in conditional):
+        raise PdfError('vacated continuations require explicit source owners, geometry and insertion confirmation')
+    if (overrides or continuations or conditional) and not breaks:
         raise PdfError('joint geometry and prefix choices require an explicit independent source page break')
     return {(e['before'], e['after']): e for e in breaks}
 
@@ -134,7 +143,7 @@ def _seam(analysis, plan, at_end):
             raise PdfError('page seam skips unselected text; cannot prove a contiguous owned paragraph')
 
 
-def _compose(source, entries, paragraphs, page_breaks=None, continuations=()):
+def _compose(source, entries, paragraphs, page_breaks=None, continuations=(), vacated_continuations=()):
     stories, regions, slots, policies, protected, source_lines = {}, {}, {}, {}, {}, {}
     by_page = {a.page: (a, plan) for a, plan in entries}
     args = {a.page: _arguments(a, plan) for a, plan in entries}
@@ -210,6 +219,9 @@ def _compose(source, entries, paragraphs, page_breaks=None, continuations=()):
         paragraph_order=[p['id'] for p in paragraphs], regions=regions, region_order=region_order,
         slot_regions=slots, paragraph_policies=policies, follows=follows, protected_regions=protected,
         continuation_destinations=destinations)
+    from .vacated_space import confirm as confirm_vacated
+    for request in vacated_continuations:
+        state = confirm_vacated(source, state, **request)
     # confirm_shared_flow imports containers in the explicit paragraph/chain order.
     expected = {}
     for sid, slot in state['slots'].items():
@@ -254,13 +266,14 @@ def accept_owned_flow_report(source, proposal, *, provider_choices=None):
         evidence.append(dict(binding=page['binding'], proposal_digest=page['digest'], reproduction=built['reproduction'],
             providers={lid: dict(sha256=c['sha256'], font_index=c['font_index'], provenance=how)
                        for lid, (c, how) in sorted(plan['providers'].items())}))
-    state, reproduction = _compose(source, entries, proposal['paragraphs'], page_breaks, proposal.get('continuations', []))
+    state, reproduction = _compose(source, entries, proposal['paragraphs'], page_breaks, proposal.get('continuations', []),
+        proposal.get('vacated_continuations', []))
     return dict(state=state, receipt=dict(schema='pdfengine-owned-flow-acceptance-1',
         proposal_digest=proposal['digest'], source_sha256=proposal['source_sha256'], pages=evidence,
         paragraphs=deepcopy(proposal['paragraphs']), relationship=proposal['relationship'],
         relationship_provenance=proposal['relationship_provenance'], reproduction=reproduction,
         state_model_sha256=state['model_sha256'],
-        **{k: deepcopy(proposal[k]) for k in ('page_breaks', 'page_overrides', 'continuations') if k in proposal}))
+        **{k: deepcopy(proposal[k]) for k in ('page_breaks', 'page_overrides', 'continuations', 'vacated_continuations') if k in proposal}))
 
 
 def accept_owned_flow(source, proposal, *, provider_choices=None):
