@@ -2,7 +2,6 @@
 import json
 from pathlib import Path
 
-import pymupdf
 import pytest
 
 from evaluations.anchors.paint_ownership import census, mutation_measure
@@ -11,6 +10,7 @@ from pdfeditor.editable import edit_document, write_editable
 from pdfeditor.mutation import IdentityMap
 from test_anchors import prepared
 from test_editable import first
+from provider_font import cjk_provider_bytes
 
 
 def test_operator_census_does_not_count_tokens_inside_strings_or_comments():
@@ -62,7 +62,7 @@ def test_ordinary_source_output_owner_guard_stays_closed(tmp_path):
 def test_late_emitted_path_rebind_failure_keeps_publication_empty(tmp_path, monkeypatch):
     source, paragraph, element, anchors = prepared(tmp_path)
     font = tmp_path/'font.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     calls = []
 
     def failed(self, mutation, names):

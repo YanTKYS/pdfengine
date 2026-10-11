@@ -32,6 +32,7 @@ from test_boundary_destination import (PREFIX_SLOT, REGION, SOURCE_PAGE, SUFFIX_
 from test_continuation import LONG, change, saved
 from test_ctm_compensation import (CTMS, _inverse, _number, _rectangle, _then, _values, drawings, glyphs, outside,
                                    pixels)
+from provider_font import cjk_provider_bytes
 
 IDENTITY = (1, 0, 0, 1, 0, 0)
 # Page space with y up (the identity CTM's user space) on a 320 x 260 pt page:
@@ -94,7 +95,7 @@ def flow(tmp_path, page2, areas=None, *, same_page=False):
     source = build(tmp_path, SOURCE_PAGE + b'\n' + page2) if same_page else build(tmp_path, SOURCE_PAGE, page2)
     page = 1 if same_page else 2
     font = tmp_path / 'font.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     p = inspect_paragraph(source, make_selection(source, glyph_ids=list(range(4)), explicit_width=150))
     regions = {'R1': dict(page=1, bounds=[18, 40, 173, 78], x=20, width=150, first_baseline=60)}
     chosen, confirmed = {}, {}

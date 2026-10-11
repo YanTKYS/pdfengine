@@ -8,6 +8,7 @@ import pymupdf
 import pytest
 from pypdf import PdfWriter
 from pypdf.generic import ArrayObject, DecodedStreamObject, DictionaryObject, NameObject, NumberObject
+from provider_font import cjk_provider_bytes
 
 
 def invoke(*args):
@@ -143,7 +144,7 @@ def test_select_rejects_invalid_existing_manifest_and_cross_page_correction(sour
 
 def test_compose_cli_embeds_font_and_protects_inputs(source, tmp_path):
     font = tmp_path / 'provided.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     manifest = tmp_path / 'selection.json'
     successful('select', source, manifest, '--line', 'p1-l3', '--width', '180')
     output, report_path, removed = (tmp_path / name for name in ('composed.pdf', 'compose.json', 'removed.pdf'))

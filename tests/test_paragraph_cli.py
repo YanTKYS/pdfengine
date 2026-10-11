@@ -7,6 +7,7 @@ import pytest
 from pdfeditor.selection import make_selection
 from test_attributed import source_pdf
 from test_selection_cli import invoke, successful
+from provider_font import cjk_provider_bytes
 
 
 def write(path,value):
@@ -25,7 +26,7 @@ def prepared(tmp_path):
 def test_cli_relative_font_and_style_preserving_edit(tmp_path):
     source,_,paragraph = prepared(tmp_path)
     font = tmp_path/'supplied.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     edits,output,report,removed = [tmp_path/name for name in ('edits.json','edited.pdf','report.json','removed.pdf')]
     write(edits,{'edits':[dict(start=5,end=9,text='本文')], 'fonts':{'s1':{'path':'supplied.ttf'}}})
     result = successful('edit-paragraph',source,output,'--paragraph',paragraph,'--edits',edits,

@@ -143,6 +143,7 @@ def _foreign_source(tmp_path, font):
 
 def _foreign_flow(tmp_path):
     font = tmp_path / 'font.ttf'
+    # The full built-in font, not provider_font's subset: one flow keeps a large real provider.
     font.write_bytes(pymupdf.Font('cjk').buffer)
     source = _foreign_source(tmp_path, font)
     p = inspect_paragraph(source, make_selection(source, glyph_ids=list(range(4)), explicit_width=150))

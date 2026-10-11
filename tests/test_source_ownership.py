@@ -19,6 +19,7 @@ from pdfeditor.document_flow import _reseal
 from pdfeditor.shared_flow import LEGACY_SCHEMA, SCHEMA, _contract, edit_shared_flow, open_shared_flow
 from test_continuation import prepared, saved, change, LONG
 from test_generated_block_canonical import block_of, pixels
+from provider_font import cjk_provider_bytes
 
 
 def program(pdf, page=1):
@@ -329,7 +330,7 @@ def custom_flow(root, data, specs, *, fixed_background=False):
     from test_attributed import source_pdf
     source = source_pdf(root, data)
     font = root/'font.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     stories, regions, mapping, policies = {}, {}, {}, {}
     for pid, ids, x, width, bounds, baseline in specs:
         paragraph = inspect_paragraph(source, make_selection(source, glyph_ids=ids, explicit_width=width))

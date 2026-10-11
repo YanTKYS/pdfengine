@@ -30,6 +30,7 @@ from pdfeditor.shared_flow import _contract, confirm_shared_flow, edit_shared_fl
 from test_boundary_destination import (DESTINATION_PAGE, PREFIX_SLOT, REGION, SOURCE_PAGE, SUFFIX_SLOT, _story,
                                        _tampered, build, first_operator, last_operator, program, split)
 from test_continuation import LONG, change, saved
+from provider_font import cjk_provider_bytes
 
 LONGER = LONG + ' Fifteen sixteen seventeen eighteen nineteen twenty.'
 IDENTITY = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
@@ -99,7 +100,7 @@ def confirmed(tmp_path, page2, areas):
     """
     source = build(tmp_path, SOURCE_PAGE, page2)
     font = tmp_path / 'font.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     p = inspect_paragraph(source, make_selection(source, glyph_ids=list(range(4)), explicit_width=150))
     regions = {'R1': dict(page=1, bounds=[18, 40, 173, 78], x=20, width=150, first_baseline=60)}
     chosen, authorities = {}, {}

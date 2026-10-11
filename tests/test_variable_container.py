@@ -12,6 +12,7 @@ from pdfeditor.selection import make_selection, source_sha
 from pdfeditor.variable_container import (confirm_variable_container, edit_variable_container,
                                           open_variable_container, plan_variable_container)
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def prepared(tmp_path, obstacle=b'', decorate=None, min_line_height=20):
@@ -19,7 +20,7 @@ def prepared(tmp_path, obstacle=b'', decorate=None, min_line_height=20):
         b'BT /Regular 12 Tf 20 220 Td (HEAD) Tj 0 -30 Td (ONE) Tj 0 -40 Td (NEXT) Tj '
         b'180 -20 Td (FIXED) Tj ET '+obstacle)
     if decorate: decorate(source)
-    font=tmp_path/'font.ttf'; font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf'; font.write_bytes(cjk_provider_bytes())
     elements={}
     for ident,ids in [('H',range(4)),('A',range(4,7)),('B',range(7,11))]:
         p=inspect_paragraph(source,make_selection(source,glyph_ids=list(ids),explicit_width=90))

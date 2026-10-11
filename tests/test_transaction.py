@@ -11,6 +11,7 @@ from pdfeditor.paragraph import edit_paragraph, plan_paragraph_edit
 from pdfeditor.selection import inspect_selection_source, make_selection, source_sha
 from pdfeditor.transaction import Transaction
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def counted_saves(monkeypatch):
@@ -26,7 +27,7 @@ def counted_saves(monkeypatch):
 
 def two_paragraphs(tmp_path):
     source=source_pdf(tmp_path,b'BT /Regular 12 Tf 20 200 Td (ONE TWO) Tj ET BT /Regular 12 Tf 20 120 Td (NEXT) Tj ET')
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     fonts={'s0':{'path':str(font)}}
     a=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(7)),explicit_width=90))
     b=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(7,11)),explicit_width=90))
@@ -94,7 +95,7 @@ def anchored_document(tmp_path):
         b'BT /Regular 12 Tf 20 200 Td (ONE TWO ) Tj ET 20 198 50.4 .7 re f '
         b'BT /Regular 12 Tf 20 184 Td (THREE FOUR) Tj ET 20 182 72 .7 re f '
         b'BT /Regular 12 Tf 20 100 Td (NEXT) Tj ET')
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     fonts={'s0':{'path':str(font)}}
     head=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(4)),explicit_width=80))
     selection=make_selection(source,glyph_ids=list(range(4,22)),explicit_width=80)

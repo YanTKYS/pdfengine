@@ -13,12 +13,13 @@ from pdfeditor.selection import make_selection
 from pdfeditor.rich_layout import layout_attributed, InlineGlyph
 from pdfeditor.layout import LayoutError
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def fixture(tmp_path, text='AB CD EF GH IJ KL', tc=0, ts=0):
     source=source_pdf(tmp_path,f'BT /Regular 12 Tf {tc} Tc {ts} Ts 20 200 Td ({text}) Tj ET'.encode())
     p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(len(text))),explicit_width=64))
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     return source,p,{'s0':dict(path=str(font))}
 
 
@@ -147,7 +148,7 @@ def test_source_justified_word_fixture_is_pixel_exact(tmp_path):
     p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(7)),explicit_width=43.2),line_joiner=' ')
     assert p['spacing']['alignment_candidates'][0]['value']=='justify'
     out,model=tmp_path/'same.pdf',tmp_path/'same.json'
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     write_editable(source,out,model,p,[],fonts={'s0':dict(path=str(font))},
         paragraph_layout=dict(alignment='justify',justify_policy='word'),min_line_height=20)
     with pymupdf.open(source) as a,pymupdf.open(out) as b:

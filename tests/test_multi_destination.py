@@ -25,6 +25,7 @@ from pdfeditor.selection import make_selection
 from pdfeditor.shared_flow import _contract, confirm_shared_flow, edit_shared_flow, open_shared_flow, plan_shared_flow
 from pdfeditor.story_flow import confirm_story
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 LONG = 'One two three four five six seven eight nine ten eleven twelve thirteen fourteen.'
@@ -58,7 +59,7 @@ def flow(tmp_path, *, orders=None, owners=None, two=False, spacing=False, mode='
     owners = owners or ({'DA': 'A', 'DB': 'B'} if two else {r: 'A' for r in areas})
     source = source_pdf(tmp_path, b'BT /Regular 12 Tf ' + (b'1 Tc 2 Ts ' if spacing else b'') + b'20 200 Td (ABCD) Tj ET')
     font = tmp_path / 'font.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     p = inspect_paragraph(source, make_selection(source, glyph_ids=list(range(4)), explicit_width=150))
     if spacing:
         out, side = tmp_path / 'confirmed.pdf', tmp_path / 'confirmed.json'

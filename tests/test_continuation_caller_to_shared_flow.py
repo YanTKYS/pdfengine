@@ -10,8 +10,6 @@ multi-destination cases stay in test_boundary_destination.py.
 from copy import deepcopy
 import hashlib
 
-import pymupdf
-
 from pdfeditor.attributed import inspect_paragraph
 from pdfeditor.continuation import (BOUNDARY, CREATE, confirm_continuation_destination, inspect_continuation_boundaries,
                                     slot_id)
@@ -23,6 +21,7 @@ from test_boundary_destination import (DESTINATION_PAGE, PAINT_A, PAINT_B, REGIO
                                        first_operator, last_operator, split)
 from test_continuation import LONG, change
 from test_operator_nesting import assert_saved_revision
+from provider_font import cjk_provider_bytes
 
 GENERATED = 'generated-from-confirmed-continuation-destination'
 
@@ -39,7 +38,7 @@ def test_caller_confirmed_boundary_destination_carries_an_overflow_through_share
     # Page 1: paragraph A ("ABCD"). Page 2: paint A (a fill), a boundary, paint B (text TAIL).
     source = build(tmp_path, SOURCE_PAGE, DESTINATION_PAGE)
     font = tmp_path / 'font.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     original = sha(source)
 
     # 1-3. Inspection, structural review and geometry review of the caller's bounds.
