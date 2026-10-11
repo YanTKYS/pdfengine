@@ -2,10 +2,12 @@
 
 Each page keeps its own B1 evidence and source owners. A caller supplies the
 semantic paragraph grouping; geometry never invents that relationship. This
-bounded bootstrap joins paragraphs already split across a page seam. It grants
-no empty destination, moves no unselected content, and changes no T2 schema.
+bootstrap accepts explicit source-page breaks or joins paragraphs already split
+across a seam. Empty continuations require separately confirmed authorities.
+No unselected content moves and the existing T2 writer remains authoritative.
 """
 from copy import deepcopy
+import math
 
 from .attributed import digest
 from .backend import PdfError
@@ -53,7 +55,8 @@ def _selection(pages, paragraphs, relationship):
     return numbers
 
 
-def propose_owned_flow(source, page_proposals, *, paragraphs, relationship):
+def propose_owned_flow(source, page_proposals, *, paragraphs, relationship, page_breaks=None,
+                       page_overrides=None, continuations=None):
     """Propose caller-declared paragraph joins without accepting or editing the PDF.
 
     `paragraphs` is an ordered list of {id, parts: [{page, paragraph_id}]}.
@@ -61,13 +64,63 @@ def propose_owned_flow(source, page_proposals, *, paragraphs, relationship):
     of one logical paragraph concatenate exactly, without an invented separator.
     `relationship` records the caller's textual basis, not a geometry inference.
     Provider substitutions still require explicit per-page choices at acceptance.
+    page_breaks explicitly choose a same-page minimum gap and preserve the next
+    paragraph's original region floor; no gap is inferred between page coordinates.
+    page_overrides contains ordinary B1 region-geometry overrides by page number.
+    continuations lists {region_id, before_region, region, destination}: each
+    destination must already have independent continuation confirmation authority.
     """
     _selection(page_proposals, paragraphs, relationship)
     for page in page_proposals:
         _recompute(source, page)
+    options = {}
+    if page_breaks is not None: options['page_breaks'] = page_breaks
+    if page_overrides is not None: options['page_overrides'] = page_overrides
+    if continuations is not None: options['continuations'] = continuations
+    _options(page_proposals, paragraphs, options)
     return _seal(dict(schema=SCHEMA, source_sha256=source_sha(source),
         pages=page_proposals, paragraphs=paragraphs, relationship=relationship,
-        relationship_provenance='caller-declared-textual-relationship; explicit acceptance required'))
+        relationship_provenance='caller-declared-textual-relationship; explicit acceptance required', **options))
+
+
+def _options(pages, paragraphs, proposal):
+    """Caller policy for an unobserved gap is explicit, never derived from page y values."""
+    breaks = proposal.get('page_breaks', [])
+    if not isinstance(breaks, list):
+        raise PdfError('page_breaks must list explicit independent-paragraph policies')
+    pairs = {(a['id'], b['id']): (a['parts'][-1]['page'], b['parts'][0]['page'])
+             for a, b in zip(paragraphs, paragraphs[1:])}
+    seen = set()
+    for edge in breaks:
+        if (not isinstance(edge, dict) or set(edge) != {'before', 'after', 'minimum_baseline_gap', 'placement'}
+                or not isinstance(edge['before'], str) or not isinstance(edge['after'], str)
+                or edge['placement'] != 'source-region-floor-and-same-page-follow'):
+            raise PdfError('page break needs an explicit source-region floor and same-page gap policy')
+        pair = (edge['before'], edge['after'])
+        if pair not in pairs or pair in seen or pairs[pair][1] != pairs[pair][0] + 1:
+            raise PdfError('page break must name a distinct selected independent-paragraph page seam')
+        gap = edge['minimum_baseline_gap']
+        if type(gap) not in (int, float) or not math.isfinite(gap) or gap <= 0:
+            raise PdfError('page break requires a positive finite caller-selected same-page gap')
+        seen.add(pair)
+    overrides = proposal.get('page_overrides', {})
+    if not isinstance(overrides, dict) or set(overrides) - {str(p['binding']['page']) for p in pages}:
+        raise PdfError('page overrides must name selected pages')
+    if any(not isinstance(v, dict) or set(v) - {'width', 'region_top', 'region_bottom'} for v in overrides.values()):
+        raise PdfError('joint page overrides may only change qualified region geometry')
+    continuations = proposal.get('continuations', [])
+    if not isinstance(continuations, list):
+        raise PdfError('continuations must list separately confirmed insertion authorities')
+    for item in continuations:
+        if (not isinstance(item, dict) or set(item) != {'region_id', 'before_region', 'region', 'destination'}
+                or not isinstance(item['before_region'], str) or not isinstance(item['region'], dict)
+                or not isinstance(item['destination'], dict)):
+            raise PdfError('continuation needs a region, insertion order and confirmed destination')
+    # Older readers refuse the independent page seam rather than silently
+    # ignoring geometry or prefix choices on an otherwise supported old join.
+    if (overrides or continuations) and not breaks:
+        raise PdfError('joint geometry and prefix choices require an explicit independent source page break')
+    return {(e['before'], e['after']): e for e in breaks}
 
 
 def _seam(analysis, plan, at_end):
@@ -81,7 +134,7 @@ def _seam(analysis, plan, at_end):
             raise PdfError('page seam skips unselected text; cannot prove a contiguous owned paragraph')
 
 
-def _compose(source, entries, paragraphs):
+def _compose(source, entries, paragraphs, page_breaks=None, continuations=()):
     stories, regions, slots, policies, protected, source_lines = {}, {}, {}, {}, {}, {}
     by_page = {a.page: (a, plan) for a, plan in entries}
     args = {a.page: _arguments(a, plan) for a, plan in entries}
@@ -121,16 +174,42 @@ def _compose(source, entries, paragraphs):
     for before, after in zip(paragraphs, paragraphs[1:]):
         tail, head = before['parts'][-1], after['parts'][0]
         if tail['page'] != head['page']:
-            raise PdfError('the paragraph gap across a page break is unobserved; no follows gap is inferred')
+            chosen = (page_breaks or {}).get((before['id'], after['id']))
+            if chosen is None:
+                raise PdfError('the paragraph gap across a page break is unobserved; no follows gap is inferred')
+            _seam(*by_page[tail['page']], True)
+            _seam(*by_page[head['page']], False)
+            policies[after['id']]['break_before'] = 'next-region'
+            follows.append(dict(before=before['id'], after=after['id'],
+                minimum_baseline_gap=chosen['minimum_baseline_gap'], region_start=chosen['placement'],
+                source_break=dict(before_region=f'page-{tail["page"]}', after_region=f'page-{head["page"]}')))
+            continue
         local_follows = args[tail['page']][1]['follows']
         edge = next((f for f in local_follows if f['before'] == tail['paragraph_id'] and f['after'] == head['paragraph_id']), None)
         if edge is None:
             raise PdfError('no observed follows relationship between the selected paragraphs')
         follows.append(dict(edge, before=before['id'], after=after['id']))
+    region_order = list(regions)
+    source_regions = set(regions)
+    destinations = {}
+    for item in continuations:
+        rid, target, dest = item['region_id'], item['before_region'], item['destination']
+        if (not isinstance(rid, str) or not rid or rid in regions or target not in source_regions
+                or dest.get('region_id') != rid or dest.get('destination_id') in destinations):
+            raise PdfError('continuation needs a distinct region and an explicit position before a source region')
+        region = item['region']
+        edges = [e for e in follows if e.get('source_break', {}).get('after_region') == target
+                 and e['before'] == dest.get('paragraph_id')]
+        if (len(edges) != 1 or region.get('page') != regions[target]['page']):
+            raise PdfError('prefix continuation must serve the predecessor at its confirmed source page break')
+        regions[rid] = deepcopy(region)
+        region_order.insert(region_order.index(target), rid)
+        destinations[dest['destination_id']] = deepcopy(dest)
     confirmed = {pid: confirm_story(source, **spec) for pid, spec in stories.items()}
     state = confirm_shared_flow(source, confirmed, flow_id='cross-page-owned-flow',
-        paragraph_order=[p['id'] for p in paragraphs], regions=regions, region_order=list(regions),
-        slot_regions=slots, paragraph_policies=policies, follows=follows, protected_regions=protected)
+        paragraph_order=[p['id'] for p in paragraphs], regions=regions, region_order=region_order,
+        slot_regions=slots, paragraph_policies=policies, follows=follows, protected_regions=protected,
+        continuation_destinations=destinations)
     # confirm_shared_flow imports containers in the explicit paragraph/chain order.
     expected = {}
     for sid, slot in state['slots'].items():
@@ -158,6 +237,7 @@ def accept_owned_flow_report(source, proposal, *, provider_choices=None):
     if proposal['source_sha256'] != source_sha(source):
         raise PdfError('owned-flow proposal belongs to another PDF revision')
     numbers = _selection(proposal['pages'], proposal['paragraphs'], proposal['relationship'])
+    page_breaks = _options(proposal['pages'], proposal['paragraphs'], proposal)
     choices = provider_choices if provider_choices is not None else {}
     if not isinstance(choices, dict) or set(choices) - {str(n) for n in numbers}:
         raise PdfError('provider choices must name selected page numbers')
@@ -166,6 +246,7 @@ def accept_owned_flow_report(source, proposal, *, provider_choices=None):
         analysis, files, roots = _recompute(source, page)
         built, plan = _build(analysis, font_files=files, font_roots=roots,
             provider_choices=choices.get(str(analysis.page)),
+            overrides=proposal.get('page_overrides', {}).get(str(analysis.page)),
             **{k: page['font_search'][k] for k in ('include_embedded_fonts', 'font_cache', 'new_text')})
         if built['status'] != 'proposed' or plan is None:
             raise PdfError(f'page {analysis.page} cannot be accepted: {built["refusals"] + built["unresolved"]}')
@@ -173,12 +254,13 @@ def accept_owned_flow_report(source, proposal, *, provider_choices=None):
         evidence.append(dict(binding=page['binding'], proposal_digest=page['digest'], reproduction=built['reproduction'],
             providers={lid: dict(sha256=c['sha256'], font_index=c['font_index'], provenance=how)
                        for lid, (c, how) in sorted(plan['providers'].items())}))
-    state, reproduction = _compose(source, entries, proposal['paragraphs'])
+    state, reproduction = _compose(source, entries, proposal['paragraphs'], page_breaks, proposal.get('continuations', []))
     return dict(state=state, receipt=dict(schema='pdfengine-owned-flow-acceptance-1',
         proposal_digest=proposal['digest'], source_sha256=proposal['source_sha256'], pages=evidence,
         paragraphs=deepcopy(proposal['paragraphs']), relationship=proposal['relationship'],
         relationship_provenance=proposal['relationship_provenance'], reproduction=reproduction,
-        state_model_sha256=state['model_sha256']))
+        state_model_sha256=state['model_sha256'],
+        **{k: deepcopy(proposal[k]) for k in ('page_breaks', 'page_overrides', 'continuations') if k in proposal}))
 
 
 def accept_owned_flow(source, proposal, *, provider_choices=None):

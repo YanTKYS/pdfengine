@@ -24,12 +24,52 @@ state = accepted["state"]
 no-edit planで照合する。logical style IDは`page-3:style-1`等へ名前空間化する。元のresource名を他ページへ
 コピーせず、slot境界を越える文字は明示承認済みproviderで生成する。
 
-現在はsource-adjacencyを観測できる連続ページの段落継続と、その後の同ページで観測したfollowsが対象。
+この基本経路はsource-adjacencyを観測できる連続ページの段落継続と、同ページで観測したfollowsが対象。
 同じ段落のpartsは区切り文字を挿入せず連結する。全選択paragraphの順序どおりの一意な被覆、途中の未選択文字が
-ないこと、共同no-edit reproductionを要求する。異なる段落間のgapが改ページに隠れて観測できない場合は拒否する。
+ないこと、共同no-edit reproductionを要求する。異なる段落間のgapが改ページに隠れる場合、下記の明示page-break policyがなければ拒否する。
 このacceptだけでは空き継続先を追加しない。必要な新規destinationには引き続き下記のreview/confirmationが必要。
 
 実測は[cross-page report](../evaluations/real_japanese/cross-page-report.md)、再現手順は同レポートを参照。
+
+## 改ページ前後の独立段落
+
+`propose_owned_flow`の`page_breaks`で、独立段落の元の改ページ関係と、新しく同じページに置く場合の
+間隔を明示する。gapはcallerの配置方針であり、異なるページのy座標の差ではない。
+
+```python
+proposal = propose_owned_flow(source, [page8_proposal, page9_proposal],
+    paragraphs=[
+        {"id": "A", "parts": [{"page": 8, "paragraph_id": "P1"}]},
+        {"id": "B", "parts": [{"page": 9, "paragraph_id": "P1"}]},
+    ],
+    relationship="イノベーターの完結した段落に、独立したアーリーアダプターの説明が続く",
+    page_breaks=[{"before": "A", "after": "B", "minimum_baseline_gap": 26.4,
+                  "placement": "source-region-floor-and-same-page-follow"}],
+    page_overrides={"9": {"region_top": 130}},
+    continuations=[{"region_id": "prefix-9", "before_region": "page-9",
+                    "region": separately_reviewed_empty_region,
+                    "destination": separately_confirmed_destination}],
+)
+```
+
+`page_overrides`はページ番号ごとの既存B1 geometry override（width/top/bottomのみ）であり、通常の
+観測・width interval・foreign collision検証を通す。この例ではBのregion上端を狭め、上の空き領域と分離する。
+`continuations`は上記review → request → confirmation済みのauthorityを渡す。A専用の空き領域をBのsource
+regionの前へ挿入する順序を明示する。対象は選択済みpage breakの前段落と、後段落の既存ページ上の継続先。
+Bのglyphを空き領域検証から除外することはない。双方のregionは非重複である必要がある。
+
+T2の`break_before=next-region`を再利用し、followsにsource breakの前後region IDと配置方針を保存する。
+Bは元のsource regionより前に移動せず、Aが前ページで終わるno-edit時にはBの元first baselineを使う。
+Aが確認済み継続先を使いBと同じページへ到達した場合のみ、Bのbaselineを次で決める：
+
+```text
+max(B region first baseline,
+    A last baseline + max(caller gap, A descent + B ascent))
+```
+
+保存後検証もこの契約を再計算する。異なるページの座標差を段落間隔に変換しない。
+Aの短文化で継続slotがdormantになればBは元のfirst baselineへ戻る。領域が不足したら既存どおりREFUSEする。
+[source page-break評価](../evaluations/real_japanese/page-break-report.md)に実測と再現コマンドを記録する。
 
 ## B1でacceptしたsource-adjacency flowへの接続
 

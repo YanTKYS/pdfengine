@@ -20,17 +20,18 @@ GROUPS = [dict(id='A', parts=[dict(page=1, paragraph_id='P1'), dict(page=2, para
           dict(id='B', parts=[dict(page=2, paragraph_id='P2')])]
 
 
-def make_source(root, *, height=310, intervening=False):
+def make_source(root, *, height=310, intervening=False, rows=None):
     font = TTFont(BytesIO(fx.build_font())); font['head'].unitsPerEm = 2048
     for name in font.getGlyphOrder():
         font['hmtx'][name] = (1001, 0)
     provider = root / 'source.ttf'; font.save(provider)
     raw, source = root / 'raw.pdf', root / 'source.pdf'
-    with pymupdf.open() as doc:
-        for number, rows in enumerate([
+    pages = rows or [
             [(ROW[:30], 270, True), (ROW[:32], 291.6, False)],
             [(ROW[:32], 80, False), ('申請期限を確認。', 101.6, False),
-             (ROW[:30], 128.1, True), ('必要書類を提出してください。', 148.5, False)]]):
+             (ROW[:30], 128.1, True), ('必要書類を提出してください。', 148.5, False)]]
+    with pymupdf.open() as doc:
+        for number, rows in enumerate(pages):
             page = doc.new_page(width=250, height=height)
             page.insert_font(fontname='F1', fontbuffer=provider.read_bytes())
             page.insert_text((40, 240), 'FIXED CONTENT')
