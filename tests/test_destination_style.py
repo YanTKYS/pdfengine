@@ -1,6 +1,5 @@
 from copy import deepcopy
 
-import pymupdf
 import pytest
 
 from pdfeditor.backend import PdfError
@@ -8,10 +7,11 @@ from pdfeditor.destination_style import PROPERTIES
 from pdfeditor.editable import write_editable, edit_document, open_editable
 from pdfeditor.paragraph import plan_paragraph
 from test_attributed import source_pdf, snapshot
+from provider_font import cjk_provider_bytes
 
 
 def recipes(tmp_path, paragraph):
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     values={}
     for ident,size,color in [('logical:body',10,[0,0,0]),('logical:accent',14,[0,0,1])]:
         p={k:deepcopy(paragraph['styles'][0][k]) for k in PROPERTIES}

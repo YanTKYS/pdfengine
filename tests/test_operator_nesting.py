@@ -21,6 +21,7 @@ from pdfeditor.replay import compare_glyphs, glyph_observations
 from pdfeditor.selection import make_selection
 from test_attributed import font, snapshot, source_pdf
 import test_composition
+from provider_font import cjk_provider_bytes
 
 
 def assert_conforming(path):
@@ -151,7 +152,7 @@ def test_empty_style_witness_is_its_own_isolated_text_object(tmp_path):
     source = source_pdf(tmp_path, b'BT /Regular 12 Tf 20 200 Td (ABCD) Tj (KEEP) Tj ET')
     p = inspect_paragraph(source, make_selection(source, glyph_ids=list(range(4)), explicit_width=25))
     provider = tmp_path / 'font.ttf'
-    provider.write_bytes(pymupdf.Font('cjk').buffer)
+    provider.write_bytes(cjk_provider_bytes())
     out, side = tmp_path / 'empty.pdf', tmp_path / 'empty.json'
     write_editable(source, out, side, p, [dict(start=0, end=4, runs=[])],
                    fonts={'logical:body': dict(path=str(provider))},

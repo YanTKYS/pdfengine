@@ -15,12 +15,13 @@ from pdfeditor.logical_element import slot_binding
 from pdfeditor.selection import make_selection
 from test_attributed import source_pdf
 from test_anchors import prepared
+from provider_font import cjk_provider_bytes
 
 
 def empty(tmp_path, *, stream=None):
     source=source_pdf(tmp_path,stream or b'BT /Regular 12 Tf 20 200 Td (ONE TWO) Tj 100 0 Td (KEEP) Tj ET')
     p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(7)),explicit_width=85))
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     out,state=tmp_path/'empty.pdf',tmp_path/'empty.json'
     report=write_editable(source,out,state,p,[dict(start=0,end=7,text='')],
         fonts={'s0':{'path':str(font)}},max_bottom=130,min_line_height=18)
@@ -87,7 +88,7 @@ def test_multistyle_empty_needs_confirmed_typing_style(tmp_path):
     change=[dict(start=0,end=6,text='',style_id='s0')]
     with pytest.raises(PdfError,match='empty_style_id'):
         write_editable(source,tmp_path/'bad.pdf',tmp_path/'bad.json',p,change)
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     write_editable(source,tmp_path/'empty.pdf',tmp_path/'empty.json',p,change,
         empty_style_id='s1',fonts={'s1':{'path':str(font)}})
     state=open_editable(tmp_path/'empty.pdf',tmp_path/'empty.json')['state']
@@ -113,7 +114,7 @@ def test_fixed_background_ownership_survives_zero_glyphs(tmp_path,relation):
     p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(7)),explicit_width=80))
     element=inspect_element(source,p['selection'])
     fixed=[dict(source_id=x['source_id'],relation='backgrounds',behavior='fixed-to-page') for x in element['paths']]
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     write_editable(source,tmp_path/'empty.pdf',tmp_path/'empty.json',p,[dict(start=0,end=7,text='')],
         element_snapshot=element,element_relations=fixed,fonts={'s0':{'path':str(font)}})
     state=open_editable(tmp_path/'empty.pdf',tmp_path/'empty.json')['state']

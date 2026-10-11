@@ -11,6 +11,7 @@ from pdfeditor.selection import make_selection,source_sha
 from pdfeditor.shared_flow import confirm_shared_flow,edit_shared_flow,open_shared_flow,plan_shared_flow
 from pdfeditor.story_flow import confirm_story
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def prepared(tmp_path, *, keep=False, break_before='auto', decorate=None, paragraph_layout=None):
@@ -21,7 +22,7 @@ def prepared(tmp_path, *, keep=False, break_before='auto', decorate=None, paragr
     writer.pages[1]['/Contents'].get_object().set_data(b'BT /Bold 13 Tf 1 0 0 rg 20 200 Td (tail) Tj ET')
     writer.write(source)
     if decorate:decorate(source)
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     stories={}
     for pid,parts in {'A':[('a1',1,list(range(10)),60,95)],
                       'B':[('b1',1,list(range(10,17)),116,145),('b2',2,list(range(4)),60,215)]}.items():

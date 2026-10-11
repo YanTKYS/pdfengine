@@ -11,13 +11,14 @@ from pdfeditor.document_flow import confirm_document, edit_flow, open_document, 
 from pdfeditor.elements import inspect_element
 from pdfeditor.selection import make_selection, source_sha
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def prepared(tmp_path, *, blocker=False):
     source=source_pdf(tmp_path,b'.9 .9 0 rg 15 155 85 18 re f 0 g '
         b'BT /Regular 12 Tf 20 200 Td (ONE TWO) Tj 0 -40 Td (NEXT) Tj '
         b'180 -25 Td (FIXED) Tj ET '+(b'BT /Regular 12 Tf 20 75 Td (BLOCK) Tj ET' if blocker else b''))
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     elements={}
     for ident,ids in [('A',list(range(7))),('B',list(range(7,11)))]:
         p=inspect_paragraph(source,make_selection(source,glyph_ids=ids,explicit_width=90))
@@ -125,7 +126,7 @@ def test_publication_failure_rolls_back_pdf_and_model(tmp_path,monkeypatch):
 def test_three_element_chain_moves_farthest_follower_first(tmp_path):
     source=source_pdf(tmp_path,b'BT /Regular 12 Tf 20 200 Td (ONE) Tj '
                       b'0 -50 Td (TWO) Tj 0 -50 Td (END) Tj ET')
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     specs={i:dict(paragraph=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(n*3,n*3+3)),explicit_width=90)),
                   layout=dict(width=90,min_line_height=18,max_bottom=250),fonts={'s0':{'path':str(font)}})
            for n,i in enumerate(('A','B','C'))}

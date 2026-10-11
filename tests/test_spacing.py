@@ -10,6 +10,7 @@ from pdfeditor.selection import inspect_selection_source, make_selection
 from pdfeditor.spacing import observe_spacing
 from test_attributed import source_pdf
 import pymupdf
+from provider_font import cjk_provider_bytes
 
 CHAR=7.2  # Courier 600/1000 at 12 pt
 
@@ -147,7 +148,7 @@ def test_line_word_spacing_no_longer_creates_false_edit_boundaries(tmp_path):
     source=source_pdf(tmp_path,CASES['justify_tw'][0])
     ids=[g for l in inspect_selection_source(source)['lines'] for g in l['glyph_ids']]
     p=inspect_paragraph(source,make_selection(source,glyph_ids=ids,explicit_width=150))
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     out,model=tmp_path/'edited.pdf',tmp_path/'edited.json'
     # No explicit style override: these are three lines of one inline style.
     write_editable(source,out,model,p,[dict(start=0,end=len(p['text']),text='First line\nSecond line')],

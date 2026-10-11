@@ -11,11 +11,12 @@ from pdfeditor.editable import write_editable,edit_document,open_editable,_seal
 from pdfeditor.selection import make_selection
 from test_anchors import prepared
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def first(tmp_path):
     source,p,e,a=prepared(tmp_path)
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     pdf,state=tmp_path/'first.pdf',tmp_path/'first.json'
     report=write_editable(source,pdf,state,p,[dict(start=4,end=7,text='FIVE SEVEN')],
         fonts={'s0':{'path':str(font)}},element_snapshot=e,anchor_spec=a,max_bottom=115)
@@ -48,7 +49,7 @@ def test_logical_spaces_ranges_and_limits_survive_repeated_edits(tmp_path):
 def test_hard_break_paragraph_boundary_and_soft_wrap_are_distinct(tmp_path):
     source=source_pdf(tmp_path,b'BT /Regular 12 Tf 20 200 Td (ONE TWO THREE) Tj ET')
     p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(13)),explicit_width=70))
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     text='ONE TWO THREE\nFOUR\n\nFIVE'
     write_editable(source,tmp_path/'a.pdf',tmp_path/'a.json',p,[dict(start=0,end=13,text=text)],
         fonts={'s0':{'path':str(font)}},max_bottom=190,boundary_kinds={18:'paragraph_boundary'})

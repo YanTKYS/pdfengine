@@ -23,6 +23,7 @@ from pdfeditor.selection import make_selection
 from pdfeditor.shared_flow import confirm_shared_flow, edit_shared_flow, open_shared_flow
 from pdfeditor.story_flow import confirm_story
 from test_continuation import LONG, change, saved
+from provider_font import cjk_provider_bytes
 
 LONGER = LONG + ' Fifteen sixteen seventeen eighteen nineteen twenty.'
 SOURCE_PAGE = b'BT /Regular 12 Tf 20 200 Td (ABCD) Tj ET'
@@ -89,7 +90,7 @@ def flow(tmp_path, pages=(SOURCE_PAGE, DESTINATION_PAGE), *, page=2, after='f', 
     """
     source = build(tmp_path, *pages)
     font = tmp_path / 'font.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     p = inspect_paragraph(source, make_selection(source, glyph_ids=list(range(4)), explicit_width=150))
     areas = areas or {'R2': ('boundary', dict(REGION, page=page))}
     regions = {'R1': dict(page=1, bounds=[18, 40, 173, 78], x=20, width=150, first_baseline=60)}

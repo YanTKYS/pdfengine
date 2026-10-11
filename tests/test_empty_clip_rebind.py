@@ -17,6 +17,7 @@ from pdfeditor.elements import _close
 from pdfeditor.mutation import IdentityMap
 from pdfeditor.selection import make_selection, source_sha
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def rewrite(source, output, program):
@@ -61,7 +62,7 @@ def test_clip_source_mapping_retains_geometry_scope_and_operator_provenance(tmp_
 
 def test_empty_paragraph_rebinds_clip_then_retypes_after_renumbered_save(tmp_path):
     source=source_pdf(tmp_path,b'q 0 0 320 260 re W* n BT /Regular 12 Tf 20 200 Td (OLD) Tj ET Q')
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     p=inspect_paragraph(source,make_selection(source,glyph_ids=[0,1,2],explicit_width=90))
     model=confirm_document(source,{'A':dict(paragraph=p,layout=dict(width=90,max_bottom=140,min_line_height=20),
         fonts={'s0':dict(path=str(font))})},container_id='body',bounds=[10,40,120,140],page=1,follows=[])

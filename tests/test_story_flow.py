@@ -10,6 +10,7 @@ from pdfeditor.document_flow import _reseal
 from pdfeditor.selection import make_selection,source_sha
 from pdfeditor.story_flow import confirm_story,edit_story,open_story,plan_story
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def prepared(tmp_path, *, same_page=False, decorate=None, paragraph_layout=None):
@@ -18,7 +19,7 @@ def prepared(tmp_path, *, same_page=False, decorate=None, paragraph_layout=None)
     source=source_pdf(tmp_path,program)
     reader=PdfReader(source);writer=PdfWriter(clone_from=reader);writer.add_page(reader.pages[1]);writer.write(source)
     if decorate:decorate(source)
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     specs={}
     for ident,page,ids,x,bottom in [('A',1,list(range(10)),20,94),
             ('B',1 if same_page else 2,list(range(22,28)) if same_page else list(range(10)),180 if same_page else 20,214)]:

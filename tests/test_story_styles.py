@@ -12,6 +12,7 @@ from pdfeditor.selection import make_selection,source_sha
 from pdfeditor.story_flow import confirm_story,edit_story,open_story,plan_story
 from pdfeditor.story_styles import project,style_ids
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def prepared(tmp_path,decorate=None,*,split_same_style=False):
@@ -21,7 +22,7 @@ def prepared(tmp_path,decorate=None,*,split_same_style=False):
     writer.pages[1]['/Contents'].get_object().set_data(b'q 1.25 0 0 1.25 0 0 cm BT /Regular 8 Tf 16 160 Td (second body) Tj ET Q')
     writer.write(source)
     if decorate:decorate(source)
-    font=tmp_path/'body.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'body.ttf';font.write_bytes(cjk_provider_bytes())
     accent=Path('C:/Windows/Fonts/times.ttf')
     if not accent.exists():accent=font
     specs={}

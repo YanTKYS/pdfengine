@@ -16,12 +16,13 @@ from pdfeditor.shared_flow import confirm_shared_flow, edit_shared_flow, open_sh
 from pdfeditor.story_flow import confirm_story
 from pdfeditor.style_confirmation import observed_values
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def prepared(tmp_path, *, mode='left', spacing=False, confirm=True, decorate=None, follower=False, same_page=False):
     source=source_pdf(tmp_path,b'BT /Regular 12 Tf '+(b'1 Tc 2 Ts ' if spacing else b'')+b'20 200 Td (ABCD) Tj ET')
     if decorate:decorate(source)
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(4)),explicit_width=150))
     if spacing:
         out,side=tmp_path/'confirmed.pdf',tmp_path/'confirmed.json'
@@ -149,7 +150,7 @@ def test_dormant_style_witness_restores_later_unselected_text_cursor(tmp_path):
     from pdfeditor.replay import glyph_observations, compare_glyphs
     source=source_pdf(tmp_path,b'BT /Regular 12 Tf 20 200 Td (ABCD) Tj (KEEP) Tj ET')
     p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(4)),explicit_width=25))
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     out,side=tmp_path/'empty.pdf',tmp_path/'empty.json'
     write_editable(source,out,side,p,[dict(start=0,end=4,runs=[])],
         fonts={'logical:body':dict(path=str(font))},render_styles={'logical:body':inline_properties(p['styles'][0])},
@@ -177,7 +178,8 @@ def test_paint_envelope_outside_trace_box_and_partial_ownership_are_protected(tm
 @pytest.mark.parametrize('kind',['unconfirmed','capacity','state','geometry','owner','protected','witness'])
 def test_refusals_are_atomic(tmp_path,kind):
     source,state=prepared(tmp_path,confirm=kind!='unconfirmed');edits=change(state,LONG)
-    if kind=='capacity':edits=change(state,LONG*20)
+    # Twice LONG already overflows both regions; refusal time grows steeply with the overflow.
+    if kind=='capacity':edits=change(state,LONG*4)
     if kind=='state':state['continuation_destinations']['empty']['authority']['graphics_state']['opacity']=.5
     if kind=='geometry':state['continuation_destinations']['empty']['bounds'][0]=0
     if kind=='owner':state['continuation_destinations']['empty']['paragraph_id']='B'
@@ -186,7 +188,8 @@ def test_refusals_are_atomic(tmp_path,kind):
     # Recompute the contract to exercise the PDF/context guard, not only the checksum.
     from pdfeditor.shared_flow import _contract
     state['contract_sha256']=_contract(state);state=_reseal(state)
-    with pytest.raises(PdfError):edit_shared_flow(source,state,tmp_path/'bad.pdf',tmp_path/'bad.json',edits)
+    with pytest.raises(PdfError,match='exceed all' if kind=='capacity' else None):
+        edit_shared_flow(source,state,tmp_path/'bad.pdf',tmp_path/'bad.json',edits)
     assert not (tmp_path/'bad.pdf').exists() and not (tmp_path/'bad.json').exists()
 
 

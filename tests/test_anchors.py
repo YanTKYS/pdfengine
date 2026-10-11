@@ -10,6 +10,7 @@ from pdfeditor.paragraph import edit_paragraph
 from pdfeditor.paint_geometry import intersects_fill
 from pdfeditor.selection import make_selection
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def test_range_projection_and_boundary_affinity():
@@ -63,7 +64,7 @@ def prepared(tmp_path):
 
 def test_reflow_replaces_physical_underlines_with_range_segments(tmp_path):
     source,p,e,s=prepared(tmp_path)
-    font=tmp_path/'supplied.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'supplied.ttf';font.write_bytes(cjk_provider_bytes())
     output,removed=tmp_path/'edited.pdf',tmp_path/'removed.pdf'
     report=edit_paragraph(source,output,p,[dict(start=4,end=7,text='FIVE SEVEN')],
         fonts={'s0':{'path':str(font)}},element_snapshot=e,anchor_spec=s,max_bottom=115,removal_output=removed)
@@ -94,7 +95,7 @@ def test_reflow_replaces_physical_underlines_with_range_segments(tmp_path):
 @pytest.mark.parametrize('mode',['missing','tampered','crossing','overflow'])
 def test_anchor_failures_do_not_publish_output(tmp_path,mode):
     source,p,e,s=prepared(tmp_path)
-    font=tmp_path/'supplied.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'supplied.ttf';font.write_bytes(cjk_provider_bytes())
     edits=[];bottom=115
     if mode=='missing':s['underlines']=[]
     if mode=='tampered':s['paragraph_sha256']='wrong'
@@ -136,7 +137,7 @@ def test_decoration_scope_is_checked_independently_of_text(tmp_path,scope,reason
     c=inspect_anchors(source,p,e)['suggested_groups'][0]
     spec=dict(paragraph_sha256=p['snapshot_sha256'],element_sha256=e['snapshot_sha256'],
               underlines=[dict(source_ids=c['source_ids'],range=c['range'])])
-    font=tmp_path/'supplied.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'supplied.ttf';font.write_bytes(cjk_provider_bytes())
     output=tmp_path/'edited.pdf'
     with pytest.raises(PdfError,match=reason):
         edit_paragraph(source,output,p,[dict(start=0,end=3,text='ELEVEN')],fonts={'s0':{'path':str(font)}},

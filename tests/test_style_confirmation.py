@@ -9,6 +9,7 @@ from pdfeditor.editable import write_editable, edit_document, open_editable, _se
 from pdfeditor.selection import make_selection
 from pdfeditor.style_confirmation import observed_values
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def setup(tmp_path, tc=1, ts=2, *, scaled=False, anisotropic=False):
@@ -18,7 +19,7 @@ def setup(tmp_path, tc=1, ts=2, *, scaled=False, anisotropic=False):
         if scaled else b'20 200 Td ')+b'(ABCD) Tj ET'+(b' Q' if scaled else b'')
     source=source_pdf(tmp_path,program)
     p=inspect_paragraph(source,make_selection(source,glyph_ids=list(range(4)),explicit_width=150))
-    font=tmp_path/'font.ttf';font.write_bytes(pymupdf.Font('cjk').buffer)
+    font=tmp_path/'font.ttf';font.write_bytes(cjk_provider_bytes())
     return source,p,{'s0':dict(path=str(font))}
 
 

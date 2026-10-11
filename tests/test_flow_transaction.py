@@ -11,6 +11,7 @@ from pdfeditor.document_flow import confirm_document, edit_flow, open_document
 from pdfeditor.flow_transaction import edit_flow_batch, plan_flow
 from pdfeditor.selection import make_selection, source_sha
 from test_attributed import source_pdf
+from provider_font import cjk_provider_bytes
 
 
 def prepared(tmp_path, *, obstacle=b'', follows=True):
@@ -18,7 +19,7 @@ def prepared(tmp_path, *, obstacle=b'', follows=True):
                         b'0 -20 Td (TWO) Tj 0 -20 Td (END) Tj '
                         b'0 -30 Td (NEXT) Tj 180 -45 Td (FIXED) Tj ET ' + obstacle)
     font = tmp_path / 'font.ttf'
-    font.write_bytes(pymupdf.Font('cjk').buffer)
+    font.write_bytes(cjk_provider_bytes())
     elements = {
         ident: dict(paragraph=inspect_paragraph(source, make_selection(source, glyph_ids=ids, explicit_width=90)),
                     layout=dict(width=90, max_bottom=145, min_line_height=20),
@@ -164,7 +165,7 @@ def test_chain_keeps_unedited_third_element_and_retained_inline_text(tmp_path):
     source = source_pdf(tmp_path, b'BT /Regular 12 Tf 20 200 Td (ONE) Tj '
                         b'0 -20 Td (TWO) Tj 0 -20 Td (END) Tj '
                         b'0 -30 Td (NEXT) Tj 0 -30 Td (LAST) Tj ET')
-    font = tmp_path/'font.ttf'; font.write_bytes(pymupdf.Font('cjk').buffer)
+    font = tmp_path/'font.ttf'; font.write_bytes(cjk_provider_bytes())
     specs = {i: dict(paragraph=inspect_paragraph(source, make_selection(source, glyph_ids=ids, explicit_width=90)),
                      layout=dict(width=90,max_bottom=180,min_line_height=20),fonts={'s0':{'path':str(font)}})
              for i, ids in [('A',list(range(9))),('B',list(range(9,13))),('C',list(range(13,17)))]}
