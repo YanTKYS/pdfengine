@@ -3,7 +3,13 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `aff104134c41db7f00b85f8417234344303d442b` plus conditional joint-owner vacated-space reflow, 2026-10-12.
+- State: starting main `0bd7ed335e12ae93deb6d68465f01f5c53a2ab43` plus explicit extension of original joint ownership.
+- **REAL-WORLD EXTENDED JOINT REFLOW VALIDATED — PASS** for LibreOffice migration pages 8–9.
+  A+B alone refuse the long replacement at the C boundary (region bottom 200.271454 pt). Explicit extension
+  adds C–H as six independent source owners (886 glyphs), re-proves all 27 original lines and qualifies the
+  larger body region. The same edit then moves B's ink beyond the old bound, intersecting 46 original C
+  glyph bounds while C moves safely. Five saved revisions restore, both raster engines preserve the exterior,
+  and the source SHA is unchanged. [Measured extension report](../evaluations/real_japanese/extended-joint-report.md).
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -382,6 +388,21 @@ B1's proofs.
   [ten regression cases](../tests/test_page_break_reflow.py) cover wrap/push-down, five restored saves,
   dormant-prefix cleanup, missing authority, insufficient capacity and invalid page-break contracts.
 
+### Extending original accepted joint ownership
+
+- `propose_owned_flow_extension` takes an accepted, uncomposed source flow plus enlarged explicit B1 selections.
+  Old logical paragraphs must remain an unchanged ordered prefix with the same page/glyph/text identities;
+  additional complete followers are named individually. A larger rectangle with unchanged owners is insufficient.
+- The sealed review shows added text, lines, glyph IDs, bounds and baselines, old/new region proposals,
+  geometry overrides, page-break and continuation policies, and the caller-declared textual relationship.
+  Proposal creation does not alter the original accepted flow or authorize new paint.
+- `accept_owned_flow_report` restores the base against the current source and recomputes the review, then
+  runs the existing per-page B1/font checks, source-owner composition and joint no-edit reproduction.
+  Its receipt connects the original model, reviewed additions and resulting shared-flow model.
+- T2 allocation, follows, source adjacency, conditional owner-removal obligations, Transaction and readback
+  are reused unchanged. The extension starts from the original PDF; edited allocations require a separate future
+  ownership-transition contract. [Measured extension report](../evaluations/real_japanese/extended-joint-report.md).
+
 ### B5 — Real text in the semantic layer (T3)
 
 Not on the replacement path; decorations, publication and style reinterpretation on real text come after B3.
@@ -397,7 +418,8 @@ B1 bootstrap (COMPLETE)
 ├→ verified existing-region continuation (COMPLETE, bounded untagged path)
 ├→ cross-page source paragraph joins (COMPLETE, bounded untagged path)
 ├→ independent source-page paragraph reflow (COMPLETE, explicit floor/gap)
-└→ joint-owner vacated-space continuation (COMPLETE, explicit fixed capacity and Transaction obligations)
+├→ joint-owner vacated-space continuation (COMPLETE, explicit fixed capacity and Transaction obligations)
+└→ explicit additional-owner approval from original source (COMPLETE, append-only followers)
         B3 → B5 semantic real text
 ```
 
@@ -407,7 +429,7 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: choosing and extending safe joint capacity beyond the explicitly confirmed page regions
+NEXT BLOCKER: adding source owners after a saved edit while preserving current generated/source ownership
 ```
 
 A continuation no longer needs an independently empty rectangle when its occupied text belongs to explicitly
@@ -421,17 +443,21 @@ own matching plan in that transaction, and final paint must be disjoint. Removal
 clip, paint envelopes, atomic save/readback and restored ownership remain in force. Shortening removes generated paint
 as the follower moves back; regrowth reuses the continuation slot.
 
-Capacity is still fixed, explicit and bounded. The implementation does not choose related paragraphs automatically,
-expand rectangles, infer ownership of intervening text, add pages or resolve cyclic source-occupancy dependencies.
+Initial capacity can now be enlarged by reviewing and accepting additional complete source paragraphs from the
+same original PDF. B1 derives and verifies the new selected-body region against the remaining foreign content;
+no independently empty destination or automatic rectangle enlargement is invented. The old accepted state remains
+unchanged and still refuses the oversized edit until the new proposal is explicitly accepted.
+
+Capacity remains explicit and bounded after acceptance. The implementation does not choose related paragraphs
+automatically, extend an already edited allocation, add pages or resolve cyclic source-occupancy dependencies.
 Tagged source owners cannot cross independent continuation regions. Missing final capacity still refuses.
 
 ## 9. Next PR scope
 
-Choose another real occupied-page case that exceeds the currently accepted joint capacity, and establish a
-reviewable proposal for additional existing source owners/regions without absorbing unrelated headings, tables,
-footnotes or sections. Preserve the conditional removal/final-placement contract and source identities; do not
-infer authority from newly available coordinates alone. The current API is bounded caller-confirmed editing,
-not automatic document-wide capacity discovery.
+Review safe additional source owners against a saved edited revision, including retained source slots and generated
+continuation slots. Any extension must preserve their current bindings and Transaction obligations instead of
+reinterpreting edited text as unowned space. Keep semantic relationships explicit; no document-wide automatic
+ownership or page generation is implied by this bounded original-source extension.
 
 ## 10. Not next (deliberately)
 
