@@ -1,5 +1,36 @@
 # 既存ページ上の確認済みcontinuation destination
 
+## 元から複数ページに存在する本文の共同ownership
+
+既存本文は空のdestinationとして確認せず、`pdfeditor.owned_flow_proposal`の
+`propose_owned_flow` → `accept_owned_flow_report`で各ページのsource ownerを同じT2 flowへ取り込む。
+ページごとに`propose_page_flow(..., line_ids=...)`し、同じ段落の続きであることを本文から確認して明示する。
+
+```python
+proposal = propose_owned_flow(source, [page3_proposal, page4_proposal],
+    paragraphs=[
+        {"id": "A", "parts": [{"page": 3, "paragraph_id": "P1"},
+                              {"page": 4, "paragraph_id": "P1"}]},
+        {"id": "B", "parts": [{"page": 4, "paragraph_id": "P2"}]},
+    ],
+    relationship="3ページ末尾の印刷と4ページ冒頭のしたりが同じ文を構成し、次段落が同じ文書交換方式を説明する",
+)
+accepted = accept_owned_flow_report(source, proposal,
+    provider_choices={"3": page3_choices, "4": page4_choices})
+state = accepted["state"]
+```
+
+既存slot・各ページのbindingを維持し、全source fragmentのUnicode、改行、baseline、glyph位置を共同の
+no-edit planで照合する。logical style IDは`page-3:style-1`等へ名前空間化する。元のresource名を他ページへ
+コピーせず、slot境界を越える文字は明示承認済みproviderで生成する。
+
+現在はsource-adjacencyを観測できる連続ページの段落継続と、その後の同ページで観測したfollowsが対象。
+同じ段落のpartsは区切り文字を挿入せず連結する。全選択paragraphの順序どおりの一意な被覆、途中の未選択文字が
+ないこと、共同no-edit reproductionを要求する。異なる段落間のgapが改ページに隠れて観測できない場合は拒否する。
+このacceptだけでは空き継続先を追加しない。必要な新規destinationには引き続き下記のreview/confirmationが必要。
+
+実測は[cross-page report](../evaluations/real_japanese/cross-page-report.md)、再現手順は同レポートを参照。
+
 ## B1でacceptしたsource-adjacency flowへの接続
 
 `pdfeditor.shared_flow.confirm_shared_flow_continuations(source, model, *, regions,

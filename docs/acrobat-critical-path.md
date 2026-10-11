@@ -3,7 +3,7 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `2667fe173538b2244204bc27fd16560e3dc2c0bd` plus whole owned-body reflow/continuation, 2026-10-11.
+- State: starting main `45bcdae5e7828490f14d66b746f4a3ac74b0deeb` plus cross-page owned-body bootstrap, 2026-10-11.
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -27,6 +27,14 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   characters absent from the source subset. Both saved revisions restore, including B4 wrap/push-down.
   Retained codes, GIDs and font program bytes remain original; added glyphs have the selected provider
   outlines, with no claim of source appearance equivalence. [Font coverage report](../evaluations/real_japanese/font-coverage-report.md).
+- **REAL-WORLD CROSS-PAGE OWNED BODY EDITING VALIDATED — PASS:** the same LibreOffice paper already
+  contains paragraph A on pages 3 and 4 (162 + 102 characters), followed by independent paragraph B (197).
+  Joint B1 acceptance proves all nine original lines/glyphs and preserves three distinct source owners.
+  A grows 264 → 284 characters, its page-4 part gains a line, and B moves 22.200012 pt while keeping
+  its 28.200012 pt follows gap and all 197 original glyphs. Five saves restore through grow, follower edit,
+  shorten, regrow and no-op; all ten pages' foreign content and outside-region raster stay unchanged.
+  [Cross-page report](../evaluations/real_japanese/cross-page-report.md). This joins an existing page-spanning
+  paragraph and its observed follower; unobserved gaps between separate paragraphs across a page seam remain refused.
 - **REAL-WORLD OWNED BODY REFLOW AND CONTINUATION VALIDATED — PASS:** the LibreOffice migration paper's
   page-9 final two body paragraphs reproduce six complete source lines. Extending the first paragraph
   from 107 to 474 characters makes eleven lines; the existing follower moves 163.199707 pt, preserving
@@ -230,7 +238,8 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 
 **Supported scope of PASS:**
 
-- one page for intent-only B1; an explicitly reviewed and confirmed additional region for bounded continuation;
+- one page for intent-only B1; explicit cross-page source joins through `owned_flow_proposal`;
+  an explicitly reviewed and confirmed additional empty region for bounded continuation;
 - horizontal text in one column of non-overlapping paragraphs;
 - untagged, or balanced page-level `/P` MCID scopes whose complete ordered bundle belongs to one leaf `/P` StructElem;
 - left-aligned naturally spaced lines, or individually reproduced zero-Tc/Tw irregular source adjacency;
@@ -327,6 +336,22 @@ B1's proofs.
 - Bounds, clip, stale ownership, output ink, capacity and tagged structure guards remain. No new page,
   foreign-content movement or mid-composition destination attachment is implemented.
 
+### Cross-page occupied-body bootstrap: bounded source-owner composition
+
+- `propose_owned_flow` accepts sealed B1 page proposals plus ordered logical paragraph/part groups and a
+  caller-declared textual relationship. Each page must explicitly select observed lines; none is an empty destination.
+- `accept_owned_flow_report` rechecks each page and its font inventory, requires explicit per-page provider
+  substitution choices, and composes ordinary `confirm_story` / `confirm_shared_flow` arguments.
+- Original containers remain distinct source owners. Logical style IDs are page-namespaced; source resource
+  names and GIDs are never copied to another page. Cross-slot glyphs use the explicitly qualified provider.
+- Joint no-edit reproduction checks each slot's exact original text and breaks, baselines, widths and every
+  painted glyph origin. Independent successful page proofs alone are insufficient.
+- The same allocator, source-adjacency writer, follows, current-revision ownership, Transaction and readback
+  perform edits. No new writer, layout engine, persistence schema or generated empty slot is introduced.
+- The [cross-page evaluation](../evaluations/real_japanese/cross-page-report.md) records the real scope;
+  [regressions](../tests/test_cross_page_owned_flow.py) cover lifecycle, stale ownership, invalid groups,
+  interrupted seams, joint reproduction and atomic over-capacity refusal.
+
 ### B5 — Real text in the semantic layer (T3)
 
 Not on the replacement path; decorations, publication and style reinterpretation on real text come after B3.
@@ -339,7 +364,8 @@ B1 bootstrap (COMPLETE)
 ├→ B6 witnessed real-body source adjacency (COMPLETE, bounded)
 ├→ B3 explicit new-glyph coverage (COMPLETE, bounded TrueType path)
 ├→ B4 real body wrap + following-paragraph capacity (COMPLETE, bounded)
-└→ verified existing-region continuation (COMPLETE, bounded untagged path)
+├→ verified existing-region continuation (COMPLETE, bounded untagged path)
+└→ cross-page source paragraph joins (COMPLETE, bounded untagged path)
         B3 → B5 semantic real text
 ```
 
@@ -349,23 +375,31 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: owning related text already spread across occupied page regions
+NEXT BLOCKER: independently bounded paragraphs at a page seam without an observed follows gap
 ```
 
-Related complete paragraphs on one page can now enter a B1 flow despite unequal source leading and
-quantized PDF pen metrics, then reflow/push down and continue their existing follower onto a verified next-page
-region. The caller establishes the semantic relationship by explicit complete-line selection and acceptance;
-geometry alone is never a relationship proof. The LibreOffice result does not merge independently accepted
-flows whose related source paragraphs already occupy different pages, or authorize writing into another
-paragraph's occupied region as a continuation destination. Those remain the next ownership/bootstrap boundary.
+`owned_flow_proposal` now combines explicitly selected B1 source fragments on consecutive occupied pages.
+The caller declares which fragments form one paragraph and why they are related. Every page retains its
+source SHA/page-observation binding; acceptance re-observes each page and jointly reproduces every source
+fragment and glyph before returning the existing T2 state. A paragraph already continuing across the page
+seam owns both source slots; its independently owned follower retains its observed same-page follows gap.
+Occupied paragraphs are never passed to the empty-destination confirmation API.
+
+This bounded route requires witnessed source adjacency on each part, exact ordered coverage, uninterrupted
+selected text at each joined seam, and observable same-page gaps between distinct logical paragraphs.
+It refuses a new paragraph starting on another page when that inter-paragraph gap cannot be observed.
+It also refuses joins whose unchanged allocation would pull text across the original page boundary. It does
+not grant one paragraph authority to consume another paragraph's source slot. Headers/footnotes at a seam
+are conservatively refused rather than automatically classified as unrelated running matter.
 Kyoto's next section and Okinawa's last-page footer still remain fixed; no invented capacity is claimed.
 
 ## 9. Next PR scope
 
-Choose an actual cross-page body whose existing related paragraphs occupy both pages. Build a source-bound
-joint proposal and preserve their distinct source owners and relationships before composition. Reuse T2 and
-continuation proofs; do not treat occupied space as an empty destination, move independent sections, or create
-pages. Broader tagged trees and unavailable providers remain independent boundaries.
+Select a real source whose separate related paragraphs start on different pages, with no shared paragraph
+bridging the seam. Establish an explicit, reviewable paragraph-boundary/spacing contract and destination
+authority before allowing redistribution. Keep the existing glyph-level reproduction and independent source
+owners. Do not infer a missing gap from page coordinates or promote occupied space to an empty destination.
+Broader tagged trees and unavailable providers remain independent boundaries.
 
 ## 10. Not next (deliberately)
 

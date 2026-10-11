@@ -1018,14 +1018,25 @@ def _confirm(analysis, plan):
 
 def _reproduce(source, state, plan):
     """No-op T2 must reproduce line allocation and each source glyph origin."""
+    by_paragraph = {s['paragraph_id']: sid for sid, s in state['slots'].items()}
+    return _reproduce_fragments(source, state, {by_paragraph[pid]: para
+        for pid, para in zip(plan['ids'], plan['column'])})
+
+
+def _reproduce_fragments(source, state, expected):
+    """Verify every owned source fragment, including fragments of one paragraph on different pages."""
     try:
         result = plan_shared_flow(source, state, {})
     except PdfError as exc:
         return dict(status='not-reproduced', detail='shared-flow planning refuses the unedited page: ' + str(exc))
-    by_paragraph = {s['paragraph_id']: sid for sid, s in state['slots'].items()}
-    for pid, para in zip(plan['ids'], plan['column']):
-        fragment = result['fragments'][by_paragraph[pid]]
-        text = state['paragraphs'][pid]['logical']['text']
+    if set(expected) != set(result['fragments']):
+        return dict(status='not-reproduced', detail='source fragment coverage differs from the no-edit allocation')
+    for sid, para in expected.items():
+        fragment = result['fragments'][sid]
+        snapshot = state['slots'][sid]['binding']['paragraph']
+        text = snapshot['text']
+        if fragment['text'] != text:
+            return dict(status='not-reproduced', detail=f'{sid}: no-edit layout changes source fragment text')
         joiner = len(text) - sum(len(line['text']) for line in para)
         step = joiner // max(1, len(para) - 1) if len(para) > 1 else 0
         starts, cursor = [], 0
@@ -1034,20 +1045,19 @@ def _reproduce(source, state, plan):
             cursor += len(line['text']) + step
         planned = fragment['lines']
         if [line['start'] for line in planned] != starts:
-            return dict(status='not-reproduced', detail=f'{pid}: planned line breaks {[l["start"] for l in planned]} '
+            return dict(status='not-reproduced', detail=f'{sid}: planned line breaks {[l["start"] for l in planned]} '
                                                       f'differ from observed {starts}')
         if not _close([line['baseline'] for line in planned], [line['baseline'] for line in para]):
-            return dict(status='not-reproduced', detail=f'{pid}: planned baselines differ from observed baselines')
+            return dict(status='not-reproduced', detail=f'{sid}: planned baselines differ from observed baselines')
         # Left-aligned natural widths must equal the observed line extents; a justified or
         # spaced source would otherwise be re-rendered with different glyph positions.
         if not _close([line['width'] for line in planned], [line['right'] - line['x'] for line in para]):
-            return dict(status='not-reproduced', detail=f'{pid}: planned line widths differ from observed line widths '
+            return dict(status='not-reproduced', detail=f'{sid}: planned line widths differ from observed line widths '
                                                       '(justified or spaced source text)')
         # Equal line extents alone do not prove reproduction: opposite gap
         # errors can cancel. Compare every painted Unicode occurrence using
         # its source offset, never a nearest-position or text search match.
         from .logical_element import paragraph_from_snapshot
-        snapshot = state['slots'][by_paragraph[pid]]['binding']['paragraph']
         paragraph = paragraph_from_snapshot(source, snapshot)
         try:
             painted = set()
@@ -1056,16 +1066,16 @@ def _reproduce(source, state, plan):
                 unit = paragraph.units[start]
                 if (end != start + 1 or unit.observation is None or unit.text != glyph['text']
                         or not _close(glyph['origin'], unit.observation['origin'])):
-                    return dict(status='not-reproduced', detail=f'{pid}: planned glyph position differs at Unicode {start}')
+                    return dict(status='not-reproduced', detail=f'{sid}: planned glyph position differs at Unicode {start}')
                 painted.add(start)
             if any(i not in painted and unit.text not in _SPACES + '\r\n'
                    for i, unit in enumerate(paragraph.units)):
-                return dict(status='not-reproduced', detail=f'{pid}: no-edit layout drops a painted character')
+                return dict(status='not-reproduced', detail=f'{sid}: no-edit layout drops a painted character')
         finally:
             paragraph.close()
     return dict(status='reproduced', method='plan_shared_flow with no edits; line starts exact, baselines and line '
                                             'widths and each painted glyph origin within the shared-flow geometry tolerance (elements._close)',
-                lines=sum(len(p) for p in plan['column']))
+                lines=sum(len(p) for p in expected.values()))
 
 
 def _font_files(font_candidates, font_roots):
