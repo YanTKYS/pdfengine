@@ -95,6 +95,7 @@ def layout_attributed(
     alignment: str = 'left',
     justify_policy: str | None = None,
     continues: bool = False,
+    source_line_gap: Callable[[int, int, int, int], float | None] | None = None,
 ) -> AttributedLayout:
     """Fit attributed text within an explicitly supplied horizontal region.
 
@@ -109,7 +110,11 @@ def layout_attributed(
     trailing-space removal follow :mod:`pdfeditor.layout`. A newline forces a
     line break; CRLF and CR also work without changing source offsets. Every
     blank authored line uses the supplied empty-line metrics. Empty input has
-    no lines. ``bbox`` encloses occupied line widths and their vertical metrics
+    no lines. ``source_line_gap`` may return a current-source witnessed advance
+    for two complete line ranges; None uses the ordinary minimum line height.
+    The minimum line height, actual ascent/descent and bottom containment remain
+    hard lower/upper bounds.
+    ``bbox`` encloses occupied line widths and their vertical metrics
     (including ink), rather than expanding to the entire available width.
     ``first_line_indent`` reserves space at the left of the first visual line
     only; a negative value is a hanging first line extending left of x.
@@ -139,6 +144,8 @@ def layout_attributed(
         raise LayoutError("The bottom limit must be finite.")
     if not callable(shape):
         raise LayoutError("A shaping callback is required.")
+    if source_line_gap is not None and not callable(source_line_gap):
+        raise LayoutError("Source line spacing needs a witness callback.")
     if not text:
         top = baseline - empty_ascent
         return AttributedLayout([], Rect(x, top, x, top), [])
@@ -194,8 +201,13 @@ def layout_attributed(
         line_baseline = baseline
         if lines:
             previous = lines[-1]
+            gap = (source_line_gap(previous.start, previous.end, start, end)
+                   if source_line_gap is not None else None)
+            if gap is not None and (not isfinite(gap) or gap <= 0):
+                raise LayoutError("Witnessed source line gap must be finite and positive.")
             line_baseline = previous.baseline + max(
-                min_line_height, previous.descent + metrics.ascent)
+                min_line_height, gap if gap is not None else min_line_height,
+                previous.descent + metrics.ascent)
         if not isfinite(line_baseline + metrics.descent):
             raise LayoutError("The composed line exceeds finite coordinates.")
         if max_bottom is not None and line_baseline + metrics.descent > max_bottom + _EPSILON:

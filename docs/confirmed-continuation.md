@@ -37,6 +37,18 @@ Tagged sourceが独立したslot/continuationへ出ることは拒否し、構�
 shorten → regrow → no-opの5保存がすべて`restored`。領域外MuPDF差分0、短文化後の2ページ目は
 原本描画と一致。[評価・制約・実測値](../evaluations/real_japanese/continuation-report.md)。
 
+## 既存の後続本文を含むflow
+
+B1で関連する完全な段落を複数選択し、source ownershipとfollowsをacceptした場合、前段落の長文化は
+既存T2で後続段落を押し下げる。継続先authorityを後続段落に結び付ければ、その段落の容量超過分だけを
+次領域へ配置できる。未選択段落や前段落へauthorityが移ることはない。
+
+LibreOffice移行資料の9ページ末尾2段落で、6行のno-edit reproduction → 前段落3→11行 →
+後続段落163.199707pt移動 → その末尾を確認済み10ページ領域へ継続する経路を検証した。
+新たに必要だったproduction変更は、B1がPDFの送り幅とglyph矩形幅を区別することと、source-adjacencyが
+完全な未変更source行同士の実測行間を保持することだった。ownershipや空き領域確認を緩めていない。
+[実測・再編集・残る範囲](../evaluations/real_japanese/owned-body-report.md)。
+
 ## caller workflow
 
 既存ページの空き領域へparagraphのcontinuationを置く場合、callerは次の6段階でdestinationを確認する。段階ごとに別のmodule APIを使う。engineはboundaryを選ばない。

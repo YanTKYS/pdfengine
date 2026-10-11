@@ -486,7 +486,8 @@ def _layout(source,state,pid,binding,text,ids,region,indent,source_edits=None):
         size=styles.properties(p['style_registry'][p['logical']['typing_style_id']])['font_size']
         return layout_attributed(text,shape=shaper.shape,x=region['x'],baseline=0,width=region['width'],
             min_line_height=state['paragraph_policies'][pid]['min_line_height'],max_bottom=None,
-            first_line_indent=indent,empty_ascent=size*.8,empty_descent=size*.2,**alignment_options(alignment))
+            first_line_indent=indent,empty_ascent=size*.8,empty_descent=size*.2,**alignment_options(alignment),
+            source_line_gap=shaper.source_line_gap if source_edits is not None else None)
     finally:
         if shaper is not None:shaper.close()
         paragraph.close()
@@ -585,7 +586,8 @@ def _plan(source,state,changes):
             measured=plan_paragraph(source,binding['paragraph'],edits,
                 fonts=styles.providers(p),render_styles=styles.render_styles(p),paragraph_style=styles.render_confirmations(p),
                 paragraph_layout=alignment_request(p['logical'].get('alignment',DEFAULT)),
-                _paragraph_continues=continuation(remaining,end,cut),**options)
+                _paragraph_continues=continuation(remaining,end,cut),
+                _preserve_source_line_gaps=linked is not None,**options)
             if not _close(measured['lines'],lines):raise PdfError('local writer differs from final shared paragraph layout')
             ink=[list(Rect(g.ink.x0,g.ink.y0+baseline,g.ink.x1,g.ink.y1+baseline).tuple())
                  for line in fitting for g in line.glyphs if g.ink is not None]
@@ -695,6 +697,7 @@ def edit_shared_flow(source,model,output,model_output,changes):
                     paragraph_layout=alignment_request(p['logical'].get('alignment',DEFAULT)),
                     _paragraph_continues=continuation(p['logical']['text'],wanted['render_end'],wanted['range'][1]),
                     _allow_empty_style_witnesses=bool(state.get('continuation_destinations')) or state['schema']==SCHEMA,
+                    _preserve_source_line_gaps=state['paragraph_policies'][pid].get('text_placement')==SOURCE_PLACEMENT,
                     empty_style_id='logical:'+p['logical']['typing_style_id'],owner=sid,**wanted['layout'])
                 edits=(wanted['source_edits'] if 'source_edits' in wanted else
                        styles.replacement(slot['binding'],wanted['text'],wanted['style_spans']))

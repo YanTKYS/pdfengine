@@ -3,7 +3,7 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `348856eac4c40e71789f82d8c18778d51b833fb4` plus verified source-adjacency continuation, 2026-10-10.
+- State: starting main `2667fe173538b2244204bc27fd16560e3dc2c0bd` plus whole owned-body reflow/continuation, 2026-10-11.
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -27,6 +27,14 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   characters absent from the source subset. Both saved revisions restore, including B4 wrap/push-down.
   Retained codes, GIDs and font program bytes remain original; added glyphs have the selected provider
   outlines, with no claim of source appearance equivalence. [Font coverage report](../evaluations/real_japanese/font-coverage-report.md).
+- **REAL-WORLD OWNED BODY REFLOW AND CONTINUATION VALIDATED — PASS:** the LibreOffice migration paper's
+  page-9 final two body paragraphs reproduce six complete source lines. Extending the first paragraph
+  from 107 to 474 characters makes eleven lines; the existing follower moves 163.199707 pt, preserving
+  its 26.5 pt paragraph gap, with two lines on page 9 and its remainder on confirmed page-10 space.
+  Five saves (grow, edit the continued follower, shorten, regrow, no-op) restore; outside-region pixels
+  remain unchanged, and shortening removes the next-page text completely.
+  The same section's explanatory paragraph and conclusion are explicitly selected together; unrelated
+  paragraphs, logos and the next section remain foreign. [Owned-body report](../evaluations/real_japanese/owned-body-report.md).
 - **REAL-WORLD MULTI-REGION PDF EDITING VALIDATED — PASS** for Kyoto City's unmodified Q&A PDF.
   The final two lines of the page-1 shipping note grow to three lines plus one on page 2, above the
   untouched next section. The caller explicitly confirms that region and its nonidentity-CTM boundary.
@@ -124,7 +132,9 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 ### 3.1 How B1 decides values (the safety argument)
 
 - **Width is never the observed content width.**
-  - Observed lines give a lower bound: every observed line must fit.
+  - Observed lines give a lower bound: every observed line must fit. For interpreted zero-Tc/Tw horizontal
+    text, source-occurrence-bound PDF operator advances define the pen end. MuPDF trace rectangle widths
+    can differ from rounded PDF /W advances; they remain geometry evidence, not replacement pen metrics.
   - Each trusted wrap gives an upper bound: the line plus the next legal break unit must not fit.
   - A wrap after sentence-final punctuation is not trusted, because it may be a paragraph end.
   - Within those bounds, page geometry chooses the value: `margin-symmetry` first, then
@@ -188,6 +198,13 @@ The caller only accepts. Every value carries an evidence label. None of them is 
   real Okinawa items (7)/(8) demonstrate wrap/push-down in a jointly accepted region. Kyoto demonstrates
   cross-page continuation, local generated-slot re-edit and dormant-slot deletion/reactivation. Tagged
   source adjacency still cannot cross independently owned continuation regions.
+- **Unequal source leading.** The retained path also recognizes two complete, unchanged, consecutive source
+  lines by occurrence identity and obtains their baseline advance from the current PDF. Only that vertical
+  edge is retained. A replacement, a changed wrap or a slot transition uses the confirmed ordinary minimum
+  line height, proposed as the smallest observed pitch for this source-adjacency paragraph. Both that floor
+  and the previous descent plus next ascent remain hard minima, and all region/ink checks run.
+  This reproduces LibreOffice's 21.6/20.4 and 20.4/20.5 pt line gaps without positional sidecar arrays or a new
+  layout engine. The shared allocator, local planner and writer all use the same shaper witness.
 - **Binding.** The proposal carries the source SHA-256, the page, the page observation hash and a canonical digest.
   Optional target line IDs and their caller-selected provenance are included and re-observed at acceptance.
   Acceptance recomputes the proposal from the PDF and the recorded font inputs and requires the same digest. An
@@ -332,21 +349,23 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: obtain editable capacity when the next region is occupied
+NEXT BLOCKER: owning related text already spread across occupied page regions
 ```
 
-Source-adjacency now continues into explicitly verified destinations. Kyoto's next-page top space has only
-one line of capacity; further growth reaches a fixed next-section heading and is refused. Okinawa's selected
-body ends on the last page above its fixed footer, with no existing next page. Neither case authorizes moving
-foreign text. The next practical boundary is proving additional existing paragraph ownership and preserving
-its relationships across pages, or confirming another genuinely available destination. Broader Office tagged
-trees and CFF-only provider availability remain separate boundaries.
+Related complete paragraphs on one page can now enter a B1 flow despite unequal source leading and
+quantized PDF pen metrics, then reflow/push down and continue their existing follower onto a verified next-page
+region. The caller establishes the semantic relationship by explicit complete-line selection and acceptance;
+geometry alone is never a relationship proof. The LibreOffice result does not merge independently accepted
+flows whose related source paragraphs already occupy different pages, or authorize writing into another
+paragraph's occupied region as a continuation destination. Those remain the next ownership/bootstrap boundary.
+Kyoto's next section and Okinawa's last-page footer still remain fixed; no invented capacity is claimed.
 
 ## 9. Next PR scope
 
-Select a real case whose next region is occupied by related text, prove which paragraphs may join the flow,
-and accept their ownership/relationships explicitly before allowing movement. Preserve existing foreign
-sections, tables, footers and B1/B2/B3/B4/B6 proofs. Do not manufacture capacity or pages.
+Choose an actual cross-page body whose existing related paragraphs occupy both pages. Build a source-bound
+joint proposal and preserve their distinct source owners and relationships before composition. Reuse T2 and
+continuation proofs; do not treat occupied space as an empty destination, move independent sections, or create
+pages. Broader tagged trees and unavailable providers remain independent boundaries.
 
 ## 10. Not next (deliberately)
 
@@ -382,4 +401,6 @@ The [real-case report](real-japanese-persistent-editing.md) and
 revisions, restored reopen, exact provider outlines and independent preservation audits.
 Current continuation evidence, regression coverage and reproducible commands:
 [continuation report](../evaluations/real_japanese/continuation-report.md).
+Whole owned-body evidence and final-HEAD commands:
+[owned-body report](../evaluations/real_japanese/owned-body-report.md).
 Final full-suite counts and the exact tested commit are recorded in the current PR.
