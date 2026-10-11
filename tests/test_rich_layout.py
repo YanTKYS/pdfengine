@@ -99,6 +99,18 @@ def test_mixed_sizes_use_max_metrics_and_neighboring_line_extents():
     assert result.lines[0].baseline + result.lines[0].descent == result.lines[1].baseline - result.lines[1].ascent
 
 
+def test_witnessed_line_gaps_keep_minimum_height_metrics_and_bottom_limits():
+    def witness(a, b, c, d):
+        return 16 if a == 0 else 8
+
+    result = _layout('a\nb\nc', source_line_gap=witness)
+    assert [line.baseline for line in result.lines] == [20, 36, 48]
+    with pytest.raises(LayoutError, match='vertical space'):
+        _layout('a\nb\nc', source_line_gap=witness, max_bottom=49)
+    result = _layout('a\nb', source_line_gap=lambda *args: 1, min_line_height=1)
+    assert [line.baseline for line in result.lines] == [20, 30]
+
+
 def test_ink_outside_font_metrics_contributes_to_line_height_and_bottom_limit():
     text = "a\nb"
 

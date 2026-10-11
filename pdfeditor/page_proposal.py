@@ -48,7 +48,7 @@ from uniseg.linebreak import line_break_boundaries
 
 from .attributed import digest, inspect_paragraph
 from .backend import PdfError, extract_page
-from .content_stream import ContentPage
+from .content_stream import ContentPage, multiply
 from .elements import _close
 from .inference import _alignment_cost, _line_groups, _paragraphs, _separator, _size
 from .layout import _SPACES, _safe_boundary
@@ -296,13 +296,17 @@ def _coverage_candidates(pool, files, text):
 
 # -- page analysis ---------------------------------------------------------------
 
-def _line_record(line, ident):
+def _line_record(line, ident, advances=None):
     glyphs = sorted(line.glyphs, key=lambda g: (g.origin[0], g.source_order))
     # The layout trims trailing spaces before measuring a line; a wrap pulls the next unit after them.
     visible = [g for g in glyphs if g.text not in _SPACES] or glyphs
+    # MuPDF trace bboxes describe glyph metrics, not the PDF text pen advance.
+    # A rounded /W can differ from that bbox even when every origin is exact.
+    # Use interpreted, occurrence-bound zero-Tc/Tw source advances when present.
+    advance = lambda glyph: (advances or {}).get(glyph.source_order, glyph.advance)
     return dict(id=ident, text=line.text, baseline=line.baseline,
-                x=glyphs[0].origin[0], right=visible[-1].origin[0] + visible[-1].advance,
-                pen_end=glyphs[-1].origin[0] + glyphs[-1].advance,
+                x=glyphs[0].origin[0], right=visible[-1].origin[0] + advance(visible[-1]),
+                pen_end=glyphs[-1].origin[0] + advance(glyphs[-1]),
                 top=line.bbox.y0, bottom=line.bbox.y1, bbox=list(line.bbox.tuple()),
                 glyph_ids=sorted(g.source_order for g in line.glyphs), size=_size(line),
                 starts=[g.origin[0] for g in glyphs])
@@ -406,7 +410,18 @@ class _Analysis:
         self.width, self.height = model.width, model.height
         self.observation_sha256 = page_observation_sha(model)
         objects = observation_lines(model)
-        self.lines = [_line_record(line, f'p{page}-l{i}') for i, line in enumerate(objects, 1)]
+        advances = {}
+        content = ContentPage(source, page)
+        try:
+            for event in content.events:
+                matrix = multiply(event.text_matrix, event.state.ctm)
+                if event.state.tc == 0 and event.state.tw == 0 and matrix[0] > 0 and matrix[1] == matrix[2] == 0:
+                    for char in event.chars:
+                        if len(char.source_orders) == 1:
+                            advances[char.source_orders[0]] = char.advance * matrix[0]
+        finally:
+            content.close()
+        self.lines = [_line_record(line, f'p{page}-l{i}', advances) for i, line in enumerate(objects, 1)]
         by_id = {id(line): record for line, record in zip(objects, self.lines)}
         if line_ids is not None:
             observed = [line['id'] for line in self.lines]
@@ -899,6 +914,14 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
             proposal['unresolved'].append(dict(code=code, style=ident,
                 detail='choose a qualified provider explicitly; substitution must name relation=substituted'))
         proposal['styles'].append(style)
+    for para, policy in zip(column, policies):
+        if policy.get('text_placement', {}).get('value') == SOURCE_PLACEMENT and len(para) > 1:
+            # Complete retained lines carry their observed individual advances.
+            # Use the smallest observed pitch as the floor for newly composed
+            # boundaries; a median would prevent reproducing shorter source gaps.
+            policy['min_line_height'] = dict(
+                value=min(b['baseline'] - a['baseline'] for a, b in zip(para, para[1:])),
+                evidence='minimum-observed-line-pitch')
     if proposal['refusals']:
         proposal['status'] = 'refused'
         return proposal, None

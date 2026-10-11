@@ -16,6 +16,7 @@ from .backend import PdfError
 from .composition import _check_obstacles, _observations, _pixels_equal, _require_removal
 from .content_stream import PaintChar, multiply, number, patch_streams, rewritten_event, translate
 from .explicit_reflow import allow_clip, matrix_operator
+from .layout import _SPACES
 from .model import Rect
 from .mutation import Mutation
 from .pdf_save import program_pdf_bytes
@@ -119,6 +120,30 @@ class ParagraphShaper:
         self.fonts, self.source_fonts = {}, {}
         self.alignment = alignment
         self.original_offsets = {id(unit):i for i,unit in enumerate(paragraph.units)}
+
+    def source_line_gap(self, a, b, c, d):
+        """Retain a vertical edge only between two complete unchanged source lines.
+
+        The current PDF supplies both the occurrence identities and baselines.
+        A changed/wrapped line uses the confirmed ordinary line-height policy.
+        No positional array from a sidecar is accepted as layout evidence.
+        """
+        def complete(start, end):
+            kept = [u.retained for u in self.units[start:end]]
+            if not kept or any(u is None or u.source_index is None for u in kept):
+                return None
+            number = kept[0].line
+            original = [u for u in self.paragraph.units if u.line == number and u.source_index is not None]
+            while original and original[-1].text in _SPACES:
+                original.pop()
+            if [id(u) for u in kept] != [id(u) for u in original]:
+                return None
+            return number
+        left, right = complete(a,b), complete(c,d)
+        if left is None or right != left + 1:
+            return None
+        lines = self.paragraph.resolved.lines
+        return lines[right].baseline - lines[left].baseline
 
     def font(self, ident):
         if ident not in self.fonts:
@@ -270,7 +295,7 @@ def _layout_parameters(paragraph, snapshot, *, width=None, x=None, first_line_in
 
 
 def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, paragraph_style=None,
-                   paragraph_layout=None, _paragraph_continues=False, **layout_options):
+                   paragraph_layout=None, _paragraph_continues=False, _preserve_source_line_gaps=False, **layout_options):
     """Measure with the writer's shaper/layout, without authorizing any paint."""
     from .logical_element import paragraph_from_snapshot
     paragraph=paragraph_from_snapshot(source,snapshot)
@@ -285,7 +310,8 @@ def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, p
         alignment=confirm(snapshot,paragraph_layout)
         _,options=_layout_parameters(paragraph,snapshot,**layout_options)
         shaper=ParagraphShaper(paragraph,units,fonts or {},alignment=alignment['value'])
-        layout=layout_attributed(shaper.text,shape=shaper.shape,**options,**alignment_options(alignment),continues=_paragraph_continues)
+        layout=layout_attributed(shaper.text,shape=shaper.shape,**options,**alignment_options(alignment),continues=_paragraph_continues,
+            source_line_gap=shaper.source_line_gap if _preserve_source_line_gaps else None)
         return dict(text=shaper.text,baseline=options['baseline'],
             last_baseline=layout.lines[-1].baseline if layout.lines else options['baseline'],
             lines=[{k:getattr(line,k) for k in ('start','end','baseline','width','ascent','descent')} for line in layout.lines])
@@ -337,7 +363,8 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                         max_bottom=None, min_line_height=None, element_snapshot=None, element_relations=None,
                         anchor_spec=None, baseline=None, preserve_empty=False, empty_style_id=None,
                         render_styles=None, paragraph_style=None, paragraph_layout=None, _paragraph_continues=False,
-                        _allow_empty_style_witnesses=False, owner=None, _generated_block=None, _source_output=None):
+                        _allow_empty_style_witnesses=False, owner=None, _generated_block=None, _source_output=None,
+                        _preserve_source_line_gaps=False):
     """Prove source facts and plan every byte mutation of one paragraph edit.
 
     ``_generated_block`` (shared flow only) names the continuation destination
@@ -415,7 +442,8 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             _require_removal(untouched, doc[pno])
         shaper = ParagraphShaper(paragraph, units, fonts or {}, alignment=alignment['value'])
         result.shaper = shaper
-        layout = layout_attributed(shaper.text, shape=shaper.shape, **layout_options, **alignment_options(alignment),continues=_paragraph_continues)
+        layout = layout_attributed(shaper.text, shape=shaper.shape, **layout_options, **alignment_options(alignment),continues=_paragraph_continues,
+            source_line_gap=shaper.source_line_gap if _preserve_source_line_gaps else None)
         resources, font_reports, font_records = {}, {}, {}
         # Codes kept for unedited text still select their current resources.
         retained_aliases = {g.glyph.payload['resource'] for g in layout.glyphs if g.glyph.payload['provider'] == 'original'}
