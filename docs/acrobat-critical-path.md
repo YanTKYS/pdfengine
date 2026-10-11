@@ -3,7 +3,7 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `45bcdae5e7828490f14d66b746f4a3ac74b0deeb` plus cross-page owned-body bootstrap, 2026-10-11.
+- State: starting main `5896ac5e5fdce1b311c1c605b3b4ab5c0923dca9` plus independent source-page paragraph reflow, 2026-10-11.
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
@@ -27,6 +27,13 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   characters absent from the source subset. Both saved revisions restore, including B4 wrap/push-down.
   Retained codes, GIDs and font program bytes remain original; added glyphs have the selected provider
   outlines, with no claim of source appearance equivalence. [Font coverage report](../evaluations/real_japanese/font-coverage-report.md).
+- **REAL-WORLD CROSS-PAGE PARAGRAPH REFLOW VALIDATED — PASS:** LibreOffice pages 8–9 contain independent
+  innovator/early-adopter paragraphs (164 and 146 characters). An explicit source-page-break floor and caller
+  same-page gap preserve all seven original lines/glyphs. A grows to 206 characters, from four to five lines,
+  using its separately confirmed empty page-9 prefix; B moves 6.4 pt in its own source region, retaining all
+  146 original glyphs in the first edit. Five saves restore through second edit, shorten, regrow and no-op.
+  All ten pages' foreign content is preserved, MuPDF/Poppler exterior changes are zero, and the original SHA
+  is unchanged. [Independent page-break report](../evaluations/real_japanese/page-break-report.md).
 - **REAL-WORLD CROSS-PAGE OWNED BODY EDITING VALIDATED — PASS:** the same LibreOffice paper already
   contains paragraph A on pages 3 and 4 (162 + 102 characters), followed by independent paragraph B (197).
   Joint B1 acceptance proves all nine original lines/glyphs and preserves three distinct source owners.
@@ -34,7 +41,7 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   its 28.200012 pt follows gap and all 197 original glyphs. Five saves restore through grow, follower edit,
   shorten, regrow and no-op; all ten pages' foreign content and outside-region raster stay unchanged.
   [Cross-page report](../evaluations/real_japanese/cross-page-report.md). This joins an existing page-spanning
-  paragraph and its observed follower; unobserved gaps between separate paragraphs across a page seam remain refused.
+  paragraph and its observed follower; unobserved gaps require the explicit source-page-break policy described below.
 - **REAL-WORLD OWNED BODY REFLOW AND CONTINUATION VALIDATED — PASS:** the LibreOffice migration paper's
   page-9 final two body paragraphs reproduce six complete source lines. Extending the first paragraph
   from 107 to 474 characters makes eleven lines; the existing follower moves 163.199707 pt, preserving
@@ -238,7 +245,7 @@ The caller only accepts. Every value carries an evidence label. None of them is 
 
 **Supported scope of PASS:**
 
-- one page for intent-only B1; explicit cross-page source joins through `owned_flow_proposal`;
+- one page for intent-only B1; explicit cross-page source joins or source-page-break policies through `owned_flow_proposal`;
   an explicitly reviewed and confirmed additional empty region for bounded continuation;
 - horizontal text in one column of non-overlapping paragraphs;
 - untagged, or balanced page-level `/P` MCID scopes whose complete ordered bundle belongs to one leaf `/P` StructElem;
@@ -352,6 +359,20 @@ B1's proofs.
   [regressions](../tests/test_cross_page_owned_flow.py) cover lifecycle, stale ownership, invalid groups,
   interrupted seams, joint reproduction and atomic over-capacity refusal.
 
+### Independent source-page paragraphs: explicit region floor and same-page follows
+
+- `page_breaks` binds the independently owned paragraphs to their original source regions on consecutive pages.
+  The caller chooses the same-page gap; different pages' y coordinates are never subtracted to invent one.
+- T2 retains `break_before=next-region` and adds a source-region floor to the follows edge. No-edit keeps B's
+  original page start; after A continues onto B's physical page, the gap can push B down within its own region.
+- Prefix continuation has separate existing review/confirmation authority. B's region can be narrowed through
+  qualified B1 geometry overrides to keep the regions disjoint. Occupied B text is never an empty destination.
+- The optional follows contract is persisted in the existing v2 model and rechecked against independent source
+  owners and actual saved occupancy. Original edge behavior and all writer/Transaction guards are retained.
+- [Measured independent-paragraph result](../evaluations/real_japanese/page-break-report.md) and
+  [ten regression cases](../tests/test_page_break_reflow.py) cover wrap/push-down, five restored saves,
+  dormant-prefix cleanup, missing authority, insufficient capacity and invalid page-break contracts.
+
 ### B5 — Real text in the semantic layer (T3)
 
 Not on the replacement path; decorations, publication and style reinterpretation on real text come after B3.
@@ -365,7 +386,8 @@ B1 bootstrap (COMPLETE)
 ├→ B3 explicit new-glyph coverage (COMPLETE, bounded TrueType path)
 ├→ B4 real body wrap + following-paragraph capacity (COMPLETE, bounded)
 ├→ verified existing-region continuation (COMPLETE, bounded untagged path)
-└→ cross-page source paragraph joins (COMPLETE, bounded untagged path)
+├→ cross-page source paragraph joins (COMPLETE, bounded untagged path)
+└→ independent source-page paragraph reflow (COMPLETE, explicit floor/gap and empty prefix)
         B3 → B5 semantic real text
 ```
 
@@ -375,31 +397,26 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: independently bounded paragraphs at a page seam without an observed follows gap
+NEXT BLOCKER: continuation capacity when the next page has no independently empty region
 ```
 
-`owned_flow_proposal` now combines explicitly selected B1 source fragments on consecutive occupied pages.
-The caller declares which fragments form one paragraph and why they are related. Every page retains its
-source SHA/page-observation binding; acceptance re-observes each page and jointly reproduces every source
-fragment and glyph before returning the existing T2 state. A paragraph already continuing across the page
-seam owns both source slots; its independently owned follower retains its observed same-page follows gap.
-Occupied paragraphs are never passed to the empty-destination confirmation API.
+Explicitly related independent source paragraphs can now cross a source page break without inventing an
+observed gap. B1 binds both source owners, an explicit same-page spacing policy and the follower's original
+region floor; joint no-edit reproduction still proves every original line and glyph. An empty continuation
+prefix is independently reviewed/confirmed for A, while B's source region is separately accepted for movement.
+T2 retains `break_before=next-region`, computes the same-page follows floor, and verifies it after saving.
 
-This bounded route requires witnessed source adjacency on each part, exact ordered coverage, uninterrupted
-selected text at each joined seam, and observable same-page gaps between distinct logical paragraphs.
-It refuses a new paragraph starting on another page when that inter-paragraph gap cannot be observed.
-It also refuses joins whose unchanged allocation would pull text across the original page boundary. It does
-not grant one paragraph authority to consume another paragraph's source slot. Headers/footnotes at a seam
-are conservatively refused rather than automatically classified as unrelated running matter.
-Kyoto's next section and Okinawa's last-page footer still remain fixed; no invented capacity is claimed.
+The current route does not consume B's occupied source slot or dynamically enlarge A's destination as B moves.
+When the independently confirmed prefix is full, further A growth is refused even if a larger redistribution
+might be typographically possible. Intervening unselected text, arbitrary tagged owners, unsupported providers
+and automatic page creation remain outside the scope. No-edit still refuses changes to original line allocation.
 
 ## 9. Next PR scope
 
-Select a real source whose separate related paragraphs start on different pages, with no shared paragraph
-bridging the seam. Establish an explicit, reviewable paragraph-boundary/spacing contract and destination
-authority before allowing redistribution. Keep the existing glyph-level reproduction and independent source
-owners. Do not infer a missing gap from page coordinates or promote occupied space to an empty destination.
-Broader tagged trees and unavailable providers remain independent boundaries.
+Choose a real case where continuation needs capacity currently occupied by another explicitly accepted owner.
+Establish the authority for vacated space and its current-revision validation before drawing into it; preserve
+separate source identities, foreign content, graphics state/clip and atomic save/readback. Do not exempt an
+occupied paragraph from the existing empty-destination proof or silently expand its neighbor's region.
 
 ## 10. Not next (deliberately)
 

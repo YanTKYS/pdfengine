@@ -186,11 +186,31 @@ def _policies(state):
     if [(e['before'],e['after']) for e in state['follows']]!=expected:
         raise PdfError('shared flow needs an explicit consecutive paragraph relation')
     for edge in state['follows']:
-        if (set(edge)!={'before','after','minimum_baseline_gap','region_start','provenance'}
-                or edge['region_start']!='reset-to-region-baseline' or edge['provenance']!='explicitly_confirmed'
+        source_break = edge.get('source_break')
+        keys = {'before','after','minimum_baseline_gap','region_start','provenance'}
+        if source_break is not None:
+            keys.add('source_break')
+        if (set(edge)!=keys or edge['provenance']!='explicitly_confirmed'
                 or type(edge['minimum_baseline_gap']) not in (int,float)
                 or not math.isfinite(edge['minimum_baseline_gap']) or edge['minimum_baseline_gap']<=0):
             raise PdfError('paragraph gap and its treatment at a region break must be confirmed')
+        if source_break is None:
+            if edge['region_start']!='reset-to-region-baseline':
+                raise PdfError('paragraph gap and its treatment at a region break must be confirmed')
+        else:
+            if (not isinstance(source_break,dict) or set(source_break)!={'before_region','after_region'}
+                    or edge['region_start']!='source-region-floor-and-same-page-follow'
+                    or policies[edge['after']]['break_before']!='next-region'):
+                raise PdfError('source page break requires an explicit region floor and next-region policy')
+            before,after=source_break['before_region'],source_break['after_region']
+            regions=state['regions'];rids=state['flow']['regions']
+            original=lambda pid:[state['slots'][sid]['region_id'] for sid in _slots(state,pid)
+                                 if state['slots'][sid].get('creation_provenance')!=destinations.PROVENANCE]
+            a,b=original(edge['before']),original(edge['after'])
+            if (before not in regions or after not in regions or not a or not b
+                    or before!=a[-1] or after!=b[0] or rids.index(before)>=rids.index(after)
+                    or regions[after]['page']!=regions[before]['page']+1):
+                raise PdfError('source page break must bind independent source owners on consecutive pages')
     if state['paragraph_boundaries']!=[dict(before=a,after=b,kind='paragraph_boundary',provenance='explicitly_confirmed') for a,b in expected]:
         raise PdfError('paragraph boundaries are identity relations, not Unicode or physical breaks')
 
@@ -518,6 +538,23 @@ def _schedule(state,fragments):
     return order,{i:sorted(v) for i,v in needs.items()}
 
 
+def _follow_baseline(state, edge, rid, previous, ascent=None):
+    """An accepted page seam is a region floor, never a cross-page coordinate gap.
+
+    If a predecessor now continues onto this physical page, apply the caller's
+    same-page gap. The follower cannot rise above its original region baseline.
+    All other edges retain their existing region-reset behavior.
+    """
+    region=state['regions'][rid]
+    floor=bool(edge and edge.get('source_break'))
+    if previous is None or floor and state['regions'][previous['region_id']]['page']!=region['page']:
+        return region['first_baseline']
+    gap=edge['minimum_baseline_gap']
+    if ascent is not None:gap=max(gap,previous['descent']+ascent)
+    baseline=previous['last_baseline']+gap
+    return max(region['first_baseline'],baseline) if floor else baseline
+
+
 def _plan(source,state,changes):
     if not isinstance(changes,dict) or set(changes)-set(state['paragraphs']):raise PdfError('changes must name independent paragraph identities')
     projected={};source_origins={}
@@ -537,12 +574,16 @@ def _plan(source,state,changes):
         p=working['paragraphs'][pid];logical=p['logical'];text=logical['text'];cursor=0
         ids=styles.style_ids(text,logical['style_spans'],p['style_registry']);policy=state['paragraph_policies'][pid]
         owned=_slots(state,pid);by_region={state['slots'][s]['region_id']:s for s in owned}
+        predecessor=previous;edge=incoming.get(pid)
         if previous and (policy['break_before']=='next-region' or state['paragraph_policies'][previous['paragraph_id']]['break_after']=='next-region'):
             ri+=1;previous=None
+        if edge and edge.get('source_break'):
+            ri=max(ri,rids.index(edge['source_break']['after_region']))
         while True:
             if ri>=len(rids):raise PdfError('paragraphs exceed all explicitly confirmed shared regions')
             rid=rids[ri];region=state['regions'][rid];sid=by_region.get(rid)
-            baseline=region['first_baseline'] if previous is None else previous['last_baseline']+incoming[pid]['minimum_baseline_gap']
+            spacing_previous=predecessor if cursor==0 and edge and edge.get('source_break') else previous
+            baseline=_follow_baseline(state,edge,rid,spacing_previous)
             if baseline>=region['bounds'][3]-.002:ri+=1;previous=None;continue
             indent=policy['first_line_indent'] if cursor==0 else 0
             if sid is None:
@@ -565,7 +606,7 @@ def _plan(source,state,changes):
                       if origins is not None else None)
             layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent,linked)
             first_ascent=layout.lines[0].ascent if layout.lines else policy['empty']['ascent']
-            if previous:baseline=previous['last_baseline']+max(incoming[pid]['minimum_baseline_gap'],previous['descent']+first_ascent)
+            baseline=_follow_baseline(state,edge,rid,spacing_previous,first_ascent)
             if baseline-first_ascent<region['bounds'][1]-.002:raise PdfError('first line exceeds the explicitly confirmed region top')
             fitting=[line for line in layout.lines if baseline+line.baseline+line.descent<=region['bounds'][3]+.002]
             empty_fits=baseline+policy['empty']['descent']<=region['bounds'][3]+.002
@@ -647,6 +688,9 @@ def _verify_placement(state):
                     or not _close(o['descent'],lines[-1]['descent'] if lines else policy['empty']['descent'])
                     or o['baseline']-o['ascent']<r['bounds'][1]-.002 or o['last_baseline']+o['descent']>r['bounds'][3]+.002):
                 raise PdfError('paragraph occupancy differs from the verified physical line metrics')
+            edge=incoming.get(pid)
+            if index==0 and edge and edge.get('source_break') and rids.index(o['region_id'])<rids.index(edge['source_break']['after_region']):
+                raise PdfError('paragraph moved before its confirmed source region floor')
             expected=r['first_baseline']
             if previous:
                 prev=rids.index(previous['region_id']);current=rids.index(o['region_id'])
@@ -656,6 +700,8 @@ def _verify_placement(state):
                             or state['paragraph_policies'][previous['paragraph_id']]['break_after']=='next-region'):
                         raise PdfError('physical region violates the paragraph break policy')
                     expected=previous['last_baseline']+max(incoming[pid]['minimum_baseline_gap'],previous['descent']+o['ascent'])
+                if index==0 and edge and edge.get('source_break'):
+                    expected=_follow_baseline(state,edge,o['region_id'],previous,o['ascent'])
             if not _close(expected,o['baseline']):raise PdfError('paragraph spacing differs from confirmed shared flow policy')
             previous=o
         for sid in _slots(state,pid):

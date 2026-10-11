@@ -42,14 +42,16 @@ SECOND=('不信と批評','不信や誤解と批評')
 
 
 def audit(before,after,initial,state,report,provider):
-    regions={r['page']:pymupdf.Rect(r['bounds']) for r in state['regions'].values()}
+    regions={}
+    for r in state['regions'].values():regions.setdefault(r['page'],[]).append(pymupdf.Rect(r['bounds']))
     reader,original=PdfReader(after),PdfReader(SOURCE)
     errors=[];placements=[]
     with pymupdf.open(SOURCE) as orig,pymupdf.open(before) as previous,pymupdf.open(after) as saved:
         assert len(orig)==len(saved)==10
         for number,(a,b) in enumerate(zip(orig,saved),1):
-            region=regions.get(number)
-            outside=lambda p:[(c[0],tuple(c[2]),tuple(c[3])) for c in chars(p) if region is None or not region.contains(pymupdf.Point(c[2]))]
+            page_regions=regions.get(number,[])
+            inside=lambda point:any(r.contains(pymupdf.Point(point)) for r in page_regions)
+            outside=lambda p:[(c[0],tuple(c[2]),tuple(c[3])) for c in chars(p) if not inside(c[2])]
             assert outside(a)==outside(b),'foreign text changed'
             draws=lambda p:[{k:v for k,v in d.items() if k!='seqno'} for d in p.get_drawings()]
             assert draws(a)==draws(b) and a.get_image_info(hashes=True)==b.get_image_info(hashes=True)
@@ -57,11 +59,12 @@ def audit(before,after,initial,state,report,provider):
             assert links(a)==links(b) and annotation_fingerprint(original,number)==annotation_fingerprint(reader,number)
             x,y=a.get_pixmap(dpi=144),b.get_pixmap(dpi=144)
             diff=ImageChops.difference(Image.frombytes('RGB',(x.width,x.height),x.samples),Image.frombytes('RGB',(y.width,y.height),y.samples))
-            if region is not None:
-                r=(region*pymupdf.Matrix(2,2)).irect
-                ImageDraw.Draw(diff).rectangle((r.x0,r.y0,r.x1-1,r.y1-1),fill=(0,0,0))
+            if page_regions:
+                for region in page_regions:
+                    r=(region*pymupdf.Matrix(2,2)).irect
+                    ImageDraw.Draw(diff).rectangle((r.x0,r.y0,r.x1-1,r.y1-1),fill=(0,0,0))
                 owned={i for s in state['slots'].values() if state['regions'][s['region_id']]['page']==number for i in s['binding']['paragraph']['selection']['glyph_ids']}
-                observed={i for i,c in enumerate(chars(b)) if region.contains(pymupdf.Point(c[2]))}
+                observed={i for i,c in enumerate(chars(b)) if inside(c[2])}
                 assert owned==observed,'unaccounted region glyphs'
             assert diff.getbbox() is None,'outside-region pixels changed'
             expected=compact(original.pages[number-1].extract_text())
@@ -85,7 +88,7 @@ def audit(before,after,initial,state,report,provider):
             old_chars=chars(previous[number-1]);fonts={f[4]:f[0] for f in saved[number-1].get_fonts(full=True)};programs={}
             for (index,c),g in zip(actual,glyphs):
                 error=max(abs(c[2][k]-g['origin'][k]) for k in (0,1));errors.append(error);assert error<.002
-                assert regions[number].contains(pymupdf.Rect(c[3]))
+                assert pymupdf.Rect(state['regions'][slot['region_id']]['bounds']).contains(pymupdf.Rect(c[3]))
                 assert new_codes[index][:2]==(g['code'],g['font_resource']) and c[1]==g['glyph_id']
                 if g['source_index'] is not None:
                     old=g['source_index'];assert old_codes[old]==new_codes[index] and old_chars[old][1]==c[1]
