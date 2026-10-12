@@ -132,6 +132,57 @@ def _options(pages, paragraphs, proposal):
     return {(e['before'], e['after']): e for e in breaks}
 
 
+def _extension_review(source, base_model, proposal):
+    """Describe an append-only source selection, never grant paint authority."""
+    from .shared_flow import _restore, _slots
+    base = _restore(source, base_model)
+    if (base['schema'] != 'pdfengine-shared-flow-2'
+            or base['allocation_provenance'] != 'observed-source-uncomposed'):
+        raise PdfError('extend ownership from the original accepted source, not an edited allocation')
+    previous = base['flow']['paragraphs']
+    current = [p['id'] for p in proposal['paragraphs']]
+    if current[:len(previous)] != previous or len(current) <= len(previous):
+        raise PdfError('ownership extension must retain the ordered paragraphs and append whole source owners')
+    observed = {(p['binding']['page'], q['id']): q for p in proposal['pages'] for q in p['paragraphs']}
+    reviewed = []
+    for group in proposal['paragraphs']:
+        parts = []
+        for part in group['parts']:
+            q = observed[(part['page'], part['paragraph_id'])]
+            parts.append(dict(page=part['page'], glyph_ids=q['glyph_ids'], text=q['text'],
+                line_ids=q['line_ids'], bounds=q['bounds'], lines=q['lines']))
+        if group['id'] in previous:
+            old = [base['slots'][sid]['binding']['paragraph'] for sid in _slots(base, group['id'])
+                   if base['slots'][sid].get('destination_id') is None]
+            identity = lambda p: (p['page'], p['glyph_ids'], p['text'])
+            if [identity(p) for p in parts] != [(s['selection']['page'], s['selection']['glyph_ids'], s['text']) for s in old]:
+                raise PdfError('ownership extension changes an already accepted source paragraph')
+        else:
+            reviewed.append(dict(paragraph_id=group['id'], parts=parts))
+    return dict(base_model_sha256=base['model_sha256'], source_sha256=base['pdf_sha256'],
+        retained_paragraphs=previous, added_paragraphs=reviewed,
+        previous_regions=base['regions'], proposed_page_regions=[p['region'] for p in proposal['pages']],
+        proposed_page_breaks=proposal.get('page_breaks', []),
+        proposed_geometry_overrides=proposal.get('page_overrides', {}),
+        proposed_continuations=proposal.get('continuations', []),
+        proposed_vacated_continuations=proposal.get('vacated_continuations', []),
+        relationship=proposal['relationship'])
+
+
+def propose_owned_flow_extension(source, accepted_model, page_proposals, **selection):
+    """Review additional whole followers against an original accepted flow.
+
+    Rebuild B1 proposals with the enlarged explicit line selection. The returned
+    proposal grants no new ownership until accept_owned_flow_report is called.
+    Acceptance starts from the same unmodified source, not a saved edited PDF.
+    """
+    proposal = propose_owned_flow(source, page_proposals, **selection)
+    review = _extension_review(source, accepted_model, proposal)
+    from .shared_flow import _restore
+    proposal['extension'] = dict(base_model=deepcopy(_restore(source, accepted_model)), review=review)
+    return _seal(proposal)
+
+
 def _seam(analysis, plan, at_end):
     """Refuse a join that skips observed text in the selected column at a page edge."""
     edge = plan['column'][-1][-1] if at_end else plan['column'][0][0]
@@ -250,6 +301,11 @@ def accept_owned_flow_report(source, proposal, *, provider_choices=None):
         raise PdfError('owned-flow proposal belongs to another PDF revision')
     numbers = _selection(proposal['pages'], proposal['paragraphs'], proposal['relationship'])
     page_breaks = _options(proposal['pages'], proposal['paragraphs'], proposal)
+    extension = proposal.get('extension')
+    if extension is not None:
+        if (not isinstance(extension, dict) or set(extension) != {'base_model', 'review'}
+                or _extension_review(source, extension['base_model'], proposal) != extension['review']):
+            raise PdfError('ownership extension review differs from the accepted source or requested selection')
     choices = provider_choices if provider_choices is not None else {}
     if not isinstance(choices, dict) or set(choices) - {str(n) for n in numbers}:
         raise PdfError('provider choices must name selected page numbers')
@@ -273,6 +329,7 @@ def accept_owned_flow_report(source, proposal, *, provider_choices=None):
         paragraphs=deepcopy(proposal['paragraphs']), relationship=proposal['relationship'],
         relationship_provenance=proposal['relationship_provenance'], reproduction=reproduction,
         state_model_sha256=state['model_sha256'],
+        **({'extension': deepcopy(extension['review'])} if extension is not None else {}),
         **{k: deepcopy(proposal[k]) for k in ('page_breaks', 'page_overrides', 'continuations', 'vacated_continuations') if k in proposal}))
 
 
