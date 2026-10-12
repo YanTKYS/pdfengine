@@ -3,14 +3,27 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `b22ea6a1fc6486215488995b5b0ebc06186f837c` (PR #70) plus next-page restored-revision extension.
-- **CROSS-PAGE POST-EDIT EXTENSION: production path and fixture lifecycle COMPLETE; real-PDF validation NOT RUN.**
-  A restored edited flow whose last source region is on page *n* can adopt complete current owners on page
-  *n*+1, with an explicit caller-selected same-page gap, a source-region floor and one explicit continuation
-  authority (named-owner release or an independently confirmed empty destination). The previously refused growth
-  then continues onto page *n*+1 and moves the adopted followers; existing owners and generated slots keep their
-  identities. The LibreOffice pages 8→9 runner exists, but this environment's network policy denied every corpus
-  host, so **no real-PDF PASS is claimed**. [Next-page extension report](../evaluations/real_japanese/next-page-extension-report.md).
+- State: starting main `b22ea6a1fc6486215488995b5b0ebc06186f837c` (PR #70) plus next-page restored-revision extension
+  (PR #71), validated on the real LibreOffice PDF.
+- **REAL-WORLD CROSS-PAGE POST-EDIT EXTENSION VALIDATED — PASS.** A restored edited flow whose last source region is
+  on page *n* adopts complete current owners on page *n*+1. It needs an explicit caller-selected same-page gap, a
+  source-region floor and one explicit continuation authority (a named-owner release or an independently confirmed
+  empty destination). The previously refused growth then continues onto page *n*+1 and moves the adopted followers.
+  Existing owners and generated slots keep their identities.
+
+  Measured on LibreOffice pages 8→9 (original SHA-256 `13665875…a5f3`, unchanged):
+  - A page-8-only saved edit (A at 176 characters) refuses the 54-character growth.
+  - Current-revision approval of B (146 glyphs, current IDs 0–145) with release region `release-9` is accepted.
+    Occupied-as-empty and stale-revision requests refuse.
+  - The extension no-op is pixel-identical on all ten pages in MuPDF and Poppler (322 glyphs, origin error 0).
+  - The same growth then succeeds: A 206 characters = 199 on page 8 + `に役立てます。` at 122 pt on page 9. B moves
+    142 → 148.4 pt, and its release is witnessed in the same Transaction.
+  - Growth beyond the accepted capacity still refuses.
+  - Second edit, shortening (continuation empty, B back to 142 pt), regrowth (same generated slot) and the final
+    no-op all reopen `restored`.
+  - Outside the edited regions, MuPDF and Poppler changed pixels are 0, and foreign content is unchanged.
+
+  [Measured next-page extension report](../evaluations/real_japanese/next-page-extension-report.md).
 - **REAL-WORLD POST-EDIT OWNERSHIP EXTENSION VALIDATED — PASS:** LibreOffice pages 8–9 start from a
   saved/restored edited A+B flow with an existing generated continuation. The larger replacement refuses;
   current-revision approval adds C–H (886 glyphs), preserving old owners, text/styles and generated identity.
@@ -476,7 +489,7 @@ B1 bootstrap (COMPLETE)
 ├→ joint-owner vacated-space continuation (COMPLETE, explicit fixed capacity and Transaction obligations)
 ├→ explicit additional-owner approval from original source (COMPLETE, append-only followers)
 ├→ current-revision additional-owner approval (COMPLETE, bounded last-region followers)
-└→ current-revision next-page owner approval (COMPLETE on fixtures; real-PDF validation pending)
+└→ current-revision next-page owner approval (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
         B3 → B5 semantic real text
 ```
 
@@ -486,13 +499,12 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: real-PDF validation of the next-page restored extension (LibreOffice pages 8→9), then
-continuation of an already adopted next-page region onto a further page with its own release authority
+NEXT BLOCKER: continuation of an already adopted next-page region onto a further page with its own release
+authority
 ```
 
-The production path in §6 exists and passes its fixture lifecycle. The real runner
-`evaluations/real_japanese/next_page_extension.py` needs the unmodified LibreOffice migration PDF, whose host was
-refused by this environment's egress policy. Until it runs, the real-PDF verdict stays NOT VALIDATED.
+The production path in §6 is validated on the real LibreOffice pages 8→9 (§1, measured report). The next
+limitation is a flow whose next page already holds one of its regions.
 
 Capacity remains explicit and bounded. The implementation adopts only the next page after the last source region,
 one release/empty continuation for the last paragraph, and no page already holding regions. It does not choose
@@ -501,8 +513,7 @@ cyclic source-occupancy dependencies. Tagged source owners cannot cross independ
 
 ## 9. Next PR scope
 
-Run the real LibreOffice next-page lifecycle when the source host is reachable and record it. Then allow a later
-extension when the next page already holds this flow's adopted region (append to it, or to the page after it),
+Allow a later extension when the next page already holds this flow's adopted region (append to it, or to the page after it),
 keeping marker and generated-slot identities. Do not convert occupied text into an empty destination or infer
 document-wide relationships; page 10 of the LibreOffice paper is a separate section and stays foreign.
 
