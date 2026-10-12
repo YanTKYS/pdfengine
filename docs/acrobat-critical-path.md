@@ -3,7 +3,15 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `0bd7ed335e12ae93deb6d68465f01f5c53a2ab43` plus explicit extension of original joint ownership.
+- State: starting main `d5e27d28dbeb6fca547e5979ed5c826500bcba85` plus current-revision ownership extension.
+- **REAL-WORLD POST-EDIT OWNERSHIP EXTENSION VALIDATED — PASS:** LibreOffice pages 8–9 start from a
+  saved/restored edited A+B flow with an existing generated continuation. The larger replacement refuses;
+  current-revision approval adds C–H (886 glyphs), preserving old owners, text/styles and generated identity.
+  All 28 current lines reproduce; the extension no-op is pixel-identical in MuPDF and Poppler on all ten pages.
+  The same growth then uses newly approved capacity and moves C–H by 20.400024 pt. Six further saves restore
+  through second edit, shortening, regrowth and no-op; both exterior raster comparisons are zero and the original
+  SHA is unchanged. Native source Tm preservation fixes a measured no-op precision loss without relaxing checks.
+  [Measured restored-extension report](../evaluations/real_japanese/post-edit-extension-report.md).
 - **REAL-WORLD EXTENDED JOINT REFLOW VALIDATED — PASS** for LibreOffice migration pages 8–9.
   A+B alone refuse the long replacement at the C boundary (region bottom 200.271454 pt). Explicit extension
   adds C–H as six independent source owners (886 glyphs), re-proves all 27 original lines and qualifies the
@@ -400,8 +408,25 @@ B1's proofs.
   runs the existing per-page B1/font checks, source-owner composition and joint no-edit reproduction.
   Its receipt connects the original model, reviewed additions and resulting shared-flow model.
 - T2 allocation, follows, source adjacency, conditional owner-removal obligations, Transaction and readback
-  are reused unchanged. The extension starts from the original PDF; edited allocations require a separate future
-  ownership-transition contract. [Measured extension report](../evaluations/real_japanese/extended-joint-report.md).
+  are reused unchanged. This original-source route remains available alongside the restored-revision route below. [Measured extension report](../evaluations/real_japanese/extended-joint-report.md).
+
+### Extending a restored edited revision
+
+- The same `propose_owned_flow_extension` entry point accepts a restored edited state, a B1 selection of
+  **new followers only**, and `append_to_region` naming the last existing source region. This bounded path
+  adopts complete consecutive paragraphs on that page; it does not reinterpret existing generated text as source.
+- The sealed review binds the current PDF SHA/model, new text/glyph IDs and qualified region, explicit textual
+  relationship, and the **currently observed** last-to-first baseline gap. Acceptance revalidates these witnesses.
+- Existing logical text/styles, source-output creation and marker identities, generated slot IDs, destination
+  witnesses and generated-font ownership are carried forward. Only confirmed capacity metadata changes.
+  Newly adopted source slots have current-revision creation records, sealed into the shared contract. They
+  may coexist with owned output markers until their first save initializes their own source-output blocks.
+- Standalone B1 reproduction is deferred to mandatory **joint** reproduction, because a standalone new owner
+  cannot claim the existing marker inventory. Font qualification, glyph coverage and foreign-content guards
+  still run; every old/new glyph and every current line must reproduce before acceptance returns.
+- The ordinary T2 writer and Transaction remove/rewrite each named owner, retain conditional release obligations,
+  and rebind source/generated ownership after saving. Stale evidence, overlapping owners, skipped text, new
+  no-op continuation slots, changed no-op positions and insufficient capacity refuse.
 
 ### B5 — Real text in the semantic layer (T3)
 
@@ -419,7 +444,8 @@ B1 bootstrap (COMPLETE)
 ├→ cross-page source paragraph joins (COMPLETE, bounded untagged path)
 ├→ independent source-page paragraph reflow (COMPLETE, explicit floor/gap)
 ├→ joint-owner vacated-space continuation (COMPLETE, explicit fixed capacity and Transaction obligations)
-└→ explicit additional-owner approval from original source (COMPLETE, append-only followers)
+├→ explicit additional-owner approval from original source (COMPLETE, append-only followers)
+└→ current-revision additional-owner approval (COMPLETE, bounded last-region followers)
         B3 → B5 semantic real text
 ```
 
@@ -429,7 +455,7 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: adding source owners after a saved edit while preserving current generated/source ownership
+NEXT BLOCKER: extending restored ownership into another source region/page with explicit placement and paint authority
 ```
 
 A continuation no longer needs an independently empty rectangle when its occupied text belongs to explicitly
@@ -449,15 +475,15 @@ no independently empty destination or automatic rectangle enlargement is invente
 unchanged and still refuses the oversized edit until the new proposal is explicitly accepted.
 
 Capacity remains explicit and bounded after acceptance. The implementation does not choose related paragraphs
-automatically, extend an already edited allocation, add pages or resolve cyclic source-occupancy dependencies.
+automatically, append a new source region to an edited allocation, add pages or resolve cyclic source-occupancy dependencies.
 Tagged source owners cannot cross independent continuation regions. Missing final capacity still refuses.
 
 ## 9. Next PR scope
 
-Review safe additional source owners against a saved edited revision, including retained source slots and generated
-continuation slots. Any extension must preserve their current bindings and Transaction obligations instead of
-reinterpreting edited text as unowned space. Keep semantic relationships explicit; no document-wide automatic
-ownership or page generation is implied by this bounded original-source extension.
+The restored-revision extension currently appends followers in the last confirmed source region. Extending to
+another existing page/region still needs independently reviewed source owners, order, page-break policy and any
+new continuation paint authority. Preserve the current marker and generated-slot identities across that transition;
+do not convert occupied text into an empty destination or infer document-wide relationships.
 
 ## 10. Not next (deliberately)
 

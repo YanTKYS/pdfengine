@@ -231,6 +231,13 @@ class ParagraphShaper:
                      "provider":"original","resource":style.event.state.font.name,
                      "code":original.char.code,"glyph_id":observation['glyph_id'],
                      "font_name":observation['font'],"offset":(0,style.rise),
+                     # The event's first character has an explicit source Tm.
+                     # Keep its double-precision operands when that occurrence
+                     # stays put; trace origins are only single precision.
+                     "source_position":dict(matrix=original.event.text_matrix,
+                         ctm=original.event.state.ctm, rise=original.event.state.ts,
+                         origin=observation['origin']) if original.source_index is not None
+                             and original.source_index in original.event.chars[0].source_orders else None,
                      "bounds_source":bounds_source}))
                 index += 1
                 continue
@@ -498,11 +505,17 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             # origin. Ts moves this glyph, so remove its already-baked offset.
             point = pymupdf.Point(gx, gy - witnessed_rise) * inverse
             basis = multiply(style.matrix, inverse_ctm)[:4]
+            tm = (*basis, point.x, point.y)
+            source_position = payload.get('source_position')
+            if (source_position is not None and tuple(source_position['origin']) == (gx, gy)
+                    and source_position['ctm'] == state.ctm and source_position['rise'] == ts
+                    and tuple(source_position['matrix'][:4]) == tuple(basis)):
+                tm = source_position['matrix']
             fill_op, fill_values = style.event.state.fill
             prefix = b''.join((_name(alias), b' ', number(style.event.state.size), b' Tf ',
                 number(style.event.state.tz), b' Tz ', number(tc), b' Tc ', number(ts), b' Ts ',
                 b' '.join(number(float(v)) for v in fill_values),
-                b' ' + fill_op.encode() + b' ', matrix_operator((*basis, point.x, point.y))))
+                b' ' + fill_op.encode() + b' ', matrix_operator(tm)))
             commands.append(prefix)
             length += len(prefix)
             glyph_offsets.append(length)

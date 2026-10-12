@@ -243,7 +243,8 @@ def record_identity(state, sid):
             or record['marker_id'] != identity(state['flow']['id'], sid, created)):
         raise PdfError('source output creation identity mismatch')
     if record['state'] == 'uninitialized':
-        if (state['allocation_provenance'] != 'observed-source-uncomposed'
+        if ((state['allocation_provenance'] != 'observed-source-uncomposed'
+                and state.get('source_adoptions', {}).get(sid) != created)
                 or created['pdf_sha256'] != state['pdf_sha256']
                 or created['paragraph_snapshot_sha256'] != slot['binding']['paragraph']['snapshot_sha256']):
             raise PdfError('source output cannot return to uninitialized')
@@ -261,6 +262,12 @@ def record_identity(state, sid):
 
 
 def validate(source, state, *, body_grammar=None):
+    adoptions = state.get('source_adoptions', {})
+    if not isinstance(adoptions, dict) or any(
+            sid not in state['slots'] or state['slots'][sid].get('destination_id') is not None
+            or created != state['slots'][sid].get('source_output', {}).get('created_from')
+            for sid, created in adoptions.items()):
+        raise PdfError('invalid current-revision source adoption identity')
     groups = {}
     for sid, slot in state['slots'].items():
         if slot.get('destination_id') is not None:
