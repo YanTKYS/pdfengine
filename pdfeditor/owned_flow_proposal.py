@@ -170,16 +170,22 @@ def _extension_review(source, base_model, proposal):
 
 
 def propose_owned_flow_extension(source, accepted_model, page_proposals, **selection):
-    """Review additional whole followers against an original accepted flow.
+    """Review additional whole followers against the accepted current revision.
 
     Rebuild B1 proposals with the enlarged explicit line selection. The returned
     proposal grants no new ownership until accept_owned_flow_report is called.
-    Acceptance starts from the same unmodified source, not a saved edited PDF.
+    For a restored edited flow, supply one B1 proposal containing only the new
+    followers and append_to_region naming its last source region. Existing
+    source/generated slots are retained; acceptance proves a joint no-op.
     """
+    from .shared_flow import _restore
+    base = _restore(source, accepted_model)
+    if base['allocation_provenance'] == 'generated-from-confirmed-shared-flow':
+        from .post_edit_extension import propose
+        return propose(source, base, page_proposals, **selection)
     proposal = propose_owned_flow(source, page_proposals, **selection)
     review = _extension_review(source, accepted_model, proposal)
-    from .shared_flow import _restore
-    proposal['extension'] = dict(base_model=deepcopy(_restore(source, accepted_model)), review=review)
+    proposal['extension'] = dict(base_model=deepcopy(base), review=review)
     return _seal(proposal)
 
 
@@ -299,6 +305,9 @@ def accept_owned_flow_report(source, proposal, *, provider_choices=None):
         raise PdfError('owned-flow proposal was modified or has an unsupported schema')
     if proposal['source_sha256'] != source_sha(source):
         raise PdfError('owned-flow proposal belongs to another PDF revision')
+    if 'edited_extension' in proposal:
+        from .post_edit_extension import accept
+        return accept(source, proposal, provider_choices)
     numbers = _selection(proposal['pages'], proposal['paragraphs'], proposal['relationship'])
     page_breaks = _options(proposal['pages'], proposal['paragraphs'], proposal)
     extension = proposal.get('extension')

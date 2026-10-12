@@ -108,6 +108,7 @@ def _contract(state):
     return digest(dict(flow=state['flow'], regions=state['regions'], pages=state['pages'],
         follows=state['follows'], paragraph_boundaries=state['paragraph_boundaries'],
         paragraph_policies=state['paragraph_policies'],
+        **({'source_adoptions':state['source_adoptions']} if state.get('source_adoptions') else {}),
         paragraphs={i:dict(source_model_sha256=p['source_model_sha256'], style_registry=p['style_registry'],
                           reflow_font_policy=p['reflow_font_policy']) for i,p in state['paragraphs'].items()},
         slots={i:{k:s[k] for k in ('paragraph_id','region_id','source_snapshot_sha256')}
