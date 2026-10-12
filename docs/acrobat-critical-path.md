@@ -3,8 +3,27 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `b22ea6a1fc6486215488995b5b0ebc06186f837c` (PR #70) plus next-page restored-revision extension
-  (PR #71), validated on the real LibreOffice PDF.
+- State: starting main `fe339acb0986b56f55656db7db1195679c602dc9` (PR #71). Sequential extensions on one restored
+  history use the existing paths and are validated on the real LibreOffice PDF.
+- **REAL-WORLD SEQUENTIAL OWNERSHIP EXTENSION VALIDATED — PASS.** On one edited history, the PR #71 next-page path
+  and then the PR #70 same-page path extend ownership twice, each from the latest saved revision.
+
+  Measured on LibreOffice pages 8→9 (original SHA-256 unchanged):
+  - A page-8-only edit (A at 176 characters) refuses the 54-character growth. Adopting B on page 9 with release
+    `release-9` lets A continue at 122 pt and moves B 142 → 148.4 pt, saved `restored`.
+  - From that revision the 164 → 282-character growth refuses, because the unowned C bounds the region at
+    200.271454 pt.
+  - Appending C–H (886 glyphs, current IDs from 153, adoptions naming the grown SHA) keeps A, B, markers, the
+    generated slot, destinations and fonts. The release owners stay exactly B, and stale-revision accepts
+    refuse.
+  - The no-op reproduces 1,238 glyphs and is pixel-identical on all ten pages in MuPDF and Poppler.
+  - The refused growth then succeeds: A continues on two page-9 lines, and B–H move 20.400024 pt. B's ink reaches
+    210.777155 pt and intersects 46 glyph bounds of the formerly unowned C.
+  - Second edit, shortening, regrowth and the final no-op all reopen `restored`. Outside-region MuPDF and Poppler
+    changes are 0, and foreign content is unchanged.
+  - A three-page sequential next-page case passes on synthetic fixtures only.
+
+  [Measured sequential report](../evaluations/real_japanese/sequential-extension-report.md).
 - **REAL-WORLD CROSS-PAGE POST-EDIT EXTENSION VALIDATED — PASS.** A restored edited flow whose last source region is
   on page *n* adopts complete current owners on page *n*+1. It needs an explicit caller-selected same-page gap, a
   source-region floor and one explicit continuation authority (a named-owner release or an independently confirmed
@@ -471,6 +490,32 @@ B1's proofs.
   growth beyond the accepted capacity. Failures publish neither PDF nor sidecar.
   [Regressions](../tests/test_next_page_extension.py).
 
+### Sequential extensions on one restored edited history
+
+No new API is involved. The existing `next_page` and `append_to_region` extensions can be chained on the same
+history, each from the latest saved, restored revision; nothing is re-accepted from the original.
+
+- After a `next_page` extension, the flow's last region is the adopted next-page source region. A later
+  `append_to_region` on that region adopts the following current owners on that page, and a later `next_page` adopts
+  owners on the page after it.
+- Each extension re-observes the current revision:
+  - the new owners take current glyph IDs, after the generated continuation glyphs;
+  - their `source_adoptions` name the revision they were approved on;
+  - the review is bound to the base model. Accepting the proposal on the original PDF or on an earlier saved
+    revision refuses as a stale revision.
+- Earlier owners, source-output markers, generated slots (and their creation bindings), destinations, destination
+  bindings and generated fonts are carried unchanged.
+- **Release authority is never widened.** An existing continuation keeps exactly the release owners it was confirmed
+  with. A newly adopted owner is not added to that set.
+- A newly adopted follower uses its **current** observed gap (the PR #70 rule). If the paragraph above it has already
+  moved down toward it, that gap is compressed. Shortening later moves the follower above its original position.
+  When that would place it inside an existing release region, which only the named owners may occupy, the edit
+  refuses and publishes nothing. This is fail-closed, and it is pinned by a regression.
+- A further `next_page` gets its own explicitly confirmed continuation destination and release owners on the new
+  page. Each continuation releases only the owner it names. Occupied text is never treated as empty space, and the
+  released owner's removal is proved in the same Transaction as its first save.
+- [Regressions](../tests/test_sequential_extension.py).
+
 ### B5 — Real text in the semantic layer (T3)
 
 Not on the replacement path; decorations, publication and style reinterpretation on real text come after B3.
@@ -489,7 +534,9 @@ B1 bootstrap (COMPLETE)
 ├→ joint-owner vacated-space continuation (COMPLETE, explicit fixed capacity and Transaction obligations)
 ├→ explicit additional-owner approval from original source (COMPLETE, append-only followers)
 ├→ current-revision additional-owner approval (COMPLETE, bounded last-region followers)
-└→ current-revision next-page owner approval (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
+├→ current-revision next-page owner approval (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
+└→ sequential extensions on one restored history (COMPLETE: next page then same page; three-page next pages on
+   fixtures)
         B3 → B5 semantic real text
 ```
 
@@ -499,12 +546,15 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: continuation of an already adopted next-page region onto a further page with its own release
-authority
+NEXT BLOCKER: follower gaps after a moved paragraph. A newly adopted follower keeps its current compressed gap,
+so shortening can pull it into an existing release region, which then refuses
 ```
 
-The production path in §6 is validated on the real LibreOffice pages 8→9 (§1, measured report). The next
-limitation is a flow whose next page already holds one of its regions.
+Sequential extensions work with the existing paths (§6). A third page is covered only by synthetic fixtures; no
+real three-page continuation of a related body has been validated. The open design question is the follower
+edge: the PR #70 rule takes the current observed gap. That keeps evidence current-only, but after the paragraph
+above has moved, it shortens the gap relative to the original layout. A caller-confirmed gap or a recorded
+source gap for followers would need its own authority, and it must not be inferred from earlier revisions.
 
 Capacity remains explicit and bounded. The implementation adopts only the next page after the last source region,
 one release/empty continuation for the last paragraph, and no page already holding regions. It does not choose
@@ -513,9 +563,11 @@ cyclic source-occupancy dependencies. Tagged source owners cannot cross independ
 
 ## 9. Next PR scope
 
-Allow a later extension when the next page already holds this flow's adopted region (append to it, or to the page after it),
-keeping marker and generated-slot identities. Do not convert occupied text into an empty destination or infer
-document-wide relationships; page 10 of the LibreOffice paper is a separate section and stays foreign.
+Decide how a follower adopted after an earlier move gets its incoming gap: an explicit caller gap in
+`append_to_region`, as `next_page` already requires, or a refusal when the current gap differs from the
+observed source layout. Then validate a real three-page related body if a suitable document is found. Do not
+convert occupied text into an empty destination or infer document-wide relationships; page 10 of the LibreOffice
+paper is a separate section and stays foreign.
 
 ## 10. Not next (deliberately)
 
