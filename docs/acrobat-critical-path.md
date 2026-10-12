@@ -3,7 +3,27 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `d5e27d28dbeb6fca547e5979ed5c826500bcba85` plus current-revision ownership extension.
+- State: starting main `b22ea6a1fc6486215488995b5b0ebc06186f837c` (PR #70) plus next-page restored-revision extension
+  (PR #71), validated on the real LibreOffice PDF.
+- **REAL-WORLD CROSS-PAGE POST-EDIT EXTENSION VALIDATED — PASS.** A restored edited flow whose last source region is
+  on page *n* adopts complete current owners on page *n*+1. It needs an explicit caller-selected same-page gap, a
+  source-region floor and one explicit continuation authority (a named-owner release or an independently confirmed
+  empty destination). The previously refused growth then continues onto page *n*+1 and moves the adopted followers.
+  Existing owners and generated slots keep their identities.
+
+  Measured on LibreOffice pages 8→9 (original SHA-256 `13665875…a5f3`, unchanged):
+  - A page-8-only saved edit (A at 176 characters) refuses the 54-character growth.
+  - Current-revision approval of B (146 glyphs, current IDs 0–145) with release region `release-9` is accepted.
+    Occupied-as-empty and stale-revision requests refuse.
+  - The extension no-op is pixel-identical on all ten pages in MuPDF and Poppler (322 glyphs, origin error 0).
+  - The same growth then succeeds: A 206 characters = 199 on page 8 + `に役立てます。` at 122 pt on page 9. B moves
+    142 → 148.4 pt, and its release is witnessed in the same Transaction.
+  - Growth beyond the accepted capacity still refuses.
+  - Second edit, shortening (continuation empty, B back to 142 pt), regrowth (same generated slot) and the final
+    no-op all reopen `restored`.
+  - Outside the edited regions, MuPDF and Poppler changed pixels are 0, and foreign content is unchanged.
+
+  [Measured next-page extension report](../evaluations/real_japanese/next-page-extension-report.md).
 - **REAL-WORLD POST-EDIT OWNERSHIP EXTENSION VALIDATED — PASS:** LibreOffice pages 8–9 start from a
   saved/restored edited A+B flow with an existing generated continuation. The larger replacement refuses;
   current-revision approval adds C–H (886 glyphs), preserving old owners, text/styles and generated identity.
@@ -428,6 +448,29 @@ B1's proofs.
   and rebind source/generated ownership after saving. Stale evidence, overlapping owners, skipped text, new
   no-op continuation slots, changed no-op positions and insufficient capacity refuse.
 
+### Extending a restored edited revision onto the next existing page
+
+- The same entry point takes `next_page` instead of `append_to_region`. The B1 selection names complete
+  paragraphs on the page **after** the last paragraph's last source region; that page must hold no confirmed
+  region or destination yet. Owners, Unicode, glyph IDs and baselines are re-observed in the current revision.
+- The review witnesses the current page seam: every line partly owned refuses; the last owned line on page *n*
+  must belong to the last paragraph; unselected text below it, or above the first adopted line on page *n*+1,
+  in the column band refuses. It records the seam lines but **never subtracts different pages' y coordinates**:
+  the edge uses the caller's `page_break` gap with `source-region-floor-and-same-page-follow`.
+- Continuation authority for the last paragraph is explicit and optional. `vacated_continuation` releases only
+  adopted next-page owners and is re-proved by `_confirm_destination` on the current revision (geometry,
+  emptiness except those owners, boundary, graphics state, CTM, clip). `continuation` takes an empty destination
+  confirmed on the current revision. Without either, the extension adds owners but the growth still refuses.
+- Acceptance runs the full standalone B1 proof of the new page and the joint no-edit proof of every current
+  line. Existing slots, bindings, source-output identities, destinations, destination bindings and generated fonts
+  are unchanged; only the new region, owners, policies, follows and destination are added.
+- A released adopted owner is uninitialized until its first save; the vacated-space proof now carries its
+  sealed `source_adoptions` record, so its removal can be proved in the same Transaction before that save.
+- Refusals: stale revision, changed review, non-finite gap, skipped seam text, release of an existing owner,
+  an unreleased owner or fixed paint inside the continuation region, missing continuation authority and
+  growth beyond the accepted capacity. Failures publish neither PDF nor sidecar.
+  [Regressions](../tests/test_next_page_extension.py).
+
 ### B5 — Real text in the semantic layer (T3)
 
 Not on the replacement path; decorations, publication and style reinterpretation on real text come after B3.
@@ -445,7 +488,8 @@ B1 bootstrap (COMPLETE)
 ├→ independent source-page paragraph reflow (COMPLETE, explicit floor/gap)
 ├→ joint-owner vacated-space continuation (COMPLETE, explicit fixed capacity and Transaction obligations)
 ├→ explicit additional-owner approval from original source (COMPLETE, append-only followers)
-└→ current-revision additional-owner approval (COMPLETE, bounded last-region followers)
+├→ current-revision additional-owner approval (COMPLETE, bounded last-region followers)
+└→ current-revision next-page owner approval (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
         B3 → B5 semantic real text
 ```
 
@@ -455,35 +499,23 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: extending restored ownership into another source region/page with explicit placement and paint authority
+NEXT BLOCKER: continuation of an already adopted next-page region onto a further page with its own release
+authority
 ```
 
-A continuation no longer needs an independently empty rectangle when its occupied text belongs to explicitly
-accepted subsequent source owners. The optional conditional destination records those exact owners and permits
-region overlap only with their source region. Each current binding and source-output witness is revalidated;
-foreign glyphs and nontext paint remain obstacles. The normal empty-destination API is unchanged.
+The production path in §6 is validated on the real LibreOffice pages 8→9 (§1, measured report). The next
+limitation is a flow whose next page already holds one of its regions.
 
-T2 plans final allocations with the existing source-page-break floor and follows. Creation/rewrite plans carry
-current-revision release obligations into the Transaction: all named source-owner glyphs must be removed by their
-own matching plan in that transaction, and final paint must be disjoint. Removal proofs, graphics state, CTM,
-clip, paint envelopes, atomic save/readback and restored ownership remain in force. Shortening removes generated paint
-as the follower moves back; regrowth reuses the continuation slot.
-
-Initial capacity can now be enlarged by reviewing and accepting additional complete source paragraphs from the
-same original PDF. B1 derives and verifies the new selected-body region against the remaining foreign content;
-no independently empty destination or automatic rectangle enlargement is invented. The old accepted state remains
-unchanged and still refuses the oversized edit until the new proposal is explicitly accepted.
-
-Capacity remains explicit and bounded after acceptance. The implementation does not choose related paragraphs
-automatically, append a new source region to an edited allocation, add pages or resolve cyclic source-occupancy dependencies.
-Tagged source owners cannot cross independent continuation regions. Missing final capacity still refuses.
+Capacity remains explicit and bounded. The implementation adopts only the next page after the last source region,
+one release/empty continuation for the last paragraph, and no page already holding regions. It does not choose
+related paragraphs automatically, add pages, change an existing continuation's release-owner set or resolve
+cyclic source-occupancy dependencies. Tagged source owners cannot cross independent continuation regions.
 
 ## 9. Next PR scope
 
-The restored-revision extension currently appends followers in the last confirmed source region. Extending to
-another existing page/region still needs independently reviewed source owners, order, page-break policy and any
-new continuation paint authority. Preserve the current marker and generated-slot identities across that transition;
-do not convert occupied text into an empty destination or infer document-wide relationships.
+Allow a later extension when the next page already holds this flow's adopted region (append to it, or to the page after it),
+keeping marker and generated-slot identities. Do not convert occupied text into an empty destination or infer
+document-wide relationships; page 10 of the LibreOffice paper is a separate section and stays foreign.
 
 ## 10. Not next (deliberately)
 

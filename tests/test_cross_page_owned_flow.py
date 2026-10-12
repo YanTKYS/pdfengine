@@ -20,7 +20,7 @@ GROUPS = [dict(id='A', parts=[dict(page=1, paragraph_id='P1'), dict(page=2, para
           dict(id='B', parts=[dict(page=2, paragraph_id='P2')])]
 
 
-def make_source(root, *, height=310, intervening=False, rows=None):
+def make_source(root, *, height=310, intervening=False, rows=None, fixed_pages=None):
     font = TTFont(BytesIO(fx.build_font())); font['head'].unitsPerEm = 2048
     for name in font.getGlyphOrder():
         font['hmtx'][name] = (1001, 0)
@@ -34,7 +34,11 @@ def make_source(root, *, height=310, intervening=False, rows=None):
         for number, rows in enumerate(pages):
             page = doc.new_page(width=250, height=height)
             page.insert_font(fontname='F1', fontbuffer=provider.read_bytes())
-            page.insert_text((40, 240), 'FIXED CONTENT')
+            if fixed_pages is None or number in fixed_pages:
+                page.insert_text((40, 240), 'FIXED CONTENT')
+            else:
+                empty = doc.get_new_xref(); doc.update_object(empty, '<<>>')
+                doc.update_stream(empty, b' '); page.set_contents(empty)
             if number == 0 and intervening:
                 page.insert_text((40, 308), 'UNSELECTED FOOTNOTE')
             stream = page.get_contents()[0]; parts = []; cmap = font.getBestCmap()

@@ -44,8 +44,14 @@ def evidence(state, destination):
     selected = owners(state, destination)
     if not selected:
         return None
-    return deepcopy(dict(flow=state['flow'], allocation_provenance=state['allocation_provenance'],
-        pdf_sha256=state['pdf_sha256'], slots=selected))
+    value = dict(flow=state['flow'], allocation_provenance=state['allocation_provenance'],
+        pdf_sha256=state['pdf_sha256'], slots=selected)
+    # An owner adopted from an edited revision stays uninitialized until its
+    # first save; its sealed adoption record is the only creation authority.
+    adoptions = {sid: state['source_adoptions'][sid] for sid in selected if sid in state.get('source_adoptions', {})}
+    if adoptions:
+        value['source_adoptions'] = adoptions
+    return deepcopy(value)
 
 
 def glyphs(source, content, destination, proof):
