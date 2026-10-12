@@ -177,6 +177,13 @@ def propose_owned_flow_extension(source, accepted_model, page_proposals, **selec
     For a restored edited flow, supply one B1 proposal containing only the new
     followers and append_to_region naming its last source region. Existing
     source/generated slots are retained; acceptance proves a joint no-op.
+    Instead of append_to_region, next_page adopts complete owners on the page
+    after the last source region: region_id, page_break (caller-selected
+    same-page gap; no gap is derived from different pages' y values), optional
+    B1 page_overrides, and at most one continuation authority for the last
+    paragraph: vacated_continuation (release of named adopted owners, proven
+    in the same Transaction) or continuation (an empty destination confirmed
+    on the current revision).
     """
     from .shared_flow import _restore
     base = _restore(source, accepted_model)
