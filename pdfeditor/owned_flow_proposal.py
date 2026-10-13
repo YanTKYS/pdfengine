@@ -177,6 +177,12 @@ def propose_owned_flow_extension(source, accepted_model, page_proposals, **selec
     For a restored edited flow, supply one B1 proposal containing only the new
     followers and append_to_region naming its last source region. Existing
     source/generated slots are retained; acceptance proves a joint no-op.
+    By default the first follower keeps its current observed gap. Instead,
+    append_to_region={region_id, incoming} approves its future placement:
+    incoming names before/after, a minimum_baseline_gap, a baseline_floor (a
+    page coordinate in that region the follower never rises above) and the
+    approved-baseline-floor-and-same-region-follow placement. The policy must
+    reproduce the follower's current baseline, or the review refuses.
     Instead of append_to_region, next_page adopts complete owners on the page
     after the last source region: region_id, page_break (caller-selected
     same-page gap; no gap is derived from different pages' y values), optional

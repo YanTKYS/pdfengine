@@ -13,6 +13,9 @@ from . import source_ownership, vacated_space
 
 NEXT_PAGE_KEYS = {'region_id', 'page_break', 'page_overrides', 'continuation', 'vacated_continuation'}
 PAGE_BREAK_PLACEMENT = 'source-region-floor-and-same-page-follow'
+FOLLOWER_PLACEMENT = 'approved-baseline-floor-and-same-region-follow'
+APPEND_KEYS = {'region_id', 'incoming'}
+INCOMING_KEYS = {'before', 'after', 'minimum_baseline_gap', 'baseline_floor', 'placement'}
 REGION_KEYS = {'page', 'bounds', 'x', 'width', 'first_baseline'}
 CONFIRMATION_KEYS = {'destination_id', 'paragraph_id', 'region_id', 'page', 'bounds', 'insertion',
                      'graphics_state', 'page_entry_order', 'boundary'}
@@ -51,7 +54,7 @@ def review(source, base, pages, paragraphs, relationship, append_to_region=None,
     page, analysis = _selection(source, base, pages, paragraphs, relationship)
     if next_page is not None:
         return _next_page_review(source, base, page, analysis, paragraphs, relationship, next_page)
-    rid = append_to_region
+    rid, incoming = _append_request(append_to_region)
     if rid != base['flow']['regions'][-1] or base['regions'][rid]['page'] != analysis.page:
         raise PdfError('additional owners must follow the last confirmed source region')
     owned = {gid for slot in base['slots'].values() if base['regions'][slot['region_id']]['page'] == analysis.page
@@ -72,11 +75,54 @@ def review(source, base, pages, paragraphs, relationship, append_to_region=None,
         if (last < line['baseline'] < first and line['bbox'][0] < r['bounds'][2]
                 and line['bbox'][2] > r['bounds'][0] and not set(line['glyph_ids']) <= owned | added):
             raise PdfError('extension skips unselected intervening text')
-    return dict(base_model_sha256=base['model_sha256'], source_sha256=base['pdf_sha256'],
+    evidence = dict(base_model_sha256=base['model_sha256'], source_sha256=base['pdf_sha256'],
         retained_paragraphs=base['flow']['paragraphs'], retained_slots=sorted(base['slots']),
         added_paragraphs=deepcopy(page['paragraphs']), append_to_region=rid,
         previous_regions=base['regions'], proposed_page_region=page['region'],
         current_baseline_gap=first-last, relationship=relationship)
+    if incoming is not None:
+        evidence['incoming'] = _incoming_review(base, page, rid, previous, paragraphs[0]['id'], incoming, first, last)
+    return evidence
+
+
+def _append_request(request):
+    """`region_id`, or {region_id, incoming}: the follower's explicitly approved placement."""
+    if isinstance(request, str):
+        return request, None
+    if (not isinstance(request, dict) or set(request) != APPEND_KEYS
+            or not isinstance(request['region_id'], str) or not request['region_id']):
+        raise PdfError('append_to_region takes a region ID or exactly {region_id, incoming}')
+    return request['region_id'], request['incoming']
+
+
+def _incoming_review(base, page, rid, previous, follower, edge, first, last):
+    """Separate the current placement witness from the approved future placement policy.
+
+    The witness is this revision's last owned baseline and the follower's current
+    first baseline. The policy is the caller's: a same-region minimum gap and a
+    page-coordinate floor in `rid` that the follower's first line never rises
+    above. Nothing is inferred from an earlier revision. The policy must place the
+    follower exactly where it is now, so the extension no-op moves nothing.
+    """
+    if (not isinstance(edge, dict) or set(edge) != INCOMING_KEYS or edge['placement'] != FOLLOWER_PLACEMENT
+            or edge['before'] != previous or edge['after'] != follower):
+        raise PdfError('follower placement needs an explicitly approved floor-and-follow policy '
+                       'from the last confirmed paragraph')
+    gap, floor = edge['minimum_baseline_gap'], edge['baseline_floor']
+    if not _finite(gap) or gap <= 0 or not _finite(floor) or floor <= 0:
+        raise PdfError('approved follower gap and floor must be positive and finite')
+    region = base['regions'][rid]
+    bottom = max(region['bounds'][3], page['region']['bounds'][3])
+    if not region['first_baseline'] <= floor < bottom:
+        raise PdfError('approved follower floor lies outside the extended source region capacity')
+    placed = max(last + gap, floor)
+    if not _close(placed, first):
+        raise PdfError('approved follower placement differs from the current PDF; the extension no-op would move it '
+                       f'({placed} pt instead of {first} pt)')
+    return dict(edge, region_id=rid,
+        current=dict(last_owned_baseline=last, first_follower_baseline=first, baseline_gap=first-last),
+        extension_noop_baseline=placed,
+        floor_is='caller-approved page coordinate in this region; not derived from another revision')
 
 
 def propose(source, base, pages, *, paragraphs, relationship, append_to_region=None, next_page=None):
@@ -112,7 +158,7 @@ def accept(source, proposal, provider_choices):
         raise PdfError('additional page qualification failed: ' + str(built['refusals'] + built['unresolved']))
     stories, shared = _arguments(analysis, plan)
     state = deepcopy(base)
-    rid = proposal['append_to_region']; region = state['regions'][rid]
+    rid = evidence['append_to_region']; region = state['regions'][rid]
     new = shared['regions']['R1']
     if not _close(region['x'], new['x']):
         raise PdfError('additional paragraphs do not share the confirmed text column')
@@ -131,8 +177,12 @@ def accept(source, proposal, provider_choices):
         if (old['role'] != 'fixed' or old['bounds'] not in added_bounds) and not any(p['bounds'] == old['bounds'] for p in protected):
             protected.append({k:v for k,v in old.items() if k != 'provenance'})
     state['pages'][str(analysis.page)]['protected_regions'] = [dict(p,provenance='explicitly_confirmed') for p in protected]
-    _adopt(source, state, stories, shared, proposal, rid,
-           dict(minimum_baseline_gap=evidence['current_baseline_gap'], region_start='reset-to-region-baseline'))
+    approved = evidence.get('incoming')
+    first = (dict(minimum_baseline_gap=evidence['current_baseline_gap'], region_start='reset-to-region-baseline')
+             if approved is None else
+             dict(minimum_baseline_gap=approved['minimum_baseline_gap'], region_start='reset-to-region-baseline',
+                  baseline_floor=dict(region_id=rid, baseline=approved['baseline_floor'])))
+    _adopt(source, state, stories, shared, proposal, rid, first)
     # Capacity metadata changes, but snapshots, source markers, destination
     # identities, style registries and existing physical layouts remain intact.
     _relayout(state, state['slots'])

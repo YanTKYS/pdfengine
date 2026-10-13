@@ -3,8 +3,19 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `fe339acb0986b56f55656db7db1195679c602dc9` (PR #71). Sequential extensions on one restored
-  history use the existing paths and are validated on the real LibreOffice PDF.
+- State: starting main `045e3551c4a576d40e4d00efbea60a9d8707ba7b` (PR #72). `append_to_region` can now carry an
+  explicitly approved placement policy for its first follower: a minimum gap and an in-region baseline floor.
+- **REAL-WORLD FOLLOWER SPACING POLICY VALIDATED — PASS.** On LibreOffice pages 8→9, the current
+  19.999963378906244 pt B→C gap and C's explicitly approved 209.29998779296875 pt floor remain separate.
+  - Extension no-op is pixel-identical on all ten pages in both MuPDF and Poppler. Shortening returns B to
+    142 pt, keeps C at its floor, and leaves D–H unchanged; the PR #72 rise to 202.800012 pt is prevented.
+  - Regrowth puts C at 229.700012 pt, then editing B puts C at 229.600037 pt, each at B's last baseline plus
+    the approved gap. All five stages save/reopen `restored`; foreign content is equal, exterior pixel changes
+    are zero, original SHA and source/generated/destination/font ownership checks pass.
+  - Windows run on `ecdadef8`, 2026-10-13: **6654.876 s, exit 0**, alone. Exact original reused locally and
+    pinned font SHA verified. Capacity and unauthorized-owner requests refuse without publishing PDF/sidecar.
+    No production/assertion/tolerance changes, pytest rerun, or full suite were needed for this follow-up.
+  - [Measured report](../evaluations/real_japanese/follower-spacing-report.md).
 - **REAL-WORLD SEQUENTIAL OWNERSHIP EXTENSION VALIDATED — PASS.** On one edited history, the PR #71 next-page path
   and then the PR #70 same-page path extend ownership twice, each from the latest saved revision.
 
@@ -507,13 +518,63 @@ history, each from the latest saved, restored revision; nothing is re-accepted f
   bindings and generated fonts are carried unchanged.
 - **Release authority is never widened.** An existing continuation keeps exactly the release owners it was confirmed
   with. A newly adopted owner is not added to that set.
-- A newly adopted follower uses its **current** observed gap (the PR #70 rule). If the paragraph above it has already
-  moved down toward it, that gap is compressed. Shortening later moves the follower above its original position.
-  When that would place it inside an existing release region, which only the named owners may occupy, the edit
-  refuses and publishes nothing. This is fail-closed, and it is pinned by a regression.
+- Without a placement policy, a newly adopted follower uses its **current** observed gap (the PR #70 rule). If the
+  paragraph above it has already moved down toward it, that gap is compressed. Shortening later moves the follower
+  above its original position. When that would place it inside an existing release region, which only the named
+  owners may occupy, the edit refuses and publishes nothing. This is fail-closed, and it is pinned by a regression.
+  An approved follower placement (below) avoids this.
 - A further `next_page` gets its own explicitly confirmed continuation destination and release owners on the new
   page. Each continuation releases only the owner it names. Occupied text is never treated as empty space, and the
   released owner's removal is proved in the same Transaction as its first save.
+- [Regressions](../tests/test_sequential_extension.py).
+
+**Real lifecycle (LibreOffice pages 8→9): validated.** From the saved A-growth revision, adopting C–H with
+gap 19.999963378906244 pt and C floor 209.29998779296875 pt keeps the extension no-op identical in both
+renderers. Shortening empties A's continuation, returns B to 142 pt and leaves C–H at their no-op positions.
+Regrowth and B's second edit push C only as required by the minimum gap. All saved stages restore and
+retain source-output identities, generated-slot creation identity, destination authority and font ownership;
+release owners stay B alone. The 26.4 pt original-gap policy refuses because it would move the no-op.
+See the [measured report](../evaluations/real_japanese/follower-spacing-report.md) for full baselines, pixel
+counts, exact assets, refusals and command. The low-floor release collision remains synthetic evidence.
+
+### Approved follower placement for `append_to_region`
+
+The current placement and the future placement policy are reviewed separately. Neither is inferred from an earlier
+revision or from the original PDF.
+
+- `append_to_region` still takes a region ID (the PR #70 current-gap rule). It now also takes exactly
+  `{region_id, incoming}`, where `incoming` is
+  `{before, after, minimum_baseline_gap, baseline_floor, placement='approved-baseline-floor-and-same-region-follow'}`.
+  - `before` must be the last confirmed paragraph and `after` the first adopted follower.
+  - The gap and floor must be positive and finite.
+  - The floor is a page coordinate in that region, from its first baseline to its bottom (after the extension).
+  - No other key is accepted; in particular, no release owner can be added through this request.
+- **Current witness.** The review records the last owned baseline, the follower's current first baseline and their
+  gap on this revision.
+- **Approved policy.** The follower's first line is placed at `max(previous last baseline + gap (and descent + ascent),
+  floor)`. A policy that does not place the follower exactly where it is now refuses: the extension no-op would move
+  it. Examples are the original larger gap, a floor below with a smaller gap, or a floor above the current position.
+- **T2 contract.** The edge is stored as `baseline_floor: {region_id, baseline}` on the sealed `follows` relation.
+  - The allocator `_follow_baseline` and the validator `_verify_placement` apply it only to the paragraph head in
+    that region.
+  - `_policies` refuses a floor outside the follower's own first source region, outside the region's capacity, or on
+    a source page-break edge.
+  - A floor only lowers the follower. It creates no capacity or paint authority, and release owners stay unchanged.
+  - Collision, capacity and Transaction guards are unchanged. A lower floor that still lets the follower enter a
+    release region refuses exactly as before.
+- **Synthetic lifecycle (PR #72 fixture, 116 pt release region).** D is approved with its current 126.9 pt baseline
+  as floor and an 18 pt gap, and the following stages all pass:
+  1. The extension no-op is pixel-identical.
+  2. Shortening returns C to 80 pt and keeps D at 126.9 pt; the PR #72 rule would put D at 118.4 pt and refuse.
+  3. Regrowth pushes D to C's last baseline + 18 pt.
+  4. A second edit, a second shortening and the final no-op all save and reopen `restored`.
+  5. Markers, the generated slot's creation binding, destinations and follows are unchanged, and the exterior raster
+     is equal.
+  6. Growth beyond capacity refuses.
+- **Refusals.** Non-finite, zero or negative gap or floor; an unapproved placement, edge or request shape; extra
+  release keys; a policy that moves the no-op; a floor outside capacity; a stale base or stale acceptance revision;
+  modified review evidence; a request that no longer matches its review; a tampered floor region or a floor on a
+  page-break edge. Failures publish neither PDF nor sidecar.
 - [Regressions](../tests/test_sequential_extension.py).
 
 ### B5 — Real text in the semantic layer (T3)
@@ -535,8 +596,9 @@ B1 bootstrap (COMPLETE)
 ├→ explicit additional-owner approval from original source (COMPLETE, append-only followers)
 ├→ current-revision additional-owner approval (COMPLETE, bounded last-region followers)
 ├→ current-revision next-page owner approval (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
-└→ sequential extensions on one restored history (COMPLETE: next page then same page; three-page next pages on
-   fixtures)
+├→ sequential extensions on one restored history (COMPLETE: next page then same page; three-page next pages on
+│  fixtures)
+└→ approved follower placement for append_to_region (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
         B3 → B5 semantic real text
 ```
 
@@ -546,28 +608,39 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: follower gaps after a moved paragraph. A newly adopted follower keeps its current compressed gap,
-so shortening can pull it into an existing release region, which then refuses
+NEXT BLOCKER: a real related body continuing across three pages. Approved follower placement is now
+validated on the two-page LibreOffice history; the three-page next-page extension remains fixture-only.
 ```
 
-Sequential extensions work with the existing paths (§6). A third page is covered only by synthetic fixtures; no
-real three-page continuation of a related body has been validated. The open design question is the follower
-edge: the PR #70 rule takes the current observed gap. That keeps evidence current-only, but after the paragraph
-above has moved, it shortens the gap relative to the original layout. A caller-confirmed gap or a recorded
-source gap for followers would need its own authority, and it must not be inferred from earlier revisions.
+The follower spacing policy is validated on the real PDF (§6): C stays at 209.299988 pt after shortening,
+and the extension no-op is pixel-identical in MuPDF and Poppler. The earlier cloud source-access blocker
+was resolved by the exact local original on Windows. Environment, measured baselines and preservation
+checks are recorded in the [follower spacing report](../evaluations/real_japanese/follower-spacing-report.md).
 
-Capacity remains explicit and bounded. The implementation adopts only the next page after the last source region,
-one release/empty continuation for the last paragraph, and no page already holding regions. It does not choose
-related paragraphs automatically, add pages, change an existing continuation's release-owner set or resolve
-cyclic source-occupancy dependencies. Tagged source owners cannot cross independent continuation regions.
+The policy keeps at least the approved gap when the paragraph above moves down. It cannot restore an original gap
+larger than the current one without moving the follower in the no-op, so such a policy refuses.
+
+A third page is covered only by synthetic fixtures; no real three-page continuation of a related body has been
+validated. Capacity remains explicit and bounded:
+- adoption covers only the next page after the last source region, and no page already holding regions;
+- there is one release/empty continuation, for the last paragraph.
+
+The implementation does not:
+- choose related paragraphs automatically;
+- add pages;
+- change an existing continuation's release-owner set;
+- resolve cyclic source-occupancy dependencies.
+
+Tagged source owners cannot cross independent continuation regions.
 
 ## 9. Next PR scope
 
-Decide how a follower adopted after an earlier move gets its incoming gap: an explicit caller gap in
-`append_to_region`, as `next_page` already requires, or a refusal when the current gap differs from the
-observed source layout. Then validate a real three-page related body if a suitable document is found. Do not
-convert occupied text into an empty destination or infer document-wide relationships; page 10 of the LibreOffice
-paper is a separate section and stays foreign.
+1. Find a real related body continuing across three pages, with independently observed source paragraphs.
+2. Validate sequential next-page extensions from saved revisions under the existing fixed-capacity and
+   source-ownership rules. Keep explicit gap/floor approval and no-op reproduction; do not infer extra authority.
+
+Do not convert occupied text into an empty destination or infer document-wide relationships. Page 10 of the
+LibreOffice paper is a separate section and stays foreign.
 
 ## 10. Not next (deliberately)
 
@@ -605,4 +678,9 @@ Current continuation evidence, regression coverage and reproducible commands:
 [continuation report](../evaluations/real_japanese/continuation-report.md).
 Whole owned-body evidence and final-HEAD commands:
 [owned-body report](../evaluations/real_japanese/owned-body-report.md).
-Final full-suite counts and the exact tested commit are recorded in the current PR.
+Current PR #73 real-PDF validation: **PASS**, Windows, `ecdadef8`, **6654.876 s**, single evaluator.
+The [follower report](../evaluations/real_japanese/follower-spacing-report.md) and
+[compact evidence](../evaluations/real_japanese/follower-spacing-windows-summary.json) record exact assets,
+baselines, all-page pixel audits, restored saves and refusal/publication checks. No production code changed
+in this validation follow-up; no pytest or full-suite run was performed. Prior **917 focused passes** and
+the cloud follow-up's **3 passed in 258.61 s** remain historical regression evidence, not new run counts.

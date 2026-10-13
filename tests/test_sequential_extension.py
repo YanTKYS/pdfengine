@@ -1,4 +1,5 @@
 """Sequential ownership extensions on one restored, edited history (never re-accepted from the original)."""
+from copy import deepcopy
 from pathlib import Path
 
 import pymupdf
@@ -7,9 +8,10 @@ import pytest
 from pdfeditor.backend import PdfError
 from pdfeditor.continuation import slot_id
 from pdfeditor.owned_flow_proposal import propose_owned_flow_extension, accept_owned_flow_report
-from pdfeditor.page_proposal import _Analysis, propose_page_flow, accept_page_flow, replace_in_flow
+from pdfeditor.page_proposal import _Analysis, propose_page_flow, accept_page_flow, replace_in_flow, _seal
+from pdfeditor.post_edit_extension import FOLLOWER_PLACEMENT
 from pdfeditor.selection import source_sha
-from pdfeditor.shared_flow import edit_shared_flow, open_shared_flow
+from pdfeditor.shared_flow import _contract, _reseal, edit_shared_flow, open_shared_flow
 from pdfeditor.source_ownership import immutable
 from test_cross_page_owned_flow import make_source, ROW
 from test_next_page_extension import LONG, PLACEMENT, RELEASE, exterior_equal, propose, request, saved_case
@@ -19,6 +21,17 @@ LONGER = LONG + ROW[:24]  # needs a second continuation line: C moves into D
 # extension adopts D at its current 18 pt gap below the moved C, so after shortening D sits 8.5 pt higher
 # than in the original; a region reaching 116 pt would then contain the unreleased D (refused below).
 CLEAR = dict(RELEASE, bounds=[40, 50, 206, 105])
+D_SOURCE = 126.9  # D's first baseline as written by the fixture; D has never moved before its adoption
+
+
+def approved(floor, gap=18.0, **change):
+    """The caller's explicit placement policy for D: a page-2 floor and a minimum gap after C."""
+    edge = dict(before='C', after='D', minimum_baseline_gap=gap, baseline_floor=floor, placement=FOLLOWER_PLACEMENT)
+    return dict(region_id='page-2', incoming=dict(edge, **change))
+
+
+def current_d(page2):
+    return page2['paragraphs'][0]['lines'][0]['baseline']
 
 
 def refused(source, state, root, pid, old, new, style='style-1', match='exceed all'):
@@ -53,8 +66,8 @@ def kept(before, after, skip=()):
             assert after[key][ident] == value, (key, ident)
 
 
-def two_extensions(root, release):
-    """Saved A+B edit -> next page adopts C (released for B) -> growth saved -> same page appends D."""
+def grown_case(root, release):
+    """Saved A+B edit -> next page adopts C (released for B) -> growth saved; D is still unowned."""
     original, source, base, _, font = saved_case(root)
     page = propose_page_flow(source, 2, font_candidates=[font], line_ids=['p2-l1', 'p2-l2'])
     state1 = accept_owned_flow_report(source, propose(source, base, page, [dict(id='C', parts=[dict(page=2, paragraph_id='P1')])],
@@ -68,12 +81,25 @@ def two_extensions(root, release):
     assert fragments[generated]['lines'][0]['baseline'] == 62 and fragments[c]['lines'][0]['baseline'] > 80
     # The next growth is blocked by the still-unowned D below C.
     refused(grown, grown_state, root, 'P1', LONG, LONGER)
-    # Second extension (same page) from the saved grown revision: append D to page-2.
+    # The second extension observes D on the saved grown revision.
     c_last = grown_state['slots'][c]['occupancy']['last_baseline']
     ids = [l['id'] for l in _Analysis(grown, 2).lines if c_last < l['baseline'] < 200]
     page2 = propose_page_flow(grown, 2, font_candidates=[font], line_ids=ids)
-    proposal = propose_owned_flow_extension(grown, grown_state, [page2], paragraphs=[dict(id='D', parts=[dict(page=2, paragraph_id='P1')])],
-        relationship='D is the instruction that follows C on page 2.', append_to_region='page-2')
+    return original, source, grown, grown_state, state1, c, generated, page2
+
+
+def propose_d(grown, grown_state, page2, append='page-2'):
+    return propose_owned_flow_extension(grown, grown_state, [page2], paragraphs=[dict(id='D', parts=[dict(page=2, paragraph_id='P1')])],
+        relationship='D is the instruction that follows C on page 2.', append_to_region=append)
+
+
+def two_extensions(root, release, append='page-2'):
+    """Saved A+B edit -> next page adopts C (released for B) -> growth saved -> same page appends D.
+
+    `append` is the append_to_region request, or a callable building it from D's current B1 observation.
+    """
+    original, source, grown, grown_state, state1, c, generated, page2 = grown_case(root, release)
+    proposal = propose_d(grown, grown_state, page2, append(page2) if callable(append) else append)
     with pytest.raises(PdfError, match='another PDF revision'):
         accept_owned_flow_report(source, proposal)
     accepted = accept_owned_flow_report(grown, proposal)
@@ -124,6 +150,126 @@ def test_newly_owned_follower_cannot_enter_an_existing_release_region(tmp_path):
     state = accepted['state']
     assert set(state['continuation_destinations']['B-next']['vacated_space']['owners']) == {c}
     refused(grown, state, tmp_path, 'P1', LONG, '期限', match='collides with an unselected glyph')
+
+
+def test_approved_follower_floor_keeps_d_out_of_the_release_region(tmp_path):
+    """The same 116 pt release region, but the caller approves D's placement: never above its current (original)
+    first baseline, and at least 18 pt after C. The no-op moves nothing; shortening keeps D at the floor instead of
+    pulling it into the release region; regrowth pushes D at the approved gap. Every stage saves and reopens."""
+    def approve(page2):
+        assert current_d(page2) == pytest.approx(D_SOURCE, abs=1e-4)
+        return approved(current_d(page2))
+    original, source, grown, grown_state, _, accepted, c, generated = two_extensions(tmp_path, RELEASE, approve)
+    sha = source_sha(original); state = accepted['state']
+    assert accepted['receipt']['reproduction']['status'] == 'reproduced'
+    incoming = accepted['receipt']['extension']['incoming']
+    # The current witness (compressed 18 pt gap) and the approved policy are recorded separately.
+    assert incoming['current']['baseline_gap'] == pytest.approx(18.0, abs=1e-4)
+    assert incoming['extension_noop_baseline'] == incoming['current']['first_follower_baseline'] == incoming['baseline_floor']
+    kept(grown_state, state)
+    d = next(s for s in state['slots'] if state['slots'][s]['paragraph_id'] == 'D')
+    edge = next(e for e in state['follows'] if e['after'] == 'D')
+    floor = edge['baseline_floor']['baseline']
+    assert edge['baseline_floor']['region_id'] == 'page-2' and edge['minimum_baseline_gap'] == 18.0
+    assert state['source_adoptions'][d]['pdf_sha256'] == source_sha(grown)
+    # The approved placement grants no release authority: B-next still releases only C.
+    assert set(state['continuation_destinations']['B-next']['vacated_space']['owners']) == {c}
+    noop, state, _ = save(grown, state, tmp_path, 'noop', {})
+    assert pixel_identical(grown, noop) and state['slots'][d]['occupancy']['baseline'] == floor
+    creation = state['slots'][generated]['creation_binding']; previous = noop
+    stages = [('P1', LONG, '期限'), ('P1', '期限', LONGER), ('P2', '再確認', '必要な再確認'), ('P1', LONGER, '期限'), (None,)]
+    for index, stage in enumerate(stages):
+        changes = {} if stage[0] is None else replace_in_flow(state, *stage[1:], paragraph_id=stage[0], style_id='style-1')
+        pdf, new, report = save(previous, state, tmp_path, f'stage-{index}', changes)
+        fragments = report['plan']['fragments']
+        if index in (0, 3):
+            # PR #72 rule: D at C's last baseline + 18 = 118.4 pt, inside the release region (refused above).
+            assert new['slots'][generated]['occupancy'] is None and fragments[c]['lines'][0]['baseline'] == 80
+            assert fragments[d]['lines'][0]['baseline'] == floor
+            assert min(box[1] for box in fragments[d]['ink_bounds']) > RELEASE['bounds'][3]
+        if index == 1:
+            assert len(fragments[generated]['lines']) == 2
+            c_last = fragments[c]['lines'][-1]['baseline']
+            assert fragments[d]['lines'][0]['baseline'] == pytest.approx(c_last + 18.0, abs=.002)
+            assert fragments[d]['lines'][0]['baseline'] > floor
+        for sid in (c, d, 'slot-0', 'slot-1'):
+            assert immutable(new['slots'][sid]['source_output']) == immutable(state['slots'][sid]['source_output'])
+        assert new['slots'][generated]['creation_binding'] == creation
+        assert new['continuation_destinations'] == state['continuation_destinations']
+        assert new['follows'] == state['follows']
+        assert exterior_equal(previous, pdf, new)
+        if stage[0] is None:
+            assert pixel_identical(previous, pdf)
+        state, previous = new, pdf
+    # The approved floor never creates capacity: growth beyond the confirmed regions still refuses.
+    refused(previous, state, tmp_path, 'D', '確認して', '確認して' + ROW * 12)
+    with pymupdf.open(previous) as doc:
+        assert doc[1].get_text().count('FIXED CONTENT') == 1
+    assert source_sha(original) == sha
+
+
+def test_low_approved_floor_still_refuses_the_release_region_collision(tmp_path):
+    """A floor below D's current position is consistent with the no-op (the 18 pt gap binds there), but it grants
+    no paint authority: shortening pulls D to 118.4 pt inside the release region, and the edit refuses."""
+    _, _, grown, _, _, accepted, _, _ = two_extensions(tmp_path, RELEASE, lambda page2: approved(110.0))
+    noop, state, _ = save(grown, accepted['state'], tmp_path, 'noop', {})
+    assert pixel_identical(grown, noop)
+    refused(noop, state, tmp_path, 'P1', LONG, '期限', match='collides with an unselected glyph')
+
+
+def test_follower_placement_policy_refusals(tmp_path):
+    original, source, grown, grown_state, state1, c, _, page2 = grown_case(tmp_path, RELEASE)
+    first = current_d(page2)
+
+    def refuses(append, match):
+        with pytest.raises(PdfError, match=match):
+            propose_d(grown, grown_state, page2, append)
+    for gap in (float('nan'), float('inf'), -18.0, 0):
+        refuses(approved(first, gap), 'positive and finite')
+    for floor in (float('nan'), float('-inf'), -1.0):
+        refuses(approved(floor), 'positive and finite')
+    # Unapproved policies: another placement kind, another edge, or a bare/extended request.
+    refuses(approved(first, placement='source-region-floor-and-same-page-follow'), 'explicitly approved')
+    refuses(approved(first, before='P2'), 'explicitly approved')
+    refuses(dict(region_id='page-2', incoming=dict(approved(first)['incoming'], source_break={})), 'explicitly approved')
+    refuses(dict(region_id='page-2'), r'exactly \{region_id, incoming\}')
+    # Release ownership cannot ride on an append request.
+    refuses(dict(approved(first), release_paragraphs=['D']), r'exactly \{region_id, incoming\}')
+    # Policies contradicting the current PDF would move D in the extension no-op.
+    refuses(approved(first, 26.5), 'would move it')         # the original 26.5 pt C->D gap pushes D down
+    refuses(approved(first + 3), 'would move it')           # a floor below the current D
+    refuses(approved(110.0, 10.0), 'would move it')         # raises D
+    # Capacity: the floor lies inside the extended region, below its first baseline and above its bottom.
+    refuses(approved(70.0), 'outside the extended source region capacity')
+    refuses(approved(300.0), 'outside the extended source region capacity')
+    # Stale revision: a base state from the earlier revision, or acceptance on another revision.
+    with pytest.raises(PdfError, match='requires confirmation'):
+        propose_d(grown, state1, page2, approved(first))
+    proposal = propose_d(grown, grown_state, page2, approved(first))
+    for stale in (original, source):
+        with pytest.raises(PdfError, match='another PDF revision'):
+            accept_owned_flow_report(stale, proposal)
+    # Modified review evidence, or a request that no longer matches its review.
+    forged = deepcopy(proposal); forged['edited_extension']['review']['incoming']['baseline_floor'] = first + 10
+    with pytest.raises(PdfError, match='review differs'):
+        accept_owned_flow_report(grown, _seal(forged))
+    forged = deepcopy(proposal); forged['edited_extension']['review']['incoming']['current']['baseline_gap'] = 26.5
+    with pytest.raises(PdfError, match='review differs'):
+        accept_owned_flow_report(grown, _seal(forged))
+    forged = deepcopy(proposal); forged['append_to_region']['incoming']['minimum_baseline_gap'] = 26.5
+    with pytest.raises(PdfError, match='would move it'):
+        accept_owned_flow_report(grown, _seal(forged))
+    state = accept_owned_flow_report(grown, proposal)['state']
+    assert set(state['continuation_destinations']['B-next']['vacated_space']['owners']) == {c}
+    # A floor is bound to the follower's own source region and never to a page-break edge.
+    for edit in (lambda e: e['after'] == 'D' and e['baseline_floor'].update(region_id='release-2'),
+                 lambda e: e['after'] == 'C' and e.update(baseline_floor=dict(region_id='page-2', baseline=90.0))):
+        tampered = deepcopy(state)
+        for edge in tampered['follows']:
+            edit(edge)
+        tampered['contract_sha256'] = _contract(tampered)
+        opened = open_shared_flow(grown, _reseal(tampered))
+        assert opened['status'] == 'needs_confirmation', opened
 
 
 def page_request(page, before, after, destination, *, region_bottom=None):

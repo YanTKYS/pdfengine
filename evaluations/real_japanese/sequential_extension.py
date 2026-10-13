@@ -67,8 +67,11 @@ def first_extension(output, font, saved, base, refusals):
     return accepted
 
 
-def second_extension(output, font, grown, state1, refusals):
-    """PR #70 path on the saved grown revision: append C–H to the same page-9 region."""
+def second_extension(output, font, grown, state1, refusals, append='page-9'):
+    """PR #70 path on the saved grown revision: append C–H to the same page-9 region.
+
+    `append` is the append_to_region request, or a callable building it from the reviewed page proposal.
+    """
     lines = _Analysis(grown, 9).lines
     b_last = state1['slots']['slot-1']['occupancy']['last_baseline']
     ids = [l['id'] for l in lines if b_last + 10 < l['baseline'] < 650]
@@ -77,7 +80,7 @@ def second_extension(output, font, grown, state1, refusals):
     page = propose_page_flow(grown, 9, **kw, new_text={s['id']: LONG + SECOND[1] for s in observed['styles']})
     groups = [dict(id=chr(67 + i), parts=[dict(page=9, paragraph_id=p['id'])]) for i, p in enumerate(page['paragraphs'])]
     proposal = propose_owned_flow_extension(grown, state1, [page], paragraphs=groups,
-        relationship=FOLLOWERS_RELATIONSHIP, append_to_region='page-9')
+        relationship=FOLLOWERS_RELATIONSHIP, append_to_region=append(page) if callable(append) else append)
     write(output / 'second-proposal.json', proposal)
     for label, stale in (('second_stale_revision_original', SOURCE), ('second_stale_revision_first_saved', output / 'saved.pdf')):
         try: accept_owned_flow_report(stale, proposal)

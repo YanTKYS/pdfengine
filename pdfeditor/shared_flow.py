@@ -191,6 +191,8 @@ def _policies(state):
         keys = {'before','after','minimum_baseline_gap','region_start','provenance'}
         if source_break is not None:
             keys.add('source_break')
+        if 'baseline_floor' in edge and source_break is None:
+            keys.add('baseline_floor')
         if (set(edge)!=keys or edge['provenance']!='explicitly_confirmed'
                 or type(edge['minimum_baseline_gap']) not in (int,float)
                 or not math.isfinite(edge['minimum_baseline_gap']) or edge['minimum_baseline_gap']<=0):
@@ -198,6 +200,8 @@ def _policies(state):
         if source_break is None:
             if edge['region_start']!='reset-to-region-baseline':
                 raise PdfError('paragraph gap and its treatment at a region break must be confirmed')
+            if 'baseline_floor' in edge:
+                _baseline_floor(state, edge)
         else:
             if (not isinstance(source_break,dict) or set(source_break)!={'before_region','after_region'}
                     or edge['region_start']!='source-region-floor-and-same-page-follow'
@@ -214,6 +218,23 @@ def _policies(state):
                 raise PdfError('source page break must bind independent source owners on consecutive pages')
     if state['paragraph_boundaries']!=[dict(before=a,after=b,kind='paragraph_boundary',provenance='explicitly_confirmed') for a,b in expected]:
         raise PdfError('paragraph boundaries are identity relations, not Unicode or physical breaks')
+
+
+def _baseline_floor(state, edge):
+    """An approved follower floor binds one same-page source region of the follower.
+
+    It is a caller-approved page coordinate inside that region, never a gap
+    derived from another revision or page. It only lowers the follower.
+    """
+    floor = edge['baseline_floor']
+    owners = [state['slots'][sid]['region_id'] for sid in _slots(state, edge['after'])
+              if state['slots'][sid].get('creation_provenance') != destinations.PROVENANCE]
+    region = state['regions'].get(floor.get('region_id')) if isinstance(floor, dict) else None
+    if (region is None or set(floor) != {'region_id','baseline'} or not owners or floor['region_id'] != owners[0]
+            or type(floor['baseline']) not in (int,float) or not math.isfinite(floor['baseline'])
+            or not region['first_baseline'] <= floor['baseline'] < region['bounds'][3]):
+        raise PdfError('approved follower floor must lie in the follower\'s own first source region')
+    return floor
 
 
 def _validate(source,value,current_styles=None,current_body=None):
@@ -550,11 +571,18 @@ def _follow_baseline(state, edge, rid, previous, ascent=None):
     region=state['regions'][rid]
     floor=bool(edge and edge.get('source_break'))
     if previous is None or floor and state['regions'][previous['region_id']]['page']!=region['page']:
-        return region['first_baseline']
-    gap=edge['minimum_baseline_gap']
-    if ascent is not None:gap=max(gap,previous['descent']+ascent)
-    baseline=previous['last_baseline']+gap
-    return max(region['first_baseline'],baseline) if floor else baseline
+        baseline=region['first_baseline']
+    else:
+        gap=edge['minimum_baseline_gap']
+        if ascent is not None:gap=max(gap,previous['descent']+ascent)
+        baseline=previous['last_baseline']+gap
+        if floor:baseline=max(region['first_baseline'],baseline)
+    # An approved follower floor (append_to_region) keeps the paragraph's first
+    # line from rising above its approved position in its own source region.
+    approved=edge.get('baseline_floor') if edge else None
+    if approved is not None and approved['region_id']==rid:
+        baseline=max(baseline,approved['baseline'])
+    return baseline
 
 
 def _plan(source,state,changes):
@@ -585,7 +613,10 @@ def _plan(source,state,changes):
             if ri>=len(rids):raise PdfError('paragraphs exceed all explicitly confirmed shared regions')
             rid=rids[ri];region=state['regions'][rid];sid=by_region.get(rid)
             spacing_previous=predecessor if cursor==0 and edge and edge.get('source_break') else previous
-            baseline=_follow_baseline(state,edge,rid,spacing_previous)
+            # A continuation fragment starts at its region baseline; only the
+            # paragraph head is governed by its incoming edge.
+            head=edge if cursor==0 else None
+            baseline=_follow_baseline(state,head,rid,spacing_previous)
             if baseline>=region['bounds'][3]-.002:ri+=1;previous=None;continue
             indent=policy['first_line_indent'] if cursor==0 else 0
             if sid is None:
@@ -608,7 +639,7 @@ def _plan(source,state,changes):
                       if origins is not None else None)
             layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent,linked)
             first_ascent=layout.lines[0].ascent if layout.lines else policy['empty']['ascent']
-            baseline=_follow_baseline(state,edge,rid,spacing_previous,first_ascent)
+            baseline=_follow_baseline(state,head,rid,spacing_previous,first_ascent)
             if baseline-first_ascent<region['bounds'][1]-.002:raise PdfError('first line exceeds the explicitly confirmed region top')
             fitting=[line for line in layout.lines if baseline+line.baseline+line.descent<=region['bounds'][3]+.002]
             empty_fits=baseline+policy['empty']['descent']<=region['bounds'][3]+.002
@@ -704,6 +735,9 @@ def _verify_placement(state):
                     expected=previous['last_baseline']+max(incoming[pid]['minimum_baseline_gap'],previous['descent']+o['ascent'])
                 if index==0 and edge and edge.get('source_break'):
                     expected=_follow_baseline(state,edge,o['region_id'],previous,o['ascent'])
+            floor=edge.get('baseline_floor') if index==0 and edge else None
+            if floor is not None and floor['region_id']==o['region_id']:
+                expected=max(expected,floor['baseline'])
             if not _close(expected,o['baseline']):raise PdfError('paragraph spacing differs from confirmed shared flow policy')
             previous=o
         for sid in _slots(state,pid):
