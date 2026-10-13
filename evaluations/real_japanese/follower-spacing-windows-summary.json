@@ -1,0 +1,225 @@
+{
+  "verdict": "REAL-WORLD FOLLOWER SPACING POLICY VALIDATED — PASS",
+  "source": {
+    "url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf",
+    "sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3"
+  },
+  "grown_revision": "cd857af23b8dc67a1512c80bba5b591d748743eb04e4b2666175060138e679fe",
+  "witness": {
+    "first_line": "アーリーアダプターはあらゆるところにいます。職務や職責によりません。どんなたぐいの移行コミュニケーショ",
+    "first_baseline": 209.29998779296875,
+    "last_owned_baseline": 189.3000244140625,
+    "gap": 19.999963378906244
+  },
+  "original_c_baselines": [
+    209.29998779296875
+  ],
+  "approved_follow": {
+    "minimum_baseline_gap": 19.999963378906244,
+    "region_start": "reset-to-region-baseline",
+    "baseline_floor": {
+      "region_id": "page-9",
+      "baseline": 209.29998779296875
+    },
+    "before": "B",
+    "after": "C",
+    "provenance": "explicitly_confirmed"
+  },
+  "release_owners": [
+    "slot-1"
+  ],
+  "pr72_shortened_c": 202.800012,
+  "refusals": {
+    "first_occupied_region_as_empty": "composed text collides with an unselected glyph",
+    "first_stale_revision": "owned-flow proposal belongs to another PDF revision",
+    "before_second_extension": "paragraphs exceed all explicitly confirmed shared regions",
+    "original_gap_policy_moves_noop": "approved follower placement differs from the current PDF; the extension no-op would move it (215.7000244140625 pt instead of 209.29998779296875 pt)",
+    "second_stale_revision_original": "owned-flow proposal belongs to another PDF revision",
+    "second_stale_revision_first_saved": "owned-flow proposal belongs to another PDF revision",
+    "capacity_after_lifecycle": "paragraphs exceed all explicitly confirmed shared regions"
+  },
+  "outside_poppler_changed_pixels": 0,
+  "original_sha_unchanged": true,
+  "run": {
+    "command": "PYTHONUTF8=1 .venv/Scripts/python.exe -u -m evaluations.real_japanese.follower_spacing --output tmp/follower/validation-win-20261013 --font tmp/b3/fonts/BIZUDMincho-Regular.ttf",
+    "head": "ecdadef817be83f84f7e593c7ad188182e4e3ab2",
+    "elapsed_seconds": 6654.8755968,
+    "exit_code": 0,
+    "started_at": "2026-10-13T19:05:44.6457481+09:00",
+    "finished_at": "2026-10-13T20:56:39.5295863+09:00",
+    "mode": "single evaluator; no concurrent heavy tests"
+  },
+  "environment": {
+    "platform": "Windows",
+    "python": "3.12.14",
+    "pymupdf": "1.27.2.3",
+    "mupdf": "1.27.2",
+    "pypdf": "6.10.0",
+    "poppler": "26.07.0",
+    "PYTHONUTF8": "1"
+  },
+  "font_sha256": "468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2",
+  "raw_summary_sha256": "3441ef25687e9caf41a349e83aab21ba07ff6c62874cc1e7516c05a54312b8c3",
+  "supplemental_unauthorized_owner_probe": {
+    "request": "redraw final real revision after unauthorized addition of C to A-next release owners",
+    "checksum": "transport model checksum recomputed; confirmed contract unchanged",
+    "refusal": "shared flow requires confirmation: shared capacity, identities or confirmed contract changed",
+    "pdf_published": false,
+    "sidecar_published": false,
+    "elapsed_seconds": 30.581342699999368
+  },
+  "shortened_page9_visual_check": {
+    "renderer": "Poppler 26.07.0",
+    "size": [
+      1131,
+      1600
+    ],
+    "comparison": "original page 9 versus saved shortened page 9",
+    "changed_pixels": 0
+  },
+  "stages": [
+    {
+      "name": "extension-noop",
+      "reopen": "restored",
+      "first_baselines": {
+        "P1": 705.5999755859375,
+        "B": 148.4,
+        "C": 209.29998779296875,
+        "D": 279.0,
+        "E": 369.20001220703125,
+        "F": 436.5,
+        "G": 526.0999755859375,
+        "H": 594.5999755859375
+      },
+      "b_last": 189.3000244140625,
+      "audit": {
+        "max_origin_error_pt": 2.4414062494315658e-05,
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_links_annotations_equal": true,
+        "all_ten_pages_checked": true,
+        "unicode_mupdf_pypdf": "exact (pypdf whitespace normalized)",
+        "retained_codes_resources_gids_programs_equal": true,
+        "provided_outlines_advances_equal": true,
+        "structure": "untagged; PDF version/count and operator nesting preserved",
+        "whole_document_mupdf_pixel_identical": true,
+        "identity": {
+          "glyphs": 1238,
+          "source_codes_resources_programs_gids_equal": true,
+          "max_origin_error_pt": 0.0
+        },
+        "whole_document_poppler_pixel_identical": true
+      }
+    },
+    {
+      "name": "shorten",
+      "reopen": "restored",
+      "first_baselines": {
+        "P1": 705.5999755859375,
+        "B": 142.0,
+        "C": 209.29998779296875,
+        "D": 279.0,
+        "E": 369.20001220703125,
+        "F": 436.5,
+        "G": 526.0999755859375,
+        "H": 594.5999755859375
+      },
+      "b_last": 182.9000244140625,
+      "audit": {
+        "max_origin_error_pt": 2.1972656213620212e-05,
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_links_annotations_equal": true,
+        "all_ten_pages_checked": true,
+        "unicode_mupdf_pypdf": "exact (pypdf whitespace normalized)",
+        "retained_codes_resources_gids_programs_equal": true,
+        "provided_outlines_advances_equal": true,
+        "structure": "untagged; PDF version/count and operator nesting preserved"
+      }
+    },
+    {
+      "name": "regrow",
+      "reopen": "restored",
+      "first_baselines": {
+        "P1": 705.5999755859375,
+        "B": 168.8000244140625,
+        "C": 229.70001220703125,
+        "D": 299.4000244140625,
+        "E": 389.60003662109375,
+        "F": 456.9000244140625,
+        "G": 546.5,
+        "H": 615.0
+      },
+      "b_last": 209.700048828125,
+      "audit": {
+        "max_origin_error_pt": 3.0517578125e-05,
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_links_annotations_equal": true,
+        "all_ten_pages_checked": true,
+        "unicode_mupdf_pypdf": "exact (pypdf whitespace normalized)",
+        "retained_codes_resources_gids_programs_equal": true,
+        "provided_outlines_advances_equal": true,
+        "structure": "untagged; PDF version/count and operator nesting preserved"
+      }
+    },
+    {
+      "name": "second",
+      "reopen": "restored",
+      "first_baselines": {
+        "P1": 705.5999755859375,
+        "B": 168.8000244140625,
+        "C": 229.60003662109375,
+        "D": 299.300048828125,
+        "E": 389.50006103515625,
+        "F": 456.800048828125,
+        "G": 546.4000244140625,
+        "H": 614.9000244140625
+      },
+      "b_last": 209.6000732421875,
+      "audit": {
+        "max_origin_error_pt": 3.0517578125e-05,
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_links_annotations_equal": true,
+        "all_ten_pages_checked": true,
+        "unicode_mupdf_pypdf": "exact (pypdf whitespace normalized)",
+        "retained_codes_resources_gids_programs_equal": true,
+        "provided_outlines_advances_equal": true,
+        "structure": "untagged; PDF version/count and operator nesting preserved"
+      }
+    },
+    {
+      "name": "noop",
+      "reopen": "restored",
+      "first_baselines": {
+        "P1": 705.5999755859375,
+        "B": 168.8000244140625,
+        "C": 229.60003662109375,
+        "D": 299.300048828125,
+        "E": 389.50006103515625,
+        "F": 456.800048828125,
+        "G": 546.4000244140625,
+        "H": 614.9000244140625
+      },
+      "b_last": 209.6000732421875,
+      "audit": {
+        "max_origin_error_pt": 3.0517578125e-05,
+        "outside_mupdf_changed_pixels": 0,
+        "foreign_text_drawings_images_links_annotations_equal": true,
+        "all_ten_pages_checked": true,
+        "unicode_mupdf_pypdf": "exact (pypdf whitespace normalized)",
+        "retained_codes_resources_gids_programs_equal": true,
+        "provided_outlines_advances_equal": true,
+        "structure": "untagged; PDF version/count and operator nesting preserved",
+        "whole_document_mupdf_pixel_identical": true
+      }
+    }
+  ],
+  "atomic_capacity_refusals": {
+    "blocked-1": {
+      "pdf_published": false,
+      "sidecar_published": false
+    },
+    "capacity": {
+      "pdf_published": false,
+      "sidecar_published": false
+    }
+  }
+}

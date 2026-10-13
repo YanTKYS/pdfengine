@@ -1,141 +1,123 @@
 # Approved follower spacing on one restored edited history
 
-**NOT VALIDATED: the real-PDF evaluation has not been run.** The verdict
-`REAL-WORLD FOLLOWER SPACING POLICY VALIDATED — PASS` is **not** claimed.
+**REAL-WORLD FOLLOWER SPACING POLICY VALIDATED — PASS.** Measured on the unmodified Japanese
+LibreOffice migration PDF, pages 8→9, with all ten pages audited. The cloud download blocker was
+resolved by reusing the checksum-matching original already present on Windows. No production code,
+evaluator assertions, tolerances, or font qualification rules changed for this validation.
 
-Starting main: `045e3551c4a576d40e4d00efbea60a9d8707ba7b` (PR #72 merged).
+## Reproduction and environment
 
-## Why it was not run
+- Evaluated PR #73 head: `ecdadef817be83f84f7e593c7ad188182e4e3ab2`; starting main:
+  `045e3551c4a576d40e4d00efbea60a9d8707ba7b` (PR #72).
+- Original: [LibreOfficeへの移行](https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf),
+  local `evaluations/realpdf/corpus/lo_migration_ja.pdf`.
+  SHA-256 `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3` verified before and after.
+- Font: `tmp/b3/fonts/BIZUDMincho-Regular.ttf`, SHA-256
+  `468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2`, from the
+  [pinned google/fonts revision](https://raw.githubusercontent.com/google/fonts/63833b7d10bb1f86a8f0b91cba2d3ae1f68d1aa3/ofl/bizudmincho/BIZUDMincho-Regular.ttf).
+  No substitute font or PDF version was used; neither binary is committed.
+- Windows, Python 3.12.14, PyMuPDF 1.27.2.3 / MuPDF 1.27.2, pypdf 6.10.0,
+  Poppler `pdftoppm` 26.07.0; repository `.venv`, `PYTHONUTF8=1`.
+- Start **2026-10-13 19:05:44.646 JST**, finish **20:56:39.530 JST**;
+  **6654.876 seconds (1 h 50 min 54.876 s), exit 0**. The evaluator ran alone without concurrent heavy tests.
 
-The implementing session's egress policy denied the source host:
-- `wiki.documentfoundation.org:443` returned `CONNECT tunnel failed, response 403`;
-- the `web.archive.org` mirror was denied the same way.
-
-The unmodified **LibreOfficeへの移行** PDF (SHA-256 `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`)
-was therefore unavailable.
-
-The implementing session also lacked the pinned provider. The follow-up below resolved that prerequisite;
-the source PDF remains unavailable in this cloud environment.
-
-No numbers below are measured on the real PDF.
-
-## Cloud follow-up (2026-10-13 UTC)
-
-Inspected and tested PR #73 head `c57d9f6e4f7bba21b9fa505b4e7ab153b8308b07`, on the existing
-`claude/festive-brown-1jx2e1` branch. No production code, evaluator assertions or tolerances were changed.
-
-- An HTTPS request to the [exact original PDF URL](https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf)
-  at 09:23 UTC failed with
-  `curl: (56) CONNECT tunnel failed, response 403`. No PDF bytes were downloaded.
-- The required local source is `evaluations/realpdf/corpus/lo_migration_ja.pdf`, SHA-256
-  `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`.
-  It was absent from the checkout and available local artifact locations.
-- **Pinned font obtained and SHA-256 verified.**
-  `tmp/b3/fonts/BIZUDMincho-Regular.ttf` has SHA-256
-  `468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2`.
-  Its reproducible [google/fonts revision URL](https://raw.githubusercontent.com/google/fonts/63833b7d10bb1f86a8f0b91cba2d3ae1f68d1aa3/ofl/bizudmincho/BIZUDMincho-Regular.ttf)
-  is pinned to commit `63833b7d10bb1f86a8f0b91cba2d3ae1f68d1aa3`; no substitute font was used.
-- Linux, Python **3.12.14**, PyMuPDF **1.27.2.3** / MuPDF **1.27.2**, Poppler `pdftoppm` **26.05.0**;
-  the repository `.venv` uses `requirements.lock.txt`. The evaluator imports and its `--help` command succeeds.
-- The environment network draft adds `wiki.documentfoundation.org`; saving the draft alone does not apply it
-  to the running environment. The original must become reachable, or the checksum-matching file must be supplied,
-  before the real-PDF run can start.
-
-**Real-PDF result: NOT VALIDATED (unrun because the source is missing), not a measured PASS or FAIL.**
-C's pre/post-shortening baselines, the approved gap/floor on this revision, all-page MuPDF/Poppler identity,
-outside-region pixel counts, real save/reopen and ownership checks, unchanged-original SHA and atomic refusals
-have not been measured in this follow-up. The 209.299988 pt and 202.800012 pt values below are prior PR #72
-evidence/expectations, not new measurements. The PR remains blocked on this required validation.
-
-### Focused synthetic checks in this environment
-
-**3 passed in 258.61 s (4 min 18 s)** on the unchanged PR head above:
-
-```bash
-PYTHONUTF8=1 .venv/bin/python -m pytest -q \
-  tests/test_sequential_extension.py::test_approved_follower_floor_keeps_d_out_of_the_release_region \
-  tests/test_sequential_extension.py::test_low_approved_floor_still_refuses_the_release_region_collision \
-  tests/test_sequential_extension.py::test_follower_placement_policy_refusals \
-  --durations=3
-```
-
-These existing fixtures exercise approved-floor shortening/regrowth and repeated restored saves,
-unchanged markers/destination identity/exterior raster, refusal of unauthorized release-region paint with
-neither PDF nor sidecar published, capacity refusal, and invalid/stale/tampered policies. They establish
-that the relevant tests run in this Linux environment; they do not replace the required real-PDF evidence.
-The previous 917-test run was not repeated. The full suite and real-PDF evaluator were not run here;
-there is no real-evaluation duration or output directory to report. Documentation whitespace checks pass.
-
-## Command (to run alone; PR #72 needed 134 min and hit `MemoryError` when run in parallel)
-
-Linux, from the checkout; always use a new output directory:
-
-```bash
-PYTHONUTF8=1 .venv/bin/python -m evaluations.real_japanese.follower_spacing \
-  --output "tmp/follower/validation-$(date -u +%Y%m%dT%H%M%SZ)" \
+```powershell
+$env:PYTHONUTF8 = '1'
+.venv/Scripts/python.exe -u -m evaluations.real_japanese.follower_spacing `
+  --output tmp/follower/validation-win-20261013 `
   --font tmp/b3/fonts/BIZUDMincho-Regular.ttf
 ```
 
-Existing Windows command:
+Use a new output directory for another run. Local evidence: `tmp/follower/validation-win-20261013/summary.json`,
+per-stage `*-report.json`, PDFs and sidecars; sibling `.log` and `-run.json` record output and timing.
+[Compact measured evidence](follower-spacing-windows-summary.json) is committed without external binaries.
 
-```powershell
-$env:PYTHONUTF8 = "1"
-.\.venv\Scripts\python.exe -m evaluations.real_japanese.follower_spacing `
-  --output tmp/follower/run-1 --font tmp/b3/fonts/BIZUDMincho-Regular.ttf
-```
+## Measured history and placement
 
-## What the script does
+The evaluator rebuilt the PR #72 history: own A on page 8, edit and save; adopt B on page 9 with
+release-only continuation `A-next`; grow A and save/reopen; then append C–H from that **current saved
+revision**, without re-accepting the original PDF. Before the second extension, further A growth refused.
 
-The script is `follower_spacing.py`. It reuses the PR #72 measurement code: `first_extension`, `second_extension`,
-`refuse`, `audit`, `audit_original_noop`, `pixel_equal` and `poppler`. It omits two steps that PR #72 already measured
-and that this PR does not change: the refused growth before the first extension, and the separate `grow` stage
-after the second extension.
+The current witness and approved policy remain separate:
 
-1. The PR #72 history:
-   - A on page 8 is edited and saved;
-   - B on page 9 is adopted with release `release-9`;
-   - A grows to `SHORT`, which moves B 142 → 148.4 pt, and the result is saved and reopened;
-   - the `SHORT → LONG` growth refuses.
-2. **Second extension with an approved policy for C.** The script records the current witness:
-   - B's last owned baseline;
-   - C's current first baseline (209.299988 pt in PR #72);
-   - their gap (≈ 20.0 pt).
+| Value | Measured / explicitly approved value (pt) |
+| --- | ---: |
+| Current B last baseline | 189.3000244140625 |
+| Current C first baseline | 209.29998779296875 |
+| Current B→C gap | 19.999963378906244 |
+| Approved minimum B→C gap | 19.999963378906244 |
+| Approved C baseline floor, region `page-9` | 209.29998779296875 |
 
-   The approved policy is a floor at C's current baseline, with a minimum gap equal to the current gap. As audit
-   only, the script records that C's line has the same baseline in the original PDF.
+C's line also occurs at that baseline in the original PDF; that comparison is audit evidence only.
+The original 26.4 pt gap is **not** substituted for the current gap: that policy refused because it
+would move the extension no-op to 215.7000244140625 pt instead of 209.29998779296875 pt.
 
-   A policy with the original 26.4 pt gap must refuse at review, because the extension no-op would move C.
-3. **Acceptance.** It must carry forward unchanged:
-   - A and B paragraphs, slot bindings, source-output records and the generated slot's creation binding;
-   - destinations, destination bindings and generated fonts;
-   - release owners exactly `['slot-1']`.
+| Saved stage | B first | B last | C first | Reopen |
+| --- | ---: | ---: | ---: | --- |
+| Extension no-op | 148.4 | 189.300024 | 209.299988 | restored |
+| Shorten A (`SHORT → FIND`) | 142.0 | 182.900024 | 209.299988 | restored |
+| Regrow A (`FIND → LONG`) | 168.800024 | 209.700049 | 229.700012 | restored |
+| Second edit, B (`SECOND`) | 168.800024 | 209.600073 | 229.600037 | restored |
+| Final no-op | 168.800024 | 209.600073 | 229.600037 | restored |
 
-   The follow edge must carry `baseline_floor = {page-9, C's current baseline}`.
-4. **Extension no-op.** The full `audit`, `audit_original_noop`, and MuPDF and Poppler whole-document pixel identity.
-5. **Shorten** (`SHORT → FIND`, A back to 164 characters):
-   - the continuation is empty and B returns to 142.0 pt;
-   - C stays at the floor, and D–H stay at their no-op baselines.
-   - **Comparison:** under PR #72's current-gap rule, C went to 202.800012 pt (6.5 pt above its original position).
-6. **Regrow** (`FIND → LONG`) and **second edit** (B `SECOND`): C = B's last baseline + the approved gap, below the
-   floor.
-7. **Final no-op:** whole-document MuPDF pixel identity.
-8. **Lifecycle checks.** Every stage reopens `restored` and keeps unchanged:
-   - source-output identities and the generated creation binding;
-   - destinations and follows;
-   - the expected texts.
+On shortening, the generated continuation becomes empty, B returns to 142 pt, and C stays at the
+approved floor. **C no longer rises to PR #72's historical 202.800012 pt.** D–H also keep their no-op
+baselines exactly: D 279, E 369.20001220703125, F 436.5, G 526.0999755859375, H 594.5999755859375 pt.
+On regrowth and the second edit, C follows B's last baseline at the approved minimum gap; the existing
+0.002 pt comparison bound was unchanged. Full-precision values are in the compact evidence.
 
-   The per-stage audit covers foreign content, outside-region pixels, Unicode, codes, GIDs and programs.
-9. **Unsafe growth.** Growth of H beyond the confirmed capacity must refuse and publish nothing.
-10. **Final checks.** Original-vs-final Poppler outside the edited regions shows 0 changed pixels, and the original
-    SHA-256 is unchanged.
+## Preservation and authority
 
-## What is validated instead (synthetic only)
+- **Extension no-op: all ten pages pixel-identical in MuPDF (144 dpi) and Poppler (1600 px scale).**
+  Independent original-identity audit retains 1238 glyphs with 0 pt origin error.
+- Final no-op: all ten pages MuPDF pixel-identical.
+- Separate post-run visual check: shortened page 9 and the original page 9 are entirely Poppler
+  pixel-identical (1131×1600 RGB, 0 changed pixels), also reviewed visually. This supplements the main evaluator.
+- Every stage: foreign text, drawings, images, links and annotations equal; all ten pages checked;
+  outside-approved-region MuPDF changed pixels **0**. Original-versus-final Poppler outside-region
+  changed pixels **0**. Unicode extraction, retained codes/resources/GIDs/font programs, and supplied
+  outlines/advances pass the independent audits.
+- Second acceptance carries forward A/B paragraphs and bindings, existing source-output records,
+  generated-slot creation binding, continuation destinations, destination bindings and generated fonts.
+  Each saved stage preserves immutable source-output identities, generated-slot creation identity,
+  destinations, follows and expected texts. Reopened states pass existing ownership validators.
+  Generated fonts remain exactly unchanged across extension no-op; edited revisions retain proved ownership.
+- Release owners remain exactly `['slot-1']` (B). Appending C–H grants no authority to occupy A's release
+  region. Source structure checks pass and the original SHA is unchanged.
+- Page 10 is a separate section and remains foreign. This is a bounded two-page related-body result,
+  not arbitrary document-wide layout or automatic relationship inference.
 
-`tests/test_sequential_extension.py` runs the PR #72 fixture with the same structure:
-- a page-1 edit;
-- a next-page adoption of C with release region `release-2` reaching 116 pt;
-- A's growth moves C, compressing the C→D gap from 26.5 to 18 pt;
-- an `append_to_region` adoption of D.
+## Measured refusals
 
-These are fixtures, not the real document. See `docs/acrobat-critical-path.md` §6 for the measured behaviour and
-the pull request for the test counts.
+| Request | Actual refusal / publication result |
+| --- | --- |
+| Treat occupied B text as empty continuation capacity | `composed text collides with an unselected glyph`; confirmation refused before writing |
+| Grow A before C–H ownership extension | `paragraphs exceed all explicitly confirmed shared regions`; neither `blocked-1.pdf` nor `.json` published |
+| Approve original 26.4 pt gap on compressed current revision | Extension no-op would move C; proposal refused |
+| Accept against stale original/first-saved revisions | `owned-flow proposal belongs to another PDF revision` |
+| Grow final H beyond confirmed capacity | `paragraphs exceed all explicitly confirmed shared regions`; neither `capacity.pdf` nor `.json` published |
+
+A separate small probe reuses the final real saved state and requests a redraw after adding C to
+`A-next`'s release owners without approval. It recomputes only the transport checksum, leaving the
+confirmed contract unchanged. The runtime refuses the changed contract and publishes neither
+`unauthorized.pdf` nor `unauthorized.json`; details are in the compact evidence. This is an actual
+authority-tampering refusal on the real revision, distinct from the synthetic low-floor collision test.
+
+The precise low-floor collision remains fixture evidence: with the 116 pt release region, a floor of
+110 pt passes extension no-op but shortening would put D at 118.4 pt inside another owner's release
+region, so the edit refuses. This real PDF was not altered to manufacture that geometry.
+
+## Regression scope
+
+This follow-up changes documentation and measured evidence only. **No new pytest run and no full suite**
+were performed. The existing **917 focused passes** are prior PR implementation evidence. The cloud
+follow-up's **3 passed in 258.61 s** on `c57d9f6` are historical, covering:
+
+- `test_approved_follower_floor_keeps_d_out_of_the_release_region`
+- `test_low_approved_floor_still_refuses_the_release_region_collision`
+- `test_follower_placement_policy_refusals`
+
+They were not rerun without a production change. Newly measured here: the complete real-PDF evaluator,
+the saved-state authority refusal, and single-page visual review of the shortened page. The remaining
+real-document coverage gap is a suitable related body continuing across three pages; current three-page
+coverage is synthetic. No new PR, merge, or authority widening is involved.

@@ -5,18 +5,17 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
 
 - State: starting main `045e3551c4a576d40e4d00efbea60a9d8707ba7b` (PR #72). `append_to_region` can now carry an
   explicitly approved placement policy for its first follower: a minimum gap and an in-region baseline floor.
-- **Approved follower spacing: implemented and pinned by synthetic regressions. NOT validated on a real PDF.** The
-  real-PDF evaluation `evaluations/real_japanese/follower_spacing.py` exists but has **not been run**. The session
-  network could not reach the LibreOffice source PDF.
-  - With the approved floor, the PR #72 synthetic case no longer refuses on shortening: D stays at its approved
-    126.9 pt floor, outside the release region.
-  - Without a policy, the PR #72 rule still applies and the same edit still refuses.
-  - Cloud follow-up (2026-10-13, PR head `c57d9f6`): the exact pinned BIZ UDMincho font is now downloaded and
-    SHA-verified, and the Linux evaluator imports with Poppler available. The original PDF request still fails
-    with proxy CONNECT 403; real baselines, renderer differences and lifecycle results remain unmeasured.
-    The three existing approved-floor lifecycle, release-collision and policy-refusal tests pass in **258.61 s**;
-    the previous 917-test set and the full suite were not repeated. No production code was changed.
-  - [Report (not run)](../evaluations/real_japanese/follower-spacing-report.md).
+- **REAL-WORLD FOLLOWER SPACING POLICY VALIDATED — PASS.** On LibreOffice pages 8→9, the current
+  19.999963378906244 pt B→C gap and C's explicitly approved 209.29998779296875 pt floor remain separate.
+  - Extension no-op is pixel-identical on all ten pages in both MuPDF and Poppler. Shortening returns B to
+    142 pt, keeps C at its floor, and leaves D–H unchanged; the PR #72 rise to 202.800012 pt is prevented.
+  - Regrowth puts C at 229.700012 pt, then editing B puts C at 229.600037 pt, each at B's last baseline plus
+    the approved gap. All five stages save/reopen `restored`; foreign content is equal, exterior pixel changes
+    are zero, original SHA and source/generated/destination/font ownership checks pass.
+  - Windows run on `ecdadef8`, 2026-10-13: **6654.876 s, exit 0**, alone. Exact original reused locally and
+    pinned font SHA verified. Capacity and unauthorized-owner requests refuse without publishing PDF/sidecar.
+    No production/assertion/tolerance changes, pytest rerun, or full suite were needed for this follow-up.
+  - [Measured report](../evaluations/real_japanese/follower-spacing-report.md).
 - **REAL-WORLD SEQUENTIAL OWNERSHIP EXTENSION VALIDATED — PASS.** On one edited history, the PR #71 next-page path
   and then the PR #70 same-page path extend ownership twice, each from the latest saved revision.
 
@@ -529,6 +528,15 @@ history, each from the latest saved, restored revision; nothing is re-accepted f
   released owner's removal is proved in the same Transaction as its first save.
 - [Regressions](../tests/test_sequential_extension.py).
 
+**Real lifecycle (LibreOffice pages 8→9): validated.** From the saved A-growth revision, adopting C–H with
+gap 19.999963378906244 pt and C floor 209.29998779296875 pt keeps the extension no-op identical in both
+renderers. Shortening empties A's continuation, returns B to 142 pt and leaves C–H at their no-op positions.
+Regrowth and B's second edit push C only as required by the minimum gap. All saved stages restore and
+retain source-output identities, generated-slot creation identity, destination authority and font ownership;
+release owners stay B alone. The 26.4 pt original-gap policy refuses because it would move the no-op.
+See the [measured report](../evaluations/real_japanese/follower-spacing-report.md) for full baselines, pixel
+counts, exact assets, refusals and command. The low-floor release collision remains synthetic evidence.
+
 ### Approved follower placement for `append_to_region`
 
 The current placement and the future placement policy are reviewed separately. Neither is inferred from an earlier
@@ -590,7 +598,7 @@ B1 bootstrap (COMPLETE)
 ├→ current-revision next-page owner approval (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
 ├→ sequential extensions on one restored history (COMPLETE: next page then same page; three-page next pages on
 │  fixtures)
-└→ approved follower placement for append_to_region (COMPLETE on fixtures; real-PDF evaluation NOT run)
+└→ approved follower placement for append_to_region (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
         B3 → B5 semantic real text
 ```
 
@@ -600,20 +608,14 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: real-PDF validation of the approved follower placement (LibreOffice pages 8–9). The evaluator
-and exact pinned font are available; the cloud follow-up still cannot fetch the source PDF (proxy CONNECT 403).
-Allow wiki.documentfoundation.org in the running environment or provide the exact SHA-verified original.
+NEXT BLOCKER: a real related body continuing across three pages. Approved follower placement is now
+validated on the two-page LibreOffice history; the three-page next-page extension remains fixture-only.
 ```
 
-The follower spacing policy is implemented and pinned on synthetic fixtures (§6). It still has to be measured on the
-real PDF:
-- after shortening, C should stay at its approved 209.299988 pt floor; under PR #72 it was 202.800012 pt;
-- the extension no-op should be pixel-identical in MuPDF and Poppler.
-
-The 2026-10-13 cloud follow-up is **NOT VALIDATED**, with no real-PDF PASS or FAIL measurement. Environment,
-artifact checks and the pinned font revision are recorded in the [follower spacing report](../evaluations/real_japanese/follower-spacing-report.md).
-Saving a network configuration draft does not establish runtime connectivity. No production fix or assertion
-relaxation was justified by the missing-source blocker.
+The follower spacing policy is validated on the real PDF (§6): C stays at 209.299988 pt after shortening,
+and the extension no-op is pixel-identical in MuPDF and Poppler. The earlier cloud source-access blocker
+was resolved by the exact local original on Windows. Environment, measured baselines and preservation
+checks are recorded in the [follower spacing report](../evaluations/real_japanese/follower-spacing-report.md).
 
 The policy keeps at least the approved gap when the paragraph above moves down. It cannot restore an original gap
 larger than the current one without moving the follower in the no-op, so such a policy refuses.
@@ -633,11 +635,9 @@ Tagged source owners cannot cross independent continuation regions.
 
 ## 9. Next PR scope
 
-1. Obtain `evaluations/realpdf/corpus/lo_migration_ja.pdf` with SHA-256
-   `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`. Run
-   `PYTHONUTF8=1 .venv/bin/python -m evaluations.real_japanese.follower_spacing --output <new-output-directory> --font tmp/b3/fonts/BIZUDMincho-Regular.ttf`
-   alone, with the verified pinned font (SHA-256 `468ee6d9…`), and record the actual result.
-2. Then validate a real three-page related body if a suitable document is found.
+1. Find a real related body continuing across three pages, with independently observed source paragraphs.
+2. Validate sequential next-page extensions from saved revisions under the existing fixed-capacity and
+   source-ownership rules. Keep explicit gap/floor approval and no-op reproduction; do not infer extra authority.
 
 Do not convert occupied text into an empty destination or infer document-wide relationships. Page 10 of the
 LibreOffice paper is a separate section and stays foreign.
@@ -678,4 +678,9 @@ Current continuation evidence, regression coverage and reproducible commands:
 [continuation report](../evaluations/real_japanese/continuation-report.md).
 Whole owned-body evidence and final-HEAD commands:
 [owned-body report](../evaluations/real_japanese/owned-body-report.md).
-Final full-suite counts and the exact tested commit are recorded in the current PR.
+Current PR #73 real-PDF validation: **PASS**, Windows, `ecdadef8`, **6654.876 s**, single evaluator.
+The [follower report](../evaluations/real_japanese/follower-spacing-report.md) and
+[compact evidence](../evaluations/real_japanese/follower-spacing-windows-summary.json) record exact assets,
+baselines, all-page pixel audits, restored saves and refusal/publication checks. No production code changed
+in this validation follow-up; no pytest or full-suite run was performed. Prior **917 focused passes** and
+the cloud follow-up's **3 passed in 258.61 s** remain historical regression evidence, not new run counts.
