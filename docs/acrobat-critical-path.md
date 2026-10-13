@@ -11,6 +11,11 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   - With the approved floor, the PR #72 synthetic case no longer refuses on shortening: D stays at its approved
     126.9 pt floor, outside the release region.
   - Without a policy, the PR #72 rule still applies and the same edit still refuses.
+  - Cloud follow-up (2026-10-13, PR head `c57d9f6`): the exact pinned BIZ UDMincho font is now downloaded and
+    SHA-verified, and the Linux evaluator imports with Poppler available. The original PDF request still fails
+    with proxy CONNECT 403; real baselines, renderer differences and lifecycle results remain unmeasured.
+    The three existing approved-floor lifecycle, release-collision and policy-refusal tests pass in **258.61 s**;
+    the previous 917-test set and the full suite were not repeated. No production code was changed.
   - [Report (not run)](../evaluations/real_japanese/follower-spacing-report.md).
 - **REAL-WORLD SEQUENTIAL OWNERSHIP EXTENSION VALIDATED — PASS.** On one edited history, the PR #71 next-page path
   and then the PR #70 same-page path extend ownership twice, each from the latest saved revision.
@@ -595,14 +600,20 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: real-PDF validation of the approved follower placement (LibreOffice pages 8–9). The evaluation
-script exists; the source PDF host was unreachable from the implementing session
+NEXT BLOCKER: real-PDF validation of the approved follower placement (LibreOffice pages 8–9). The evaluator
+and exact pinned font are available; the cloud follow-up still cannot fetch the source PDF (proxy CONNECT 403).
+Allow wiki.documentfoundation.org in the running environment or provide the exact SHA-verified original.
 ```
 
 The follower spacing policy is implemented and pinned on synthetic fixtures (§6). It still has to be measured on the
 real PDF:
 - after shortening, C should stay at its approved 209.299988 pt floor; under PR #72 it was 202.800012 pt;
 - the extension no-op should be pixel-identical in MuPDF and Poppler.
+
+The 2026-10-13 cloud follow-up is **NOT VALIDATED**, with no real-PDF PASS or FAIL measurement. Environment,
+artifact checks and the pinned font revision are recorded in the [follower spacing report](../evaluations/real_japanese/follower-spacing-report.md).
+Saving a network configuration draft does not establish runtime connectivity. No production fix or assertion
+relaxation was justified by the missing-source blocker.
 
 The policy keeps at least the approved gap when the paragraph above moves down. It cannot restore an original gap
 larger than the current one without moving the follower in the no-op, so such a policy refuses.
@@ -622,8 +633,10 @@ Tagged source owners cannot cross independent continuation regions.
 
 ## 9. Next PR scope
 
-1. Run `python -m evaluations.real_japanese.follower_spacing --output tmp/follower --font <BIZUDMincho-Regular.ttf>`
-   alone, with the pinned font (SHA-256 `468ee6d9…`), and record the result.
+1. Obtain `evaluations/realpdf/corpus/lo_migration_ja.pdf` with SHA-256
+   `13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3`. Run
+   `PYTHONUTF8=1 .venv/bin/python -m evaluations.real_japanese.follower_spacing --output <new-output-directory> --font tmp/b3/fonts/BIZUDMincho-Regular.ttf`
+   alone, with the verified pinned font (SHA-256 `468ee6d9…`), and record the actual result.
 2. Then validate a real three-page related body if a suitable document is found.
 
 Do not convert occupied text into an empty destination or infer document-wide relationships. Page 10 of the
