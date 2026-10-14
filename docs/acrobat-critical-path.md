@@ -3,8 +3,16 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `045e3551c4a576d40e4d00efbea60a9d8707ba7b` (PR #72). `append_to_region` can now carry an
+- State: starting main `fbfaa7db79bba853c06c655614854bc9cfdd1930` (PR #73 merged). `append_to_region` can carry an
   explicitly approved placement policy for its first follower: a minimum gap and an in-region baseline floor.
+- **REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW — NOT VALIDATED.** A real Wakayama page-4 edit
+  (36 → 37 characters) and pre-extension no-op both save/reopen `restored`; all six pages have zero
+  exterior pixel differences, and the no-op is entirely pixel-identical in MuPDF and Poppler.
+  The 120-character edit refuses before extension. Current-revision approval of page-5 caution ⑤
+  after page-4 caution ④ refuses because foreign page number `4` lies below the last owned line in
+  its horizontal band. No destination/release authority is granted. Page 6 also belongs to different
+  sections, so it is not forced into the selected flow. Production code is unchanged; three-page
+  success remains synthetic-only. [Measured preflight and limitations](../evaluations/real_japanese/three-page-preflight-report.md).
 - **REAL-WORLD FOLLOWER SPACING POLICY VALIDATED — PASS.** On LibreOffice pages 8→9, the current
   19.999963378906244 pt B→C gap and C's explicitly approved 209.29998779296875 pt floor remain separate.
   - Extension no-op is pixel-identical on all ten pages in both MuPDF and Poppler. Shortening returns B to
@@ -625,6 +633,13 @@ validated. Capacity remains explicit and bounded:
 - adoption covers only the next page after the last source region, and no page already holding regions;
 - there is one release/empty continuation, for the last paragraph.
 
+The real Wakayama saved-edit probe now isolates an additional selection constraint: an unowned page
+number below the last owned paragraph, overlapping its horizontal band, blocks the next-page seam even
+outside the drawing region. `_page_boundary` does not infer footer exemptions. The page-4→5 request
+refuses without changing state, and the selected cautions do not continue into page 6. See the
+[measured refusal](../evaluations/real_japanese/three-page-preflight-report.md); this is not three-page
+validation and does not justify relaxing the ownership guard.
+
 The implementation does not:
 - choose related paragraphs automatically;
 - add pages;
@@ -635,7 +650,9 @@ Tagged source owners cannot cross independent continuation regions.
 
 ## 9. Next PR scope
 
-1. Find a real related body continuing across three pages, with independently observed source paragraphs.
+1. Find a real related body continuing across three pages, with independently observed source paragraphs
+   and seams eligible under the existing foreign-text guard. The inspected Wakayama caution sequence is
+   not such a body; do not repeat it as a three-page success candidate.
 2. Validate sequential next-page extensions from saved revisions under the existing fixed-capacity and
    source-ownership rules. Keep explicit gap/floor approval and no-op reproduction; do not infer extra authority.
 
@@ -684,3 +701,9 @@ The [follower report](../evaluations/real_japanese/follower-spacing-report.md) a
 baselines, all-page pixel audits, restored saves and refusal/publication checks. No production code changed
 in this validation follow-up; no pytest or full-suite run was performed. Prior **917 focused passes** and
 the cloud follow-up's **3 passed in 258.61 s** remain historical regression evidence, not new run counts.
+
+Current three-page preflight on merged PR #73 main: **NOT VALIDATED**, real boundary-refusal probe
+completed in **35.190 s**, Linux; **1 synthetic lifecycle test passed in 59.00 s**, then **2 seam-guard
+tests passed in 20.56 s**. Evaluator and tests ran serially. No production change or full-suite run.
+[Report and commands](../evaluations/real_japanese/three-page-preflight-report.md) /
+[measured summary](../evaluations/real_japanese/three-page-preflight-summary.json).

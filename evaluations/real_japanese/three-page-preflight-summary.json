@@ -1,0 +1,176 @@
+{
+  "verdict": "REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW — NOT VALIDATED",
+  "outcome": "current-revision next-page proposal REFUSED; no extension was authorized",
+  "source": {
+    "url": "https://www.pref.wakayama.lg.jp/prefg/020400/d00220063_d/fil/jissiyouryou.pdf",
+    "sha256": "ccd4d63d09331ff6c6636ba6f2cc4c3398a8ff714abefe727cbd0051a6d5aa7c",
+    "pages": 6
+  },
+  "font_sha256": "468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "pymupdf": "1.27.2.3",
+    "mupdf": "1.27.2",
+    "poppler": "pdftoppm version 26.05.0"
+  },
+  "started_utc": "2026-10-14T15:15:11.993099+00:00",
+  "elapsed_seconds": 35.18954341299832,
+  "source_owner_before": {
+    "slot-0": {
+      "paragraph": "P1",
+      "page": 4,
+      "characters": 36,
+      "range": [
+        0,
+        36
+      ],
+      "occupancy": null
+    }
+  },
+  "source_owner_after": {
+    "slot-0": {
+      "paragraph": "P1",
+      "page": 4,
+      "characters": 37,
+      "range": [
+        0,
+        37
+      ],
+      "occupancy": {
+        "paragraph_id": "P1",
+        "region_id": "R1",
+        "baseline": 755.8800048828125,
+        "last_baseline": 755.8800048828125,
+        "ascent": 9.714302197265624,
+        "descent": 2.59271240234375,
+        "empty": false
+      }
+    }
+  },
+  "saved_sha256": "e95df7038bc0a95c86924d8fb47ff462c11b96e58ffe20b74958ae0893231acc",
+  "current_sha256": "6dbb7995f73eeb848a0cfb2d5e8efaa27aff4cfa7ad1dd2c9ba304a0b9e1c561",
+  "saved_reopen": "restored",
+  "noop_reopen": "restored",
+  "saved_audit": {
+    "scope": "outside-confirmed-regions",
+    "pages": [
+      {
+        "page": 1,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 2,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 3,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 4,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 5,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 6,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      }
+    ]
+  },
+  "noop_audit": {
+    "scope": "whole-document",
+    "pages": [
+      {
+        "page": 1,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 2,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 3,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 4,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 5,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      },
+      {
+        "page": 6,
+        "mupdf_changed_pixels": 0,
+        "poppler_changed_pixels": 0,
+        "foreign_glyphs_drawings_images_links_annotations_equal": true
+      }
+    ]
+  },
+  "noop_codes_gids_resources_programs_equal": true,
+  "noop_generated_font_ownership_equal": true,
+  "noop_source_output_identity_equal": true,
+  "noop_max_origin_drift_pt": 3.0517578125e-05,
+  "capacity_refusal": "paragraphs exceed all explicitly confirmed shared regions",
+  "capacity_pdf_and_sidecar_absent": true,
+  "extension_refusal": "page seam skips unselected text after the last confirmed paragraph",
+  "obstructing_foreign_lines": [
+    {
+      "id": "p4-l38",
+      "text": "4 ",
+      "baseline": 791.0399780273438,
+      "bounds": [
+        302.0400085449219,
+        783.4186401367188,
+        310.3584899902344,
+        793.3790283203125
+      ],
+      "glyph_ids": [
+        0,
+        1
+      ]
+    }
+  ],
+  "next_page_observation_sha256": "6dbb7995f73eeb848a0cfb2d5e8efaa27aff4cfa7ad1dd2c9ba304a0b9e1c561",
+  "requested_release_owners": [
+    "B"
+  ],
+  "granted_destinations": {},
+  "state_unchanged_after_refusal": true,
+  "original_sha_unchanged": true,
+  "three_page_reflow_executed": false,
+  "unrun": [
+    "first-extension acceptance/growth",
+    "second extension",
+    "page-6 continuation",
+    "independent release authorities",
+    "three-page shorten/regrow lifecycle"
+  ]
+}
