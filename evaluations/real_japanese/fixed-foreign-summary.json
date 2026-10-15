@@ -1,0 +1,365 @@
+{
+  "verdict": "REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW — NOT VALIDATED",
+  "scope": "real source and fixed-margin observation; first B1 owner refused",
+  "source": {
+    "url": "https://cruel.org/freeware/cathedral.pdf",
+    "sha256": "4a4fc57797d000eef36858db9c985133a946f383cee031565332ef98a029014f",
+    "unchanged": true,
+    "pages": 40
+  },
+  "font_sha256": "468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2",
+  "started_utc": "2026-10-15T08:57:25.905803+00:00",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "pymupdf": "1.27.2.3",
+    "mupdf": "1.27.2"
+  },
+  "observations": [
+    {
+      "page": 22,
+      "proposed_line_ids": [
+        "p22-l26",
+        "p22-l27",
+        "p22-l28",
+        "p22-l29"
+      ],
+      "characters": 168,
+      "lines": 4,
+      "baselines": [
+        663.2476806640625,
+        682.8864135742188,
+        702.525146484375,
+        722.1528930664062
+      ],
+      "fonts": [
+        [
+          31,
+          "n/a",
+          "Type0",
+          "Ryumin-Light-H",
+          "F1",
+          "H"
+        ],
+        [
+          84,
+          "pfa",
+          "Type1",
+          "JEGXGI+CMR10",
+          "F14",
+          ""
+        ],
+        [
+          111,
+          "pfa",
+          "Type1",
+          "ZKTHBC+CMSS12",
+          "F15",
+          ""
+        ],
+        [
+          48,
+          "n/a",
+          "Type0",
+          "GothicBBB-Medium-H",
+          "F6",
+          "H"
+        ]
+      ],
+      "footer": {
+        "line_id": "p22-l30",
+        "text": "22",
+        "baseline": 780.0723266601562,
+        "bounds": [
+          292.17718505859375,
+          771.2410888671875,
+          303.08636474609375,
+          782.1502685546875
+        ],
+        "glyph_ids": [
+          1055,
+          1056
+        ],
+        "original_codes": [
+          {
+            "glyph_ids": [
+              1055
+            ],
+            "code": "32",
+            "font_resource": "/F14",
+            "origin": [
+              292.17718505859375,
+              780.0723266601562
+            ]
+          },
+          {
+            "glyph_ids": [
+              1056
+            ],
+            "code": "32",
+            "font_resource": "/F14",
+            "origin": [
+              297.63177490234375,
+              780.0723266601562
+            ]
+          }
+        ]
+      },
+      "owner_status": "not accepted",
+      "margin_witness": "observed; grants no authority",
+      "glyph_id_range": [
+        887,
+        1054
+      ],
+      "glyph_count": 168
+    },
+    {
+      "page": 23,
+      "proposed_line_ids": [
+        "p23-l1",
+        "p23-l2",
+        "p23-l3",
+        "p23-l4",
+        "p23-l5",
+        "p23-l6",
+        "p23-l7",
+        "p23-l8",
+        "p23-l9",
+        "p23-l10",
+        "p23-l11",
+        "p23-l12",
+        "p23-l13",
+        "p23-l14",
+        "p23-l15",
+        "p23-l16",
+        "p23-l17",
+        "p23-l18",
+        "p23-l19",
+        "p23-l20",
+        "p23-l21",
+        "p23-l22",
+        "p23-l23",
+        "p23-l24",
+        "p23-l25",
+        "p23-l26",
+        "p23-l27",
+        "p23-l28",
+        "p23-l29",
+        "p23-l30",
+        "p23-l31",
+        "p23-l32",
+        "p23-l33"
+      ],
+      "characters": 1336,
+      "lines": 33,
+      "baselines": [
+        123.25382995605469,
+        142.88160705566406,
+        162.5203399658203,
+        182.1590576171875,
+        201.79779052734375,
+        221.4365234375,
+        241.06430053710938,
+        260.7030029296875,
+        280.34173583984375,
+        299.98046875,
+        319.60821533203125,
+        339.2469787597656,
+        358.88568115234375,
+        378.5244140625,
+        398.1631164550781,
+        417.7909240722656,
+        437.42962646484375,
+        457.068359375,
+        476.70709228515625,
+        496.3348693847656,
+        515.9736328125,
+        535.6123046875,
+        555.2510375976562,
+        574.8897705078125,
+        594.5175170898438,
+        614.15625,
+        633.7949829101562,
+        653.4337158203125,
+        673.0614624023438,
+        692.7001953125,
+        712.3388671875,
+        731.9776000976562,
+        751.6163330078125
+      ],
+      "fonts": [
+        [
+          31,
+          "n/a",
+          "Type0",
+          "Ryumin-Light-H",
+          "F1",
+          "H"
+        ],
+        [
+          84,
+          "pfa",
+          "Type1",
+          "JEGXGI+CMR10",
+          "F14",
+          ""
+        ],
+        [
+          48,
+          "n/a",
+          "Type0",
+          "GothicBBB-Medium-H",
+          "F6",
+          "H"
+        ]
+      ],
+      "footer": {
+        "line_id": "p23-l34",
+        "text": "23",
+        "baseline": 780.0723266601562,
+        "bounds": [
+          292.17718505859375,
+          771.2410888671875,
+          303.08636474609375,
+          782.1502685546875
+        ],
+        "glyph_ids": [
+          1336,
+          1337
+        ],
+        "original_codes": [
+          {
+            "glyph_ids": [
+              1336
+            ],
+            "code": "32",
+            "font_resource": "/F14",
+            "origin": [
+              292.17718505859375,
+              780.0723266601562
+            ]
+          },
+          {
+            "glyph_ids": [
+              1337
+            ],
+            "code": "33",
+            "font_resource": "/F14",
+            "origin": [
+              297.63177490234375,
+              780.0723266601562
+            ]
+          }
+        ]
+      },
+      "owner_status": "not accepted",
+      "margin_witness": "observed; grants no authority",
+      "glyph_id_range": [
+        0,
+        1335
+      ],
+      "glyph_count": 1336
+    },
+    {
+      "page": 24,
+      "proposed_line_ids": [
+        "p24-l1",
+        "p24-l2",
+        "p24-l3",
+        "p24-l4"
+      ],
+      "characters": 147,
+      "lines": 4,
+      "baselines": [
+        123.25382995605469,
+        142.88160705566406,
+        162.5203399658203,
+        182.1590576171875
+      ],
+      "fonts": [
+        [
+          31,
+          "n/a",
+          "Type0",
+          "Ryumin-Light-H",
+          "F1",
+          "H"
+        ],
+        [
+          84,
+          "pfa",
+          "Type1",
+          "JEGXGI+CMR10",
+          "F14",
+          ""
+        ]
+      ],
+      "footer": {
+        "line_id": "p24-l33",
+        "text": "24",
+        "baseline": 780.0723266601562,
+        "bounds": [
+          292.17718505859375,
+          771.2410888671875,
+          303.08636474609375,
+          782.1502685546875
+        ],
+        "glyph_ids": [
+          1277,
+          1278
+        ],
+        "original_codes": [
+          {
+            "glyph_ids": [
+              1277
+            ],
+            "code": "32",
+            "font_resource": "/F14",
+            "origin": [
+              292.17718505859375,
+              780.0723266601562
+            ]
+          },
+          {
+            "glyph_ids": [
+              1278
+            ],
+            "code": "34",
+            "font_resource": "/F14",
+            "origin": [
+              297.63177490234375,
+              780.0723266601562
+            ]
+          }
+        ]
+      },
+      "owner_status": "not accepted",
+      "margin_witness": "observed; grants no authority",
+      "glyph_id_range": [
+        0,
+        146
+      ],
+      "glyph_count": 147
+    }
+  ],
+  "first_owner_refusals": [
+    {
+      "code": "unsupported-for-persistent-flow",
+      "detail": "backend cannot establish unique text-operator provenance for every selected glyph",
+      "paragraph_first_line": "p22-l26"
+    },
+    {
+      "code": "paragraph-evidence",
+      "detail": "P1 (p22-l26): backend cannot establish unique text-operator provenance for every selected glyph"
+    }
+  ],
+  "acceptance_refusal": "page-flow proposal cannot be accepted: unsupported-for-persistent-flow: backend cannot establish unique text-operator provenance for every selected glyph; paragraph-evidence: P1 (p22-l26): backend cannot establish unique text-operator provenance for every selected glyph",
+  "accepted_owners": [],
+  "destinations": [],
+  "release_authority": [],
+  "saves": [],
+  "restores": [],
+  "raster_comparisons": "not run: no accepted owner or edited PDF",
+  "publication": "not attempted: first owner refused before editing; no PDF or state sidecar created",
+  "elapsed_seconds": 1.9793092500185594
+}
