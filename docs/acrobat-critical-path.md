@@ -3,16 +3,18 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `fbfaa7db79bba853c06c655614854bc9cfdd1930` (PR #73 merged). `append_to_region` can carry an
+- State: starting main `9105e1ff617c2014c81953b0e9bb182b83a0e375` (PR #74 merged). `append_to_region` can carry an
   explicitly approved placement policy for its first follower: a minimum gap and an in-region baseline floor.
-- **REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW — NOT VALIDATED.** A real Wakayama page-4 edit
-  (36 → 37 characters) and pre-extension no-op both save/reopen `restored`; all six pages have zero
-  exterior pixel differences, and the no-op is entirely pixel-identical in MuPDF and Poppler.
-  The 120-character edit refuses before extension. Current-revision approval of page-5 caution ⑤
-  after page-4 caution ④ refuses because foreign page number `4` lies below the last owned line in
-  its horizontal band. No destination/release authority is granted. Page 6 also belongs to different
-  sections, so it is not forced into the selected flow. Production code is unchanged; three-page
-  success remains synthetic-only. [Measured preflight and limitations](../evaluations/real_japanese/three-page-preflight-report.md).
+- **REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW — NOT VALIDATED.** The public Japanese translation
+  of *The Cathedral and the Bazaar*, pages 22–24, has related prose and complete paragraph boundaries
+  at both seams. Its non-embedded Japanese `/H` CMap prevents unique text-operator provenance, so
+  B1 refuses the first source owner. No saved real three-page history, destinations or release owners exist.
+- **Explicit fixed-margin seam witnesses implemented.** `inspect_fixed_foreign` and
+  `next_page.fixed_foreign` let a caller identify current-revision, independently protected header/footer
+  lines in bounded outer margins. These lines remain foreign and confer no source ownership, capacity or
+  release authority. Default seam refusals, body-interior guards and all destination checks remain active.
+  Saved three-page lifecycle evidence is synthetic only. The earlier Wakayama cautions were not retried as
+  a three-page candidate. [Scope, real qualification and regressions](../evaluations/real_japanese/fixed-foreign-report.md).
 - **REAL-WORLD FOLLOWER SPACING POLICY VALIDATED — PASS.** On LibreOffice pages 8→9, the current
   19.999963378906244 pt B→C gap and C's explicitly approved 209.29998779296875 pt floor remain separate.
   - Extension no-op is pixel-identical on all ten pages in both MuPDF and Poppler. Shortening returns B to
@@ -493,8 +495,20 @@ B1's proofs.
   region or destination yet. Owners, Unicode, glyph IDs and baselines are re-observed in the current revision.
 - The review witnesses the current page seam: every line partly owned refuses; the last owned line on page *n*
   must belong to the last paragraph; unselected text below it, or above the first adopted line on page *n*+1,
-  in the column band refuses. It records the seam lines but **never subtracts different pages' y coordinates**:
+  in the column band refuses unless covered by the explicit fixed-margin witness below.
+  It records the seam lines but **never subtracts different pages' y coordinates**:
   the edge uses the caller's `page_break` gap with `source-region-floor-and-same-page-follow`.
+- Optional `next_page.fixed_foreign` contains witnesses returned by `inspect_fixed_foreign` for explicitly
+  classified whole header/footer lines. Each witness binds the PDF SHA, page observation, line/glyph IDs,
+  original codes, GIDs, font resources, origins and bounds. Review and acceptance re-observe it, even when
+  the outer proposal has been re-sealed. Stale, altered, duplicate and non-obstructing witnesses refuse.
+  The caller's body rectangle must include the central 75% of the page height and contain all existing
+  source/destination regions and the new source region. Selected fixed ink lies wholly beyond its top or
+  bottom in the corresponding outer eighth. This is a bounded geometric scope, not inferred semantics:
+  the caller still reviews the actual document relationship. Interior headings/text cannot use this exception.
+  Fixed lines must remain unowned and covered by independently established protected regions. They are not
+  removed or redrawn, and cannot become capacity or a continuation destination. Font/code mapping must be
+  exact even for numeric page labels; unsupported fonts receive no numeric exemption.
 - Continuation authority for the last paragraph is explicit and optional. `vacated_continuation` releases only
   adopted next-page owners and is re-proved by `_confirm_destination` on the current revision (geometry,
   emptiness except those owners, boundary, graphics state, CTM, clip). `continuation` takes an empty destination
@@ -633,12 +647,12 @@ validated. Capacity remains explicit and bounded:
 - adoption covers only the next page after the last source region, and no page already holding regions;
 - there is one release/empty continuation, for the last paragraph.
 
-The real Wakayama saved-edit probe now isolates an additional selection constraint: an unowned page
-number below the last owned paragraph, overlapping its horizontal band, blocks the next-page seam even
-outside the drawing region. `_page_boundary` does not infer footer exemptions. The page-4→5 request
-refuses without changing state, and the selected cautions do not continue into page 6. See the
-[measured refusal](../evaluations/real_japanese/three-page-preflight-report.md); this is not three-page
-validation and does not justify relaxing the ownership guard.
+The earlier Wakayama saved-edit probe isolated a page-number seam obstruction. The default request still
+refuses; the explicit fixed-margin proof now provides a bounded way to review eligible protected margins.
+The selected cautions do not continue into page 6 and were not retried. The new, related three-page
+Cathedral candidate instead fails initial B1 ownership because `/H` Japanese source codes cannot be mapped
+uniquely by the current backend. New provider-font coverage does not repair original-code provenance.
+See the [fixed-margin scope and qualification report](../evaluations/real_japanese/fixed-foreign-report.md).
 
 The implementation does not:
 - choose related paragraphs automatically;
@@ -650,9 +664,10 @@ Tagged source owners cannot cross independent continuation regions.
 
 ## 9. Next PR scope
 
-1. Find a real related body continuing across three pages, with independently observed source paragraphs
-   and seams eligible under the existing foreign-text guard. The inspected Wakayama caution sequence is
-   not such a body; do not repeat it as a three-page success candidate.
+1. Qualify a real three-page body with supported original font/code provenance. Cathedral pages 22–24 have
+   the required textual relationship but need unsupported legacy CMap interpretation; broad CMap/font
+   support was not added as an exception to the fixed-margin change. Another original with supported fonts
+   is preferable to rewriting or substituting the source PDF. Wakayama cautions are not a three-page body.
 2. Validate sequential next-page extensions from saved revisions under the existing fixed-capacity and
    source-ownership rules. Keep explicit gap/floor approval and no-op reproduction; do not infer extra authority.
 
@@ -702,8 +717,15 @@ baselines, all-page pixel audits, restored saves and refusal/publication checks.
 in this validation follow-up; no pytest or full-suite run was performed. Prior **917 focused passes** and
 the cloud follow-up's **3 passed in 258.61 s** remain historical regression evidence, not new run counts.
 
-Current three-page preflight on merged PR #73 main: **NOT VALIDATED**, real boundary-refusal probe
+Historical three-page preflight on merged PR #73 main: **NOT VALIDATED**, real boundary-refusal probe
 completed in **35.190 s**, Linux; **1 synthetic lifecycle test passed in 59.00 s**, then **2 seam-guard
 tests passed in 20.56 s**. Evaluator and tests ran serially. No production change or full-suite run.
 [Report and commands](../evaluations/real_japanese/three-page-preflight-report.md) /
 [measured summary](../evaluations/real_japanese/three-page-preflight-summary.json).
+
+Current fixed-margin seam change on merged PR #74 main: **44 focused passes in 533.69 s**, followed by
+**2 lifecycle passes in 140.73 s** (one strengthened rerun; 45 distinct tests). Synthetic fixed-margin
+extension no-ops are all-page MuPDF/Poppler identical; short/regrow saves restore with independent
+page-2/page-3 releases and unchanged native fixed-font bytes. Real Cathedral qualification completed in
+**1.979309 s**, but first-owner B1 refuses unsupported `/H` source provenance: **real three-page NOT VALIDATED**.
+All runs were serial; no full suite. [Measured scope and commands](../evaluations/real_japanese/fixed-foreign-report.md).

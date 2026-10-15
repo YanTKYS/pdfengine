@@ -189,7 +189,10 @@ def propose_owned_flow_extension(source, accepted_model, page_proposals, **selec
     B1 page_overrides, and at most one continuation authority for the last
     paragraph: vacated_continuation (release of named adopted owners, proven
     in the same Transaction) or continuation (an empty destination confirmed
-    on the current revision).
+    on the current revision). Optional fixed_foreign holds current witnesses
+    from post_edit_extension.inspect_fixed_foreign for explicitly classified
+    header/footer lines in the outer page margins. They remain protected,
+    unowned paint and supply no capacity or continuation authority.
     """
     from .shared_flow import _restore
     base = _restore(source, accepted_model)

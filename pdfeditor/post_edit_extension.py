@@ -1,5 +1,6 @@
 """Append current-revision source owners without recreating existing output slots."""
 from copy import deepcopy
+import json
 import math
 
 from .backend import PdfError
@@ -9,9 +10,14 @@ from .page_proposal import (_Analysis, _arguments, _build, _protected, _recomput
 from .shared_flow import (_restore, _slots, _plan, _contract, _breaks, _validate,
                           _layout_options, _reseal, SOURCE_PLACEMENT)
 from .story_flow import confirm_story, _boundaries
+from .selection import inspect_selection_source
 from . import source_ownership, vacated_space
 
-NEXT_PAGE_KEYS = {'region_id', 'page_break', 'page_overrides', 'continuation', 'vacated_continuation'}
+NEXT_PAGE_KEYS = {'region_id', 'page_break', 'page_overrides', 'continuation', 'vacated_continuation', 'fixed_foreign'}
+FIXED_FOREIGN_SCHEMA = 'pdfengine-fixed-foreign-margin-1'
+# Deliberately bounded geometry, not inferred header/footer semantics: the
+# declared body must include the central 75% of the page's height.
+FIXED_MARGIN_FRACTION = 1 / 8
 PAGE_BREAK_PLACEMENT = 'source-region-floor-and-same-page-follow'
 FOLLOWER_PLACEMENT = 'approved-baseline-floor-and-same-region-follow'
 APPEND_KEYS = {'region_id', 'incoming'}
@@ -275,7 +281,103 @@ def _band(box, bounds):
     return box[0] < bounds[2] and box[2] > bounds[0]
 
 
-def _page_boundary(source, base, page, analysis, last, tail):
+def inspect_fixed_foreign(source, *, page, line_ids, classification, body_bounds):
+    """Observe explicitly classified, whole header/footer lines on this revision.
+
+    This grants nothing. Pass the returned witness in ``next_page.fixed_foreign``
+    for review. The caller declares a body rectangle containing the central 75%
+    of the page height; all selected ink must lie outside its top/bottom interior
+    in the corresponding outer eighth. Neither text nor page numbers imply a
+    classification. Review additionally excludes owners and all usable regions.
+    """
+    from .content_stream import ContentPage
+    if type(page) is not int or page < 1:
+        raise PdfError('fixed foreign page must be a positive integer')
+    analysis = _Analysis(source, page)
+    if (classification not in ('header', 'footer') or not isinstance(body_bounds, list)
+            or len(body_bounds) != 4 or not all(_finite(v) for v in body_bounds)):
+        raise PdfError('fixed foreign needs explicit header/footer classification and finite body bounds')
+    x0, y0, x1, y1 = body_bounds
+    if (not 0 <= x0 < x1 <= analysis.width or not 0 <= y0 < y1 <= analysis.height
+            or y0 > analysis.height * FIXED_MARGIN_FRACTION
+            or y1 < analysis.height * (1 - FIXED_MARGIN_FRACTION)):
+        raise PdfError('fixed foreign body bounds must include the central page body; only outer margins qualify')
+    observed = {line['id']: line for line in analysis.lines}
+    if (not isinstance(line_ids, list) or not line_ids or any(not isinstance(i, str) or i not in observed for i in line_ids)
+            or len(set(line_ids)) != len(line_ids)):
+        raise PdfError('fixed foreign needs distinct whole observed line IDs')
+    lines = [line for line in analysis.lines if line['id'] in line_ids]
+    if [line['id'] for line in lines] != line_ids:
+        raise PdfError('fixed foreign lines must be in observed order')
+    for line in lines:
+        box = line['bbox']
+        if (not 0 <= box[0] < box[2] <= analysis.width or not 0 <= box[1] < box[3] <= analysis.height
+                or not (box[3] <= y0 if classification == 'header' else box[1] >= y1)):
+            raise PdfError('fixed foreign line is not wholly outside the declared body in its classified margin')
+    ids = {gid for line in lines for gid in line['glyph_ids']}
+    observation = inspect_selection_source(source, page)
+    # Keep both rendered observations (GID, font, origin, bounds) and interpreted
+    # original codes. The revision hash also binds the exact font/program bytes.
+    glyphs = json.loads(json.dumps([g for g in observation['glyphs'] if g['source_order'] in ids]))
+    content = ContentPage(source, page)
+    try:
+        paint = [dict(glyph_ids=c.source_orders, code=c.code.hex(), font_resource=e.state.font.name,
+                      origin=list(c.origin)) for e in content.events for c in e.chars if set(c.source_orders) & ids]
+    finally:
+        content.close()
+    if (any(len(p['glyph_ids']) != 1 for p in paint)
+            or sorted(gid for p in paint for gid in p['glyph_ids']) != sorted(ids)):
+        raise PdfError('fixed foreign glyphs need exact individual source-code observations')
+    return dict(schema=FIXED_FOREIGN_SCHEMA, source_sha256=observation['source_sha256'], page=page,
+        page_observation_sha256=observation['page_observation_sha256'], classification=classification,
+        body_bounds=deepcopy(body_bounds), line_ids=list(line_ids), lines=deepcopy(lines), glyphs=glyphs, paint=paint)
+
+
+def _fixed_foreign(source, base, page, prior, analysis, owned, added, request):
+    """Re-observe every assertion; exemptions confer no layout or paint authority."""
+    if not isinstance(request, list):
+        raise PdfError('fixed_foreign must be an explicit list of current margin witnesses')
+    result = {prior.page: set(), analysis.page: set()}
+    for witness in request:
+        if (not isinstance(witness, dict) or type(witness.get('page')) is not int
+                or witness['page'] not in result):
+            raise PdfError('fixed foreign witness must name a page at this seam')
+        observed = prior if witness['page'] == prior.page else analysis
+        if (witness.get('source_sha256') != base['pdf_sha256']
+                or witness.get('page_observation_sha256') != observed.observation_sha256):
+            raise PdfError('fixed foreign witness differs from the current revision')
+        try:
+            current = inspect_fixed_foreign(source, **{k: witness[k] for k in
+                ('page', 'line_ids', 'classification', 'body_bounds')})
+        except KeyError as exc:
+            raise PdfError('fixed foreign witness is incomplete') from exc
+        if current != witness:
+            raise PdfError('fixed foreign witness differs from the current revision')
+        number = witness['page']; existing = number == prior.page
+        ids = {gid for line in current['lines'] for gid in line['glyph_ids']}
+        if ids & (owned if existing else added) or result[number] & set(current['line_ids']):
+            raise PdfError('fixed foreign lines must remain unowned and may be witnessed only once')
+        regions = [r['bounds'] for r in base['regions'].values() if r['page'] == number]
+        regions += [d['bounds'] for d in base.get('continuation_destinations', {}).values() if d['page'] == number]
+        if not existing:
+            regions.append(page['region']['bounds'])
+        body = current['body_bounds']
+        if any(not (body[0] <= b[0] < b[2] <= body[2] and body[1] <= b[1] < b[3] <= body[3]) for b in regions):
+            raise PdfError('fixed foreign body bounds must contain all confirmed and proposed regions')
+        selected = [l['id'] for l in analysis.lines if set(l['glyph_ids']) <= added]
+        protected = (base['pages'][str(number)]['protected_regions'] if existing else
+                     _protected(analysis, analysis.foreign(selected))[str(number)])
+        for line in current['lines']:
+            box = line['bbox']
+            if not any(p['role'] in ('fixed', 'header', 'footer') and
+                       p['bounds'][0] <= box[0] < box[2] <= p['bounds'][2] and
+                       p['bounds'][1] <= box[1] < box[3] <= p['bounds'][3] for p in protected):
+                raise PdfError('fixed foreign line needs an independently protected region')
+        result[number].update(current['line_ids'])
+    return result
+
+
+def _page_boundary(source, base, page, analysis, last, tail, fixed_foreign=None):
     """Witness the current page seam; it orders owners, it never yields a gap."""
     number = base['regions'][tail]['page']
     prior = _Analysis(source, number)
@@ -289,20 +391,32 @@ def _page_boundary(source, base, page, analysis, last, tail):
     end = max(lines, key=lambda l: l['baseline'], default=None)
     if end is None or not set(end['glyph_ids']) <= own_last:
         raise PdfError('the last owned line before the page break is not the last confirmed paragraph')
+    added = {gid for p in page['paragraphs'] for gid in p['glyph_ids']}
+    fixed = _fixed_foreign(source, base, page, prior, analysis, owned, added,
+                           fixed_foreign if fixed_foreign is not None else [])
+    used = {number: set(), analysis.page: set()}
     for line in prior.lines:
         if (line['baseline'] > end['baseline'] and not set(line['glyph_ids']) <= owned
                 and _band(line['bbox'], base['regions'][tail]['bounds'])):
-            raise PdfError('page seam skips unselected text after the last confirmed paragraph')
-    added = {gid for p in page['paragraphs'] for gid in p['glyph_ids']}
+            if line['id'] not in fixed[number]:
+                raise PdfError('page seam skips unselected text after the last confirmed paragraph')
+            used[number].add(line['id'])
     head = page['paragraphs'][0]['lines'][0]
     for line in analysis.lines:
         if (line['baseline'] < head['baseline'] and not set(line['glyph_ids']) <= added
                 and _band(line['bbox'], page['region']['bounds'])):
-            raise PdfError('page seam skips unselected text before the additional paragraphs')
-    return dict(previous_page=number, previous_region=tail,
+            if line['id'] not in fixed[analysis.page]:
+                raise PdfError('page seam skips unselected text before the additional paragraphs')
+            used[analysis.page].add(line['id'])
+    if used != fixed:
+        raise PdfError('fixed foreign witnesses may name only foreign lines obstructing this page seam')
+    boundary = dict(previous_page=number, previous_region=tail,
         last_owned_line=dict(id=end['id'], baseline=end['baseline'], text=end['text']),
         next_page=analysis.page, first_added_line=dict(id=head['id'], baseline=head['baseline'], text=head['text']),
         gap='caller-selected same-page gap; coordinates of different pages are never subtracted')
+    if fixed_foreign:
+        boundary['fixed_foreign'] = deepcopy(fixed_foreign)
+    return boundary
 
 
 def _continuation_request(request, base, analysis, last, rid, added_ids):
@@ -363,7 +477,9 @@ def _next_page_review(source, base, page, analysis, paragraphs, relationship, re
     if (not isinstance(overrides, dict) or set(overrides) - {'width', 'region_top', 'region_bottom'}
             or not all(_finite(v) for v in overrides.values())):
         raise PdfError('next-page overrides may only change qualified region geometry')
-    boundary = _page_boundary(source, base, page, analysis, last, tail)
+    if 'fixed_foreign' in request and not isinstance(request['fixed_foreign'], list):
+        raise PdfError('fixed_foreign must be an explicit list of current margin witnesses')
+    boundary = _page_boundary(source, base, page, analysis, last, tail, request.get('fixed_foreign'))
     kind, item = _continuation_request(request, base, analysis, last, rid, ids)
     return dict(base_model_sha256=base['model_sha256'], source_sha256=base['pdf_sha256'],
         retained_paragraphs=flow['paragraphs'], retained_slots=sorted(base['slots']),

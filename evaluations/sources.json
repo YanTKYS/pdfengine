@@ -1,5 +1,11 @@
 [
   {
+    "id": "cathedral_ja",
+    "path": "evaluations/realpdf/corpus/cathedral_ja.pdf",
+    "source_url": "https://cruel.org/freeware/cathedral.pdf",
+    "sha256": "4a4fc57797d000eef36858db9c985133a946f383cee031565332ef98a029014f"
+  },
+  {
     "id": "word_osaka_guideline",
     "path": "evaluations/realpdf/corpus/word_osaka_guideline.pdf",
     "source_url": "https://www.pref.osaka.lg.jp/documents/63648/guideline_tsuuchi.pdf",
