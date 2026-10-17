@@ -23,7 +23,7 @@ from .elements import _close
 from .transaction import Transaction
 from .logical_element import paragraph_from_snapshot
 from .model import Rect
-from .paragraph import ParagraphShaper, plan_paragraph
+from .paragraph import ParagraphShaper, plan_paragraph, source_line_candidates
 from .pdf_save import embedded_font_sha256
 from .proof_session import proof_session
 from .replay import ensure_destination
@@ -513,7 +513,7 @@ def _fragment_source_edits(slot, text, ids, origins):
     return edits
 
 
-def _layout(source,state,pid,binding,text,ids,region,indent,source_edits=None):
+def _layout(source,state,pid,binding,text,ids,region,indent,source_edits=None,baseline=None):
     p=state['paragraphs'][pid];paragraph=paragraph_from_snapshot(source,binding['paragraph']);shaper=None
     try:
         paragraph=bind_destination_styles(paragraph,styles.render_styles(p),styles.render_confirmations(p))
@@ -524,13 +524,18 @@ def _layout(source,state,pid,binding,text,ids,region,indent,source_edits=None):
         paragraph=confirm_paragraph(paragraph,styles.render_confirmations(p))
         if ''.join(u.text for u in units) != text:
             raise PdfError('source-linked edits differ from the projected paragraph')
+        candidates=source_line_candidates(binding, dict(x=region['x'], width=region['width'],
+            baseline=baseline, first_line_indent=indent,
+            min_line_height=state['paragraph_policies'][pid]['min_line_height']), source_edits)
         shaper=ParagraphShaper(paragraph,units,
-                              styles.providers(p),alignment=alignment['value'])
+                              styles.providers(p),alignment=alignment['value'], source_lines=candidates)
         size=styles.properties(p['style_registry'][p['logical']['typing_style_id']])['font_size']
-        return layout_attributed(text,shape=shaper.shape,x=region['x'],baseline=0,width=region['width'],
+        layout=layout_attributed(text,shape=shaper.shape,x=region['x'],baseline=0,width=region['width'],
             min_line_height=state['paragraph_policies'][pid]['min_line_height'],max_bottom=None,
             first_line_indent=indent,empty_ascent=size*.8,empty_descent=size*.2,**alignment_options(alignment),
             source_line_gap=shaper.source_line_gap if source_edits is not None else None)
+        shaper.verify_source_layout(layout,offset=baseline)
+        return layout
     finally:
         if shaper is not None:shaper.close()
         paragraph.close()
@@ -637,9 +642,14 @@ def _plan(source,state,changes):
             origins = source_origins.get(pid)
             linked = (_fragment_source_edits(working['slots'][sid or owned[0]], remaining, ids[cursor:], origins[cursor:])
                       if origins is not None else None)
-            layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent,linked)
+            layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent,linked,baseline)
             first_ascent=layout.lines[0].ascent if layout.lines else policy['empty']['ascent']
-            baseline=_follow_baseline(state,head,rid,spacing_previous,first_ascent)
+            adjusted=_follow_baseline(state,head,rid,spacing_previous,first_ascent)
+            if adjusted != baseline:
+                # A changed follower position cannot use the unchanged-layout
+                # candidate path, even if its text did not change.
+                layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent,linked,adjusted)
+            baseline=adjusted
             if baseline-first_ascent<region['bounds'][1]-.002:raise PdfError('first line exceeds the explicitly confirmed region top')
             fitting=[line for line in layout.lines if baseline+line.baseline+line.descent<=region['bounds'][3]+.002]
             empty_fits=baseline+policy['empty']['descent']<=region['bounds'][3]+.002
@@ -661,7 +671,8 @@ def _plan(source,state,changes):
                 fonts=styles.providers(p),render_styles=styles.render_styles(p),paragraph_style=styles.render_confirmations(p),
                 paragraph_layout=alignment_request(p['logical'].get('alignment',DEFAULT)),
                 _paragraph_continues=continuation(remaining,end,cut),
-                _preserve_source_line_gaps=linked is not None,**options)
+                _preserve_source_line_gaps=linked is not None,
+                _source_line_layout=source_line_candidates(binding,options,edits),**options)
             if not _close(measured['lines'],lines):raise PdfError('local writer differs from final shared paragraph layout')
             ink=[list(Rect(g.ink.x0,g.ink.y0+baseline,g.ink.x1,g.ink.y1+baseline).tuple())
                  for line in fitting for g in line.glyphs if g.ink is not None]
@@ -783,6 +794,7 @@ def edit_shared_flow(source,model,output,model_output,changes):
                     empty_style_id='logical:'+p['logical']['typing_style_id'],owner=sid,**wanted['layout'])
                 edits=(wanted['source_edits'] if 'source_edits' in wanted else
                        styles.replacement(slot['binding'],wanted['text'],wanted['style_spans']))
+                options['_source_line_layout']=source_line_candidates(slot['binding'],wanted['layout'],edits)
                 if sid in plan['new_slots']:
                     from .editable import plan_editable
                     plans[sid]=plan_editable(page,slot['binding']['paragraph'],edits,**options)
