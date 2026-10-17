@@ -210,6 +210,46 @@ def used_destination(output, name, state, pid, follower):
                 same_transaction_release=witness)
 
 
+def compare_regrown_c(output, before, after, before_state, after_state, before_audit, after_audit):
+    """Compare actual C placement and both page-3 rasters without another save."""
+    import shutil
+    import subprocess
+    import pymupdf
+    from PIL import Image
+    from .three_page_audit import _pixels
+
+    directory = output / 'regrow-B-initial-page3-comparison'
+    directory.mkdir(exist_ok=False)
+    old_c = next(p for p in before_audit['placements'] if p['paragraph'] == 'C')
+    new_c = next(p for p in after_audit['placements'] if p['paragraph'] == 'C')
+    observations, images = [], []
+    with pymupdf.open(before) as old, pymupdf.open(after) as new:
+        for document, state in ((old, before_state), (new, after_state)):
+            page = document[2]
+            glyphs = [c for span in page.get_texttrace() for c in span['chars']]
+            ids = state['slots'][owner(state, 'C')]['binding']['paragraph']['selection']['glyph_ids']
+            observations.append([glyphs[i] for i in ids])
+            pix = page.get_pixmap(dpi=144, colorspace=pymupdf.csRGB, alpha=False)
+            images.append(Image.frombytes('RGB', (pix.width, pix.height), pix.samples))
+        mupdf = _pixels(*images, old[2].rect, [])
+        rect = old[2].rect
+    renderer = shutil.which('pdftoppm')
+    assert renderer, 'Poppler is required for regrowth placement equality'
+    for label, pdf in (('initial', before), ('regrow', after)):
+        subprocess.run([renderer, '-f', '3', '-l', '3', '-singlefile', '-r', '144', '-png',
+                        str(pdf), str(directory / label)], check=True, capture_output=True, timeout=120)
+    with Image.open(directory / 'initial.png') as a, Image.open(directory / 'regrow.png') as b:
+        poppler = _pixels(a.convert('RGB'), b.convert('RGB'), rect, [])
+    evidence = dict(scope='regrow-C-placement-and-page3-render-equality', dpi=144,
+        initial_baselines=old_c['baselines'], regrow_baselines=new_c['baselines'],
+        planned_baselines_equal=old_c['baselines'] == new_c['baselines'],
+        glyphs_checked=len(observations[0]), glyphs_equal=observations[0] == observations[1],
+        mupdf_changed_pixels=mupdf, poppler_changed_pixels=poppler)
+    write(output / 'regrow-B-placement-equality.json', evidence)
+    assert evidence['glyphs_equal'] and mupdf == poppler == 0, evidence
+    return evidence
+
+
 def extension(source, state, number, output):
     accepted_path = output / f'extension-{number}-accepted.json'
     if accepted_path.exists():
@@ -367,6 +407,94 @@ def run(output, phase):
             audit=checked, unrun=['shorten/regrow/re-edit lifecycle', 'broad regressions', 'full suite'])
         write(output / 'grown-3-summary.json', result)
         print(result['verdict'] + '; stopped before lifecycle', flush=True)
+    elif phase == 'b-short-regrow':
+        # Exactly two saves from the measured growth, with a full restored/audit
+        # gate between them. Existing artifacts are never replayed or replaced.
+        for stem in ('shorten-B', 'regrow-B'):
+            assert not list(output.glob(f'{stem}*')), 'preserve every previous edit artifact'
+        assert not (output / 'b-short-regrow-summary.json').exists()
+        source, side = output / 'grown-3.pdf', output / 'grown-3.json'
+        audited = json.loads((output / 'grown-3-audit.json').read_text())
+        measured = json.loads((output / 'grown-3-summary.json').read_text())
+        assert source_sha(source) == audited['pdf_sha256'] == measured['output_sha256']
+        assert source_sha(side) == measured['sidecar_sha256']
+        assert audited['scope'] == 'all-page-outside-confirmed-regions' and audited['dpi'] == 144
+        assert [p['page'] for p in audited['pages']] == list(range(1, 14))
+        assert all(p['mupdf_changed_pixels'] == p['poppler_changed_pixels'] == 0
+                   for p in audited['pages'])
+        opened = open_shared_flow(source, side)
+        assert opened['status'] == 'restored'
+        initial = state = opened['state']
+        assert state['pdf_sha256'] == measured['output_sha256']
+        assert set(state['continuation_destinations']) == {'P1-next', 'B-next'}
+        independent_releases(state)
+        first = slot_id(state['continuation_destinations']['P1-next'])
+        second = slot_id(state['continuation_destinations']['B-next'])
+        cslot = owner(state, 'C')
+        c_floor = state['regions'][state['slots'][cslot]['region_id']]['first_baseline']
+        assert state['slots'][second]['occupancy'] is not None
+        results = []
+        print('b-short-regrow input qualified; executing only the two requested edits', flush=True)
+        for name, old, new in [('shorten-B', B_LONG, B_FIND), ('regrow-B', B_FIND, B_LONG)]:
+            started = time.perf_counter()
+            edits = change(state, 'B', old, new)
+            input_sha = source_sha(source)
+            write(output / f'{name}-request.json', dict(source_sha256=input_sha, edits=edits))
+            source, state = save(source, state, output, name, edits)
+            checked = json.loads((output / f'{name}-audit.json').read_text())
+            assert [p['page'] for p in checked['pages']] == list(range(1, 14))
+            assert all(p['mupdf_changed_pixels'] == p['poppler_changed_pixels'] == 0
+                       for p in checked['pages'])
+            assert set(state['slots']) == set(initial['slots'])
+            for sid, previous in initial['slots'].items():
+                assert all(state['slots'][sid][k] == previous[k] for k in ('paragraph_id', 'region_id'))
+                assert state['slots'][sid].get('creation_binding') == previous.get('creation_binding')
+                if previous.get('source_output'):
+                    assert immutable(state['slots'][sid]['source_output']) == immutable(previous['source_output'])
+            assert state['continuation_destinations'] == initial['continuation_destinations']
+            assert state['slots'][first]['occupancy'] == initial['slots'][first]['occupancy']
+            continuation = state['slots'][second]
+            if name == 'shorten-B':
+                assert continuation['occupancy'] is None
+                assert continuation['range'][0] == continuation['range'][1]
+                assert continuation['binding']['paragraph']['text'] == ''
+                assert continuation['binding']['paragraph']['selection']['glyph_ids'] == []
+                assert state['slots'][cslot]['occupancy']['baseline'] == c_floor
+                placement_equality = None
+            else:
+                proof = used_destination(output, name, state, 'B', 'C')
+                write(output / f'{name}-destination-proof.json', proof)
+                assert state['paragraphs']['B']['logical']['text'] == initial['paragraphs']['B']['logical']['text']
+                assert continuation['occupancy'] == initial['slots'][second]['occupancy']
+                assert continuation['range'] == initial['slots'][second]['range']
+                assert state['slots'][cslot]['occupancy']['baseline'] == initial['slots'][cslot]['occupancy']['baseline']
+                original_b = [p for p in audited['placements'] if p['paragraph'] == 'B']
+                current_b = [p for p in checked['placements'] if p['paragraph'] == 'B']
+                assert [{k: p[k] for k in ('slot', 'characters', 'lines', 'range', 'baselines')} for p in current_b] == [
+                    {k: p[k] for k in ('slot', 'characters', 'lines', 'range', 'baselines')} for p in original_b]
+                placement_equality = compare_regrown_c(output, output / 'grown-3.pdf', source,
+                    initial, state, audited, checked)
+            assert source_sha(SOURCE) == original_sha
+            result = dict(name=name, scope='b-short-regrow-only', input_sha256=input_sha,
+                output_sha256=source_sha(source), sidecar_sha256=source_sha(output / f'{name}.json'),
+                reopen='restored', elapsed_seconds=time.perf_counter() - started,
+                B_characters=len(state['paragraphs']['B']['logical']['text']),
+                placements=[p for p in checked['placements'] if p['paragraph'] in ('B', 'C')],
+                continuation_slot=second, continuation_occupancy=continuation['occupancy'],
+                creation_binding=continuation['creation_binding'],
+                existing_slot_markers_and_creation_bindings_preserved=True,
+                destinations_unchanged=True, release_owners={k: list(v['vacated_space']['owners'])
+                    for k, v in state['continuation_destinations'].items()},
+                original_sha256=original_sha, original_unchanged=True, audit=checked)
+            result['initial_growth_placement_comparison'] = placement_equality
+            write(output / f'{name}-summary.json', result)
+            results.append(result)
+            print(name, 'measured PASS', flush=True)
+        write(output / 'b-short-regrow-summary.json', dict(scope='b-short-regrow-only',
+            verdict='REAL-PDF THREE-PAGE SHORTEN/REGROW — PASS',
+            real_world_three_page_sequential_reflow='NOT VALIDATED', stages=results,
+            unrun=['A edits', 'further re-edit lifecycle', 'additional no-op', 'broad regressions', 'full suite']))
+        print('REAL-PDF THREE-PAGE SHORTEN/REGROW — PASS; stopped after two saves', flush=True)
     elif phase == 'lifecycle':
         source = output / 'grown-3.pdf'
         opened = open_shared_flow(source, output / 'grown-3.json')
@@ -422,7 +550,7 @@ if __name__ == '__main__':
     logging.getLogger('fontTools.ttLib.tables._h_e_a_d').setLevel(logging.ERROR)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--phase', choices=['initial', 'extend-2', 'grow-2', 'extend-3', 'grow-3', 'lifecycle'], required=True)
+    parser.add_argument('--phase', choices=['initial', 'extend-2', 'grow-2', 'extend-3', 'grow-3', 'b-short-regrow', 'lifecycle'], required=True)
     args = parser.parse_args()
     started = time.perf_counter()
     try:

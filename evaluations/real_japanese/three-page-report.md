@@ -4,11 +4,110 @@ The full validation is incomplete. The [limited no-op follow-up](three-page-noop
 resolved the page-2 and page-3 differences: the saved third-page extension now
 reopens `restored` with zero changed pixels on all 13 pages in both renderers.
 The subsequent **B growth onto page 3 passes**, with C moved down and zero changes
-outside approved regions on all 13 pages in both renderers. The remaining
-shorten/regrow/re-edit lifecycle is unrun; **REAL-WORLD THREE-PAGE SEQUENTIAL
+outside approved regions on all 13 pages in both renderers. B's bounded
+shorten/regrow pair also passes, including reuse of the same continuation and
+exact C glyph/render placement after regrowth. A's remaining edits, further
+re-edit lifecycle and final no-op are unrun; **REAL-WORLD THREE-PAGE SEQUENTIAL
 REFLOW remains NOT VALIDATED**.
 
 Starting main: `f93c8f47bc8d2c277b01464178d75f3e1cc23e89` (PR #75 merged).
+
+## B shorten/regrow — bounded PASS
+
+**REAL-PDF THREE-PAGE SHORTEN/REGROW — PASS.** Starting at
+`ef8dd78f542cb31fc79eaa99858d65d2895914dc`, this follow-up performs exactly two
+edit/saves: `grown-3 → shorten-B → regrow-B`. The input PDF/sidecar hashes match
+the growth summary and completed 13-page audit below; it reopens `restored`.
+The new `b-short-regrow` phase rejects existing output artifacts, shortens
+`B_LONG → B_FIND`, and only after that save, restored state and full audit pass
+applies `B_FIND → B_LONG` to the shortened saved revision. It replays no earlier
+qualification, extension, no-op or growth. No production change is needed.
+
+| Measurement | Initial `grown-3` | `shorten-B` | `regrow-B` |
+| --- | --- | --- | --- |
+| B characters / lines | 181 / 5 | 138 / 4 | 181 / 5 |
+| B page-2 characters / lines | 148 / 4 | 138 / 4 | 148 / 4 |
+| B page-3 characters / glyphs / lines | 33 / 33 / 1 | 0 / 0 / 0 | 33 / 33 / 1 |
+| B page-3 logical range | `[148,181)` | `[138,138)` | `[148,181)` |
+| B page-3 occupancy / baseline | occupied / 100 pt | `None` / none | occupied / 100 pt |
+| C characters / glyphs / lines | 130 / 129 / 4 | 130 / 129 / 4 | 130 / 129 / 4 |
+| C first baseline | 126.4 pt | 116.41998291015625 pt | 126.4 pt |
+
+The short text has 138 characters, rather than the original pre-growth 139,
+because the earlier explicitly authorized growth already removed its trailing
+space. This pair performs no further trimming. B's four page-2 baselines remain
+exactly the values in the growth section below. On regrowth its full text,
+fragment ranges, line counts, baselines and continuation occupancy equal the
+initial growth. Shortening leaves no text or glyph IDs in the dormant page-3
+slot, and C's first baseline equals the existing page-3 source-region floor
+exactly; no tolerance is introduced.
+
+C's complete **planned** baselines are:
+
+| Line | Initial growth (pt) | Shortened (pt) | Regrown (pt) |
+| --- | ---: | ---: | ---: |
+| 1 | 126.4 | 116.41998291015625 | 126.4 |
+| 2 | 151.95999755859376 | 141.97998046875 | 151.95999755859376 |
+| 3 | 177.639990234375 | 167.659912109375 | 177.63992919921876 |
+| 4 | 203.19998779296876 | 193.219970703125 | 203.19998779296876 |
+
+The regrown third planned baseline differs from the initial plan by
+**−0.00006103515625 pt**. This is recorded, not rounded away or described as
+bit-identical planning. In contrast, all **129 actual C glyphs** have exactly
+equal Unicode/GID/origin/bounds between initial growth and regrowth, with maximum
+origin delta **0.0 pt**. A separate read-only whole-page-3 comparison at 144 dpi
+also gives **0 changed pixels in MuPDF and 0 in Poppler**, including both B and C.
+It takes 0.741829 s and performs no save. These physical-placement checks are the
+final equality gate, added to the reproduction phase after verifying the saved
+results; the two edits are not rerun. The original phase's provisional PASS is
+accepted only after this additional gate passes.
+
+Both stages preserve slot
+`continuation-afdebcf635632e109f04ecb8`, its creation binding and its destination
+contract. Its creation source remains
+`45bf2173d2f4f1d583284dfcad37c4cacbfb4bbb0c52dbfc097de173ff55d6e1`, and its
+destination-contract SHA remains
+`707a11a5cdff34fd1fc101e3c826950e5d6bdd010726f2edf175207326423e27`.
+All existing slot identities, immutable source markers and generated creation
+bindings are preserved. `P1-next` remains released only by D1 (`slot-1`), and
+`B-next` only by C (`slot-6`); their destination contracts remain unchanged.
+A's continuation occupancy is unchanged. Regrowth's destination proof records
+the same-transaction release and safe final C placement.
+
+Each output reopens **`restored`** and independently passes **all 13 pages with
+0 changed pixels outside confirmed regions in both renderers at 144 dpi**.
+Foreign glyph geometry/code/GID/font program and drawings remain equal; the
+original's images, links and annotations remain empty. Each audit checks 1,081
+retained/reused glyphs for exact code/GID/resource/program equality; approved
+provider glyph checks number 12 after shortening and 55 after regrowth. The
+provider specification/program is unchanged. Page-2 `/PRF2` is regenerated for
+the replaced B glyphs; its regrown subset SHA equals the initial growth subset
+SHA. This is not an exception for retained glyphs, whose program equality remains
+mandatory. Page-3 `/PRF1` and the remaining registry entries are unchanged.
+
+| Saved output | PDF SHA-256 | Sidecar SHA-256 | Operation time |
+| --- | --- | --- | ---: |
+| `shorten-B` | `9866f31094b31b3442fbf5b8942ffec3506783ea6249060250c30b4128ff23ce` | `ae797aa7a53aa114e91f3c9bc3ae04ed367a96dd28f7b32b680383a41c9990ba` | 168.396367 s |
+| `regrow-B` | `121541869471fd0ea28f32d11c8faf4547d1bb17846fc206cea5bf264cc6ca71` | `2cb13bbb21d612de77c2c2847b1337a05689c7e8d3a246f16c0699b2e944c9c5` | 179.656200 s |
+
+The CLI phase completes in **360.235449 s**, exit 0, including input validation
+and both stages. The separate read-only placement comparison is timed above.
+Original SHA-256 remains
+`70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2`.
+All output artifacts are under `tmp/courts-three-page/run-01`: each stage retains
+its PDF, sidecar, request, report, audit and summary; regrowth also retains its
+destination proof. `regrow-B-placement-equality.json` links the extra physical
+placement evidence, and `b-short-regrow-summary.json` records the bounded verdict.
+The execution log is `tmp/courts-three-page-b-short-regrow.log`.
+
+```bash
+.venv/bin/python -u -m evaluations.real_japanese.three_page_edit \
+  --output tmp/courts-three-page/run-01 --phase b-short-regrow
+```
+
+Syntax compilation and whitespace checks pass. No extra edit/save, test suite,
+A edit, further re-edit lifecycle, additional no-op, PR or merge is performed.
+The full three-page sequential-reflow verdict remains **NOT VALIDATED**.
 
 ## Measured third-page growth — bounded PASS
 
