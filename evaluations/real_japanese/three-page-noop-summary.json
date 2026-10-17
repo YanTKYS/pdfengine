@@ -1,17 +1,18 @@
 {
   "scope": "extension-3-noop-only",
-  "verdict": "FAIL: page 3 Poppler differs by 225 pixels",
-  "target_page_2_difference_resolved": true,
+  "verdict": "PASS: all 13 pages identical in MuPDF and Poppler",
   "real_world_three_page_sequential_reflow": "NOT VALIDATED",
+  "starting_checkpoint": "1e5df9ffdc107adca2be83451170da340f8556d0",
   "real_noop_attempts_in_this_followup": 1,
-  "elapsed_seconds": 158.380476,
-  "exit_code": 1,
+  "elapsed_seconds": 175.1241642399691,
+  "exit_code": 0,
   "input_sha256": "471075481a135ec49a12c8a83220596598b13c2a84d621d10ce071e2662c5939",
-  "output_sha256": "c3f855ca6c590f7334fbb47bfe1acb7ef734e1a35520bf90edabff665cc1a7af",
+  "output_sha256": "45bf2173d2f4f1d583284dfcad37c4cacbfb4bbb0c52dbfc097de173ff55d6e1",
   "original_sha256": "70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2",
   "original_unchanged": true,
   "save_reopen": "restored",
-  "all_page_audit_complete": false,
+  "all_page_audit_complete": true,
+  "dpi": 144,
   "renderer_results": [
     {
       "page": 1,
@@ -26,7 +27,7 @@
     {
       "page": 3,
       "mupdf_changed_pixels": 0,
-      "poppler_changed_pixels": 225
+      "poppler_changed_pixels": 0
     },
     {
       "page": 4,
@@ -79,36 +80,72 @@
       "poppler_changed_pixels": 0
     }
   ],
-  "partial_evidence": "Independent audit reached the page 3 Poppler assertion after all earlier page/glyph/foreign checks; it raises on the first failure.",
-  "d1_baselines_before": [
-    126.4,
-    151.95999755859376,
-    177.639990234375,
-    203.19998779296876,
-    228.7599853515625,
-    254.43997802734376,
-    279.9999755859375,
-    305.5900024414062,
-    331.2699951171875
+  "all_page_foreign_codes_gids_fonts_geometry_equal": true,
+  "all_page_drawings_images_links_annotations_equal": true,
+  "empty_original_categories": [
+    "images",
+    "links",
+    "annotations"
   ],
-  "d1_baselines_after": [
-    126.4,
-    151.95999755859376,
-    177.639990234375,
-    203.19998779296876,
-    228.7599853515625,
-    254.43997802734376,
-    279.9999755859375,
-    305.5900024414062,
-    331.2699951171875
-  ],
+  "retained_or_reused_codes_gids_programs_checked": 1093,
+  "max_origin_error_pt": 0.000244140625,
+  "font_registry_evidence": {
+    "mode": "exact-registry-equality",
+    "explicit_provider_programs_unchanged": true,
+    "changes": [],
+    "retained_and_reused_occurrences": "exact code/GID/resource/program equality in independent audit",
+    "new_occurrences": "provider program SHA, outline and advance equality in independent audit"
+  },
+  "identity_checks": {
+    "source_markers": "preserved",
+    "slot_creation_bindings": "unchanged",
+    "continuation_destinations": "unchanged",
+    "page_registry": "unchanged",
+    "logical_text": "unchanged",
+    "independent_release_owners": {
+      "P1-next": "D1",
+      "B-next": "C"
+    }
+  },
+  "diagnosis": {
+    "glyph": "降",
+    "page": 3,
+    "code": "3746",
+    "gid": 14150,
+    "font_resource": "/F2",
+    "pixel_bounds": [
+      525,
+      212,
+      546,
+      235
+    ],
+    "native_x": 261.49999999999994,
+    "rounded_x": 261.5,
+    "cause": "12-significant-digit source Tm serialization crosses Poppler raster threshold",
+    "single_coordinate_in_memory_diagnostic": {
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "diagnostic_pdf_published": false,
+      "existing_pdfs_unchanged": true
+    }
+  },
   "direct_tests": {
-    "passed": 13,
+    "distinct_passed": 15,
     "skipped": 0,
-    "elapsed_seconds": 4.94,
+    "initial_batch": {
+      "passed": 14,
+      "failed": 1,
+      "elapsed_seconds": 5.37,
+      "failure": "new fixture imported parser from incorrect module"
+    },
+    "corrected_node": {
+      "passed": 1,
+      "elapsed_seconds": 0.24,
+      "node": "tests/test_retained_source_positions.py::test_source_matrix_roundtrip_has_pdf_numeric_syntax"
+    },
     "files": [
-      "tests/test_witnessed_source_line_positions.py",
-      "tests/test_retained_source_positions.py"
+      "tests/test_retained_source_positions.py",
+      "tests/test_witnessed_source_line_positions.py"
     ]
   },
   "unrun": [
@@ -118,117 +155,53 @@
     "full suite"
   ],
   "artifacts": {
-    "pdf": "tmp/courts-three-page/run-01/extension-3-noop-stable.pdf",
-    "sidecar": "tmp/courts-three-page/run-01/extension-3-noop-stable.json",
-    "report": "tmp/courts-three-page/run-01/extension-3-noop-stable-report.json",
-    "failed_audit_images": "tmp/courts-three-page/run-01/extension-3-noop-stable-audit",
-    "log": "tmp/courts-three-page-noop-3-stable.log"
+    "pdf": "tmp/courts-three-page/run-01/extension-3-noop-roundtrip.pdf",
+    "sidecar": "tmp/courts-three-page/run-01/extension-3-noop-roundtrip.json",
+    "audit": "tmp/courts-three-page/run-01/extension-3-noop-roundtrip-audit.json",
+    "report": "tmp/courts-three-page/run-01/extension-3-noop-roundtrip-report.json",
+    "result": "tmp/courts-three-page/run-01/extension-3-noop-roundtrip-result.json",
+    "log": "tmp/courts-three-page-noop-3-roundtrip.log",
+    "diagnosis": "tmp/courts-three-page/run-01/page3-225-rounding-diagnosis.json"
   },
-  "page_3_existing_difference_comparison": {
-    "old_noop_vs_input": {
-      "pixels": 225,
-      "bbox": [
-        525,
-        212,
-        546,
-        235
-      ]
-    },
-    "new_noop_vs_input": {
-      "pixels": 225,
-      "bbox": [
-        525,
-        212,
-        546,
-        235
-      ]
-    },
-    "old_noop_vs_new_noop": {
-      "pixels": 0,
-      "bbox": null
-    }
-  },
-  "page_3_difference_predates_repair": true,
-  "additional_direct_tests": {
-    "passed": 3,
-    "skipped": 0,
-    "elapsed_seconds": 8.06,
-    "nodes": [
-      "tests/test_source_adjacency_flow.py::test_noedit_reproduces_every_glyph_without_justify",
-      "tests/test_source_adjacency_flow.py::test_two_edits_wrap_push_following_and_preserve_foreign",
-      "tests/test_rich_layout.py::test_witnessed_line_gaps_keep_minimum_height_metrics_and_bottom_limits"
-    ]
-  },
-  "distinct_passing_tests": 16,
-  "unvisited_pages_by_aborted_glyph_audit": [
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13
-  ],
-  "remaining_page_read_only_render_comparison": {
-    "scope": "existing-output-render-comparison-only",
-    "dpi": 144,
-    "pages": [
-      {
-        "page": 4,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
+  "historical_page_2_followup": {
+    "verdict": "FAIL: page 3 Poppler differs by 225 pixels",
+    "target_page_2_difference_resolved": true,
+    "real_noop_attempts_in_this_followup": 1,
+    "elapsed_seconds": 158.380476,
+    "exit_code": 1,
+    "output_sha256": "c3f855ca6c590f7334fbb47bfe1acb7ef734e1a35520bf90edabff665cc1a7af",
+    "page_3_difference_predates_repair": true,
+    "page_3_existing_difference_comparison": {
+      "old_noop_vs_input": {
+        "pixels": 225,
+        "bbox": [
+          525,
+          212,
+          546,
+          235
+        ]
       },
-      {
-        "page": 5,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
+      "new_noop_vs_input": {
+        "pixels": 225,
+        "bbox": [
+          525,
+          212,
+          546,
+          235
+        ]
       },
-      {
-        "page": 6,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
-      },
-      {
-        "page": 7,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
-      },
-      {
-        "page": 8,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
-      },
-      {
-        "page": 9,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
-      },
-      {
-        "page": 10,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
-      },
-      {
-        "page": 11,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
-      },
-      {
-        "page": 12,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
-      },
-      {
-        "page": 13,
-        "mupdf_changed_pixels": 0,
-        "poppler_changed_pixels": 0
+      "old_noop_vs_new_noop": {
+        "pixels": 0,
+        "bbox": null
       }
-    ],
-    "elapsed_seconds": 7.029793401015922
-  },
-  "all_pages_render_compared": true,
-  "new_render_differences_outside_target_page": false
+    },
+    "distinct_passing_tests": 16,
+    "artifacts": {
+      "pdf": "tmp/courts-three-page/run-01/extension-3-noop-stable.pdf",
+      "sidecar": "tmp/courts-three-page/run-01/extension-3-noop-stable.json",
+      "report": "tmp/courts-three-page/run-01/extension-3-noop-stable-report.json",
+      "failed_audit_images": "tmp/courts-three-page/run-01/extension-3-noop-stable-audit",
+      "log": "tmp/courts-three-page-noop-3-stable.log"
+    }
+  }
 }

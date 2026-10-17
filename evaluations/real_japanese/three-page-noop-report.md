@@ -5,7 +5,85 @@ no-op and directly related regressions. Three-page growth and the remaining
 shorten/regrow/re-edit lifecycle are not executed here. **REAL-WORLD THREE-PAGE
 SEQUENTIAL REFLOW remains NOT VALIDATED.** No PR is created for this follow-up.
 
+## Page-3 follow-up: source-coordinate serialization
+
+**PASS — extension-3 no-op only.** The single authorized real save completed in
+**175.124164 s**, exit 0. All **13 pages have 0 changed pixels in both MuPDF and
+Poppler at 144 dpi**, including the previously failing pages 2 and 3. The saved
+sidecar reopened `restored`. Three-page growth and its remaining lifecycle remain
+unrun and **NOT VALIDATED**.
+
+Starting checkpoint: `1e5df9ffdc107adca2be83451170da340f8556d0`, with the page-2
+repair below retained. The same saved `grown-2.pdf` and accepted extension are
+reused. No initial qualification, adoption, edit history or growth is replayed.
+
+The existing page-3 difference covers one glyph, **降**, at 144-dpi bounds
+`(525, 212, 546, 235)`. At 144 dpi this is `(262.5, 106, 273, 117.5)` pt
+in top-left page coordinates, or approximately `(262.5, 724.42, 273, 735.92)`
+in native bottom-left PDF coordinates on this unrotated page.
+Its code `3746`, GID 14150, `/F2` font resource and embedded
+program are unchanged, as are its CTM, rise, paint state and observed MuPDF
+position. The original TJ starts at native x=135.5 and advances through ten glyphs
+and fractional TJ adjustments. Its binary64 accumulation reaches
+`261.49999999999994`; the no-op's 12-significant-digit Tm serializer emits `261.5`.
+This is a different cause from the page-2 layout drift below.
+
+A one-coordinate causal diagnostic replaces only that x operand in memory with
+`261.49999999999994`. Against the saved input, the entire page then has **0 changed
+pixels in both MuPDF and Poppler**. Both existing PDFs retain their SHA-256; no
+diagnostic PDF is published or used as an editing input. Evidence is retained in
+`tmp/courts-three-page/run-01/page3-225-rounding-diagnosis.json`.
+
+The production repair serializes an unchanged retained occurrence's witnessed
+native Tm with binary64 round-trip decimal precision. Fixed decimal notation
+avoids exponents, which PDF numeric operands do not permit. The existing exact
+position, CTM, rise and basis guard is unchanged; moved and new glyphs retain the
+normal serializer. Global number formatting is unchanged. The earlier generated
+line-candidate proof now compares parsed normal-writer operands with the actual
+native operands, so rounding both sides cannot hide a difference. Its final
+range/baseline guard and ordinary fallback remain in force.
+
+Direct verification passed **15 distinct tests**, no skips, across
+`tests/test_retained_source_positions.py` and
+`tests/test_witnessed_source_line_positions.py`. The first batch passed 14 tests
+in 5.37 s and exposed one new test's incorrect parser import. After correcting
+that fixture, only its failed node was rerun: **1 passed in 0.24 s**. The two new
+cases check exact per-glyph native matrices after TJ accumulation, retained codes
+and font resources, restored state, both renderers, and fixed-point PDF syntax
+for small and large operands. Existing cases cover moved occurrences, edited
+content and tampered line candidates. These counts are not added to the
+overlapping historical tests below.
+
+The completed independent audit checks all-page foreign glyph geometry, original
+codes/GIDs/font resources/programs, drawings, images, links and annotations, plus
+**1,093 retained/reused output occurrences**. Generated-font registry and explicit
+provider specifications are unchanged. Existing source markers, slot creation
+bindings, page/destination registries and logical text are preserved. Independent
+release ownership remains `P1-next → D1` and `B-next → C`. Images, links and
+annotations are empty in this original; their equality check does not establish
+preservation of nonempty examples. The maximum planned-versus-observed origin
+error is 0.000244140625 pt; no tolerance was changed and both raster comparisons
+are exact.
+
+The original SHA-256 remains
+`70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2`.
+The new output SHA-256 is
+`45bf2173d2f4f1d583284dfcad37c4cacbfb4bbb0c52dbfc097de173ff55d6e1`.
+Artifacts use the new stem
+`tmp/courts-three-page/run-01/extension-3-noop-roundtrip`: PDF, sidecar,
+`-report.json`, `-audit.json` and `-result.json`. The execution log is
+`tmp/courts-three-page-noop-3-roundtrip.log`. All earlier failures and diagnostic
+evidence are retained. This follow-up performs exactly one real no-op save;
+the one-coordinate in-memory diagnostic is a separate render-only experiment.
+No further real edit, broad test, full suite or PR is performed.
+
+[Current machine-readable result](three-page-noop-summary.json).
+
+## Historical page-2 follow-up
+
 Starting checkpoint: `35a3e3f` (preserved WIP on `validate-real-three-page-reflow`).
+The following measurements describe that earlier follow-up, before the page-3
+repair above.
 
 ## Diagnosis
 

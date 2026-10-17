@@ -1,8 +1,10 @@
 # Real Japanese three-page sequential reflow
 
 The full validation is incomplete. The [limited no-op follow-up](three-page-noop-report.md)
-resolved the page-2 difference but stopped on a page-3 Poppler difference of 225 pixels.
-This report does not claim a complete three-page PASS.
+resolved the page-2 and page-3 differences: the saved third-page extension now
+reopens `restored` with zero changed pixels on all 13 pages in both renderers.
+Three-page growth and the remaining lifecycle are unrun; this report does not
+claim a complete three-page PASS.
 
 Starting main: `f93c8f47bc8d2c277b01464178d75f3e1cc23e89` (PR #75 merged).
 

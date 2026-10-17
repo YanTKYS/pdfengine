@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict
+from decimal import Decimal
 from io import BytesIO
 import hashlib
 import math
@@ -30,6 +31,20 @@ def _name(value):
     stream = BytesIO()
     NameObject(value).write_to_stream(stream)
     return stream.getvalue()
+
+
+def _source_matrix_operator(values):
+    """Preserve witnessed binary64 source positions without PDF exponents.
+
+    The ordinary writer's 12-digit formatting can round a TJ-accumulated
+    position across a renderer threshold. Only unchanged source occurrences
+    use these round-trip decimal operands; layout coordinates keep the normal
+    serializer and must independently satisfy their existing guards.
+    """
+    if any(not math.isfinite(float(value)) for value in values):
+        raise PdfError('nonfinite source matrix operand')
+    return b' '.join(format(Decimal(repr(float(value))), 'f').encode('ascii')
+                     for value in values) + b' Tm '
 
 
 def _style_witness(style, writer_spacing, inverse_ctm):
@@ -172,7 +187,9 @@ class ParagraphShaper:
                         or unit.event.state.ts != ts or tuple(matrix[:4]) != tuple(basis)):
                     return None
                 point = pymupdf.Point(unit.observation['origin'][0], baseline + style.rise - witnessed_rise) * inverse
-                if matrix_operator((*basis, point.x, point.y)) != matrix_operator(matrix):
+                # Compare the normal writer's parsed operands with the actual
+                # native operands, not two separately rounded spellings.
+                if tuple(float(number(v)) for v in (*basis, point.x, point.y)) != tuple(matrix):
                     return None
             baselines.append(baseline)
         return baselines
@@ -576,16 +593,17 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             point = pymupdf.Point(gx, gy - witnessed_rise) * inverse
             basis = multiply(style.matrix, inverse_ctm)[:4]
             tm = (*basis, point.x, point.y)
+            matrix_bytes = matrix_operator(tm)
             source_position = payload.get('source_position')
             if (source_position is not None and tuple(source_position['origin']) == (gx, gy)
                     and source_position['ctm'] == state.ctm and source_position['rise'] == ts
                     and tuple(source_position['matrix'][:4]) == tuple(basis)):
-                tm = source_position['matrix']
+                matrix_bytes = _source_matrix_operator(source_position['matrix'])
             fill_op, fill_values = style.event.state.fill
             prefix = b''.join((_name(alias), b' ', number(style.event.state.size), b' Tf ',
                 number(style.event.state.tz), b' Tz ', number(tc), b' Tc ', number(ts), b' Ts ',
                 b' '.join(number(float(v)) for v in fill_values),
-                b' ' + fill_op.encode() + b' ', matrix_operator(tm)))
+                b' ' + fill_op.encode() + b' ', matrix_bytes))
             commands.append(prefix)
             length += len(prefix)
             glyph_offsets.append(length)

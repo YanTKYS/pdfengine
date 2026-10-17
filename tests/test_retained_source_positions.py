@@ -68,3 +68,49 @@ def test_later_tj_glyph_uses_source_matrix_only_when_unchanged(tmp_path):
         assert c.source_text_matrix[4] > 99.326 + 10
     finally:
         content.close()
+
+
+def test_tj_accumulated_position_keeps_roundtrip_precision(tmp_path):
+    # Ten advances of 12 pt plus the original fractional TJ adjustments are
+    # mathematically 126 pt, but the interpreter accumulates just below it.
+    atoms = b''.join(b'(' + bytes([65+i]) + b') ' + (b'-35.4 ' if i == 4 else b'-29.4 ')
+                     for i in range(10)) + b'(K)'
+    source = source_pdf(tmp_path, b'BT /Regular 20 Tf 1 0 0 1 135.5 200.09 Tm [' + atoms + b'] TJ ET')
+    snapshot = inspect_paragraph(source, make_selection(source, glyph_ids=list(range(11)), explicit_width=150))
+    before = ContentPage(source, 1)
+    try:
+        expected = [g.source_text_matrix for e in before.events for g in e.chars]
+        codes = [(g.code, e.state.font.name) for e in before.events for g in e.chars]
+        assert expected[-1][4] == 261.49999999999994
+    finally:
+        before.close()
+    pdf, side = tmp_path / 'precise.pdf', tmp_path / 'precise.json'
+    write_editable(source, pdf, side, snapshot, [], min_line_height=25, max_bottom=100)
+    assert open_editable(pdf, side)['status'] == 'restored'
+    after = ContentPage(pdf, 1)
+    try:
+        assert [g.source_text_matrix for e in after.events for g in e.chars] == expected
+        assert [(g.code, e.state.font.name) for e in after.events for g in e.chars] == codes
+    finally:
+        after.close()
+    with pymupdf.open(source) as a, pymupdf.open(pdf) as b:
+        assert a[0].get_pixmap(dpi=144).samples == b[0].get_pixmap(dpi=144).samples
+    poppler = shutil.which('pdftoppm')
+    if not poppler:
+        pytest.skip('Poppler is required for roundtrip-position raster comparison')
+    for name, path in [('original-prefix', source), ('retained-position', pdf)]:
+        subprocess.run([poppler, '-f', '1', '-l', '1', '-singlefile', '-r', '144', '-png',
+                        str(path), str(tmp_path / name)], check=True, capture_output=True)
+    with Image.open(tmp_path / 'original-prefix.png') as a, Image.open(tmp_path / 'retained-position.png') as b:
+        assert ImageChops.difference(a.convert('RGB'), b.convert('RGB')).getbbox() is None
+
+
+def test_source_matrix_roundtrip_has_pdf_numeric_syntax():
+    from pdfeditor.paragraph import _source_matrix_operator
+    from pdfeditor.content_stream import operators
+    values = (1.0, 1e-20, -1e-20, 1.0, 1e20, 261.49999999999994)
+    serialized = _source_matrix_operator(values)
+    assert b'e' not in serialized.lower()
+    parsed = list(operators(serialized))
+    assert len(parsed) == 1 and parsed[0].name == 'Tm'
+    assert tuple(map(float, parsed[0].args)) == values
