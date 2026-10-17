@@ -301,6 +301,72 @@ def run(output, phase):
         assert opened['status'] == 'restored'
         assert json.loads((output / f'{NOOP_STEMS[2]}-audit.json').read_text())['scope'] == 'all-page-whole-noop'
         source, state = grow(source, opened['state'], 2, output)
+    elif phase == 'grow-3':
+        # One edit from the independently audited saved revision. Do not replay
+        # adoption, its no-op, earlier edits, or the later lifecycle.
+        started = time.perf_counter()
+        assert not list(output.glob('grown-3*')), 'preserve every previous growth artifact'
+        stem = 'extension-3-noop-roundtrip'
+        source, side = output / f'{stem}.pdf', output / f'{stem}.json'
+        audited = json.loads((output / f'{stem}-audit.json').read_text())
+        input_sha = source_sha(source)
+        assert audited['pdf_sha256'] == input_sha
+        assert audited['scope'] == 'all-page-whole-noop' and audited['dpi'] == 144
+        assert [p['page'] for p in audited['pages']] == list(range(1, 14))
+        assert all(p['mupdf_changed_pixels'] == p['poppler_changed_pixels'] == 0
+                   for p in audited['pages'])
+        opened = open_shared_flow(source, side)
+        assert opened['status'] == 'restored'
+        before = opened['state']
+        assert before['pdf_sha256'] == input_sha
+        assert set(before['continuation_destinations']) == {'P1-next', 'B-next'}
+        independent_releases(before)
+        refused = json.loads((output / 'before-page-3-refusal.json').read_text())
+        assert refused['source_sha256'] == source_sha(output / 'grown-2.pdf')
+        assert not refused['published']
+        assert change(before, 'B', B_FIRST_FIND, B_LONG) == refused['edits']
+        write(output / 'grown-3-input.json', dict(pdf_sha256=input_sha,
+            sidecar_sha256=source_sha(side), audit_sha256=source_sha(output / f'{stem}-audit.json'),
+            reopen='restored', noop_pages=13, noop_both_renderers_zero=True,
+            request_equals_previous_refusal=True, original_sha256=original_sha))
+        print('grow-3 input qualified; executing the previously refused request once', flush=True)
+        source, state = grow(source, before, 3, output)
+        checked = json.loads((output / 'grown-3-audit.json').read_text())
+        assert len(checked['pages']) == 13
+        assert all(p['mupdf_changed_pixels'] == p['poppler_changed_pixels'] == 0
+                   for p in checked['pages'])
+        for sid, previous in before['slots'].items():
+            assert all(state['slots'][sid][k] == previous[k] for k in ('paragraph_id', 'region_id'))
+        assert before['continuation_destinations'] == state['continuation_destinations']
+        continuation = slot_id(state['continuation_destinations']['B-next'])
+        cslot = owner(state, 'C')
+        first = before['slots'][cslot]['occupancy']['baseline']
+        last = state['slots'][cslot]['occupancy']['baseline']
+        assert last > first
+        b_before = [p for p in audited['placements'] if p['paragraph'] == 'B']
+        b_after = [p for p in checked['placements'] if p['paragraph'] == 'B']
+        page3 = [p for p in b_after if p['slot'] == continuation]
+        assert len(page3) == 1 and page3[0]['page'] == 3 and page3[0]['lines'] > 0
+        assert source_sha(SOURCE) == original_sha
+        result = dict(scope='grow-3-only', verdict='PASS: B continues onto page 3 and C moves down',
+            real_world_three_page_sequential_reflow='NOT VALIDATED',
+            input_sha256=input_sha, output_sha256=source_sha(source),
+            sidecar_sha256=source_sha(output / 'grown-3.json'), original_sha256=original_sha,
+            original_unchanged=True, reopen='restored', elapsed_seconds=time.perf_counter() - started,
+            B_before=dict(characters=len(before['paragraphs']['B']['logical']['text']), placements=b_before),
+            B_after=dict(characters=len(state['paragraphs']['B']['logical']['text']), placements=b_after),
+            page3_continuation=page3[0], C_baseline_before=first, C_baseline_after=last,
+            C_delta_pt=last-first, existing_slot_identities_preserved=True,
+            source_markers={sid: immutable(s['source_output']) for sid, s in state['slots'].items()
+                            if s.get('source_output')},
+            generated_creation_bindings={sid: s['creation_binding'] for sid, s in state['slots'].items()
+                                         if s.get('creation_binding')},
+            continuation_destinations_unchanged=True,
+            release_owners={k: list(v['vacated_space']['owners'])
+                            for k, v in state['continuation_destinations'].items()},
+            audit=checked, unrun=['shorten/regrow/re-edit lifecycle', 'broad regressions', 'full suite'])
+        write(output / 'grown-3-summary.json', result)
+        print(result['verdict'] + '; stopped before lifecycle', flush=True)
     elif phase == 'lifecycle':
         source = output / 'grown-3.pdf'
         opened = open_shared_flow(source, output / 'grown-3.json')
@@ -356,7 +422,7 @@ if __name__ == '__main__':
     logging.getLogger('fontTools.ttLib.tables._h_e_a_d').setLevel(logging.ERROR)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--phase', choices=['initial', 'extend-2', 'grow-2', 'extend-3', 'lifecycle'], required=True)
+    parser.add_argument('--phase', choices=['initial', 'extend-2', 'grow-2', 'extend-3', 'grow-3', 'lifecycle'], required=True)
     args = parser.parse_args()
     started = time.perf_counter()
     try:

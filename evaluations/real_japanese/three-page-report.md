@@ -3,10 +3,93 @@
 The full validation is incomplete. The [limited no-op follow-up](three-page-noop-report.md)
 resolved the page-2 and page-3 differences: the saved third-page extension now
 reopens `restored` with zero changed pixels on all 13 pages in both renderers.
-Three-page growth and the remaining lifecycle are unrun; this report does not
-claim a complete three-page PASS.
+The subsequent **B growth onto page 3 passes**, with C moved down and zero changes
+outside approved regions on all 13 pages in both renderers. The remaining
+shorten/regrow/re-edit lifecycle is unrun; **REAL-WORLD THREE-PAGE SEQUENTIAL
+REFLOW remains NOT VALIDATED**.
 
 Starting main: `f93c8f47bc8d2c277b01464178d75f3e1cc23e89` (PR #75 merged).
+
+## Measured third-page growth — bounded PASS
+
+This follow-up starts at `ccdced1459058a21d91890eb6db9bebcb8aacebe` and performs
+**one real edit/save**, using the already verified
+`extension-3-noop-roundtrip.pdf` and its sidecar. Its SHA matches both the sidecar
+and the completed 13-page, 144-dpi whole-no-op audit; opening returns `restored`.
+Initial qualification, ownership extensions, earlier edits and no-op saves are
+not replayed. No production change is needed.
+
+The exact request matches `before-page-3-refusal.json`, which records a capacity
+refusal with neither PDF nor sidecar published. It replaces B offsets **126–139**,
+including the explicitly approved trailing space, with the existing `B_LONG`
+text under `style-3`. The newly added `grow-3` phase refuses any pre-existing
+`grown-3*` artifact, calls the existing `grow`, `save` and `used_destination`
+checks once, and stops before the lifecycle.
+
+| Measurement | Before | After |
+| --- | --- | --- |
+| B logical characters | 139 | 181 |
+| B total lines | 4 | 5 |
+| B page-2 fragment | 139 characters, 138 glyphs, 4 lines | 148 characters/glyphs, 4 lines |
+| B page-3 continuation | unused | 33 characters/glyphs, 1 line, range `[148,181)`, baseline 100 pt |
+| C logical characters / glyphs / lines | 130 / 129 / 4 | 130 / 129 / 4 |
+
+B's page-2 baselines remain
+`[689.639990234375, 715.3199829101562, 740.87998046875, 766.4360107421875]`.
+Its occupied page-3 slot is `continuation-afdebcf635632e109f04ecb8`, in `release-3`
+under destination `B-next`. C's four baselines move as follows:
+
+| C line | Before (pt) | After (pt) |
+| --- | ---: | ---: |
+| 1 | 116.41998291015625 | 126.4 |
+| 2 | 141.97998046875 | 151.95999755859376 |
+| 3 | 167.65997314453125 | 177.639990234375 |
+| 4 | 193.219970703125 | 203.19998779296876 |
+
+Each moves down **9.980017089843756 pt**. The destination proof records C's
+removal and safe final placement in the same transaction that creates B's
+continuation. Release owners stay independent: `P1-next → slot-1 (D1)` only,
+`B-next → slot-6 (C)` only. Existing slot identities, immutable source markers,
+generated creation bindings and destination contracts remain intact. The new
+B continuation's creation binding names the exact input PDF revision. A's
+existing page-2 continuation and its creation identity remain in place.
+
+The output saves and reopens **`restored`**. The completed independent audit
+reports **0 changed pixels outside confirmed regions on all 13 pages**, in both
+MuPDF and Poppler at 144 dpi. All-page foreign Unicode/geometry/code/GID/font
+program and drawing checks pass; images, links and annotations are empty in this
+original. It checks **1,081 retained/reused glyph occurrences** for exact
+code/GID/resource/program equality and **55 provider glyphs** for approved
+program, outline and advance. Existing fonts remain unchanged; the edit adds
+two owned subsets, `/PRF2` on page 2 and `/PRF1` on page 3, from the unchanged
+approved provider. Maximum planned-versus-observed origin error is
+0.00003662109375568434 pt, with no tolerance changes.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Input PDF | `45bf2173d2f4f1d583284dfcad37c4cacbfb4bbb0c52dbfc097de173ff55d6e1` |
+| Output `grown-3.pdf` | `029cd5f552df88ce9f83e3ca2e7dc1d471d230237e738a0c4eabcc9ab0e17226` |
+| Output `grown-3.json` sidecar | `1a30c58d6f82eea76e41e935c3e14e68c01eefe6e278ea52b3cbf1d29c09cb2f` |
+| Unchanged original | `70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2` |
+
+The CLI phase completes in **186.108990 s**, exit 0. The narrower timer inside
+the phase records **185.991619 s** through summary construction; these are two
+timers of the same single run, not separate attempts. Evidence is preserved under
+`tmp/courts-three-page/run-01/grown-3` (`-input.json`, `-request.json`, PDF,
+sidecar, `-report.json`, `-audit.json`, `-destination-proof.json`, `-summary.json`).
+The log is `tmp/courts-three-page-grow-3.log`.
+
+The scoped command was:
+
+```bash
+.venv/bin/python -u -m evaluations.real_japanese.three_page_edit \
+  --output tmp/courts-three-page/run-01 --phase grow-3
+```
+
+The evaluator passed syntax compilation and whitespace checks. No new tests or
+production changes were needed. No further edit/save, shortened/regrown/re-edited
+lifecycle, broad regression, full suite, PR or merge is performed in this
+follow-up. This bounded growth result does not establish the full lifecycle PASS.
 
 ## Original and approved scope
 
