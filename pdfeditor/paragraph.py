@@ -231,13 +231,13 @@ class ParagraphShaper:
                      "provider":"original","resource":style.event.state.font.name,
                      "code":original.char.code,"glyph_id":observation['glyph_id'],
                      "font_name":observation['font'],"offset":(0,style.rise),
-                     # The event's first character has an explicit source Tm.
-                     # Keep its double-precision operands when that occurrence
-                     # stays put; trace origins are only single precision.
-                     "source_position":dict(matrix=original.event.text_matrix,
+                     # Preserve the source Tm and every preceding text advance
+                     # for any unchanged occurrence, including later TJ glyphs.
+                     # Trace origins are only single precision.
+                     "source_position":dict(matrix=original.char.source_text_matrix,
                          ctm=original.event.state.ctm, rise=original.event.state.ts,
                          origin=observation['origin']) if original.source_index is not None
-                             and original.source_index in original.event.chars[0].source_orders else None,
+                             and original.char.source_text_matrix is not None else None,
                      "bounds_source":bounds_source}))
                 index += 1
                 continue

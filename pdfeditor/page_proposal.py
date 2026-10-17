@@ -46,7 +46,7 @@ import pymupdf
 from fontTools.ttLib import TTFont
 from uniseg.linebreak import line_break_boundaries
 
-from .attributed import digest, inspect_paragraph
+from .attributed import SourceParagraph, digest, inspect_paragraph
 from .backend import PdfError, extract_page
 from .content_stream import ContentPage, multiply
 from .elements import _close
@@ -395,7 +395,10 @@ def _columns(paragraphs):
 class _Analysis:
     """Everything a proposal is derived from; recomputed (never trusted) on acceptance."""
 
-    def __init__(self, source, page, line_ids=None):
+    def __init__(self, source, page, line_ids=None, source_style_confirmations=None):
+        self.source_style_confirmations = deepcopy({} if source_style_confirmations is None else source_style_confirmations)
+        if not isinstance(self.source_style_confirmations, dict):
+            raise PdfError('source style confirmations must name proposed paragraphs')
         self.target_line_ids = None
         self.source, self.page = str(source), page
         self.refusals, self.unresolved = [], []
@@ -719,6 +722,8 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
                          include_embedded_fonts=include_embedded_fonts, font_cache=font_cache, new_text=new_text),
         refusals=list(analysis.refusals), unresolved=[], paragraphs=[], region=None, follows=[], styles=[],
         foreign_content=[], reproduction=dict(status='not-run'))
+    if analysis.source_style_confirmations:
+        proposal['source_style_confirmations'] = analysis.source_style_confirmations
     if analysis.target_line_ids is not None:
         proposal['target'] = dict(line_ids=analysis.target_line_ids, provenance='caller-selected-observed-lines')
     if proposal['refusals']:
@@ -734,6 +739,8 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
     if 'paragraph_starts' not in overrides and not analysis.numbered_column:
         column, width_splits = _unexplained_breaks(analysis, column, overrides.get('width'))
     ids = [f'P{i}' for i in range(1, len(column) + 1)]
+    if set(analysis.source_style_confirmations) - set(ids):
+        raise PdfError('source style confirmations name an unknown proposed paragraph')
     if paragraph_ids is not None:
         if not paragraph_ids or any(p not in ids for p in paragraph_ids) or len(set(paragraph_ids)) != len(paragraph_ids):
             raise PdfError('paragraph_ids must name proposed paragraphs')
@@ -770,6 +777,28 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
             joiner = _joiner(para)
             selection = make_selection(source, page, glyph_ids=glyph_ids, explicit_width=chosen[1] if chosen else None)
             snapshot = inspect_paragraph(source, selection, line_joiner=joiner)
+            if pid in analysis.source_style_confirmations:
+                # Explicit source values are verified by the existing per-glyph
+                # Tc/Ts contract. Preserve observations; never turn unknown
+                # tracking into a guessed default for destination glyphs.
+                supplied = analysis.source_style_confirmations[pid]
+                from .style_confirmation import values
+                if not isinstance(supplied, dict) or not supplied:
+                    raise PdfError('source style confirmations must name painted styles')
+                records = {sid: {key: dict(value=value, provenance='explicitly_confirmed')
+                                 for key, value in values(record).items()}
+                           for sid, record in supplied.items()}
+                paragraph = SourceParagraph(source, selection, line_joiner=joiner)
+                try:
+                    logical = dict(pdf_sha256=selection['source_sha256'], text=paragraph.text,
+                        units=[dict(glyph_id=u.source_index, style_glyph_id=(u.source_index if u.source_index is not None
+                                  else next(w.source_index for w in paragraph.units
+                                            if w.style_id == u.style_id and w.source_index is not None)))
+                               for u in paragraph.units], style_confirmations=records,
+                        text_provenance='observed_source', binding_provenance='caller-confirmed-source-styles')
+                finally:
+                    paragraph.close()
+                snapshot = inspect_paragraph(source, selection, line_joiner=joiner, logical=logical)
             if snapshot['text'] != joiner.join(line['text'] for line in para):
                 raise PdfError('paragraph Unicode differs from its observed lines')
         except PdfError as exc:
@@ -779,7 +808,9 @@ def _build(analysis, *, font_files, font_roots, paragraph_ids=None, overrides=No
         snapshots.append(snapshot)
         spacing = snapshot['spacing']
         if (any(line['distribution'] == 'irregular' for line in spacing['lines'])
-                and all(line['tc'] == [0.0] and line['tw'] == [0.0] for line in spacing['lines'])):
+                and all(line['tw'] == [0.0] for line in spacing['lines'])
+                and all(style['tracking'] == 0.0 or style['tracking_provenance'] == 'explicitly_confirmed'
+                        for style in snapshot['styles'])):
             policy['text_placement'] = dict(value=SOURCE_PLACEMENT,
                 evidence='observed source glyph adjacency; not an inferred tracking or justify policy',
                 editing='retain existing codes and same-line adjacent source gaps; shape replacement and new boundaries normally')
@@ -1097,7 +1128,7 @@ def _seal(proposal):
 
 
 def propose_page_flow(source, page=1, *, font_candidates=None, font_roots=None, line_ids=None,
-                      include_embedded_fonts=None, font_cache=None, new_text=None):
+                      include_embedded_fonts=None, font_cache=None, new_text=None, source_style_confirmations=None):
     """Observe the unchanged PDF and propose an evidence-labelled shared flow.
 
     `font_candidates` (explicit files) or `font_roots` (directories) inject the
@@ -1110,6 +1141,10 @@ def propose_page_flow(source, page=1, *, font_candidates=None, font_roots=None, 
     new_text maps observed logical style IDs to proposed replacement text. A
     different source program requires provider_choices with relation='substituted' at
     acceptance; the choice only supplies new glyphs and preserves source glyphs.
+    source_style_confirmations maps proposed paragraph IDs and physical style IDs
+    to explicit tracking/baseline_shift values in page points. Every value must
+    match every selected source glyph's Tc/Ts witness; unknown tracking cannot
+    be promoted to a single value. Confirmation is revalidated on acceptance.
     """
     if include_embedded_fonts is None:
         include_embedded_fonts = font_candidates is None and font_roots is None
@@ -1117,7 +1152,7 @@ def propose_page_flow(source, page=1, *, font_candidates=None, font_roots=None, 
         raise PdfError('include_embedded_fonts must be a boolean')
     font_cache = str(Path(font_cache or (Path(tempfile.gettempdir()) / 'pdfengine-font-cache')).resolve()) if include_embedded_fonts else None
     files, roots = _font_files(font_candidates, font_roots)
-    analysis = _Analysis(source, page, line_ids=line_ids)
+    analysis = _Analysis(source, page, line_ids=line_ids, source_style_confirmations=source_style_confirmations)
     proposal, _ = _build(analysis, font_files=files, font_roots=roots,
                          include_embedded_fonts=include_embedded_fonts, font_cache=font_cache, new_text=new_text)
     return _seal(proposal)
@@ -1140,7 +1175,8 @@ def _recompute(source, proposal):
     if target is not None and (not isinstance(target, dict) or set(target) != {'line_ids', 'provenance'}
                                or target['provenance'] != 'caller-selected-observed-lines'):
         raise PdfError('invalid page-flow target')
-    analysis = _Analysis(source, binding['page'], line_ids=target['line_ids'] if target else None)
+    analysis = _Analysis(source, binding['page'], line_ids=target['line_ids'] if target else None,
+                         source_style_confirmations=proposal.get('source_style_confirmations'))
     if analysis.observation_sha256 != binding['page_observation_sha256']:
         raise PdfError('page observation changed since the proposal')
     fresh, _ = _build(analysis, font_files=files, font_roots=roots,

@@ -78,6 +78,8 @@ import json
 import math
 import re
 
+from pypdf.generic import BooleanObject
+
 from .attributed import digest
 from .backend import PdfError
 from .composition import _check_obstacles, _observations
@@ -163,10 +165,23 @@ def _page_context(content):
     """Page-level drawing context shared by both authorities: group, transform, bounds."""
     group=content.pdf_page.get('/Group')
     group=group.get_object() if group is not None else None
+    # ISO 32000-1:2008 11.4.7 / Table 147: a directly displayed page group
+    # composes in isolation even when /I is omitted. This is page context,
+    # never a Form XObject or an embedded page used as another page's element.
+    # Keep explicit unsupported flags fail-closed and bind the original
+    # dictionary below. BooleanObject(False) is truthy in pypdf, so Python's
+    # bool() must not be used to interpret PDF boolean operands.
+    flags = {}
+    if group is not None:
+        for key, default in (('/I', True), ('/K', False)):
+            value = group.get(key)
+            if value is not None and not isinstance(value, BooleanObject):
+                raise PdfError('continuation page group flags must be PDF booleans')
+            flags[key] = default if value is None else value.value
     if group is not None and (set(group)-{'/S','/CS','/I','/K','/Type'} or group.get('/S')!='/Transparency'
             or group.get('/Type','/Group')!='/Group'
             or group.get('/CS') not in ('/DeviceRGB','/DeviceGray','/DeviceCMYK')
-            or not bool(group.get('/I',False)) or bool(group.get('/K',False))):
+            or not flags['/I'] or flags['/K']):
         raise PdfError('continuation page-entry graphics context has unsupported group semantics')
     colors=content.pdf_page['/Resources'].get_object().get('/ColorSpace',{})
     if hasattr(colors,'get_object'):colors=colors.get_object()
