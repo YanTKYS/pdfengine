@@ -6,14 +6,177 @@ reopens `restored` with zero changed pixels on all 13 pages in both renderers.
 The subsequent **B growth onto page 3 passes**, with C moved down and zero changes
 outside approved regions on all 13 pages in both renderers. B's bounded
 shorten/regrow pair also passes, including reuse of the same continuation and
-exact C glyph/render placement after regrowth. A's subsequent shorten/regrow pair
-is **not validated**: the final page-2 comparison detects 5,424 Poppler pixels.
+exact C glyph/render placement after regrowth. A's repaired shorten/regrow pair
+also **passes**: all 13 pages match the good input in both renderers, and the
+actual owned glyph coordinates/bounds match exactly. The earlier failed pair
+and its diagnosis are retained below as historical evidence.
 Further re-edit lifecycle and final no-op are unrun; **REAL-WORLD THREE-PAGE SEQUENTIAL
 REFLOW remains NOT VALIDATED**.
 
 Starting main: `f93c8f47bc8d2c277b01464178d75f3e1cc23e89` (PR #75 merged).
 
-## Bounded investigation of A return-position drift — unresolved
+## A shorten/regrow with witnessed relative spacing — PASS
+
+**REAL-PDF THREE-PAGE A SHORTEN/REGROW — PASS** (2026-10-18).
+Starting commit: `570dc71def7ac408333030e6d69d0299064019e7`.
+Implementation/evaluator/regression commit:
+`37c8b913f12227048de6f10da05031f1259b7000`.
+
+Exactly two real-PDF edits resume the good `regrow-B.pdf` and its bound sidecar:
+`regrow-B → shorten-A-spacing-fixed → regrow-A-spacing-fixed`.
+The input PDF SHA is
+`121541869471fd0ea28f32d11c8faf4547d1bb17846fc206cea5bf264cc6ca71`;
+sidecar SHA is
+`2cb13bbb21d612de77c2c2847b1337a05689c7e8d3a246f16c0699b2e944c9c5`.
+Input hashes, the existing 13-page audit, both occupied continuations and
+`restored` are checked before editing. No earlier qualification, ownership
+extension, no-op or B edit is repeated. Legacy `shorten-A`, `regrow-A` and the
+diagnostic artifacts are preserved; their PDF hashes remain unchanged.
+
+### Production change and current-revision proof
+
+`pdfeditor/paragraph.py` permits a baseline-only translation to use candidate
+lines when text is unedited and x, width, indentation and minimum height are
+unchanged. Every candidate still requires the current paragraph's retained-unit
+and style identity, exact complete line ranges, and native Tm reproduction for
+every current source glyph with the same CTM, basis and rise. A stale or altered
+candidate cannot authorize a location merely because it appears in a sidecar.
+
+The proven current baselines are expressed relative to their first line. These
+offsets supply the existing layout's line gaps. Normal minimum-height and ink
+leading clamps, wrapping, paragraph gap/floor, region and collision checks still
+apply. The final layout must have exactly the witnessed line ranges and equal
+`target_first + source_offset` at every line. Translating the resulting positions
+back must exactly recover every proven current baseline. Both comparisons use
+exact binary64 equality, without a new tolerance. Subtracting at another origin
+can change an offset's final binary64 bit; requiring an exactly reversible
+translation handles that case without ignoring an output-coordinate difference.
+An unrepresentable translation or a clamp that changes the proven positions
+refuses. Changed text/styles/wrapping use normal layout or refuse.
+
+The ordinary saved `physical_layout.lines` record the translated coordinates.
+On the next open/edit these are proved again against that revision's native
+operators before deriving offsets. There is no historical PDF authority or new
+history store. `shared_flow.py` retains its remeasurement at the final follower
+baseline; only its comment changes. Writer position guards and Transaction,
+ownership and publication behavior are unchanged. The evaluator adds the bounded
+`a-spacing-fixed` phase, keeping all previous output names untouched.
+
+An empty candidate list uses the ordinary empty-layout path: it has no first
+line or relative position to prove. This compatibility guard and its focused
+empty/no-op test were added after the real run. It does not change the nonempty
+spacing proof used in that run; the emptied A slot has text edits and therefore
+no source-line candidate. No additional real-PDF save was needed or performed.
+
+### Measured placement
+
+All values below are writer baselines in pt. Every D1–B line passes exact forward
+translation and inverse-translation checks in both saved stages. After regrowth,
+all their planned baselines also equal the initial `regrow-B` values.
+
+| D1 line | Input / fixed regrowth | Fixed shortening |
+| --- | ---: | ---: |
+| 1 | 126.4 | 116.41998291015625 |
+| 2 | 151.95999755859376 | 141.97998046875 |
+| 3 | 177.639990234375 | 167.65997314453125 |
+| 4 | 203.19998779296876 | 193.219970703125 |
+| 5 | 228.7599853515625 | 218.77996826171875 |
+| 6 | 254.43997802734376 | 244.4599609375 |
+| 7 | 279.9999755859375 | 270.01995849609375 |
+| 8 | 305.5900024414062 | 295.6099853515625 |
+| 9 | 331.2699951171875 | 321.28997802734375 |
+
+The critical D1 line-2→3 gap remains **25.67999267578125 pt**. D1's first-line
+movement is −9.980017089843756 pt, then the exact inverse. Its minimum line
+height remains **25.55999755859375 pt**.
+
+| Follower | Characters / lines on page 2 | Fixed short first / last | Input / fixed regrowth first / last |
+| --- | --- | --- | --- |
+| D2 | 87 / 3 | 346.8499755859375 / 398.0899963378906 | 356.8299926757812 / 408.07001342773435 |
+| D3 | 158 / 5 | 423.6499938964844 / 526.0299682617188 | 433.6300109863281 / 536.0099853515625 |
+| D4 | 153 / 5 | 551.7099609375 / 654.0699462890625 | 561.6899780273437 / 664.0499633789062 |
+| B | 148 / 4 | 679.6599731445312 / 756.4559936523438 | 689.639990234375 / 766.4360107421875 |
+
+A changes **126→86→126 characters**. Shortening has 86 characters in three
+page-1 lines and no page-2 glyphs: `P1-next` occupancy is `None`, its source glyph
+selection is empty, and its logical range is `[86,86]`. Regrowth has 111 characters
+in three page-1 lines plus 15 characters in one page-2 line at baseline **100 pt**,
+using the same `continuation-5627be817d85c2462eda17cb` slot and `[111,126]` range.
+B remains 181 characters/five lines, including 33 characters/one line on page 3
+at **100 pt** in the same `continuation-afdebcf635632e109f04ecb8` slot.
+C remains 130 characters/129 glyphs/four lines, with baselines
+`[126.4,151.95999755859376,177.63992919921876,203.19998779296876]`.
+
+### Independent audit and identity
+
+Each save reopens **`restored`** and passes all 13 pages of the independent
+outside-confirmed-regions audit: **MuPDF 0 / Poppler 0 changed pixels**, at
+144 dpi. After shortening, page 3's complete raster and its 162 owned glyphs
+equal `regrow-B`. After regrowth, the comparison uses the complete pages with
+no region masks: **all 13 pages are pixel-identical in both renderers**.
+All 1,136 owned glyphs (111 page 1, 863 page 2, 162 page 3) have exactly equal
+Unicode, GID, physical origin and bounds. In particular D1–B's maximum physical
+position/bounds difference is **0 pt**, replacing the legacy
+0.0001220703125 pt drift. Page-2 Poppler changes improve **5,424→0**; MuPDF stays 0.
+This result is independently measured, not inferred from writer baselines.
+
+Logical text returns to the input. Source-output marker identities, generated
+slot creation bindings, existing slot IDs and continuation destination contracts
+are unchanged. `P1-next` releases only `slot-1` (D1); `B-next` releases only
+`slot-6` (C). Neither authority is created or broadened. Retained/reused glyph
+codes, GIDs, font resources/programs, foreign text, drawings and fixed elements
+pass the existing independent checks. Images, links and annotations remain
+empty, as in this original. Provider identity is preserved; replaced generated
+subsets follow the existing glyph-level font audit described below.
+The original PDF SHA remains
+`70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2`.
+
+### Tests, command, timing and artifacts
+
+**26 distinct focused tests pass**, with no skips: 20 tests covering witnessed
+positions and retained-source serialization (19 passed in the 7.17 s batch, then
+the corrected logical-snapshot roundtrip fixture passed in 1.39 s); five direct
+source-adjacency, line-height/bounds, approved-floor and release-collision cases
+passed in 142.54 s. These 25 passed before real saves. The additional empty
+candidate/no-op regression passed in 0.82 s. The initial exact-offset-subtraction
+check exposed the binary64 reversibility issue above; the final regression also
+retains the existing 1e-9 clamped-candidate refusal. Stale evidence, style change,
+wrap/height/bounds changes and non-reversible translations are covered.
+
+```bash
+.venv/bin/python -m pytest -q tests/test_witnessed_source_line_positions.py tests/test_retained_source_positions.py
+.venv/bin/python -m pytest -q \
+  tests/test_source_adjacency_flow.py::test_noedit_reproduces_every_glyph_without_justify \
+  tests/test_source_adjacency_flow.py::test_two_edits_wrap_push_following_and_preserve_foreign \
+  tests/test_rich_layout.py::test_witnessed_line_gaps_keep_minimum_height_metrics_and_bottom_limits \
+  tests/test_sequential_extension.py::test_approved_follower_floor_keeps_d_out_of_the_release_region \
+  tests/test_sequential_extension.py::test_low_approved_floor_still_refuses_the_release_region_collision
+.venv/bin/python -m evaluations.real_japanese.three_page_edit \
+  --output tmp/courts-three-page/run-01 --phase a-spacing-fixed
+```
+
+Runtime: Linux, Python **3.12.14**, PyMuPDF **1.27.2.3**, Poppler **26.05.0**.
+The single real phase took **362.614758 s** including input verification;
+shortening took **167.258913 s**, regrowth **183.597211 s**, each including its
+save/readback and audits. Heavy tests and real evaluation ran serially. The
+nonempty current-D1 proof was also checked read-only before either save.
+
+| Output | SHA-256 |
+| --- | --- |
+| `shorten-A-spacing-fixed.pdf` | `17e140ee06f6742f0434b55082a911b18cfb1c83a1b0af882427b82654b913cd` |
+| `shorten-A-spacing-fixed.json` | `93a26993f43a1f19731eb173008d34cd6f71299ac4fc1f5f53a5e6a43646209c` |
+| `regrow-A-spacing-fixed.pdf` | `7e58e00309a903865dce1c0006e4cdbde7546046aa7a9d894228be6800fffaab` |
+| `regrow-A-spacing-fixed.json` | `a062bf5f33b24416a1e92844a242631f94a2712ecbc417a0341bb7d89f13b8ce` |
+
+The local run directory retains each stage's report, audit, destination proofs,
+input comparison and summary, plus `a-spacing-fixed-summary.json`; PDFs/fonts/tmp
+are not committed. Per-line evidence for all D1–B lines is in each new summary's
+`relative_spacing`. The previous failed pair is not repaired or relabelled.
+Additional re-edits, final no-op and the remaining lifecycle are **unrun**; the
+full three-page verdict remains **NOT VALIDATED**. No full suite, PR or merge is
+performed. This completes only the bounded A shorten/regrow repair.
+
+## Bounded investigation of A return-position drift — historical unresolved checkpoint
 
 Starting at `d3be83a47f33fe6a808b6521ba0c52157bdad27e`, read-only comparison
 of the three existing PDFs, sidecars and writer plans identifies **two distinct
