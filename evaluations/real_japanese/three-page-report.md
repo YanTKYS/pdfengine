@@ -6,11 +6,115 @@ reopens `restored` with zero changed pixels on all 13 pages in both renderers.
 The subsequent **B growth onto page 3 passes**, with C moved down and zero changes
 outside approved regions on all 13 pages in both renderers. B's bounded
 shorten/regrow pair also passes, including reuse of the same continuation and
-exact C glyph/render placement after regrowth. A's remaining edits, further
-re-edit lifecycle and final no-op are unrun; **REAL-WORLD THREE-PAGE SEQUENTIAL
+exact C glyph/render placement after regrowth. A's subsequent shorten/regrow pair
+is **not validated**: the final page-2 comparison detects 5,424 Poppler pixels.
+Further re-edit lifecycle and final no-op are unrun; **REAL-WORLD THREE-PAGE SEQUENTIAL
 REFLOW remains NOT VALIDATED**.
 
 Starting main: `f93c8f47bc8d2c277b01464178d75f3e1cc23e89` (PR #75 merged).
+
+## A shorten/regrow — FAIL at final input comparison
+
+Starting at `d4aa6394453759eaa2f10738b8739e3c8d52b592`, the new
+`--phase a-short-regrow` performs exactly two saves:
+`regrow-B → shorten-A → regrow-A`. The existing input PDF SHA is
+`121541869471fd0ea28f32d11c8faf4547d1bb17846fc206cea5bf264cc6ca71`;
+its sidecar SHA is
+`2cb13bbb21d612de77c2c2847b1337a05689c7e8d3a246f16c0699b2e944c9c5`.
+Both match the prior summary and 13-page audit, and the input opens `restored`.
+No qualification, extension, earlier edit or no-op is replayed. Production code
+and all previous precision repairs are unchanged.
+
+**Shortening passes.** Replacing `LONG → FIND` empties the existing A continuation
+and returns D1's first baseline to the approved page-2 start. B's full text and
+its page-3 continuation remain intact. The entire third page has exactly equal
+162 owned glyphs and zero raster differences in both renderers versus `regrow-B`.
+Only after this gate passes does the phase replace `FIND → LONG` on the saved
+shortened revision.
+
+**Regrowth saves and restores, but fails the final equality requirement.**
+Both per-edit independent audits pass on all 13 pages outside the unchanged
+confirmed regions. The final unmasked comparison with `regrow-B` instead finds
+5,424 changed Poppler pixels on page 2, bounds `(170, 539, 1076, 563)` at 144 dpi.
+MuPDF is pixel-identical on all 13 pages; Poppler pages 1 and 3–13 are also exact.
+The evaluator exits 1 at that final comparison and does not emit a PASS verdict.
+
+| Measurement | Input `regrow-B` | `shorten-A` | `regrow-A` |
+| --- | --- | --- | --- |
+| A characters / total lines | 126 / 4 | 86 / 3 | 126 / 4 |
+| A page-1 characters / lines | 111 / 3 | 86 / 3 | 111 / 3 |
+| A page-2 continuation | 15 characters, 1 line, baseline 100 pt | 0 characters/glyphs/lines, occupancy `None`, range `[86,86)` | same 15 characters, 1 line, baseline 100 pt, range `[111,126)` |
+| D1 first baseline (pt) | 126.4 | 116.41998291015625 | 126.4 |
+| D1 last planned baseline (pt) | 331.2699951171875 | 321.2900695800781 | 331.2701171875 |
+| B logical characters / total lines | 181 / 5 | 181 / 5 | 181 / 5 |
+| B first page-2 baseline (pt) | 689.639990234375 | 679.6600952148438 | 689.6401428222656 |
+| B page-3 continuation | 33 characters, 1 line, baseline 100 pt | unchanged, nonempty | unchanged, nonempty |
+| C first baseline (pt) | 126.4 | 126.4 | 126.4 |
+
+All logical paragraphs return exactly to the input text. Both generated-slot
+occupancies and ranges also return exactly. C's complete planned baselines stay
+`[126.4, 151.95999755859376, 177.63992919921876, 203.19998779296876]` throughout.
+Its 129 glyphs and B's 33 page-3 glyphs are physically identical to the input
+after each operation, as is page-3 rendering in both renderers.
+
+Page 2 is different: 83 of D1's 305 glyph positions and all 86 D2, 157 D3,
+152 D4 and 148 page-2 B positions differ after regrowth, with maximum observed
+origin displacement **0.0001220703125 pt**. A's 15 continuation glyphs match
+exactly. For example, D1's seventh planned baseline changes from
+`279.9999755859375` to `280.0000366210937`; its last baseline changes by
+`0.0001220703125` pt, and that discrepancy propagates through the followers.
+This is a real placement/raster difference, not merely unequal plan metadata.
+The region and line coincide with the historical 5,424-pixel failure, but this
+trigger involves moving the followers up and back, rather than an unchanged
+no-op. The current saved-line candidate path requires unchanged placement;
+the previous no-op repair has not been removed. A separate bounded follow-up
+must establish how to preserve witnessed line spacing through follower movement.
+No serializer, tolerance, region mask or production code is changed here, and
+no third edit/save is attempted.
+
+Both saves preserve source-output marker identities, existing slots and creation
+bindings, destination contracts, page ownership and independent release owners:
+`P1-next → slot-1 (D1)` only and `B-next → slot-6 (C)` only. A reuses
+`continuation-5627be817d85c2462eda17cb`, whose creation source remains
+`26e8c6411db21a425eaff8a3d5ac4e485ed7c1fe393787ad7f50e303bebbf09f`
+and destination-contract SHA remains
+`0113cb683f98cca208a677d5c20323706305e07f6599f4789f0320e030e6b29f`.
+B reuses `continuation-afdebcf635632e109f04ecb8`; its creation binding remains
+the value documented below. Same-transaction release proofs pass for the
+occupied destinations. The two independent audits each verify 1,084 retained or
+reused glyphs' exact code/GID/resource/program; approved provider glyph counts
+are 12 and 52 respectively. Original foreign glyphs, drawings and fixed elements
+are unchanged, with both renderers showing zero outside-region pixels on all
+13 pages. Images, links and annotations remain empty in this original.
+
+| Output | PDF SHA-256 | Sidecar SHA-256 |
+| --- | --- | --- |
+| `shorten-A` | `15b6254e6ad0f06af196219204f37e2f796321bce5dabc304f74a80f6ad0cb50` | `3dd24f49b2be86230111e937c5cbb87fbd6e6dc52cacdcefd3b97391eadc9371` |
+| `regrow-A` | `41cbba8b8349af74d2ebb53517647af034bd327ca60bee4fa4c953355ebddcb1` | `739db4cd51f904f8804d7e1cfccbb3e5eb92ef5d87e9ffc8f64a10a4aa931acb` |
+
+Shortening takes **176.651983 s** including its comparison. Total phase time is
+**383.689788 s**, exit 1. The regrowth timer was interrupted by the failing
+comparison before its stage summary could be written. Its request-file through
+completed-comparison-file timestamps span approximately **194.791991 s**; this
+is an artifact-derived interval, not an instrumented operation duration.
+The evaluator now writes the measured comparison verdict and stage summary
+before raising on a failed gate; this reporting-only improvement is syntax
+checked without rerunning the saves. The original SHA is still
+`70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2`.
+
+Evidence remains in `tmp/courts-three-page/run-01`: both PDF/sidecar/report/audit
+sets, `shorten-A-summary.json`, both `*-input-comparison.json` files,
+`regrow-A-diagnosis.json`, destination proofs and the post-run failure summary
+`a-short-regrow-summary.json`. The log is `tmp/courts-three-page-a-short-regrow.log`.
+Only read-only glyph aggregation and a page-2 raster diagnosis follow the
+two saves. Syntax compilation and whitespace checks pass; production-focused
+tests, full suite, extra saves, further edits, final no-op, PR and merge are not
+performed. **The A shorten/regrow PASS is not declared.**
+
+```bash
+.venv/bin/python -u -m evaluations.real_japanese.three_page_edit \
+  --output tmp/courts-three-page/run-01 --phase a-short-regrow
+```
 
 ## B shorten/regrow — bounded PASS
 
