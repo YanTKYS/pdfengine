@@ -129,9 +129,13 @@ def _rewrite_generated_block(result, content, paragraph, selected, owner, genera
 
 
 def source_line_candidates(binding, options, edits):
-    """Candidate writer baselines, never authority without current Tm witnesses."""
+    """Current writer lines, never authority without current Tm witnesses.
+
+    A requested baseline may translate an unchanged paragraph. Its relative
+    spacing still requires native-operator proof and a final layout check.
+    """
     physical = binding.get('physical_layout', {})
-    keys = ('x', 'width', 'baseline', 'first_line_indent', 'min_line_height')
+    keys = ('x', 'width', 'first_line_indent', 'min_line_height')
     if (edits != [] or physical.get('provenance') != 'generated-by-pdfengine'
             or any(options.get(k) != binding.get('layout', {}).get(k) for k in keys)):
         return None
@@ -146,6 +150,8 @@ class ParagraphShaper:
         self.alignment = alignment
         self.original_offsets = {id(unit):i for i,unit in enumerate(paragraph.units)}
         self.source_baselines = self._source_baselines(source_lines)
+        self.source_offsets = ([b - self.source_baselines[0] for b in self.source_baselines]
+                               if self.source_baselines else None)
         self.source_line_ranges = ([(line['start'], line['end']) for line in source_lines]
                                    if self.source_baselines is not None else None)
 
@@ -158,10 +164,13 @@ class ParagraphShaper:
         existing native Tm with the same CTM, basis and rise. No tolerance or
         report checksum can replace this proof. Otherwise use observed gaps.
         """
-        if candidates is None or len(candidates) != len(self.paragraph.resolved.lines):
+        # An empty paragraph has no relative position to witness. Preserve its
+        # ordinary empty-layout/no-op path rather than requiring a first line.
+        if not candidates or len(candidates) != len(self.paragraph.resolved.lines):
             return None
         if (len(self.units) != len(self.paragraph.units)
-                or any(u.retained is not old for u, old in zip(self.units, self.paragraph.units))):
+                or any(u.retained is not old or u.style_id != old.style_id
+                       for u, old in zip(self.units, self.paragraph.units))):
             return None
         from .style_confirmation import writer_spacing
         state = self.paragraph.first.state
@@ -195,11 +204,21 @@ class ParagraphShaper:
         return baselines
 
     def verify_source_layout(self, layout, *, offset=0):
-        """A proven candidate must survive line breaking and every leading clamp."""
-        if self.source_baselines is not None and (
-                [(line.start, line.end) for line in layout.lines] != self.source_line_ranges
-                or [offset + line.baseline for line in layout.lines] != self.source_baselines):
-            raise PdfError('current-source line candidate differs from the final output layout')
+        """Keep witnessed relative spacing after translation and every clamp.
+
+        The translated coordinates must match the final output exactly, and
+        translating them back must recover every proven current coordinate.
+        Binary64 subtraction need not have an identical spelling at another
+        origin; loss of reversibility still refuses, without a tolerance.
+        No old absolute baseline prescribes the destination.
+        """
+        if self.source_baselines is not None:
+            baselines = [offset + line.baseline for line in layout.lines]
+            if ([(line.start, line.end) for line in layout.lines] != self.source_line_ranges
+                    or not baselines
+                    or baselines != [baselines[0] + d for d in self.source_offsets]
+                    or [b - baselines[0] + self.source_baselines[0] for b in baselines] != self.source_baselines):
+                raise PdfError('current-source line candidate differs from the final output layout')
 
     def source_line_gap(self, a, b, c, d):
         """Retain a vertical edge only between two complete unchanged source lines.
@@ -223,7 +242,7 @@ class ParagraphShaper:
         if left is None or right != left + 1:
             return None
         if self.source_baselines is not None:
-            return self.source_baselines[right] - self.source_baselines[left]
+            return self.source_offsets[right] - self.source_offsets[left]
         lines = self.paragraph.resolved.lines
         return lines[right].baseline - lines[left].baseline
 

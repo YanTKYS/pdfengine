@@ -646,8 +646,8 @@ def _plan(source,state,changes):
             first_ascent=layout.lines[0].ascent if layout.lines else policy['empty']['ascent']
             adjusted=_follow_baseline(state,head,rid,spacing_previous,first_ascent)
             if adjusted != baseline:
-                # A changed follower position cannot use the unchanged-layout
-                # candidate path, even if its text did not change.
+                # Recheck the translated layout, including exact preservation
+                # of any current-source witnessed relative line positions.
                 layout=_layout(source,working,pid,binding,remaining,ids[cursor:],region,indent,linked,adjusted)
             baseline=adjusted
             if baseline-first_ascent<region['bounds'][1]-.002:raise PdfError('first line exceeds the explicitly confirmed region top')
