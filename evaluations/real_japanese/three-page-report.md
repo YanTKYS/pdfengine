@@ -10,10 +10,143 @@ exact C glyph/render placement after regrowth. A's repaired shorten/regrow pair
 also **passes**: all 13 pages match the good input in both renderers, and the
 actual owned glyph coordinates/bounds match exactly. The earlier failed pair
 and its diagnosis are retained below as historical evidence.
+The bounded **A/B simultaneous shorten/regrow pair also passes**: each save edits
+both paragraphs in one Transaction, empties then reuses both continuation slots,
+and returns all 13 pages, actual glyphs and glyph font/code identities to the input.
 Further re-edit lifecycle and final no-op are unrun; **REAL-WORLD THREE-PAGE SEQUENTIAL
 REFLOW remains NOT VALIDATED**.
 
 Starting main: `f93c8f47bc8d2c277b01464178d75f3e1cc23e89` (PR #75 merged).
+
+## A/B simultaneous shorten/regrow — PASS
+
+**REAL-PDF THREE-PAGE A/B SIMULTANEOUS SHORTEN/REGROW — PASS** (2026-10-18).
+Starting commit: `fbb6b5a8ccca86b4a99eb6ec9d5c923506cfa65a`.
+No production code or tolerances change in this follow-up.
+
+Exactly two real saves resume `regrow-A-spacing-fixed.pdf` and its bound sidecar:
+`regrow-A-spacing-fixed → shorten-A-B-spacing-fixed → regrow-A-B-spacing-fixed`.
+The input PDF SHA is
+`7e58e00309a903865dce1c0006e4cdbde7546046aa7a9d894228be6800fffaab`;
+sidecar SHA is
+`a062bf5f33b24416a1e92844a242631f94a2712ecbc417a0341bb7d89f13b8ce`.
+Both hashes, the bound 13-page audit, occupied continuations, independent release
+owners and `restored` are checked before editing. Earlier artifacts remain intact.
+
+The new `--phase ab-short-regrow` reuses `change()`, `save()`,
+`used_destination()` and the independent audit. Each request contains both `P1`
+and `B`; `save()` makes one `edit_shared_flow` call, whose implementation uses one
+`with Transaction(source)` for the entire request. Shortening sends `LONG→FIND`
+and `B_LONG→B_FIND` together. Regrowth sends the inverse changes together from the
+shortened, saved and restored revision. There is no composition of separate edits.
+
+### Measured text, slots and placement
+
+| Measurement | Input | Simultaneous shortening | Simultaneous regrowth |
+| --- | --- | --- | --- |
+| A total characters / lines | 126 / 4 | 86 / 3 | 126 / 4 |
+| A page-1 characters / lines | 111 / 3 | 86 / 3 | 111 / 3 |
+| A page-2 continuation | 15 characters, 1 line, 100 pt | 0 characters / lines | 15 characters, 1 line, 100 pt |
+| B total characters / lines | 181 / 5 | 138 / 4 | 181 / 5 |
+| B page-2 characters / lines | 148 / 4 | 138 / 4 | 148 / 4 |
+| B page-3 continuation | 33 characters, 1 line, 100 pt | 0 characters / lines | 33 characters, 1 line, 100 pt |
+| D1 first baseline | 126.4 pt | 116.41998291015625 pt | 126.4 pt |
+| C first baseline | 126.4 pt | 116.41998291015625 pt | 126.4 pt |
+
+Both followers move up **9.980017089843756 pt**, then return. D1 keeps 306 logical
+characters / 305 glyphs / nine lines; C keeps 130 characters / 129 glyphs / four lines.
+Their full writer baselines are:
+
+| Line | D1 input / final | D1 short | C input / final | C short |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 126.4 | 116.41998291015625 | 126.4 | 116.41998291015625 |
+| 2 | 151.95999755859376 | 141.97998046875 | 151.95999755859376 | 141.97998046875 |
+| 3 | 177.639990234375 | 167.65997314453125 | 177.63992919921876 | 167.659912109375 |
+| 4 | 203.19998779296876 | 193.219970703125 | 203.19998779296876 | 193.219970703125 |
+| 5 | 228.7599853515625 | 218.77996826171875 | — | — |
+| 6 | 254.43997802734376 | 244.4599609375 | — | — |
+| 7 | 279.9999755859375 | 270.01995849609375 | — | — |
+| 8 | 305.5900024414062 | 295.6099853515625 | — | — |
+| 9 | 331.2699951171875 | 321.28997802734375 | — | — |
+
+B's four page-2 baselines are
+`[679.6599731445312,705.3399658203125,730.8999633789062,756.4559936523438]`
+after shortening and
+`[689.639990234375,715.3199829101562,740.87998046875,766.4360107421875]`
+after regrowth, exactly the input. D1–D4 pass the current-source relative-position
+and exact inverse-translation checks at both saves. B is edited and therefore
+uses ordinary edited-text layout; its final physical placement is independently
+compared. A read-only comparison of **all nine slots' saved
+`physical_layout.lines`** finds no final baseline differences, including B and C.
+
+`P1-next` keeps slot `continuation-5627be817d85c2462eda17cb`; `B-next` keeps
+`continuation-afdebcf635632e109f04ecb8`. Shortening sets both occupancies to `None`,
+with empty text/glyph selections and ranges `[86,86]` / `[138,138]`. Regrowth
+reuses these same slots with nonempty occupancy at 100 pt and ranges `[111,126]`
+/ `[148,181]`. Every slot's final occupancy and logical range, and every owned
+paragraph's text, exactly equal the input. Creation bindings, their complete
+mutation/anchor records, immutable source-output markers and destination
+contracts remain unchanged at both saves. The creation-binding identifiers are:
+
+| Destination | Creation source PDF SHA-256 | Destination contract SHA-256 |
+| --- | --- | --- |
+| `P1-next` | `26e8c6411db21a425eaff8a3d5ac4e485ed7c1fe393787ad7f50e303bebbf09f` | `0113cb683f98cca208a677d5c20323706305e07f6599f4789f0320e030e6b29f` |
+| `B-next` | `45bf2173d2f4f1d583284dfcad37c4cacbfb4bbb0c52dbfc097de173ff55d6e1` | `707a11a5cdff34fd1fc101e3c826950e5d6bdd010726f2edf175207326423e27` |
+
+Release authority stays independent: **`P1-next` releases only `slot-1` (D1);
+`B-next` releases only `slot-6` (C)**. The existing capacity, collision, source
+ownership, minimum-height, floor and writer guards are unchanged.
+
+### Independent comparisons and artifacts
+
+Both saves reopen **`restored`**. Each passes the outside-confirmed-regions audit
+on **all 13 pages at 144 dpi: MuPDF 0 / Poppler 0 changed pixels**. Foreign glyph
+code/GID/font/geometry, drawings and fixed elements are unchanged. Images, links
+and annotations are empty in this original; their empty-state checks also pass.
+Each stage independently checks 1,029 retained/reused glyph occurrences;
+provider outline/advance checks cover 24 glyphs after shortening and 107 after
+regrowth. The edited slots regenerate subsets `/PRF1` on page 1 and `/PRF2` on
+page 2; original/provider identity and retained/reused code/GID/resource/program
+equality remain enforced throughout.
+
+The final comparison against `regrow-A-spacing-fixed` uses **whole pages without
+region masks**. All 13 pages have **MuPDF 0 / Poppler 0 changed pixels** at 144 dpi.
+All **1,136 owned glyphs** (111 on page 1, 863 on page 2, 162 on page 3) have exact
+Unicode/GID/origin/bounds equality, including D1–B, both continuations and C.
+Maximum actual coordinate/bounds difference is **0 pt**. Separately, the native
+content interpreter compares **every glyph's code, font resource and embedded
+program SHA on all 13 pages**, including foreign text: all are equal. Thus final
+font/code equality is measured directly against the input, not inferred from
+the per-edit provider checks. The original SHA remains
+`70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2`.
+
+| Output | SHA-256 |
+| --- | --- |
+| `shorten-A-B-spacing-fixed.pdf` | `a93ec056967801261962dc987e0269acddc7e9f8aabdda9a5a9d1fa5a8e0d963` |
+| `shorten-A-B-spacing-fixed.json` | `efa9162effc34d1e0dcf1959b14d2fd90889367ba969a9ba31dd5bfc25ca7bfc` |
+| `regrow-A-B-spacing-fixed.pdf` | `9c8ca31d5b5a4ae676781109f7ca29f69bee6ef882a6e68dc91c421851c42f05` |
+| `regrow-A-B-spacing-fixed.json` | `232800157e00e9e7fddabaf00f697852e348e3e76b394ed169eeb5f4c532c51b` |
+
+Shortening took **169.954222 s**; regrowth, including the complete final
+comparison, took **197.545756 s**. The single phase took **379.995432 s**, including
+input qualification. Runtime is the same Linux/Python 3.12.14/PyMuPDF 1.27.2.3 /
+Poppler 26.05.0 environment as the preceding run. The evaluator passes
+`py_compile` and `git diff --check`; no production tests are rerun because no
+production code changes.
+
+```bash
+PYTHONPATH=. .venv/bin/python -u -m evaluations.real_japanese.three_page_edit \
+  --output tmp/courts-three-page/run-01 --phase ab-short-regrow
+```
+
+Local evidence is in `tmp/courts-three-page-ab-short-regrow.log` and the run
+directory: both request/report/audit/summary sets, final destination proofs,
+`regrow-A-B-spacing-fixed-input-comparison.json`, the read-only
+`regrow-A-B-spacing-fixed-planned-baseline-comparison.json`, and
+`ab-short-regrow-summary.json`. Prior artifacts are not overwritten; the new
+phase refuses existing output stems. No additional save, no-op, re-edit,
+remaining lifecycle, full suite, PR or merge is performed. **The full
+REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW remains NOT VALIDATED.**
 
 ## A shorten/regrow with witnessed relative spacing — PASS
 

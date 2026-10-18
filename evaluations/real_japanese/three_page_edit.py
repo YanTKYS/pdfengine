@@ -250,13 +250,13 @@ def compare_regrown_c(output, before, after, before_state, after_state, before_a
     return evidence
 
 
-def compare_a_resume(output, name, before, after, before_state, after_state, pages):
+def compare_a_resume(output, name, before, after, before_state, after_state, pages, *, compare_codes=False):
     """Read-only exact owned-glyph and whole-page renderer comparison."""
     import shutil
     import subprocess
     import pymupdf
     from PIL import Image
-    from .three_page_audit import _pixels
+    from .three_page_audit import _codes, _pixels
 
     directory = output / f'{name}-input-comparison'
     directory.mkdir(exist_ok=False)
@@ -285,8 +285,11 @@ def compare_a_resume(output, name, before, after, before_state, after_state, pag
             results.append(dict(page=number, owned_glyphs_equal=observations[0] == observations[1],
                 glyphs_checked=sum(map(len, observations[0].values())),
                 mupdf_changed_pixels=mupdf, poppler_changed_pixels=poppler))
+            if compare_codes:
+                results[-1]['all_glyph_codes_resources_programs_equal'] = _codes(before, number) == _codes(after, number)
     evidence = dict(scope='exact-input-owned-glyphs-and-whole-page-render', dpi=144, pages=results)
     evidence['passed'] = all(p['owned_glyphs_equal'] and p['mupdf_changed_pixels'] == p['poppler_changed_pixels'] == 0
+                             and p.get('all_glyph_codes_resources_programs_equal', True)
                              for p in results)
     write(output / f'{name}-input-comparison.json', evidence)
     return evidence
@@ -537,19 +540,25 @@ def run(output, phase):
             real_world_three_page_sequential_reflow='NOT VALIDATED', stages=results,
             unrun=['A edits', 'further re-edit lifecycle', 'additional no-op', 'broad regressions', 'full suite']))
         print('REAL-PDF THREE-PAGE SHORTEN/REGROW — PASS; stopped after two saves', flush=True)
-    elif phase in ('a-short-regrow', 'a-spacing-fixed'):
-        # Resume only the two A edits; the B history and ownership stay intact.
-        suffix = '-spacing-fixed' if phase == 'a-spacing-fixed' else ''
+    elif phase in ('a-short-regrow', 'a-spacing-fixed', 'ab-short-regrow'):
+        # Resume exactly two saves, optionally editing A and B together.
+        # Earlier histories and ownership extensions are never replayed.
+        simultaneous = phase == 'ab-short-regrow'
+        suffix = '-B-spacing-fixed' if simultaneous else '-spacing-fixed' if phase == 'a-spacing-fixed' else ''
         short_name, long_name = 'shorten-A' + suffix, 'regrow-A' + suffix
         for stem in (short_name, long_name, phase + '-summary'):
             assert not list(output.glob(f'{stem}*')), 'preserve every previous edit artifact'
-        initial_pdf = source = output / 'regrow-B.pdf'
-        side = output / 'regrow-B.json'
-        audited = json.loads((output / 'regrow-B-audit.json').read_text())
-        measured = json.loads((output / 'regrow-B-summary.json').read_text())
+        resume = 'regrow-A-spacing-fixed' if simultaneous else 'regrow-B'
+        initial_pdf = source = output / f'{resume}.pdf'
+        side = output / f'{resume}.json'
+        audited = json.loads((output / f'{resume}-audit.json').read_text())
+        measured = json.loads((output / f'{resume}-summary.json').read_text())
         assert source_sha(source) == audited['pdf_sha256'] == measured['output_sha256'] == (
+            '7e58e00309a903865dce1c0006e4cdbde7546046aa7a9d894228be6800fffaab' if simultaneous else
             '121541869471fd0ea28f32d11c8faf4547d1bb17846fc206cea5bf264cc6ca71')
         assert source_sha(side) == measured['sidecar_sha256']
+        if simultaneous:
+            assert source_sha(side) == 'a062bf5f33b24416a1e92844a242631f94a2712ecbc417a0341bb7d89f13b8ce'
         assert audited['scope'] == 'all-page-outside-confirmed-regions' and audited['dpi'] == 144
         assert [p['page'] for p in audited['pages']] == list(range(1, 14))
         assert all(p['mupdf_changed_pixels'] == p['poppler_changed_pixels'] == 0 for p in audited['pages'])
@@ -562,18 +571,30 @@ def run(output, phase):
         first = slot_id(state['continuation_destinations']['P1-next'])
         second = slot_id(state['continuation_destinations']['B-next'])
         assert all(state['slots'][sid]['occupancy'] is not None for sid in (first, second))
+        assert state['paragraphs']['P1']['logical']['text'].endswith(LONG)
+        assert state['paragraphs']['B']['logical']['text'].endswith(B_LONG)
+        if simultaneous:
+            assert tuple(len(state['paragraphs'][pid]['logical']['text']) for pid in ('P1', 'B')) == (126, 181)
         results = []
-        print(phase, 'input qualified; executing only the two requested A edits', flush=True)
+        print(phase, 'input qualified; executing only the two requested saves', flush=True)
         for name, old, new in [(short_name, LONG, FIND), (long_name, FIND, LONG)]:
             started = time.perf_counter()
             edits = change(state, 'P1', old, new)
+            if simultaneous:
+                b_old, b_new = (B_LONG, B_FIND) if name == short_name else (B_FIND, B_LONG)
+                edits.update(change(state, 'B', b_old, b_new))
+                assert set(edits) == {'P1', 'B'}
             input_sha = source_sha(source)
-            write(output / f'{name}-request.json', dict(source_sha256=input_sha, edits=edits))
+            write(output / f'{name}-request.json', dict(source_sha256=input_sha, edits=edits,
+                transaction_scope='one edit_shared_flow call containing every requested paragraph'))
             input_state = state
             source, state = save(source, state, output, name, edits)
             checked = json.loads((output / f'{name}-audit.json').read_text())
             assert [p['page'] for p in checked['pages']] == list(range(1, 14))
             assert all(p['mupdf_changed_pixels'] == p['poppler_changed_pixels'] == 0 for p in checked['pages'])
+            if simultaneous:
+                expected_chars = (86, 138) if name == short_name else (126, 181)
+                assert tuple(len(state['paragraphs'][pid]['logical']['text']) for pid in ('P1', 'B')) == expected_chars
             assert set(state['slots']) == set(initial['slots'])
             for sid, previous in initial['slots'].items():
                 assert all(state['slots'][sid][k] == previous[k] for k in ('paragraph_id', 'region_id'))
@@ -581,30 +602,45 @@ def run(output, phase):
                 if previous.get('source_output'):
                     assert immutable(state['slots'][sid]['source_output']) == immutable(previous['source_output'])
             assert state['continuation_destinations'] == initial['continuation_destinations']
-            assert {pid: p['logical']['text'] for pid, p in state['paragraphs'].items() if pid != 'P1'} == {
-                pid: p['logical']['text'] for pid, p in initial['paragraphs'].items() if pid != 'P1'}
-            assert state['slots'][second]['occupancy'] is not None
-            b_proof = used_destination(output, name, state, 'B', 'C')
-            write(output / f'{name}-B-destination-proof.json', b_proof)
+            untouched = set(initial['paragraphs']) - set(edits)
+            assert {pid: state['paragraphs'][pid]['logical']['text'] for pid in untouched} == {
+                pid: initial['paragraphs'][pid]['logical']['text'] for pid in untouched}
+            if not simultaneous or name == long_name:
+                assert state['slots'][second]['occupancy'] is not None
+                b_proof = used_destination(output, name, state, 'B', 'C')
+                write(output / f'{name}-B-destination-proof.json', b_proof)
             continuation = state['slots'][first]
             if name == short_name:
                 assert continuation['occupancy'] is None
                 assert continuation['range'][0] == continuation['range'][1]
                 assert continuation['binding']['paragraph']['text'] == ''
                 assert continuation['binding']['paragraph']['selection']['glyph_ids'] == []
-                comparison_pages = [3]
+                if simultaneous:
+                    other = state['slots'][second]
+                    assert other['occupancy'] is None and other['range'][0] == other['range'][1]
+                    assert other['binding']['paragraph']['text'] == ''
+                    assert other['binding']['paragraph']['selection']['glyph_ids'] == []
+                    for pid in ('D1', 'C'):
+                        follower = state['slots'][owner(state, pid)]
+                        assert follower['occupancy']['baseline'] == state['regions'][follower['region_id']]['first_baseline']
+                comparison_pages = [] if simultaneous else [3]
             else:
                 a_proof = used_destination(output, name, state, 'P1', 'D1')
                 write(output / f'{name}-A-destination-proof.json', a_proof)
                 assert {pid: p['logical']['text'] for pid, p in state['paragraphs'].items()} == {
                     pid: p['logical']['text'] for pid, p in initial['paragraphs'].items()}
-                for sid in (first, second):
+                for sid in (initial['slots'] if simultaneous else (first, second)):
                     assert state['slots'][sid]['occupancy'] == initial['slots'][sid]['occupancy']
                     assert state['slots'][sid]['range'] == initial['slots'][sid]['range']
+                if simultaneous:
+                    for sid, count in ((first, 15), (second, 33)):
+                        placement = next(p for p in checked['placements'] if p['slot'] == sid)
+                        assert placement['characters'] == placement['glyphs'] == count
+                        assert placement['lines'] == 1 and placement['baselines'] == [100]
                 comparison_pages = range(1, 14)
             spacing = {}
-            if phase == 'a-spacing-fixed':
-                for pid in ('D1', 'D2', 'D3', 'D4', 'B'):
+            if phase in ('a-spacing-fixed', 'ab-short-regrow'):
+                for pid in (('D1', 'D2', 'D3', 'D4') if simultaneous else ('D1', 'D2', 'D3', 'D4', 'B')):
                     sid = owner(state, pid)
                     prior = [line['baseline'] for line in input_state['slots'][sid]['binding']['physical_layout']['lines']]
                     current = [line['baseline'] for line in state['slots'][sid]['binding']['physical_layout']['lines']]
@@ -615,12 +651,15 @@ def run(output, phase):
                         assert current == [line['baseline'] for line in initial['slots'][sid]['binding']['physical_layout']['lines']]
                     spacing[pid] = dict(slot=sid, input_baselines=prior, output_baselines=current,
                         translated_positions_exact=True, inverse_translation_exact=True)
-            comparison = compare_a_resume(output, name, initial_pdf, source, initial, state, comparison_pages)
+            comparison = (compare_a_resume(output, name, initial_pdf, source, initial, state,
+                          comparison_pages, compare_codes=simultaneous) if comparison_pages else None)
             assert source_sha(SOURCE) == original_sha
             result = dict(name=name, scope=phase + '-only', input_sha256=input_sha,
                 output_sha256=source_sha(source), sidecar_sha256=source_sha(output / f'{name}.json'),
                 reopen='restored', elapsed_seconds=time.perf_counter() - started,
                 A_characters=len(state['paragraphs']['P1']['logical']['text']), placements=checked['placements'],
+                B_characters=len(state['paragraphs']['B']['logical']['text']),
+                edited_paragraphs=sorted(edits), edit_shared_flow_calls=1,
                 continuation_slots={key: dict(slot_id=sid, occupancy=state['slots'][sid]['occupancy'],
                     creation_binding=state['slots'][sid]['creation_binding'])
                     for key, sid in (('P1-next', first), ('B-next', second))},
@@ -630,16 +669,17 @@ def run(output, phase):
                 original_sha256=original_sha, original_unchanged=True, audit=checked,
                 relative_spacing=spacing,
                 input_placement_comparison=comparison,
-                verdict='PASS' if comparison['passed'] else 'FAIL: input placement/render comparison')
+                verdict='PASS' if comparison is None or comparison['passed'] else 'FAIL: input placement/render comparison')
             write(output / f'{name}-summary.json', result)
-            assert comparison['passed'], comparison
+            assert comparison is None or comparison['passed'], comparison
             results.append(result)
             print(name, 'measured PASS', flush=True)
-        write(output / f'{phase}-summary.json', dict(scope=phase + '-only',
-            verdict='REAL-PDF THREE-PAGE A SHORTEN/REGROW — PASS',
+        verdict = ('REAL-PDF THREE-PAGE A/B SIMULTANEOUS SHORTEN/REGROW — PASS' if simultaneous else
+                   'REAL-PDF THREE-PAGE A SHORTEN/REGROW — PASS')
+        write(output / f'{phase}-summary.json', dict(scope=phase + '-only', verdict=verdict,
             real_world_three_page_sequential_reflow='NOT VALIDATED', stages=results,
             unrun=['additional A/B re-edits', 'final no-op', 'remaining lifecycle', 'full suite']))
-        print('REAL-PDF THREE-PAGE A SHORTEN/REGROW — PASS; stopped after two saves', flush=True)
+        print(verdict + '; stopped after two saves', flush=True)
     elif phase == 'lifecycle':
         source = output / 'grown-3.pdf'
         opened = open_shared_flow(source, output / 'grown-3.json')
@@ -695,7 +735,7 @@ if __name__ == '__main__':
     logging.getLogger('fontTools.ttLib.tables._h_e_a_d').setLevel(logging.ERROR)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--phase', choices=['initial', 'extend-2', 'grow-2', 'extend-3', 'grow-3', 'b-short-regrow', 'a-short-regrow', 'a-spacing-fixed', 'lifecycle'], required=True)
+    parser.add_argument('--phase', choices=['initial', 'extend-2', 'grow-2', 'extend-3', 'grow-3', 'b-short-regrow', 'a-short-regrow', 'a-spacing-fixed', 'ab-short-regrow', 'lifecycle'], required=True)
     args = parser.parse_args()
     started = time.perf_counter()
     try:
