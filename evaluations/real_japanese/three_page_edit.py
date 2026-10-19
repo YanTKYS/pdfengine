@@ -152,6 +152,70 @@ def kept(old, new):
         assert all(new.get(key, {}).get(k) == v for k, v in old.get(key, {}).items())
 
 
+def saved_lifecycle_evidence(output):
+    """Read saved successful evidence; never replay an edit or accept a failed retry."""
+    names = ['original-noop', 'initial', 'extension-2-noop-precise', 'grown-2',
+             'extension-3-noop-roundtrip', 'grown-3', 'shorten-B', 'regrow-B',
+             'shorten-A-spacing-fixed', 'regrow-A-spacing-fixed',
+             'shorten-A-B-spacing-fixed', 'regrow-A-B-spacing-fixed']
+    result = []
+    for index, name in enumerate(names):
+        pdf, side = output / f'{name}.pdf', output / f'{name}.json'
+        state = json.loads(side.read_text())
+        report = json.loads((output / f'{name}-report.json').read_text())
+        audit = json.loads((output / f'{name}-audit.json').read_text())
+        assert source_sha(pdf) == state['pdf_sha256'] == report['pdf_sha256']
+        assert report['model_sha256'] == state['model_sha256']
+        assert report['saves'] == 1 and report['paragraph_identities_and_allocation_verified']
+        assert audit['dpi'] == 144 and [p['page'] for p in audit['pages']] == list(range(1, 14))
+        assert all(p['mupdf_changed_pixels'] == p['poppler_changed_pixels'] == 0
+                   and p['foreign_codes_gids_fonts_geometry_equal']
+                   and p['drawings_images_links_annotations_equal'] for p in audit['pages'])
+        if 'noop' in name:
+            assert audit['scope'] == 'all-page-whole-noop'
+        if 'pdf_sha256' in audit:
+            assert audit['pdf_sha256'] == state['pdf_sha256'] and audit['reopen'] == 'restored'
+            restoration = 'saved audit records restored and exact PDF SHA'
+        else:
+            # Legacy audits predate the explicit SHA/reopen fields. The next
+            # successful operation restores this exact model and source PDF.
+            following = json.loads((output / f'{names[index + 1]}-report.json').read_text())
+            assert following['plan']['source_sha256'] == state['pdf_sha256']
+            if name != 'initial':  # initial is then deliberately extended.
+                assert following['plan']['model_sha256'] == state['model_sha256']
+            else:
+                accepted = json.loads((output / 'extension-2-accepted.json').read_text())
+                assert accepted['receipt']['extension']['base_model_sha256'] == state['model_sha256']
+            restoration = 'legacy audit plus SHA-bound report/sidecar and subsequent successful source restore'
+        summary_path = output / f'{name}-summary.json'
+        if summary_path.exists():
+            summary = json.loads(summary_path.read_text())
+            assert summary['output_sha256'] == state['pdf_sha256']
+            assert summary['sidecar_sha256'] == source_sha(side)
+            assert summary['reopen'] == 'restored'
+            expected_verdict = ('PASS: B continues onto page 3 and C moves down' if name == 'grown-3'
+                                else None if name in ('shorten-B', 'regrow-B') else 'PASS')
+            assert summary.get('verdict') == expected_verdict
+        result.append(dict(name=name, pdf_sha256=state['pdf_sha256'], sidecar_sha256=source_sha(side),
+            audit_sha256=source_sha(output / f'{name}-audit.json'), audit_scope=audit['scope'],
+            pages=13, mupdf_changed_pixels=0, poppler_changed_pixels=0, restoration=restoration))
+    for name, source in [('page-1-accepted', SOURCE), ('extension-2-accepted', output / 'initial.pdf'),
+                         ('extension-3-accepted', output / 'grown-2.pdf')]:
+        accepted = json.loads((output / f'{name}.json').read_text())
+        assert accepted['receipt']['source_sha256'] == accepted['state']['pdf_sha256'] == source_sha(source)
+        assert accepted['receipt']['reproduction']['status'] == 'reproduced'
+    for name, growth in [(FIRST_REFUSAL, 2), ('before-page-3', 3)]:
+        refusal = json.loads((output / f'{name}-refusal.json').read_text())
+        request = json.loads((output / f'grown-{growth}-request.json').read_text())
+        assert refusal['reason'] == 'paragraphs exceed all explicitly confirmed shared regions'
+        assert refusal['published'] is False and refusal['edits'] == request['edits']
+        assert not (output / f'{name}.pdf').exists() and not (output / f'{name}.json').exists()
+    for name in ('regrow-A-spacing-fixed', 'regrow-A-B-spacing-fixed'):
+        assert json.loads((output / f'{name}-input-comparison.json').read_text())['passed']
+    assert json.loads((output / 'b-short-regrow-summary.json').read_text())['verdict'].endswith('— PASS')
+    return result
+
+
 def owner(state, paragraph):
     return next(sid for sid, slot in state['slots'].items()
                 if slot['paragraph_id'] == paragraph and slot.get('source_output'))
@@ -680,6 +744,115 @@ def run(output, phase):
             real_world_three_page_sequential_reflow='NOT VALIDATED', stages=results,
             unrun=['additional A/B re-edits', 'final no-op', 'remaining lifecycle', 'full suite']))
         print(verdict + '; stopped after two saves', flush=True)
+    elif phase == 'final-lifecycle':
+        # Only the missing contracts and two final saves; never replay history.
+        names = ('second-A-B-final', 'final-three-page-noop')
+        refusal_names = ('final-over-capacity', 'final-unowned-paragraph')
+        for stem in (*names, 'final-lifecycle'):
+            assert not list(output.glob(f'{stem}*')), 'preserve every previous artifact'
+        for stem in refusal_names:
+            assert all(p.name == f'{stem}-refusal.json' for p in output.glob(f'{stem}*'))
+        history = saved_lifecycle_evidence(output)
+        source = output / 'regrow-A-B-spacing-fixed.pdf'
+        side = output / 'regrow-A-B-spacing-fixed.json'
+        input_pdf_sha, input_side_sha = source_sha(source), source_sha(side)
+        assert input_pdf_sha == '9c8ca31d5b5a4ae676781109f7ca29f69bee6ef882a6e68dc91c421851c42f05'
+        assert input_side_sha == '232800157e00e9e7fddabaf00f697852e348e3e76b394ed169eeb5f4c532c51b'
+        opened = open_shared_flow(source, side)
+        assert opened['status'] == 'restored'
+        state = initial = opened['state']
+        independent_releases(state)
+        assert set(state['continuation_destinations']) == {'P1-next', 'B-next'}
+        assert all(state['slots'][slot_id(d)]['occupancy'] is not None
+                   for d in state['continuation_destinations'].values())
+        assert state['paragraphs']['P1']['logical']['text'].endswith(LONG)
+        assert state['paragraphs']['B']['logical']['text'].endswith(B_LONG)
+        print('final-lifecycle input and 12 historical revisions qualified', flush=True)
+        refusals = {}
+        requests = [change(state, 'B', B_LONG, B_LONG * 4),
+                    {'foreign-section-2': {'edits': [dict(start=0, end=1, text='変更',
+                     style_id=next(k for k, v in state['paragraphs']['B']['style_registry'].items()
+                                   if v['attributes']['tracking']['value'] == .24))]}}]
+        reasons = ('final allocation needs a missing paragraph destination slot; new continuation is not authorized',
+                   'changes must name independent paragraph identities')
+        for name, edits, expected_reason in zip(refusal_names, requests, reasons):
+            started = time.perf_counter()
+            raw_path = output / f'{name}-refusal.json'
+            reused = raw_path.exists()
+            if not reused:
+                refuse(source, state, output, name, edits)
+            evidence = json.loads(raw_path.read_text())
+            assert evidence['reason'] == expected_reason
+            assert evidence['source_sha256'] == input_pdf_sha and evidence['edits'] == edits
+            assert evidence['published'] is False
+            assert not (output / f'{name}.pdf').exists() and not (output / f'{name}.json').exists()
+            assert source_sha(source) == input_pdf_sha and source_sha(side) == input_side_sha
+            evidence.update(contract=('confirmed-capacity-and-destination-authority'
+                                      if name == refusal_names[0] else 'source-ownership'),
+                            input_pdf_and_sidecar_unchanged=True, reused_saved_refusal=reused,
+                            elapsed_seconds=None if reused else time.perf_counter() - started)
+            refusals[name] = evidence
+        write(output / 'final-lifecycle-qualified-refusals.json', refusals)
+        results = []
+        for index, name in enumerate(names):
+            started = time.perf_counter()
+            edits = {}
+            if index == 0:
+                edits.update(change(state, 'P1', LONG, A_SECOND))
+                edits.update(change(state, 'B', B_LONG, B_SECOND))
+                assert set(edits) == {'P1', 'B'}
+            previous_source, previous_state = source, state
+            write(output / f'{name}-request.json', dict(source_sha256=source_sha(source), edits=edits,
+                  transaction_scope='one edit_shared_flow call'))
+            source, state = save(source, state, output, name, edits, whole=index == 1)
+            checked = json.loads((output / f'{name}-audit.json').read_text())
+            assert checked['dpi'] == 144 and [p['page'] for p in checked['pages']] == list(range(1, 14))
+            assert all(p['mupdf_changed_pixels'] == p['poppler_changed_pixels'] == 0 for p in checked['pages'])
+            assert set(state['slots']) == set(initial['slots'])
+            assert state['continuation_destinations'] == initial['continuation_destinations']
+            for sid, original in initial['slots'].items():
+                current = state['slots'][sid]
+                assert all(current[k] == original[k] for k in ('paragraph_id', 'region_id'))
+                if original.get('source_output'):
+                    assert immutable(current['source_output']) == immutable(original['source_output'])
+                if original.get('creation_binding'):
+                    assert current['creation_binding'] == original['creation_binding']
+            assert state['paragraphs']['P1']['logical']['text'].endswith(A_SECOND)
+            assert state['paragraphs']['B']['logical']['text'].endswith(B_SECOND)
+            proofs = {pid: used_destination(output, name, state, pid, follower)
+                      for pid, follower in [('P1', 'D1'), ('B', 'C')]}
+            write(output / f'{name}-destination-proofs.json', proofs)
+            comparison = None
+            if index == 1:
+                assert state['generated_fonts'] == previous_state['generated_fonts']
+                for sid in state['slots']:
+                    assert state['slots'][sid]['range'] == previous_state['slots'][sid]['range']
+                    assert state['slots'][sid]['occupancy'] == previous_state['slots'][sid]['occupancy']
+                comparison = compare_a_resume(output, name, previous_source, source,
+                                              previous_state, state, range(1, 14), compare_codes=True)
+            result = dict(name=name, scope='final-lifecycle-only', input_sha256=source_sha(previous_source),
+                output_sha256=source_sha(source), sidecar_sha256=source_sha(output / f'{name}.json'),
+                reopen='restored', edited_paragraphs=sorted(edits), edit_shared_flow_calls=1,
+                elapsed_seconds=time.perf_counter() - started, placements=checked['placements'],
+                characters={pid: len(p['logical']['text']) for pid, p in state['paragraphs'].items()},
+                audit=checked, continuation_proofs=proofs, input_placement_comparison=comparison,
+                source_markers_and_creation_bindings_preserved=True, destinations_unchanged=True,
+                release_owners={key: d['vacated_space']['owners'] for key, d in state['continuation_destinations'].items()},
+                original_sha256=source_sha(SOURCE), original_unchanged=source_sha(SOURCE) == SHA,
+                verdict='PASS' if comparison is None or comparison['passed'] else 'FAIL: no-op input comparison')
+            write(output / f'{name}-summary.json', result)
+            assert result['original_unchanged'] and result['verdict'] == 'PASS', result['verdict']
+            results.append(result)
+            print(name, 'measured PASS', flush=True)
+        result = dict(verdict='REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW VALIDATED — PASS',
+            source=dict(url=URL, sha256=SHA, pages=13, edited_pages=[1, 2, 3]),
+            resume=dict(pdf_sha256=input_pdf_sha, sidecar_sha256=input_side_sha),
+            historical_saved_evidence=history, final_stages=results, refusals=refusals,
+            excluded_historical_failures=['extension-2-noop', 'extension-3-noop',
+                'extension-3-noop-stable', 'shorten-A', 'regrow-A'],
+            successful_saves_this_phase=2, original_sha_unchanged=source_sha(SOURCE) == SHA)
+        write(output / 'final-lifecycle-summary.json', result)
+        print(result['verdict'], flush=True)
     elif phase == 'lifecycle':
         source = output / 'grown-3.pdf'
         opened = open_shared_flow(source, output / 'grown-3.json')
@@ -735,7 +908,7 @@ if __name__ == '__main__':
     logging.getLogger('fontTools.ttLib.tables._h_e_a_d').setLevel(logging.ERROR)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--phase', choices=['initial', 'extend-2', 'grow-2', 'extend-3', 'grow-3', 'b-short-regrow', 'a-short-regrow', 'a-spacing-fixed', 'ab-short-regrow', 'lifecycle'], required=True)
+    parser.add_argument('--phase', choices=['initial', 'extend-2', 'grow-2', 'extend-3', 'grow-3', 'b-short-regrow', 'a-short-regrow', 'a-spacing-fixed', 'ab-short-regrow', 'final-lifecycle', 'lifecycle'], required=True)
     args = parser.parse_args()
     started = time.perf_counter()
     try:

@@ -1,22 +1,171 @@
 # Real Japanese three-page sequential reflow
 
-The full validation is incomplete. The [limited no-op follow-up](three-page-noop-report.md)
-resolved the page-2 and page-3 differences: the saved third-page extension now
-reopens `restored` with zero changed pixels on all 13 pages in both renderers.
-The subsequent **B growth onto page 3 passes**, with C moved down and zero changes
-outside approved regions on all 13 pages in both renderers. B's bounded
-shorten/regrow pair also passes, including reuse of the same continuation and
-exact C glyph/render placement after regrowth. A's repaired shorten/regrow pair
-also **passes**: all 13 pages match the good input in both renderers, and the
-actual owned glyph coordinates/bounds match exactly. The earlier failed pair
-and its diagnosis are retained below as historical evidence.
-The bounded **A/B simultaneous shorten/regrow pair also passes**: each save edits
-both paragraphs in one Transaction, empties then reuses both continuation slots,
-and returns all 13 pages, actual glyphs and glyph font/code identities to the input.
-Further re-edit lifecycle and final no-op are unrun; **REAL-WORLD THREE-PAGE SEQUENTIAL
-REFLOW remains NOT VALIDATED**.
+**REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW VALIDATED — PASS** (2026-10-19).
+The unchanged public Japanese judgment now has a verified saved history through
+two sequential extensions, growth onto pages 2 and 3, individual and simultaneous
+shorten/regrow, simultaneous additional re-edit, and final no-op. The final no-op
+is pixel-identical on all 13 pages in MuPDF and Poppler at 144 dpi, with exact
+actual glyph/code/font equality. Capacity/destination and source-ownership
+violations refuse without publishing PDF or sidecar.
+
+This verdict is for the selected body and specified edits in this source, not
+unrestricted PDF editing. [Compact measured evidence](three-page-final-summary.json)
+records the 14 successful revision hashes and final measurements. The checkpoints
+below retain their original outcomes: earlier NOT VALIDATED statements describe
+their then-incomplete scope, and failed revisions remain failures.
 
 Starting main: `f93c8f47bc8d2c277b01464178d75f3e1cc23e89` (PR #75 merged).
+
+## Final re-edit, no-op and integrated lifecycle — PASS
+
+Starting commit: `5cc46caffb025c7a874bde2e40302177ad5cf8cd`.
+This final phase changes only the evaluator and measurement records; no production
+code, safety check or tolerance changes. It resumes `regrow-A-B-spacing-fixed`
+with PDF SHA
+`9c8ca31d5b5a4ae676781109f7ca29f69bee6ef882a6e68dc91c421851c42f05`
+and sidecar SHA
+`232800157e00e9e7fddabaf00f697852e348e3e76b394ed169eeb5f4c532c51b`.
+The source remains [the official 13-page judgment](https://www.courts.go.jp/assets/hanrei/hanrei-pdf-97044.pdf),
+SHA `70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2`.
+These hashes and `restored` are verified before either successful save.
+
+### Refusals before saving
+
+The existing overlarge request replaces B's `B_LONG` by `B_LONG * 4`.
+It refuses with **`final allocation needs a missing paragraph destination slot;
+new continuation is not authorized`**. This is the existing allocation guard in
+`shared_flow._plan`: the request outgrows B's authorized page-2/release-3 slots
+and would require an additional paragraph destination. The page-3 body belongs
+to C and is not automatically granted to B. This is a capacity/placement and
+destination-authority refusal, not a source-position proof failure.
+
+The nonempty edit of unowned `foreign-section-2` refuses with
+**`changes must name independent paragraph identities`**. Its request replaces
+one character with `変更`, using an existing B style ID; the missing paragraph
+identity is the reason for refusal. Both exact reason strings are asserted.
+Neither attempt publishes PDF or sidecar, and both input hashes remain unchanged.
+Each refusal is executed once. The earlier pre-extension capacity refusals are
+read-only evidence; their exact requests match the later successful growth requests.
+
+### Exactly two successful saves
+
+`second-A-B-final` uses one `edit_shared_flow` call, and therefore one production
+`Transaction`, containing both `P1: LONG→A_SECOND` and `B: B_LONG→B_SECOND`.
+The specified wording changes include `入居地区が確定し→入居地区も確定し`
+and `相談を複数回→相談も複数回`. All logical text is checked against the two
+explicit replacements. `final-three-page-noop` then uses `edits={}` on that saved,
+restored revision. It preserves the complete logical text.
+
+| Paragraph / fragment | Re-edit and final no-op characters / lines | Range | Baseline(s), pt |
+| --- | --- | --- | --- |
+| A, page 1 | 111 / 3 | `[0,111]` | 705.3399658203125, 730.8999633789062, 756.4559936523438 |
+| A continuation, page 2 | 15 / 1 | `[111,126]` | 100 |
+| B, page 2 | 148 / 4 | `[0,148]` | 689.639990234375, 715.3199829101562, 740.87998046875, 766.4360107421875 |
+| B continuation, page 3 | 33 / 1 | `[148,181]` | 100 |
+| D1, page 2 | 306 / 9 | `[0,306]` | first 126.4; last 331.2699951171875 |
+| C, page 3 | 130 / 4 | `[0,130]` | 126.4, 151.95999755859376, 177.63992919921876, 203.19998779296876 |
+
+A remains 126 characters/four lines, B 181 characters/five lines. Both generated
+slots retain nonempty occupancy, their original slot IDs and complete creation
+bindings. The same-Transaction release evidence is checked for both fragments.
+`P1-next` releases only D1 (`slot-1`); `B-next` releases only C (`slot-6`).
+All slot identities, immutable source-output markers and destination contracts
+survive both saves. No-op occupancy, logical ranges and generated-font registry
+are exactly unchanged. D1–D4 retain their witnessed relative spacing, and all
+nine slots' no-op planned baselines also match the re-edited input exactly.
+
+Both saves reopen **`restored`**. The re-edit passes the independent audit on all
+13 pages outside the confirmed regions: **MuPDF 0 / Poppler 0 changed pixels**
+at 144 dpi. It checks 1,029 retained/reused occurrences for exact code/GID/resource/
+program equality and 107 generated glyphs against provider outlines/advances.
+Its edited `/PRF1` subsets on pages 1 and 3 regenerate under the
+existing glyph-level font policy; the explicit provider remains unchanged.
+
+For the final no-op, both the independent audit and the direct input comparison
+use **complete pages without region masks**. All 13 pages are pixel-identical in
+both renderers. All **1,136 owned glyphs** (111 / 863 / 162 on pages 1 / 2 / 3)
+have exactly equal Unicode, GID, physical origin and bounds; the maximum
+before/after position/bounds difference is **0 pt**. Every glyph's native code,
+font resource and embedded program SHA also matches on all 13 pages. The no-op
+checks 1,136 retained/reused occurrences, introduces no provider glyphs and has
+zero generated-font registry changes. The plan-to-render audit's maximum origin
+error is 0.00003662109375568434 pt in each stage; this is distinct from the exact
+zero measured no-op before/after difference. Foreign glyphs, fixed elements and
+drawings remain unchanged. Images, links and annotations are empty in this source;
+their equality checks do not establish nonempty-example coverage.
+
+### Integration of saved evidence
+
+No earlier successful edit, B1 acceptance or extension is rerun. The evaluator
+reads the following saved revisions, checks their actual PDF and sidecar/report
+hash bindings, and verifies all 13 saved page results are zero in both renderers.
+The linked compact summary contains full PDF, sidecar and audit SHA-256 values.
+
+| Successful evidence | Contract covered | Saved raster scope, all 13 pages |
+| --- | --- | --- |
+| `original-noop` | Original B1 ownership and source reproduction | Whole pages, 0 / 0 |
+| `initial` | First A edit, save/readback | Outside confirmed regions, 0 / 0 |
+| `extension-2-noop-precise` | First saved-revision extension, immediate no-op | Whole pages, 0 / 0 |
+| `grown-2` | Same previously refused A request uses page 2 and moves D1–B | Outside confirmed regions, 0 / 0 |
+| `extension-3-noop-roundtrip` | Second saved-revision extension, immediate no-op | Whole pages, 0 / 0 |
+| `grown-3` | Same previously refused B request uses page 3 and moves C | Outside confirmed regions, 0 / 0 |
+| `shorten-B`, `regrow-B` | Independent B continuation release/reuse and C return | Outside confirmed regions, 0 / 0; final C/page-3 exact comparison |
+| `shorten-A-spacing-fixed`, `regrow-A-spacing-fixed` | Independent A release/reuse and witnessed follower spacing | Outside confirmed regions, 0 / 0; final all-page exact comparison |
+| `shorten-A-B-spacing-fixed`, `regrow-A-B-spacing-fixed` | Single-Transaction simultaneous release/reuse | Outside confirmed regions, 0 / 0; final all-page glyph/code/font/render equality |
+| `second-A-B-final` | Simultaneous additional re-edit | Outside confirmed regions, 0 / 0 |
+| `final-three-page-noop` | Final no-op/readback/identity | Whole pages and actual glyph/code/font equality, 0 / 0 |
+
+Both extension receipts reproduce their exact saved source revision and are
+bound by source/model SHA to the corresponding immediate no-op. The initial
+acceptance also matches the original source SHA. The earliest three audits
+predate explicit `pdf_sha256`/`reopen` fields; their saved reports and sidecars
+match the actual PDFs, and the following successful operation restores that
+same source/model (or its explicitly recorded extension). This legacy evidence
+is labelled in the summary rather than inventing missing audit fields.
+
+The old `extension-2-noop`, `extension-3-noop`, `extension-3-noop-stable`,
+`shorten-A` and `regrow-A` failures are excluded. Their failed rasters, diagnostics
+and earlier reports remain historical evidence. Only the corresponding corrected
+PASS artifacts above are included. Original SHA, source ownership, independent
+release authority and every required lifecycle stage have evidence; no requested
+stage remains unvalidated for this selected source and edit sequence.
+
+### Timing, output hashes and execution limits
+
+The successful resumed phase took **422.637918 s**: re-edit **191.922492 s**,
+final no-op including direct comparison **202.660640 s**, with input qualification
+and the previously unrun ownership refusal also included in the phase total.
+The ownership refusal took **12.306879 s**. Two earlier evaluator-only starts are
+recorded separately: **15.583616 s**, payload setup `KeyError` before any refusal
+or save; **98.467619 s**, one valid capacity refusal followed by an overly specific
+expected-reason assertion. Both produced zero successful saves. The latter raw
+refusal was preserved and reused after exact source/request/reason/nonpublication
+checks, not rerun. Its individual runtime was not separately recorded.
+Thus this task executes exactly **two successful saves and two refusal attempts**.
+No global runtime is inferred for the older interrupted evaluation history.
+
+| Output | SHA-256 |
+| --- | --- |
+| `second-A-B-final.pdf` | `b68d4772495e2f9256b84931051cbd64543cdf6e86fb58d91b8c1788512c0650` |
+| `second-A-B-final.json` | `bf9dac930ebf70d96e850b0ad363e73fca4005ab68eaa0de028c042044973324` |
+| `final-three-page-noop.pdf` | `b816db4e617a34d7ebd577c0ecde17c2b44947d2124abf932a46742e47ddb8ea` |
+| `final-three-page-noop.json` | `85b47b6441f04db9ec357216788efb8f9989a37bc6de633f240204d5f8ae0e4b` |
+
+```bash
+PYTHONPATH=. .venv/bin/python -u -m evaluations.real_japanese.three_page_edit \
+  --output tmp/courts-three-page/run-01 --phase final-lifecycle
+```
+
+This phase requires the qualified saved history, refuses existing successful
+output stems, and does not run the old `lifecycle` phase. Logs are
+`tmp/courts-three-page-final-lifecycle.log`, `-qualified.log` and `-resume.log`;
+the last is the completed run. The run directory holds raw/qualified refusals,
+requests, reports, audits, destination proofs, comparison and stage summaries,
+plus `final-lifecycle-summary.json`. PDFs, fonts and full tmp artifacts are not
+committed. Environment remains Linux / Python 3.12.14 / PyMuPDF 1.27.2.3 /
+Poppler 26.05.0. `py_compile` and `git diff --check` pass. The previously measured
+26 distinct focused tests below are reused as historical evidence, not rerun or
+double-counted. Full suite, new PDF search and merge are unrun.
 
 ## A/B simultaneous shorten/regrow — PASS
 
