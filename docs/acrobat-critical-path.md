@@ -99,6 +99,11 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   whole-page no-op differences are zero. Complete owner selection and a fixed rectangle
   require explicit caller declarations. This separate API does not extend B1/B2 paragraph
   aggregation. [Contract, tests and measurements](../evaluations/real_japanese/osaka-single-span-report.md).
+  The same path now also supports one internal nonempty replacement/insertion when
+  a SHA-pinned exact original embedded program proves the new glyphs. Real Span62
+  replacement generated9glyphs and retained24; both saves restored and both renderers
+  report zero exterior/no-op differences. Growth is fixture-validated; wrapping and
+  cross-owner edits remain refused. [Replacement evidence](../evaluations/real_japanese/osaka-single-span-replacement-report.md).
 - Evidence: [B1 tests](../tests/test_page_proposal.py),
   [B2 tests](../tests/test_tagged_page_proposal.py), and
   [implementation/evidence report](tagged-persistent-editing.md).
@@ -392,8 +397,9 @@ B1's proofs.
   ActualText/mixed children; none of the four probed pages qualifies as a complete supported
   bundle. A broader Office claim needs additional structure-preserving policies and evidence.
   A separate `propose_single_span` → `accept_single_span` → `edit_single_span` →
-  `open_single_span` path now supports one proven leaf ActualText owner and internal deletion
-  only; it does not make these pages eligible for B2 whole-paragraph aggregation.
+  `open_single_span` path supports one proven leaf ActualText owner and internal edits
+  within its fixed one-line region. Nonempty edits require a pinned original embedded
+  font program; it does not make these pages eligible for B2 whole-paragraph aggregation.
 
 ### B6 — Witnessed irregular source adjacency: COMPLETE for the bounded path
 

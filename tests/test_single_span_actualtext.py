@@ -64,9 +64,9 @@ def world(tmp_path_factory):
     return path, proposal
 
 
-def save(path, state, root, name, edits):
+def save(path, state, root, name, edits, *, provider=None):
     pdf, sidecar = root / (name + '.pdf'), root / (name + '.json')
-    edit_single_span(path, state, pdf, sidecar, edits)
+    edit_single_span(path, state, pdf, sidecar, edits, provider=provider)
     opened = open_single_span(pdf, json.loads(sidecar.read_text()))
     assert opened['status'] == 'restored', opened
     return pdf, opened['state']
@@ -231,3 +231,159 @@ def test_existing_nominal_box_overlap_still_requires_ink_separation(world, tmp_p
     else:
         with pytest.raises(PdfError, match='collides'):
             propose_single_span(path, selection(path), region=region)
+
+
+def pinned_provider(source, proposal, root):
+    import hashlib
+    with pymupdf.open(source) as doc:
+        data = doc.extract_font(proposal['paragraph']['styles'][0]['font_xref'])[3]
+    path = root / 'provider.ttf'; path.write_bytes(data)
+    return dict(path=str(path), sha256=hashlib.sha256(data).hexdigest(), font_index=0)
+
+
+def glyph_records(path, ids):
+    content = ContentPage(path, 1)
+    try:
+        return [dict(text=ch.text, code=ch.code.hex(), gid=content.actual[i]['gid'],
+                     resource=e.state.font.name, font_xref=e.state.font.xref)
+                for e in content.events for ch in e.chars for i in ch.source_orders if i in ids]
+    finally:
+        content.close()
+
+
+@pytest.mark.parametrize('start,end,text', [(4, 6, '申請'), (4, 6, '申'), (4, 6, '申請書'), (4, 4, '申請')])
+def test_nonempty_replacement_and_insertion_preserve_native_glyphs(world, tmp_path, start, end, text):
+    from pdfeditor.span_edit import plan_single_span_edit
+    source, proposal = world
+    state = accept_single_span(source, proposal)
+    provider = pinned_provider(source, proposal, tmp_path)
+    edits = [dict(start=start, end=end, text=text)]
+    plan = plan_single_span_edit(source, state, edits, provider=provider)
+    assert plan['provided_font_glyph_count'] == len(text)
+    assert plan['new_line_count'] == 1
+    out, current = save(source, state, tmp_path, 'replacement', edits, provider=provider)
+    assert current['witness']['text'] == TEXT[:start] + text + TEXT[end:]
+    assert current['witness']['structure'] == state['witness']['structure']
+    assert current['witness']['clip'] == state['witness']['clip']
+    old = glyph_records(source, state['selection']['glyph_ids'])
+    new = glyph_records(out, current['selection']['glyph_ids'])
+    assert new[:start] == old[:start] and new[start + len(text):] == old[end:]
+    assert all(g['resource'] != old[0]['resource'] for g in new[start:start+len(text)])
+    assert len(current['font_binding']['generated']) == 1
+    # _restore independently checks current subset outlines, advances and
+    # Unicode/GID against the original embedded provider on every reopen.
+    assert open_single_span(out, current)['status'] == 'restored'
+    noop, unchanged = save(out, current, tmp_path, 'noop-replacement', [])
+    assert raster(out) == raster(noop)
+    # Replace across the physical native/generated font boundary under the
+    # same approved appearance, then retain the resulting glyphs in deletion.
+    again, edited = save(noop, unchanged, tmp_path, 'again', [dict(start=3, end=6, text='提出')], provider=provider)
+    final, last = save(again, edited, tmp_path, 'deleted', [dict(start=2, end=3, text='')])
+    assert last['witness']['structure'] == state['witness']['structure']
+
+
+@pytest.mark.parametrize('kind', ['missing', 'bad-sha', 'wrong-file', 'bad-face', 'extra', 'coverage', 'capacity',
+                                 'head-insert', 'tail-insert', 'newline', 'ignorable', 'combining'])
+def test_provider_and_new_edit_refusals_publish_neither_artifact(world, tmp_path, kind):
+    source, proposal = world
+    state = deepcopy(proposal); state['status'] = 'confirmed'; state = _seal(state)
+    provider = pinned_provider(source, proposal, tmp_path)
+    edit = dict(start=4, end=6, text='申請')
+    if kind == 'missing': provider = None
+    elif kind == 'bad-sha': provider['sha256'] = '0' * 64
+    elif kind == 'wrong-file':
+        provider['path'] = str(tmp_path / 'missing.ttf')
+    elif kind == 'bad-face': provider['font_index'] = 1
+    elif kind == 'extra': provider['fallback'] = 'guess'
+    elif kind == 'coverage': edit['text'] = '髙'
+    elif kind == 'capacity': edit['text'] = '申請書' * 12
+    elif kind == 'head-insert': edit.update(start=0, end=0)
+    elif kind == 'tail-insert': edit.update(start=len(TEXT), end=len(TEXT))
+    elif kind == 'newline': edit['text'] = '申\n請'
+    elif kind == 'ignorable': edit['text'] = '\u200b'
+    elif kind == 'combining': edit['text'] = '申\u0301'
+    with pytest.raises(PdfError):
+        edit_single_span(source, state, tmp_path / 'bad.pdf', tmp_path / 'bad.json', [edit], provider=provider)
+    assert not (tmp_path / 'bad.pdf').exists() and not (tmp_path / 'bad.json').exists()
+
+
+def test_generated_registry_and_stale_revision_are_not_authority(world, tmp_path):
+    source, proposal = world; state = accept_single_span(source, proposal)
+    provider = pinned_provider(source, proposal, tmp_path)
+    out, current = save(source, state, tmp_path, 'generated', [dict(start=4, end=6, text='申請')], provider=provider)
+    assert open_single_span(out, state)['status'] == 'needs_confirmation'
+    for kind in ('missing', 'hash', 'instance', 'style', 'unrecorded'):
+        forged = deepcopy(current); binding = forged['font_binding']; alias = next(iter(binding['generated']))
+        if kind == 'missing': del forged['font_binding']
+        elif kind == 'hash': binding['generated'][alias]['subset_sha256'] = '0' * 64
+        elif kind == 'instance': binding['generated'][alias]['provider']['instance_sha256'] = '0' * 64
+        elif kind == 'style': binding['appearance']['font_size'] = 1
+        elif kind == 'unrecorded': binding['generated'] = {}
+        assert open_single_span(out, _seal(forged))['status'] == 'needs_confirmation'
+
+
+def test_new_glyph_ink_must_fit_original_clip(world, tmp_path):
+    source, _ = world
+    writer = PdfWriter(PdfReader(source), full=True); page = writer.pages[0]
+    data = page.get_contents().get_data()
+    data = data.replace(b'/MCID 1>> BDC q 0 0 595.28 841.89 re', b'/MCID 1>> BDC q 100 0 127 841.89 re')
+    stream = DecodedStreamObject(); stream.set_data(data); page[NameObject('/Contents')] = writer._add_object(stream)
+    clipped = tmp_path / 'clipped.pdf'; writer.write(clipped)
+    proposal = propose_single_span(clipped, selection(clipped), region=REGION)
+    state = accept_single_span(clipped, proposal); provider = pinned_provider(clipped, proposal, tmp_path)
+    with pytest.raises(PdfError, match='clip'):
+        edit_single_span(clipped, state, tmp_path / 'bad.pdf', tmp_path / 'bad.json',
+                         [dict(start=4, end=4, text='申請')], provider=provider)
+    assert not (tmp_path / 'bad.pdf').exists() and not (tmp_path / 'bad.json').exists()
+
+
+@pytest.mark.parametrize('kind', ['outline', 'advance'])
+def test_matching_subset_hash_cannot_hide_changed_glyphs(world, tmp_path, kind):
+    from io import BytesIO
+    import hashlib
+    from fontTools.ttLib import TTFont
+    from pdfeditor.span_edit import _verify_font_binding
+    source, proposal = world; state = accept_single_span(source, proposal)
+    recipe = pinned_provider(source, proposal, tmp_path)
+    out, current = save(source, state, tmp_path, 'generated', [dict(start=4, end=6, text='申請')], provider=recipe)
+    alias = next(iter(current['font_binding']['generated']))
+    glyph = glyph_records(out, current['selection']['glyph_ids'])[4]
+    writer = PdfWriter(PdfReader(out), full=True)
+    font = writer.pages[0]['/Resources']['/Font'][alias]
+    descriptor = font['/DescendantFonts'][0].get_object()['/FontDescriptor']
+    program = TTFont(BytesIO(descriptor['/FontFile2'].get_data()))
+    name = program.getGlyphName(glyph['gid'])
+    if kind == 'advance':
+        width, lsb = program['hmtx'][name]; program['hmtx'][name] = (width + 7, lsb)
+    else:
+        program['glyf'][name].coordinates[0] = (10, 10)
+    data = BytesIO(); program.save(data)
+    stream = DecodedStreamObject(); stream.set_data(data.getvalue())
+    descriptor[NameObject('/FontFile2')] = writer._add_object(stream)
+    changed = tmp_path / 'changed-font.pdf'; writer.write(changed)
+    forged = deepcopy(current['font_binding'])
+    forged['generated'][alias]['subset_sha256'] = hashlib.sha256(data.getvalue()).hexdigest()
+    with pytest.raises(PdfError, match='outline or advance'):
+        _verify_font_binding(changed, current['paragraph'], forged)
+
+
+@pytest.mark.parametrize('phase', ['semantic', 'sidecar-publication'])
+def test_nonempty_failure_publishes_neither_pdf_nor_sidecar(world, tmp_path, monkeypatch, phase):
+    source, proposal = world; state = accept_single_span(source, proposal)
+    provider = pinned_provider(source, proposal, tmp_path)
+    output, sidecar = tmp_path / 'bad.pdf', tmp_path / 'bad.json'
+    if phase == 'semantic':
+        import pdfeditor.source_ownership as ownership
+        def fail(*args): raise PdfError('injected semantic failure')
+        monkeypatch.setattr(ownership, 'verify_single_span_output', fail)
+    else:
+        import os
+        from pathlib import Path
+        original = os.link
+        def fail(src, dst, *args, **kwargs):
+            if Path(dst) == sidecar: raise OSError('injected sidecar publication failure')
+            return original(src, dst, *args, **kwargs)
+        monkeypatch.setattr(os, 'link', fail)
+    with pytest.raises((PdfError, OSError)):
+        edit_single_span(source, state, output, sidecar, [dict(start=4, end=6, text='申請')], provider=provider)
+    assert not output.exists() and not sidecar.exists()

@@ -1,0 +1,168 @@
+{
+  "verdict": "BOUNDED PASS",
+  "owner": 62,
+  "mcid": 28,
+  "page": 1,
+  "source_sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+  "original_actualtext": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+  "edited_actualtext": "国立感染症研究所においてガイドラインが作成されていたので、参考に送",
+  "edit": {
+    "start": 19,
+    "end": 28,
+    "text": "作成されていたので"
+  },
+  "candidate_refusals": [],
+  "original_characters": 33,
+  "edited_characters": 33,
+  "region": {
+    "x0": 176.05999755859375,
+    "y0": 335.0,
+    "x1": 525.0,
+    "y1": 351.0
+  },
+  "layout_width_pt": 347.318447265625,
+  "retained_original_glyphs": 24,
+  "new_glyphs": 9,
+  "font_proof": {
+    "provider_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+    "instance_sha256": "7443a3982f11668db9d24914395658256a23cbc72724de176b1ce84108388df5",
+    "subset_sha256": "3bf4d00e11b1745fcb2d2b2a3cdeda02a126c8dd8477e8469425a10424cfb63d",
+    "glyphs": [
+      {
+        "unicode": "作",
+        "cid_code": "0001",
+        "gid": 3128,
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "planned_advance_pt": 10.56,
+        "outline_sha256": "f0084a48feeb7daa6df2d395222ff9c0d1cd3c16737585c9fd7bc079f8f2243f",
+        "font_resource": "/PRF1",
+        "font_xref": 173
+      },
+      {
+        "unicode": "成",
+        "cid_code": "0002",
+        "gid": 6210,
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "planned_advance_pt": 10.56,
+        "outline_sha256": "704ec5da23b4d986059f663d970f253f09297a652cfad65b7d0a2f361db37c8a",
+        "font_resource": "/PRF1",
+        "font_xref": 173
+      },
+      {
+        "unicode": "さ",
+        "cid_code": "0003",
+        "gid": 2121,
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "planned_advance_pt": 10.56,
+        "outline_sha256": "4e32fce52a5dc7e58d1815e739150c2b09170e773993653304f06595d68be2f8",
+        "font_resource": "/PRF1",
+        "font_xref": 173
+      },
+      {
+        "unicode": "れ",
+        "cid_code": "0004",
+        "gid": 2176,
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "planned_advance_pt": 10.56,
+        "outline_sha256": "0ecb0027622384d45a1f143a997abeaf0bdd3cc5099d3ac3327e1b49a24d028d",
+        "font_resource": "/PRF1",
+        "font_xref": 173
+      },
+      {
+        "unicode": "て",
+        "cid_code": "0005",
+        "gid": 2138,
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "planned_advance_pt": 10.56,
+        "outline_sha256": "17fc25de9f9312a0a14213bece30b62812d20563d76206b96d0fe2c32652f0b7",
+        "font_resource": "/PRF1",
+        "font_xref": 173
+      },
+      {
+        "unicode": "い",
+        "cid_code": "0006",
+        "gid": 2104,
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "planned_advance_pt": 10.56,
+        "outline_sha256": "70987edb1bf3da4c4f84013adb292963c5c9e55e4c900905b02a935e768d32a7",
+        "font_resource": "/PRF1",
+        "font_xref": 173
+      },
+      {
+        "unicode": "た",
+        "cid_code": "0007",
+        "gid": 2131,
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "planned_advance_pt": 10.56,
+        "outline_sha256": "289e8188b4130551f394a1140563870e2959b7c6beb34f1045b91e762a37b1d2",
+        "font_resource": "/PRF1",
+        "font_xref": 173
+      },
+      {
+        "unicode": "の",
+        "cid_code": "0008",
+        "gid": 2146,
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "planned_advance_pt": 10.56,
+        "outline_sha256": "387a0eb9f50f919472fc5fe54b595be1c4483cfe6367664ec324be63cd733db2",
+        "font_resource": "/PRF1",
+        "font_xref": 173
+      },
+      {
+        "unicode": "で",
+        "cid_code": "0009",
+        "gid": 2139,
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "planned_advance_pt": 10.56,
+        "outline_sha256": "ad3422b25d4fe645d3ba4101377b48429a7eda9fb2bf3534a58d093728e4812e",
+        "font_resource": "/PRF1",
+        "font_xref": 173
+      }
+    ]
+  },
+  "original_font_programs": {
+    "5": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+    "12": "adede2aae871adc30591b9edefd1bd6fa6c889a757703f0931f2f5f706b1c50e",
+    "14": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+    "17": "adede2aae871adc30591b9edefd1bd6fa6c889a757703f0931f2f5f706b1c50e"
+  },
+  "foreign_scopes_unchanged": 96,
+  "foreign_drawing_count": 4,
+  "structure_except_target_actualtext_equal": true,
+  "clip_unchanged": true,
+  "restored": [
+    "replacement",
+    "noop"
+  ],
+  "successful_saves": 2,
+  "dpi": 144,
+  "exterior_pixels": {
+    "mupdf": 0,
+    "poppler": 0
+  },
+  "noop_whole_page_pixels": {
+    "mupdf": 0,
+    "poppler": 0
+  },
+  "sha256": {
+    "tmp/osaka-single-span-replacement/replacement.pdf": "06c33c997f6963516f6c59b48669723878b9259f14f6d878d7753cfabefb6cb2",
+    "tmp/osaka-single-span-replacement/replacement.json": "cb51dff117fedbf505e03fd3d6fd834b8cfe540956ef9f7845ce55ffc7498bd6",
+    "tmp/osaka-single-span-replacement/noop.pdf": "d2923d688d9250958b3d2f4bfdb96802e42e388513f2d18ce5795105d0cbce55",
+    "tmp/osaka-single-span-replacement/noop.json": "75a99c4b6e87acf8ce449b037099f189a0716a4e01afdfd348dbdc591bd4f848"
+  },
+  "elapsed_seconds": {
+    "qualification": 3.6672445699950913,
+    "replacement_and_audit": 6.068517513995175,
+    "noop_and_audit": 4.702623912002309,
+    "total": 14.438385995992576
+  }
+}
