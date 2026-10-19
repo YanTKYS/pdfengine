@@ -168,7 +168,7 @@ def _add_page_fonts(writer, page_number, font_builders, replacements=None, outco
 
 @preserve_primitive_tokens
 def program_pdf_bytes(source, page_number, data, *, font_builders: Mapping[str, Callable[[PdfWriter], IndirectObject]] | None = None,
-                      font_replacements=None, font_outcome=None):
+                      font_replacements=None, font_outcome=None, actual_text_updates=()):
     """Replace one page program, or several when ``data`` maps page numbers to programs.
 
     ``font_builders`` maps aliases to builders for a single page, or page
@@ -189,6 +189,19 @@ def program_pdf_bytes(source, page_number, data, *, font_builders: Mapping[str, 
     preserve_ids = tagged and not any(generation not in (0, 65535) and entries
                                      for generation, entries in reader.xref.items())
     writer = PdfWriter(reader, full=True) if preserve_ids else PdfWriter(clone_from=reader)
+    if actual_text_updates:
+        from .marked_content import structure_objects
+        if not preserve_ids or len(actual_text_updates) != 1:
+            raise PdfError('single Span semantic save requires preserved indirect identities')
+        update = actual_text_updates[0]
+        ref = update['owner']
+        if ref['generation'] != 0 or structure_objects(reader, omit_actual_text=ref['xref']) != update['structure']:
+            raise PdfError('single Span structure changed before semantic save')
+        original = reader.get_object(ref['xref'])
+        if original.get('/ActualText') != update['before'] or original.get('/S') != '/Span':
+            raise PdfError('single Span ActualText compare-and-set failed')
+        owner = writer.get_object(ref['xref'])
+        owner[NameObject('/ActualText')] = TextStringObject(update['after'])
     # Keep the source's PDF version. A clone otherwise writes pypdf's default
     # %PDF-1.3 header, which silently changes (usually lowers) the version the
     # written content is interpreted against. The catalog /Version is cloned.
@@ -240,15 +253,23 @@ def program_pdf_bytes(source, page_number, data, *, font_builders: Mapping[str, 
     output = BytesIO()
     writer.write(output)
     writer.close()
-    return output.getvalue()
+    encoded = output.getvalue()
+    if actual_text_updates:
+        # Verify the actual serialization before any output is published.
+        saved = PdfReader(BytesIO(encoded))
+        if (structure_objects(saved, omit_actual_text=ref['xref']) != update['structure']
+                or saved.get_object(ref['xref']).get('/ActualText') != update['after']):
+            raise PdfError('single Span semantic serialization verification failed')
+    return encoded
 
 
 def publish_program(source, page_number, data, destination, verify=None, *, font_builders: Mapping[str, Callable[[PdfWriter], IndirectObject]] | None = None,
-                    font_replacements=None, font_outcome=None):
+                    font_replacements=None, font_outcome=None, actual_text_updates=(), verify_path=None):
     destination = Path(destination)
     destination.parent.mkdir(parents=True, exist_ok=True)
     encoded = program_pdf_bytes(source, page_number, data, font_builders=font_builders,
-                                font_replacements=font_replacements, font_outcome=font_outcome)
+                                font_replacements=font_replacements, font_outcome=font_outcome,
+                                actual_text_updates=actual_text_updates)
     if verify:
         with pymupdf.open(stream=encoded, filetype="pdf") as document:
             verify(document)
@@ -256,6 +277,8 @@ def publish_program(source, page_number, data, destination, verify=None, *, font
     try:
         with os.fdopen(descriptor, "wb") as stream:
             stream.write(encoded)
+        if verify_path is not None:
+            verify_path(Path(temporary))
         os.link(temporary, destination)
     finally:
         Path(temporary).unlink(missing_ok=True)

@@ -78,6 +78,7 @@ class Plan:
         self.font_builders = {}
         self.font_subsets = {}
         self.font_records = {}
+        self.single_span_witness = None
 
     def check(self, page, *, exclude_glyphs, paint_changes):
         """Final-state obstacle checks; other plans' changes are already applied."""
@@ -460,6 +461,9 @@ class Transaction:
             raise PdfError('a transaction commits once')
         if not self.pages or not any(page.plans for page in self.pages.values()):
             raise PdfError('transaction has no plans')
+        if removal_output is not None and any(plan.single_span_witness is not None
+                for page in self.pages.values() for plan in page.plans):
+            raise PdfError('single Span cannot publish a removal-only semantic checkpoint')
         output = ensure_destination(output, self.source)
         if removal_output is not None:
             removal_output = ensure_destination(removal_output, self.source)
@@ -469,6 +473,7 @@ class Transaction:
             raise PdfError('source revision changed while planning')
         programs, builders, kept, new, paints, masks, old_fonts, added = {}, {}, {}, {}, {}, {}, {}, {}
         replacements, retargeted, outcome = {}, {}, {}
+        actual_text_updates = []
         for number, page in self.pages.items():
             page.check()
             programs[number - 1] = page.program.apply()
@@ -485,9 +490,19 @@ class Transaction:
             added[number] = {}
             for plan in page.plans:
                 added[number].update(plan.font_subsets)
+                if plan.single_span_witness is not None:
+                    from .source_ownership import single_span_update
+                    actual_text_updates.append(single_span_update(page, plan, plan.single_span_witness))
+        if actual_text_updates and (len(actual_text_updates) != 1 or sum(len(p.plans) for p in self.pages.values()) != 1):
+            raise PdfError('single Span semantic update requires exactly one transaction plan')
+        def verify_semantics(path):
+            from .source_ownership import verify_single_span_output
+            for update in actual_text_updates:
+                verify_single_span_output(path, update)
         publish_program(self.source, None, programs, output,
                         lambda document: self._verify(document, kept, new, paints, masks, old_fonts, added, retargeted),
-                        font_builders=builders, font_replacements=replacements, font_outcome=outcome)
+                        font_builders=builders, font_replacements=replacements, font_outcome=outcome,
+                        actual_text_updates=actual_text_updates, verify_path=verify_semantics if actual_text_updates else None)
         if removal_output is not None:
             removals = {}
             for number, page in self.pages.items():

@@ -93,6 +93,12 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
 - **B1 — ordinary-page editable-state bootstrap: COMPLETE** for the scope below.
 - **B2 — tagged-PDF persistent editing: COMPLETE for the verified same-owner leaf-P subset.**
   This does not claim support for arbitrary Office/PDF-UA structures.
+- **BOUNDED — single-Span ActualText editing** on Osaka guideline page1, owner62/MCID28:
+  one internal deletion (33→31 characters) updates displayed text and leaf ActualText in
+  one Transaction. Both saved revisions restore; MuPDF/Poppler144dpi exterior edit and
+  whole-page no-op differences are zero. Complete owner selection and a fixed rectangle
+  require explicit caller declarations. This separate API does not extend B1/B2 paragraph
+  aggregation. [Contract, tests and measurements](../evaluations/real_japanese/osaka-single-span-report.md).
 - Evidence: [B1 tests](../tests/test_page_proposal.py),
   [B2 tests](../tests/test_tagged_page_proposal.py), and
   [implementation/evidence report](tagged-persistent-editing.md).
@@ -385,6 +391,9 @@ B1's proofs.
 - Refusal boundaries remain explicit. Existing Osaka pages have per-run Span owners and
   ActualText/mixed children; none of the four probed pages qualifies as a complete supported
   bundle. A broader Office claim needs additional structure-preserving policies and evidence.
+  A separate `propose_single_span` → `accept_single_span` → `edit_single_span` →
+  `open_single_span` path now supports one proven leaf ActualText owner and internal deletion
+  only; it does not make these pages eligible for B2 whole-paragraph aggregation.
 
 ### B6 — Witnessed irregular source adjacency: COMPLETE for the bounded path
 

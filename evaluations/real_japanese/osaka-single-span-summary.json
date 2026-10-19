@@ -1,0 +1,58 @@
+{
+  "verdict": "BOUNDED PASS",
+  "source_sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+  "owner": 62,
+  "mcid": 28,
+  "page": 1,
+  "original_actualtext": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+  "edited_actualtext": "国立感染症研究所においてガイドラインが作成されたので、参考に送",
+  "edit": {
+    "start": 23,
+    "end": 25,
+    "text": ""
+  },
+  "region": {
+    "x0": 176.05999755859375,
+    "y0": 335.0,
+    "x1": 525.0,
+    "y1": 351.0
+  },
+  "original_characters": 33,
+  "edited_characters": 31,
+  "foreign_scopes_unchanged": 96,
+  "original_fonts": {
+    "5": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+    "12": "adede2aae871adc30591b9edefd1bd6fa6c889a757703f0931f2f5f706b1c50e",
+    "14": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+    "17": "adede2aae871adc30591b9edefd1bd6fa6c889a757703f0931f2f5f706b1c50e"
+  },
+  "retained_glyph_codes_gids_fonts_unchanged": 31,
+  "source_and_edited_structure_except_target_actualtext_equal": true,
+  "clip_unchanged": true,
+  "restored": [
+    "edited",
+    "noop"
+  ],
+  "successful_saves": 2,
+  "dpi": 144,
+  "exterior_pixels": {
+    "mupdf": 0,
+    "poppler": 0
+  },
+  "noop_whole_page_pixels": {
+    "mupdf": 0,
+    "poppler": 0
+  },
+  "sha256": {
+    "tmp/osaka-single-span-actualtext/edited.pdf": "fde1b163ddbfcbbfe3d3fc6c3505139be7f932e4a972a9f2ad1583ee163a4f9e",
+    "tmp/osaka-single-span-actualtext/edited.json": "6cf7aac7085451d26e35b91c9f58d1a243c6dd2423ca1a74ee6e9a7b07c61831",
+    "tmp/osaka-single-span-actualtext/noop.pdf": "c46ea77f07fc6a34d14e2149ac4707beabfd85e1e49f9d65202abb81d0691b20",
+    "tmp/osaka-single-span-actualtext/noop.json": "f4e6393baf0023643661e6ef21f1916a65809f7283ed14fecf1afcb35f8c04f5"
+  },
+  "elapsed_seconds": {
+    "qualification": 2.1355818279989762,
+    "edit_and_audit": 3.79683945501165,
+    "noop_and_audit": 3.022219933991437,
+    "total": 8.954641217002063
+  }
+}

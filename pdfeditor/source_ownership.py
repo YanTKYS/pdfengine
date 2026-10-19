@@ -20,6 +20,46 @@ REWRITE = 'source-output-rewrite'
 BODY_OPERATORS = frozenset('q Q BT ET Tf Tz Tc Tw Ts Tm Tj TJ g rg k'.split())
 
 
+def single_span_witness(content, selected):
+    """Current-revision complete leaf ownership; distinct from shared-flow B2."""
+    from .marked_content import leaf_span_structure
+    value = leaf_span_structure(content, selected)
+    value['program_sha256'] = sha(content.streams[-content.page.xref])
+    return value
+
+
+def single_span_update(page, plan, witness):
+    """Bind semantic mutation to this plan's entire consumed/generated text."""
+    current = single_span_witness(page.content, plan.consumed)
+    if current != witness:
+        raise PdfError('single Span current ownership witness changed')
+    text = ''.join(g['unicode'] for g in plan.new_glyphs)
+    if not text or '\n' in text or '\r' in text:
+        raise PdfError('single Span requires nonempty single-line text')
+    return dict(page=page.number, owner=witness['owner'], before=witness['text'], after=text,
+                structure=witness['structure'], mcid=witness['mcid'], clip=witness['clip'])
+
+
+def verify_single_span_output(path, update):
+    """Verify semantic mapping from the serialized temporary PDF before publish."""
+    from .marked_content import observe_marked_content
+    observed = observe_marked_content(path, update['page'])
+    scopes = [s for s in observed['scopes'] if s['association'].get('owner_reference') == update['owner']]
+    if len(scopes) != 1:
+        raise PdfError('single Span serialized owner has changed')
+    lo, hi = scopes[0]['content_byte_range']
+    content = ContentPage(path, update['page'])
+    try:
+        selected = {i for e in content.events if not e.invocation and lo <= e.operator.start < hi
+                    for ch in e.chars for i in ch.source_orders}
+        proof = single_span_witness(content, selected)
+    finally:
+        content.close()
+    if (proof['owner'] != update['owner'] or proof['mcid'] != update['mcid'] or proof['text'] != update['after']
+            or proof['clip'] != update['clip'] or proof['structure'] != update['structure']):
+        raise PdfError('single Span serialized ownership/semantics differ from plan')
+
+
 def sha(data):
     return hashlib.sha256(data).hexdigest()
 
