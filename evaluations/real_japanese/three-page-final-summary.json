@@ -1,0 +1,820 @@
+{
+  "verdict": "REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW VALIDATED — PASS",
+  "measured_date": "2026-10-19",
+  "starting_commit": "5cc46caffb025c7a874bde2e40302177ad5cf8cd",
+  "source": {
+    "url": "https://www.courts.go.jp/assets/hanrei/hanrei-pdf-97044.pdf",
+    "sha256": "70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2",
+    "pages": 13,
+    "edited_pages": [
+      1,
+      2,
+      3
+    ]
+  },
+  "resume": {
+    "pdf_sha256": "9c8ca31d5b5a4ae676781109f7ca29f69bee6ef882a6e68dc91c421851c42f05",
+    "sidecar_sha256": "232800157e00e9e7fddabaf00f697852e348e3e76b394ed169eeb5f4c532c51b"
+  },
+  "original_sha_unchanged": true,
+  "successful_saves_this_phase": 2,
+  "final_run_elapsed_seconds": 422.637918,
+  "prior_evaluator_attempts": [
+    {
+      "elapsed_seconds": 15.583616,
+      "successful_saves": 0,
+      "refusal_attempts": 0,
+      "outcome": "payload setup KeyError: typing_style_id at wrong level; corrected evaluator only"
+    },
+    {
+      "elapsed_seconds": 98.467619,
+      "successful_saves": 0,
+      "refusal_attempts": 1,
+      "outcome": "valid missing-destination capacity refusal; evaluator reason assertion failed; saved refusal reused without retry"
+    }
+  ],
+  "revisions": [
+    {
+      "name": "original-noop",
+      "pdf_sha256": "a1f3a1960c0832aa7ced9306c689f95107a4f6e2e57613664470ff05d9209ebd",
+      "sidecar_sha256": "70074fbbc0cc0f851a95a29b439d5fafe35191d626cbd80f112f1eb74efaa91f",
+      "audit_sha256": "4edbf0aaedf7f877e4fb7bea2bd3ebd16c53a8afc2d460bef078a629f02b657b",
+      "audit_scope": "all-page-whole-noop",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "legacy audit plus SHA-bound report/sidecar and subsequent successful source restore"
+    },
+    {
+      "name": "initial",
+      "pdf_sha256": "46b5069f3360262d5387a2219441ebea757c7073b15cd14d5b3b7ef810aacd6e",
+      "sidecar_sha256": "921a3e4476daf85333a5891c276b9d383dd470fce0284d609089804193070ed5",
+      "audit_sha256": "743a986b5212a2e75f6e4bff86babc5f7959bc21f91c3fe3ff876ffcbffde535",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "legacy audit plus SHA-bound report/sidecar and subsequent successful source restore"
+    },
+    {
+      "name": "extension-2-noop-precise",
+      "pdf_sha256": "26e8c6411db21a425eaff8a3d5ac4e485ed7c1fe393787ad7f50e303bebbf09f",
+      "sidecar_sha256": "b0011ae463acf9414a0374d225886ffa22e77d8986e8ff422db11f5c236015f6",
+      "audit_sha256": "20cf52adf0b4f259ea770de55100d3fbe9dbf4ff35c30db4a79dd95c910e7234",
+      "audit_scope": "all-page-whole-noop",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "legacy audit plus SHA-bound report/sidecar and subsequent successful source restore"
+    },
+    {
+      "name": "grown-2",
+      "pdf_sha256": "471075481a135ec49a12c8a83220596598b13c2a84d621d10ce071e2662c5939",
+      "sidecar_sha256": "24be479bd44096708ba6adcdf5d668cf0e733a4487c2360aad9cbd06958d6693",
+      "audit_sha256": "487fe37cdfbd9fb4486b6bc0849662cb01546d3d82991d72c33ef6dd8c621dd3",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "saved audit records restored and exact PDF SHA"
+    },
+    {
+      "name": "extension-3-noop-roundtrip",
+      "pdf_sha256": "45bf2173d2f4f1d583284dfcad37c4cacbfb4bbb0c52dbfc097de173ff55d6e1",
+      "sidecar_sha256": "0d32c377d4fd058cb1180ccae579cbb5efc06e85fa57fdcf7a7e34afcb87eea1",
+      "audit_sha256": "9f883b18dc0839f4b2a768d7502cd43b2580b4d4c209b98c55c9c9ced471107b",
+      "audit_scope": "all-page-whole-noop",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "saved audit records restored and exact PDF SHA"
+    },
+    {
+      "name": "grown-3",
+      "pdf_sha256": "029cd5f552df88ce9f83e3ca2e7dc1d471d230237e738a0c4eabcc9ab0e17226",
+      "sidecar_sha256": "1a30c58d6f82eea76e41e935c3e14e68c01eefe6e278ea52b3cbf1d29c09cb2f",
+      "audit_sha256": "e36b0d010334a0daad87c1888d05221d67f1d0866906ba0d5619dcffe7a69828",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "saved audit records restored and exact PDF SHA"
+    },
+    {
+      "name": "shorten-B",
+      "pdf_sha256": "9866f31094b31b3442fbf5b8942ffec3506783ea6249060250c30b4128ff23ce",
+      "sidecar_sha256": "ae797aa7a53aa114e91f3c9bc3ae04ed367a96dd28f7b32b680383a41c9990ba",
+      "audit_sha256": "287ee65ed2bcf7a28751c3c96cbcbe52fa169265bc7d2729197f8f87f6874e7c",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "saved audit records restored and exact PDF SHA"
+    },
+    {
+      "name": "regrow-B",
+      "pdf_sha256": "121541869471fd0ea28f32d11c8faf4547d1bb17846fc206cea5bf264cc6ca71",
+      "sidecar_sha256": "2cb13bbb21d612de77c2c2847b1337a05689c7e8d3a246f16c0699b2e944c9c5",
+      "audit_sha256": "301f9bc9fe75dafe9afb7753409812cd12c552a23eb8993f98d16443fc49929c",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "saved audit records restored and exact PDF SHA"
+    },
+    {
+      "name": "shorten-A-spacing-fixed",
+      "pdf_sha256": "17e140ee06f6742f0434b55082a911b18cfb1c83a1b0af882427b82654b913cd",
+      "sidecar_sha256": "93a26993f43a1f19731eb173008d34cd6f71299ac4fc1f5f53a5e6a43646209c",
+      "audit_sha256": "d594eb3ea703f6361e027e4585579d3036ed923d7501d2bce783d7bd28f7cc4c",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "saved audit records restored and exact PDF SHA"
+    },
+    {
+      "name": "regrow-A-spacing-fixed",
+      "pdf_sha256": "7e58e00309a903865dce1c0006e4cdbde7546046aa7a9d894228be6800fffaab",
+      "sidecar_sha256": "a062bf5f33b24416a1e92844a242631f94a2712ecbc417a0341bb7d89f13b8ce",
+      "audit_sha256": "965f15e015c156189f878fb56fb2823e739e30db16162b14c785ea49eb3ec032",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "saved audit records restored and exact PDF SHA"
+    },
+    {
+      "name": "shorten-A-B-spacing-fixed",
+      "pdf_sha256": "a93ec056967801261962dc987e0269acddc7e9f8aabdda9a5a9d1fa5a8e0d963",
+      "sidecar_sha256": "efa9162effc34d1e0dcf1959b14d2fd90889367ba969a9ba31dd5bfc25ca7bfc",
+      "audit_sha256": "14f406bc46023454f887c9175a90cef0dcd711e895179ca07f12367c913824e6",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "saved audit records restored and exact PDF SHA"
+    },
+    {
+      "name": "regrow-A-B-spacing-fixed",
+      "pdf_sha256": "9c8ca31d5b5a4ae676781109f7ca29f69bee6ef882a6e68dc91c421851c42f05",
+      "sidecar_sha256": "232800157e00e9e7fddabaf00f697852e348e3e76b394ed169eeb5f4c532c51b",
+      "audit_sha256": "e41de26cb94f83d1b2fbe1a816888918ce7047ab23972b176c22271d3c0c2ca9",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "saved audit records restored and exact PDF SHA"
+    },
+    {
+      "name": "second-A-B-final",
+      "pdf_sha256": "b68d4772495e2f9256b84931051cbd64543cdf6e86fb58d91b8c1788512c0650",
+      "sidecar_sha256": "bf9dac930ebf70d96e850b0ad363e73fca4005ab68eaa0de028c042044973324",
+      "audit_sha256": "04313efde872fe5c76a09559c4c1a277bc85d225729f10f878640e4be8f1fe1d",
+      "audit_scope": "all-page-outside-confirmed-regions",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "restored"
+    },
+    {
+      "name": "final-three-page-noop",
+      "pdf_sha256": "b816db4e617a34d7ebd577c0ecde17c2b44947d2124abf932a46742e47ddb8ea",
+      "sidecar_sha256": "85b47b6441f04db9ec357216788efb8f9989a37bc6de633f240204d5f8ae0e4b",
+      "audit_sha256": "45040f8b59bbeda4a4041895931ada3ad74f8722eebd09a9a2d01f2ff2a2523b",
+      "audit_scope": "all-page-whole-noop",
+      "pages": 13,
+      "mupdf_changed_pixels": 0,
+      "poppler_changed_pixels": 0,
+      "restoration": "restored"
+    }
+  ],
+  "final_stages": [
+    {
+      "name": "second-A-B-final",
+      "elapsed_seconds": 191.9224924940063,
+      "reopen": "restored",
+      "edited_paragraphs": [
+        "B",
+        "P1"
+      ],
+      "edit_shared_flow_calls": 1,
+      "characters": {
+        "P1": 126,
+        "D1": 306,
+        "D2": 87,
+        "D3": 158,
+        "D4": 153,
+        "B": 181,
+        "C": 130
+      },
+      "placements": [
+        {
+          "slot": "slot-0",
+          "paragraph": "P1",
+          "page": 1,
+          "characters": 111,
+          "glyphs": 111,
+          "lines": 3,
+          "baselines": [
+            705.3399658203125,
+            730.8999633789062,
+            756.4559936523438
+          ],
+          "range": [
+            0,
+            111
+          ]
+        },
+        {
+          "slot": "continuation-5627be817d85c2462eda17cb",
+          "paragraph": "P1",
+          "page": 2,
+          "characters": 15,
+          "glyphs": 15,
+          "lines": 1,
+          "baselines": [
+            100
+          ],
+          "range": [
+            111,
+            126
+          ]
+        },
+        {
+          "slot": "slot-1",
+          "paragraph": "D1",
+          "page": 2,
+          "characters": 306,
+          "glyphs": 305,
+          "lines": 9,
+          "baselines": [
+            126.4,
+            151.95999755859376,
+            177.639990234375,
+            203.19998779296876,
+            228.7599853515625,
+            254.43997802734376,
+            279.9999755859375,
+            305.5900024414062,
+            331.2699951171875
+          ],
+          "range": [
+            0,
+            306
+          ]
+        },
+        {
+          "slot": "slot-2",
+          "paragraph": "D2",
+          "page": 2,
+          "characters": 87,
+          "glyphs": 86,
+          "lines": 3,
+          "baselines": [
+            356.8299926757812,
+            382.389990234375,
+            408.07001342773435
+          ],
+          "range": [
+            0,
+            87
+          ]
+        },
+        {
+          "slot": "slot-3",
+          "paragraph": "D3",
+          "page": 2,
+          "characters": 158,
+          "glyphs": 157,
+          "lines": 5,
+          "baselines": [
+            433.6300109863281,
+            459.19000854492185,
+            484.889990234375,
+            510.4499877929687,
+            536.0099853515625
+          ],
+          "range": [
+            0,
+            158
+          ]
+        },
+        {
+          "slot": "slot-4",
+          "paragraph": "D4",
+          "page": 2,
+          "characters": 153,
+          "glyphs": 152,
+          "lines": 5,
+          "baselines": [
+            561.6899780273437,
+            587.2500366210937,
+            612.8099731445312,
+            638.4900268554687,
+            664.0499633789062
+          ],
+          "range": [
+            0,
+            153
+          ]
+        },
+        {
+          "slot": "slot-5",
+          "paragraph": "B",
+          "page": 2,
+          "characters": 148,
+          "glyphs": 148,
+          "lines": 4,
+          "baselines": [
+            689.639990234375,
+            715.3199829101562,
+            740.87998046875,
+            766.4360107421875
+          ],
+          "range": [
+            0,
+            148
+          ]
+        },
+        {
+          "slot": "continuation-afdebcf635632e109f04ecb8",
+          "paragraph": "B",
+          "page": 3,
+          "characters": 33,
+          "glyphs": 33,
+          "lines": 1,
+          "baselines": [
+            100
+          ],
+          "range": [
+            148,
+            181
+          ]
+        },
+        {
+          "slot": "slot-6",
+          "paragraph": "C",
+          "page": 3,
+          "characters": 130,
+          "glyphs": 129,
+          "lines": 4,
+          "baselines": [
+            126.4,
+            151.95999755859376,
+            177.63992919921876,
+            203.19998779296876
+          ],
+          "range": [
+            0,
+            130
+          ]
+        }
+      ],
+      "release_owners": {
+        "P1-next": {
+          "slot-1": {
+            "paragraph_id": "D1",
+            "region_id": "page-2",
+            "source_snapshot_sha256": "4c78a68b4220ee92e9f607972be8b88f6ba1bc66fea01bae569a12cda8baea3e",
+            "source_output": {
+              "version": 1,
+              "marker_id": "cf4d3e96774721f6d6c9921e4ec09b814199c183f7c999bd32807c3464dea7f0",
+              "created_from": {
+                "pdf_sha256": "46b5069f3360262d5387a2219441ebea757c7073b15cd14d5b3b7ef810aacd6e",
+                "paragraph_snapshot_sha256": "4c78a68b4220ee92e9f607972be8b88f6ba1bc66fea01bae569a12cda8baea3e"
+              }
+            }
+          }
+        },
+        "B-next": {
+          "slot-6": {
+            "paragraph_id": "C",
+            "region_id": "page-3",
+            "source_snapshot_sha256": "4906656e9501c332859726c6d7996e57c2c597f71740d494701febdbce1fd44e",
+            "source_output": {
+              "version": 1,
+              "marker_id": "682bc040d136ed98c2e827264ca884d07e0f06b3bc5b2bde62a7e4179679961f",
+              "created_from": {
+                "pdf_sha256": "471075481a135ec49a12c8a83220596598b13c2a84d621d10ce071e2662c5939",
+                "paragraph_snapshot_sha256": "4906656e9501c332859726c6d7996e57c2c597f71740d494701febdbce1fd44e"
+              }
+            }
+          }
+        }
+      },
+      "retained_or_reused_codes_gids_programs_checked": 1029,
+      "provided_glyph_outlines_advances_checked": 107,
+      "generated_font_registry_changes": 2,
+      "source_markers_and_creation_bindings_preserved": true,
+      "destinations_unchanged": true,
+      "max_origin_error_pt": 3.662109375568434e-05,
+      "whole_noop_comparison": null
+    },
+    {
+      "name": "final-three-page-noop",
+      "elapsed_seconds": 202.66064032699796,
+      "reopen": "restored",
+      "edited_paragraphs": [],
+      "edit_shared_flow_calls": 1,
+      "characters": {
+        "P1": 126,
+        "D1": 306,
+        "D2": 87,
+        "D3": 158,
+        "D4": 153,
+        "B": 181,
+        "C": 130
+      },
+      "placements": [
+        {
+          "slot": "slot-0",
+          "paragraph": "P1",
+          "page": 1,
+          "characters": 111,
+          "glyphs": 111,
+          "lines": 3,
+          "baselines": [
+            705.3399658203125,
+            730.8999633789062,
+            756.4559936523438
+          ],
+          "range": [
+            0,
+            111
+          ]
+        },
+        {
+          "slot": "continuation-5627be817d85c2462eda17cb",
+          "paragraph": "P1",
+          "page": 2,
+          "characters": 15,
+          "glyphs": 15,
+          "lines": 1,
+          "baselines": [
+            100
+          ],
+          "range": [
+            111,
+            126
+          ]
+        },
+        {
+          "slot": "slot-1",
+          "paragraph": "D1",
+          "page": 2,
+          "characters": 306,
+          "glyphs": 305,
+          "lines": 9,
+          "baselines": [
+            126.4,
+            151.95999755859376,
+            177.639990234375,
+            203.19998779296876,
+            228.7599853515625,
+            254.43997802734376,
+            279.9999755859375,
+            305.5900024414062,
+            331.2699951171875
+          ],
+          "range": [
+            0,
+            306
+          ]
+        },
+        {
+          "slot": "slot-2",
+          "paragraph": "D2",
+          "page": 2,
+          "characters": 87,
+          "glyphs": 86,
+          "lines": 3,
+          "baselines": [
+            356.8299926757812,
+            382.389990234375,
+            408.07001342773435
+          ],
+          "range": [
+            0,
+            87
+          ]
+        },
+        {
+          "slot": "slot-3",
+          "paragraph": "D3",
+          "page": 2,
+          "characters": 158,
+          "glyphs": 157,
+          "lines": 5,
+          "baselines": [
+            433.6300109863281,
+            459.19000854492185,
+            484.889990234375,
+            510.4499877929687,
+            536.0099853515625
+          ],
+          "range": [
+            0,
+            158
+          ]
+        },
+        {
+          "slot": "slot-4",
+          "paragraph": "D4",
+          "page": 2,
+          "characters": 153,
+          "glyphs": 152,
+          "lines": 5,
+          "baselines": [
+            561.6899780273437,
+            587.2500366210937,
+            612.8099731445312,
+            638.4900268554687,
+            664.0499633789062
+          ],
+          "range": [
+            0,
+            153
+          ]
+        },
+        {
+          "slot": "slot-5",
+          "paragraph": "B",
+          "page": 2,
+          "characters": 148,
+          "glyphs": 148,
+          "lines": 4,
+          "baselines": [
+            689.639990234375,
+            715.3199829101562,
+            740.87998046875,
+            766.4360107421875
+          ],
+          "range": [
+            0,
+            148
+          ]
+        },
+        {
+          "slot": "continuation-afdebcf635632e109f04ecb8",
+          "paragraph": "B",
+          "page": 3,
+          "characters": 33,
+          "glyphs": 33,
+          "lines": 1,
+          "baselines": [
+            100
+          ],
+          "range": [
+            148,
+            181
+          ]
+        },
+        {
+          "slot": "slot-6",
+          "paragraph": "C",
+          "page": 3,
+          "characters": 130,
+          "glyphs": 129,
+          "lines": 4,
+          "baselines": [
+            126.4,
+            151.95999755859376,
+            177.63992919921876,
+            203.19998779296876
+          ],
+          "range": [
+            0,
+            130
+          ]
+        }
+      ],
+      "release_owners": {
+        "P1-next": {
+          "slot-1": {
+            "paragraph_id": "D1",
+            "region_id": "page-2",
+            "source_snapshot_sha256": "4c78a68b4220ee92e9f607972be8b88f6ba1bc66fea01bae569a12cda8baea3e",
+            "source_output": {
+              "version": 1,
+              "marker_id": "cf4d3e96774721f6d6c9921e4ec09b814199c183f7c999bd32807c3464dea7f0",
+              "created_from": {
+                "pdf_sha256": "46b5069f3360262d5387a2219441ebea757c7073b15cd14d5b3b7ef810aacd6e",
+                "paragraph_snapshot_sha256": "4c78a68b4220ee92e9f607972be8b88f6ba1bc66fea01bae569a12cda8baea3e"
+              }
+            }
+          }
+        },
+        "B-next": {
+          "slot-6": {
+            "paragraph_id": "C",
+            "region_id": "page-3",
+            "source_snapshot_sha256": "4906656e9501c332859726c6d7996e57c2c597f71740d494701febdbce1fd44e",
+            "source_output": {
+              "version": 1,
+              "marker_id": "682bc040d136ed98c2e827264ca884d07e0f06b3bc5b2bde62a7e4179679961f",
+              "created_from": {
+                "pdf_sha256": "471075481a135ec49a12c8a83220596598b13c2a84d621d10ce071e2662c5939",
+                "paragraph_snapshot_sha256": "4906656e9501c332859726c6d7996e57c2c597f71740d494701febdbce1fd44e"
+              }
+            }
+          }
+        }
+      },
+      "retained_or_reused_codes_gids_programs_checked": 1136,
+      "provided_glyph_outlines_advances_checked": 0,
+      "generated_font_registry_changes": 0,
+      "source_markers_and_creation_bindings_preserved": true,
+      "destinations_unchanged": true,
+      "max_origin_error_pt": 3.662109375568434e-05,
+      "whole_noop_comparison": {
+        "scope": "exact-input-owned-glyphs-and-whole-page-render",
+        "dpi": 144,
+        "pages": [
+          {
+            "page": 1,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 111,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 2,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 863,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 3,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 162,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 4,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 5,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 6,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 7,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 8,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 9,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 10,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 11,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 12,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          },
+          {
+            "page": 13,
+            "owned_glyphs_equal": true,
+            "glyphs_checked": 0,
+            "mupdf_changed_pixels": 0,
+            "poppler_changed_pixels": 0,
+            "all_glyph_codes_resources_programs_equal": true
+          }
+        ],
+        "passed": true
+      }
+    }
+  ],
+  "refusals": {
+    "final-over-capacity": {
+      "reason": "final allocation needs a missing paragraph destination slot; new continuation is not authorized",
+      "published": false,
+      "source_sha256": "9c8ca31d5b5a4ae676781109f7ca29f69bee6ef882a6e68dc91c421851c42f05",
+      "contract": "confirmed-capacity-and-destination-authority",
+      "input_pdf_and_sidecar_unchanged": true,
+      "reused_saved_refusal": true,
+      "elapsed_seconds": null
+    },
+    "final-unowned-paragraph": {
+      "reason": "changes must name independent paragraph identities",
+      "published": false,
+      "source_sha256": "9c8ca31d5b5a4ae676781109f7ca29f69bee6ef882a6e68dc91c421851c42f05",
+      "contract": "source-ownership",
+      "input_pdf_and_sidecar_unchanged": true,
+      "reused_saved_refusal": false,
+      "elapsed_seconds": 12.306878809002228
+    }
+  },
+  "excluded_historical_failures": [
+    "extension-2-noop",
+    "extension-3-noop",
+    "extension-3-noop-stable",
+    "shorten-A",
+    "regrow-A"
+  ],
+  "unrun": [
+    "full suite",
+    "new PDF search",
+    "replay of prior successful edits",
+    "merge"
+  ],
+  "ownership_acceptances": [
+    {
+      "name": "page-1-accepted",
+      "receipt_file_sha256": "3e733a9016f72523befca7b3e947e16bb1442d47d168e18f4d2f38dcd97d351d",
+      "source_sha256": "70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2",
+      "reproduction": "reproduced",
+      "immediate_noop": "original-noop",
+      "exact_source_and_model_binding": true
+    },
+    {
+      "name": "extension-2-accepted",
+      "receipt_file_sha256": "b6144dab2aa750bfc5405bb3094beccb1f16bea027f13e8f3a44ab588e830e93",
+      "source_sha256": "46b5069f3360262d5387a2219441ebea757c7073b15cd14d5b3b7ef810aacd6e",
+      "reproduction": "reproduced",
+      "immediate_noop": "extension-2-noop-precise",
+      "exact_source_and_model_binding": true
+    },
+    {
+      "name": "extension-3-accepted",
+      "receipt_file_sha256": "9b01443ef13cbe4c44038a11a2dd702266f6897cd9116a1a6ac2c462a608ad85",
+      "source_sha256": "471075481a135ec49a12c8a83220596598b13c2a84d621d10ce071e2662c5939",
+      "reproduction": "reproduced",
+      "immediate_noop": "extension-3-noop-roundtrip",
+      "exact_source_and_model_binding": true
+    }
+  ],
+  "pre_extension_refusals": [
+    {
+      "name": "before-page-2-no-tail-space",
+      "source_sha256": "46b5069f3360262d5387a2219441ebea757c7073b15cd14d5b3b7ef810aacd6e",
+      "reason": "paragraphs exceed all explicitly confirmed shared regions",
+      "published": false,
+      "raw_refusal_sha256": "8cdc07893bb3cd2c5ae14bb189ea12cf6c652cc927ca5b9be9200df40f50cae1",
+      "exact_successful_request_sha256": "d126dc83d7d0b6ba6ff0bee14a883bcfed7a195b4aa1d7430fc5d6cfe53c49d9"
+    },
+    {
+      "name": "before-page-3",
+      "source_sha256": "471075481a135ec49a12c8a83220596598b13c2a84d621d10ce071e2662c5939",
+      "reason": "paragraphs exceed all explicitly confirmed shared regions",
+      "published": false,
+      "raw_refusal_sha256": "82a10204c4e445c10a0bdbc218ef0f1fa3a5a359e7c0562be47ff90fc1757b54",
+      "exact_successful_request_sha256": "8219b927e782f27bae0b78fce7974b9eaea7ff9570251656530f0c91c378721b"
+    }
+  ]
+}

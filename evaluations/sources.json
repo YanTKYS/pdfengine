@@ -1,5 +1,11 @@
 [
   {
+    "id": "courts_97044",
+    "path": "evaluations/realpdf/corpus/courts_97044.pdf",
+    "source_url": "https://www.courts.go.jp/assets/hanrei/hanrei-pdf-97044.pdf",
+    "sha256": "70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2"
+  },
+  {
     "id": "cathedral_ja",
     "path": "evaluations/realpdf/corpus/cathedral_ja.pdf",
     "source_url": "https://cruel.org/freeware/cathedral.pdf",

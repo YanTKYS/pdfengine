@@ -201,6 +201,17 @@ def translate(matrix,x,y):
     return multiply((1,0,0,1,x,y),matrix)
 
 
+def source_translate(matrix, x, y):
+    """Source text displacement without a renderer's float32 matrix roundtrip.
+
+    This parallel witness does not replace trace matching/layout observations.
+    It preserves the original Tm/Td/TJ/font-width arithmetic for a retained
+    occurrence that the writer proves has not moved.
+    """
+    a, b, c, d, e, f = matrix
+    return a, b, c, d, e + x * a + y * c, f + x * b + y * d
+
+
 @dataclass
 class PaintChar:
     code: bytes
@@ -209,6 +220,7 @@ class PaintChar:
     advance: float
     pdf_width: float
     source_orders: list[int]=field(default_factory=list)
+    source_text_matrix: tuple | None=None
 
 
 @dataclass
@@ -293,6 +305,7 @@ class ContentPage:
         data=obj.get_data() if data_override is None else data_override
         self.streams[xref]=data
         path=[];pending_clip=None;pending_text_clips=[]
+        source_tm, source_lm = tm, lm
         # Structural scope, recorded at top-level operator boundaries only.
         top=depth==0 and not invocation;in_text=False;marked=0;compatibility=0
         try:ops=list(operators(data))
@@ -308,17 +321,21 @@ class ContentPage:
                 if not stack:raise PdfError("unbalanced Q")
                 state=stack.pop()
             elif n=="cm":state.ctm=multiply(tuple(map(float,a)),state.ctm)
-            elif n=="BT":tm=lm=(1,0,0,1,0,0);pending_text_clips=[]
+            elif n=="BT":
+                tm=lm=source_tm=source_lm=(1,0,0,1,0,0);pending_text_clips=[]
             elif n=="ET":
                 state.clip=state.clip+tuple(pending_text_clips);pending_text_clips=[]
             elif n=="Tf":state.font=self._font(resources,str(a[0]));state.size=float(a[1])
             elif n in {"Tc","Tw","Tz","TL","Ts","Tr"}:setattr(state,n.lower(),int(a[0]) if n=="Tr" else float(a[0]))
-            elif n=="Tm":tm=lm=tuple(map(float,a))
+            elif n=="Tm":tm=lm=source_tm=source_lm=tuple(map(float,a))
             elif n in {"Td","TD"}:
                 tx,ty=map(float,a)
                 if n=="TD":state.tl=-ty
                 tm=lm=translate(lm,tx,ty)
-            elif n=="T*":tm=lm=translate(lm,0,-state.tl)
+                source_tm=source_lm=source_translate(source_lm,tx,ty)
+            elif n=="T*":
+                tm=lm=translate(lm,0,-state.tl)
+                source_tm=source_lm=source_translate(source_lm,0,-state.tl)
             elif n in {"g","rg","k","cs","sc","scn"}:state.fill=(n,tuple(map(str,a)))
             elif n in {"G","RG","K","CS","SC","SCN"}:state.stroke=(n,tuple(map(str,a)))
             elif n=="gs":
@@ -345,7 +362,9 @@ class ContentPage:
                     self._walk(target,form.get("/Resources",resources).get_object(),child,tm,lm,[],invocation+((xref,index,str(a[0])),),depth+1)
             elif n in {"Tj","TJ","'",'"'}:
                 if n=='"':state.tw=float(a[0]);state.tc=float(a[1])
-                if n in {"'",'"'}:tm=lm=translate(lm,0,-state.tl)
+                if n in {"'",'"'}:
+                    tm=lm=translate(lm,0,-state.tl)
+                    source_tm=source_lm=source_translate(source_lm,0,-state.tl)
                 atoms=a[0] if n=="TJ" else [a[-1]]
                 event=TextEvent(f"s{xref}-o{index}"+"".join(f"@{i[1]}" for i in invocation),xref,invocation,op,copy(state),tm,[],[])
                 event.line_matrix=lm
@@ -357,12 +376,14 @@ class ContentPage:
                             for code,text,w in state.font.decode(bytes(atom)):
                                 point=pymupdf.Point(0,state.ts)*pymupdf.Matrix(*tm)*pymupdf.Matrix(*state.ctm)*self.page.transformation_matrix
                                 advance=(w/1000*state.size+state.tc+(state.tw if code==b" " else 0))*state.tz/100
-                                char=PaintChar(code,text,tuple(point),advance,w)
+                                char=PaintChar(code,text,tuple(point),advance,w,source_text_matrix=source_tm)
                                 event.atoms.append(char);event.chars.append(char)
                                 tm=translate(tm,advance,0)
+                                source_tm=source_translate(source_tm,advance,0)
                         else:
                             value=float(atom);event.atoms.append(value)
                             tm=translate(tm,-value/1000*state.size*state.tz/100,0)
+                            source_tm=source_translate(source_tm,-value/1000*state.size*state.tz/100,0)
                 except Exception as exc:event.error=str(exc)
                 if state.tr>=4:
                     pending_text_clips.append({"rule":"text clipping","at":[xref,index],

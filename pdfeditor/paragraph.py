@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict
+from decimal import Decimal
 from io import BytesIO
 import hashlib
 import math
@@ -30,6 +31,20 @@ def _name(value):
     stream = BytesIO()
     NameObject(value).write_to_stream(stream)
     return stream.getvalue()
+
+
+def _source_matrix_operator(values):
+    """Preserve witnessed binary64 source positions without PDF exponents.
+
+    The ordinary writer's 12-digit formatting can round a TJ-accumulated
+    position across a renderer threshold. Only unchanged source occurrences
+    use these round-trip decimal operands; layout coordinates keep the normal
+    serializer and must independently satisfy their existing guards.
+    """
+    if any(not math.isfinite(float(value)) for value in values):
+        raise PdfError('nonfinite source matrix operand')
+    return b' '.join(format(Decimal(repr(float(value))), 'f').encode('ascii')
+                     for value in values) + b' Tm '
 
 
 def _style_witness(style, writer_spacing, inverse_ctm):
@@ -113,20 +128,104 @@ def _rewrite_generated_block(result, content, paragraph, selected, owner, genera
                                              owner=owner))
 
 
+def source_line_candidates(binding, options, edits):
+    """Current writer lines, never authority without current Tm witnesses.
+
+    A requested baseline may translate an unchanged paragraph. Its relative
+    spacing still requires native-operator proof and a final layout check.
+    """
+    physical = binding.get('physical_layout', {})
+    keys = ('x', 'width', 'first_line_indent', 'min_line_height')
+    if (edits != [] or physical.get('provenance') != 'generated-by-pdfengine'
+            or any(options.get(k) != binding.get('layout', {}).get(k) for k in keys)):
+        return None
+    return physical['lines']
+
+
 class ParagraphShaper:
-    def __init__(self, paragraph, units, fonts, *, alignment='left'):
+    def __init__(self, paragraph, units, fonts, *, alignment='left', source_lines=None):
         self.paragraph, self.units, self.specs = paragraph, units, fonts
         self.text = "".join(u.text for u in units)
         self.fonts, self.source_fonts = {}, {}
         self.alignment = alignment
         self.original_offsets = {id(unit):i for i,unit in enumerate(paragraph.units)}
+        self.source_baselines = self._source_baselines(source_lines)
+        self.source_offsets = ([b - self.source_baselines[0] for b in self.source_baselines]
+                               if self.source_baselines else None)
+        self.source_line_ranges = ([(line['start'], line['end']) for line in source_lines]
+                                   if self.source_baselines is not None else None)
+
+    def _source_baselines(self, candidates):
+        """Recover writer coordinates only by exact current-operator replay.
+
+        Float32 observation gaps can fall just below the confirmed minimum and
+        accumulate when clamped again. A saved baseline is only a candidate:
+        every current occurrence in every complete line must serialize to its
+        existing native Tm with the same CTM, basis and rise. No tolerance or
+        report checksum can replace this proof. Otherwise use observed gaps.
+        """
+        # An empty paragraph has no relative position to witness. Preserve its
+        # ordinary empty-layout/no-op path rather than requiring a first line.
+        if not candidates or len(candidates) != len(self.paragraph.resolved.lines):
+            return None
+        if (len(self.units) != len(self.paragraph.units)
+                or any(u.retained is not old or u.style_id != old.style_id
+                       for u, old in zip(self.units, self.paragraph.units))):
+            return None
+        from .style_confirmation import writer_spacing
+        state = self.paragraph.first.state
+        inverse = ~(pymupdf.Matrix(*state.ctm) * self.paragraph.content.page.transformation_matrix)
+        inverse_ctm = tuple(~pymupdf.Matrix(*state.ctm))
+        baselines = []
+        for number_, line in enumerate(candidates):
+            baseline = line.get('baseline')
+            if type(baseline) not in (int, float) or not math.isfinite(baseline):
+                return None
+            indices = [i for i, u in enumerate(self.paragraph.units) if u.line == number_ and u.source_index is not None]
+            while indices and self.paragraph.units[indices[-1]].text in _SPACES:
+                indices.pop()
+            if not indices or (line.get('start'), line.get('end')) != (indices[0], indices[-1] + 1):
+                return None
+            for i in indices:
+                unit, edit = self.paragraph.units[i], self.units[i]
+                style = self.paragraph.styles[edit.style_id]
+                _, ts, witnessed_rise = writer_spacing(style)
+                matrix = unit.char.source_text_matrix
+                basis = multiply(style.matrix, inverse_ctm)[:4]
+                if (matrix is None or unit.event.state.ctm != state.ctm
+                        or unit.event.state.ts != ts or tuple(matrix[:4]) != tuple(basis)):
+                    return None
+                point = pymupdf.Point(unit.observation['origin'][0], baseline + style.rise - witnessed_rise) * inverse
+                # Compare the normal writer's parsed operands with the actual
+                # native operands, not two separately rounded spellings.
+                if tuple(float(number(v)) for v in (*basis, point.x, point.y)) != tuple(matrix):
+                    return None
+            baselines.append(baseline)
+        return baselines
+
+    def verify_source_layout(self, layout, *, offset=0):
+        """Keep witnessed relative spacing after translation and every clamp.
+
+        The translated coordinates must match the final output exactly, and
+        translating them back must recover every proven current coordinate.
+        Binary64 subtraction need not have an identical spelling at another
+        origin; loss of reversibility still refuses, without a tolerance.
+        No old absolute baseline prescribes the destination.
+        """
+        if self.source_baselines is not None:
+            baselines = [offset + line.baseline for line in layout.lines]
+            if ([(line.start, line.end) for line in layout.lines] != self.source_line_ranges
+                    or not baselines
+                    or baselines != [baselines[0] + d for d in self.source_offsets]
+                    or [b - baselines[0] + self.source_baselines[0] for b in baselines] != self.source_baselines):
+                raise PdfError('current-source line candidate differs from the final output layout')
 
     def source_line_gap(self, a, b, c, d):
         """Retain a vertical edge only between two complete unchanged source lines.
 
         The current PDF supplies both the occurrence identities and baselines.
         A changed/wrapped line uses the confirmed ordinary line-height policy.
-        No positional array from a sidecar is accepted as layout evidence.
+        Sidecar candidates require exact current-operator proof before use.
         """
         def complete(start, end):
             kept = [u.retained for u in self.units[start:end]]
@@ -142,6 +241,8 @@ class ParagraphShaper:
         left, right = complete(a,b), complete(c,d)
         if left is None or right != left + 1:
             return None
+        if self.source_baselines is not None:
+            return self.source_offsets[right] - self.source_offsets[left]
         lines = self.paragraph.resolved.lines
         return lines[right].baseline - lines[left].baseline
 
@@ -231,13 +332,13 @@ class ParagraphShaper:
                      "provider":"original","resource":style.event.state.font.name,
                      "code":original.char.code,"glyph_id":observation['glyph_id'],
                      "font_name":observation['font'],"offset":(0,style.rise),
-                     # The event's first character has an explicit source Tm.
-                     # Keep its double-precision operands when that occurrence
-                     # stays put; trace origins are only single precision.
-                     "source_position":dict(matrix=original.event.text_matrix,
+                     # Preserve the source Tm and every preceding text advance
+                     # for any unchanged occurrence, including later TJ glyphs.
+                     # Trace origins are only single precision.
+                     "source_position":dict(matrix=original.char.source_text_matrix,
                          ctm=original.event.state.ctm, rise=original.event.state.ts,
                          origin=observation['origin']) if original.source_index is not None
-                             and original.source_index in original.event.chars[0].source_orders else None,
+                             and original.char.source_text_matrix is not None else None,
                      "bounds_source":bounds_source}))
                 index += 1
                 continue
@@ -302,7 +403,8 @@ def _layout_parameters(paragraph, snapshot, *, width=None, x=None, first_line_in
 
 
 def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, paragraph_style=None,
-                   paragraph_layout=None, _paragraph_continues=False, _preserve_source_line_gaps=False, **layout_options):
+                   paragraph_layout=None, _paragraph_continues=False, _preserve_source_line_gaps=False,
+                   _source_line_layout=None, **layout_options):
     """Measure with the writer's shaper/layout, without authorizing any paint."""
     from .logical_element import paragraph_from_snapshot
     paragraph=paragraph_from_snapshot(source,snapshot)
@@ -316,9 +418,11 @@ def plan_paragraph(source, snapshot, edits, *, fonts=None, render_styles=None, p
         from .alignment import confirm, options as alignment_options
         alignment=confirm(snapshot,paragraph_layout)
         _,options=_layout_parameters(paragraph,snapshot,**layout_options)
-        shaper=ParagraphShaper(paragraph,units,fonts or {},alignment=alignment['value'])
+        shaper=ParagraphShaper(paragraph,units,fonts or {},alignment=alignment['value'],
+                               source_lines=_source_line_layout if _preserve_source_line_gaps else None)
         layout=layout_attributed(shaper.text,shape=shaper.shape,**options,**alignment_options(alignment),continues=_paragraph_continues,
             source_line_gap=shaper.source_line_gap if _preserve_source_line_gaps else None)
+        shaper.verify_source_layout(layout)
         return dict(text=shaper.text,baseline=options['baseline'],
             last_baseline=layout.lines[-1].baseline if layout.lines else options['baseline'],
             lines=[{k:getattr(line,k) for k in ('start','end','baseline','width','ascent','descent')} for line in layout.lines])
@@ -371,7 +475,7 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                         anchor_spec=None, baseline=None, preserve_empty=False, empty_style_id=None,
                         render_styles=None, paragraph_style=None, paragraph_layout=None, _paragraph_continues=False,
                         _allow_empty_style_witnesses=False, owner=None, _generated_block=None, _source_output=None,
-                        _preserve_source_line_gaps=False):
+                        _preserve_source_line_gaps=False, _source_line_layout=None):
     """Prove source facts and plan every byte mutation of one paragraph edit.
 
     ``_generated_block`` (shared flow only) names the continuation destination
@@ -458,10 +562,12 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
                 raise PdfError("source no-op failed; attributed editing is prohibited")
         with pymupdf.open(stream=program_pdf_bytes(source, pno, removed), filetype='pdf') as doc:
             _require_removal(untouched, doc[pno])
-        shaper = ParagraphShaper(paragraph, units, fonts or {}, alignment=alignment['value'])
+        shaper = ParagraphShaper(paragraph, units, fonts or {}, alignment=alignment['value'],
+                                 source_lines=_source_line_layout if _preserve_source_line_gaps else None)
         result.shaper = shaper
         layout = layout_attributed(shaper.text, shape=shaper.shape, **layout_options, **alignment_options(alignment),continues=_paragraph_continues,
             source_line_gap=shaper.source_line_gap if _preserve_source_line_gaps else None)
+        shaper.verify_source_layout(layout)
         resources, font_reports, font_records = {}, {}, {}
         # Codes kept for unedited text still select their current resources.
         retained_aliases = {g.glyph.payload['resource'] for g in layout.glyphs if g.glyph.payload['provider'] == 'original'}
@@ -506,16 +612,17 @@ def plan_paragraph_edit(page, snapshot, edits, *, fonts=None, width=None, x=None
             point = pymupdf.Point(gx, gy - witnessed_rise) * inverse
             basis = multiply(style.matrix, inverse_ctm)[:4]
             tm = (*basis, point.x, point.y)
+            matrix_bytes = matrix_operator(tm)
             source_position = payload.get('source_position')
             if (source_position is not None and tuple(source_position['origin']) == (gx, gy)
                     and source_position['ctm'] == state.ctm and source_position['rise'] == ts
                     and tuple(source_position['matrix'][:4]) == tuple(basis)):
-                tm = source_position['matrix']
+                matrix_bytes = _source_matrix_operator(source_position['matrix'])
             fill_op, fill_values = style.event.state.fill
             prefix = b''.join((_name(alias), b' ', number(style.event.state.size), b' Tf ',
                 number(style.event.state.tz), b' Tz ', number(tc), b' Tc ', number(ts), b' Ts ',
                 b' '.join(number(float(v)) for v in fill_values),
-                b' ' + fill_op.encode() + b' ', matrix_operator(tm)))
+                b' ' + fill_op.encode() + b' ', matrix_bytes))
             commands.append(prefix)
             length += len(prefix)
             glyph_offsets.append(length)

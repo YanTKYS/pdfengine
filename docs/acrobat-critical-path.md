@@ -3,18 +3,30 @@
 **Current-state document.** This file holds only the current critical path. Rewrite it whenever the state changes. It
 is not a history log; history is in [continuation-checkpoint.md](continuation-checkpoint.md).
 
-- State: starting main `9105e1ff617c2014c81953b0e9bb182b83a0e375` (PR #74 merged). `append_to_region` can carry an
+- State: base main `f93c8f47bc8d2c277b01464178d75f3e1cc23e89` (PR #75 merged). `append_to_region` can carry an
   explicitly approved placement policy for its first follower: a minimum gap and an in-region baseline floor.
-- **REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW — NOT VALIDATED.** The public Japanese translation
-  of *The Cathedral and the Bazaar*, pages 22–24, has related prose and complete paragraph boundaries
-  at both seams. Its non-embedded Japanese `/H` CMap prevents unique text-operator provenance, so
-  B1 refuses the first source owner. No saved real three-page history, destinations or release owners exist.
+- **REAL-WORLD THREE-PAGE SEQUENTIAL REFLOW VALIDATED — PASS.** The unchanged public Japanese
+  judgment `courts_97044.pdf` has a SHA-bound, saved editing history across pages 1→2→3 of its 13 pages.
+  Two next-page source-owner approvals are made from successive saved revisions. Previously refused
+  growth then succeeds: A continues with 15 characters onto page 2, B with 33 onto page 3, and D1/C move.
+  - Both extension no-ops are pixel-identical on all 13 pages in MuPDF and Poppler at 144 dpi.
+  - B-only, A-only and single-Transaction A/B shorten/regrow pairs release and reuse the same slots.
+    Fixed regrowth reproduces the input's actual glyph geometry and whole-page rendering exactly.
+  - The final same-Transaction A/B edit changes both texts; its saved revision then passes a final no-op
+    with all 13 pages pixel-identical, all 1,136 owned glyphs identical and all glyph codes/font resources/
+    programs unchanged. Generated font registry, markers, creation bindings and destinations persist.
+  - Release authority remains independent: `P1-next` only D1, `B-next` only C. Over-capacity placement
+    and unowned-paragraph edits refuse without publishing PDF or sidecar. Saved edits reopen `restored`;
+    foreign content and original SHA remain unchanged. No full-suite rerun is performed.
+  - [Measurements, historical failures and commands](../evaluations/real_japanese/three-page-report.md) /
+    [compact SHA-bound evidence](../evaluations/real_japanese/three-page-final-summary.json).
 - **Explicit fixed-margin seam witnesses implemented.** `inspect_fixed_foreign` and
   `next_page.fixed_foreign` let a caller identify current-revision, independently protected header/footer
   lines in bounded outer margins. These lines remain foreign and confer no source ownership, capacity or
   release authority. Default seam refusals, body-interior guards and all destination checks remain active.
-  Saved three-page lifecycle evidence is synthetic only. The earlier Wakayama cautions were not retried as
-  a three-page candidate. [Scope, real qualification and regressions](../evaluations/real_japanese/fixed-foreign-report.md).
+  The earlier Wakayama cautions were not retried as a three-page candidate. Cathedral's non-embedded
+  Japanese `/H` source still refuses B1; the supported judgment supplies the real three-page evidence.
+  [Fixed-margin scope and regressions](../evaluations/real_japanese/fixed-foreign-report.md).
 - **REAL-WORLD FOLLOWER SPACING POLICY VALIDATED — PASS.** On LibreOffice pages 8→9, the current
   19.999963378906244 pt B→C gap and C's explicitly approved 209.29998779296875 pt floor remain separate.
   - Extension no-op is pixel-identical on all ten pages in both MuPDF and Poppler. Shortening returns B to
@@ -42,7 +54,7 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
     210.777155 pt and intersects 46 glyph bounds of the formerly unowned C.
   - Second edit, shortening, regrowth and the final no-op all reopen `restored`. Outside-region MuPDF and Poppler
     changes are 0, and foreign content is unchanged.
-  - A three-page sequential next-page case passes on synthetic fixtures only.
+  - Three-page sequential next-page editing is separately validated on the real judgment above.
 
   [Measured sequential report](../evaluations/real_japanese/sequential-extension-report.md).
 - **REAL-WORLD CROSS-PAGE POST-EDIT EXTENSION VALIDATED — PASS.** A restored edited flow whose last source region is
@@ -618,8 +630,8 @@ B1 bootstrap (COMPLETE)
 ├→ explicit additional-owner approval from original source (COMPLETE, append-only followers)
 ├→ current-revision additional-owner approval (COMPLETE, bounded last-region followers)
 ├→ current-revision next-page owner approval (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
-├→ sequential extensions on one restored history (COMPLETE: next page then same page; three-page next pages on
-│  fixtures)
+├→ sequential extensions on one restored history (COMPLETE: next page then same page; two successive
+│  next-page approvals and re-edit lifecycle VALIDATED on real judgment pages 1→2→3)
 └→ approved follower placement for append_to_region (COMPLETE; real-PDF VALIDATED, LibreOffice pages 8→9)
         B3 → B5 semantic real text
 ```
@@ -630,8 +642,8 @@ that boundary is not solved by B6 or B3.
 ## 8. NEXT BLOCKER
 
 ```
-NEXT BLOCKER: a real related body continuing across three pages. Approved follower placement is now
-validated on the two-page LibreOffice history; the three-page next-page extension remains fixture-only.
+NEXT BOUNDARY: broader source/font/layout coverage beyond the validated judgment and LibreOffice histories.
+Three-page editing and re-editing are validated within explicitly approved regions, not arbitrary PDF layouts.
 ```
 
 The follower spacing policy is validated on the real PDF (§6): C stays at 209.299988 pt after shortening,
@@ -642,15 +654,27 @@ checks are recorded in the [follower spacing report](../evaluations/real_japanes
 The policy keeps at least the approved gap when the paragraph above moves down. It cannot restore an original gap
 larger than the current one without moving the follower in the no-op, so such a policy refuses.
 
-A third page is covered only by synthetic fixtures; no real three-page continuation of a related body has been
-validated. Capacity remains explicit and bounded:
+The real judgment now validates two successive next-page approvals from saved revisions, actual continuation
+on pages 2 and 3, independent release owners, single and simultaneous shorten/regrow, another simultaneous
+edit and a final whole-document no-op. All edited stages have zero outside-region pixels in both renderers;
+the final no-op has zero pixels everywhere. Failed legacy no-ops and A regrowth remain historical failures,
+and only the repaired SHA-bound artifacts count toward PASS.
+
+The supporting production changes remain narrow: caller-confirmed original Tc/Ts values are verified per glyph;
+direct page transparency-group defaults are supported under explicit checks; unchanged retained native Tm operands
+use round-trip decimal precision; unchanged moving paragraphs preserve relative line positions only after proving
+the current native operators, ranges and styles and checking the final clamped layout. Saved coordinates alone
+are not authority. Changed text, unsupported geometry or non-reversible translations use normal layout or refuse.
+
+Capacity remains explicit and bounded:
 - adoption covers only the next page after the last source region, and no page already holding regions;
-- there is one release/empty continuation, for the last paragraph.
+- each adoption approves a specific empty/released continuation and a specific independent release-owner set;
+- existing text is never treated as empty capacity, and no further continuation is inferred when capacity runs out.
 
 The earlier Wakayama saved-edit probe isolated a page-number seam obstruction. The default request still
 refuses; the explicit fixed-margin proof now provides a bounded way to review eligible protected margins.
-The selected cautions do not continue into page 6 and were not retried. The new, related three-page
-Cathedral candidate instead fails initial B1 ownership because `/H` Japanese source codes cannot be mapped
+The selected cautions do not continue into page 6 and were not retried. The earlier related three-page
+Cathedral candidate still fails initial B1 ownership because `/H` Japanese source codes cannot be mapped
 uniquely by the current backend. New provider-font coverage does not repair original-code provenance.
 See the [fixed-margin scope and qualification report](../evaluations/real_japanese/fixed-foreign-report.md).
 
@@ -662,14 +686,18 @@ The implementation does not:
 
 Tagged source owners cannot cross independent continuation regions.
 
-## 9. Next PR scope
+## 9. Validated scope and remaining limits
 
-1. Qualify a real three-page body with supported original font/code provenance. Cathedral pages 22–24 have
-   the required textual relationship but need unsupported legacy CMap interpretation; broad CMap/font
-   support was not added as an exception to the fixed-margin change. Another original with supported fonts
-   is preferable to rewriting or substituting the source PDF. Wakayama cautions are not a three-page body.
-2. Validate sequential next-page extensions from saved revisions under the existing fixed-capacity and
-   source-ownership rules. Keep explicit gap/floor approval and no-op reproduction; do not infer extra authority.
+The judgment's related selected body on pages 1–3 is qualified without converting the original. Two saved-revision
+extensions and the re-edit lifecycle are complete under current source/code/font provenance and fixed capacity.
+The [integrated evidence](../evaluations/real_japanese/three-page-final-summary.json) records 14 successful revisions
+and the explicit refusal contracts; source hash is
+`70ce8722348b21c10a7035a5b6dd09dc641b032d7ec33588e9bc8cb711ef17f2`.
+
+This does not generalize ownership to the judgment's remaining foreign body, unsupported legacy `/H` CMaps,
+arbitrary tagged layouts or unapproved page relationships. Cathedral remains refused, and the Wakayama cautions
+are not a three-page body. Broader font/layout coverage must retain unique original-code provenance, caller review,
+gap/floor approval, independent releases and exact no-op reproduction.
 
 Do not convert occupied text into an empty destination or infer document-wide relationships. Page 10 of the
 LibreOffice paper is a separate section and stays foreign.
@@ -723,9 +751,16 @@ tests passed in 20.56 s**. Evaluator and tests ran serially. No production chang
 [Report and commands](../evaluations/real_japanese/three-page-preflight-report.md) /
 [measured summary](../evaluations/real_japanese/three-page-preflight-summary.json).
 
-Current fixed-margin seam change on merged PR #74 main: **44 focused passes in 533.69 s**, followed by
+Historical fixed-margin seam change on merged PR #74 main: **44 focused passes in 533.69 s**, followed by
 **2 lifecycle passes in 140.73 s** (one strengthened rerun; 45 distinct tests). Synthetic fixed-margin
 extension no-ops are all-page MuPDF/Poppler identical; short/regrow saves restore with independent
 page-2/page-3 releases and unchanged native fixed-font bytes. Real Cathedral qualification completed in
-**1.979309 s**, but first-owner B1 refuses unsupported `/H` source provenance: **real three-page NOT VALIDATED**.
+**1.979309 s**, but first-owner B1 refuses unsupported `/H` source provenance: **Cathedral candidate NOT VALIDATED**.
 All runs were serial; no full suite. [Measured scope and commands](../evaluations/real_japanese/fixed-foreign-report.md).
+
+Current real-judgment history: **26 distinct relevant focused tests pass**, as recorded in the
+[relative-spacing repair](../evaluations/real_japanese/three-page-report.md). Historical overlapping 15/16-test
+no-op batches are not added to this count. The final evaluation-only follow-up does not rerun these tests or the
+full suite; it verifies the missing refusal contracts and performs exactly two successful saves, with all-page
+MuPDF/Poppler audits and a complete final no-op glyph/code/font comparison. The integrated real three-page
+verdict is **PASS**; historical Cathedral/preflight refusals remain distinct evidence.
