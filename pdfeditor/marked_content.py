@@ -325,6 +325,137 @@ def _digest(value):
                                      separators=(',', ':')).encode()).hexdigest()
 
 
+def structure_objects(reader, *, omit_actual_text=None):
+    """Exact serialized structure graph, without following page/annotation links.
+
+    Reference IDs and every sibling value remain significant. Only the named
+    leaf's ActualText may be omitted for a single-Span compare-and-set.
+    """
+    from io import BytesIO
+    root = reader.trailer['/Root'].get('/StructTreeRoot')
+    if root is None:
+        raise PdfError('single Span needs a StructureTree')
+    result, seen = {}, set()
+    def visit(value):
+        if isinstance(value, IndirectObject):
+            key = (value.idnum, value.generation)
+            if key in seen:
+                return
+            seen.add(key)
+            obj = value.get_object()
+            encoded = DictionaryObject(obj) if isinstance(obj, DictionaryObject) else obj
+            if key == (omit_actual_text, 0):
+                del encoded['/ActualText']
+            stream = BytesIO(); encoded.write_to_stream(stream)
+            result[f'{key[0]}:{key[1]}'] = stream.getvalue().hex()
+            visit(obj)
+        elif isinstance(value, dict):
+            for key, child in value.items():
+                if key not in ('/Pg', '/Obj'):
+                    visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+    visit(root)
+    return result
+
+
+def leaf_span_structure(content, selected):
+    """Separate contract: complete single-MCID Span with exact leaf ActualText.
+
+    Does not widen paragraph_structure or B2's same-owner aggregation policy.
+    """
+    observed = observe_marked_content(content.source, content.page.number + 1)
+    def require(ok, reason):
+        if not ok:
+            raise PdfError('single Span: ' + reason)
+    require(observed['complete'] and not content.errors, 'incomplete source observation')
+    require(not any(g not in (0, 65535) and entries for g, entries in content.reader.xref.items()),
+            'requires generation-zero object references')
+    selected = set(selected)
+    events = content.selected_events(selected)
+    scopes = [s for s in observed['scopes'] if any(
+        s['content_byte_range'][0] <= e.operator.start < s['content_byte_range'][1] for e in events)]
+    require(len(scopes) == 1 and events and selected, 'selection must belong to one envelope')
+    scope = scopes[0]; a = scope['association']; ref = a.get('owner_reference')
+    require(not scope['invocation'] and not scope['enclosing_scope_ids'] and scope['end_byte_range'] is not None
+            and scope['namespace']['kind'] == 'page' and scope['tag'] == '/P'
+            and set(scope['properties']) == {'/MCID'}, 'unsupported envelope or properties')
+    require(a['status'] == 'tree_backed' and a.get('backlink_verified') is True and ref is not None
+            and a.get('owner_role') == {'declared': '/Span', 'mapped': '/Span'}, 'unproved leaf Span')
+    require(sum(s['namespace'] == scope['namespace'] and s['properties'].get('/MCID') == a['mcid']
+                for s in observed['scopes']) == 1, 'duplicate MCID')
+    require(sum(s['association'].get('owner_reference') == ref for s in observed['scopes']) == 1
+            and a['owner_children'] == [a['mcid']], 'owner must have one MCID')
+    ancestors = a['ancestors']
+    require(len(ancestors) >= 3 and ancestors[1]['role'] == {'declared': '/P', 'mapped': '/P'}
+            and ancestors[-1]['type'] == '/StructTreeRoot', 'unsupported parent chain')
+    require(all(x['parent_backlink_verified'] and x['type_is_name'] for x in ancestors)
+            and all(x['type'] == '/StructElem' and not x['role'].get('error')
+                    and isinstance(x['role']['mapped'], str) and x['role']['mapped'].startswith('/')
+                    for x in ancestors[:-1]), 'invalid ancestor backlink/type/role')
+    require(ancestors[0]['unsupported_semantics'] == ['/ActualText']
+            and all(not x['unsupported_semantics'] for x in ancestors[1:]), 'unsupported semantic override')
+    owner = content.reader.get_object(ref['xref'])
+    from pypdf.generic import TextStringObject
+    require(isinstance(owner.get('/ActualText'), TextStringObject), 'requires decoded leaf ActualText')
+    parent = owner['/P']; children = _object(parent.get('/K'))
+    require(isinstance(children, list) and len(children) >= 2
+            and all(isinstance(c, IndirectObject) and c.get_object().get('/S') == '/Span'
+                    and _same_reference(c.get_object().get('/P'), parent) for c in children)
+            and len({_reference(c)['xref'] for c in children}) == len(children), 'parent needs ordered leaf Span siblings')
+    positions = []
+    for child in children:
+        node = child.get_object()
+        items = _object(node.get('/K'))
+        items = items if isinstance(items, list) else [items]
+        require(items and all(isinstance(i, int) and not isinstance(i, bool) and i >= 0 for i in items),
+                'sibling is not an integer-MCID leaf')
+        siblings = [s for s in observed['scopes'] if s['association'].get('owner_reference') == _reference(child)]
+        require([s['properties'].get('/MCID') for s in siblings] == items
+                and all(s['association'].get('backlink_verified') and not s['invocation']
+                        and s['namespace'] == scope['namespace'] for s in siblings), 'sibling content order/backlink differs')
+        positions.extend(s['begin_byte_range'][0] for s in siblings)
+    require(positions == sorted(set(positions)), 'parent reading order differs from source order')
+    lo, hi = scope['content_byte_range']
+    inside = [e for e in content.events if lo <= e.operator.start < hi]
+    chars = [c for e in inside for c in e.chars]
+    ids = [i for c in chars for i in c.source_orders]
+    require(all(not e.invocation and not e.error for e in inside)
+            and all(len(c.source_orders) == 1 and len(c.text) == 1 for c in chars)
+            and len(ids) == len(set(ids)) and set(ids) == selected, 'selection must cover the complete owner only')
+    text = ''.join(c.text for c in chars)
+    require(text == owner['/ActualText'], 'ActualText differs from drawn Unicode')
+    require(len({round(content.actual[i]['origin'][1], 4) for i in ids}) == 1, 'only one visual line is supported')
+    require(all(content.actual[i]['unicode'] == c.text for c, i in zip(chars, ids)), 'drawn Unicode mapping differs')
+    ops = [o for o in observed['operators'] if scope['id'] in o['active_scope_ids']]
+    allowed = set('q Q BT ET Tf Tz Tc Tw Ts TL Tr Tm Td TD T* Tj TJ g rg k G RG K EMC re W* n'.split())
+    require(all(o['operator'] in allowed and o['active_scope_ids'] == [scope['id']] for o in ops),
+            'unsupported paint, nesting or graphics state')
+    names = [o['operator'] for o in ops]
+    from .operator_nesting import audit
+    require(not audit(content.streams[-content.page.xref][scope['begin_byte_range'][0]:scope['end_byte_range'][1]])['violations'],
+            'unbalanced envelope graphics/text state')
+    require(names[:5] == ['q', 're', 'W*', 'n', 'BT'] and names[-3:] == ['ET', 'Q', 'EMC']
+            and all(names.count(n) == 1 for n in ('re', 'W*', 'n')), 'requires one original rectangular clip')
+    clip = inside[0].state.clip
+    require(len(clip) == 1 and clip[0]['rule'] == 'W*' and len(clip[0]['path']) == 1
+            and clip[0]['path'][0]['operator'] == 're', 'unproved rectangular clip')
+    canonical_clip = [{k: v for k, v in x.items() if k != 'at'} for x in clip]
+    require(all([{k: v for k, v in x.items() if k != 'at'} for x in e.state.clip] == canonical_clip
+                for e in inside), 'different active clips')
+    # Reuse the source-output rectangular-clip and paint-context validator.
+    from .source_ownership import context, _boundary
+    for event in inside:
+        context(_boundary(content, event.operator.end), split=True, marked_structure={'identity_sha256': 'single-span'})
+    structure = structure_objects(content.reader, omit_actual_text=ref['xref'])
+    return dict(contract='single-span-actualtext-1', owner=ref, mcid=a['mcid'],
+                association=a, tag=scope['tag'], properties=scope['properties'], text=text,
+                glyph_ids=ids, scope_range=[scope['begin_byte_range'][0], scope['end_byte_range'][1]],
+                content_range=scope['content_byte_range'], clip=canonical_clip,
+                structure=structure, structure_sha256=_digest(structure))
+
+
 def paragraph_structure(content, selected, *, offset=None):
     """Prove the narrow, leaf-/P, same-owner MCID bundle (never ownership).
 

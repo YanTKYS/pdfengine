@@ -69,6 +69,17 @@ SENTENCE_END = ('。', '！', '？', '.', '!', '?')  # the terminal set inferenc
 
 # -- installed font discovery ---------------------------------------------------
 
+def propose_single_span(source, selection, *, region):
+    """Explicit single-leaf proposal; does not alter the page-flow B1 contract."""
+    from .span_edit import propose_single_span as propose
+    return propose(source, selection, region=region)
+
+
+def accept_single_span(source, proposal):
+    from .span_edit import accept_single_span as accept
+    return accept(source, proposal)
+
+
 def default_font_roots(platform=None, environ=None, home=None):
     """Installed-font directories for this platform, in a fixed order (strings)."""
     platform = sys.platform if platform is None else platform
