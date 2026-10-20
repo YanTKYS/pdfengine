@@ -15,8 +15,10 @@ from pdfeditor.selection import make_selection
 from pdfeditor.span_edit import _seal
 import test_adjacent_span as adj
 
-# The other paragraph is right-aligned to a 270pt column; line one wraps there.
-COLUMN = dict(other='提出していただきます', other_x=165)
+# Two other lines (a paragraph and a date) are right-aligned to a 270pt
+# column; line one wraps at 268pt because the next character (10.5pt) did not fit.
+DATE = (270 - 5 * 10.5, 120, '令和七年度')
+COLUMN = dict(other='提出していただきます', other_x=165, extra=(DATE,))
 
 
 def source(root, name='source.pdf', **options):
@@ -64,7 +66,8 @@ def test_proposal_derives_owners_boundary_follower_rectangles_and_font(world):
     assert [c['status'] for c in proposal['candidates']] == ['refused', 'refused', 'qualified']
     assert chosen['follower_dx'] == pytest.approx(21)
     evidence = proposal['regions']['evidence']
-    assert evidence['column_right'] == pytest.approx(270) and evidence['column_witness']['unicode'] == 'す'
+    assert evidence['column_right'] == pytest.approx(270) and evidence['basis'] == 'corroborated line ends'
+    assert sorted(x['unicode'] for x in evidence['supports']) == ['す', '度']
     first, second = proposal['regions']['owners']
     assert first['x1'] == second['x1'] == pytest.approx(270) and first['y1'] <= second['y0']
     assert proposal['font']['provider']['sha256'] == proposal['font']['program_sha256']
@@ -120,7 +123,7 @@ def test_selection_refusals(world, kind, match):
     elif kind == 'cross-owner':
         ids = first[-2:] + adj.ids_of(path, 2)[:1]
     elif kind == 'no-following-owner':
-        ids = adj.ids_of(path, 4)[1:3]
+        ids = adj.ids_of(path, 5)[1:3]  # the date line, last child of the other parent
     else:
         ids = first[:2]
     with pytest.raises(PdfError, match=match):
@@ -183,6 +186,16 @@ def test_stale_tampered_and_unaccepted_intents_publish_nothing(world, tmp_path):
     widened = deepcopy(proposal); widened['regions']['owners'][0]['x1'] = 400
     with pytest.raises(PdfError, match='stale or was modified'):
         accept_adjacent_intent(path, _seal(widened), work_dir=work)
+    # A re-sealed inner adjacent-Span proposal cannot widen a rectangle or drop the proved follower.
+    for change in ('region', 'follower'):
+        inner = deepcopy(proposal)
+        if change == 'region':
+            inner['adjacent']['owners'][0]['region']['x1'] = 400
+        else:
+            inner['adjacent']['follower'] = None; inner['adjacent']['witness']['follower'] = None
+        inner['adjacent'] = _seal(inner['adjacent'])
+        with pytest.raises(PdfError, match='claim'):
+            accept_adjacent_intent(path, _seal(inner), work_dir=work)
     acceptance = accept_adjacent_intent(path, proposal, work_dir=work)
     moved = deepcopy(acceptance); moved['boundary'] -= 1
     with pytest.raises(PdfError, match='differs from its proposal'):
@@ -196,3 +209,52 @@ def test_stale_tampered_and_unaccepted_intents_publish_nothing(world, tmp_path):
     with pytest.raises(PdfError):
         edit_adjacent_intent(edited, acceptance, out, side, work_dir=work)
     assert not out.exists() and not side.exists()
+
+
+def column(proposal):
+    return proposal['regions']['evidence']
+
+
+@pytest.mark.parametrize('extra', [
+    ((560, 800, '１'),),                       # page number right of the body
+    ((300 - 2 * 10.5, 230, '注記'),),            # right-aligned note beyond the column
+    ((290, 160, '提出'), (290, 178, '提出')),    # a second column on the edited lines
+])
+def test_column_edge_ignores_page_numbers_notes_and_other_columns(tmp_path, extra):
+    path = source(tmp_path, extra=(DATE,) + extra)
+    proposal = intent(path, tmp_path)
+    evidence = column(proposal)
+    assert evidence['basis'] == 'corroborated line ends' and evidence['column_right'] == pytest.approx(270)
+    assert evidence['wrap_window'] == pytest.approx([268, 278.5])
+    assert all(r['x1'] <= 270 + 1e-9 for r in proposal['regions']['owners'] + [proposal['regions']['follower']])
+    assert proposal['status'] == 'proposed' and proposal['candidates'][proposal['chosen']]['boundary'] == adj.BOUNDARY
+
+
+def test_single_right_aligned_line_is_not_corroboration(tmp_path):
+    path = source(tmp_path, extra=())
+    proposal = intent(path, tmp_path)
+    evidence = column(proposal)
+    assert evidence['basis'] == 'wrapped line end only' and evidence['column_right'] == pytest.approx(268)
+    assert len(evidence['supports']) == 1
+    assert all(r['x1'] <= 268 + 1e-9 for r in proposal['regions']['owners'])
+
+
+@pytest.mark.parametrize('kind,match', [
+    ('hanging', 'hanging punctuation'),
+    ('continued-line', 'continues the first owner'),
+    ('uncorroborated-capacity', 'not corroborated'),
+])
+def test_insufficient_column_evidence_refuses(tmp_path, kind, match):
+    if kind == 'hanging':
+        path = source(tmp_path, first='本年度の補助事業について募集を、')
+        selection, replacement = occurrence(path, 1, 'について'), 'につきまして'
+    elif kind == 'continued-line':
+        # A glyph of another column starts within one character of the wrapped line end.
+        path = source(tmp_path, extra=(DATE, (274, 160, '提')))
+        selection, replacement = occurrence(path, 1, 'について'), 'につきまして'
+    else:
+        # Only the first owner's own line end is evidence, and the last glyph cannot move.
+        path = source(tmp_path, extra=())
+        selection, replacement = occurrence(path, 1, '行'), '行い'
+    with pytest.raises(PdfError, match=match):
+        propose_adjacent_intent(path, selection, replacement, work_dir=tmp_path / 'work')
