@@ -1,0 +1,27 @@
+{
+  "schema": "pdfengine-edit-coverage-cases-1",
+  "fixed_on": "2026-10-20",
+  "note": "Fixed before running the evaluation. Each selection is the glyph occurrence starting at `anchor` on page 1 whose drawn text must equal `selected`; do not change cases to improve results, add new ids instead.",
+  "source": {
+    "id": "word_osaka_guideline",
+    "path": "evaluations/realpdf/corpus/word_osaka_guideline.pdf",
+    "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+    "page": 1
+  },
+  "cases": [
+    {"id": "A", "category": "cross-owner selection, same length (Windows refusal)", "anchor": 135, "selected": "つきまして", "replacement": "おきまして"},
+    {"id": "B", "category": "growth in a wrapped owner (PR #81 case)", "anchor": 149, "selected": "において", "replacement": "におきまして"},
+    {"id": "C", "category": "same length inside one owner (PR #78 case)", "anchor": 160, "selected": "作成されましたので", "replacement": "作成されていたので"},
+    {"id": "D", "category": "shortening inside one owner", "anchor": 160, "selected": "作成されましたので", "replacement": "作成されたので"},
+    {"id": "E", "category": "owner head replacement", "anchor": 132, "selected": "標記", "replacement": "本件"},
+    {"id": "F", "category": "change spanning two owners", "anchor": 134, "selected": "につきまして、", "replacement": "に関して、"},
+    {"id": "G", "category": "owner without ActualText", "anchor": 182, "selected": "つきまして", "replacement": "おきまして"},
+    {"id": "H", "category": "deletion at an owner end", "anchor": 134, "selected": "につ", "replacement": "に"},
+    {"id": "I", "category": "insertion with growth in a wrapped owner", "anchor": 170, "selected": "参考に", "replacement": "参考までに"},
+    {"id": "J", "category": "growth in the last owner of a paragraph", "anchor": 175, "selected": "いたします", "replacement": "させていただきます"},
+    {"id": "K", "category": "growth in a mid-line owner followed by whitespace", "anchor": 112, "selected": "御協力いただき", "replacement": "御協力をいただき"},
+    {"id": "L", "category": "same length inside a sentence owner", "anchor": 122, "selected": "御礼", "replacement": "お礼"},
+    {"id": "M", "category": "growth in a title owner", "anchor": 64, "selected": "届出の質向上", "replacement": "届出の品質向上"},
+    {"id": "N", "category": "cross-owner selection, shortening at an owner end", "anchor": 132, "selected": "標記につきまして", "replacement": "標記につき"}
+  ]
+}
