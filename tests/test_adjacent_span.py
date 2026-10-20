@@ -59,11 +59,12 @@ def build_font(chars):
     return out.getvalue()
 
 
-def make_source(path, *, second_parent=0, follower=True, foreign=None):
-    """P1: LEAD, FIRST, SECOND, ' ' (follower); P2: OTHER. ``foreign`` adds a P2 glyph on line two."""
-    chars = sorted(set(LEAD + FIRST + SECOND + OTHER + 'につきまして' + 'いたし' + ' '))
-    lines = [(50, 160, 10.5, LEAD), (100, 160, 10.5, FIRST), (50, 178, 10.5, SECOND),
-             (50 + len(SECOND) * 10.5, 178, 10.5, ' '), (50, 196, 10.5, OTHER)]
+def make_source(path, *, second_parent=0, follower=True, foreign=None, first=FIRST, second=SECOND,
+                other=OTHER, other_x=50):
+    """P1: LEAD, first, second, ' ' (follower); P2: other. ``foreign`` adds a P2 glyph on line two."""
+    chars = sorted(set(LEAD + first + second + other + 'につきまして' + 'いたし' + ' '))
+    lines = [(50, 160, 10.5, LEAD), (100, 160, 10.5, first), (50, 178, 10.5, second),
+             (50 + len(second) * 10.5, 178, 10.5, ' '), (other_x, 196, 10.5, other)]
     if foreign is not None:
         lines.append((foreign, 178, 10.5, '提'))
     fx.make_page(path, build_font(chars), tagged=True, lines=lines)
