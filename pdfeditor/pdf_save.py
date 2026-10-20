@@ -194,14 +194,24 @@ def program_pdf_bytes(source, page_number, data, *, font_builders: Mapping[str, 
         if not preserve_ids or len(actual_text_updates) != 1:
             raise PdfError('single Span semantic save requires preserved indirect identities')
         update = actual_text_updates[0]
-        ref = update['owner']
-        if ref['generation'] != 0 or structure_objects(reader, omit_actual_text=ref['xref']) != update['structure']:
+        # The adjacent-Span contract sets exactly its two owners together;
+        # the single-Span contract still sets exactly one.
+        adjacent = update.get('contract') == 'adjacent-span-actualtext-1'
+        sets = update['owners'] if adjacent else [update]
+        if len(sets) != (2 if adjacent else 1):
+            raise PdfError('semantic save names an unsupported number of owners')
+        refs = [s['owner'] for s in sets]
+        omit = tuple(r['xref'] for r in refs) if len(sets) == 2 else refs[0]['xref']
+        if (any(r['generation'] != 0 for r in refs) or len({r['xref'] for r in refs}) != len(refs)
+                or structure_objects(reader, omit_actual_text=omit) != update['structure']):
             raise PdfError('single Span structure changed before semantic save')
-        original = reader.get_object(ref['xref'])
-        if original.get('/ActualText') != update['before'] or original.get('/S') != '/Span':
-            raise PdfError('single Span ActualText compare-and-set failed')
-        owner = writer.get_object(ref['xref'])
-        owner[NameObject('/ActualText')] = TextStringObject(update['after'])
+        for value in sets:
+            original = reader.get_object(value['owner']['xref'])
+            if original.get('/ActualText') != value['before'] or original.get('/S') != '/Span':
+                raise PdfError('single Span ActualText compare-and-set failed')
+        for value in sets:
+            owner = writer.get_object(value['owner']['xref'])
+            owner[NameObject('/ActualText')] = TextStringObject(value['after'])
     # Keep the source's PDF version. A clone otherwise writes pypdf's default
     # %PDF-1.3 header, which silently changes (usually lowers) the version the
     # written content is interpreted against. The catalog /Version is cloned.
@@ -257,8 +267,8 @@ def program_pdf_bytes(source, page_number, data, *, font_builders: Mapping[str, 
     if actual_text_updates:
         # Verify the actual serialization before any output is published.
         saved = PdfReader(BytesIO(encoded))
-        if (structure_objects(saved, omit_actual_text=ref['xref']) != update['structure']
-                or saved.get_object(ref['xref']).get('/ActualText') != update['after']):
+        if (structure_objects(saved, omit_actual_text=omit) != update['structure']
+                or any(saved.get_object(v['owner']['xref']).get('/ActualText') != v['after'] for v in sets)):
             raise PdfError('single Span semantic serialization verification failed')
     return encoded
 

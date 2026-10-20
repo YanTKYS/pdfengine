@@ -1,0 +1,371 @@
+{
+  "verdict": "PASS",
+  "source": "evaluations/realpdf/corpus/word_osaka_guideline.pdf",
+  "source_sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+  "page": 1,
+  "parent": 58,
+  "owners": [
+    {
+      "owner": 62,
+      "mcid": 28,
+      "before": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+      "after": "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+      "characters": [
+        33,
+        33
+      ]
+    },
+    {
+      "owner": 63,
+      "mcid": 29,
+      "before": "付いたします。",
+      "after": "に送付いたします。",
+      "characters": [
+        7,
+        9
+      ]
+    }
+  ],
+  "follower": {
+    "owner": 64,
+    "mcid": 30,
+    "text": " ",
+    "properties": {
+      "/MCID": 30,
+      "/Lang": {
+        "bytes_hex": "656e2d5553"
+      }
+    },
+    "dx": 21.120000000000005,
+    "before": [
+      144.5,
+      355.0589294433594,
+      149.77999877929688,
+      365.6189270019531
+    ],
+    "after": [
+      165.6199951171875,
+      355.0589294433594,
+      170.89999389648438,
+      365.6189270019531
+    ]
+  },
+  "edit": {
+    "start": 8,
+    "end": 12,
+    "text": "におきまして"
+  },
+  "boundary": 33,
+  "relocated": "に送",
+  "paragraph": {
+    "before": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+    "after": "標記につきまして、国立感染症研究所におきましてガイドラインが作成されましたので、参考に送付いたします。 ",
+    "characters": [
+      50,
+      52
+    ],
+    "reading_order": [
+      59,
+      60,
+      61,
+      62,
+      63,
+      64
+    ]
+  },
+  "regions": [
+    {
+      "x0": 176.05999755859375,
+      "y0": 335.0,
+      "x1": 525.0,
+      "y1": 351.0
+    },
+    {
+      "x0": 70.94400024414062,
+      "y0": 353.0,
+      "x1": 525.0,
+      "y1": 369.0
+    }
+  ],
+  "follower_region": {
+    "x0": 144.5,
+    "y0": 353.0,
+    "x1": 525.0,
+    "y1": 369.0
+  },
+  "layouts": [
+    {
+      "text": "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+      "line": {
+        "text": "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+        "start": 0,
+        "end": 33,
+        "x": 176.05999755859375,
+        "baseline": 346.1299743652344,
+        "width": 347.20224426269533,
+        "ascent": 9.075000000000001,
+        "descent": 1.48895263671875
+      },
+      "width_limit": 348.94000244140625
+    },
+    {
+      "text": "に送付いたします。",
+      "line": {
+        "text": "に送付いたします。",
+        "start": 0,
+        "end": 9,
+        "x": 70.94400024414062,
+        "baseline": 364.1299743652344,
+        "width": 94.80767028808594,
+        "ascent": 9.075000000000001,
+        "descent": 1.48895263671875
+      },
+      "width_limit": 454.0559997558594
+    }
+  ],
+  "without_follower": [
+    {
+      "label": "column-rectangle",
+      "second_region": {
+        "x0": 70.94400024414062,
+        "y0": 353.0,
+        "x1": 525.0,
+        "y1": 369.0
+      },
+      "proposal": "REFUSED",
+      "reason": "single Span rectangle adds foreign glyph capacity"
+    },
+    {
+      "label": "rectangle-before-Span64",
+      "second_region": {
+        "x0": 70.94400024414062,
+        "y0": 353.0,
+        "x1": 144.6316680908203,
+        "y1": 369.0
+      },
+      "proposal": "REFUSED",
+      "reason": "Reflowed text exceeds the available vertical space."
+    }
+  ],
+  "provenance_counts": {
+    "retained": 34,
+    "relocated": 2,
+    "inserted": 6
+  },
+  "generated_glyphs": [
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "に",
+      "cid_code": "0001",
+      "gid": 2143,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "f78ba462e24e7fba24b7a3f3dfc5fb8a09e4503829df61d15b77c16875596481"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "お",
+      "cid_code": "0002",
+      "gid": 2110,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "30c46798a4ee750e70b2e749dd2c18b86de9ead1533b76a02e1835dcedc3cf75"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "き",
+      "cid_code": "0003",
+      "gid": 2113,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "1b4169cea5487e0f9a3cedcbe00e7f13e494d90682627b42c0a1247f29af6893"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "ま",
+      "cid_code": "0004",
+      "gid": 2162,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "2c664d9377e030996f7a3867f81c7364471e86ad9581111f23c26d8672f2b652"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "し",
+      "cid_code": "0005",
+      "gid": 2123,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "887a5419a8166c50d214d120a46a9a99ead6bdffa4b89acb43a27d93be3cadad"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "て",
+      "cid_code": "0006",
+      "gid": 2138,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "17fc25de9f9312a0a14213bece30b62812d20563d76206b96d0fe2c32652f0b7"
+    },
+    {
+      "owner": "second",
+      "kind": "relocated",
+      "unicode": "に",
+      "cid_code": "0001",
+      "gid": 2143,
+      "font_resource": "/PRF2",
+      "font_xref": 179,
+      "subset_sha256": "a244d729670d488e2174ccc106912ff280629b838f09d13b520bc41ee44b260b",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "f78ba462e24e7fba24b7a3f3dfc5fb8a09e4503829df61d15b77c16875596481",
+      "source_glyph": {
+        "code": "085f",
+        "gid": 2143,
+        "font": "/F1",
+        "font_xref": 5,
+        "font_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+        "origin": [
+          501.7937927246094,
+          346.1299743652344
+        ]
+      }
+    },
+    {
+      "owner": "second",
+      "kind": "relocated",
+      "unicode": "送",
+      "cid_code": "0002",
+      "gid": 13286,
+      "font_resource": "/PRF2",
+      "font_xref": 179,
+      "subset_sha256": "a244d729670d488e2174ccc106912ff280629b838f09d13b520bc41ee44b260b",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "deee46a882ad1bff21e8654096f525705840f4f340e46bebb3cb0caec6246cb4",
+      "source_glyph": {
+        "code": "33e6",
+        "gid": 13286,
+        "font": "/F1",
+        "font_xref": 5,
+        "font_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+        "origin": [
+          512.3538208007812,
+          346.1299743652344
+        ]
+      }
+    }
+  ],
+  "provider_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+  "generated_font_bindings": [
+    {
+      "/PRF1": {
+        "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+        "basefont": "AJAHJM+MS-Gothic",
+        "provider": {
+          "source_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "font_index": 0,
+          "variations": {},
+          "instance_sha256": "7443a3982f11668db9d24914395658256a23cbc72724de176b1ce84108388df5"
+        }
+      }
+    },
+    {
+      "/PRF2": {
+        "subset_sha256": "a244d729670d488e2174ccc106912ff280629b838f09d13b520bc41ee44b260b",
+        "basefont": "GQHPZN+MS-Gothic",
+        "provider": {
+          "source_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "font_index": 0,
+          "variations": {},
+          "instance_sha256": "7443a3982f11668db9d24914395658256a23cbc72724de176b1ce84108388df5"
+        }
+      }
+    }
+  ],
+  "original_font_programs": {
+    "5": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+    "12": "adede2aae871adc30591b9edefd1bd6fa6c889a757703f0931f2f5f706b1c50e",
+    "14": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+    "17": "adede2aae871adc30591b9edefd1bd6fa6c889a757703f0931f2f5f706b1c50e"
+  },
+  "other_scopes_unchanged": 94,
+  "foreign_drawings": 4,
+  "structure_changed_objects": [
+    "62:0",
+    "63:0"
+  ],
+  "restored": [
+    "edited",
+    "noop"
+  ],
+  "successful_saves": 2,
+  "edited_audit_resumed_without_resave": true,
+  "dpi": 144,
+  "exterior_pixels": {
+    "mupdf": {
+      "outside_pixels": 0,
+      "changed_raster_bbox": [
+        143,
+        674,
+        1046,
+        730
+      ]
+    },
+    "poppler": {
+      "outside_pixels": 0,
+      "changed_raster_bbox": [
+        142,
+        674,
+        1046,
+        730
+      ]
+    }
+  },
+  "noop_whole_page_pixels": {
+    "mupdf": {
+      "outside_pixels": 0,
+      "changed_raster_bbox": null
+    },
+    "poppler": {
+      "outside_pixels": 0,
+      "changed_raster_bbox": null
+    }
+  },
+  "sha256": {
+    "tmp/osaka-adjacent-span/edited.pdf": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2",
+    "tmp/osaka-adjacent-span/edited.json": "013466725e4c17adcf4cb47aaa702fbf7aa4ce06170371f15d658e427bad3782",
+    "tmp/osaka-adjacent-span/noop.pdf": "16196bfd015d10944dab618c2bf1d4f2e9bc2542e3e10346e09812214d078386",
+    "tmp/osaka-adjacent-span/noop.json": "a70d39d47dce7c13191068370a80b56101742ebb0033e551ece87fa59d419dac"
+  },
+  "elapsed_seconds": {
+    "qualification": 9.506723296000018,
+    "edit_and_audit": 2.847996041999977,
+    "noop_and_audit": 7.972317209000039,
+    "total": 20.327036547000034
+  }
+}

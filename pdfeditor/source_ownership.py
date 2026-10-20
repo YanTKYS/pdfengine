@@ -60,6 +60,102 @@ def verify_single_span_output(path, update):
         raise PdfError('single Span serialized ownership/semantics differ from plan')
 
 
+ADJACENT = 'adjacent-span-actualtext-1'
+
+
+def adjacent_span_witness(content, first, second, follower=()):
+    """Current-revision ownership of two consecutive leaf Spans (and a follower)."""
+    from .marked_content import adjacent_span_structure
+    value = adjacent_span_structure(content, first, second, follower)
+    value['program_sha256'] = sha(content.streams[-content.page.xref])
+    return value
+
+
+def _plan_text(plan):
+    return ''.join(g['unicode'] for g in plan.new_glyphs)
+
+
+def adjacent_span_update(transaction):
+    """One joint semantic update for exactly the plans bound to one witness.
+
+    Never more than the two approved owners' ActualText values; a follower
+    contributes only its translation and keeps every semantic value.
+    """
+    plans = [(page, plan) for page in transaction.pages.values() for plan in page.plans]
+    bound = [(page, plan) for page, plan in plans if plan.adjacent_span_witness is not None]
+    roles = sorted(plan.adjacent_span_role for _, plan in bound)
+    if len(bound) != len(plans) or len({page.number for page, _ in bound}) != 1 or roles not in (
+            ['first', 'second'], ['first', 'follower', 'second']):
+        raise PdfError('adjacent Span semantic update requires exactly its owner and follower plans')
+    witness = bound[0][1].adjacent_span_witness
+    if any(plan.adjacent_span_witness != witness for _, plan in bound):
+        raise PdfError('adjacent Span plans are bound to different witnesses')
+    page = bound[0][0]
+    by_role = {plan.adjacent_span_role: plan for _, plan in bound}
+    follower = by_role.get('follower')
+    if (follower is None) != (witness['follower'] is None) or (follower is not None and (
+            follower.consumed or follower.new_glyphs or set(follower.moved) != set(witness['follower']['glyph_ids']))):
+        raise PdfError('adjacent Span follower plan differs from its approved owner')
+    current = adjacent_span_witness(page.content, by_role['first'].consumed, by_role['second'].consumed,
+                                    witness['follower']['glyph_ids'] if follower is not None else ())
+    if current != witness:
+        raise PdfError('adjacent Span current ownership witness changed')
+    owners = []
+    for role in ('first', 'second'):
+        text = _plan_text(by_role[role])
+        if not text or '\n' in text or '\r' in text:
+            raise PdfError('adjacent Span owners require nonempty single-line text')
+        proof = witness[role]
+        owners.append(dict(owner=proof['owner'], mcid=proof['mcid'], before=proof['text'], after=text, clip=proof['clip']))
+    kept = None
+    if follower is not None:
+        f = witness['follower']
+        kept = {k: f[k] for k in ('owner', 'mcid', 'tag', 'properties', 'text', 'actual_text', 'clip')}
+    return dict(contract=ADJACENT, page=page.number, owners=owners, follower=kept,
+                parent=witness['parent'], children=witness['children'], structure=witness['structure'],
+                logical_before=witness['text'], logical_after=owners[0]['after'] + owners[1]['after'])
+
+
+def observe_adjacent_owners(path, page, owners, follower=None):
+    """Current glyph IDs of each named owner, located by owner identity only."""
+    from .marked_content import observe_marked_content
+    observed = observe_marked_content(path, page)
+    content = ContentPage(path, page)
+    try:
+        result = []
+        for owner in list(owners) + ([follower] if follower is not None else []):
+            scopes = [s for s in observed['scopes'] if s['association'].get('owner_reference') == owner]
+            if len(scopes) != 1:
+                raise PdfError('adjacent Span serialized owner has changed')
+            lo, hi = scopes[0]['content_byte_range']
+            result.append([i for e in content.events if not e.invocation and lo <= e.operator.start < hi
+                           for ch in e.chars for i in ch.source_orders])
+        return result
+    finally:
+        content.close()
+
+
+def verify_adjacent_span_output(path, update):
+    """Re-prove the joint relation from the serialized temporary PDF before publish."""
+    follower = update['follower']['owner'] if update['follower'] is not None else None
+    ids = observe_adjacent_owners(path, update['page'], [o['owner'] for o in update['owners']], follower)
+    content = ContentPage(path, update['page'])
+    try:
+        proof = adjacent_span_witness(content, ids[0], ids[1], ids[2] if follower is not None else ())
+    finally:
+        content.close()
+    for role, wanted in zip(('first', 'second'), update['owners']):
+        got = proof[role]
+        if (got['owner'] != wanted['owner'] or got['mcid'] != wanted['mcid'] or got['text'] != wanted['after']
+                or got['clip'] != wanted['clip']):
+            raise PdfError('adjacent Span serialized ownership/semantics differ from plan')
+    if (proof['structure'] != update['structure'] or proof['parent'] != update['parent']
+            or proof['children'] != update['children'] or proof['text'] != update['logical_after']):
+        raise PdfError('adjacent Span serialized structure differs from plan')
+    if follower is not None and {k: proof['follower'][k] for k in update['follower']} != update['follower']:
+        raise PdfError('adjacent Span follower semantics changed')
+
+
 def sha(data):
     return hashlib.sha256(data).hexdigest()
 

@@ -329,12 +329,14 @@ def structure_objects(reader, *, omit_actual_text=None):
     """Exact serialized structure graph, without following page/annotation links.
 
     Reference IDs and every sibling value remain significant. Only the named
-    leaf's ActualText may be omitted for a single-Span compare-and-set.
+    leaf's ActualText may be omitted for a single-Span compare-and-set, or a
+    tuple of leaves' for the adjacent-Span contract's joint compare-and-set.
     """
     from io import BytesIO
     root = reader.trailer['/Root'].get('/StructTreeRoot')
     if root is None:
         raise PdfError('single Span needs a StructureTree')
+    omitted = set(omit_actual_text) if isinstance(omit_actual_text, tuple) else {omit_actual_text}
     result, seen = {}, set()
     def visit(value):
         if isinstance(value, IndirectObject):
@@ -344,7 +346,7 @@ def structure_objects(reader, *, omit_actual_text=None):
             seen.add(key)
             obj = value.get_object()
             encoded = DictionaryObject(obj) if isinstance(obj, DictionaryObject) else obj
-            if key == (omit_actual_text, 0):
+            if key[1] == 0 and key[0] in omitted:
                 del encoded['/ActualText']
             stream = BytesIO(); encoded.write_to_stream(stream)
             result[f'{key[0]}:{key[1]}'] = stream.getvalue().hex()
@@ -454,6 +456,121 @@ def leaf_span_structure(content, selected):
                 glyph_ids=ids, scope_range=[scope['begin_byte_range'][0], scope['end_byte_range'][1]],
                 content_range=scope['content_byte_range'], clip=canonical_clip,
                 structure=structure, structure_sha256=_digest(structure))
+
+
+def _between_scopes_is_whitespace(data, before, after):
+    return before['end_byte_range'][1] <= after['begin_byte_range'][0] and not data[
+        before['end_byte_range'][1]:after['begin_byte_range'][0]].strip()
+
+
+def _follower_structure(content, observed, follower, parent, after_scope, line):
+    """An independent whitespace leaf whose only authorized change is its Tm translation."""
+    def require(ok, reason):
+        if not ok:
+            raise PdfError('adjacent Span follower: ' + reason)
+    selected = set(follower)
+    events = content.selected_events(selected)
+    scopes = [s for s in observed['scopes'] if any(
+        s['content_byte_range'][0] <= e.operator.start < s['content_byte_range'][1] for e in events)]
+    require(len(scopes) == 1 and events and selected, 'selection must belong to one envelope')
+    scope = scopes[0]; a = scope['association']; ref = a.get('owner_reference')
+    require(not scope['invocation'] and not scope['enclosing_scope_ids'] and scope['end_byte_range'] is not None
+            and scope['namespace']['kind'] == 'page' and set(scope['properties']) <= {'/MCID', '/Lang'}
+            and '/MCID' in scope['properties'], 'unsupported envelope or properties')
+    require(a['status'] == 'tree_backed' and a.get('backlink_verified') is True and ref is not None
+            and a.get('owner_role') == {'declared': '/Span', 'mapped': '/Span'}, 'unproved leaf Span')
+    require(sum(s['namespace'] == scope['namespace'] and s['properties'].get('/MCID') == a['mcid']
+                for s in observed['scopes']) == 1, 'duplicate MCID')
+    require(sum(s['association'].get('owner_reference') == ref for s in observed['scopes']) == 1
+            and a['owner_children'] == [a['mcid']], 'owner must have one MCID')
+    ancestors = a['ancestors']
+    require(all(x['parent_backlink_verified'] for x in ancestors)
+            and set(ancestors[0]['unsupported_semantics']) <= {'/ActualText'}
+            and all(not x['unsupported_semantics'] for x in ancestors[1:]), 'unsupported semantic override')
+    owner = content.reader.get_object(ref['xref'])
+    require(_same_reference(owner.get('/P'), parent), 'follower must share the edited owners\' parent')
+    require(_between_scopes_is_whitespace(content.streams[-content.page.xref], after_scope, scope),
+            'follower must immediately follow the second owner in the content stream')
+    lo, hi = scope['content_byte_range']
+    inside = [e for e in content.events if lo <= e.operator.start < hi]
+    chars = [c for e in inside for c in e.chars]
+    ids = [i for c in chars for i in c.source_orders]
+    require(all(not e.invocation and not e.error for e in inside) and set(ids) == selected
+            and len(ids) == len(set(ids)), 'selection must cover the complete follower only')
+    text = ''.join(c.text for c in chars)
+    require(text and not text.strip(' '), 'only a whitespace leaf may follow')
+    actual = owner.get('/ActualText')
+    require(actual is None or actual == text, 'follower ActualText differs from drawn Unicode')
+    require({round(content.actual[i]['origin'][1], 4) for i in ids} == {line}, 'follower must stay on the second owner\'s line')
+    ops = [o for o in observed['operators'] if scope['id'] in o['active_scope_ids']]
+    allowed = set('q Q BT ET Tf Tz Tc Tw Ts Tm Tj TJ g rg k G RG K EMC re W* n'.split())
+    names = [o['operator'] for o in ops]
+    require(all(o['operator'] in allowed and o['active_scope_ids'] == [scope['id']] for o in ops)
+            and names[:5] == ['q', 're', 'W*', 'n', 'BT'] and names[-3:] == ['ET', 'Q', 'EMC']
+            and names.count('Tm') == 1 and names.count('BT') == 1 and sum(n in ('Tj', 'TJ') for n in names) == 1
+            and names.index('Tm') < next(i for i, n in enumerate(names) if n in ('Tj', 'TJ')),
+            'follower needs one positioned text object')
+    from .operator_nesting import audit
+    data = content.streams[-content.page.xref]
+    require(not audit(data[scope['begin_byte_range'][0]:scope['end_byte_range'][1]])['violations'],
+            'unbalanced follower graphics/text state')
+    tm = next(o for o in ops if o['operator'] == 'Tm')
+    try:
+        operands = [float(v) for v in data[tm['byte_range'][0]:tm['byte_range'][1]].split()[:-1]]
+    except ValueError:
+        operands = []
+    require(len(operands) == 6 and operands[:4] == [1, 0, 0, 1], 'follower Tm must be a translation')
+    require(all(tuple(e.state.ctm) == (1, 0, 0, 1, 0, 0) for e in inside)
+            and tuple(content.page.transformation_matrix)[:4] == (1, 0, 0, -1), 'follower needs an identity CTM')
+    clip = inside[0].state.clip
+    require(len(clip) == 1 and clip[0]['path'][0]['operator'] == 're' and len(clip[0]['path']) == 1,
+            'unproved rectangular follower clip')
+    return dict(owner=ref, mcid=a['mcid'], association=a, tag=scope['tag'], properties=scope['properties'],
+                text=text, actual_text=actual, glyph_ids=ids, tm_range=tm['byte_range'], tm=operands,
+                scope_range=[scope['begin_byte_range'][0], scope['end_byte_range'][1]],
+                clip=[{k: v for k, v in x.items() if k != 'at'} for x in clip],
+                bbox=[min(content.actual[i]['bbox'][0] for i in ids), min(content.actual[i]['bbox'][1] for i in ids),
+                      max(content.actual[i]['bbox'][2] for i in ids), max(content.actual[i]['bbox'][3] for i in ids)])
+
+
+def adjacent_span_structure(content, first, second, follower=()):
+    """Separate contract: two complete, consecutive leaf Spans of one /P.
+
+    Each owner must independently satisfy the single-Span leaf contract; the
+    pair proof adds same-parent adjacency in /K, content order and the
+    continuing line. A shared parent alone grants nothing. An optional
+    follower is an independent whitespace leaf that may only be translated.
+    """
+    def require(ok, reason):
+        if not ok:
+            raise PdfError('adjacent Span: ' + reason)
+    require(not set(first) & set(second) and not set(follower) & (set(first) | set(second)),
+            'owner selections overlap')
+    a = leaf_span_structure(content, first); b = leaf_span_structure(content, second)
+    observed = observe_marked_content(content.source, content.page.number + 1)
+    reader = content.reader
+    owners = [reader.get_object(x['owner']['xref']) for x in (a, b)]
+    parent = owners[0]['/P']
+    require(_same_reference(owners[1]['/P'], parent), 'owners need the same parent /P')
+    children = [_reference(c) for c in _object(parent.get_object()['/K'])]
+    index = children.index(a['owner'])
+    require(index + 1 < len(children) and children[index + 1] == b['owner'], 'owners must be consecutive siblings')
+    scopes = {s['association'].get('mcid'): s for s in observed['scopes'] if s['association'].get('mcid') is not None}
+    first_scope, second_scope = scopes[a['mcid']], scopes[b['mcid']]
+    data = content.streams[-content.page.xref]
+    require(_between_scopes_is_whitespace(data, first_scope, second_scope), 'owners must be consecutive in content order')
+    lines = [round(content.actual[x['glyph_ids'][0]]['origin'][1], 4) for x in (a, b)]
+    require(lines[1] > lines[0], 'the second owner must continue on the following visual line')
+    result = dict(contract='adjacent-span-actualtext-1', parent=_reference(parent), children=children,
+                  first=a, second=b, text=a['text'] + b['text'], follower=None)
+    if follower:
+        require(index + 2 < len(children), 'follower must be the next sibling')
+        value = _follower_structure(content, observed, follower, parent, second_scope, lines[1])
+        require(children[index + 2] == value['owner'], 'follower must be the next sibling')
+        result['follower'] = value
+    result['structure'] = structure_objects(reader, omit_actual_text=(a['owner']['xref'], b['owner']['xref']))
+    result['structure_sha256'] = _digest(result['structure'])
+    return result
 
 
 def paragraph_structure(content, selected, *, offset=None):

@@ -154,7 +154,7 @@ def _seal(value):
     return value
 
 
-def _observe(source, selection, region, font_binding=None):
+def _observe(source, selection, region, font_binding=None, *, follower=frozenset()):
     import math
     if (not isinstance(region, dict) or set(region) != {'x0', 'y0', 'x1', 'y1'}
             or any(type(v) not in (int, float) or not math.isfinite(v) for v in region.values())):
@@ -176,9 +176,11 @@ def _observe(source, selection, region, font_binding=None):
         # already overlap (e.g. a comma's empty advance box). Permit only
         # that existing overlap inside the selected source box; the writer's
         # per-glyph ink/foreign-box obstacle proof remains mandatory below.
+        # Only the adjacent-Span contract names an approved follower, whose
+        # translation is proved separately in the same Transaction.
         for i, glyph in enumerate(content.actual):
             box = Rect(*glyph['bbox'])
-            if i not in selection['glyph_ids'] and rect.intersects(box):
+            if i not in selection['glyph_ids'] and i not in follower and rect.intersects(box):
                 overlap = Rect(max(rect.x0, box.x0), max(rect.y0, box.y0),
                                min(rect.x1, box.x1), min(rect.y1, box.y1))
                 if not resolved.bbox.contains(overlap):
