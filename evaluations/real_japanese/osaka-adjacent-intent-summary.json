@@ -1,0 +1,404 @@
+{
+  "verdict": "PASS",
+  "source": "evaluations/realpdf/corpus/word_osaka_guideline.pdf",
+  "source_sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+  "page": 1,
+  "input": {
+    "selection_glyph_ids": [
+      149,
+      150,
+      151,
+      152
+    ],
+    "selected_text": "において",
+    "replacement": "におきまして",
+    "drawn_occurrences_on_page": 1
+  },
+  "derived": {
+    "first": {
+      "owner": {
+        "xref": 62,
+        "generation": 0
+      },
+      "mcid": 28,
+      "text": "国立感染症研究所においてガイドラインが作成されましたので、参考に送"
+    },
+    "second": {
+      "owner": {
+        "xref": 63,
+        "generation": 0
+      },
+      "mcid": 29,
+      "text": "付いたします。"
+    },
+    "parent": {
+      "xref": 58,
+      "generation": 0
+    },
+    "follower": {
+      "owner": {
+        "xref": 64,
+        "generation": 0
+      },
+      "mcid": 30,
+      "text": " ",
+      "note": "whitespace leaf after the following owner",
+      "approved": true
+    },
+    "original_boundary": 33,
+    "boundary": 33,
+    "relocated": "に送",
+    "follower_dx": 21.120000000000005,
+    "regions": {
+      "owners": [
+        {
+          "x0": 176.05999755859375,
+          "y0": 333.3389434814453,
+          "x1": 524.6199951171875,
+          "y1": 351.33892822265625
+        },
+        {
+          "x0": 70.94400024414062,
+          "y0": 351.33892822265625,
+          "x1": 524.6199951171875,
+          "y1": 369.33892822265625
+        }
+      ],
+      "follower": {
+        "x0": 144.5,
+        "y0": 351.33892822265625,
+        "x1": 524.6199951171875,
+        "y1": 369.33892822265625
+      },
+      "evidence": {
+        "column_right": 524.6199951171875,
+        "column_witness": {
+          "unicode": "日",
+          "bbox": [
+            514.0599975585938,
+            121.02893829345703,
+            524.6199951171875,
+            131.58892822265625
+          ]
+        },
+        "column_support": 2,
+        "wrap_check": {
+          "first_line_end": 522.913818359375,
+          "next_character": "付",
+          "next_advance": 10.55999755859375
+        },
+        "rectangles": [
+          {
+            "owner": "first",
+            "left": "owner first glyph",
+            "right": "observed column edge",
+            "vertical": "half gap to neighbouring lines"
+          },
+          {
+            "owner": "second",
+            "left": "owner first glyph",
+            "right": "observed column edge",
+            "vertical": "half gap to neighbouring lines"
+          }
+        ]
+      }
+    },
+    "font": {
+      "font_xref": 5,
+      "family": "MS-Gothic",
+      "program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+      "provider": {
+        "path": "tmp/osaka-adjacent-intent/work/provider-5e5ded281865f30d.ttf",
+        "sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+        "font_index": 0
+      }
+    }
+  },
+  "candidates": [
+    {
+      "relocated_count": 0,
+      "boundary": 35,
+      "after": [
+        "国立感染症研究所におきましてガイドラインが作成されましたので、参考に送",
+        "付いたします。"
+      ],
+      "natural_break": true,
+      "break_evidence": "UAX #14 break opportunity and Japanese line-head/tail rules",
+      "status": "refused",
+      "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+      "widths": null,
+      "width_limits": null,
+      "follower_dx": null
+    },
+    {
+      "relocated_count": 1,
+      "boundary": 34,
+      "after": [
+        "国立感染症研究所におきましてガイドラインが作成されましたので、参考に",
+        "送付いたします。"
+      ],
+      "natural_break": true,
+      "break_evidence": "UAX #14 break opportunity and Japanese line-head/tail rules",
+      "status": "refused",
+      "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+      "widths": null,
+      "width_limits": null,
+      "follower_dx": null
+    },
+    {
+      "relocated_count": 2,
+      "boundary": 33,
+      "after": [
+        "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+        "に送付いたします。"
+      ],
+      "natural_break": true,
+      "break_evidence": "UAX #14 break opportunity and Japanese line-head/tail rules",
+      "status": "qualified",
+      "reason": null,
+      "widths": [
+        347.20224426269533,
+        94.80767028808594
+      ],
+      "width_limits": [
+        348.55999755859375,
+        453.6759948730469
+      ],
+      "follower_dx": 21.120000000000005
+    }
+  ],
+  "acceptance_checks": {
+    "status_proposed": true,
+    "chosen_qualified_natural": true,
+    "forward_relocation_only": true,
+    "follower_contract_proved": true,
+    "rectangles_within_column": true,
+    "column_edge_consistent_with_line_break": true,
+    "provider_is_original_program": true,
+    "growth": true
+  },
+  "proposal_sha256": "bde94fe2cb03459ec86e05e36b9c2c773bb37849ad7c204d85de60c28f145b4c",
+  "acceptance_sha256": "91df02ee1b0944f39d5b0e4e60b49b6dd8d000d968f1e9bc3a20dac006b667b7",
+  "paragraph": {
+    "before": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+    "after": "標記につきまして、国立感染症研究所におきましてガイドラインが作成されましたので、参考に送付いたします。 ",
+    "characters": [
+      50,
+      52
+    ],
+    "reading_order": [
+      59,
+      60,
+      61,
+      62,
+      63,
+      64
+    ]
+  },
+  "owner_text": [
+    {
+      "mcid": 28,
+      "before": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+      "after": "国立感染症研究所におきましてガイドラインが作成されましたので、参考"
+    },
+    {
+      "mcid": 29,
+      "before": "付いたします。",
+      "after": "に送付いたします。"
+    }
+  ],
+  "provenance_counts": {
+    "retained": 34,
+    "relocated": 2,
+    "inserted": 6
+  },
+  "generated_glyphs": [
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "に",
+      "cid_code": "0001",
+      "gid": 2143,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "f78ba462e24e7fba24b7a3f3dfc5fb8a09e4503829df61d15b77c16875596481"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "お",
+      "cid_code": "0002",
+      "gid": 2110,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "30c46798a4ee750e70b2e749dd2c18b86de9ead1533b76a02e1835dcedc3cf75"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "き",
+      "cid_code": "0003",
+      "gid": 2113,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "1b4169cea5487e0f9a3cedcbe00e7f13e494d90682627b42c0a1247f29af6893"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "ま",
+      "cid_code": "0004",
+      "gid": 2162,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "2c664d9377e030996f7a3867f81c7364471e86ad9581111f23c26d8672f2b652"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "し",
+      "cid_code": "0005",
+      "gid": 2123,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "887a5419a8166c50d214d120a46a9a99ead6bdffa4b89acb43a27d93be3cadad"
+    },
+    {
+      "owner": "first",
+      "kind": "inserted",
+      "unicode": "て",
+      "cid_code": "0006",
+      "gid": 2138,
+      "font_resource": "/PRF1",
+      "font_xref": 173,
+      "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "17fc25de9f9312a0a14213bece30b62812d20563d76206b96d0fe2c32652f0b7"
+    },
+    {
+      "owner": "second",
+      "kind": "relocated",
+      "unicode": "に",
+      "cid_code": "0001",
+      "gid": 2143,
+      "font_resource": "/PRF2",
+      "font_xref": 179,
+      "subset_sha256": "a244d729670d488e2174ccc106912ff280629b838f09d13b520bc41ee44b260b",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "f78ba462e24e7fba24b7a3f3dfc5fb8a09e4503829df61d15b77c16875596481",
+      "source_glyph": {
+        "code": "085f",
+        "gid": 2143,
+        "font": "/F1",
+        "font_xref": 5,
+        "font_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+        "origin": [
+          501.7937927246094,
+          346.1299743652344
+        ]
+      }
+    },
+    {
+      "owner": "second",
+      "kind": "relocated",
+      "unicode": "送",
+      "cid_code": "0002",
+      "gid": 13286,
+      "font_resource": "/PRF2",
+      "font_xref": 179,
+      "subset_sha256": "a244d729670d488e2174ccc106912ff280629b838f09d13b520bc41ee44b260b",
+      "provider_advance_units": 256,
+      "nominal_pdf_width": 1000.0,
+      "outline_sha256": "deee46a882ad1bff21e8654096f525705840f4f340e46bebb3cb0caec6246cb4",
+      "source_glyph": {
+        "code": "33e6",
+        "gid": 13286,
+        "font": "/F1",
+        "font_xref": 5,
+        "font_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+        "origin": [
+          512.3538208007812,
+          346.1299743652344
+        ]
+      }
+    }
+  ],
+  "other_scopes_unchanged": 94,
+  "foreign_drawings": 4,
+  "structure_changed_objects": [
+    "62:0",
+    "63:0"
+  ],
+  "manual_adjacent_result": {
+    "content_stream_equal": true,
+    "sha256_equal": true
+  },
+  "restored": [
+    "edited",
+    "noop"
+  ],
+  "successful_saves": 2,
+  "edited_audit_resumed_without_resave": false,
+  "dpi": 144,
+  "exterior_pixels": {
+    "mupdf": {
+      "outside_pixels": 0,
+      "changed_raster_bbox": [
+        143,
+        674,
+        1046,
+        730
+      ]
+    },
+    "poppler": {
+      "outside_pixels": 0,
+      "changed_raster_bbox": [
+        142,
+        674,
+        1046,
+        730
+      ]
+    }
+  },
+  "noop_whole_page_pixels": {
+    "mupdf": {
+      "outside_pixels": 0,
+      "changed_raster_bbox": null
+    },
+    "poppler": {
+      "outside_pixels": 0,
+      "changed_raster_bbox": null
+    }
+  },
+  "sha256": {
+    "tmp/osaka-adjacent-intent/edited.pdf": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2",
+    "tmp/osaka-adjacent-intent/edited.json": "715b33062c4673acfebd0998715f9d3c77d81bde57b1167559f9289411a89e5f",
+    "tmp/osaka-adjacent-intent/noop.pdf": "16196bfd015d10944dab618c2bf1d4f2e9bc2542e3e10346e09812214d078386",
+    "tmp/osaka-adjacent-intent/noop.json": "56259532ddea37e79845eeb1c47db49d3ed95cf2269d62a3ce05f5bf5ce37722"
+  },
+  "elapsed_seconds": {
+    "proposal": 8.192788262000022,
+    "acceptance": 9.593208431999983,
+    "edit": 17.77127722199998,
+    "audit": 5.651737300000036,
+    "noop_and_audit": 7.913939429999914,
+    "total": 49.122950645999936
+  }
+}
