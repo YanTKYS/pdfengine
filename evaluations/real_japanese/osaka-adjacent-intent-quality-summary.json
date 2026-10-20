@@ -1,0 +1,1278 @@
+{
+  "evaluation": {
+    "verdict": "PASS",
+    "source": "evaluations/realpdf/corpus/word_osaka_guideline.pdf",
+    "source_sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+    "page": 1,
+    "input": {
+      "selection_glyph_ids": [
+        149,
+        150,
+        151,
+        152
+      ],
+      "selected_text": "において",
+      "replacement": "におきまして",
+      "drawn_occurrences_on_page": 1
+    },
+    "derived": {
+      "first": {
+        "owner": {
+          "xref": 62,
+          "generation": 0
+        },
+        "mcid": 28,
+        "text": "国立感染症研究所においてガイドラインが作成されましたので、参考に送"
+      },
+      "second": {
+        "owner": {
+          "xref": 63,
+          "generation": 0
+        },
+        "mcid": 29,
+        "text": "付いたします。"
+      },
+      "parent": {
+        "xref": 58,
+        "generation": 0
+      },
+      "follower": {
+        "owner": {
+          "xref": 64,
+          "generation": 0
+        },
+        "mcid": 30,
+        "text": " ",
+        "note": "whitespace leaf after the following owner",
+        "approved": true
+      },
+      "original_boundary": 33,
+      "boundary": 33,
+      "relocated": "に送",
+      "follower_dx": 21.120000000000005,
+      "regions": {
+        "owners": [
+          {
+            "x0": 176.05999755859375,
+            "y0": 333.3389434814453,
+            "x1": 524.6199951171875,
+            "y1": 351.33892822265625
+          },
+          {
+            "x0": 70.94400024414062,
+            "y0": 351.33892822265625,
+            "x1": 524.6199951171875,
+            "y1": 369.33892822265625
+          }
+        ],
+        "follower": {
+          "x0": 144.5,
+          "y0": 351.33892822265625,
+          "x1": 524.6199951171875,
+          "y1": 369.33892822265625
+        },
+        "evidence": {
+          "column_right": 524.6199951171875,
+          "basis": "corroborated line ends",
+          "wrap_window": [
+            522.913818359375,
+            533.4738159179688
+          ],
+          "wrapped_line_end": 522.913818359375,
+          "next_character": "付",
+          "next_advance": 10.55999755859375,
+          "supports": [
+            {
+              "baseline": 112.58,
+              "unicode": "号",
+              "right": 524.1400146484375
+            },
+            {
+              "baseline": 130.1,
+              "unicode": "日",
+              "right": 524.6199951171875
+            }
+          ],
+          "ignored_beyond_window": [],
+          "rectangles": [
+            {
+              "owner": "first",
+              "left": "owner first glyph",
+              "right": "column edge",
+              "vertical": "half gap to neighbouring lines"
+            },
+            {
+              "owner": "second",
+              "left": "owner first glyph",
+              "right": "column edge",
+              "vertical": "half gap to neighbouring lines"
+            }
+          ]
+        }
+      },
+      "font": {
+        "font_xref": 5,
+        "program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+        "family": "MS-Gothic",
+        "provider": {
+          "path": "tmp/osaka-adjacent-intent-quality/work/provider-5e5ded281865f30d.ttf",
+          "sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "font_index": 0
+        }
+      }
+    },
+    "candidates": [
+      {
+        "relocated_count": 0,
+        "boundary": 35,
+        "after": [
+          "国立感染症研究所におきましてガイドラインが作成されましたので、参考に送",
+          "付いたします。"
+        ],
+        "natural_break": true,
+        "break_evidence": "UAX #14 break opportunity and Japanese line-head/tail rules",
+        "status": "refused",
+        "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+        "widths": null,
+        "width_limits": null,
+        "follower_dx": null
+      },
+      {
+        "relocated_count": 1,
+        "boundary": 34,
+        "after": [
+          "国立感染症研究所におきましてガイドラインが作成されましたので、参考に",
+          "送付いたします。"
+        ],
+        "natural_break": true,
+        "break_evidence": "UAX #14 break opportunity and Japanese line-head/tail rules",
+        "status": "refused",
+        "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+        "widths": null,
+        "width_limits": null,
+        "follower_dx": null
+      },
+      {
+        "relocated_count": 2,
+        "boundary": 33,
+        "after": [
+          "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+          "に送付いたします。"
+        ],
+        "natural_break": true,
+        "break_evidence": "UAX #14 break opportunity and Japanese line-head/tail rules",
+        "status": "qualified",
+        "reason": null,
+        "widths": [
+          347.20224426269533,
+          94.80767028808594
+        ],
+        "width_limits": [
+          348.55999755859375,
+          453.6759948730469
+        ],
+        "follower_dx": 21.120000000000005
+      }
+    ],
+    "acceptance_checks": {
+      "status_proposed": true,
+      "chosen_qualified_natural": true,
+      "forward_relocation_only": true,
+      "follower_contract_proved": true,
+      "rectangles_within_column": true,
+      "column_edge_inside_wrap_window": true,
+      "provider_is_original_program": true,
+      "growth": true
+    },
+    "proposal_sha256": "5e66f3de68e2752cab12d1f59bf70fdb65978d21f073c3ab6c48933358846703",
+    "acceptance_sha256": "9970378487231843451bd96a98d5add59e799ee695640ac52d350b9bc32e14d8",
+    "paragraph": {
+      "before": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+      "after": "標記につきまして、国立感染症研究所におきましてガイドラインが作成されましたので、参考に送付いたします。 ",
+      "characters": [
+        50,
+        52
+      ],
+      "reading_order": [
+        59,
+        60,
+        61,
+        62,
+        63,
+        64
+      ]
+    },
+    "owner_text": [
+      {
+        "mcid": 28,
+        "before": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+        "after": "国立感染症研究所におきましてガイドラインが作成されましたので、参考"
+      },
+      {
+        "mcid": 29,
+        "before": "付いたします。",
+        "after": "に送付いたします。"
+      }
+    ],
+    "provenance_counts": {
+      "retained": 34,
+      "relocated": 2,
+      "inserted": 6
+    },
+    "generated_glyphs": [
+      {
+        "owner": "first",
+        "kind": "inserted",
+        "unicode": "に",
+        "cid_code": "0001",
+        "gid": 2143,
+        "font_resource": "/PRF1",
+        "font_xref": 173,
+        "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "outline_sha256": "f78ba462e24e7fba24b7a3f3dfc5fb8a09e4503829df61d15b77c16875596481"
+      },
+      {
+        "owner": "first",
+        "kind": "inserted",
+        "unicode": "お",
+        "cid_code": "0002",
+        "gid": 2110,
+        "font_resource": "/PRF1",
+        "font_xref": 173,
+        "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "outline_sha256": "30c46798a4ee750e70b2e749dd2c18b86de9ead1533b76a02e1835dcedc3cf75"
+      },
+      {
+        "owner": "first",
+        "kind": "inserted",
+        "unicode": "き",
+        "cid_code": "0003",
+        "gid": 2113,
+        "font_resource": "/PRF1",
+        "font_xref": 173,
+        "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "outline_sha256": "1b4169cea5487e0f9a3cedcbe00e7f13e494d90682627b42c0a1247f29af6893"
+      },
+      {
+        "owner": "first",
+        "kind": "inserted",
+        "unicode": "ま",
+        "cid_code": "0004",
+        "gid": 2162,
+        "font_resource": "/PRF1",
+        "font_xref": 173,
+        "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "outline_sha256": "2c664d9377e030996f7a3867f81c7364471e86ad9581111f23c26d8672f2b652"
+      },
+      {
+        "owner": "first",
+        "kind": "inserted",
+        "unicode": "し",
+        "cid_code": "0005",
+        "gid": 2123,
+        "font_resource": "/PRF1",
+        "font_xref": 173,
+        "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "outline_sha256": "887a5419a8166c50d214d120a46a9a99ead6bdffa4b89acb43a27d93be3cadad"
+      },
+      {
+        "owner": "first",
+        "kind": "inserted",
+        "unicode": "て",
+        "cid_code": "0006",
+        "gid": 2138,
+        "font_resource": "/PRF1",
+        "font_xref": 173,
+        "subset_sha256": "1ad9d06f57c216ca4765c331b851ab9f1f665e8b1e6657494b8b3a48ce49d5ab",
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "outline_sha256": "17fc25de9f9312a0a14213bece30b62812d20563d76206b96d0fe2c32652f0b7"
+      },
+      {
+        "owner": "second",
+        "kind": "relocated",
+        "unicode": "に",
+        "cid_code": "0001",
+        "gid": 2143,
+        "font_resource": "/PRF2",
+        "font_xref": 179,
+        "subset_sha256": "a244d729670d488e2174ccc106912ff280629b838f09d13b520bc41ee44b260b",
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "outline_sha256": "f78ba462e24e7fba24b7a3f3dfc5fb8a09e4503829df61d15b77c16875596481",
+        "source_glyph": {
+          "code": "085f",
+          "gid": 2143,
+          "font": "/F1",
+          "font_xref": 5,
+          "font_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "origin": [
+            501.7937927246094,
+            346.1299743652344
+          ]
+        }
+      },
+      {
+        "owner": "second",
+        "kind": "relocated",
+        "unicode": "送",
+        "cid_code": "0002",
+        "gid": 13286,
+        "font_resource": "/PRF2",
+        "font_xref": 179,
+        "subset_sha256": "a244d729670d488e2174ccc106912ff280629b838f09d13b520bc41ee44b260b",
+        "provider_advance_units": 256,
+        "nominal_pdf_width": 1000.0,
+        "outline_sha256": "deee46a882ad1bff21e8654096f525705840f4f340e46bebb3cb0caec6246cb4",
+        "source_glyph": {
+          "code": "33e6",
+          "gid": 13286,
+          "font": "/F1",
+          "font_xref": 5,
+          "font_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "origin": [
+            512.3538208007812,
+            346.1299743652344
+          ]
+        }
+      }
+    ],
+    "other_scopes_unchanged": 94,
+    "foreign_drawings": 4,
+    "structure_changed_objects": [
+      "62:0",
+      "63:0"
+    ],
+    "earlier_results": {
+      "manual": {
+        "content_stream_equal": true,
+        "sha256_equal": true,
+        "noop_sha256_equal": true
+      },
+      "intent": {
+        "content_stream_equal": true,
+        "sha256_equal": true,
+        "noop_sha256_equal": true
+      }
+    },
+    "restored": [
+      "edited",
+      "noop"
+    ],
+    "successful_saves": 2,
+    "edited_audit_resumed_without_resave": false,
+    "dpi": 144,
+    "exterior_pixels": {
+      "mupdf": {
+        "outside_pixels": 0,
+        "changed_raster_bbox": [
+          143,
+          674,
+          1046,
+          730
+        ]
+      },
+      "poppler": {
+        "outside_pixels": 0,
+        "changed_raster_bbox": [
+          142,
+          674,
+          1046,
+          730
+        ]
+      }
+    },
+    "noop_whole_page_pixels": {
+      "mupdf": {
+        "outside_pixels": 0,
+        "changed_raster_bbox": null
+      },
+      "poppler": {
+        "outside_pixels": 0,
+        "changed_raster_bbox": null
+      }
+    },
+    "sha256": {
+      "tmp/osaka-adjacent-intent-quality/edited.pdf": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2",
+      "tmp/osaka-adjacent-intent-quality/edited.json": "715b33062c4673acfebd0998715f9d3c77d81bde57b1167559f9289411a89e5f",
+      "tmp/osaka-adjacent-intent-quality/noop.pdf": "16196bfd015d10944dab618c2bf1d4f2e9bc2542e3e10346e09812214d078386",
+      "tmp/osaka-adjacent-intent-quality/noop.json": "56259532ddea37e79845eeb1c47db49d3ed95cf2269d62a3ce05f5bf5ce37722"
+    },
+    "elapsed_seconds": {
+      "proposal": 5.940668175999917,
+      "acceptance": 6.104589922000059,
+      "edit": 13.257257340000024,
+      "audit": 5.081855816999905,
+      "noop_and_audit": 8.05454948900001,
+      "total": 38.438920743999915
+    }
+  },
+  "timing": {
+    "before-1": {
+      "code": "906e4fd (PR #80 main)",
+      "repeat": 3,
+      "runs": [
+        {
+          "propose": 8.573141958,
+          "accept": 10.392311148999994,
+          "edit": 17.923485189000004,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        },
+        {
+          "propose": 8.291801462999999,
+          "accept": 10.36167274399999,
+          "edit": 17.882191713999987,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        },
+        {
+          "propose": 8.332367398000002,
+          "accept": 9.847652799999992,
+          "edit": 17.424138848000013,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        }
+      ],
+      "statistics": {
+        "propose": {
+          "mean": 8.399103606333334,
+          "stdev": 0.15208027373313054,
+          "min": 8.291801462999999,
+          "max": 8.573141958
+        },
+        "accept": {
+          "mean": 10.200545564333325,
+          "stdev": 0.30599780277700067,
+          "min": 9.847652799999992,
+          "max": 10.392311148999994
+        },
+        "edit": {
+          "mean": 17.743271917,
+          "stdev": 0.27714747800838446,
+          "min": 17.424138848000013,
+          "max": 17.923485189000004
+        }
+      },
+      "profiled_calls": {
+        "propose": {
+          "propose_adjacent_intent": 1,
+          "plan_adjacent_span_edit": 3,
+          "_observe_pair": 4,
+          "_observe": 8,
+          "__init__@content_stream": 135,
+          "propose_adjacent_span": 1,
+          "plan_paragraph_edit": 7,
+          "inspect_paragraph": 8,
+          "observe_marked_content": 34,
+          "leaf_span_structure": 16,
+          "resolve_selection": 26,
+          "adjacent_span_structure": 4,
+          "program_pdf_bytes": 15,
+          "_follower_shift": 1,
+          "_discover": 1,
+          "__init__@shaped_font": 7,
+          "make_selection": 2,
+          "inspect_selection_source": 2,
+          "_provider": 7,
+          "_pixels_equal": 8,
+          "structure_objects": 20,
+          "_coverage": 1,
+          "extract_font": 24,
+          "_regions": 1
+        },
+        "accept": {
+          "propose_adjacent_intent": 1,
+          "_observe_pair": 5,
+          "plan_adjacent_span_edit": 3,
+          "_observe": 10,
+          "__init__@content_stream": 165,
+          "propose_adjacent_span": 2,
+          "plan_paragraph_edit": 9,
+          "inspect_paragraph": 10,
+          "accept_adjacent_span": 1,
+          "observe_marked_content": 42,
+          "leaf_span_structure": 20,
+          "resolve_selection": 32,
+          "adjacent_span_structure": 5,
+          "program_pdf_bytes": 20,
+          "_follower_shift": 1,
+          "__init__@shaped_font": 7,
+          "_discover": 1,
+          "make_selection": 2,
+          "inspect_selection_source": 2,
+          "structure_objects": 25,
+          "_provider": 7,
+          "_pixels_equal": 11,
+          "_coverage": 1,
+          "extract_font": 30,
+          "_regions": 1
+        },
+        "edit": {
+          "_observe_pair": 8,
+          "propose_adjacent_intent": 1,
+          "_observe": 16,
+          "plan_adjacent_span_edit": 4,
+          "__init__@content_stream": 324,
+          "edit_adjacent_span": 1,
+          "inspect_paragraph": 16,
+          "observe_marked_content": 74,
+          "plan_paragraph_edit": 13,
+          "leaf_span_structure": 36,
+          "propose_adjacent_span": 1,
+          "resolve_selection": 50,
+          "adjacent_span_structure": 10,
+          "_follower_shift": 3,
+          "commit": 1,
+          "program_pdf_bytes": 28,
+          "__init__@shaped_font": 17,
+          "publish_program": 1,
+          "verify_adjacent_span_output": 1,
+          "make_selection": 4,
+          "structure_objects": 48,
+          "inspect_selection_source": 4,
+          "_discover": 1,
+          "_provider": 11,
+          "_pixels_equal": 15,
+          "_verify": 1,
+          "interpreted_paints": 2,
+          "_coverage": 1,
+          "extract_font": 68,
+          "_regions": 1
+        }
+      },
+      "profiled_cumulative_seconds": {
+        "propose": {
+          "propose_adjacent_intent": 24.595,
+          "plan_adjacent_span_edit": 16.989,
+          "_observe_pair": 14.02,
+          "_observe": 10.487,
+          "__init__@content_stream": 10.204,
+          "propose_adjacent_span": 5.772,
+          "plan_paragraph_edit": 5.641,
+          "inspect_paragraph": 5.231,
+          "observe_marked_content": 5.076,
+          "leaf_span_structure": 3.035,
+          "resolve_selection": 2.807,
+          "adjacent_span_structure": 2.107,
+          "program_pdf_bytes": 1.491,
+          "_follower_shift": 1.036,
+          "_discover": 0.748,
+          "__init__@shaped_font": 0.728,
+          "make_selection": 0.559,
+          "inspect_selection_source": 0.346,
+          "_provider": 0.309,
+          "_pixels_equal": 0.267,
+          "structure_objects": 0.259,
+          "_coverage": 0.068,
+          "extract_font": 0.025,
+          "_regions": 0.005
+        },
+        "accept": {
+          "propose_adjacent_intent": 24.8,
+          "_observe_pair": 18.051,
+          "plan_adjacent_span_edit": 17.326,
+          "_observe": 13.318,
+          "__init__@content_stream": 13.229,
+          "propose_adjacent_span": 11.892,
+          "plan_paragraph_edit": 6.948,
+          "inspect_paragraph": 6.547,
+          "accept_adjacent_span": 6.141,
+          "observe_marked_content": 6.1,
+          "leaf_span_structure": 3.512,
+          "resolve_selection": 3.359,
+          "adjacent_span_structure": 2.601,
+          "program_pdf_bytes": 1.923,
+          "_follower_shift": 0.989,
+          "__init__@shaped_font": 0.858,
+          "_discover": 0.687,
+          "make_selection": 0.52,
+          "inspect_selection_source": 0.333,
+          "structure_objects": 0.316,
+          "_provider": 0.292,
+          "_pixels_equal": 0.29,
+          "_coverage": 0.068,
+          "extract_font": 0.03,
+          "_regions": 0.005
+        },
+        "edit": {
+          "_observe_pair": 32.032,
+          "propose_adjacent_intent": 25.137,
+          "_observe": 24.729,
+          "plan_adjacent_span_edit": 24.085,
+          "__init__@content_stream": 23.812,
+          "edit_adjacent_span": 21.119,
+          "inspect_paragraph": 10.793,
+          "observe_marked_content": 10.743,
+          "plan_paragraph_edit": 9.532,
+          "leaf_span_structure": 6.748,
+          "propose_adjacent_span": 6.157,
+          "resolve_selection": 5.429,
+          "adjacent_span_structure": 5.338,
+          "_follower_shift": 2.82,
+          "commit": 2.812,
+          "program_pdf_bytes": 2.629,
+          "__init__@shaped_font": 1.92,
+          "publish_program": 1.841,
+          "verify_adjacent_span_output": 1.432,
+          "make_selection": 1.101,
+          "structure_objects": 0.871,
+          "inspect_selection_source": 0.685,
+          "_discover": 0.66,
+          "_provider": 0.475,
+          "_pixels_equal": 0.384,
+          "_verify": 0.256,
+          "interpreted_paints": 0.255,
+          "_coverage": 0.071,
+          "extract_font": 0.062,
+          "_regions": 0.008
+        }
+      }
+    },
+    "before-2": {
+      "code": "906e4fd (PR #80 main)",
+      "repeat": 3,
+      "runs": [
+        {
+          "propose": 7.966917404000014,
+          "accept": 9.786498143000017,
+          "edit": 16.72712507899996,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        },
+        {
+          "propose": 7.765503001999946,
+          "accept": 9.618040591000067,
+          "edit": 16.954293938999967,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        },
+        {
+          "propose": 7.857467876999976,
+          "accept": 9.977022359999978,
+          "edit": 16.813702282999998,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        }
+      ],
+      "statistics": {
+        "propose": {
+          "mean": 7.863296094333312,
+          "stdev": 0.10083360759798665,
+          "min": 7.765503001999946,
+          "max": 7.966917404000014
+        },
+        "accept": {
+          "mean": 9.79385369800002,
+          "stdev": 0.17960388570572436,
+          "min": 9.618040591000067,
+          "max": 9.977022359999978
+        },
+        "edit": {
+          "mean": 16.831707100333308,
+          "stdev": 0.1146496961349223,
+          "min": 16.72712507899996,
+          "max": 16.954293938999967
+        }
+      },
+      "profiled_calls": {
+        "propose": {
+          "propose_adjacent_intent": 1,
+          "plan_adjacent_span_edit": 3,
+          "_observe_pair": 4,
+          "_observe": 8,
+          "_walk@content_stream": 27,
+          "propose_adjacent_span": 1,
+          "plan_paragraph_edit": 7,
+          "inspect_paragraph": 8,
+          "observe_marked_content": 34,
+          "leaf_span_structure": 16,
+          "resolve_selection": 26,
+          "adjacent_span_structure": 4,
+          "program_pdf_bytes": 15,
+          "_follower_shift": 1,
+          "_discover": 1,
+          "__init__@shaped_font": 7,
+          "make_selection": 2,
+          "inspect_selection_source": 2,
+          "_provider": 7,
+          "_pixels_equal": 8,
+          "structure_objects": 20,
+          "_coverage": 1,
+          "extract_font": 24,
+          "_regions": 1
+        },
+        "accept": {
+          "propose_adjacent_intent": 1,
+          "_observe_pair": 5,
+          "plan_adjacent_span_edit": 3,
+          "_observe": 10,
+          "propose_adjacent_span": 2,
+          "_walk@content_stream": 33,
+          "plan_paragraph_edit": 9,
+          "inspect_paragraph": 10,
+          "observe_marked_content": 42,
+          "accept_adjacent_span": 1,
+          "leaf_span_structure": 20,
+          "resolve_selection": 32,
+          "adjacent_span_structure": 5,
+          "program_pdf_bytes": 20,
+          "_follower_shift": 1,
+          "__init__@shaped_font": 7,
+          "_discover": 1,
+          "make_selection": 2,
+          "_pixels_equal": 11,
+          "inspect_selection_source": 2,
+          "structure_objects": 25,
+          "_provider": 7,
+          "_coverage": 1,
+          "extract_font": 30,
+          "_regions": 1
+        },
+        "edit": {
+          "_observe_pair": 8,
+          "propose_adjacent_intent": 1,
+          "_observe": 16,
+          "plan_adjacent_span_edit": 4,
+          "_walk@content_stream": 58,
+          "edit_adjacent_span": 1,
+          "observe_marked_content": 74,
+          "inspect_paragraph": 16,
+          "plan_paragraph_edit": 13,
+          "leaf_span_structure": 36,
+          "propose_adjacent_span": 1,
+          "adjacent_span_structure": 10,
+          "resolve_selection": 50,
+          "commit": 1,
+          "_follower_shift": 3,
+          "program_pdf_bytes": 28,
+          "publish_program": 1,
+          "__init__@shaped_font": 17,
+          "verify_adjacent_span_output": 1,
+          "make_selection": 4,
+          "structure_objects": 48,
+          "inspect_selection_source": 4,
+          "_discover": 1,
+          "_pixels_equal": 15,
+          "_provider": 11,
+          "interpreted_paints": 2,
+          "_verify": 1,
+          "_coverage": 1,
+          "extract_font": 68,
+          "_regions": 1
+        }
+      },
+      "profiled_cumulative_seconds": {
+        "propose": {
+          "propose_adjacent_intent": 23.076,
+          "plan_adjacent_span_edit": 15.873,
+          "_observe_pair": 13.185,
+          "_observe": 9.841,
+          "_walk@content_stream": 9.005,
+          "propose_adjacent_span": 5.215,
+          "plan_paragraph_edit": 4.953,
+          "inspect_paragraph": 4.815,
+          "observe_marked_content": 4.683,
+          "leaf_span_structure": 2.783,
+          "resolve_selection": 2.572,
+          "adjacent_span_structure": 1.95,
+          "program_pdf_bytes": 1.269,
+          "_follower_shift": 0.951,
+          "_discover": 0.784,
+          "__init__@shaped_font": 0.7,
+          "make_selection": 0.569,
+          "inspect_selection_source": 0.351,
+          "_provider": 0.333,
+          "_pixels_equal": 0.242,
+          "structure_objects": 0.237,
+          "_coverage": 0.07,
+          "extract_font": 0.026,
+          "_regions": 0.008
+        },
+        "accept": {
+          "propose_adjacent_intent": 23.298,
+          "_observe_pair": 17.031,
+          "plan_adjacent_span_edit": 15.958,
+          "_observe": 12.73,
+          "propose_adjacent_span": 11.146,
+          "_walk@content_stream": 11.14,
+          "plan_paragraph_edit": 6.373,
+          "inspect_paragraph": 6.281,
+          "observe_marked_content": 5.814,
+          "accept_adjacent_span": 5.597,
+          "leaf_span_structure": 3.38,
+          "resolve_selection": 3.282,
+          "adjacent_span_structure": 2.454,
+          "program_pdf_bytes": 1.832,
+          "_follower_shift": 1.012,
+          "__init__@shaped_font": 0.774,
+          "_discover": 0.68,
+          "make_selection": 0.529,
+          "_pixels_equal": 0.341,
+          "inspect_selection_source": 0.337,
+          "structure_objects": 0.3,
+          "_provider": 0.289,
+          "_coverage": 0.097,
+          "extract_font": 0.029,
+          "_regions": 0.006
+        },
+        "edit": {
+          "_observe_pair": 30.659,
+          "propose_adjacent_intent": 23.74,
+          "_observe": 23.452,
+          "plan_adjacent_span_edit": 23.295,
+          "_walk@content_stream": 21.214,
+          "edit_adjacent_span": 21.094,
+          "observe_marked_content": 10.397,
+          "inspect_paragraph": 10.143,
+          "plan_paragraph_edit": 9.406,
+          "leaf_span_structure": 6.595,
+          "propose_adjacent_span": 5.789,
+          "adjacent_span_structure": 5.365,
+          "resolve_selection": 5.192,
+          "commit": 3.053,
+          "_follower_shift": 2.91,
+          "program_pdf_bytes": 2.626,
+          "publish_program": 2.054,
+          "__init__@shaped_font": 1.885,
+          "verify_adjacent_span_output": 1.651,
+          "make_selection": 1.115,
+          "structure_objects": 0.884,
+          "inspect_selection_source": 0.712,
+          "_discover": 0.644,
+          "_pixels_equal": 0.491,
+          "_provider": 0.464,
+          "interpreted_paints": 0.257,
+          "_verify": 0.25,
+          "_coverage": 0.066,
+          "extract_font": 0.064,
+          "_regions": 0.005
+        }
+      }
+    },
+    "after-1": {
+      "code": "this branch",
+      "repeat": 3,
+      "runs": [
+        {
+          "propose": 5.580173109000043,
+          "accept": 5.693607133,
+          "edit": 12.640581096999995,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        },
+        {
+          "propose": 5.631564894999997,
+          "accept": 5.753830146000041,
+          "edit": 12.64991071899999,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        },
+        {
+          "propose": 5.790612487999965,
+          "accept": 5.540958151000041,
+          "edit": 13.438257201999932,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        }
+      ],
+      "statistics": {
+        "propose": {
+          "mean": 5.667450164000002,
+          "stdev": 0.10971325105414684,
+          "min": 5.580173109000043,
+          "max": 5.790612487999965
+        },
+        "accept": {
+          "mean": 5.662798476666694,
+          "stdev": 0.10972921918348769,
+          "min": 5.540958151000041,
+          "max": 5.753830146000041
+        },
+        "edit": {
+          "mean": 12.909583005999972,
+          "stdev": 0.4578690474347641,
+          "min": 12.640581096999995,
+          "max": 13.438257201999932
+        }
+      },
+      "profiled_calls": {
+        "propose": {
+          "propose_adjacent_intent": 1,
+          "_observe_pair": 2,
+          "propose_adjacent_span": 1,
+          "_walk@content_stream": 16,
+          "plan_paragraph_edit": 7,
+          "_observe": 4,
+          "observe_marked_content": 20,
+          "inspect_paragraph": 4,
+          "resolve_selection": 18,
+          "leaf_span_structure": 8,
+          "program_pdf_bytes": 15,
+          "adjacent_span_structure": 2,
+          "_follower_shift": 1,
+          "__init__@shaped_font": 6,
+          "make_selection": 2,
+          "inspect_selection_source": 2,
+          "_discover": 1,
+          "_pixels_equal": 8,
+          "_provider": 7,
+          "structure_objects": 10,
+          "_coverage": 1,
+          "extract_font": 24,
+          "_regions": 1
+        },
+        "accept": {
+          "_observe_pair": 2,
+          "accept_adjacent_span": 1,
+          "propose_adjacent_span": 1,
+          "_walk@content_stream": 16,
+          "_observe": 4,
+          "plan_paragraph_edit": 7,
+          "observe_marked_content": 20,
+          "inspect_paragraph": 4,
+          "resolve_selection": 18,
+          "leaf_span_structure": 8,
+          "program_pdf_bytes": 15,
+          "_follower_shift": 1,
+          "adjacent_span_structure": 2,
+          "__init__@shaped_font": 6,
+          "make_selection": 2,
+          "inspect_selection_source": 2,
+          "_discover": 1,
+          "_pixels_equal": 8,
+          "_provider": 7,
+          "structure_objects": 10,
+          "_coverage": 1,
+          "extract_font": 24,
+          "_regions": 1
+        },
+        "edit": {
+          "edit_adjacent_span": 1,
+          "_observe_pair": 5,
+          "_observe": 10,
+          "_walk@content_stream": 40,
+          "plan_paragraph_edit": 10,
+          "observe_marked_content": 51,
+          "inspect_paragraph": 10,
+          "accept_adjacent_span": 1,
+          "propose_adjacent_span": 1,
+          "leaf_span_structure": 24,
+          "resolve_selection": 35,
+          "adjacent_span_structure": 7,
+          "commit": 1,
+          "publish_program": 1,
+          "program_pdf_bytes": 22,
+          "_follower_shift": 2,
+          "verify_adjacent_span_output": 1,
+          "__init__@shaped_font": 13,
+          "make_selection": 4,
+          "structure_objects": 33,
+          "inspect_selection_source": 4,
+          "_pixels_equal": 12,
+          "_discover": 1,
+          "_provider": 9,
+          "interpreted_paints": 2,
+          "_verify": 1,
+          "_coverage": 1,
+          "extract_font": 58,
+          "_regions": 1
+        }
+      },
+      "profiled_cumulative_seconds": {
+        "propose": {
+          "propose_adjacent_intent": 16.253,
+          "_observe_pair": 6.72,
+          "propose_adjacent_span": 5.535,
+          "_walk@content_stream": 5.413,
+          "plan_paragraph_edit": 5.044,
+          "_observe": 4.992,
+          "observe_marked_content": 2.753,
+          "inspect_paragraph": 2.396,
+          "resolve_selection": 1.824,
+          "leaf_span_structure": 1.444,
+          "program_pdf_bytes": 1.291,
+          "adjacent_span_structure": 1.001,
+          "_follower_shift": 0.918,
+          "__init__@shaped_font": 0.682,
+          "make_selection": 0.679,
+          "inspect_selection_source": 0.478,
+          "_discover": 0.263,
+          "_pixels_equal": 0.261,
+          "_provider": 0.212,
+          "structure_objects": 0.118,
+          "_coverage": 0.072,
+          "extract_font": 0.024,
+          "_regions": 0.007
+        },
+        "accept": {
+          "_observe_pair": 7.105,
+          "accept_adjacent_span": 5.654,
+          "propose_adjacent_span": 5.646,
+          "_walk@content_stream": 5.522,
+          "_observe": 5.267,
+          "plan_paragraph_edit": 5.083,
+          "observe_marked_content": 2.781,
+          "inspect_paragraph": 2.665,
+          "resolve_selection": 1.881,
+          "leaf_span_structure": 1.455,
+          "program_pdf_bytes": 1.286,
+          "_follower_shift": 1.003,
+          "adjacent_span_structure": 1.001,
+          "__init__@shaped_font": 0.632,
+          "make_selection": 0.575,
+          "inspect_selection_source": 0.343,
+          "_discover": 0.257,
+          "_pixels_equal": 0.256,
+          "_provider": 0.214,
+          "structure_objects": 0.114,
+          "_coverage": 0.071,
+          "extract_font": 0.023,
+          "_regions": 0.007
+        },
+        "edit": {
+          "edit_adjacent_span": 20.919,
+          "_observe_pair": 20.022,
+          "_observe": 15.52,
+          "_walk@content_stream": 14.368,
+          "plan_paragraph_edit": 7.532,
+          "observe_marked_content": 7.465,
+          "inspect_paragraph": 6.69,
+          "accept_adjacent_span": 5.807,
+          "propose_adjacent_span": 5.797,
+          "leaf_span_structure": 4.318,
+          "resolve_selection": 3.569,
+          "adjacent_span_structure": 3.502,
+          "commit": 3.04,
+          "publish_program": 2.067,
+          "program_pdf_bytes": 2.057,
+          "_follower_shift": 2.022,
+          "verify_adjacent_span_output": 1.663,
+          "__init__@shaped_font": 1.443,
+          "make_selection": 1.027,
+          "structure_objects": 0.671,
+          "inspect_selection_source": 0.655,
+          "_pixels_equal": 0.495,
+          "_discover": 0.403,
+          "_provider": 0.288,
+          "interpreted_paints": 0.247,
+          "_verify": 0.245,
+          "_coverage": 0.069,
+          "extract_font": 0.052,
+          "_regions": 0.007
+        }
+      }
+    },
+    "after-2": {
+      "code": "this branch",
+      "repeat": 3,
+      "runs": [
+        {
+          "propose": 5.578568064000137,
+          "accept": 5.654413825999882,
+          "edit": 13.389382297000111,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        },
+        {
+          "propose": 6.030256065000003,
+          "accept": 6.013232732000006,
+          "edit": 12.869660783999961,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        },
+        {
+          "propose": 5.881934176999948,
+          "accept": 5.633752614000059,
+          "edit": 12.798918311999842,
+          "edited_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2"
+        }
+      ],
+      "statistics": {
+        "propose": {
+          "mean": 5.830252768666696,
+          "stdev": 0.23023626677240697,
+          "min": 5.578568064000137,
+          "max": 6.030256065000003
+        },
+        "accept": {
+          "mean": 5.767133057333315,
+          "stdev": 0.21337879187869985,
+          "min": 5.633752614000059,
+          "max": 6.013232732000006
+        },
+        "edit": {
+          "mean": 13.019320464333305,
+          "stdev": 0.32242897564224665,
+          "min": 12.798918311999842,
+          "max": 13.389382297000111
+        }
+      },
+      "profiled_calls": {
+        "propose": {
+          "propose_adjacent_intent": 1,
+          "_observe_pair": 2,
+          "propose_adjacent_span": 1,
+          "_walk@content_stream": 16,
+          "_observe": 4,
+          "plan_paragraph_edit": 7,
+          "observe_marked_content": 20,
+          "inspect_paragraph": 4,
+          "resolve_selection": 18,
+          "leaf_span_structure": 8,
+          "program_pdf_bytes": 15,
+          "adjacent_span_structure": 2,
+          "_follower_shift": 1,
+          "__init__@shaped_font": 6,
+          "make_selection": 2,
+          "inspect_selection_source": 2,
+          "_discover": 1,
+          "_pixels_equal": 8,
+          "_provider": 7,
+          "structure_objects": 10,
+          "_coverage": 1,
+          "extract_font": 24,
+          "_regions": 1
+        },
+        "accept": {
+          "_observe_pair": 2,
+          "accept_adjacent_span": 1,
+          "propose_adjacent_span": 1,
+          "_walk@content_stream": 16,
+          "plan_paragraph_edit": 7,
+          "_observe": 4,
+          "observe_marked_content": 20,
+          "inspect_paragraph": 4,
+          "resolve_selection": 18,
+          "leaf_span_structure": 8,
+          "program_pdf_bytes": 15,
+          "adjacent_span_structure": 2,
+          "_follower_shift": 1,
+          "__init__@shaped_font": 6,
+          "make_selection": 2,
+          "inspect_selection_source": 2,
+          "_discover": 1,
+          "_pixels_equal": 8,
+          "_provider": 7,
+          "structure_objects": 10,
+          "_coverage": 1,
+          "extract_font": 24,
+          "_regions": 1
+        },
+        "edit": {
+          "edit_adjacent_span": 1,
+          "_observe_pair": 5,
+          "_observe": 10,
+          "_walk@content_stream": 40,
+          "plan_paragraph_edit": 10,
+          "observe_marked_content": 51,
+          "inspect_paragraph": 10,
+          "accept_adjacent_span": 1,
+          "propose_adjacent_span": 1,
+          "leaf_span_structure": 24,
+          "resolve_selection": 35,
+          "adjacent_span_structure": 7,
+          "commit": 1,
+          "program_pdf_bytes": 22,
+          "publish_program": 1,
+          "_follower_shift": 2,
+          "__init__@shaped_font": 13,
+          "verify_adjacent_span_output": 1,
+          "make_selection": 4,
+          "inspect_selection_source": 4,
+          "structure_objects": 33,
+          "_discover": 1,
+          "_pixels_equal": 12,
+          "_provider": 9,
+          "_verify": 1,
+          "interpreted_paints": 2,
+          "_coverage": 1,
+          "extract_font": 58,
+          "_regions": 1
+        }
+      },
+      "profiled_cumulative_seconds": {
+        "propose": {
+          "propose_adjacent_intent": 16.295,
+          "_observe_pair": 6.721,
+          "propose_adjacent_span": 5.629,
+          "_walk@content_stream": 5.252,
+          "_observe": 5.066,
+          "plan_paragraph_edit": 5.063,
+          "observe_marked_content": 2.814,
+          "inspect_paragraph": 2.303,
+          "resolve_selection": 1.812,
+          "leaf_span_structure": 1.514,
+          "program_pdf_bytes": 1.323,
+          "adjacent_span_structure": 0.959,
+          "_follower_shift": 0.872,
+          "__init__@shaped_font": 0.68,
+          "make_selection": 0.658,
+          "inspect_selection_source": 0.456,
+          "_discover": 0.265,
+          "_pixels_equal": 0.265,
+          "_provider": 0.227,
+          "structure_objects": 0.121,
+          "_coverage": 0.069,
+          "extract_font": 0.025,
+          "_regions": 0.007
+        },
+        "accept": {
+          "_observe_pair": 6.655,
+          "accept_adjacent_span": 5.635,
+          "propose_adjacent_span": 5.628,
+          "_walk@content_stream": 5.21,
+          "plan_paragraph_edit": 5.165,
+          "_observe": 4.928,
+          "observe_marked_content": 2.879,
+          "inspect_paragraph": 2.407,
+          "resolve_selection": 1.835,
+          "leaf_span_structure": 1.468,
+          "program_pdf_bytes": 1.237,
+          "adjacent_span_structure": 1.042,
+          "_follower_shift": 1.026,
+          "__init__@shaped_font": 0.608,
+          "make_selection": 0.553,
+          "inspect_selection_source": 0.33,
+          "_discover": 0.262,
+          "_pixels_equal": 0.249,
+          "_provider": 0.215,
+          "structure_objects": 0.118,
+          "_coverage": 0.068,
+          "extract_font": 0.023,
+          "_regions": 0.007
+        },
+        "edit": {
+          "edit_adjacent_span": 21.937,
+          "_observe_pair": 20.835,
+          "_observe": 16.361,
+          "_walk@content_stream": 14.857,
+          "plan_paragraph_edit": 7.455,
+          "observe_marked_content": 7.347,
+          "inspect_paragraph": 7.106,
+          "accept_adjacent_span": 5.491,
+          "propose_adjacent_span": 5.483,
+          "leaf_span_structure": 4.248,
+          "resolve_selection": 3.78,
+          "adjacent_span_structure": 3.41,
+          "commit": 2.958,
+          "program_pdf_bytes": 2.021,
+          "publish_program": 1.966,
+          "_follower_shift": 1.965,
+          "__init__@shaped_font": 1.597,
+          "verify_adjacent_span_output": 1.553,
+          "make_selection": 1.13,
+          "inspect_selection_source": 0.698,
+          "structure_objects": 0.677,
+          "_discover": 0.422,
+          "_pixels_equal": 0.393,
+          "_provider": 0.291,
+          "_verify": 0.26,
+          "interpreted_paints": 0.257,
+          "_coverage": 0.072,
+          "extract_font": 0.053,
+          "_regions": 0.007
+        }
+      }
+    }
+  }
+}

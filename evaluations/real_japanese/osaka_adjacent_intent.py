@@ -1,7 +1,7 @@
 """Osaka guideline: edit intent (selection + replacement) -> proposal -> acceptance -> edit -> no-op.
 
 Run after focused tests with:
-  .venv/bin/python -m evaluations.real_japanese.osaka_adjacent_intent
+  .venv/bin/python -m evaluations.real_japanese.osaka_adjacent_intent [--root tmp/<new directory>]
 The proposal receives only a concrete glyph selection and replacement text;
 owner numbers, MCIDs, the boundary and rectangles are read back from it for
 the audit. Starts from the unmodified corpus PDF. PDFs, fonts, sidecars and
@@ -30,7 +30,8 @@ SOURCE = Path('evaluations/realpdf/corpus/word_osaka_guideline.pdf')
 SOURCE_SHA = '9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe'
 ROOT = Path('tmp/osaka-adjacent-intent')
 SELECTED, REPLACEMENT = 'において', 'におきまして'
-MANUAL = Path('tmp/osaka-adjacent-span/edited.pdf')
+# Earlier saved results compared when present: manual adjacent edit and the PR #80 intent run.
+EARLIER = dict(manual=Path('tmp/osaka-adjacent-span'), intent=Path('tmp/osaka-adjacent-intent'))
 
 
 def user_selection():
@@ -127,14 +128,18 @@ def safe_to_accept(proposal):
         follower_contract_proved=proposal['follower'].get('approved') is True,
         rectangles_within_column=all(r['x1'] <= evidence['column_right'] for r in
                                      proposal['regions']['owners'] + [proposal['regions']['follower']]),
-        column_edge_consistent_with_line_break=evidence['wrap_check']['first_line_end']
-            + evidence['wrap_check']['next_advance'] > evidence['column_right'],
+        column_edge_inside_wrap_window=evidence['wrap_window'][0] <= evidence['column_right'] < evidence['wrap_window'][1],
         provider_is_original_program=proposal['font']['provider']['sha256'] == proposal['font']['program_sha256'],
         growth=len(proposal['logical_after']) > len(proposal['logical_before']))
     return checks
 
 
 def main():
+    global ROOT
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--root', default=str(ROOT))
+    ROOT = Path(parser.parse_args().root)
     started = time.monotonic()
     assert source_sha(SOURCE) == SOURCE_SHA
     ROOT.mkdir(parents=True, exist_ok=True)
@@ -218,11 +223,13 @@ def main():
     fonts = font_audit(edited, generated, acceptance['provider']['path'], before['rows'][first]['glyphs'])
     render(edited, 'edited')
     exterior = pixels('source', 'edited', masks=regions)
-    manual = None
-    if MANUAL.exists():
-        manual = dict(content_stream_equal=PdfReader(MANUAL).pages[0].get_contents().get_data()
-                      == PdfReader(edited).pages[0].get_contents().get_data(),
-                      sha256_equal=source_sha(MANUAL) == source_sha(edited))
+    manual = {}
+    for label, root in EARLIER.items():
+        earlier = root / 'edited.pdf'
+        if earlier.exists() and root.resolve() != ROOT.resolve():
+            manual[label] = dict(content_stream_equal=PdfReader(earlier).pages[0].get_contents().get_data()
+                                 == PdfReader(edited).pages[0].get_contents().get_data(),
+                                 sha256_equal=source_sha(earlier) == source_sha(edited))
     audited = time.monotonic()
 
     noop, noop_side = ROOT / 'noop.pdf', ROOT / 'noop.json'
@@ -232,6 +239,10 @@ def main():
     assert PdfReader(edited).pages[0].get_contents().get_data() == PdfReader(noop).pages[0].get_contents().get_data()
     render(noop, 'noop')
     whole = pixels('edited', 'noop')
+    for label, root in EARLIER.items():
+        earlier = root / 'noop.pdf'
+        if label in manual and earlier.exists():
+            manual[label]['noop_sha256_equal'] = source_sha(earlier) == source_sha(noop)
     assert source_sha(SOURCE) == SOURCE_SHA
     finished = time.monotonic()
     summary = dict(verdict='PASS', source=str(SOURCE), source_sha256=SOURCE_SHA, page=1,
@@ -251,7 +262,7 @@ def main():
                     for m in (first, second)],
         provenance_counts=classes, generated_glyphs=fonts, other_scopes_unchanged=len(untouched),
         foreign_drawings=len(before['drawings']), structure_changed_objects=sorted(changed),
-        manual_adjacent_result=manual, restored=['edited', 'noop'], successful_saves=2,
+        earlier_results=manual, restored=['edited', 'noop'], successful_saves=2,
         edited_audit_resumed_without_resave=resumed, dpi=144, exterior_pixels=exterior, noop_whole_page_pixels=whole,
         sha256={str(p): source_sha(p) for p in (edited, side, noop, noop_side)},
         elapsed_seconds=dict(proposal=proposed - started, acceptance=accepted - proposed,
@@ -259,7 +270,7 @@ def main():
                              total=finished - started))
     (ROOT / 'summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2, default=list) + '\n', encoding='utf-8')
     print(json.dumps({k: summary[k] for k in ('verdict', 'input', 'acceptance_checks', 'paragraph', 'provenance_counts',
-                                              'manual_adjacent_result', 'exterior_pixels', 'noop_whole_page_pixels',
+                                              'earlier_results', 'exterior_pixels', 'noop_whole_page_pixels',
                                               'sha256', 'elapsed_seconds')}, ensure_ascii=False, indent=2, default=list))
     print(json.dumps(summary['derived'], ensure_ascii=False, indent=1, default=list))
 

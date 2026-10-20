@@ -60,13 +60,17 @@ def build_font(chars):
 
 
 def make_source(path, *, second_parent=0, follower=True, foreign=None, first=FIRST, second=SECOND,
-                other=OTHER, other_x=50):
-    """P1: LEAD, first, second, ' ' (follower); P2: other. ``foreign`` adds a P2 glyph on line two."""
-    chars = sorted(set(LEAD + first + second + other + 'につきまして' + 'いたし' + ' '))
+                other=OTHER, other_x=50, extra=()):
+    """P1: LEAD, first, second, ' ' (follower); P2: other.
+
+    ``foreign`` adds a P2 glyph on line two; ``extra`` adds (x, baseline, text) P2 lines.
+    """
+    chars = sorted(set(LEAD + first + second + other + ''.join(e[2] for e in extra) + 'につきまして' + 'いたし' + ' '))
     lines = [(50, 160, 10.5, LEAD), (100, 160, 10.5, first), (50, 178, 10.5, second),
              (50 + len(second) * 10.5, 178, 10.5, ' '), (other_x, 196, 10.5, other)]
     if foreign is not None:
         lines.append((foreign, 178, 10.5, '提'))
+    lines.extend((x, baseline, 10.5, text) for x, baseline, text in extra)
     fx.make_page(path, build_font(chars), tagged=True, lines=lines)
     writer = PdfWriter(PdfReader(path), full=True)
     page = writer.pages[0]
@@ -79,7 +83,7 @@ def make_source(path, *, second_parent=0, follower=True, foreign=None, first=FIR
     for _ in range(2):
         parents.append(writer._add_object(DictionaryObject({NameObject('/Type'): NameObject('/StructElem'),
             NameObject('/S'): NameObject('/P'), NameObject('/P'): document_ref, NameObject('/Pg'): page.indirect_reference})))
-    membership = [0, 0, second_parent, 0, 1] + ([1] if foreign is not None else [])
+    membership = [0, 0, second_parent, 0, 1] + [1] * (len(lines) - 5)
     owners = []
     for mcid, (line, parent) in enumerate(zip(lines, membership)):
         owners.append(writer._add_object(DictionaryObject({NameObject('/Type'): NameObject('/StructElem'),

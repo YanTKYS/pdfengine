@@ -20,6 +20,7 @@ import tempfile
 from .backend import PdfError
 from .content_stream import ContentPage, number
 from .editable import _publish
+from .layout import LayoutError
 from .model import Rect
 from .mutation import Mutation
 from .paragraph import plan_paragraph_edit
@@ -319,10 +320,18 @@ def _qualify(source, state, split, recipe, stack):
     return stack.enter_context(_provider(source, owner, [dict(text=needed)], recipe))
 
 
-def _follower_shift(source, state, plan):
-    """Translation that keeps the follower's exact pen relation to the second owner."""
-    with Transaction(source) as probe:
-        unchanged = _plan_owner(probe, state, 1, [], None)._report['lines'][0]
+def _follower_shift(source, state, plan, unchanged=None):
+    """Translation that keeps the follower's exact pen relation to the second owner.
+
+    ``unchanged`` may hold the second owner's no-edit line already planned for
+    this restored state within the same call; it is filled on first use.
+    """
+    if unchanged is None:
+        unchanged = []
+    if not unchanged:
+        with Transaction(source) as probe:
+            unchanged.append(_plan_owner(probe, state, 1, [], None)._report['lines'][0])
+    unchanged = unchanged[0]
     edited = plan._report['lines'][0]
     if abs(edited['x'] - unchanged['x']) > 1e-9:
         raise PdfError('adjacent Span second owner moved its line start')
@@ -356,7 +365,7 @@ def _provenance(content, state, split, plans):
     return records
 
 
-def _plan_all(transaction, state, split, font, source):
+def _plan_all(transaction, state, split, font, source, unchanged=None):
     plans = [_plan_owner(transaction, state, i, split['edits'][i], font) for i in (0, 1)]
     page = transaction.page(state['page'])
     for plan, wanted in zip(plans, split['after']):
@@ -364,21 +373,42 @@ def _plan_all(transaction, state, split, font, source):
             raise PdfError('adjacent Span owner plan differs from the approved split')
     follower = None
     if state['follower'] is not None:
-        follower = page.add(FollowerPlan(page, state, _follower_shift(source, state, plans[1])))
+        follower = page.add(FollowerPlan(page, state, _follower_shift(source, state, plans[1], unchanged)))
     page.check()
     return plans, follower, _provenance(page.content, state, split, plans)
 
 
+def iter_adjacent_span_plans(source, model, edit, boundaries, *, provider=None):
+    """Read-only proofs of one edit at several boundaries, after one revision proof.
+
+    The model is restored against the current revision once per call. Each
+    boundary still gets its own split, provider qualification, Transaction,
+    capacity, clip, collision, follower and provenance proof. Yields
+    ``(boundary, report)``; a refused boundary yields its PdfError/LayoutError.
+    """
+    state = _restore(source, model)
+    texts = [o['witness']['text'] for o in state['owners']]
+    unchanged = []
+    for boundary in boundaries:
+        try:
+            split = _split(*texts, edit, boundary)
+            with ExitStack() as stack:
+                font = _qualify(source, state, split, provider, stack)
+                with Transaction(source) as transaction:
+                    plans, follower, provenance = _plan_all(transaction, state, split, font, source, unchanged)
+                    report = dict(owners=[deepcopy(p._report) for p in plans], split=split, provenance=provenance,
+                                  follower=follower.report(None) if follower is not None else None)
+        except (PdfError, LayoutError) as exc:
+            report = exc
+        yield boundary, report
+
+
 def plan_adjacent_span_edit(source, model, edit, *, boundary, provider=None):
     """Read-only split, shaping, capacity, follower and provenance proof."""
-    state = _restore(source, model)
-    split = _split(*(o['witness']['text'] for o in state['owners']), edit, boundary)
-    with ExitStack() as stack:
-        font = _qualify(source, state, split, provider, stack)
-        with Transaction(source) as transaction:
-            plans, follower, provenance = _plan_all(transaction, state, split, font, source)
-            return dict(owners=[deepcopy(p._report) for p in plans], split=split, provenance=provenance,
-                        follower=follower.report(None) if follower is not None else None)
+    for _, report in iter_adjacent_span_plans(source, model, edit, [boundary], provider=provider):
+        if isinstance(report, Exception):
+            raise report
+        return report
 
 
 def edit_adjacent_span(source, model, output, model_output, edit=None, *, boundary=None, provider=None):
