@@ -37,6 +37,6 @@ fontToolsの`LICENSE.external`には、テスト用フォント等に対するSI
 
 評価用に取得した外部PDFと、その中のフォントprogramは独自コードではありません。公開URLから取得できることや、技術的に抽出・再埋め込みできることは、再配布や用途変更の許諾を意味しません。リポジトリを公開する際は、コードの公開対象と評価資料の公開対象を分け、取得元の条件を確認します。
 
-提供fontのOS/2 `fsType`は技術上の埋め込み制限として確認します。restricted・bitmap-only・preview/print-onlyを拒否し、no-subsettingを宣言するfontは完全なprogramを保持します。このビット検査を利用許諾そのものの代わりにはしません。今回のWindowsフォントおよびその派生subsetは公開しません。
+提供fontのOS/2 `fsType`は技術上の埋め込み制限として確認します。restricted・bitmap-only・preview/print-onlyを拒否し、no-subsettingを宣言するfontは完全なprogramを保持します。このビット検査を利用許諾そのものの代わりにはしません。今回のWindowsフォントおよびその派生subsetは公開しません。元の埋め込みフォントにない文字に使う代替フォント（`relation='substituted'`）も同じ検査を通し、利用者が用意したファイルをSHA-256で固定して使います。リポジトリには含めません。評価で使ったBIZ UDゴシック・BIZ UD明朝はSIL Open Font License 1.1です。
 
 本書は実装上の選択を整理したものです。実際に配布・サービス提供する際の適用範囲は、その構成をもとに法務または権利者へ確認します。

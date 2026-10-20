@@ -332,6 +332,16 @@ def apply_edits(paragraph, snapshot, edits):
                         or not isinstance(run.get('text'),str) or run.get('style_id') not in paragraph.styles):
                     raise PdfError('each replacement run needs Unicode and a known style')
                 runs.append((run['text'],run['style_id'],run.get('font_id',run['style_id'])))
+            if edit.get("keep_spacing"):
+                # The runs together replace the painted source units one for one.
+                if (sum(len(r[0]) for r in runs) != end-start or start == end
+                        or any(u.char is None or u.source_index is None for u in paragraph.units[start:end])):
+                    raise PdfError("source spacing can be kept only for a one-for-one replacement of painted glyphs")
+                slots, kept = paragraph.units[start:end], []
+                for text,style,provider in runs:
+                    kept.append((text,style,provider,slots[:len(text)]))
+                    slots = slots[len(text):]
+                runs = kept
             ordered.append((start,end,runs))
             continue
         if not isinstance(text,str):

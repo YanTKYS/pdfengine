@@ -174,3 +174,70 @@ def test_stale_tampered_and_unaccepted_states_publish_nothing(kerned, tmp_path):
     with pytest.raises(PdfError):
         accept_edit_intent(other, proposal, work_dir=work)
     assert not out.exists() and not side.exists()
+
+
+def approved_substitute(root, chars='件髙'):
+    import hashlib
+    path = root / 'substitute.ttf'; path.write_bytes(adj.build_font(chars))
+    return dict(path=str(path), sha256=hashlib.sha256(path.read_bytes()).hexdigest(), font_index=0,
+                relation='substituted')
+
+
+def test_missing_characters_are_reported_and_need_an_explicit_substitute(kerned, tmp_path):
+    work = tmp_path / 'work'
+    selection = make_selection(kerned, 1, glyph_ids=select(kerned, 0, '書') + select(kerned, 1, '本'))
+    refused = propose_edit_intent(kerned, selection, '件本', work_dir=work)
+    single = refused['routes']['single-span']
+    assert refused['status'] == 'refused' and single['missing'] == '件' and not single['capacity']
+    assert 'no fallback font' in refused['reason'] and 'substitute' not in refused
+    substitute = approved_substitute(tmp_path)
+    proposal = propose_edit_intent(kerned, selection, '件本', work_dir=work, substitute=substitute)
+    assert proposal['status'] == 'proposed' and proposal['route'] == 'single-span'
+    route = proposal['routes']['single-span']
+    assert route['font']['missing'] == '件' and route['substitute']['characters'] == '件'
+    assert route['substitute']['relation'] == 'substituted' and route['substitute']['new'] == 1
+    assert route['substitute']['family'] == 'AdjacentFixture' and 'appearance may differ' in route['substitute']['warning']
+    acceptance = accept_edit_intent(kerned, proposal, work_dir=work)
+    out, side = tmp_path / 'out.pdf', tmp_path / 'out.json'
+    result = edit_edit_intent(kerned, acceptance, out, side, work_dir=work)
+    assert result['after'] == ['申請件'] and open_edit_result(out, side)['status'] == 'restored'
+    assert actual_texts(out)[:2] == ['申請件', adj.FIRST]
+    binding = json.loads(side.read_text())['font_binding']
+    assert list(binding['generated']) == [] and [r['glyphs'].keys() for r in binding['substitutes'].values()] == [{'件'}]
+    # The substitute sits in the source slot; the following owner did not move.
+    before, after = glyphs(kerned), glyphs(out)
+    lead = select(kerned, 0, '申請書')
+    assert after[lead[2]]['origin'] == pytest.approx(before[lead[2]]['origin'], abs=.002)
+    assert [g['origin'] for g in after if g not in after[lead[0]:lead[2] + 1]] == \
+        [g['origin'] for g in before if g not in before[lead[0]:lead[2] + 1]]
+
+
+def test_substitute_is_not_used_when_nothing_is_missing_or_when_capacity_fails(kerned, tmp_path):
+    work = tmp_path / 'work'
+    selection = make_selection(kerned, 1, glyph_ids=select(kerned, 0, '書') + select(kerned, 1, '本'))
+    unneeded = propose_edit_intent(kerned, selection, '類本', work_dir=work, substitute=approved_substitute(tmp_path))
+    assert unneeded['status'] == 'refused' and 'covers every new character' in unneeded['reason']
+    path = intent.source(tmp_path)
+    grown = propose_edit_intent(path, make_selection(path, 1, glyph_ids=select(path, 1, 'について')),
+                                'につき髙して', work_dir=work, substitute=approved_substitute(tmp_path))
+    single = grown['routes']['single-span']
+    assert single['capacity'] and grown['status'] == 'refused' and set(grown['routes']) == {'single-span'}
+    assert 'adjacent-Span route does not take a substitute font' in grown['reason']
+
+
+def test_substitute_approval_is_rechecked_at_acceptance_and_edit(kerned, tmp_path):
+    work = tmp_path / 'work'
+    selection = make_selection(kerned, 1, glyph_ids=select(kerned, 0, '書') + select(kerned, 1, '本'))
+    substitute = approved_substitute(tmp_path)
+    proposal = propose_edit_intent(kerned, selection, '件本', work_dir=work, substitute=substitute)
+    forged = deepcopy(proposal); forged['substitute']['relation'] = 'identical'
+    with pytest.raises(PdfError, match='modified|stale'):
+        accept_edit_intent(kerned, _seal(forged), work_dir=work)
+    acceptance = accept_edit_intent(kerned, proposal, work_dir=work)
+    # The approved bytes changed on disk after acceptance: nothing is written.
+    from pathlib import Path
+    Path(substitute['path']).write_bytes(adj.build_font('件髙申'))
+    out, side = tmp_path / 'out.pdf', tmp_path / 'out.json'
+    with pytest.raises(PdfError):
+        edit_edit_intent(kerned, acceptance, out, side, work_dir=work)
+    assert not out.exists() and not side.exists()

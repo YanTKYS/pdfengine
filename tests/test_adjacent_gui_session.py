@@ -283,3 +283,36 @@ def test_cross_owner_drag_with_a_one_owner_change_takes_the_single_span_route(tm
     session.accept()
     saved = session.save(*outputs(tmp_path))
     assert saved['route'] == 'single-span' and saved['after'] == ['申請類'] and saved['reopen'] == 'restored'
+
+
+def test_missing_characters_enable_an_explicit_substitute_for_them_only(tmp_path):
+    import test_edit_intent as edit
+    path = edit.kerned_source(tmp_path)
+    session = AdjacentEditSession(path, work_dir=tmp_path / 'work')
+    lead = adj.ids_of(path, 0)
+    font = tmp_path / 'substitute.ttf'; font.write_bytes(adj.build_font('件'))
+    screen_drag(session, lead[-1], lead[-1])
+    with pytest.raises(Refused, match='substitute font is chosen only'):
+        session.set_substitute(font)
+    session.set_replacement('件')
+    with pytest.raises(Refused, match='lacks') as refused:
+        session.propose()
+    assert refused.value.missing == '件' == session.missing and session.proposal is None
+    with pytest.raises(Refused, match='not found'):
+        session.set_substitute(tmp_path / 'absent.ttf')
+    chosen = session.set_substitute(font)
+    assert chosen['relation'] == 'substituted' and chosen['missing'] == '件'
+    shown = session.propose()
+    assert shown['route'] == 'single-span' and shown['substitute']['characters'] == '件'
+    assert shown['substitute']['missing'] == '件' and shown['font']['program_sha256'] != chosen['sha256']
+    lines = review_text(shown)
+    assert any('元フォントにない文字: 「件」' in line for line in lines)
+    assert any('代替フォント: AdjacentFixture' in line for line in lines)
+    assert any('見た目が異なる' in line for line in lines)
+    session.accept()
+    saved = session.save(*outputs(tmp_path))
+    assert saved['reopen'] == 'restored' and saved['after'] == ['申請件']
+    assert [r['characters'] for r in saved['substitutes'].values()] == ['件']
+    # A new replacement discards the reported characters and the font choice.
+    session.set_replacement('類')
+    assert session.missing is None and session.substitute is None

@@ -6,6 +6,10 @@
 drives it with canvas mouse events, typed text and button presses, taking a
 screenshot (ImageMagick ``import``) at each stage. Each run saves into a new
 directory and compares the outputs with the PR #81 result.
+
+With ``--substitute FONT`` the first proposal must be refused for characters
+the original font lacks; the run then chooses FONT through
+「代替フォントを選ぶ…」 (the session's ``set_substitute``) and proposes again.
 """
 import argparse
 import json
@@ -19,6 +23,7 @@ SOURCE = Path('evaluations/realpdf/corpus/word_osaka_guideline.pdf')
 SOURCE_SHA = '9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe'
 SELECTED, REPLACEMENT = 'において', 'におきまして'
 ANCHOR = None  # first glyph of the occurrence when the drawn text occurs more than once
+SUBSTITUTE = None  # font file chosen after a refusal for missing characters
 EARLIER = Path('tmp/osaka-adjacent-intent-quality')
 
 
@@ -55,6 +60,16 @@ def run_session(root):
     chosen = session.select(center(session.glyphs[first]['bbox']), center(session.glyphs[last]['bbox']))
     assert chosen['text'] == SELECTED
     session.set_replacement(REPLACEMENT)
+    refusal = None
+    if SUBSTITUTE is not None:
+        from examples.adjacent_span_session import Refused
+        try:
+            session.propose()
+            raise AssertionError('the original font was expected to lack characters')
+        except Refused as exc:
+            assert exc.missing, exc
+            refusal = dict(reason=str(exc), missing=exc.missing)
+        session.set_substitute(SUBSTITUTE)
     shown = session.propose()
     proposed = time.monotonic()
     session.accept()
@@ -63,7 +78,7 @@ def run_session(root):
     finished = time.monotonic()
     (root / 'review.txt').write_text('\n'.join(review_text(shown)) + '\n', encoding='utf-8')
     return dict(selection=chosen['glyph_ids'], selected_text=chosen['text'], review=shown, saved=saved,
-                elapsed_seconds=dict(propose=proposed - started, accept=accepted - proposed, save=finished - accepted))
+                refusal_without_substitute=refusal, elapsed_seconds=dict(propose=proposed - started, accept=accepted - proposed, save=finished - accepted))
 
 
 def run_gui(root):
@@ -84,11 +99,12 @@ def run_gui(root):
 
     def states(app):
         return {name: str(getattr(app, name).cget('state')) for name in
-                ('open_button', 'propose_button', 'accept_button', 'save_button', 'entry')}
+                ('open_button', 'propose_button', 'accept_button', 'save_button', 'entry', 'font_button')}
 
     window = tk.Tk()
     window.geometry('1500x900+0+0')
-    app = App(window, str(SOURCE), choose_outputs=lambda source: (root / 'edited.pdf', root / 'edited.json'))
+    app = App(window, str(SOURCE), choose_outputs=lambda source: (root / 'edited.pdf', root / 'edited.json'),
+              choose_substitute=lambda source: SUBSTITUTE)
     pump(app, lambda: window.winfo_ismapped())
     log = dict(initial=states(app))
     # A press/release on empty paper selects nothing and says why.
@@ -115,6 +131,17 @@ def run_gui(root):
     # A disabled 「PDFを開く」 ignores the press; an enabled one would block on its dialog here.
     log['open_pressed_while_proposing'] = str(app.open_button.invoke())
     pump(app, lambda: app.busy is None)
+    if SUBSTITUTE is not None:
+        assert app.review is None and app.session.missing, app.status.cget('text')
+        log['refused_for_missing'] = dict(states=states(app), status=app.status.cget('text'), font=app.font_label.cget('text'),
+                                          text=app.text.get('1.0', 'end').strip().splitlines())
+        shot('2a-missing-characters')
+        app.font_button.invoke()
+        pump(app, lambda: True)
+        assert app.session.substitute is not None, app.status.cget('text')
+        log['substitute_chosen'] = dict(states=states(app), status=app.status.cget('text'), font=app.font_label.cget('text'))
+        app.propose_button.invoke()
+        pump(app, lambda: app.busy is None)
     proposed = time.monotonic()
     assert app.review is not None and app.review['status'] == 'proposed', app.status.cget('text')
     log['after_proposal'] = states(app)
@@ -132,6 +159,13 @@ def run_gui(root):
     log['after_changed_replacement'] = states(app)
     app.entry.delete(len(REPLACEMENT), 'end')
     pump(app, lambda: True)
+    if SUBSTITUTE is not None:
+        # The changed replacement discarded the font choice; it is made again after the refusal.
+        log['substitute_after_changed_replacement'] = app.session.substitute
+        app.propose_button.invoke()
+        pump(app, lambda: app.busy is None)
+        app.font_button.invoke()
+        pump(app, lambda: True)
     app.propose_button.invoke()
     pump(app, lambda: app.busy is None)
     app.accept_button.invoke()
@@ -154,15 +188,17 @@ def run_gui(root):
 
 
 def main():
-    global SELECTED, REPLACEMENT, ANCHOR
+    global SELECTED, REPLACEMENT, ANCHOR, SUBSTITUTE
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', choices=('session', 'gui'), required=True)
     parser.add_argument('--root')
     parser.add_argument('--selected', default=SELECTED)
     parser.add_argument('--replacement', default=REPLACEMENT)
     parser.add_argument('--anchor', type=int)
+    parser.add_argument('--substitute')
     args = parser.parse_args()
     SELECTED, REPLACEMENT, ANCHOR = args.selected, args.replacement, args.anchor
+    SUBSTITUTE = Path(args.substitute).resolve() if args.substitute else None
     root = Path(args.root or 'tmp/osaka-adjacent-gui-' + args.mode)
     root.mkdir(parents=True, exist_ok=False)
     assert source_sha(SOURCE) == SOURCE_SHA

@@ -2,7 +2,11 @@
 
 This is not B1 page-flow or B2 paragraph aggregation. The caller selects the
 complete leaf and approves a fixed rectangle. New glyphs require an explicitly
-pinned original embedded program; no font-name lookup or substitution occurs.
+pinned original embedded program; no font-name lookup occurs. Only characters
+that program cannot shape may come from a caller-approved substitute program
+(``relation='substituted'``), pinned by SHA-256 and face index, qualified for
+embedding rights, shaping, outline and advance, and recorded in the sidecar
+as a substitute, never as the original font.
 """
 from copy import deepcopy
 from contextlib import contextmanager
@@ -25,6 +29,10 @@ from .transaction import Plan, Transaction
 
 SCHEMA = 'pdfengine-single-span-actualtext-1'
 
+ORIGINAL_FONT = 'single-span-provider'
+SUBSTITUTE_FONT = 'single-span-substitute'
+SUBSTITUTE_RECIPE = {'path', 'sha256', 'font_index', 'relation'}
+
 STYLE_FIELDS = ('font_size', 'horizontal_scale', 'tracking', 'tracking_provenance',
                 'baseline_shift', 'baseline_shift_provenance', 'fill', 'observed_color')
 
@@ -43,11 +51,20 @@ def _font_binding(source, paragraph):
                 appearance=_appearance(first), generated={})
 
 
+def _glyph_evidence(font, gid):
+    """What a substitute glyph must still be when reopened from its embedded subset."""
+    return dict(gid=gid, advance=font.nominal_width(gid), upem=font.upem,
+                outline_sha256=digest(json.loads(json.dumps(font.outline(gid)))))
+
+
 def _verify_font_binding(source, paragraph, binding):
     """Only recorded writer resources may supplement the original style.
 
     Program hashes bind resources; every painted generated glyph additionally
     retains its GID, outline and advance in the original embedded provider.
+    Substitute resources are never original-program subsets: each painted
+    substitute glyph must keep the Unicode, GID, outline and advance recorded
+    when the caller-approved substitute program was qualified.
     """
     from .shaped_font import ShapedFont
     from .pdf_save import embedded_font_sha256
@@ -71,11 +88,22 @@ def _verify_font_binding(source, paragraph, binding):
                     or alias == binding['source_resource']
                     or embedded_font_sha256(fonts.get(alias)) != record['subset_sha256']):
                 raise PdfError('single Span generated font registry differs from the current resources')
+        substitutes = binding.get('substitutes', {})
+        for alias, record in substitutes.items():
+            if (set(record) != {'provider', 'subset_sha256', 'basefont', 'relation', 'family', 'glyphs'}
+                    or record['relation'] != 'substituted' or alias in binding['generated']
+                    or alias == binding['source_resource']
+                    or record['provider']['source_sha256'] == binding['source_program_sha256']
+                    or not record['glyphs'] or embedded_font_sha256(fonts.get(alias)) != record['subset_sha256']):
+                raise PdfError('single Span substitute font registry differs from the current resources')
         for style in paragraph['styles']:
             if _appearance(style) != binding['appearance']:
                 raise PdfError('single Span generated resource changes the approved style')
             alias = style['font_resource']
             if alias == binding['source_resource']:
+                continue
+            if alias in substitutes:
+                parsed[alias] = TTFont(BytesIO(content.document.extract_font(style['font_xref'])[3]))
                 continue
             record = binding['generated'].get(alias)
             if (record is None or record['provider']['source_sha256'] != binding['source_program_sha256']
@@ -94,6 +122,9 @@ def _verify_font_binding(source, paragraph, binding):
                     if not set(char.source_orders) & selected:
                         continue
                     gid = content.actual[char.source_orders[0]]['gid']
+                    if alias in substitutes:
+                        _verify_substitute_glyph(font, glyphs, gid, char, substitutes[alias]['glyphs'])
+                        continue
                     shaped = provider.shape(char.text).glyphs
                     if len(shaped) != 1 or shaped[0].text != char.text or shaped[0].gid != gid:
                         raise PdfError('single Span generated Unicode/GID differs from the pinned provider')
@@ -113,6 +144,109 @@ def _verify_font_binding(source, paragraph, binding):
         content.close()
 
 
+def _verify_substitute_glyph(font, glyphs, gid, char, recorded):
+    """A painted substitute glyph is exactly the one qualified for its Unicode."""
+    from fontTools.pens.recordingPen import DecomposingRecordingPen
+    expected = recorded.get(char.text)
+    if expected is None or expected['gid'] != gid:
+        raise PdfError('single Span substitute Unicode/GID differs from its recorded qualification')
+    name = font.getGlyphName(gid)
+    pen = DecomposingRecordingPen(glyphs); glyphs[name].draw(pen)
+    if (digest(json.loads(json.dumps(pen.value))) != expected['outline_sha256']
+            or font['head'].unitsPerEm != expected['upem'] or font['hmtx'][name][0] != expected['advance']
+            or abs(char.pdf_width - expected['advance'] * 1000 / expected['upem']) > 1e-6):
+        raise PdfError('single Span substitute outline or advance differs from its recorded qualification')
+
+
+def _one_glyph_each(font, text):
+    """One unambiguous glyph per Unicode character, the same in the run and alone."""
+    run = font.shape(text)
+    scalar_runs = [font.shape(c).glyphs for c in text]
+    if len(run.glyphs) != len(text) or any(g.text != c or len(scalar) != 1 or scalar[0].gid != g.gid
+            for g, c, scalar in zip(run.glyphs, text, scalar_runs)):
+        raise PdfError('single Span new glyphs require one unambiguous glyph per Unicode character')
+    return run
+
+
+def missing_characters(font, text):
+    """Characters of ``text`` the font cannot shape to one real, visible glyph (in order, once each)."""
+    from .fonts import FontError
+    missing = []
+    for c in text:
+        try:
+            glyphs = font.shape(c).glyphs
+            if len(glyphs) != 1 or glyphs[0].gid == 0:
+                raise FontError('no single glyph')
+        except FontError:
+            if c not in missing:
+                missing.append(c)
+    return missing
+
+
+def _qualify_substitute(substitute, binding, missing):
+    """The caller-approved substitute program, qualified only for the characters the original lacks.
+
+    Reuses page-proposal coverage qualification (editable embedding, actual
+    HarfBuzz shaping, visible glyphs) and adds per-character Unicode, GID,
+    outline and advance evidence. No equivalence to the original is claimed.
+    """
+    from .page_proposal import _FontPool, _coverage_candidates
+    from .shaped_font import ShapedFont
+    if (not isinstance(substitute, dict) or set(substitute) != SUBSTITUTE_RECIPE
+            or not isinstance(substitute['path'], str) or not isinstance(substitute['sha256'], str)
+            or type(substitute['font_index']) is not int or substitute['font_index'] < 0):
+        raise PdfError('single Span substitute needs an explicit path, SHA-256, face index and relation')
+    if substitute['relation'] != 'substituted':
+        raise PdfError('single Span substitute must be approved as relation=substituted')
+    if not missing:
+        raise PdfError('single Span original program covers every new character; no substitute is used')
+    data = Path(substitute['path']).read_bytes()
+    sha = hashlib.sha256(data).hexdigest()
+    if sha != substitute['sha256']:
+        raise PdfError('single Span substitute font bytes differ from the approved SHA-256')
+    if sha == binding['source_program_sha256']:
+        raise PdfError('single Span substitute is the original program; it is not a substitute')
+    text = ''.join(missing)
+    # Face index, outline format and embedding rights first, on the approved bytes.
+    font = ShapedFont(data, font_index=substitute['font_index'])
+    try:
+        pool = _FontPool()
+        try:
+            candidates, rejected = _coverage_candidates(pool, [substitute['path']], text)
+        finally:
+            pool.close()
+        if not any(c['sha256'] == sha and c['font_index'] == substitute['font_index'] for c in candidates):
+            reasons = [r['reason'] for r in rejected if r['font_index'] == substitute['font_index']]
+            raise PdfError('single Span substitute does not qualify for ' + text + ': ' +
+                           (reasons[0] if reasons else 'it lacks a glyph for a required character'))
+        _one_glyph_each(font, text)
+        cmap = font.font.getBestCmap()
+        evidence = {}
+        for c in missing:
+            glyph = font.shape(c).glyphs[0]
+            if cmap.get(ord(c)) != font.order[glyph.gid]:
+                raise PdfError('single Span substitute shapes %s to a glyph its cmap does not map' % c)
+            if font.ink(glyph.gid) is None or font.nominal_width(glyph.gid) <= 0:
+                raise PdfError('single Span substitute glyph for %s has no outline or advance' % c)
+            evidence[c] = _glyph_evidence(font, glyph.gid)
+    except BaseException:
+        font.font.close()
+        raise
+    return font, evidence
+
+
+def _original_program(source, state, recipe):
+    """The SHA-pinned original embedded program bytes named by the caller's recipe."""
+    if (not isinstance(recipe, dict) or set(recipe) != {'path', 'sha256', 'font_index'}
+            or type(recipe['font_index']) is not int or recipe['font_index'] != 0):
+        raise PdfError('single Span new glyphs require an explicit path, SHA and face-zero provider')
+    binding = state.get('font_binding') or _font_binding(source, state['paragraph'])
+    data = Path(recipe['path']).read_bytes()
+    if hashlib.sha256(data).hexdigest() != recipe['sha256'] or recipe['sha256'] != binding['source_program_sha256']:
+        raise PdfError('single Span provider must match the pinned original embedded program')
+    return binding, data
+
+
 @contextmanager
 def _provider(source, state, edits, recipe):
     from .shaped_font import ShapedFont
@@ -124,19 +258,9 @@ def _provider(source, state, edits, recipe):
                 raise PdfError('single Span no-op/deletion does not take a font provider')
             yield None
             return
-        if (not isinstance(recipe, dict) or set(recipe) != {'path', 'sha256', 'font_index'}
-                or type(recipe['font_index']) is not int or recipe['font_index'] != 0):
-            raise PdfError('single Span new glyphs require an explicit path, SHA and face-zero provider')
-        binding = state.get('font_binding') or _font_binding(source, state['paragraph'])
-        data = Path(recipe['path']).read_bytes()
-        if hashlib.sha256(data).hexdigest() != recipe['sha256'] or recipe['sha256'] != binding['source_program_sha256']:
-            raise PdfError('single Span provider must match the pinned original embedded program')
+        _, data = _original_program(source, state, recipe)
         font = ShapedFont(data)
-        run = font.shape(needed)
-        scalar_runs = [font.shape(c).glyphs for c in needed]
-        if len(run.glyphs) != len(needed) or any(g.text != c or len(scalar) != 1 or scalar[0].gid != g.gid
-                for g, c, scalar in zip(run.glyphs, needed, scalar_runs)):
-            raise PdfError('single Span new glyphs require one unambiguous glyph per Unicode character')
+        _one_glyph_each(font, needed)
         yield font
     except (OSError, TypeError, ValueError) as exc:
         if isinstance(exc, PdfError):
@@ -145,6 +269,52 @@ def _provider(source, state, edits, recipe):
     finally:
         if font is not None:
             font.font.close()
+
+
+@contextmanager
+def _new_glyph_fonts(source, state, edits, recipe, substitute=None):
+    """Fonts for new glyphs and the font of each new character, or None for no new text.
+
+    Yields ``fonts`` (font_id -> ShapedFont), ``runs`` (the new text split
+    into maximal ``(text, font_id)`` runs) and the substitute ``evidence``.
+    Without a substitute every character comes from the original program
+    through ``_provider``, exactly as before; with one, only the characters
+    the original cannot shape come from the approved substitute.
+    """
+    if substitute is None:
+        with _provider(source, state, edits, recipe) as font:
+            yield None if font is None else dict(fonts={ORIGINAL_FONT: font}, runs=[(edits[0]['text'], ORIGINAL_FONT)],
+                                                 evidence={})
+        return
+    from .shaped_font import ShapedFont
+    font = substitute_font = None
+    try:
+        needed = edits[0]['text'] if edits else ''
+        if not needed:
+            raise PdfError('single Span no-op/deletion does not take a font provider')
+        binding, data = _original_program(source, state, recipe)
+        font = ShapedFont(data)
+        substitute_font, evidence = _qualify_substitute(substitute, binding, missing_characters(font, needed))
+        runs = []
+        for c in needed:
+            ident = SUBSTITUTE_FONT if c in evidence else ORIGINAL_FONT
+            if runs and runs[-1][1] == ident:
+                runs[-1] = (runs[-1][0] + c, ident)
+            else:
+                runs.append((c, ident))
+        fonts = {ORIGINAL_FONT: font, SUBSTITUTE_FONT: substitute_font}
+        for text, ident in runs:
+            _one_glyph_each(fonts[ident], text)
+        yield dict(fonts={k: v for k, v in fonts.items() if any(k == i for _, i in runs)}, runs=runs,
+                   evidence=evidence, substitute=dict(substitute, family=substitute_font.name))
+    except (OSError, TypeError, ValueError) as exc:
+        if isinstance(exc, PdfError):
+            raise
+        raise PdfError('single Span provider qualification failed: ' + str(exc)) from exc
+    finally:
+        for f in (font, substitute_font):
+            if f is not None:
+                f.font.close()
 
 
 def _seal(value):
@@ -204,15 +374,21 @@ def _plan(transaction, model, edits, provider=None):
         # Generated and native resource IDs are physical styles only. Their
         # identical approved appearance is re-proved on the current revision.
         ident = next(s['style_id'] for s in paragraph['spans'] if s['start'] <= edits[0]['start'] < s['end'])
-        requested = [dict(edits[0], style_id=ident, font_id='single-span-provider')]
         start, end, text = edits[0]['start'], edits[0]['end'], edits[0]['text']
+        runs = provider['runs'] if provider is not None else [(text, ORIGINAL_FONT)]
+        if len(runs) == 1 and runs[0][1] == ORIGINAL_FONT:
+            requested = [dict(edits[0], style_id=ident, font_id=ORIGINAL_FONT)]
+        else:
+            # Substituted characters are their own runs under the same
+            # approved style; their font differs, their appearance does not.
+            requested = [dict(start=start, end=end, runs=[dict(text=t, style_id=ident, font_id=f) for t, f in runs])]
         # A one-for-one replacement in one style keeps the replaced glyphs'
         # source spacing when advances are equal (writer kerning included).
         if text and len(text) == end - start and all(
                 s['style_id'] == ident for s in paragraph['spans'] if s['start'] < end and s['end'] > start):
             requested[0]['keep_spacing'] = True
     plan = plan_paragraph_edit(page, paragraph, requested, owner='single-span:' + str(proof['owner']['xref']),
-        fonts={'single-span-provider': provider} if provider is not None else None,
+        fonts=provider['fonts'] if provider is not None else None,
         width=region.x1 - paragraph['layout_suggestion']['x'], max_bottom=region.y1)
     if plan._report['new_line_count'] != 1:
         raise PdfError('single Span cannot wrap')
@@ -305,18 +481,39 @@ def _edits(text, edits):
         raise PdfError('single Span edits must be a list')
 
 
-def plan_single_span_edit(source, model, edits, *, provider=None):
+def plan_single_span_edit(source, model, edits, *, provider=None, substitute=None):
     """Read-only shaping/capacity/font proof for the requested internal edit."""
     state = _restore(source, model); _edits(state['witness']['text'], edits)
-    with _provider(source, state, edits, provider) as font, Transaction(source) as transaction:
-        return deepcopy(_plan(transaction, state, edits, font)._report)
+    with _new_glyph_fonts(source, state, edits, provider, substitute) as fonts, Transaction(source) as transaction:
+        report = deepcopy(_plan(transaction, state, edits, fonts)._report)
+        if fonts is not None and fonts['evidence']:
+            report['substitute'] = dict(fonts['substitute'], characters=''.join(fonts['evidence']),
+                                        glyphs=deepcopy(fonts['evidence']))
+        return report
 
 
-def edit_single_span(source, model, output, model_output, edits, *, provider=None):
+def _record_fonts(source, state, records, fonts):
+    """Route the writer's new resources: original-program subsets or recorded substitutes, nothing else."""
+    binding = state.setdefault('font_binding', _font_binding(source, state['paragraph']))
+    for alias, record in deepcopy(records).items():
+        sha = record['provider']['source_sha256']
+        if sha == binding['source_program_sha256']:
+            binding['generated'][alias] = record
+        elif fonts['evidence'] and sha == fonts['substitute']['sha256']:
+            binding.setdefault('substitutes', {})[alias] = dict(
+                record, relation='substituted', family=fonts['substitute']['family'],
+                glyphs=deepcopy(fonts['evidence']))
+        else:
+            raise PdfError('single Span writer produced a font resource from an unapproved program')
+
+
+def edit_single_span(source, model, output, model_output, edits, *, provider=None, substitute=None):
     """One internal replacement/insertion/deletion, or an unchanged-program no-op.
 
     New glyphs are shaped with a SHA-pinned exact original embedded program.
-    No alternate provider, wrap, font resizing or owner redistribution occurs.
+    Only characters it lacks may come from an explicitly approved
+    ``substitute`` (relation='substituted'). No implicit fallback, wrap, font
+    resizing or owner redistribution occurs.
     """
     state = _restore(source, model)
     text = state['witness']['text']; _edits(text, edits)
@@ -326,12 +523,11 @@ def edit_single_span(source, model, output, model_output, edits, *, provider=Non
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='.single-span-', dir=output.parent) as directory:
         root = Path(directory); target = root / 'span.pdf'
-        with _provider(source, state, edits, provider) as font, Transaction(source) as transaction:
+        with _new_glyph_fonts(source, state, edits, provider, substitute) as fonts, Transaction(source) as transaction:
             if edits:
-                plan = _plan(transaction, state, edits, font)
-                if font is not None:
-                    binding = state.setdefault('font_binding', _font_binding(source, state['paragraph']))
-                    binding['generated'].update(deepcopy(plan.font_records))
+                plan = _plan(transaction, state, edits, fonts)
+                if fonts is not None:
+                    _record_fonts(source, state, plan.font_records, fonts)
             else:
                 plan = transaction.page(state['selection']['page']).add(Plan('single-span-noop'))
             result = transaction.commit(target)

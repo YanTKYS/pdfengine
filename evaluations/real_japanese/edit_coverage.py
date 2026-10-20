@@ -7,6 +7,12 @@ accepted (simulating the user's explicit approval), saved into its own
 directory and audited independently: per-owner ActualText and drawn text,
 structure, other owners, drawings, pixels outside the approved rectangles
 (MuPDF and Poppler at 144 dpi) and reopen. The original PDF is only read.
+
+With ``--substitute FONT`` a case whose proposal is refused for characters
+the original program lacks (``missing``) is proposed again with that font
+approved as ``relation='substituted'`` (the user's explicit choice in the
+GUI); every other case runs exactly as without it. A saved substitute case
+is also re-edited from its sidecar back to the selected text.
 """
 import argparse
 import hashlib
@@ -25,6 +31,7 @@ from pdfeditor.content_stream import ContentPage
 from pdfeditor.edit_intent import accept_edit_intent, edit_edit_intent, open_edit_result, propose_edit_intent
 from pdfeditor.marked_content import observe_marked_content, structure_objects
 from pdfeditor.selection import make_selection, source_sha
+from pdfeditor.span_edit import edit_single_span, open_single_span
 
 CASES = Path('evaluations/real_japanese/edit-coverage-cases.json')
 PR81 = Path('tmp/osaka-adjacent-intent-quality/edited.pdf')
@@ -119,11 +126,66 @@ def audit(source, edited, before, proposal, root):
         follower_semantics_unchanged=follower is None or all(
             after['rows'][follower][k] == before['rows'][follower][k] for k in ('owner', 'association', 'properties', 'actualtext')))
     checks['changed_structure_objects_are_owners'] = checks['changed_structure_objects'] == sorted('%d:0' % x for x in xrefs)
+    value = dict(owner_texts=owner_texts, checks=checks)
+    if proposal['route'] == 'single-span':
+        # Glyphs outside the changed range keep code, GID and font object
+        # (and, before it, their position); the changed glyphs are listed.
+        old, new = before['rows'][mcids[0]]['glyphs'], after['rows'][mcids[0]]['glyphs']
+        start, end, length = edit['start'], edit['end'], len(edit['text'])
+        same = lambda a, b: [{k: g[k] for k in ('text', 'code', 'gid', 'font_xref')} for g in a] == \
+            [{k: g[k] for k in ('text', 'code', 'gid', 'font_xref')} for g in b]
+        # Trace origins are single precision; the writer re-emits retained glyphs' matrices.
+        shift = max((abs(a - b) for g, h in zip(old[:start], new[:start]) for a, b in zip(g['origin'], h['origin'])),
+                    default=0)
+        checks.update(unchanged_glyph_identity=same(old[:start], new[:start]) and same(old[end:], new[start + length:]),
+                      unchanged_prefix_positions=shift <= .002)
+        value.update(changed_glyphs=new[start:start + length], prefix_max_shift=shift)
     render(edited, root / 'edited')
-    return dict(owner_texts=owner_texts, checks=checks, pixels=pixels(root.parent / 'source', root / 'edited', regions(proposal)))
+    value['pixels'] = pixels(root.parent / 'source', root / 'edited', regions(proposal))
+    return value
 
 
-def run_case(case, source, before, root):
+def substitute_evidence(record, side, before, proposal):
+    """What was substituted, as recorded and as drawn: resources, GIDs, outlines, advances."""
+    binding = json.loads(side.read_text(encoding='utf-8'))['font_binding']
+    route = proposal['routes']['single-span']
+    drawn = {g['font'] for g in record['changed_glyphs']}
+    return dict(approved={k: route['substitute'][k] for k in ('relation', 'family', 'file', 'sha256', 'font_index',
+                                                               'characters', 'warning')},
+                original_font=route['font'], substitutes={a: {k: v for k, v in r.items() if k != 'provider'}
+                                                          for a, r in binding.get('substitutes', {}).items()},
+                generated=sorted(binding['generated']),
+                changed_glyphs=[dict(g, role='substitute' if g['font'] in binding.get('substitutes', {}) else
+                                     'original-program subset' if g['font'] in binding['generated'] else 'original')
+                                for g in record['changed_glyphs']],
+                substitute_resources_drawn=sorted(drawn & set(binding.get('substitutes', {}))),
+                substitute_glyphs_match_record=all(
+                    binding['substitutes'][g['font']]['glyphs'][g['text']]['gid'] == g['gid']
+                    for g in record['changed_glyphs'] if g['font'] in binding.get('substitutes', {})))
+
+
+def reedit(source, case, record, root):
+    """Second edit from the saved sidecar: restore the selected text with the original program only."""
+    side, edited = root / 'edited.json', root / 'edited.pdf'
+    state = open_single_span(edited, json.loads(side.read_text(encoding='utf-8')))
+    if state['status'] != 'restored':
+        return dict(status='not-restored', reason=state['reason'])
+    edit = record['normalized']['edit']
+    back = [dict(start=edit['start'], end=edit['start'] + len(edit['text']), text=record['normalized']['changed_text'])]
+    provider = json.loads((root / 'provider.json').read_text(encoding='utf-8'))
+    try:
+        edit_single_span(edited, state['state'], root / 'reedited.pdf', root / 'reedited.json', back, provider=provider)
+    except Exception as exc:  # recorded, never hidden
+        return dict(status='refused', reason='%s: %s' % (type(exc).__name__, exc))
+    reopened = open_single_span(root / 'reedited.pdf', json.loads((root / 'reedited.json').read_text(encoding='utf-8')))
+    render(root / 'reedited.pdf', root / 'reedited')
+    after = observe(root / 'reedited.pdf')['rows'][record['normalized']['owner']]
+    return dict(status='saved', edit=back, reopen=reopened['status'], actualtext=after['actualtext'],
+                drawn=''.join(g['text'] for g in after['glyphs']),
+                whole_page_pixels_vs_source=pixels(root.parent / 'source', root / 'reedited'))
+
+
+def run_case(case, source, before, root, substitute=None):
     root.mkdir(parents=True)
     ids = list(range(case['anchor'], case['anchor'] + len(case['selected'])))
     drawn = ''.join(before['glyph_text'][i] for i in ids)
@@ -133,6 +195,13 @@ def run_case(case, source, before, root):
     started = time.monotonic()
     proposal = propose_edit_intent(source, make_selection(source, 1, glyph_ids=ids), case['replacement'],
                                    work_dir=root / 'work')
+    missing = proposal['routes'].get('single-span', {}).get('missing')
+    if substitute is not None and missing:
+        # The user saw the missing characters and explicitly chose this font.
+        record['without_substitute'] = dict(status=proposal['status'], reason=proposal['reason'], missing=missing)
+        proposal = propose_edit_intent(source, make_selection(source, 1, glyph_ids=ids), case['replacement'],
+                                       work_dir=root / 'work', substitute=substitute)
+        record['substitute_requested'] = True
     found = proposal['normalized']
     record.update(proposal_sha256=proposal['model_sha256'], status=proposal['status'], route=proposal['route'],
                   selection_owners=[o['mcid'] for o in found['selection_owners']],
@@ -141,7 +210,8 @@ def run_case(case, source, before, root):
                   routes={k: {f: v.get(f) for f in ('status', 'reason', 'capacity')} for k, v in proposal['routes'].items()},
                   propose_seconds=time.monotonic() - started)
     if proposal['status'] == 'refused':
-        return dict(record, outcome='refused', reason=proposal['reason'])
+        return dict(record, outcome='refused', reason=proposal['reason'],
+                    **(dict(missing=missing) if missing else {}))
     if proposal['status'] == 'ambiguous':
         return dict(record, outcome='needs-confirmation', reason='several boundaries; an explicit choice is required')
     acceptance = accept_edit_intent(source, proposal, work_dir=root / 'work')
@@ -155,6 +225,12 @@ def run_case(case, source, before, root):
     record.update(audit(source, edited, before, proposal, root))
     passed = (reopened['status'] == 'restored' and all(v for k, v in record['checks'].items() if k != 'changed_structure_objects')
               and all(p['outside_pixels'] == 0 for p in record['pixels'].values()))
+    if record.get('substitute_requested'):
+        record['substitute'] = substitute_evidence(record, side, before, proposal)
+        (root / 'provider.json').write_text(json.dumps(proposal['routes']['single-span']['provider']), encoding='utf-8')
+        record['reedit'] = reedit(source, case, record, root)
+        passed = (passed and record['substitute']['substitute_glyphs_match_record']
+                  and record['reedit'].get('reopen') == 'restored')
     return dict(record, outcome='success' if passed else 'audit-failed')
 
 
@@ -186,7 +262,14 @@ def compare_with_pr81(edited, root):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', default='tmp/edit-coverage')
+    parser.add_argument('--substitute', help='font file the user approves for characters the original lacks')
+    parser.add_argument('--face', type=int, default=0)
     args = parser.parse_args()
+    substitute = None
+    if args.substitute:
+        font = Path(args.substitute).resolve()
+        substitute = dict(path=str(font), sha256=hashlib.sha256(font.read_bytes()).hexdigest(), font_index=args.face,
+                          relation='substituted')
     spec = json.loads(CASES.read_text(encoding='utf-8'))
     source = Path(spec['source']['path'])
     assert source_sha(source) == spec['source']['sha256']
@@ -200,7 +283,7 @@ def main():
     results = []
     for case in spec['cases']:
         try:
-            results.append(run_case(case, source, before, root / case['id']))
+            results.append(run_case(case, source, before, root / case['id'], substitute))
         except Exception as exc:  # recorded, never hidden
             results.append(dict(case, outcome='error', reason='%s: %s' % (type(exc).__name__, exc)))
         print(case['id'], results[-1]['outcome'], results[-1].get('route'), results[-1].get('reason', '')[:120])
@@ -210,7 +293,8 @@ def main():
         compat['unified_vs_pr81'] = compare_with_pr81(root / 'B' / 'edited.pdf', root / 'B')
     assert source_sha(source) == spec['source']['sha256']
     summary = dict(schema='pdfengine-edit-coverage-results-1', cases_file=str(CASES), source=spec['source'],
-                   results=results, compatibility=compat,
+                   substitute=dict({k: v for k, v in substitute.items() if k != 'path'}, file=Path(substitute['path']).name)
+                   if substitute else None, results=results, compatibility=compat,
                    totals={o: sum(r['outcome'] == o for r in results) for o in
                            ('success', 'needs-confirmation', 'refused', 'audit-failed', 'case-error', 'error')},
                    elapsed_seconds=time.monotonic() - started)

@@ -13,6 +13,12 @@ The route is then decided by proved preconditions, not by trying routes:
 
 Anything else is refused with its reason. Proposals never write; acceptance
 and editing re-derive the normalization and route on the same revision.
+
+Characters the owner's original embedded program lacks are reported
+(``missing``) and refused, unless the caller passes an explicitly approved
+``substitute`` (path, SHA-256, face index, ``relation='substituted'``). It
+supplies only those characters, on the single-Span route only; it is never
+chosen by the engine and never presented as the original font.
 """
 import json
 from pathlib import Path
@@ -25,10 +31,12 @@ from .content_stream import ContentPage
 from .layout import LayoutError, grapheme_cluster_boundaries
 from .marked_content import observe_marked_content
 from .selection import make_selection, resolve_selection, source_sha
-from .span_edit import SCHEMA as SINGLE_STATE, _seal, accept_single_span, edit_single_span, open_single_span, \
-    plan_single_span_edit, propose_single_span
+from .span_edit import SCHEMA as SINGLE_STATE, _seal, accept_single_span, edit_single_span, missing_characters, \
+    open_single_span, plan_single_span_edit, propose_single_span
 
 SCHEMA = 'pdfengine-edit-intent-proposal-1'
+SUBSTITUTE_WARNING = ('substitute glyphs come from a different font program; their appearance may differ '
+                      'from the original font')
 ACCEPTANCE = 'pdfengine-edit-intent-acceptance-1'
 # Trace boxes are single precision; the single-Span rectangle gets only that
 # rounding beyond the owner's observed extent.
@@ -144,7 +152,17 @@ def _selection_owners(ordered, scope_of, ids):
     return result
 
 
-def _single_route(source, found, work_dir):
+def _missing(data, text):
+    """The original program's name and the characters of ``text`` it cannot shape (each once, in order)."""
+    from .shaped_font import ShapedFont
+    font = ShapedFont(data)
+    try:
+        return font.name, ''.join(missing_characters(font, text))
+    finally:
+        font.font.close()
+
+
+def _single_route(source, found, work_dir, substitute=None):
     """Single-Span preconditions: leaf contract, edit position, font and capacity in the owner's own extent."""
     owner = found['owner']
     content = ContentPage(source, found['page'])
@@ -165,7 +183,11 @@ def _single_route(source, found, work_dir):
                 recipe, font, data = _provider(content, dict(font_xrefs=owner['fonts']), work_dir)
                 font['family'] = _coverage(data, found['inserted'])
             except PdfError as exc:
-                return dict(record, provider=None, font=None, status='refused', reason=str(exc), capacity=False)
+                family, missing = _missing(data, found['inserted']) if font is not None else (None, '')
+                if substitute is None or not missing:
+                    refused = dict(record, provider=None, font=None, status='refused', reason=str(exc), capacity=False)
+                    return dict(refused, missing=missing) if missing else refused
+                font.update(family=family, missing=missing)
     finally:
         content.close()
     record.update(provider=recipe, font=font)
@@ -173,31 +195,48 @@ def _single_route(source, found, work_dir):
         selection = make_selection(source, found['page'], glyph_ids=owner['glyph_ids'],
                                    explicit_width=region['x1'] - region['x0'])
         proposal = propose_single_span(source, selection, region=region)
-        plan = plan_single_span_edit(source, _seal(dict(proposal, status='confirmed')), [found['edit']],
-                                     provider=recipe)
+        options = dict(provider=recipe) if substitute is None else dict(provider=recipe, substitute=substitute)
+        plan = plan_single_span_edit(source, _seal(dict(proposal, status='confirmed')), [found['edit']], **options)
     except (PdfError, LayoutError) as exc:
         reason = str(exc)
         return dict(record, status='refused', reason=reason, capacity=any(c in reason for c in CAPACITY))
     glyphs = plan['glyph_plan']
-    return dict(record, status='qualified', proposal=proposal, after=plan['after'],
-                width=plan['lines'][0]['width'], width_limit=region['x1'] - plan['lines'][0]['x'],
-                retained=sum(g['provider'] == 'original' for g in glyphs),
-                new=sum(g['provider'] != 'original' for g in glyphs))
+    value = dict(record, status='qualified', proposal=proposal, after=plan['after'],
+                 width=plan['lines'][0]['width'], width_limit=region['x1'] - plan['lines'][0]['x'],
+                 retained=sum(g['provider'] == 'original' for g in glyphs),
+                 new=sum(g['provider'] != 'original' for g in glyphs))
+    if substitute is not None:
+        chosen = plan['substitute']
+        value['substitute'] = dict({k: chosen[k] for k in ('relation', 'sha256', 'font_index', 'family')},
+                                   file=Path(chosen['path']).name, characters=chosen['characters'],
+                                   glyphs=chosen['glyphs'], new=sum(g['provider'] == 'single-span-substitute'
+                                                                    for g in glyphs),
+                                   warning=SUBSTITUTE_WARNING)
+    return value
 
 
-def _derive(source, selection, replacement, work_dir):
+def _derive(source, selection, replacement, work_dir, substitute=None):
     found = normalize_edit(source, selection, replacement)
     value = dict(schema=SCHEMA, pdf_sha256=source_sha(source), normalized=found, routes={})
+    if substitute is not None:
+        # The caller's explicit approval, kept verbatim so acceptance and
+        # editing re-qualify the same bytes; never inferred by the engine.
+        value['substitute'] = substitute
     if found['owner'] is None:
         value.update(status='refused', route=None, reason=found['reason'])
         return value
-    single = _single_route(source, found, work_dir)
+    single = _single_route(source, found, work_dir, substitute)
     value['routes']['single-span'] = single
     if single['status'] == 'qualified':
         value.update(status='proposed', route='single-span')
         return value
     if not single['capacity']:
         value.update(status='refused', route=None, reason='single-span route: ' + single['reason'])
+        return value
+    if substitute is not None:
+        # The adjacent-Span contract pins one original program for both owners.
+        value.update(status='refused', route=None, reason='single Span lacks capacity (%s); the adjacent-Span route '
+                     'does not take a substitute font' % single['reason'])
         return value
     normalized = make_selection(source, found['page'], glyph_ids=found['changed_ids'])
     try:
@@ -212,9 +251,13 @@ def _derive(source, selection, replacement, work_dir):
     return value
 
 
-def propose_edit_intent(source, selection, replacement, *, work_dir):
-    """Read-only proposal. ``status`` is proposed, ambiguous (adjacent boundary choice) or refused."""
-    return _seal(_derive(source, selection, replacement, work_dir))
+def propose_edit_intent(source, selection, replacement, *, work_dir, substitute=None):
+    """Read-only proposal. ``status`` is proposed, ambiguous (adjacent boundary choice) or refused.
+
+    ``substitute`` is the caller's explicit approval of a font for the
+    characters a refused proposal reported as ``missing``.
+    """
+    return _seal(_derive(source, selection, replacement, work_dir, substitute))
 
 
 def _rederive(source, proposal, work_dir):
@@ -223,7 +266,7 @@ def _rederive(source, proposal, work_dir):
     if source_sha(source) != proposal['pdf_sha256']:
         _refuse('the proposal is stale for this revision')
     found = proposal['normalized']
-    if _seal(_derive(source, found['selection'], found['replacement'], work_dir)) != proposal:
+    if _seal(_derive(source, found['selection'], found['replacement'], work_dir, proposal.get('substitute'))) != proposal:
         _refuse('the proposal is stale or was modified')
 
 
@@ -259,7 +302,10 @@ def edit_edit_intent(source, acceptance, output, model_output, *, work_dir):
         expected = {k: v for k, v in route['proposal'].items() if k not in ('status', 'model_sha256')}
         if {k: v for k, v in model.items() if k not in ('status', 'model_sha256')} != expected:
             _refuse('the accepted single-Span state differs from the proposal')
-        result = edit_single_span(source, model, output, model_output, route['edits'], provider=route['provider'])
+        options = dict(provider=route['provider'])
+        if proposal.get('substitute') is not None:
+            options['substitute'] = proposal['substitute']
+        result = edit_single_span(source, model, output, model_output, route['edits'], **options)
         result = dict(result, after=[result['after']])
     else:
         result = edit_adjacent_intent(source, acceptance['inner'], output, model_output, work_dir=work_dir)

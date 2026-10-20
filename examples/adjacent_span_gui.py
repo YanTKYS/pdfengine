@@ -5,6 +5,9 @@ Drag from one glyph to another on page 1, type the replacement, press
 「編集案を確認」, review the owners, boundary, follower, font and rectangles
 (drawn over the page), press 「この内容で承認」 and then 「PDFを保存」. All
 decisions are made by ``examples.adjacent_span_session`` and the engine.
+「代替フォントを選ぶ…」 is enabled only after a proposal was refused for
+characters the original font lacks; the chosen file is then proposed again
+as an explicit substitute for those characters.
 """
 from __future__ import annotations
 
@@ -27,6 +30,13 @@ LEGEND = {'first': '先行owner矩形', 'second': '後続owner矩形', 'follower
           'wrap-window': '改行窓', 'support': 'カラム端の裏付け'}
 
 
+def default_substitute(source):
+    """Ask for a local font file (TrueType outlines; embedding rights are checked by the engine)."""
+    path = filedialog.askopenfilename(title='代替フォント（不足文字だけに使用）', initialdir=str(Path(source).parent),
+                                      filetypes=[('TrueType', '*.ttf *.ttc'), ('すべて', '*.*')])
+    return Path(path) if path else None
+
+
 def default_outputs(source):
     """Ask for the output PDF; the sidecar is the same name with .json."""
     path = filedialog.asksaveasfilename(title='保存先PDF', defaultextension='.pdf', confirmoverwrite=False,
@@ -37,8 +47,8 @@ def default_outputs(source):
 
 
 class App:
-    def __init__(self, root, path=None, *, choose_outputs=default_outputs):
-        self.root, self.choose_outputs = root, choose_outputs
+    def __init__(self, root, path=None, *, choose_outputs=default_outputs, choose_substitute=default_substitute):
+        self.root, self.choose_outputs, self.choose_substitute = root, choose_outputs, choose_substitute
         self.session = self.review = None
         self.shown = None
         self.busy = None
@@ -70,6 +80,10 @@ class App:
         self.entry = ttk.Entry(side, textvariable=self.replacement, width=40); self.entry.pack(anchor='w')
         self.propose_button = ttk.Button(side, text='編集案を確認', command=self.propose)
         self.propose_button.pack(anchor='w', pady=4)
+        fonts = ttk.Frame(side); fonts.pack(anchor='w')
+        self.font_button = ttk.Button(fonts, text='代替フォントを選ぶ…', command=self.choose_font)
+        self.font_button.pack(side='left')
+        self.font_label = ttk.Label(fonts, text=''); self.font_label.pack(side='left', padx=6)
         self.text = tk.Text(side, width=70, height=30, wrap='char'); self.text.pack(fill='y', expand=True)
         self.options = ttk.Frame(side); self.options.pack(anchor='w')
         self.option = tk.IntVar(value=-1)
@@ -188,6 +202,22 @@ class App:
                 self.review = None
                 self.clear_proposal()
 
+    def choose_font(self):
+        if self.busy or self.session is None or not self.session.missing:
+            return
+        path = self.choose_substitute(self.session.source)
+        if not path:
+            return
+        try:
+            chosen = self.session.set_substitute(path)
+        except Exception as exc:
+            self.say('代替フォントを使えません: %s' % exc, error=True)
+            return self.refresh()
+        self.review = None
+        self.clear_proposal()
+        self.say('代替フォント「%s」を選びました。元フォントにない「%s」だけに使います。「編集案を確認」を押してください。'
+                 % (Path(chosen['path']).name, chosen['missing']))
+
     def clear_proposal(self):
         for child in self.options.winfo_children():
             child.destroy()
@@ -230,7 +260,13 @@ class App:
     def proposed(self, value, error):
         if error is not None:
             self.review = None
-            self.write(['編集案は作成されませんでした（編集は行いません）。', str(error)])
+            lines = ['編集案は作成されませんでした（編集は行いません）。', str(error)]
+            missing = getattr(error, 'missing', None)
+            if missing and self.session.substitute is None:
+                lines += ['', '元のフォントに「%s」がありません。自動で別のフォントは使いません。' % missing,
+                          '使う場合は「代替フォントを選ぶ…」で、埋め込みが許可されたフォントファイルを選んでください。',
+                          '代替フォントは「%s」だけに使い、見た目が元のフォントと異なる場合があります。' % missing]
+            self.write(lines)
             self.say('拒否されました: %s' % error, error=True)
             return self.draw()
         self.review = value
@@ -269,6 +305,8 @@ class App:
             return
         self.show(value['output'])
         self.write(review_text(self.review) + ['', '保存: ' + value['output'], 'sidecar: ' + value['sidecar'],
+                   *['代替フォントの記録: %s %s（「%s」）' % (a, r['family'], r['characters'])
+                     for a, r in value['substitutes'].items()],
                    'PDF SHA-256: ' + value['output_sha256'], 'sidecar SHA-256: ' + value['sidecar_sha256'],
                    '再open: ' + value['reopen'] + ('（%s）' % value['reopen_reason'] if value['reopen_reason'] else '')])
         self.say('保存しました。再openの結果: %s' % value['reopen'], error=value['reopen'] != 'restored')
@@ -286,6 +324,10 @@ class App:
         self.accept_button.configure(state='normal' if ready and s.proposal is not None and choice
                                      and s.acceptance is None else 'disabled')
         self.save_button.configure(state='normal' if ready and s.acceptance is not None and s.result is None else 'disabled')
+        self.font_button.configure(state='normal' if ready and s.missing and s.result is None else 'disabled')
+        self.font_label.configure(text=('代替: %s（「%s」だけ）' % (Path(s.substitute['path']).name, s.missing)
+                                        if s is not None and s.substitute else
+                                        '元フォントにない文字: 「%s」' % s.missing if s is not None and s.missing else ''))
         for child in self.options.winfo_children():
             child.configure(state='normal' if ready and s.acceptance is None else 'disabled')
         self.view_button.configure(state='normal' if idle and s.result else 'disabled',
