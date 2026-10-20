@@ -1436,5 +1436,1065 @@
         "save": 37.36100749100001
       }
     }
+  },
+  "substitute_evaluation": {
+    "recorded": "2026-10-20",
+    "base_commit": "146cf66",
+    "substitute_font": {
+      "file": "BIZUDGothic-Regular.ttf",
+      "family": "BIZUDGothic-Regular",
+      "sha256": "709fcd41e3209fb765da750472f55ccdf925653e9fa7e1eb007cb65c8f749c75",
+      "font_index": 0,
+      "license": "SIL Open Font License 1.1 (The BIZ UDGothic Project Authors)",
+      "source": "https://github.com/google/fonts/tree/main/ofl/bizudgothic",
+      "os2_fstype": 0,
+      "units_per_em": 2048,
+      "advance_of_missing_characters": 2048,
+      "committed": false
+    },
+    "selection_rule": "propose without a substitute; only a proposal refused with routes.single-span.missing is proposed again with the font approved as relation=substituted (the GUI choice); every other case is unchanged",
+    "without_substitute": {
+      "run_root": "tmp/edit-coverage-3",
+      "totals": {
+        "success": 6,
+        "needs-confirmation": 0,
+        "refused": 8,
+        "audit-failed": 0,
+        "case-error": 0,
+        "error": 0
+      },
+      "elapsed_seconds": 302.9393034269999,
+      "identical_to_pr83": {
+        "A": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "B": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "C": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "D": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "E": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "F": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "G": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "H": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "I": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "J": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "K": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "L": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "M": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        },
+        "N": {
+          "outcome": true,
+          "reason": true,
+          "pdf_and_sidecar_sha256": true
+        }
+      },
+      "compatibility_adjacent_api_equals_pr81": true
+    },
+    "with_substitute": {
+      "run_root": "tmp/edit-coverage-substitute",
+      "totals": {
+        "success": 7,
+        "needs-confirmation": 0,
+        "refused": 7,
+        "audit-failed": 0,
+        "case-error": 0,
+        "error": 0
+      },
+      "elapsed_seconds": 350.33408576500005,
+      "results": [
+        {
+          "id": "A",
+          "outcome": "success",
+          "route": "single-span",
+          "normalized": {
+            "changed_text": "つ",
+            "inserted": "お",
+            "rule": "changed characters only",
+            "owner": 25,
+            "edit": {
+              "start": 3,
+              "end": 4,
+              "text": "お"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "qualified",
+              "reason": null,
+              "capacity": null
+            }
+          },
+          "after": [
+            "標記にお"
+          ],
+          "reopen": "restored",
+          "sha256": {
+            "pdf": "e2a2fbf3bcec518c213f407721aa1d0420ce0db49d3eccf8eab5746f6dd1d5c3",
+            "sidecar": "3a97344a73eddae3b7d4b6143bf526bf3840df3e6db58b33149bbe592ef255ad"
+          },
+          "checks": {
+            "actualtext_equals_drawn": true,
+            "logical_text": true,
+            "structure_except_changed_actualtext": true,
+            "changed_structure_objects": [
+              "59:0"
+            ],
+            "other_owners_unchanged": true,
+            "original_fonts_unchanged": true,
+            "drawings_unchanged": true,
+            "follower_semantics_unchanged": true,
+            "changed_structure_objects_are_owners": true,
+            "unchanged_glyph_identity": true,
+            "unchanged_prefix_positions": true
+          },
+          "pixels": {
+            "mupdf": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                228,
+                675,
+                246,
+                694
+              ]
+            },
+            "poppler": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                228,
+                675,
+                246,
+                694
+              ]
+            }
+          },
+          "prefix_max_shift": 7.62939453125e-06,
+          "changed_glyphs": [
+            {
+              "text": "お",
+              "code": "0001",
+              "gid": 2110,
+              "font": "/PRF1",
+              "font_xref": 173,
+              "origin": [
+                113.06783294677734,
+                346.1299743652344
+              ]
+            }
+          ],
+          "propose_seconds": 3.4370951539999623,
+          "saved_seconds": 18.581413010000006
+        },
+        {
+          "id": "B",
+          "outcome": "success",
+          "route": "adjacent-span",
+          "normalized": {
+            "changed_text": "い",
+            "inserted": "きまし",
+            "rule": "changed characters only",
+            "owner": 28,
+            "edit": {
+              "start": 10,
+              "end": 11,
+              "text": "きまし"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "refused",
+              "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+              "capacity": true
+            },
+            "adjacent-span": {
+              "status": "proposed",
+              "reason": null,
+              "capacity": null
+            }
+          },
+          "after": [
+            "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+            "に送付いたします。"
+          ],
+          "reopen": "restored",
+          "sha256": {
+            "pdf": "d09e33e15e4519c5452546344e900fc120095cc880abba3ee8a3b05fac2206d7",
+            "sidecar": "2160b216eace6151b3b7347763fcc450f11e9c520955095735ac6a6ad088bcb4"
+          },
+          "checks": {
+            "actualtext_equals_drawn": true,
+            "logical_text": true,
+            "structure_except_changed_actualtext": true,
+            "changed_structure_objects": [
+              "62:0",
+              "63:0"
+            ],
+            "other_owners_unchanged": true,
+            "original_fonts_unchanged": true,
+            "drawings_unchanged": true,
+            "follower_semantics_unchanged": true,
+            "changed_structure_objects_are_owners": true
+          },
+          "pixels": {
+            "mupdf": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                143,
+                674,
+                1046,
+                730
+              ]
+            },
+            "poppler": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                142,
+                674,
+                1046,
+                730
+              ]
+            }
+          },
+          "propose_seconds": 13.796256077999942,
+          "saved_seconds": 78.21022159300014
+        },
+        {
+          "id": "C",
+          "outcome": "success",
+          "route": "single-span",
+          "normalized": {
+            "changed_text": "まし",
+            "inserted": "てい",
+            "rule": "changed characters only",
+            "owner": 28,
+            "edit": {
+              "start": 23,
+              "end": 25,
+              "text": "てい"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "qualified",
+              "reason": null,
+              "capacity": null
+            }
+          },
+          "after": [
+            "国立感染症研究所においてガイドラインが作成されていたので、参考に送"
+          ],
+          "reopen": "restored",
+          "sha256": {
+            "pdf": "49b9be801d8f6de09dac90e47c4e5037238367c1ba5b6a84fe9cd7191d4c9e06",
+            "sidecar": "987b26ffb94232efb225d841f5b794cf9edb782c8e90fe589aea07a934f286ff"
+          },
+          "checks": {
+            "actualtext_equals_drawn": true,
+            "logical_text": true,
+            "structure_except_changed_actualtext": true,
+            "changed_structure_objects": [
+              "62:0"
+            ],
+            "other_owners_unchanged": true,
+            "original_fonts_unchanged": true,
+            "drawings_unchanged": true,
+            "follower_semantics_unchanged": true,
+            "changed_structure_objects_are_owners": true,
+            "unchanged_glyph_identity": true,
+            "unchanged_prefix_positions": true
+          },
+          "pixels": {
+            "mupdf": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                837,
+                675,
+                877,
+                694
+              ]
+            },
+            "poppler": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                837,
+                675,
+                877,
+                694
+              ]
+            }
+          },
+          "prefix_max_shift": 3.0517578125e-05,
+          "changed_glyphs": [
+            {
+              "text": "て",
+              "code": "0001",
+              "gid": 2138,
+              "font": "/PRF1",
+              "font_xref": 173,
+              "origin": [
+                417.7784118652344,
+                346.1299743652344
+              ]
+            },
+            {
+              "text": "い",
+              "code": "0002",
+              "gid": 2104,
+              "font": "/PRF1",
+              "font_xref": 173,
+              "origin": [
+                428.2222595214844,
+                346.1299743652344
+              ]
+            }
+          ],
+          "propose_seconds": 4.721502019999889,
+          "saved_seconds": 22.042429329000015
+        },
+        {
+          "id": "D",
+          "outcome": "success",
+          "route": "single-span",
+          "normalized": {
+            "changed_text": "まし",
+            "inserted": "",
+            "rule": "changed characters only",
+            "owner": 28,
+            "edit": {
+              "start": 23,
+              "end": 25,
+              "text": ""
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "qualified",
+              "reason": null,
+              "capacity": null
+            }
+          },
+          "after": [
+            "国立感染症研究所においてガイドラインが作成されたので、参考に送"
+          ],
+          "reopen": "restored",
+          "sha256": {
+            "pdf": "fde1b163ddbfcbbfe3d3fc6c3505139be7f932e4a972a9f2ad1583ee163a4f9e",
+            "sidecar": "ed74144e1277853f83b8d5a979c07b326b883b8b3bcf228cc2e9e9e17dd323e7"
+          },
+          "checks": {
+            "actualtext_equals_drawn": true,
+            "logical_text": true,
+            "structure_except_changed_actualtext": true,
+            "changed_structure_objects": [
+              "62:0"
+            ],
+            "other_owners_unchanged": true,
+            "original_fonts_unchanged": true,
+            "drawings_unchanged": true,
+            "follower_semantics_unchanged": true,
+            "changed_structure_objects_are_owners": true,
+            "unchanged_glyph_identity": true,
+            "unchanged_prefix_positions": true
+          },
+          "pixels": {
+            "mupdf": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                837,
+                674,
+                1045,
+                694
+              ]
+            },
+            "poppler": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                837,
+                674,
+                1045,
+                694
+              ]
+            }
+          },
+          "prefix_max_shift": 3.0517578125e-05,
+          "changed_glyphs": [],
+          "propose_seconds": 4.142898603999811,
+          "saved_seconds": 19.907080980999808
+        },
+        {
+          "id": "E",
+          "outcome": "success",
+          "route": "single-span",
+          "without_substitute": {
+            "status": "refused",
+            "reason": "single-span route: the original embedded program lacks 件; no fallback font is used",
+            "missing": "件"
+          },
+          "normalized": {
+            "changed_text": "標記",
+            "inserted": "本件",
+            "rule": "changed characters only",
+            "owner": 25,
+            "edit": {
+              "start": 0,
+              "end": 2,
+              "text": "本件"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "qualified",
+              "reason": null,
+              "capacity": null
+            }
+          },
+          "after": [
+            "本件につ"
+          ],
+          "reopen": "restored",
+          "sha256": {
+            "pdf": "2eebb2aab938325e24335bb33ceb8974cdf132a2f67baf0cf4a7a5e26e40e5c6",
+            "sidecar": "190fca7bf4c66fd15a4af3697b51c361f1d52b28f655840af4c0640c38ab29b8"
+          },
+          "checks": {
+            "actualtext_equals_drawn": true,
+            "logical_text": true,
+            "structure_except_changed_actualtext": true,
+            "changed_structure_objects": [
+              "59:0"
+            ],
+            "other_owners_unchanged": true,
+            "original_fonts_unchanged": true,
+            "drawings_unchanged": true,
+            "follower_semantics_unchanged": true,
+            "changed_structure_objects_are_owners": true,
+            "unchanged_glyph_identity": true,
+            "unchanged_prefix_positions": true
+          },
+          "pixels": {
+            "mupdf": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                163,
+                673,
+                205,
+                695
+              ]
+            },
+            "poppler": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                163,
+                673,
+                205,
+                695
+              ]
+            }
+          },
+          "prefix_max_shift": 0,
+          "changed_glyphs": [
+            {
+              "text": "本",
+              "code": "0001",
+              "gid": 7055,
+              "font": "/PRF1",
+              "font_xref": 173,
+              "origin": [
+                81.50399780273438,
+                346.1299743652344
+              ]
+            },
+            {
+              "text": "件",
+              "code": "0001",
+              "gid": 2825,
+              "font": "/PRF2",
+              "font_xref": 179,
+              "origin": [
+                92.06399536132812,
+                346.1299743652344
+              ]
+            }
+          ],
+          "substitute": {
+            "approved": {
+              "relation": "substituted",
+              "family": "BIZUDGothic-Regular",
+              "file": "BIZUDGothic-Regular.ttf",
+              "sha256": "709fcd41e3209fb765da750472f55ccdf925653e9fa7e1eb007cb65c8f749c75",
+              "font_index": 0,
+              "characters": "件",
+              "warning": "substitute glyphs come from a different font program; their appearance may differ from the original font"
+            },
+            "original_font": {
+              "font_xref": 5,
+              "program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+              "family": "MS-Gothic",
+              "missing": "件"
+            },
+            "substitutes": {
+              "/PRF2": {
+                "subset_sha256": "4013b44ccaeac9bd8009fb79704ebd46b8efa7afedaf31d3bac1c98452ad4d9e",
+                "basefont": "MTYYUA+BIZUDGothic-Regular",
+                "relation": "substituted",
+                "family": "BIZUDGothic-Regular",
+                "glyphs": {
+                  "件": {
+                    "gid": 2825,
+                    "advance": 2048,
+                    "upem": 2048,
+                    "outline_sha256": "b5d9ef1f358e1bdb8ce598c5877dffa52428f78d99dbd3841b4ddac5ad13ccf2"
+                  }
+                }
+              }
+            },
+            "generated": [
+              "/PRF1"
+            ],
+            "changed_glyphs": [
+              {
+                "text": "本",
+                "code": "0001",
+                "gid": 7055,
+                "font": "/PRF1",
+                "font_xref": 173,
+                "origin": [
+                  81.50399780273438,
+                  346.1299743652344
+                ],
+                "role": "original-program subset"
+              },
+              {
+                "text": "件",
+                "code": "0001",
+                "gid": 2825,
+                "font": "/PRF2",
+                "font_xref": 179,
+                "origin": [
+                  92.06399536132812,
+                  346.1299743652344
+                ],
+                "role": "substitute"
+              }
+            ],
+            "substitute_resources_drawn": [
+              "/PRF2"
+            ],
+            "substitute_glyphs_match_record": true
+          },
+          "reedit": {
+            "status": "saved",
+            "edit": [
+              {
+                "start": 0,
+                "end": 2,
+                "text": "標記"
+              }
+            ],
+            "reopen": "restored",
+            "actualtext": "標記につ",
+            "drawn": "標記につ",
+            "whole_page_pixels_vs_source": {
+              "mupdf": {
+                "outside_pixels": 0,
+                "changed_raster_bbox": null
+              },
+              "poppler": {
+                "outside_pixels": 0,
+                "changed_raster_bbox": null
+              }
+            }
+          },
+          "propose_seconds": 6.45162313600008,
+          "saved_seconds": 25.3427989610002
+        },
+        {
+          "id": "F",
+          "outcome": "refused",
+          "route": null,
+          "reason": "the changed characters つきま span 2 owners",
+          "normalized": {
+            "changed_text": "つきま",
+            "inserted": "関",
+            "rule": "changed characters only",
+            "owner": null,
+            "edit": null
+          },
+          "routes": {},
+          "propose_seconds": 0.5450559809999049
+        },
+        {
+          "id": "G",
+          "outcome": "refused",
+          "route": null,
+          "reason": "single-span route: single Span: unsupported semantic override",
+          "normalized": {
+            "changed_text": "つ",
+            "inserted": "お",
+            "rule": "changed characters only",
+            "owner": 31,
+            "edit": {
+              "start": 0,
+              "end": 1,
+              "text": "お"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "refused",
+              "reason": "single Span: unsupported semantic override",
+              "capacity": false
+            }
+          },
+          "propose_seconds": 0.8302266489999965
+        },
+        {
+          "id": "H",
+          "outcome": "refused",
+          "route": null,
+          "reason": "single-span route: single Span supports one internal edit only",
+          "normalized": {
+            "changed_text": "つ",
+            "inserted": "",
+            "rule": "changed characters only",
+            "owner": 25,
+            "edit": {
+              "start": 3,
+              "end": 4,
+              "text": ""
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "refused",
+              "reason": "single Span supports one internal edit only",
+              "capacity": false
+            }
+          },
+          "propose_seconds": 2.8535818870000185
+        },
+        {
+          "id": "I",
+          "outcome": "success",
+          "route": "adjacent-span",
+          "normalized": {
+            "changed_text": "考",
+            "inserted": "考まで",
+            "rule": "insertion attached to the preceding selected glyph",
+            "owner": 28,
+            "edit": {
+              "start": 30,
+              "end": 31,
+              "text": "考まで"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "refused",
+              "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+              "capacity": true
+            },
+            "adjacent-span": {
+              "status": "proposed",
+              "reason": null,
+              "capacity": null
+            }
+          },
+          "after": [
+            "国立感染症研究所においてガイドラインが作成されましたので、参考まで",
+            "に送付いたします。"
+          ],
+          "reopen": "restored",
+          "sha256": {
+            "pdf": "996d738ca79d7a655343c2f4bd305e2c4a64360cc4275997861d5e773f64c6f4",
+            "sidecar": "bae7ea96e5a963e32170826ad3d630ccf48faec5685cd76e6509dc0b57493601"
+          },
+          "checks": {
+            "actualtext_equals_drawn": true,
+            "logical_text": true,
+            "structure_except_changed_actualtext": true,
+            "changed_structure_objects": [
+              "62:0",
+              "63:0"
+            ],
+            "other_owners_unchanged": true,
+            "original_fonts_unchanged": true,
+            "drawings_unchanged": true,
+            "follower_semantics_unchanged": true,
+            "changed_structure_objects_are_owners": true
+          },
+          "pixels": {
+            "mupdf": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                143,
+                674,
+                1045,
+                730
+              ]
+            },
+            "poppler": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                142,
+                674,
+                1045,
+                730
+              ]
+            }
+          },
+          "propose_seconds": 14.028527586999871,
+          "saved_seconds": 73.80339681299984
+        },
+        {
+          "id": "J",
+          "outcome": "refused",
+          "route": null,
+          "reason": "single Span lacks capacity (single Span provider qualification failed: Reflowed text exceeds the available vertical space.); the adjacent-Span route does not take a substitute font",
+          "missing": "せ",
+          "without_substitute": {
+            "status": "refused",
+            "reason": "single-span route: the original embedded program lacks せ; no fallback font is used",
+            "missing": "せ"
+          },
+          "normalized": {
+            "changed_text": "いたし",
+            "inserted": "させていただき",
+            "rule": "changed characters only",
+            "owner": 29,
+            "edit": {
+              "start": 1,
+              "end": 4,
+              "text": "させていただき"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "refused",
+              "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+              "capacity": true
+            }
+          },
+          "propose_seconds": 5.161711130999947
+        },
+        {
+          "id": "K",
+          "outcome": "refused",
+          "route": null,
+          "reason": "single Span lacks capacity (single Span provider qualification failed: Reflowed text exceeds the available vertical space.); the adjacent-Span route does not take a substitute font",
+          "missing": "を",
+          "without_substitute": {
+            "status": "refused",
+            "reason": "single-span route: the original embedded program lacks を; no fallback font is used",
+            "missing": "を"
+          },
+          "normalized": {
+            "changed_text": "力",
+            "inserted": "力を",
+            "rule": "insertion attached to the preceding selected glyph",
+            "owner": 23,
+            "edit": {
+              "start": 19,
+              "end": 20,
+              "text": "力を"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "refused",
+              "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+              "capacity": true
+            }
+          },
+          "propose_seconds": 5.301708969999936
+        },
+        {
+          "id": "L",
+          "outcome": "success",
+          "route": "single-span",
+          "normalized": {
+            "changed_text": "御",
+            "inserted": "お",
+            "rule": "changed characters only",
+            "owner": 23,
+            "edit": {
+              "start": 27,
+              "end": 28,
+              "text": "お"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "qualified",
+              "reason": null,
+              "capacity": null
+            }
+          },
+          "after": [
+            "日頃より、本府保健医療行政の推進に御協力いただき、厚くお礼申し上げます。"
+          ],
+          "reopen": "restored",
+          "sha256": {
+            "pdf": "8b15215779246132f669531a25b6444f11d3cd1db68f8c6a42d22daea4af240c",
+            "sidecar": "10887c4e1ae992413236a820f33324e2230809efcd4be42706e1083161218613"
+          },
+          "checks": {
+            "actualtext_equals_drawn": true,
+            "logical_text": true,
+            "structure_except_changed_actualtext": true,
+            "changed_structure_objects": [
+              "56:0"
+            ],
+            "other_owners_unchanged": true,
+            "original_fonts_unchanged": true,
+            "drawings_unchanged": true,
+            "follower_semantics_unchanged": true,
+            "changed_structure_objects_are_owners": true,
+            "unchanged_glyph_identity": true,
+            "unchanged_prefix_positions": true
+          },
+          "pixels": {
+            "mupdf": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                731,
+                639,
+                751,
+                658
+              ]
+            },
+            "poppler": {
+              "outside_pixels": 0,
+              "changed_raster_bbox": [
+                731,
+                639,
+                750,
+                658
+              ]
+            }
+          },
+          "prefix_max_shift": 6.103515625e-05,
+          "changed_glyphs": [
+            {
+              "text": "お",
+              "code": "0001",
+              "gid": 2110,
+              "font": "/PRF1",
+              "font_xref": 173,
+              "origin": [
+                365.23004150390625,
+                328.1300048828125
+              ]
+            }
+          ],
+          "propose_seconds": 3.799738199000103,
+          "saved_seconds": 20.428725572000076
+        },
+        {
+          "id": "M",
+          "outcome": "refused",
+          "route": null,
+          "reason": "single Span lacks capacity (single Span provider qualification failed: Reflowed text exceeds the available vertical space.); the adjacent-Span route does not take a substitute font",
+          "missing": "品",
+          "without_substitute": {
+            "status": "refused",
+            "reason": "single-span route: the original embedded program lacks 品; no fallback font is used",
+            "missing": "品"
+          },
+          "normalized": {
+            "changed_text": "の",
+            "inserted": "の品",
+            "rule": "insertion attached to the preceding selected glyph",
+            "owner": 17,
+            "edit": {
+              "start": 18,
+              "end": 19,
+              "text": "の品"
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "refused",
+              "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+              "capacity": true
+            }
+          },
+          "propose_seconds": 6.0084934699998485
+        },
+        {
+          "id": "N",
+          "outcome": "refused",
+          "route": null,
+          "reason": "single-span route: single Span supports one internal edit only",
+          "normalized": {
+            "changed_text": "まして",
+            "inserted": "",
+            "rule": "changed characters only",
+            "owner": 26,
+            "edit": {
+              "start": 1,
+              "end": 4,
+              "text": ""
+            }
+          },
+          "routes": {
+            "single-span": {
+              "status": "refused",
+              "reason": "single Span supports one internal edit only",
+              "capacity": false
+            }
+          },
+          "propose_seconds": 3.581712355000036
+        }
+      ],
+      "compatibility_adjacent_api_equals_pr81": true
+    },
+    "diagnostics": {
+      "note": "same cases with a covered character in place of the missing one (not fixed cases; diagnostic only)",
+      "J": {
+        "replacement": "さしていただきます",
+        "outcome": "refused",
+        "reason": "single Span lacks capacity; adjacent Span: the first owner's line ends with hanging punctuation or whitespace, so its line break does not bound the column"
+      },
+      "K": {
+        "replacement": "御協力のいただき",
+        "outcome": "refused",
+        "reason": "single Span lacks capacity; adjacent Span: the first owner's line ends with hanging punctuation or whitespace, so its line break does not bound the column"
+      },
+      "M": {
+        "replacement": "届出の出質向上",
+        "outcome": "refused",
+        "reason": "single Span lacks capacity; adjacent Span: the first owner is not one wrapped line followed by the second owner's line"
+      },
+      "E_with_BIZUDMincho": {
+        "sha256": "468ee6d9b149ca144809e03841bf18740ecf014e055a00da6ecaf1aaf4165af2",
+        "outcome": "success",
+        "reopen": "restored",
+        "after": "本件につ"
+      }
+    },
+    "gui_run": {
+      "root": "tmp/edit-coverage-gui-E-substitute",
+      "selection": [
+        132,
+        133
+      ],
+      "selected_text": "標記",
+      "after": [
+        "本件につ"
+      ],
+      "reopen": "restored",
+      "substitutes": {
+        "/PRF2": {
+          "family": "BIZUDGothic-Regular",
+          "characters": "件"
+        }
+      },
+      "output_sha256": "2eebb2aab938325e24335bb33ceb8974cdf132a2f67baf0cf4a7a5e26e40e5c6",
+      "sidecar_sha256": "190fca7bf4c66fd15a4af3697b51c361f1d52b28f655840af4c0640c38ab29b8",
+      "equals_coverage_run": true,
+      "refused_for_missing": {
+        "states": {
+          "open_button": "normal",
+          "propose_button": "normal",
+          "accept_button": "disabled",
+          "save_button": "disabled",
+          "entry": "normal",
+          "font_button": "normal"
+        },
+        "status": "拒否されました: the engine refused this edit: single-span route: the original embedded program lacks 件; no fallback font is used",
+        "font": "元フォントにない文字: 「件」",
+        "text": [
+          "編集案は作成されませんでした（編集は行いません）。",
+          "the engine refused this edit: single-span route: the original embedded program lacks 件; no fallback font is used",
+          "",
+          "元のフォントに「件」がありません。自動で別のフォントは使いません。",
+          "使う場合は「代替フォントを選ぶ…」で、埋め込みが許可されたフォントファイルを選んでください。",
+          "代替フォントは「件」だけに使い、見た目が元のフォントと異なる場合があります。"
+        ]
+      },
+      "substitute_chosen": {
+        "states": {
+          "open_button": "normal",
+          "propose_button": "normal",
+          "accept_button": "disabled",
+          "save_button": "disabled",
+          "entry": "normal",
+          "font_button": "normal"
+        },
+        "status": "代替フォント「BIZUDGothic-Regular.ttf」を選びました。元フォントにない「件」だけに使います。「編集案を確認」を押してください。",
+        "font": "代替: BIZUDGothic-Regular.ttf（「件」だけ）"
+      },
+      "substitute_after_changed_replacement": null,
+      "review_text": [
+        "状態: 提案（経路: 単一Span）",
+        "選択: 「標記」 → 置換: 「本件」",
+        "実際の変更: 「標記」 → 「本件」（changed characters only）",
+        "選択範囲のowner: MCID25",
+        "編集対象: MCID25（構造要素 59）「標記につ」",
+        "編集前: 標記につ",
+        "編集後: 本件につ",
+        "空白follower: なし（single-Span route）",
+        "元フォント: xref 5 MS-Gothic（program SHA-256 5e5ded281865f30d…）",
+        "元フォントにない文字: 「件」",
+        "代替フォント: BIZUDGothic-Regular（BIZUDGothic-Regular.ttf、face 0、SHA-256 709fcd41e3209fb7…、relation=substituted）",
+        "代替フォントで描く文字: 「件」（1 glyph。ほかの新しい文字は元フォント）",
+        "注意: 代替フォントの字形は元のフォントと見た目が異なる場合があります。縮小や枠の拡張はしません。",
+        "編集矩形: (81.50, 333.34)–(123.63, 351.34)",
+        "確認事項: owner and changed characters、owner rectangle (its own glyph extent)、pinned original font program、substitute font for the missing characters only (appearance may differ)"
+      ],
+      "elapsed_seconds": {
+        "propose": 5.910414719000073,
+        "accept": 21.03321459699987,
+        "save": 12.88312536400008
+      }
+    }
   }
 }

@@ -116,7 +116,7 @@ GUI（`examples/adjacent_span_session.py`）は共通APIに接続した。選択
 
 ## 次の障壁
 
-1. **フォントのcoverage**（E・J・K・M）：Wordの埋め込みsubsetには、文書で使った153文字しかない。元programにない文字を描くには、利用者が明示的に承認した別のproviderが必要になる。暗黙のfallbackは今後もしない
+1. **フォントのcoverage**（E・J・K・M）：Wordの埋め込みsubsetには、文書で使った153文字しかない。元programにない文字を描くには、利用者が明示的に承認した別のproviderが必要になる。暗黙のfallbackは今後もしない（→[代替フォントによる不足文字の解消](#代替フォントによる不足文字の解消)でEは解消。J・K・Mは容量・構造が残る）
 2. **複数ownerにまたがる変更**（F）：変わる文字が隣接する2つ以上のownerにまたがる。ownerごとのActualTextへの分配と、ownerをまたぐ再組版の設計が必要で、独立した設計課題である
 3. **owner端の削除**（H・N）：端の削除はownerの範囲を変える。後続ownerとの間隔や、空になったownerの扱いの証明が必要
 4. **ActualTextのないowner**（G）：Span66のようにActualTextを持たないleaf Spanは、意味の同時更新ができないため対象外
@@ -124,10 +124,130 @@ GUI（`examples/adjacent_span_session.py`）は共通APIに接続した。選択
 6. **処理時間**：隣接Span経路では、提案〜保存に約60秒かかる。共通APIで経路判定を再導出したうえで、内側の `adjacent_intent` も自分で再導出するためである。安全性を保ったまま重複を減らすことが次の性能課題
 7. **同じownerの再編集**：生成glyphを含むownerを、PDFだけから再提案すると「複数のfont resource」で拒否される。sidecarのfont bindingを提案に渡す接続が必要
 
+## 代替フォントによる不足文字の解消
+
+記録日：2026-10-20（Asia/Tokyo）。PR #83マージ後のmain `146cf66` から作業した。評価ケース `edit-coverage-cases.json` は変更していない。結果は `edit-coverage-results.json` の `substitute_evaluation` に追記した。
+
+### 結論
+
+- **ケースE（標記→本件、「件」が元フォントにない）：成功**。利用者が代替フォント（BIZ UDゴシック）を明示的に承認すると、「件」だけを代替フォントで、「本」は元のMSゴシックのprogramで描き、保存・再open（`restored`）・再編集まで完了した。
+- **代替フォントなしの結果は変わらない**。14件すべてで、結果・拒否理由・出力PDFとsidecarのSHA-256がPR #83の記録と一致した（`tmp/edit-coverage-3`）。
+- **代替フォントあり**：成功7（+E）、拒否7、監査失敗0（`tmp/edit-coverage-substitute`）。J・K・Mは代替フォントで不足文字は解消するが、単一Spanの容量不足で拒否される。代替フォントを隣接Span経路では使わないため、そこで止まる。
+- 同じ位置に同じ文字数で置き換えたEでは、元の字間（WordのTJの詰めを含む）をそのまま使った。縮小・矩形の拡張はしていない。
+
+### しくみ（`span_edit.py`・`edit_intent.py`）
+
+| 要件 | 実装 |
+| --- | --- |
+| 暗黙のfallbackをしない | 代替フォントは `substitute=dict(path, sha256, font_index, relation='substituted')` で明示的に渡したときだけ使う。渡さなければ、従来どおり「元のprogramに◯がない」で拒否し、不足文字を `routes['single-span']['missing']` に示す |
+| 不足文字だけに使う | 新しい文字ごとに元のprogramで整形し、1つの実glyphにならない文字だけを代替フォントのrunにする。元のprogramにある文字は元のprogram。元のprogramですべて描ける場合に代替フォントを渡すと拒否する |
+| 代替フォントの資格 | 既存の `page_proposal._coverage_candidates`（埋め込み許可、実際のHarfBuzz整形、可視glyph）と `ShapedFont`（TrueType輪郭、`fsType`、face番号）を再利用する。加えて、1文字1glyph（run内と単独で同じGID）、cmapが同じglyphを指すこと、可視輪郭、正の字幅を検査する。SHA-256が承認値と違う、元のprogramそのもの、face番号が範囲外、のいずれも拒否する |
+| 元と同一視しない | 提案と承認に `relation='substituted'`、SHA-256、face番号、family、適用文字、注意書き（見た目が異なる場合がある）を記録する。page proposalの `relation='substituted'` と同じ語を使う |
+| 変更しない文字 | 既存の単一Span経路のまま：元のglyphはcode・GID・resource・位置を保持し、元のfont programは変更しない。新しいglyphだけが新しいresource（元programのsubsetと代替フォントのsubsetは別resource）になる |
+| 字間 | 字間を元のまま保つ `keep_spacing` を、runが複数ある置換にも広げた（`attributed.apply_edits`）。条件は従来と同じ：同じ文字数・同じスタイルで、新旧glyphの公称幅が一致すること。幅が違えば公称advanceで組む（テストで確認） |
+| sidecar | `font_binding.generated`（元programのsubset）とは別に、`font_binding.substitutes` に代替resourceを記録する。文字ごとに、GID・字幅・unitsPerEm・輪郭のdigestを持つ |
+| 再open | 再openのたびに、描かれている代替glyphを埋め込みsubsetから読み、Unicode・GID・輪郭・字幅・PDF上の幅を記録と照合する。subsetのSHA-256、`relation`、元programとの区別（代替resourceを `generated` として記録し直すと拒否）も検査する |
+| 再編集 | 2回目以降の編集で不足文字があれば、代替フォントの再承認が必要（埋め込み済みの代替resourceを新しい文字に流用しない）。不足文字のない再編集では代替フォントを受け取らず、既存の代替glyphは記録のまま検証する |
+| 経路 | 代替フォントは単一Span経路だけで使う。単一Spanが容量不足で拒否した場合、代替フォント付きの提案は隣接Span経路へ進まず、その理由を示して拒否する（隣接Span契約は両ownerで1つの元programを固定するため） |
+
+### 使った代替フォント
+
+| 項目 | 値 |
+| --- | --- |
+| フォント | BIZ UDゴシック Regular（`BIZUDGothic-Regular.ttf`、[google/fonts](https://github.com/google/fonts/tree/main/ofl/bizudgothic)） |
+| ライセンス | SIL Open Font License 1.1。リポジトリにはコミットしていない |
+| SHA-256 | `709fcd41e3209fb765da750472f55ccdf925653e9fa7e1eb007cb65c8f749c75`（face 0） |
+| 埋め込み許可 | OS/2 `fsType` = 0（制限なし） |
+| 不足文字の字幅 | 件・せ・を・品とも2048/2048 em（元のMSゴシックの全角と同じ1000/1000） |
+
+本文がMSゴシックなので、ゴシック体を選んだ。BIZ UD明朝（SHA-256 `468ee6d9…`、以前の沖縄県PDFの評価で使ったもの）でも、Eは保存・再open（`restored`）まで成功した（診断。固定評価には含めていない）。
+
+### 代替フォントなし／ありの比較
+
+| ID | 代替なし（PR #83と同じ） | 代替あり | 不足文字 | 代替ありでの理由・保存後 |
+| --- | --- | --- | --- | --- |
+| A | 成功 | 成功 | — | 同じ出力（SHA一致） |
+| B | 成功 | 成功 | — | 同じ出力（SHA一致） |
+| C | 成功 | 成功 | — | 同じ出力（SHA一致） |
+| D | 成功 | 成功 | — | 同じ出力（SHA一致） |
+| **E** | 拒否（「件」がない） | **成功** | 件 | 「本件につ」。「本」は元program、「件」は代替フォント |
+| F | 拒否 | 拒否 | — | 理由同じ（2ownerにまたがる） |
+| G | 拒否 | 拒否 | — | 理由同じ（ActualTextなし） |
+| H | 拒否 | 拒否 | — | 理由同じ（端の削除） |
+| I | 成功 | 成功 | — | 同じ出力（SHA一致） |
+| J | 拒否（「せ」がない） | 拒否 | せ | 単一Spanの容量不足。代替フォント付きでは隣接Span経路へ進まない |
+| K | 拒否（「を」がない） | 拒否 | を | 同上 |
+| L | 成功 | 成功 | — | 同じ出力（SHA一致） |
+| M | 拒否（「品」がない） | 拒否 | 品 | 同上 |
+| N | 拒否 | 拒否 | — | 理由同じ（端の削除） |
+
+代替フォントは、不足文字で拒否されたケース（E・J・K・M）だけに渡した（GUIで利用者が選ぶのと同じ条件）。それ以外のケースは代替フォントなしと同じ処理で、出力もSHA-256で一致した。
+
+### ケースEの監査
+
+| 検査 | 結果 |
+| --- | --- |
+| ActualTextと描画文字 | Span59のActualTextも描画も「本件につ」 |
+| 構造 | 変わった構造オブジェクトはSpan59（`59:0`）のActualTextだけ。StructureTree・ParentTree・MCID・ownerは不変 |
+| 変更したglyph | 「本」：`/PRF1`（元programのsubset、`generated`）GID 7055。「件」：`/PRF2`（BIZ UDゴシックのsubset、`substitutes`）GID 2825。記録したGID・輪郭digest・字幅（2048/2048）と一致 |
+| 変更しないglyph | 「につ」はcode・GID・font objectが同じ（`unchanged_glyph_identity`）。位置の差は最大7.6e-6pt（traceの単精度の丸め。評価後に元PDFと出力のtraceを直接比較して確認） |
+| 新しいglyphの位置 | 「本」「件」は元の「標」「記」と同じ原点（81.504, 346.130）・（92.064, 346.130） |
+| 元のフォント | ページ上の元のfont program（F1〜F4）のSHA-256は不変 |
+| 他owner・図形 | すべて不変 |
+| 矩形外の画素（144dpi） | MuPDF 0、Poppler 0。変化は2文字のセル内だけ |
+| 再open | `restored`（`open_edit_result`、contract `single-span`） |
+| 再編集 | 保存したPDFとsidecarから、「本件」を元のprogramで「標記」に戻した。再openは `restored`、ActualTextと描画は「標記につ」、ページ全体の画素は元PDFと一致（MuPDF・Popplerとも差0） |
+
+### J・K・Mの残る障壁
+
+代替フォントを承認すると、フォントの拒否はなくなり、単一Spanの容量（「Reflowed text exceeds the available vertical space」）で拒否される。代替フォントを隣接Span経路で使わないことが、そこで止まる直接の理由である。ただし、不足文字を元programにある文字に置き換えた診断（固定ケースではない）でも、隣接Span経路は構造の理由で拒否した。
+
+| ID | 診断の置換 | 隣接Span経路の拒否理由 |
+| --- | --- | --- |
+| J | させて→**さし**ていただきます | 先行ownerの行末が句読点・空白なので、カラム端の根拠にならない（矩形の明示が必要） |
+| K | 御協力**の**いただき | 同上 |
+| M | 届出の**出**質向上 | 先行ownerが「1行で折り返し、次の行が後続owner」の形でない（タイトル） |
+
+フォントだけを理由にJ・K・Mが拒否されているわけではない。隣接Span経路で代替フォントを使えるようにしても、これらは成功しない。したがって今回は隣接Span経路を広げていない。
+
+### GUI（Xvfb、`tmp/edit-coverage-gui-E-substitute`）
+
+`osaka_adjacent_gui.py --mode gui --selected 標記 --replacement 本件 --anchor 132 --substitute <BIZUDGothic-Regular.ttf>` で、Tkアプリを操作した。
+
+1. 「標記」をドラッグし、「本件」を入力して「編集案を確認」：拒否。「元のフォントに「件」がありません。自動で別のフォントは使いません。」と表示され、「代替フォントを選ぶ…」が押せるようになった（それまでは押せない）
+2. 「代替フォントを選ぶ…」でフォントファイルを選択（テストではファイル選択ダイアログを置き換えた）：「代替: BIZUDGothic-Regular.ttf（「件」だけ）」
+3. 「編集案を確認」：元フォント（xref 5 MS-Gothic、SHA-256）、元フォントにない文字「件」、代替フォント（ファイル名・face・SHA-256・relation=substituted）、代替フォントで描く文字「件」（1 glyph）、見た目が異なる場合がある旨が表示された
+4. 承認後に置換文字列を変えると、承認と代替フォントの選択がともに取り消された。戻して提案→フォント選択→承認→保存
+5. 保存：再open `restored`。出力PDFとsidecarは、評価スクリプトのケースEとSHA-256で一致した
+
+人による実ディスプレイでの操作、Windowsでの確認は未実施である。
+
+### テスト（今回）
+
+| ファイル | 内容 |
+| --- | --- |
+| `tests/test_single_span_substitute.py`（新規26件） | 不足文字だけが代替フォントになること（全部不足・混在の2通り）／元のglyphのcode・GID・resource不変／ActualText／同じ字幅で元の位置を保つこと／字幅が違えば公称advance／no-op・不足文字なしの再編集・代替glyphの置換・再承認しての追加（2つ目の代替resource）／拒否：未承認、relation違い、改ざん（bytes変更）、SHA違い、埋め込み禁止（`fsType`=2）、glyphがない、元programを代替として渡す、不要な代替、余分なキー、face番号、容量（いずれも出力なし、理由を照合）／再open時の拒否：GID・輪郭・字幅・Unicode・relationの改ざん、代替resourceを `generated` として記録、記録の削除／埋め込みsubsetの輪郭を書き換えたPDF |
+| `tests/test_edit_intent.py`（3件追加） | 不足文字の報告と明示の代替での成功（元の位置、後続ownerは不動）／不要な代替は拒否、容量不足では隣接経路へ進まない／提案の代替情報の改ざんと、承認後のフォントbytes変更の拒否 |
+| `tests/test_adjacent_gui_session.py`（1件追加） | 不足文字の報告→フォント選択→提案の表示→承認→保存・再open。不足文字がないときのフォント選択の拒否、置換文字列の変更で選択が取り消されること |
+
+上記に、`span_edit` をimportする既存テスト（`test_single_span_actualtext`・`test_adjacent_span`・`test_adjacent_intent`）、`test_attributed`・`test_attributed_boundaries`・`test_story_styles`（runsを使う編集）・`test_generated_fonts` を加えた10ファイルを `-q` で実行し、**203 passed（263.76秒）**だった。評価スクリプトと並行して動かしたため、時間は単独実行より長い。その後、GUIの表示ラベル1行を変えて`test_adjacent_gui_session.py` を再実行し、**14 passed（47.14秒）**だった。さらに `edit_intent._single_route` の重複したフォント解析をまとめた後、`test_edit_intent.py` を再実行し、**13 passed（20.78秒）**だった（評価とGUIの実行はこの整理の前。提案に記録する値は変わらない）。
+
+`attributed.py` の変更は、`runs` と `keep_spacing` の両方が付いた編集だけに働く。`keep_spacing` を付けるのは `span_edit` だけなので、`attributed` をimportする41ファイルすべては実行していない。full suiteは実行していない。
+
+### 未実施・既知の点
+
+- full suite、Windows・人による操作、外部の別PDFでの評価は未実施
+- J・K・M：上記のとおり、単一Spanの容量と隣接Span経路の構造条件が残る障壁
+- 共通APIからの再編集：代替resourceを含むownerをPDFだけから再提案すると、従来の生成glyphと同じく「複数のfont resource」で拒否される。今回の再編集はsidecarの状態から `edit_single_span` を直接呼んで確認した（前節の障壁7と同じ）
+- 単一Span経路の容量不足の理由に「provider qualification failed:」が前置される（PR #83以前からの表示。拒否の判定には影響しない。代替なしの結果を変えないため、今回は直していない）
+
 ## 再評価
 
 ```
 .venv/bin/python -m evaluations.real_japanese.edit_coverage --root tmp/<new directory>
+.venv/bin/python -m evaluations.real_japanese.edit_coverage --root tmp/<new directory> --substitute <font.ttf>
 ```
+
+`--substitute` は、不足文字で拒否されたケースだけを、そのフォントを `relation='substituted'` で承認して提案し直す。保存できたケースは、sidecarから元の文字列へ戻す再編集も行う。
 
 ケースの追加は、IDを増やす形で行い、既存ケースは変更しない。PDF・font・sidecar・rasterはコミットしない。

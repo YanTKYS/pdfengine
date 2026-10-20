@@ -10,6 +10,12 @@ fonts or boundaries. Changing the selection or replacement discards the
 proposal and acceptance; a proposal or acceptance computed for older inputs
 is discarded. One step runs at a time, and while a save runs (it publishes
 files) the selection and replacement cannot change.
+
+When a proposal is refused because the original embedded font lacks
+characters, the session records them (``missing``). Only then may the user
+choose a local font file (``set_substitute``); it is passed to the engine as
+an explicit ``relation='substituted'`` approval for those characters only.
+Changing the selection or replacement also discards that choice.
 """
 from __future__ import annotations
 
@@ -28,6 +34,10 @@ from pdfeditor.selection import inspect_selection_source, make_selection, source
 
 class Refused(PdfError):
     """A refusal raised by the session before or instead of an engine call."""
+
+    def __init__(self, message, *, missing=None):
+        super().__init__(message)
+        self.missing = missing
 
 
 def _sha(path):
@@ -63,6 +73,9 @@ class AdjacentEditSession:
         self.selection = self.selected_text = None
         self.replacement = ''
         self.proposal = self.acceptance = self.result = None
+        # Characters the original font lacks (from a refused proposal) and
+        # the user's explicit substitute choice for exactly those characters.
+        self.missing = self.substitute = None
         self.running = None
 
     # -- coordinates and selection --------------------------------------------
@@ -96,6 +109,7 @@ class AdjacentEditSession:
             self._require_editable_inputs()
             self._invalidate()
             self.selection = self.selected_text = None
+            self.missing = self.substitute = None
         first, last = sorted((self.glyph_at(*start), self.glyph_at(*end)))
         ids = list(range(first, last + 1))
         selection = make_selection(self.source, self.page, glyph_ids=ids)
@@ -110,6 +124,23 @@ class AdjacentEditSession:
                 self._require_editable_inputs()
                 self._invalidate()
                 self.replacement = text
+                self.missing = self.substitute = None
+
+    def set_substitute(self, path):
+        """The user's explicit choice of a local font for the reported missing characters."""
+        path = Path(path).resolve()
+        if not path.is_file():
+            raise Refused('font file not found: %s' % path)
+        sha = _sha(path)
+        with self._lock:
+            self._require_editable_inputs()
+            if self.running is not None:
+                raise Refused('%s is still running' % self.running)
+            if not self.missing:
+                raise Refused('a substitute font is chosen only for characters the original font lacks')
+            self._invalidate()
+            self.substitute = dict(path=str(path), sha256=sha, font_index=0, relation='substituted')
+        return dict(self.substitute, missing=self.missing)
 
     def _require_editable_inputs(self):
         if self.running == 'save':
@@ -130,7 +161,8 @@ class AdjacentEditSession:
                                    'acceptance': 'accept the proposal first'}[name])
             self.running = step
             return self.generation, dict(selection=self.selection, replacement=self.replacement,
-                                         proposal=self.proposal, acceptance=self.acceptance)
+                                         proposal=self.proposal, acceptance=self.acceptance,
+                                         substitute=self.substitute)
 
     def _end(self):
         with self._lock:
@@ -155,10 +187,14 @@ class AdjacentEditSession:
             if not inputs['replacement']:
                 raise Refused('enter the replacement text first')
             self._check_source()
+            options = dict(substitute=inputs['substitute']) if inputs['substitute'] else {}
             proposal = propose_edit_intent(self.source, inputs['selection'], inputs['replacement'],
-                                           work_dir=self.work_dir)
+                                           work_dir=self.work_dir, **options)
             if proposal['status'] == 'refused':
-                raise Refused('the engine refused this edit: ' + proposal['reason'])
+                missing = proposal['routes'].get('single-span', {}).get('missing')
+                if missing and not inputs['substitute']:
+                    self._commit(token, missing=missing)
+                raise Refused('the engine refused this edit: ' + proposal['reason'], missing=missing)
             self._commit(token, proposal=proposal)
             return review(proposal)
         finally:
@@ -187,8 +223,11 @@ class AdjacentEditSession:
             self._check_source()
             result = edit_edit_intent(self.source, inputs['acceptance'], output, sidecar, work_dir=self.work_dir)
             reopened = open_edit_result(output, sidecar)
+            substitutes = result.get('state', {}).get('font_binding', {}).get('substitutes', {})
             value = dict(route=result['route'], after=result['after'], follower_dx=result.get('follower_dx'),
                          provenance=result.get('provenance'),
+                         substitutes={a: dict(family=r['family'], characters=''.join(r['glyphs']))
+                                      for a, r in substitutes.items()},
                          output=str(output), sidecar=str(sidecar), output_sha256=_sha(output),
                          sidecar_sha256=_sha(sidecar), reopen=reopened['status'], reopen_reason=reopened.get('reason'))
             self._commit(token, result=value)
@@ -211,14 +250,18 @@ def review(proposal):
     route, owner = proposal['routes']['single-span'], found['owner']
     r = route['region']
     font = route['font'] or {}
+    confirm = ['owner and changed characters', 'owner rectangle (its own glyph extent)', 'pinned original font program']
+    substitute = route.get('substitute')
+    if substitute is not None:
+        substitute = dict(substitute, missing=font.get('missing'))
+        confirm.append('substitute font for the missing characters only (appearance may differ)')
     return dict(base, first=dict(owner=owner['owner'], mcid=owner['mcid'], text=owner['text']), second=None,
                 logical_before=owner['text'], logical_after=route['after'], options=[], chosen=None, candidates=[],
                 follower=dict(mcid=None, owner=None, approved=False, note='single-Span route'),
                 font=dict(font_xref=font.get('font_xref'), family=font.get('family'),
                           program_sha256=font.get('program_sha256')),
-                column=None, regions=[r], follower_region=None,
-                requires_confirmation=['owner and changed characters', 'owner rectangle (its own glyph extent)',
-                                       'pinned original font program'],
+                substitute=substitute, column=None, regions=[r], follower_region=None,
+                requires_confirmation=confirm,
                 overlays=[dict(kind='first', rect=(r['x0'], r['y0'], r['x1'], r['y1']))])
 
 
@@ -288,10 +331,18 @@ def review_text(value):
     f = value['follower']
     lines.append('空白follower: ' + ('MCID%s を位置のみ移動' % f['mcid'] if f['approved'] else 'なし（%s）' % f['note']))
     if value['font']['program_sha256']:
-        lines.append('フォント: xref %d %s（program SHA-256 %s…）' % (
-            value['font']['font_xref'], value['font']['family'], value['font']['program_sha256'][:16]))
+        lines.append('%s: xref %d %s（program SHA-256 %s…）' % (
+            '元フォント' if value.get('substitute') else 'フォント', value['font']['font_xref'], value['font']['family'],
+            value['font']['program_sha256'][:16]))
     else:
         lines.append('フォント: 新しい文字はありません（元のglyphだけ）')
+    sub = value.get('substitute')
+    if sub:
+        lines += ['元フォントにない文字: 「%s」' % sub['missing'],
+                  '代替フォント: %s（%s、face %d、SHA-256 %s…、relation=%s）' % (
+                      sub['family'], sub['file'], sub['font_index'], sub['sha256'][:16], sub['relation']),
+                  '代替フォントで描く文字: 「%s」（%d glyph。ほかの新しい文字は元フォント）' % (sub['characters'], sub['new']),
+                  '注意: 代替フォントの字形は元のフォントと見た目が異なる場合があります。縮小や枠の拡張はしません。']
     column = value['column'] or dict(right=None, supports=[], ignored=[])
     if column['right'] is not None:
         lines.append('カラム右端: %.2fpt（根拠: %s、改行窓 %.2f〜%.2fpt、次の文字「%s」）' % (

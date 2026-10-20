@@ -104,6 +104,14 @@ is not a history log; history is in [continuation-checkpoint.md](continuation-ch
   replacement generated9glyphs and retained24; both saves restored and both renderers
   report zero exterior/no-op differences. Growth is fixture-validated; wrapping and
   cross-owner edits remain refused. [Replacement evidence](../evaluations/real_japanese/osaka-single-span-replacement-report.md).
+  Characters the original program lacks are reported and refused unless the caller passes an
+  explicit `relation='substituted'` font (SHA-256 and face pinned). It supplies only those
+  characters on the single-Span route, qualified by B3's coverage/shaping/embedding checks plus
+  per-character cmap/GID, outline and advance evidence; the sidecar records it under
+  `font_binding.substitutes`, separate from original-program subsets, and every reopen re-proves
+  each painted substitute glyph against that evidence. Osaka case E (標記→本件, 件 missing) saves
+  and restores with OFL BIZ UDGothic; J/K/M still fail on single-Span capacity and adjacent-Span
+  structure. [Edit coverage](../evaluations/real_japanese/edit-coverage-report.md#代替フォントによる不足文字の解消).
 - Evidence: [B1 tests](../tests/test_page_proposal.py),
   [B2 tests](../tests/test_tagged_page_proposal.py), and
   [implementation/evidence report](tagged-persistent-editing.md).
