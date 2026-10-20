@@ -46,7 +46,8 @@ class App:
         self.press = None
         root.title('pdfengine 隣接Span編集 PoC')
         top = ttk.Frame(root); top.pack(fill='x')
-        ttk.Button(top, text='PDFを開く', command=self.ask_open).pack(side='left')
+        self.open_button = ttk.Button(top, text='PDFを開く', command=self.ask_open)
+        self.open_button.pack(side='left')
         self.view_button = ttk.Button(top, text='生成PDFを表示', command=self.toggle_view, state='disabled')
         self.view_button.pack(side='left')
         self.path_label = ttk.Label(top, text='PDF未選択'); self.path_label.pack(side='left', padx=8)
@@ -88,6 +89,8 @@ class App:
     # -- documents ----------------------------------------------------------------
 
     def ask_open(self):
+        if self.busy:
+            return
         path = filedialog.askopenfilename(filetypes=[('PDF', '*.pdf')])
         if path:
             self.open(path)
@@ -275,6 +278,7 @@ class App:
     def refresh(self):
         s = self.session
         idle = not self.busy and s is not None
+        self.open_button.configure(state='disabled' if self.busy else 'normal')
         ready = idle and self.showing_source()
         self.entry.configure(state='normal' if ready else 'disabled')
         self.propose_button.configure(state='normal' if ready and s.selection is not None and s.replacement else 'disabled')

@@ -80,7 +80,7 @@ def run_gui(root):
 
     def states(app):
         return {name: str(getattr(app, name).cget('state')) for name in
-                ('propose_button', 'accept_button', 'save_button', 'entry')}
+                ('open_button', 'propose_button', 'accept_button', 'save_button', 'entry')}
 
     window = tk.Tk()
     window.geometry('1500x900+0+0')
@@ -108,6 +108,8 @@ def run_gui(root):
     started = time.monotonic()
     app.propose_button.invoke()
     log['while_proposing'] = states(app)
+    # A disabled 「PDFを開く」 ignores the press; an enabled one would block on its dialog here.
+    log['open_pressed_while_proposing'] = str(app.open_button.invoke())
     pump(app, lambda: app.busy is None)
     proposed = time.monotonic()
     assert app.review is not None and app.review['status'] == 'proposed', app.status.cget('text')

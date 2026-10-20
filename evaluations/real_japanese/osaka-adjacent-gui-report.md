@@ -58,8 +58,8 @@
 
 | 実行 | 結果 |
 | --- | --- |
-| `.venv/bin/python -m pytest -q tests/test_adjacent_gui_session.py tests/test_adjacent_intent.py`（Python 3.13） | **33 passed（33.19秒）** |
-| 同じ `tests/test_adjacent_gui_session.py` を、GUI用のPython 3.12環境で | **10 passed（13.66秒）** |
+| `.venv/bin/python -m pytest -q tests/test_adjacent_gui_session.py tests/test_adjacent_intent.py`（Python 3.13） | **35 passed（37.62秒）**（レビュー対応後。対応前は33 passed） |
+| 同じ `tests/test_adjacent_gui_session.py` を、GUI用のPython 3.12環境で | **12 passed（19.55秒）**（対応前は10 passed） |
 
 `test_adjacent_gui_session.py` の内容：
 
@@ -71,6 +71,8 @@
 - REFUSED（容量不足）の場合、出力を生成しない
 - 改ざんした提案（矩形の拡大）、改ざんした承認（境界の変更）、提案後にディスク上で差し替えられた元PDFは、いずれも拒否し、出力を生成しない
 - worker threadの処理中に入力が変わった場合、結果を破棄する
+- 保存中は入力が固定される。保存中の置換文字列の変更・再選択・別ステップの開始はすべて拒否され、保存結果と公開されたファイルは承認した入力と一致する（レビュー対応で追加）
+- ステップは同時に1つだけ実行される。拒否・失敗の後は実行状態が解除される（レビュー対応で追加）
 - 正常系：提案（owner・follower・候補・カラム根拠・重ね描き図形）→ 承認 → 既存ファイルへの保存を拒否 → 保存 → 再open `restored`。直接API経由の出力と、PDF・sidecarのSHAが一致する
 - 回転したページを拒否する
 
@@ -104,6 +106,16 @@
   | 保存後 | 生成PDFを表示し、全操作が無効（「元PDFを表示」で戻れる） |
 
 - スクリーンショット（コミットしない）：`tmp/osaka-adjacent-gui-gui/1-selected.png`・`2-proposal.png`・`3-saved.png`、`tmp/osaka-adjacent-gui-gui-2/` の同名ファイル
+
+## レビュー対応（PR #82）
+
+1. **「PDFを開く」が処理中も押せた**：ボタンを保持し、`refresh()` で処理中は無効にした。`ask_open` でも処理中を拒否する。Xvfb上の再評価（`tmp/osaka-adjacent-gui-gui-3`）で、提案の処理中だけ無効になり、押しても何も起きないこと（無効でなければファイルダイアログが開き、自動操作が止まる）を確認した
+2. **保存中の入力変更とファイル公開の整合性**：セッションは実行中のステップを `running` として持ち、同時実行を拒否する
+   - 保存（ファイルを公開する処理）の実行中は、`select` / `set_replacement` を拒否する。保存開始後に入力が変わることはなく、公開されたPDF・sidecarと、セッションの承認内容・結果が必ず一致する
+   - 提案・承認はファイルを書かないので、従来どおり処理中の入力変更を受け付け、その結果を破棄する
+   - GUIでは処理中の入力欄と選択操作をもともと無効にしているため、通常の画面操作では到達しない経路だが、セッションの契約としてテストで保証した
+
+再評価でも、出力PDF・sidecarのSHA-256はPR #81と一致し、再openは `restored` だった。
 
 ## 環境
 

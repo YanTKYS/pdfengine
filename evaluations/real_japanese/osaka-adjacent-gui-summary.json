@@ -307,5 +307,108 @@
       "status": "保存しました。再openの結果: restored",
       "shown": "/home/user/pdfengine/tmp/osaka-adjacent-gui-gui-2/edited.pdf"
     }
+  },
+  "gui_after_review": {
+    "mode": "gui",
+    "output_root": "tmp/osaka-adjacent-gui-gui-3",
+    "selection": [
+      149,
+      150,
+      151,
+      152
+    ],
+    "selected_text": "において",
+    "comparison": {
+      "pdf": {
+        "sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2",
+        "pr81_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2",
+        "equal": true
+      },
+      "sidecar": {
+        "sha256": "715b33062c4673acfebd0998715f9d3c77d81bde57b1167559f9289411a89e5f",
+        "pr81_sha256": "715b33062c4673acfebd0998715f9d3c77d81bde57b1167559f9289411a89e5f",
+        "equal": true
+      }
+    },
+    "elapsed_seconds": {
+      "propose": 8.707677378,
+      "accept": 24.443339229999992,
+      "save": 20.709482843000018
+    },
+    "saved": {
+      "after": [
+        "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+        "に送付いたします。"
+      ],
+      "follower_dx": 21.120000000000005,
+      "output_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2",
+      "sidecar_sha256": "715b33062c4673acfebd0998715f9d3c77d81bde57b1167559f9289411a89e5f",
+      "reopen": "restored"
+    },
+    "gui": {
+      "initial": {
+        "open_button": "normal",
+        "propose_button": "disabled",
+        "accept_button": "disabled",
+        "save_button": "disabled",
+        "entry": "normal"
+      },
+      "empty_click": {
+        "status": "選択できません: no glyph at this point",
+        "states": {
+          "open_button": "normal",
+          "propose_button": "disabled",
+          "accept_button": "disabled",
+          "save_button": "disabled",
+          "entry": "normal"
+        }
+      },
+      "selected_label": "「において」（glyph 149〜152）",
+      "before_proposal": {
+        "open_button": "normal",
+        "propose_button": "normal",
+        "accept_button": "disabled",
+        "save_button": "disabled",
+        "entry": "normal"
+      },
+      "while_proposing": {
+        "open_button": "disabled",
+        "propose_button": "disabled",
+        "accept_button": "disabled",
+        "save_button": "disabled",
+        "entry": "disabled"
+      },
+      "open_pressed_while_proposing": "",
+      "after_proposal": {
+        "open_button": "normal",
+        "propose_button": "normal",
+        "accept_button": "normal",
+        "save_button": "disabled",
+        "entry": "normal"
+      },
+      "after_acceptance": {
+        "open_button": "normal",
+        "propose_button": "normal",
+        "accept_button": "disabled",
+        "save_button": "normal",
+        "entry": "normal"
+      },
+      "after_changed_replacement": {
+        "open_button": "normal",
+        "propose_button": "normal",
+        "accept_button": "disabled",
+        "save_button": "disabled",
+        "entry": "normal"
+      },
+      "after_save": {
+        "open_button": "normal",
+        "propose_button": "disabled",
+        "accept_button": "disabled",
+        "save_button": "disabled",
+        "entry": "disabled"
+      },
+      "status": "保存しました。再openの結果: restored",
+      "shown": "/home/user/pdfengine/tmp/osaka-adjacent-gui-gui-3/edited.pdf"
+    }
   }
 }

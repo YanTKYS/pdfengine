@@ -6,7 +6,9 @@ page observation; proposing, accepting and saving call
 ``propose_adjacent_intent``, ``accept_adjacent_intent`` and
 ``edit_adjacent_intent`` unchanged. It never corrects owners, rectangles,
 fonts or boundaries. Changing the selection or replacement discards the
-proposal and acceptance; a result computed for older inputs is discarded.
+proposal and acceptance; a proposal or acceptance computed for older inputs
+is discarded. One step runs at a time, and while a save runs (it publishes
+files) the selection and replacement cannot change.
 """
 from __future__ import annotations
 
@@ -61,6 +63,7 @@ class AdjacentEditSession:
         self.selection = self.selected_text = None
         self.replacement = ''
         self.proposal = self.acceptance = self.result = None
+        self.running = None
 
     # -- coordinates and selection --------------------------------------------
 
@@ -90,6 +93,7 @@ class AdjacentEditSession:
         Every new gesture first discards the previous selection, proposal and acceptance.
         """
         with self._lock:
+            self._require_editable_inputs()
             self._invalidate()
             self.selection = self.selected_text = None
         first, last = sorted((self.glyph_at(*start), self.glyph_at(*end)))
@@ -103,22 +107,34 @@ class AdjacentEditSession:
     def set_replacement(self, text):
         if text != self.replacement:
             with self._lock:
+                self._require_editable_inputs()
                 self._invalidate()
                 self.replacement = text
+
+    def _require_editable_inputs(self):
+        if self.running == 'save':
+            raise Refused('saving is in progress; the selection and replacement stay fixed until it finishes')
 
     def _invalidate(self):
         self.generation += 1
         self.proposal = self.acceptance = self.result = None
 
-    def _snapshot(self, *required):
-        """The generation and the inputs a step works on, read together."""
+    def _begin(self, step, *required):
+        """Start one step; return the generation and the inputs it works on, read together."""
         with self._lock:
+            if self.running is not None:
+                raise Refused('%s is still running' % self.running)
             for name in required:
                 if getattr(self, name) is None:
                     raise Refused({'selection': 'select glyphs first', 'proposal': 'check the edit proposal first',
                                    'acceptance': 'accept the proposal first'}[name])
+            self.running = step
             return self.generation, dict(selection=self.selection, replacement=self.replacement,
                                          proposal=self.proposal, acceptance=self.acceptance)
+
+    def _end(self):
+        with self._lock:
+            self.running = None
 
     def _commit(self, token, **values):
         with self._lock:
@@ -134,37 +150,48 @@ class AdjacentEditSession:
     # -- proposal, acceptance, save -------------------------------------------
 
     def propose(self):
-        token, inputs = self._snapshot('selection')
-        if not inputs['replacement']:
-            raise Refused('enter the replacement text first')
-        self._check_source()
-        proposal = propose_adjacent_intent(self.source, inputs['selection'], inputs['replacement'], work_dir=self.work_dir)
-        self._commit(token, proposal=proposal)
-        return review(proposal)
+        token, inputs = self._begin('propose', 'selection')
+        try:
+            if not inputs['replacement']:
+                raise Refused('enter the replacement text first')
+            self._check_source()
+            proposal = propose_adjacent_intent(self.source, inputs['selection'], inputs['replacement'],
+                                               work_dir=self.work_dir)
+            self._commit(token, proposal=proposal)
+            return review(proposal)
+        finally:
+            self._end()
 
     def accept(self, option=None):
-        token, inputs = self._snapshot('proposal')
-        self._check_source()
-        acceptance = accept_adjacent_intent(self.source, inputs['proposal'], work_dir=self.work_dir, option=option)
-        self._commit(token, acceptance=acceptance)
-        return acceptance
+        token, inputs = self._begin('accept', 'proposal')
+        try:
+            self._check_source()
+            acceptance = accept_adjacent_intent(self.source, inputs['proposal'], work_dir=self.work_dir, option=option)
+            self._commit(token, acceptance=acceptance)
+            return acceptance
+        finally:
+            self._end()
 
     def save(self, output, sidecar):
-        token, inputs = self._snapshot('acceptance')
-        output, sidecar = Path(output).resolve(), Path(sidecar).resolve()
-        if output == sidecar or self.source in (output, sidecar):
-            raise Refused('the output PDF, sidecar and source must be three different files')
-        for path in (output, sidecar):
-            if path.exists():
-                raise Refused('%s already exists; choose a new file' % path)
-        self._check_source()
-        result = edit_adjacent_intent(self.source, inputs['acceptance'], output, sidecar, work_dir=self.work_dir)
-        reopened = open_adjacent_span(output, json.loads(sidecar.read_text(encoding='utf-8')))
-        value = dict(after=result['after'], follower_dx=result['follower_dx'], provenance=result['provenance'],
-                     output=str(output), sidecar=str(sidecar), output_sha256=_sha(output), sidecar_sha256=_sha(sidecar),
-                     reopen=reopened['status'], reopen_reason=reopened.get('reason'))
-        self._commit(token, result=value)
-        return value
+        """Publish the accepted edit; the inputs it was accepted for cannot change until it returns."""
+        token, inputs = self._begin('save', 'acceptance')
+        try:
+            output, sidecar = Path(output).resolve(), Path(sidecar).resolve()
+            if output == sidecar or self.source in (output, sidecar):
+                raise Refused('the output PDF, sidecar and source must be three different files')
+            for path in (output, sidecar):
+                if path.exists():
+                    raise Refused('%s already exists; choose a new file' % path)
+            self._check_source()
+            result = edit_adjacent_intent(self.source, inputs['acceptance'], output, sidecar, work_dir=self.work_dir)
+            reopened = open_adjacent_span(output, json.loads(sidecar.read_text(encoding='utf-8')))
+            value = dict(after=result['after'], follower_dx=result['follower_dx'], provenance=result['provenance'],
+                         output=str(output), sidecar=str(sidecar), output_sha256=_sha(output),
+                         sidecar_sha256=_sha(sidecar), reopen=reopened['status'], reopen_reason=reopened.get('reason'))
+            self._commit(token, result=value)
+            return value
+        finally:
+            self._end()
 
 
 def review(proposal):

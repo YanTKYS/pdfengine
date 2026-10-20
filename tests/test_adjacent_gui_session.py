@@ -210,3 +210,56 @@ def test_unsupported_pages_are_refused(tmp_path):
         document.save(tmp_path / 'rotated.pdf')
     with pytest.raises(Refused, match='rotated'):
         AdjacentEditSession(tmp_path / 'rotated.pdf')
+
+
+def test_inputs_are_locked_while_saving(world, tmp_path, monkeypatch):
+    _, session = world
+    screen_drag(session, *occurrence(session, 1, 'について'))
+    session.set_replacement('につきまして')
+    session.propose(); session.accept()
+    accepted = session.acceptance
+    refusals, real = [], gui.edit_adjacent_intent
+
+    def changed_meanwhile(*args, **kwargs):
+        # Another caller tries to change the inputs after the save has started.
+        for attempt in (lambda: session.set_replacement('につき'),
+                        lambda: session.select((5, 5), (5, 5)),
+                        lambda: session.propose()):
+            try:
+                attempt()
+            except Refused as exc:
+                refusals.append(str(exc))
+        return real(*args, **kwargs)
+    monkeypatch.setattr(gui, 'edit_adjacent_intent', changed_meanwhile)
+    pdf, sidecar = outputs(tmp_path)
+    saved = session.save(pdf, sidecar)
+    assert [r.split(';')[0] for r in refusals] == ['saving is in progress'] * 2 + ['save is still running']
+    # The published files are exactly the accepted edit, and the session agrees with them.
+    assert session.replacement == 'につきまして' and session.acceptance is accepted and session.result == saved
+    assert saved['reopen'] == 'restored' and source_sha(pdf) == saved['output_sha256']
+    assert session.running is None
+    session.set_replacement('につき')
+    assert session.result is None and pdf.exists()
+
+
+def test_one_step_runs_at_a_time_and_is_released_after_refusal(world, monkeypatch):
+    _, session = world
+    screen_drag(session, *occurrence(session, 1, 'について'))
+    session.set_replacement('につきまして' * 3)
+    with pytest.raises(PdfError):
+        session.propose()
+    assert session.running is None
+    session.set_replacement('につきまして')
+    refusals, real = [], gui.propose_adjacent_intent
+
+    def overlapping(*args, **kwargs):
+        for attempt in (session.propose, session.accept):
+            try:
+                attempt()
+            except Refused as exc:
+                refusals.append(str(exc))
+        return real(*args, **kwargs)
+    monkeypatch.setattr(gui, 'propose_adjacent_intent', overlapping)
+    session.propose()
+    assert refusals == ['propose is still running'] * 2
+    assert session.proposal is not None and session.running is None
