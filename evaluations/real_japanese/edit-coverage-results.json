@@ -1,0 +1,1440 @@
+{
+  "schema": "pdfengine-edit-coverage-results-1",
+  "cases_file": "evaluations/real_japanese/edit-coverage-cases.json",
+  "source": {
+    "id": "word_osaka_guideline",
+    "path": "evaluations/realpdf/corpus/word_osaka_guideline.pdf",
+    "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+    "page": 1
+  },
+  "results": [
+    {
+      "id": "A",
+      "category": "cross-owner selection, same length (Windows refusal)",
+      "anchor": 135,
+      "selected": "つきまして",
+      "replacement": "おきまして",
+      "glyph_ids": [
+        135,
+        136,
+        137,
+        138,
+        139
+      ],
+      "proposal_sha256": "53d450161bdd0a5d947764508b43b7f3eaca6f1f2d2c9c5cd9fcbf7bff0a373e",
+      "status": "proposed",
+      "route": "single-span",
+      "selection_owners": [
+        25,
+        26
+      ],
+      "normalized": {
+        "changed_text": "つ",
+        "inserted": "お",
+        "rule": "changed characters only",
+        "owner": 25,
+        "edit": {
+          "start": 3,
+          "end": 4,
+          "text": "お"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "qualified",
+          "reason": null,
+          "capacity": null
+        }
+      },
+      "propose_seconds": 3.6057122199999867,
+      "after": [
+        "標記にお"
+      ],
+      "reopen": "restored",
+      "contract": "single-span",
+      "sha256": {
+        "pdf": "e2a2fbf3bcec518c213f407721aa1d0420ce0db49d3eccf8eab5746f6dd1d5c3",
+        "sidecar": "3a97344a73eddae3b7d4b6143bf526bf3840df3e6db58b33149bbe592ef255ad"
+      },
+      "provenance": [],
+      "saved_seconds": 16.23475316200006,
+      "owner_texts": [
+        {
+          "mcid": 25,
+          "before": "標記につ",
+          "after": "標記にお",
+          "drawn": "標記にお"
+        }
+      ],
+      "checks": {
+        "actualtext_equals_drawn": true,
+        "logical_text": true,
+        "structure_except_changed_actualtext": true,
+        "changed_structure_objects": [
+          "59:0"
+        ],
+        "other_owners_unchanged": true,
+        "original_fonts_unchanged": true,
+        "drawings_unchanged": true,
+        "follower_semantics_unchanged": true,
+        "changed_structure_objects_are_owners": true
+      },
+      "pixels": {
+        "mupdf": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            228,
+            675,
+            246,
+            694
+          ]
+        },
+        "poppler": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            228,
+            675,
+            246,
+            694
+          ]
+        }
+      },
+      "outcome": "success"
+    },
+    {
+      "id": "B",
+      "category": "growth in a wrapped owner (PR #81 case)",
+      "anchor": 149,
+      "selected": "において",
+      "replacement": "におきまして",
+      "glyph_ids": [
+        149,
+        150,
+        151,
+        152
+      ],
+      "proposal_sha256": "3869a4b6d00f94a183eee188a7b664b2af81597e9fe428d83c03f52fe68aea95",
+      "status": "proposed",
+      "route": "adjacent-span",
+      "selection_owners": [
+        28
+      ],
+      "normalized": {
+        "changed_text": "い",
+        "inserted": "きまし",
+        "rule": "changed characters only",
+        "owner": 28,
+        "edit": {
+          "start": 10,
+          "end": 11,
+          "text": "きまし"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "refused",
+          "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+          "capacity": true
+        },
+        "adjacent-span": {
+          "status": "proposed",
+          "reason": null,
+          "capacity": null
+        }
+      },
+      "propose_seconds": 11.664985766999962,
+      "after": [
+        "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+        "に送付いたします。"
+      ],
+      "reopen": "restored",
+      "contract": "adjacent-span",
+      "sha256": {
+        "pdf": "d09e33e15e4519c5452546344e900fc120095cc880abba3ee8a3b05fac2206d7",
+        "sidecar": "2160b216eace6151b3b7347763fcc450f11e9c520955095735ac6a6ad088bcb4"
+      },
+      "provenance": [
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "国"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "立"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "感"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "染"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "症"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "研"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "究"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "所"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "に"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "お"
+        },
+        {
+          "owner": "first",
+          "kind": "inserted",
+          "unicode": "き"
+        },
+        {
+          "owner": "first",
+          "kind": "inserted",
+          "unicode": "ま"
+        },
+        {
+          "owner": "first",
+          "kind": "inserted",
+          "unicode": "し"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "て"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ガ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "イ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ド"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ラ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "イ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ン"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "が"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "作"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "成"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "さ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "れ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ま"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "し"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "た"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "の"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "で"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "、"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "参"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "考"
+        },
+        {
+          "owner": "second",
+          "kind": "relocated",
+          "unicode": "に"
+        },
+        {
+          "owner": "second",
+          "kind": "relocated",
+          "unicode": "送"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "付"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "い"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "た"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "し"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "ま"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "す"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "。"
+        }
+      ],
+      "saved_seconds": 67.2598649659999,
+      "owner_texts": [
+        {
+          "mcid": 28,
+          "before": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+          "after": "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+          "drawn": "国立感染症研究所におきましてガイドラインが作成されましたので、参考"
+        },
+        {
+          "mcid": 29,
+          "before": "付いたします。",
+          "after": "に送付いたします。",
+          "drawn": "に送付いたします。"
+        }
+      ],
+      "checks": {
+        "actualtext_equals_drawn": true,
+        "logical_text": true,
+        "structure_except_changed_actualtext": true,
+        "changed_structure_objects": [
+          "62:0",
+          "63:0"
+        ],
+        "other_owners_unchanged": true,
+        "original_fonts_unchanged": true,
+        "drawings_unchanged": true,
+        "follower_semantics_unchanged": true,
+        "changed_structure_objects_are_owners": true
+      },
+      "pixels": {
+        "mupdf": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            143,
+            674,
+            1046,
+            730
+          ]
+        },
+        "poppler": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            142,
+            674,
+            1046,
+            730
+          ]
+        }
+      },
+      "outcome": "success"
+    },
+    {
+      "id": "C",
+      "category": "same length inside one owner (PR #78 case)",
+      "anchor": 160,
+      "selected": "作成されましたので",
+      "replacement": "作成されていたので",
+      "glyph_ids": [
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168
+      ],
+      "proposal_sha256": "e19909f378806f9e90592d81de14504ba5087f99fdf8aaeef4ddd8e495e1e714",
+      "status": "proposed",
+      "route": "single-span",
+      "selection_owners": [
+        28
+      ],
+      "normalized": {
+        "changed_text": "まし",
+        "inserted": "てい",
+        "rule": "changed characters only",
+        "owner": 28,
+        "edit": {
+          "start": 23,
+          "end": 25,
+          "text": "てい"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "qualified",
+          "reason": null,
+          "capacity": null
+        }
+      },
+      "propose_seconds": 3.3133140709999225,
+      "after": [
+        "国立感染症研究所においてガイドラインが作成されていたので、参考に送"
+      ],
+      "reopen": "restored",
+      "contract": "single-span",
+      "sha256": {
+        "pdf": "49b9be801d8f6de09dac90e47c4e5037238367c1ba5b6a84fe9cd7191d4c9e06",
+        "sidecar": "987b26ffb94232efb225d841f5b794cf9edb782c8e90fe589aea07a934f286ff"
+      },
+      "provenance": [],
+      "saved_seconds": 18.130986679999978,
+      "owner_texts": [
+        {
+          "mcid": 28,
+          "before": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+          "after": "国立感染症研究所においてガイドラインが作成されていたので、参考に送",
+          "drawn": "国立感染症研究所においてガイドラインが作成されていたので、参考に送"
+        }
+      ],
+      "checks": {
+        "actualtext_equals_drawn": true,
+        "logical_text": true,
+        "structure_except_changed_actualtext": true,
+        "changed_structure_objects": [
+          "62:0"
+        ],
+        "other_owners_unchanged": true,
+        "original_fonts_unchanged": true,
+        "drawings_unchanged": true,
+        "follower_semantics_unchanged": true,
+        "changed_structure_objects_are_owners": true
+      },
+      "pixels": {
+        "mupdf": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            837,
+            675,
+            877,
+            694
+          ]
+        },
+        "poppler": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            837,
+            675,
+            877,
+            694
+          ]
+        }
+      },
+      "outcome": "success"
+    },
+    {
+      "id": "D",
+      "category": "shortening inside one owner",
+      "anchor": 160,
+      "selected": "作成されましたので",
+      "replacement": "作成されたので",
+      "glyph_ids": [
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168
+      ],
+      "proposal_sha256": "cbb8fdd5b47d495ff8777cf1f398b00f1c3e84d57218f561d999766409853e1e",
+      "status": "proposed",
+      "route": "single-span",
+      "selection_owners": [
+        28
+      ],
+      "normalized": {
+        "changed_text": "まし",
+        "inserted": "",
+        "rule": "changed characters only",
+        "owner": 28,
+        "edit": {
+          "start": 23,
+          "end": 25,
+          "text": ""
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "qualified",
+          "reason": null,
+          "capacity": null
+        }
+      },
+      "propose_seconds": 3.5713368250001167,
+      "after": [
+        "国立感染症研究所においてガイドラインが作成されたので、参考に送"
+      ],
+      "reopen": "restored",
+      "contract": "single-span",
+      "sha256": {
+        "pdf": "fde1b163ddbfcbbfe3d3fc6c3505139be7f932e4a972a9f2ad1583ee163a4f9e",
+        "sidecar": "ed74144e1277853f83b8d5a979c07b326b883b8b3bcf228cc2e9e9e17dd323e7"
+      },
+      "provenance": [],
+      "saved_seconds": 17.14941862500018,
+      "owner_texts": [
+        {
+          "mcid": 28,
+          "before": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+          "after": "国立感染症研究所においてガイドラインが作成されたので、参考に送",
+          "drawn": "国立感染症研究所においてガイドラインが作成されたので、参考に送"
+        }
+      ],
+      "checks": {
+        "actualtext_equals_drawn": true,
+        "logical_text": true,
+        "structure_except_changed_actualtext": true,
+        "changed_structure_objects": [
+          "62:0"
+        ],
+        "other_owners_unchanged": true,
+        "original_fonts_unchanged": true,
+        "drawings_unchanged": true,
+        "follower_semantics_unchanged": true,
+        "changed_structure_objects_are_owners": true
+      },
+      "pixels": {
+        "mupdf": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            837,
+            674,
+            1045,
+            694
+          ]
+        },
+        "poppler": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            837,
+            674,
+            1045,
+            694
+          ]
+        }
+      },
+      "outcome": "success"
+    },
+    {
+      "id": "E",
+      "category": "owner head replacement",
+      "anchor": 132,
+      "selected": "標記",
+      "replacement": "本件",
+      "glyph_ids": [
+        132,
+        133
+      ],
+      "proposal_sha256": "d9623e9abe3c10e39b35f92a07492bb10c23279457c0e304797279fb0b7ebcaa",
+      "status": "refused",
+      "route": null,
+      "selection_owners": [
+        25
+      ],
+      "normalized": {
+        "changed_text": "標記",
+        "inserted": "本件",
+        "rule": "changed characters only",
+        "owner": 25,
+        "edit": {
+          "start": 0,
+          "end": 2,
+          "text": "本件"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "refused",
+          "reason": "the original embedded program lacks 件; no fallback font is used",
+          "capacity": false
+        }
+      },
+      "propose_seconds": 0.6314226499998767,
+      "outcome": "refused",
+      "reason": "single-span route: the original embedded program lacks 件; no fallback font is used"
+    },
+    {
+      "id": "F",
+      "category": "change spanning two owners",
+      "anchor": 134,
+      "selected": "につきまして、",
+      "replacement": "に関して、",
+      "glyph_ids": [
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140
+      ],
+      "proposal_sha256": "dee240386c5afe13c40d236c7f601f36fc00ce1a2c87ce7cf53b23ed3659a2a6",
+      "status": "refused",
+      "route": null,
+      "selection_owners": [
+        25,
+        26,
+        27
+      ],
+      "normalized": {
+        "changed_text": "つきま",
+        "inserted": "関",
+        "rule": "changed characters only",
+        "owner": null,
+        "edit": null
+      },
+      "routes": {},
+      "propose_seconds": 0.3452241069999218,
+      "outcome": "refused",
+      "reason": "the changed characters つきま span 2 owners"
+    },
+    {
+      "id": "G",
+      "category": "owner without ActualText",
+      "anchor": 182,
+      "selected": "つきまして",
+      "replacement": "おきまして",
+      "glyph_ids": [
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      "proposal_sha256": "854f98113cecc762c35b69a3652a3828bfbf07e3ccd021b1f60820d9b3cfbb62",
+      "status": "refused",
+      "route": null,
+      "selection_owners": [
+        31
+      ],
+      "normalized": {
+        "changed_text": "つ",
+        "inserted": "お",
+        "rule": "changed characters only",
+        "owner": 31,
+        "edit": {
+          "start": 0,
+          "end": 1,
+          "text": "お"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "refused",
+          "reason": "single Span: unsupported semantic override",
+          "capacity": false
+        }
+      },
+      "propose_seconds": 1.2620420600001125,
+      "outcome": "refused",
+      "reason": "single-span route: single Span: unsupported semantic override"
+    },
+    {
+      "id": "H",
+      "category": "deletion at an owner end",
+      "anchor": 134,
+      "selected": "につ",
+      "replacement": "に",
+      "glyph_ids": [
+        134,
+        135
+      ],
+      "proposal_sha256": "c9155ba2a8005f364905c662abae7599a7a79bd886e54005c0f3a4574a019d98",
+      "status": "refused",
+      "route": null,
+      "selection_owners": [
+        25
+      ],
+      "normalized": {
+        "changed_text": "つ",
+        "inserted": "",
+        "rule": "changed characters only",
+        "owner": 25,
+        "edit": {
+          "start": 3,
+          "end": 4,
+          "text": ""
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "refused",
+          "reason": "single Span supports one internal edit only",
+          "capacity": false
+        }
+      },
+      "propose_seconds": 2.7805717589999404,
+      "outcome": "refused",
+      "reason": "single-span route: single Span supports one internal edit only"
+    },
+    {
+      "id": "I",
+      "category": "insertion with growth in a wrapped owner",
+      "anchor": 170,
+      "selected": "参考に",
+      "replacement": "参考までに",
+      "glyph_ids": [
+        170,
+        171,
+        172
+      ],
+      "proposal_sha256": "a665a3a48a9d85368e53c49ca18d8440c6eae402aeb11809a285b707c5652d58",
+      "status": "proposed",
+      "route": "adjacent-span",
+      "selection_owners": [
+        28
+      ],
+      "normalized": {
+        "changed_text": "考",
+        "inserted": "考まで",
+        "rule": "insertion attached to the preceding selected glyph",
+        "owner": 28,
+        "edit": {
+          "start": 30,
+          "end": 31,
+          "text": "考まで"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "refused",
+          "reason": "single Span provider qualification failed: Reflowed text exceeds the available vertical space.",
+          "capacity": true
+        },
+        "adjacent-span": {
+          "status": "proposed",
+          "reason": null,
+          "capacity": null
+        }
+      },
+      "propose_seconds": 11.831865045000086,
+      "after": [
+        "国立感染症研究所においてガイドラインが作成されましたので、参考まで",
+        "に送付いたします。"
+      ],
+      "reopen": "restored",
+      "contract": "adjacent-span",
+      "sha256": {
+        "pdf": "996d738ca79d7a655343c2f4bd305e2c4a64360cc4275997861d5e773f64c6f4",
+        "sidecar": "bae7ea96e5a963e32170826ad3d630ccf48faec5685cd76e6509dc0b57493601"
+      },
+      "provenance": [
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "国"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "立"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "感"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "染"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "症"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "研"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "究"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "所"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "に"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "お"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "い"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "て"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ガ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "イ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ド"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ラ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "イ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ン"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "が"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "作"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "成"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "さ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "れ"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "ま"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "し"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "た"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "の"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "で"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "、"
+        },
+        {
+          "owner": "first",
+          "kind": "retained",
+          "unicode": "参"
+        },
+        {
+          "owner": "first",
+          "kind": "inserted",
+          "unicode": "考"
+        },
+        {
+          "owner": "first",
+          "kind": "inserted",
+          "unicode": "ま"
+        },
+        {
+          "owner": "first",
+          "kind": "inserted",
+          "unicode": "で"
+        },
+        {
+          "owner": "second",
+          "kind": "relocated",
+          "unicode": "に"
+        },
+        {
+          "owner": "second",
+          "kind": "relocated",
+          "unicode": "送"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "付"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "い"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "た"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "し"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "ま"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "す"
+        },
+        {
+          "owner": "second",
+          "kind": "retained",
+          "unicode": "。"
+        }
+      ],
+      "saved_seconds": 62.46564777499998,
+      "owner_texts": [
+        {
+          "mcid": 28,
+          "before": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+          "after": "国立感染症研究所においてガイドラインが作成されましたので、参考まで",
+          "drawn": "国立感染症研究所においてガイドラインが作成されましたので、参考まで"
+        },
+        {
+          "mcid": 29,
+          "before": "付いたします。",
+          "after": "に送付いたします。",
+          "drawn": "に送付いたします。"
+        }
+      ],
+      "checks": {
+        "actualtext_equals_drawn": true,
+        "logical_text": true,
+        "structure_except_changed_actualtext": true,
+        "changed_structure_objects": [
+          "62:0",
+          "63:0"
+        ],
+        "other_owners_unchanged": true,
+        "original_fonts_unchanged": true,
+        "drawings_unchanged": true,
+        "follower_semantics_unchanged": true,
+        "changed_structure_objects_are_owners": true
+      },
+      "pixels": {
+        "mupdf": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            143,
+            674,
+            1045,
+            730
+          ]
+        },
+        "poppler": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            142,
+            674,
+            1045,
+            730
+          ]
+        }
+      },
+      "outcome": "success"
+    },
+    {
+      "id": "J",
+      "category": "growth in the last owner of a paragraph",
+      "anchor": 175,
+      "selected": "いたします",
+      "replacement": "させていただきます",
+      "glyph_ids": [
+        175,
+        176,
+        177,
+        178,
+        179
+      ],
+      "proposal_sha256": "954a063f3fb42285522ee448bd4dbc6fd98db810e9b1845c7f8efa9413d777cd",
+      "status": "refused",
+      "route": null,
+      "selection_owners": [
+        29
+      ],
+      "normalized": {
+        "changed_text": "いたし",
+        "inserted": "させていただき",
+        "rule": "changed characters only",
+        "owner": 29,
+        "edit": {
+          "start": 1,
+          "end": 4,
+          "text": "させていただき"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "refused",
+          "reason": "the original embedded program lacks せ; no fallback font is used",
+          "capacity": false
+        }
+      },
+      "propose_seconds": 0.56029984099996,
+      "outcome": "refused",
+      "reason": "single-span route: the original embedded program lacks せ; no fallback font is used"
+    },
+    {
+      "id": "K",
+      "category": "growth in a mid-line owner followed by whitespace",
+      "anchor": 112,
+      "selected": "御協力いただき",
+      "replacement": "御協力をいただき",
+      "glyph_ids": [
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118
+      ],
+      "proposal_sha256": "b2d7509226c5cbd6793fed57ced047d36d951cde57578f57eb488b46c2a3ad72",
+      "status": "refused",
+      "route": null,
+      "selection_owners": [
+        23
+      ],
+      "normalized": {
+        "changed_text": "力",
+        "inserted": "力を",
+        "rule": "insertion attached to the preceding selected glyph",
+        "owner": 23,
+        "edit": {
+          "start": 19,
+          "end": 20,
+          "text": "力を"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "refused",
+          "reason": "the original embedded program lacks を; no fallback font is used",
+          "capacity": false
+        }
+      },
+      "propose_seconds": 0.5533568999999261,
+      "outcome": "refused",
+      "reason": "single-span route: the original embedded program lacks を; no fallback font is used"
+    },
+    {
+      "id": "L",
+      "category": "same length inside a sentence owner",
+      "anchor": 122,
+      "selected": "御礼",
+      "replacement": "お礼",
+      "glyph_ids": [
+        122,
+        123
+      ],
+      "proposal_sha256": "69170970f60d44ea03900b9e1c206ad8c63ae5639043ccca088fb0c5a3107d2d",
+      "status": "proposed",
+      "route": "single-span",
+      "selection_owners": [
+        23
+      ],
+      "normalized": {
+        "changed_text": "御",
+        "inserted": "お",
+        "rule": "changed characters only",
+        "owner": 23,
+        "edit": {
+          "start": 27,
+          "end": 28,
+          "text": "お"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "qualified",
+          "reason": null,
+          "capacity": null
+        }
+      },
+      "propose_seconds": 3.225657080000019,
+      "after": [
+        "日頃より、本府保健医療行政の推進に御協力いただき、厚くお礼申し上げます。"
+      ],
+      "reopen": "restored",
+      "contract": "single-span",
+      "sha256": {
+        "pdf": "8b15215779246132f669531a25b6444f11d3cd1db68f8c6a42d22daea4af240c",
+        "sidecar": "10887c4e1ae992413236a820f33324e2230809efcd4be42706e1083161218613"
+      },
+      "provenance": [],
+      "saved_seconds": 15.997906871000168,
+      "owner_texts": [
+        {
+          "mcid": 23,
+          "before": "日頃より、本府保健医療行政の推進に御協力いただき、厚く御礼申し上げます。",
+          "after": "日頃より、本府保健医療行政の推進に御協力いただき、厚くお礼申し上げます。",
+          "drawn": "日頃より、本府保健医療行政の推進に御協力いただき、厚くお礼申し上げます。"
+        }
+      ],
+      "checks": {
+        "actualtext_equals_drawn": true,
+        "logical_text": true,
+        "structure_except_changed_actualtext": true,
+        "changed_structure_objects": [
+          "56:0"
+        ],
+        "other_owners_unchanged": true,
+        "original_fonts_unchanged": true,
+        "drawings_unchanged": true,
+        "follower_semantics_unchanged": true,
+        "changed_structure_objects_are_owners": true
+      },
+      "pixels": {
+        "mupdf": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            731,
+            639,
+            751,
+            658
+          ]
+        },
+        "poppler": {
+          "outside_pixels": 0,
+          "changed_raster_bbox": [
+            731,
+            639,
+            750,
+            658
+          ]
+        }
+      },
+      "outcome": "success"
+    },
+    {
+      "id": "M",
+      "category": "growth in a title owner",
+      "anchor": 64,
+      "selected": "届出の質向上",
+      "replacement": "届出の品質向上",
+      "glyph_ids": [
+        64,
+        65,
+        66,
+        67,
+        68,
+        69
+      ],
+      "proposal_sha256": "99a7c31792dec6dfb05b0f4629d3a6988cb085d2ff396fa8eeefa29cccdc263b",
+      "status": "refused",
+      "route": null,
+      "selection_owners": [
+        17
+      ],
+      "normalized": {
+        "changed_text": "の",
+        "inserted": "の品",
+        "rule": "insertion attached to the preceding selected glyph",
+        "owner": 17,
+        "edit": {
+          "start": 18,
+          "end": 19,
+          "text": "の品"
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "refused",
+          "reason": "the original embedded program lacks 品; no fallback font is used",
+          "capacity": false
+        }
+      },
+      "propose_seconds": 0.49453283900015776,
+      "outcome": "refused",
+      "reason": "single-span route: the original embedded program lacks 品; no fallback font is used"
+    },
+    {
+      "id": "N",
+      "category": "cross-owner selection, shortening at an owner end",
+      "anchor": 132,
+      "selected": "標記につきまして",
+      "replacement": "標記につき",
+      "glyph_ids": [
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139
+      ],
+      "proposal_sha256": "273f6666ac23d16f0722abaf2bc806f9ca9beb88d116ae3f4d7bc8d7f93c5dd1",
+      "status": "refused",
+      "route": null,
+      "selection_owners": [
+        25,
+        26
+      ],
+      "normalized": {
+        "changed_text": "まして",
+        "inserted": "",
+        "rule": "changed characters only",
+        "owner": 26,
+        "edit": {
+          "start": 1,
+          "end": 4,
+          "text": ""
+        }
+      },
+      "routes": {
+        "single-span": {
+          "status": "refused",
+          "reason": "single Span supports one internal edit only",
+          "capacity": false
+        }
+      },
+      "propose_seconds": 2.1930873470000734,
+      "outcome": "refused",
+      "reason": "single-span route: single Span supports one internal edit only"
+    }
+  ],
+  "compatibility": {
+    "adjacent_intent_api_sha256": "79840e338c2097e6712166a651feeccd5242344b93721b1acaf22465aeec98c2",
+    "adjacent_intent_api_equals_pr81": true,
+    "unified_vs_pr81": {
+      "actualtext_equal": true,
+      "actualtext": {
+        "28": [
+          "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+          "国立感染症研究所におきましてガイドラインが作成されましたので、参考"
+        ],
+        "29": [
+          "に送付いたします。",
+          "に送付いたします。"
+        ]
+      },
+      "structure_equal": true,
+      "original_f1_glyphs": {
+        "pr81": 34,
+        "unified": 37
+      },
+      "whole_page_pixel_difference": {
+        "mupdf": {
+          "outside_pixels": 2386,
+          "changed_raster_bbox": [
+            543,
+            674,
+            1046,
+            694
+          ]
+        },
+        "poppler": {
+          "outside_pixels": 2259,
+          "changed_raster_bbox": [
+            543,
+            674,
+            1046,
+            694
+          ]
+        }
+      }
+    }
+  },
+  "totals": {
+    "success": 6,
+    "needs-confirmation": 0,
+    "refused": 8,
+    "audit-failed": 0,
+    "case-error": 0,
+    "error": 0
+  },
+  "elapsed_seconds": 257.21956428199996,
+  "run_root": "tmp/edit-coverage-2",
+  "gui_runs": {
+    "A": {
+      "root": "tmp/edit-coverage-gui-A",
+      "selection": [
+        135,
+        136,
+        137,
+        138,
+        139
+      ],
+      "selected_text": "つきまして",
+      "route": "single-span",
+      "after": [
+        "標記にお"
+      ],
+      "reopen": "restored",
+      "output_sha256": "e2a2fbf3bcec518c213f407721aa1d0420ce0db49d3eccf8eab5746f6dd1d5c3",
+      "sidecar_sha256": "3a97344a73eddae3b7d4b6143bf526bf3840df3e6db58b33149bbe592ef255ad",
+      "equals_coverage_run": true,
+      "elapsed_seconds": {
+        "propose": 3.4586895939999067,
+        "accept": 13.09887797700003,
+        "save": 9.357804582999961
+      }
+    },
+    "B": {
+      "root": "tmp/edit-coverage-gui-B",
+      "selection": [
+        149,
+        150,
+        151,
+        152
+      ],
+      "selected_text": "において",
+      "route": "adjacent-span",
+      "after": [
+        "国立感染症研究所におきましてガイドラインが作成されましたので、参考",
+        "に送付いたします。"
+      ],
+      "reopen": "restored",
+      "output_sha256": "d09e33e15e4519c5452546344e900fc120095cc880abba3ee8a3b05fac2206d7",
+      "sidecar_sha256": "2160b216eace6151b3b7347763fcc450f11e9c520955095735ac6a6ad088bcb4",
+      "equals_coverage_run": true,
+      "elapsed_seconds": {
+        "propose": 13.54280420400005,
+        "accept": 58.945989232999864,
+        "save": 37.36100749100001
+      }
+    }
+  }
+}

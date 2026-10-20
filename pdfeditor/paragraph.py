@@ -303,7 +303,8 @@ class ParagraphShaper:
                     if index + 1 < end:
                         advance += style.tracking
                 elif index+1 < end:
-                    following = self.units[index+1].retained
+                    # A one-for-one replacement keeps the source gap before it.
+                    following = self.units[index+1].retained or self.units[index+1].slot
                     if (following is not None and following.char is not None
                             and original.source_index is not None and following.source_index is not None
                             and following.line == original.line
@@ -369,6 +370,9 @@ class ParagraphShaper:
                 advance = (glyph.advance if self.alignment == 'left' else font.nominal_width(glyph.gid))*sx + style.tracking
                 if stop == end and position == len(run.glyphs)-1:
                     advance -= style.tracking
+                kept = self._slot_advance(index+position, end, glyph, font)
+                if kept is not None:
+                    advance = kept
                 result.append(InlineGlyph(glyph.text,advance,ink,
                     max(0,font.ascender*style.size-style.rise),max(0,-font.descender*style.size+style.rise),
                     {"style_id":style.id,"provider":provider,"source_index":None,
@@ -376,6 +380,27 @@ class ParagraphShaper:
                      "bounds_source":"provided_outline"}))
             index = stop
         return result
+
+    def _slot_advance(self, index, end, glyph, font):
+        """Source advance of the unit a new glyph replaces one-for-one, or None.
+
+        Kept only for left alignment, an unpositioned glyph and an equal
+        nominal PDF width, so the replacement sits exactly where the source
+        spacing (including writer kerning) placed the replaced glyph and the next one.
+        """
+        slot = self.units[index].slot
+        if (slot is None or self.alignment != 'left' or glyph.x_offset or glyph.y_offset or len(glyph.text) != 1
+                or abs(font.nominal_width(glyph.gid) * 1000 / font.upem - slot.char.pdf_width) > 1e-6):
+            return None
+        if index + 1 < end:
+            following = self.units[index+1].retained or self.units[index+1].slot
+            if (following is not None and following.char is not None and following.source_index is not None
+                    and following.line == slot.line
+                    and self.original_offsets[id(following)] == self.original_offsets[id(slot)]+1):
+                return following.observation['origin'][0] - slot.observation['origin'][0]
+            return None
+        matrix = multiply(slot.event.text_matrix, slot.event.state.ctm)
+        return (slot.char.advance - slot.event.state.tc * slot.event.state.tz / 100) * matrix[0]
 
     def close(self):
         for font in self.source_fonts.values():

@@ -387,3 +387,27 @@ def test_nonempty_failure_publishes_neither_pdf_nor_sidecar(world, tmp_path, mon
     with pytest.raises((PdfError, OSError)):
         edit_single_span(source, state, output, sidecar, [dict(start=4, end=6, text='申請')], provider=provider)
     assert not output.exists() and not sidecar.exists()
+
+
+@pytest.mark.parametrize('start,end,text', [(0, 1, '申'), (len(TEXT) - 1, len(TEXT), '申'), (0, 2, '申請')])
+def test_owner_end_replacement_stays_inside_the_owner(world, tmp_path, start, end, text):
+    source, proposal = world
+    state = accept_single_span(source, proposal)
+    provider = pinned_provider(source, proposal, tmp_path)
+    out, current = save(source, state, tmp_path, 'end-replacement', [dict(start=start, end=end, text=text)],
+                        provider=provider)
+    assert current['witness']['text'] == TEXT[:start] + text + TEXT[end:]
+    assert current['witness']['structure'] == state['witness']['structure']
+    old = glyph_records(source, state['selection']['glyph_ids'])
+    new = glyph_records(out, current['selection']['glyph_ids'])
+    assert new[:start] == old[:start] and new[start + len(text):] == old[end:]
+
+
+@pytest.mark.parametrize('start,end,text', [(0, 1, ''), (len(TEXT) - 1, len(TEXT), ''), (0, len(TEXT), ''),
+                                            (0, 0, '申'), (len(TEXT), len(TEXT), '申')])
+def test_owner_end_insertion_and_deletion_stay_refused(world, tmp_path, start, end, text):
+    source, proposal = world
+    state = accept_single_span(source, proposal)
+    with pytest.raises(PdfError, match='internal edit'):
+        edit_single_span(source, state, tmp_path / 'bad.pdf', tmp_path / 'bad.json', [dict(start=start, end=end, text=text)])
+    assert not (tmp_path / 'bad.pdf').exists()
