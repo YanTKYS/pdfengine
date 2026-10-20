@@ -18,6 +18,7 @@ from pdfeditor.selection import source_sha
 SOURCE = Path('evaluations/realpdf/corpus/word_osaka_guideline.pdf')
 SOURCE_SHA = '9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe'
 SELECTED, REPLACEMENT = 'において', 'におきまして'
+ANCHOR = None  # first glyph of the occurrence when the drawn text occurs more than once
 EARLIER = Path('tmp/osaka-adjacent-intent-quality')
 
 
@@ -25,6 +26,9 @@ def occurrence(session):
     """Glyphs of the single drawn occurrence; a pointer would be required for more."""
     drawn = [g['text'] for g in session.glyphs]
     starts = [i for i in range(len(drawn)) if ''.join(drawn[i:i + len(SELECTED)]) == SELECTED]
+    if ANCHOR is not None:
+        assert ANCHOR in starts, 'the anchor glyph does not start the selected text'
+        starts = [ANCHOR]
     assert len(starts) == 1, 'ambiguous display text needs a pointer position'
     return starts[0], starts[0] + len(SELECTED) - 1
 
@@ -150,10 +154,15 @@ def run_gui(root):
 
 
 def main():
+    global SELECTED, REPLACEMENT, ANCHOR
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', choices=('session', 'gui'), required=True)
     parser.add_argument('--root')
+    parser.add_argument('--selected', default=SELECTED)
+    parser.add_argument('--replacement', default=REPLACEMENT)
+    parser.add_argument('--anchor', type=int)
     args = parser.parse_args()
+    SELECTED, REPLACEMENT, ANCHOR = args.selected, args.replacement, args.anchor
     root = Path(args.root or 'tmp/osaka-adjacent-gui-' + args.mode)
     root.mkdir(parents=True, exist_ok=False)
     assert source_sha(SOURCE) == SOURCE_SHA

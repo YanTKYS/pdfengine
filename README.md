@@ -285,7 +285,29 @@ restored = open_shared_flow("shared.pdf", "shared.flow.json")
 
 短文化で後続段落が前へ詰まり、長文化で確認済みの次領域へ移ります。continuation経路では、既存source slotを超える場合、利用者が空き領域と描画contextを確認した既存ページ上のdestinationへ、同じparagraphのslotを生成できます。短文化で空になったslotも再利用します。対象の外部LibreOffice PDFの1 paragraphでは、確認済みdestinationについてoverflow → reopen → re-edit → shorten → regrow → no-opと容量拒否の系列評価を完了しました（[評価](evaluations/continuation/README.md)）。単一原本・単一destinationの範囲です。同じページに互いに交差しない複数のdestinationを置くこともできます。生成blockは、利用者が確認した`page_entry_order`の順でpage program先頭のpage-entry chainに並び、生成順やactivation順には依存しません（[同一ページの複数destination](docs/confirmed-continuation.md#同一ページの複数destination)）。これは同じpage-entry authorityの拡張であり、任意のcontent-stream位置への挿入ではありません。page entryの代わりに、`inspect_continuation_boundaries`が列挙したpage levelの安全な境界の1つをcallerが確認し、そこへblockを入れることもできます。blockは、確認したprefixの描画より後、suffixの描画より前に描かれます（[確認済みpage-program境界](docs/confirmed-continuation.md#確認済みpage-program境界)）。境界のCTMがidentity以外でも、逆行列で相殺できることを証明できる場合に限り、blockは`q N cm BT ... ET Q`としてpage座標に描き、suffixは元のCTMのままです（[CTMの相殺](docs/confirmed-continuation.md#identity以外のctmの相殺)。source operandの逆を使い、source・interpreted双方の変位上界を証明します）。境界に有効なclipがあっても、そのclipを1つのpage矩形と証明でき、destinationと生成glyphのinkがその内側に収まる場合に限り、blockはclipを変えずに継承して描きます（[矩形clipの継承](docs/confirmed-continuation.md#矩形clipの継承)）。1つの明確な`q ... Q` scopeの内側（深さ1）の境界も、状態が同じ条件を満たせば候補になります。blockはそのscopeの対応する`Q`より前で閉じ、scopeの`q`・`Q`は保存ごとにmutation mapで追跡します（[1つのq ... Q scopeの内側](docs/confirmed-continuation.md#1つのq--q-scopeの内側)）。最大2段の明確に証明された`q ... Q` scope chain（深さ2）の内側の境界も、状態が同じ条件を満たせば候補になります。外側・内側の`q`と対応する`Q`、各`Q`が戻す状態をauthorityとして固定し、4つの`q`/`Q`を保存ごとに追跡します（[2段のq ... Q scope chainの内側](docs/confirmed-continuation.md#2段のq--q-scope-chainの内側)）。矩形clipの継承と深さ1のscopeは、上記の外部LibreOffice PDFの10ページでも、ページ全体の矩形clipを持つ本文scopeの内側の境界で系列評価しました（[評価](evaluations/continuation/README.md#pr-15-engineでのq--q-scope境界の評価)）。PR #17 engineでは、同じ原本の10ページで深さ2・CTM相殺・矩形clipの系列と状態復帰を確認しました。PR #18時点では同条件のpage-entry対照とPoppler画素が一致せず、外部評価の総合結果は未達でした（[当時の失敗記録](evaluations/continuation/README.md#pr-17-engineの深さ2実境界評価--2026-09-27)）。その後、PDFの十進operandからexact rationalで構成したCTMを基準に逆行列を作り、source・interpretedの両モデルで既存の0.002pt上界を証明するよう修正しました。同じ実境界のoverflowを各authorityで1回ずつ再評価し、Poppler差は5,868→0画素となりました。深さ0・1・2の端数平行移動でもMuPDF・Poppler回帰を確認しています（[修正とfocused評価](evaluations/continuation/README.md#source-ctm-compensation)）。今回、depth 3専用の`outer`・`middle`・`inner` authorityを追加し、最大scope depthを3へ広げました。6つのq/Qを個別に追跡し、各Q後の状態復帰を検証します。depth 0・1・2のserialized形式とPR #19のCTM契約は維持します（[3段の契約](docs/confirmed-continuation.md#3段のq--q-scope-chainの内側)）。今回の検証はsyntheticだけで、外部実PDF評価は再実行していません。`q`の深さ4以上、矩形と証明できないclip、ExtGState、特異・数値的に不安定なCTM、text object・marked contentの内側は候補になりません。合成PDFに加え、上記と同じ外部LibreOffice PDFでも評価しました。確認済みの6ページ領域を2つのdestinationへ明示分割し、逐次生成・同時生成・reopen・re-edit・shorten・regrow・no-opを完走しました（[2 destinationの評価](evaluations/continuation/README.md#同一ページ2-destinationの評価)）。text object内の`q`/`Q`を正規化した現行engineで、単一destinationと2 destinationの系列を再評価しました。全保存がPDF 1.xのoperator nestingを満たし、描画は以前のengineと画素単位で同じでした。いずれも単一原本・確認済みの1領域の範囲で、任意のPDFで複数destinationが動くことを示すものではありません。再保存では、sidecarの記録で所有を証明したpdfengine生成fontだけを再利用・置換し、元PDFのresourceは削除しません。no-op保存を繰り返してもfont数は増えません。所有を証明した生成blockは保存ごとに現在の内容だけへ書き直すので、保存回数に比例して増えません。新規確認したshared-flow v2のtext source slotも、初回のsource residueと復元bridgeを固定し、以後は所有するcurrent outputだけを書き換えるため、同一状態の再保存でpage programは増えません。既存v1は従来のsource rewriteを維持します（[source slotのownership](docs/source-slot-rewrite-ownership.md#11-実装済みsynthetic-contract--2026-10-03)）。[独立段落の共有flow](docs/shared-paragraph-flow.md)と[確認済みcontinuation](docs/confirmed-continuation.md)に入力契約と評価範囲を記録しています。
 
-## GUIで文字を選んで隣接Spanを編集する（PoC）
+## タグ付きPDFの文字を選んで置き換える
+
+`pdfeditor.edit_intent` は、ページ上の具体的なglyph occurrenceの選択と置換文字列だけから、安全な編集案を作ります。owner番号・境界・矩形・フォントは入力しません。
+
+```python
+from pdfeditor.edit_intent import propose_edit_intent, accept_edit_intent, edit_edit_intent, open_edit_result
+from pdfeditor.selection import make_selection
+
+selection = make_selection("source.pdf", 1, glyph_ids=selected_glyph_ids)   # 画面で選んだglyph
+proposal = propose_edit_intent("source.pdf", selection, "おきまして", work_dir="work")  # PDFは変更しない
+acceptance = accept_edit_intent("source.pdf", proposal, work_dir="work")                # 利用者の明示承認
+edit_edit_intent("source.pdf", acceptance, "edited.pdf", "edited.json", work_dir="work")
+open_edit_result("edited.pdf", "edited.json")   # restored
+```
+
+- **正規化**：選択文字列と置換文字列の前後で一致する書記素は、元のglyph・フォント・構造のまま残し、実際に変わる最小範囲とそのownerを求めます。選択が複数のSpanにまたがっていても、変わる文字が1つのSpanに収まれば、そのSpanだけを編集します。
+- **単一Span経路**：変更が1つのleaf Span（ActualTextあり）に収まり、そのSpanの元の文字範囲の中で組める場合に使います。owner先頭・末尾の文字の置換もできます（端への挿入と端の削除は拒否）。同じ文字数・同じ字幅の置換では、Wordが入れた字間の詰め（TJカーニング）を置換位置にそのまま残します。
+- **隣接Span経路**：単一Span経路が「容量不足」だけを理由に拒否した場合に限り、同じ親段落の次行のSpanへ文字を送る編集案を作ります（後続の空白Spanは位置だけ移動）。構造・フォント・位置の制約による拒否は、別の経路では試しません。
+- 新しい文字は元の埋め込みfont programだけで描きます（fallbackなし）。保存はTransactionで検証し、ActualText・StructureTree・MCID・元glyph・領域外描画を保護します。
+
+大阪府ガイドラインPDFで事前に固定した14件の編集では、6件が保存・再openまで成功しました。拒否された8件も含めた理由と再評価方法は [編集対応範囲の評価](evaluations/real_japanese/edit-coverage-report.md) にあります。
+
+### GUI（PoC）
 
 Tkinter（Python標準のGUI。Ubuntuでは `python3-tk`）とPyMuPDFで動く最小のGUIです。1ページ目だけを扱います。
 
@@ -294,11 +316,11 @@ python -m examples.adjacent_span_gui evaluations/realpdf/corpus/word_osaka_guide
 ```
 
 1. 1ページ目で、置き換えたい文字列の先頭glyphから末尾glyphまでドラッグして選択する（選択した文字列が右側に表示されます）。
-2. 置換後の文字列を入力し、「編集案を確認」を押す。対象owner、後続owner、編集前後の文、再配置される文字、followerの移動量、元の埋め込みフォント、編集矩形とカラム端の根拠が表示され、矩形と裏付けになった行末がページ上に重ねて描かれます。拒否された場合は理由だけが表示されます。
+2. 置換後の文字列を入力し、「編集案を確認」を押す。実際に変わる文字、選ばれた経路（単一Span／隣接Span）、対象owner、編集前後の文、元の埋め込みフォント、編集矩形とその根拠が表示され、矩形がページ上に重ねて描かれます。拒否された場合は理由だけが表示されます。
 3. 境界候補が複数ある場合は1つを選び、「この内容で承認」を押す。
 4. 「PDFを保存」で保存先を選ぶ（sidecarは同名の `.json`。既存ファイルや元PDFには書きません）。保存後は生成PDFが表示され、再openの結果（`restored`）が表示されます。
 
-判断はすべて `propose_adjacent_intent` → `accept_adjacent_intent` → `edit_adjacent_intent` が行い、GUIは結果を表示するだけです。選択や置換文字列を変えると、それまでの提案と承認は無効になります。
+判断はすべて `propose_edit_intent` → `accept_edit_intent` → `edit_edit_intent` が行い、GUIは結果を表示するだけです。選択や置換文字列を変えると、それまでの提案と承認は無効になります。
 
 ## 忠実性と幅の契約
 

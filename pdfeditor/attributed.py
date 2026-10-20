@@ -65,6 +65,9 @@ class EditUnit:
     style_id: str
     retained: SourceUnit | None
     provider: str | None = None
+    # The source unit a new glyph replaces one-for-one (``keep_spacing``).
+    # ParagraphShaper keeps that unit's source spacing when advances are equal.
+    slot: SourceUnit | None = None
 
 
 class SourceParagraph:
@@ -344,6 +347,13 @@ def apply_edits(paragraph, snapshot, edits):
         if style not in paragraph.styles:
             raise PdfError("unknown source style_id")
         provider = edit.get("font_id",style)
+        if edit.get("keep_spacing"):
+            # Only a one-for-one replacement of painted source units has slots.
+            if (len(text) != end-start or not text
+                    or any(u.char is None or u.source_index is None for u in paragraph.units[start:end])):
+                raise PdfError("source spacing can be kept only for a one-for-one replacement of painted glyphs")
+            ordered.append((start,end,[(text,style,provider,paragraph.units[start:end])]))
+            continue
         ordered.append((start,end,[(text,style,provider)]))
     ordered.sort(key=lambda e:(e[0],e[1]))
     result, cursor = [], 0
@@ -352,7 +362,9 @@ def apply_edits(paragraph, snapshot, edits):
         if start < cursor or start == previous_start:
             raise PdfError("edits must be disjoint, with one operation at each source position")
         result.extend(EditUnit(u.text,u.style_id,u) for u in paragraph.units[cursor:start])
-        result.extend(EditUnit(c,style,None,provider) for text,style,provider in runs for c in text)
+        for text,style,provider,*slots in runs:
+            slots = slots[0] if slots else [None]*len(text)
+            result.extend(EditUnit(c,style,None,provider,slot) for c,slot in zip(text,slots))
         cursor, previous_start = end, start
     result.extend(EditUnit(u.text,u.style_id,u) for u in paragraph.units[cursor:])
     _require_complete_graphemes(paragraph, result)

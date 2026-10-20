@@ -9,7 +9,7 @@ from pypdf import PdfReader
 
 from examples import adjacent_span_session as gui
 from examples.adjacent_span_session import AdjacentEditSession, Refused, review, review_text
-from pdfeditor.adjacent_intent import accept_adjacent_intent, edit_adjacent_intent, propose_adjacent_intent
+from pdfeditor.edit_intent import accept_edit_intent, edit_edit_intent, propose_edit_intent
 from pdfeditor.backend import PdfError
 from pdfeditor.selection import source_sha
 from pdfeditor.span_edit import _seal
@@ -88,7 +88,7 @@ def test_cross_owner_selection_is_refused_by_the_engine(world, tmp_path):
     first = adj.ids_of(session.source, 1)
     screen_drag(session, first[-2], adj.ids_of(session.source, 2)[1])
     session.set_replacement('につき')
-    with pytest.raises(PdfError, match='crosses owners'):
+    with pytest.raises(PdfError, match='span 2 owners'):
         session.propose()
     assert session.proposal is None
 
@@ -133,14 +133,16 @@ def test_stale_and_tampered_states_are_refused(world, tmp_path):
     screen_drag(session, *occurrence(session, 1, 'について'))
     session.set_replacement('につきまして')
     session.propose()
-    forged = deepcopy(session.proposal); forged['regions']['owners'][0]['x1'] = 400
+    forged = deepcopy(session.proposal)
+    forged['routes']['adjacent-span']['proposal']['regions']['owners'][0]['x1'] = 400
     session.proposal = _seal(forged)
     with pytest.raises(PdfError, match='stale or was modified'):
         session.accept()
     session.set_replacement('につきまして ')
     session.set_replacement('につきまして')
     session.propose(); session.accept()
-    moved = deepcopy(session.acceptance); moved['boundary'] -= 1
+    moved = deepcopy(session.acceptance); moved['inner']['boundary'] -= 1
+    moved['inner'] = _seal(moved['inner'])
     session.acceptance = _seal(moved)
     with pytest.raises(PdfError, match='differs from its proposal'):
         session.save(pdf, sidecar)
@@ -159,13 +161,13 @@ def test_result_for_changed_inputs_is_discarded(world, monkeypatch):
     _, session = world
     screen_drag(session, *occurrence(session, 1, 'について'))
     session.set_replacement('につきまして')
-    real = gui.propose_adjacent_intent
+    real = gui.propose_edit_intent
 
     def edited_meanwhile(*args, **kwargs):
         value = real(*args, **kwargs)
         session.set_replacement('につき')  # the user typed while the worker ran
         return value
-    monkeypatch.setattr(gui, 'propose_adjacent_intent', edited_meanwhile)
+    monkeypatch.setattr(gui, 'propose_edit_intent', edited_meanwhile)
     with pytest.raises(Refused, match='discarded'):
         session.propose()
     assert session.proposal is None
@@ -176,7 +178,8 @@ def test_gui_flow_saves_reopens_and_matches_the_direct_api(world, tmp_path):
     screen_drag(session, *occurrence(session, 1, 'について'))
     session.set_replacement('につきまして')
     shown = session.propose()
-    assert shown == review(session.proposal) and shown['status'] == 'proposed'
+    assert shown == review(session.proposal) and shown['status'] == 'proposed' and shown['route'] == 'adjacent-span'
+    assert (shown['changed_text'], shown['inserted']) == ('い', 'きまし')
     assert shown['first']['mcid'] == 1 and shown['second']['mcid'] == 2 and shown['follower']['approved']
     assert shown['options'][0]['relocated'] == 'を行' and shown['options'][0]['follower_dx'] == pytest.approx(21)
     assert shown['column']['basis'] == 'corroborated line ends' and len(shown['column']['supports']) == 2
@@ -194,9 +197,9 @@ def test_gui_flow_saves_reopens_and_matches_the_direct_api(world, tmp_path):
     assert source_sha(path) == session.sha256
     # The same edit through the APIs directly gives the same PDF and sidecar.
     direct = tmp_path / 'direct'
-    proposal = propose_adjacent_intent(path, session.selection, 'につきまして', work_dir=direct / 'work')
-    acceptance = accept_adjacent_intent(path, proposal, work_dir=direct / 'work')
-    edit_adjacent_intent(path, acceptance, direct / 'out.pdf', direct / 'out.json', work_dir=direct / 'work')
+    proposal = propose_edit_intent(path, session.selection, 'につきまして', work_dir=direct / 'work')
+    acceptance = accept_edit_intent(path, proposal, work_dir=direct / 'work')
+    edit_edit_intent(path, acceptance, direct / 'out.pdf', direct / 'out.json', work_dir=direct / 'work')
     assert source_sha(direct / 'out.pdf') == saved['output_sha256']
     assert source_sha(direct / 'out.json') == saved['sidecar_sha256']
     assert json.loads(sidecar.read_text())['status'] == 'confirmed'
@@ -218,7 +221,7 @@ def test_inputs_are_locked_while_saving(world, tmp_path, monkeypatch):
     session.set_replacement('につきまして')
     session.propose(); session.accept()
     accepted = session.acceptance
-    refusals, real = [], gui.edit_adjacent_intent
+    refusals, real = [], gui.edit_edit_intent
 
     def changed_meanwhile(*args, **kwargs):
         # Another caller tries to change the inputs after the save has started.
@@ -230,7 +233,7 @@ def test_inputs_are_locked_while_saving(world, tmp_path, monkeypatch):
             except Refused as exc:
                 refusals.append(str(exc))
         return real(*args, **kwargs)
-    monkeypatch.setattr(gui, 'edit_adjacent_intent', changed_meanwhile)
+    monkeypatch.setattr(gui, 'edit_edit_intent', changed_meanwhile)
     pdf, sidecar = outputs(tmp_path)
     saved = session.save(pdf, sidecar)
     assert [r.split(';')[0] for r in refusals] == ['saving is in progress'] * 2 + ['save is still running']
@@ -250,7 +253,7 @@ def test_one_step_runs_at_a_time_and_is_released_after_refusal(world, monkeypatc
         session.propose()
     assert session.running is None
     session.set_replacement('につきまして')
-    refusals, real = [], gui.propose_adjacent_intent
+    refusals, real = [], gui.propose_edit_intent
 
     def overlapping(*args, **kwargs):
         for attempt in (session.propose, session.accept):
@@ -259,7 +262,24 @@ def test_one_step_runs_at_a_time_and_is_released_after_refusal(world, monkeypatc
             except Refused as exc:
                 refusals.append(str(exc))
         return real(*args, **kwargs)
-    monkeypatch.setattr(gui, 'propose_adjacent_intent', overlapping)
+    monkeypatch.setattr(gui, 'propose_edit_intent', overlapping)
     session.propose()
     assert refusals == ['propose is still running'] * 2
     assert session.proposal is not None and session.running is None
+
+
+def test_cross_owner_drag_with_a_one_owner_change_takes_the_single_span_route(tmp_path):
+    import test_edit_intent as edit
+    path = edit.kerned_source(tmp_path)
+    session = AdjacentEditSession(path, work_dir=tmp_path / 'work')
+    lead, first = adj.ids_of(path, 0), adj.ids_of(path, 1)
+    chosen = screen_drag(session, lead[-1], first[0])
+    assert chosen['text'] == '書本'
+    session.set_replacement('類本')
+    shown = session.propose()
+    assert shown['route'] == 'single-span' and shown['selection_owners'] == [0, 1]
+    assert (shown['changed_text'], shown['inserted'], shown['first']['mcid']) == ('書', '類', 0)
+    assert [o['kind'] for o in shown['overlays']] == ['first'] and any('単一Span' in line for line in review_text(shown))
+    session.accept()
+    saved = session.save(*outputs(tmp_path))
+    assert saved['route'] == 'single-span' and saved['after'] == ['申請類'] and saved['reopen'] == 'restored'

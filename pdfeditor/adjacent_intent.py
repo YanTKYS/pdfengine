@@ -116,6 +116,19 @@ def _baseline(glyph):
     return round(glyph['origin'][1], 4)
 
 
+def line_band(actual, ids):
+    """The glyphs' box and a vertical band splitting the gap to every other line (capped at half its height)."""
+    own = Rect(min(actual[i]['bbox'][0] for i in ids), min(actual[i]['bbox'][1] for i in ids),
+               max(actual[i]['bbox'][2] for i in ids), max(actual[i]['bbox'][3] for i in ids))
+    line = {_baseline(actual[i]) for i in ids}
+    above = [g['bbox'][3] for g in actual if _baseline(g) not in line and g['bbox'][3] <= own.y0]
+    below = [g['bbox'][1] for g in actual if _baseline(g) not in line and g['bbox'][1] >= own.y1]
+    cap = own.height / 2
+    y0 = own.y0 - min(cap, (own.y0 - max(above)) / 2) if above else own.y0 - cap
+    y1 = own.y1 + min(cap, (min(below) - own.y1) / 2) if below else own.y1 + cap
+    return own, y0, y1
+
+
 def _column_edge(content, found):
     """The column right edge, bounded by the edited paragraph's own line break.
 
@@ -176,12 +189,7 @@ def _regions(content, found):
     drawings = [Rect(*d['rect']) for d in content.page.get_drawings()]
 
     def band(ids, allowed):
-        own = box(ids); line = {_baseline(actual[i]) for i in ids}
-        above = [g['bbox'][3] for g in actual if _baseline(g) not in line and g['bbox'][3] <= own.y0]
-        below = [g['bbox'][1] for g in actual if _baseline(g) not in line and g['bbox'][1] >= own.y1]
-        cap = own.height / 2
-        y0 = own.y0 - min(cap, (own.y0 - max(above)) / 2) if above else own.y0 - cap
-        y1 = own.y1 + min(cap, (min(below) - own.y1) / 2) if below else own.y1 + cap
+        own, y0, y1 = line_band(actual, ids); line = {_baseline(actual[i]) for i in ids}
         stops = [g['bbox'][0] for j, g in enumerate(actual) if j not in allowed and _baseline(g) in line
                  and g['bbox'][0] >= own.x0 and g['bbox'][2] > own.x1]
         return own, y0, y1, max(own.x1, min([right] + stops)), stops
@@ -243,7 +251,8 @@ def _coverage(data, text):
     finally:
         font.font.close()
     if missing:
-        _refuse('the original embedded program lacks ' + ''.join(missing) + '; no fallback font is used')
+        # Not an intent-level refusal: callers report font coverage on its own.
+        raise PdfError('the original embedded program lacks ' + ''.join(missing) + '; no fallback font is used')
     return family
 
 

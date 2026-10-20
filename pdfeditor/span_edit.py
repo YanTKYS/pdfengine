@@ -183,7 +183,8 @@ def _observe(source, selection, region, font_binding=None, *, follower=frozenset
             if i not in selection['glyph_ids'] and i not in follower and rect.intersects(box):
                 overlap = Rect(max(rect.x0, box.x0), max(rect.y0, box.y0),
                                min(rect.x1, box.x1), min(rect.y1, box.y1))
-                if not resolved.bbox.contains(overlap):
+                # Trace boxes are single precision; allow only that rounding.
+                if not resolved.bbox.contains(overlap, .001):
                     raise PdfError('single Span rectangle adds foreign glyph capacity')
     finally:
         content.close()
@@ -204,6 +205,12 @@ def _plan(transaction, model, edits, provider=None):
         # identical approved appearance is re-proved on the current revision.
         ident = next(s['style_id'] for s in paragraph['spans'] if s['start'] <= edits[0]['start'] < s['end'])
         requested = [dict(edits[0], style_id=ident, font_id='single-span-provider')]
+        start, end, text = edits[0]['start'], edits[0]['end'], edits[0]['text']
+        # A one-for-one replacement in one style keeps the replaced glyphs'
+        # source spacing when advances are equal (writer kerning included).
+        if text and len(text) == end - start and all(
+                s['style_id'] == ident for s in paragraph['spans'] if s['start'] < end and s['end'] > start):
+            requested[0]['keep_spacing'] = True
     plan = plan_paragraph_edit(page, paragraph, requested, owner='single-span:' + str(proof['owner']['xref']),
         fonts={'single-span-provider': provider} if provider is not None else None,
         width=region.x1 - paragraph['layout_suggestion']['x'], max_bottom=region.y1)
@@ -276,12 +283,23 @@ def open_single_span(source, model):
 
 
 def _edits(text, edits):
+    """One edit inside the owner, or a replacement of characters at its ends.
+
+    An insertion at an owner end is ambiguous between neighbouring owners, and
+    a deletion there changes the owner's extent; both stay refused. A
+    nonempty replacement of the first or last characters stays inside the
+    owner's own characters, so it needs no such choice.
+    """
     if edits:
-        if (not isinstance(edits, list) or len(edits) != 1 or set(edits[0]) != {'start', 'end', 'text'}
-                or type(edits[0]['start']) is not int or type(edits[0]['end']) is not int
-                or not 0 < edits[0]['start'] <= edits[0]['end'] < len(text)
-                or not isinstance(edits[0]['text'], str)
-                or (edits[0]['start'] == edits[0]['end'] and not edits[0]['text'])):
+        edit = edits[0] if isinstance(edits, list) and len(edits) == 1 else None
+        if (not isinstance(edit, dict) or set(edit) != {'start', 'end', 'text'}
+                or type(edit['start']) is not int or type(edit['end']) is not int
+                or not isinstance(edit['text'], str) or not 0 <= edit['start'] <= edit['end'] <= len(text)):
+            raise PdfError('single Span supports one internal edit only')
+        start, end, new = edit['start'], edit['end'], edit['text']
+        internal = 0 < start and end < len(text) and (start < end or new)
+        replaces_end = start < end and new and (start == 0 or end == len(text))
+        if not (internal or replaces_end):
             raise PdfError('single Span supports one internal edit only')
     elif edits != []:
         raise PdfError('single Span edits must be a list')

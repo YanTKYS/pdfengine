@@ -3,8 +3,9 @@
 The session only connects user gestures to the existing contracts: a drag
 between two glyphs becomes a ``make_selection`` bound to the source SHA and
 page observation; proposing, accepting and saving call
-``propose_adjacent_intent``, ``accept_adjacent_intent`` and
-``edit_adjacent_intent`` unchanged. It never corrects owners, rectangles,
+``propose_edit_intent``, ``accept_edit_intent`` and ``edit_edit_intent``
+unchanged (single-Span or adjacent-Span route, chosen by the engine). It
+never corrects owners, routes, rectangles,
 fonts or boundaries. Changing the selection or replacement discards the
 proposal and acceptance; a proposal or acceptance computed for older inputs
 is discarded. One step runs at a time, and while a save runs (it publishes
@@ -20,8 +21,7 @@ import threading
 
 import pymupdf
 
-from pdfeditor.adjacent_intent import accept_adjacent_intent, edit_adjacent_intent, propose_adjacent_intent
-from pdfeditor.adjacent_span import open_adjacent_span
+from pdfeditor.edit_intent import accept_edit_intent, edit_edit_intent, open_edit_result, propose_edit_intent
 from pdfeditor.backend import PdfError
 from pdfeditor.selection import inspect_selection_source, make_selection, source_sha
 
@@ -155,8 +155,10 @@ class AdjacentEditSession:
             if not inputs['replacement']:
                 raise Refused('enter the replacement text first')
             self._check_source()
-            proposal = propose_adjacent_intent(self.source, inputs['selection'], inputs['replacement'],
-                                               work_dir=self.work_dir)
+            proposal = propose_edit_intent(self.source, inputs['selection'], inputs['replacement'],
+                                           work_dir=self.work_dir)
+            if proposal['status'] == 'refused':
+                raise Refused('the engine refused this edit: ' + proposal['reason'])
             self._commit(token, proposal=proposal)
             return review(proposal)
         finally:
@@ -166,7 +168,7 @@ class AdjacentEditSession:
         token, inputs = self._begin('accept', 'proposal')
         try:
             self._check_source()
-            acceptance = accept_adjacent_intent(self.source, inputs['proposal'], work_dir=self.work_dir, option=option)
+            acceptance = accept_edit_intent(self.source, inputs['proposal'], work_dir=self.work_dir, option=option)
             self._commit(token, acceptance=acceptance)
             return acceptance
         finally:
@@ -183,9 +185,10 @@ class AdjacentEditSession:
                 if path.exists():
                     raise Refused('%s already exists; choose a new file' % path)
             self._check_source()
-            result = edit_adjacent_intent(self.source, inputs['acceptance'], output, sidecar, work_dir=self.work_dir)
-            reopened = open_adjacent_span(output, json.loads(sidecar.read_text(encoding='utf-8')))
-            value = dict(after=result['after'], follower_dx=result['follower_dx'], provenance=result['provenance'],
+            result = edit_edit_intent(self.source, inputs['acceptance'], output, sidecar, work_dir=self.work_dir)
+            reopened = open_edit_result(output, sidecar)
+            value = dict(route=result['route'], after=result['after'], follower_dx=result.get('follower_dx'),
+                         provenance=result.get('provenance'),
                          output=str(output), sidecar=str(sidecar), output_sha256=_sha(output),
                          sidecar_sha256=_sha(sidecar), reopen=reopened['status'], reopen_reason=reopened.get('reason'))
             self._commit(token, result=value)
@@ -194,8 +197,33 @@ class AdjacentEditSession:
             self._end()
 
 
+ROUTES = {'single-span': '単一Span', 'adjacent-span': '隣接Span'}
+
+
 def review(proposal):
     """What the user must see before accepting, plus PDF-space overlays."""
+    found = proposal['normalized']
+    base = dict(status=proposal['status'], route=proposal['route'], selected_text=found['selected_text'],
+                replacement=found['replacement'], changed_text=found['changed_text'], inserted=found['inserted'],
+                rule=found['rule'], selection_owners=[o['mcid'] for o in found['selection_owners']])
+    if proposal['route'] == 'adjacent-span':
+        return dict(_adjacent_review(proposal['routes']['adjacent-span']['proposal']), **base)
+    route, owner = proposal['routes']['single-span'], found['owner']
+    r = route['region']
+    font = route['font'] or {}
+    return dict(base, first=dict(owner=owner['owner'], mcid=owner['mcid'], text=owner['text']), second=None,
+                logical_before=owner['text'], logical_after=route['after'], options=[], chosen=None, candidates=[],
+                follower=dict(mcid=None, owner=None, approved=False, note='single-Span route'),
+                font=dict(font_xref=font.get('font_xref'), family=font.get('family'),
+                          program_sha256=font.get('program_sha256')),
+                column=None, regions=[r], follower_region=None,
+                requires_confirmation=['owner and changed characters', 'owner rectangle (its own glyph extent)',
+                                       'pinned original font program'],
+                overlays=[dict(kind='first', rect=(r['x0'], r['y0'], r['x1'], r['y1']))])
+
+
+def _adjacent_review(proposal):
+    """The adjacent-Span part of a review (an ``adjacent_intent`` proposal)."""
     evidence = proposal['regions']['evidence']
     owners = proposal['owners']
     options = []
@@ -235,11 +263,18 @@ def review_text(value):
     """Plain Japanese lines for the review pane."""
     def owner(o):
         return 'MCID%s（構造要素 %d）「%s」' % (o['mcid'], o['owner']['xref'], o['text'])
-    lines = ['状態: ' + ('提案（境界は一意）' if value['status'] == 'proposed' else '境界候補が複数あります。1つ選んでください'),
+    route = ROUTES[value['route']]
+    lines = ['状態: ' + ('提案（経路: %s）' % route if value['status'] == 'proposed'
+                       else '境界候補が複数あります（経路: %s）。1つ選んでください' % route),
              '選択: 「%s」 → 置換: 「%s」' % (value['selected_text'], value['replacement']),
-             '編集対象: ' + owner(value['first']), '後続owner: ' + owner(value['second']),
-             '編集前: ' + value['logical_before'], '編集後: ' + value['logical_after'],
-             '元の境界: %d文字目' % value['original_boundary']]
+             '実際の変更: 「%s」 → 「%s」（%s）' % (value['changed_text'], value['inserted'], value['rule']),
+             '選択範囲のowner: ' + '、'.join('MCID%s' % m for m in value['selection_owners']),
+             '編集対象: ' + owner(value['first'])]
+    if value['second'] is not None:
+        lines.append('後続owner: ' + owner(value['second']))
+    lines += ['編集前: ' + value['logical_before'], '編集後: ' + value['logical_after']]
+    if value['route'] == 'adjacent-span':
+        lines.append('元の境界: %d文字目' % value['original_boundary'])
     for o in value['options']:
         mark = '★' if o['index'] == value['chosen'] else '・'
         dx = '%.2fpt' % o['follower_dx'] if o['follower_dx'] is not None else 'なし'
@@ -252,16 +287,21 @@ def review_text(value):
             lines.append('不採用: 再配置%d文字 — %s' % (c['relocated_count'], c['reason']))
     f = value['follower']
     lines.append('空白follower: ' + ('MCID%s を位置のみ移動' % f['mcid'] if f['approved'] else 'なし（%s）' % f['note']))
-    lines.append('フォント: xref %d %s（program SHA-256 %s…）' % (
-        value['font']['font_xref'], value['font']['family'], value['font']['program_sha256'][:16]))
-    column = value['column']
-    lines.append('カラム右端: %.2fpt（根拠: %s、改行窓 %.2f〜%.2fpt、次の文字「%s」）' % (
-        column['right'], column['basis'], column['wrap_window'][0], column['wrap_window'][1], column['next_character']))
+    if value['font']['program_sha256']:
+        lines.append('フォント: xref %d %s（program SHA-256 %s…）' % (
+            value['font']['font_xref'], value['font']['family'], value['font']['program_sha256'][:16]))
+    else:
+        lines.append('フォント: 新しい文字はありません（元のglyphだけ）')
+    column = value['column'] or dict(right=None, supports=[], ignored=[])
+    if column['right'] is not None:
+        lines.append('カラム右端: %.2fpt（根拠: %s、改行窓 %.2f〜%.2fpt、次の文字「%s」）' % (
+            column['right'], column['basis'], column['wrap_window'][0], column['wrap_window'][1],
+            column['next_character']))
     for s in column['supports']:
         lines.append('    裏付けの行末: 「%s」 右端 %.2fpt（baseline %.2f）' % (s['unicode'], s['right'], s['baseline']))
     for s in column['ignored']:
         lines.append('    窓の外として無視: 「%s」 右端 %.2fpt' % (s['unicode'], s['right']))
-    for name, r in zip(('先行', '後続'), value['regions']):
+    for name, r in zip(('先行', '後続') if value['second'] is not None else ('編集',), value['regions']):
         lines.append('%s矩形: (%.2f, %.2f)–(%.2f, %.2f)' % (name, r['x0'], r['y0'], r['x1'], r['y1']))
     if value['follower_region']:
         r = value['follower_region']
