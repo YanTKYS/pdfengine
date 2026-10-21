@@ -51,3 +51,8 @@ tmp/
 
 # Semantic lifecycle external validation: commit only result.json + report.md per run (artifacts/logs stay local).
 !/evaluations/semantic_lifecycle/runs/*/result.json
+
+# Paragraph/frame architecture PoC: text evidence only.
+!/evaluations/architecture_poc/manifest.json
+!/evaluations/architecture_poc/results.json
+!/evaluations/architecture_poc/audits/*.json
