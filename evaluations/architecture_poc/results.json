@@ -1,0 +1,1404 @@
+{
+  "schema": "paragraph-frame-comparison-results-1",
+  "baseline_commit": "8fa868f",
+  "manifest_commit": "35b06b6",
+  "manifest_sha256": "eb87071abd75539132ddab86f57be808fe479adeed29b230b27e5554ac7da065",
+  "dates": {
+    "initial_edits": "2026-10-20",
+    "completion": "2026-10-21"
+  },
+  "environment": {
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "python": "3.12.14",
+    "versions": {
+      "PyMuPDF": "1.27.2.3",
+      "pypdf": "6.10.0",
+      "uharfbuzz": "0.55.0",
+      "fonttools": "4.64.0",
+      "uniseg": "0.10.1",
+      "Pillow": "12.3.0"
+    }
+  },
+  "sdk": {
+    "arm": "C",
+    "status": "unverified",
+    "reason": "No evaluation content-editor API/license supplied; PDFNetPython3 module unavailable. No SDK performance claim."
+  },
+  "timing_policy": "One exploratory first save per request, no cold/warm guarantee, no p95 or general speedup. A intent and proposal/accept/save measured separately; B analysis/layout/save+readback measured separately. Audit seconds include reusable raster cache. RSS was not measured. Initial B timings precede extra fail-closed guards; final read-only qualification verifies the same source/layout.",
+  "source_sha256_unchanged": {
+    "osaka": true,
+    "libreoffice": true
+  },
+  "final_guard_qualification": {
+    "A": {
+      "source_semantics_and_inbound_guards": true,
+      "insertion_clip_contains_frame": true,
+      "layout_unchanged": true,
+      "pdf_alone_observation_matches": true,
+      "original_occurrences_match_manifest": true
+    },
+    "B": {
+      "source_semantics_and_inbound_guards": true,
+      "insertion_clip_contains_frame": true,
+      "layout_unchanged": true,
+      "pdf_alone_observation_matches": true,
+      "original_occurrences_match_manifest": true
+    },
+    "C": {
+      "source_semantics_and_inbound_guards": true,
+      "insertion_clip_contains_frame": true,
+      "layout_unchanged": true,
+      "pdf_alone_observation_matches": true,
+      "original_occurrences_match_manifest": true
+    },
+    "D": {
+      "source_semantics_and_inbound_guards": true,
+      "insertion_clip_contains_frame": true,
+      "layout_unchanged": true,
+      "pdf_alone_observation_matches": true,
+      "original_occurrences_match_manifest": true
+    }
+  },
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_poc.py --durations=5",
+    "passed": 12,
+    "seconds": 1.81,
+    "full_suite": "not run; independent prototype only; production modules unchanged"
+  },
+  "independent_review": {
+    "method": "Separate agent code review and 144-dpi MuPDF crop inspection; source/edited native-search boundary reproduction",
+    "observations": [
+      "No clipped new text or obvious foreground collision in A/B/C/D B crops",
+      "Osaka follower ends with a separate two-character line; typography limitation",
+      "D native full-replacement search fails on both A and B; original LO also fails comparable no-space CJK boundary queries",
+      "Source Osaka frame has only two foreign U+0020 occurrences (225,226); both preserved",
+      "A PDF-alone C/D reached explicit substituted provider acceptance and refused due to existing source output marker inventory / owned slot contract",
+      "B continuation passed all eight modes with both renderers showing all-page zero difference on no-op saves"
+    ],
+    "review_limit": "Bounded input/code audit, not a general PDF/UA or security certification"
+  },
+  "cases": {
+    "A": {
+      "document": "osaka",
+      "old": "につきまして、",
+      "new": "に関して、",
+      "expected": "標記に関して、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+      "arms": {
+        "A": {
+          "baseline_routes": {
+            "edit_intent": {
+              "status": "refused",
+              "reason": "the changed characters つきま span 2 owners",
+              "route": null
+            },
+            "page_flow": {
+              "status": "refused",
+              "saved": null,
+              "acceptance_refusal": "PdfError: page-flow proposal cannot be accepted: unsupported-for-persistent-flow: tagged-page: source output: unsupported marked structure: paragraph needs one tree-backed owner; region: the column region collides with foreign content: p1-l17, p1-l18; paragraph-evidence: P1 (p1-l14): selected style spans have different non-inline graphics state; paragraph-evidence: P2 (p1-l16): selected style spans have different non-inline graphics state"
+            }
+          },
+          "timing": {
+            "edit_intent": 0.2859327580081299,
+            "page_flow": 3.5725490619952325,
+            "total": 3.8584821599943098
+          },
+          "edit": "refused",
+          "quality": "not evaluated",
+          "lifecycle": "not applicable: no output"
+        },
+        "B": {
+          "timing": {
+            "analysis": 0.16560107699478976,
+            "layout": 0.3389631310128607,
+            "save_and_readback": 0.6739043880079407,
+            "total": 1.1784685960155912
+          },
+          "planned_lines": [
+            [
+              {
+                "text": "標記に関して、国立感染症研究所においてガイドラインが作成されましたので、参考に送付",
+                "baseline": 346.13
+              },
+              {
+                "text": "いたします。 ",
+                "baseline": 364.13
+              }
+            ],
+            [
+              {
+                "text": "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたしま",
+                "baseline": 382.13
+              },
+              {
+                "text": "す。 ",
+                "baseline": 400.13
+              }
+            ]
+          ],
+          "source_glyphs_removed": 93,
+          "source_show_operators_rewritten": 9,
+          "edit": "saved",
+          "pdf_sha256": "040d6ae78adba10fbf5046d0c7ce18f3ae1b23263b050eab563104bd6d7c2eb4",
+          "quality": "success",
+          "audit": "evaluations/architecture_poc/audits/B-A-initial.json",
+          "failed_checks": [],
+          "verification_seconds": 0.8992940679891035,
+          "physical_lines": [
+            {
+              "text": "標記に関して、国立感染症研究所においてガイドラインが作成されましたので、参考に送付",
+              "baseline": 346.13
+            },
+            {
+              "text": "いたします。",
+              "baseline": 364.13
+            },
+            {
+              "text": "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたしま",
+              "baseline": 382.13
+            },
+            {
+              "text": "す。",
+              "baseline": 400.13
+            }
+          ],
+          "safety_checks_passed": true,
+          "lifecycle": {
+            "pdf-alone": {
+              "status": "saved",
+              "seconds": 1.3698422930028755,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/B-A-pdf-alone-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "seconds": 0.019684192986460403,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            },
+            "sidecar": {
+              "status": "saved",
+              "seconds": 1.5714331700000912,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/B-A-sidecar-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "seconds": 0.030293810996226966,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "B": {
+      "document": "osaka",
+      "old": "標記につきまして、",
+      "new": "標記のガイドラインにつきまして、内容をご確認いただけるよう",
+      "expected": "標記のガイドラインにつきまして、内容をご確認いただけるよう国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+      "arms": {
+        "A": {
+          "baseline_routes": {
+            "edit_intent": {
+              "status": "refused",
+              "reason": "the changed characters につきまして、 span 3 owners",
+              "route": null
+            },
+            "page_flow": {
+              "status": "refused",
+              "saved": null,
+              "acceptance_refusal": "PdfError: page-flow proposal cannot be accepted: unsupported-for-persistent-flow: tagged-page: source output: unsupported marked structure: paragraph needs one tree-backed owner; region: the column region collides with foreign content: p1-l17, p1-l18; paragraph-evidence: P1 (p1-l14): selected style spans have different non-inline graphics state; paragraph-evidence: P2 (p1-l16): selected style spans have different non-inline graphics state"
+            }
+          },
+          "timing": {
+            "edit_intent": 0.27634706199751236,
+            "page_flow": 3.1767661010089796,
+            "total": 3.4531134339922573
+          },
+          "edit": "refused",
+          "quality": "not evaluated",
+          "lifecycle": "not applicable: no output"
+        },
+        "B": {
+          "timing": {
+            "analysis": 0.1741060680069495,
+            "layout": 0.3190061329805758,
+            "save_and_readback": 0.6959260410221759,
+            "total": 1.1890382420097012
+          },
+          "planned_lines": [
+            [
+              {
+                "text": "標記のガイドラインにつきまして、内容をご確認いただけるよう国立感染症研究所において",
+                "baseline": 346.13
+              },
+              {
+                "text": "ガイドラインが作成されましたので、参考に送付いたします。 ",
+                "baseline": 364.13
+              }
+            ],
+            [
+              {
+                "text": "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたしま",
+                "baseline": 382.13
+              },
+              {
+                "text": "す。 ",
+                "baseline": 400.13
+              }
+            ]
+          ],
+          "source_glyphs_removed": 93,
+          "source_show_operators_rewritten": 9,
+          "edit": "saved",
+          "pdf_sha256": "6778ffcde439331e76ca728b576c70b7114396f82b82b94858e2790814afb4e8",
+          "quality": "success",
+          "audit": "evaluations/architecture_poc/audits/B-B-initial.json",
+          "failed_checks": [],
+          "verification_seconds": 0.8417038860206958,
+          "physical_lines": [
+            {
+              "text": "標記のガイドラインにつきまして、内容をご確認いただけるよう国立感染症研究所において",
+              "baseline": 346.13
+            },
+            {
+              "text": "ガイドラインが作成されましたので、参考に送付いたします。",
+              "baseline": 364.13
+            },
+            {
+              "text": "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたしま",
+              "baseline": 382.13
+            },
+            {
+              "text": "す。",
+              "baseline": 400.13
+            }
+          ],
+          "safety_checks_passed": true,
+          "lifecycle": {
+            "pdf-alone": {
+              "status": "saved",
+              "seconds": 1.5814056629897095,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/B-B-pdf-alone-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "seconds": 0.025354896002681926,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            },
+            "sidecar": {
+              "status": "saved",
+              "seconds": 1.4926534169935621,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/B-B-sidecar-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "seconds": 0.033467443980043754,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "C": {
+      "document": "libreoffice",
+      "old": "依然こそこそと、隠れたやり方で",
+      "new": "依然として",
+      "expected": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然として変化に抵抗します。",
+      "arms": {
+        "A": {
+          "baseline_routes": {
+            "edit_intent": {
+              "status": "refused",
+              "reason": "the changed characters こそこそと、隠れたやり方で span 1 owners",
+              "route": null
+            },
+            "page_flow": {
+              "status": "needs-choice",
+              "saved": true,
+              "acceptance_refusal": null
+            }
+          },
+          "timing": {
+            "edit_intent": 0.33449651300907135,
+            "page_flow": 92.47555857899715,
+            "total": 92.81005560199264
+          },
+          "edit": "saved",
+          "pdf_sha256": "38fd2d202b653edf5efee47834040309b968b43c62bdec73ee6d5f275695f323",
+          "quality": "success",
+          "audit": "evaluations/architecture_poc/audits/A-C-initial.json",
+          "failed_checks": [],
+          "verification_seconds": 1.5103590509970672,
+          "physical_lines": [
+            {
+              "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他の",
+              "baseline": 526.1
+            },
+            {
+              "text": "メンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然として変化に抵抗します。",
+              "baseline": 546.5
+            },
+            {
+              "text": "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単になり、より効果",
+              "baseline": 573.0
+            },
+            {
+              "text": "的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失い、自然と仲間が増える勢",
+              "baseline": 593.4
+            },
+            {
+              "text": "いが作られる前に、不信と批評が蔓延するからです。",
+              "baseline": 613.9
+            }
+          ],
+          "safety_checks_passed": true,
+          "lifecycle": {
+            "pdf-alone": {
+              "status": "refused",
+              "seconds": 52.241846819000784,
+              "refusal": "PdfError: page-flow proposal cannot be accepted: shared-flow-confirmation: source output marker inventory differs from owned slots",
+              "routes": {
+                "edit_intent": {
+                  "status": "refused",
+                  "reason": "the changed characters 依然として span 1 owners",
+                  "acceptance_refusal": null
+                },
+                "page_flow": {
+                  "status": "needs-choice",
+                  "reason": null,
+                  "acceptance_refusal": "PdfError: page-flow proposal cannot be accepted: shared-flow-confirmation: source output marker inventory differs from owned slots"
+                }
+              }
+            },
+            "sidecar": {
+              "status": "saved",
+              "reopen": "restored",
+              "seconds": 58.389563336007996,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/A-C-sidecar-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "reopen": "restored",
+                "seconds": 55.40103272398119,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            }
+          }
+        },
+        "B": {
+          "timing": {
+            "analysis": 0.18118647497612983,
+            "layout": 0.31369947001803666,
+            "save_and_readback": 0.6810850779875182,
+            "total": 1.1759710229816847
+          },
+          "planned_lines": [
+            [
+              {
+                "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を",
+                "baseline": 526.1
+              },
+              {
+                "text": "占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然として変化",
+                "baseline": 547.1
+              },
+              {
+                "text": "に抵抗します。",
+                "baseline": 568.1
+              }
+            ],
+            [
+              {
+                "text": "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単にな",
+                "baseline": 594.6
+              },
+              {
+                "text": "り、より効果的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失",
+                "baseline": 615.6
+              },
+              {
+                "text": "い、自然と仲間が増える勢いが作られる前に、不信と批評が蔓延するからです。",
+                "baseline": 636.6
+              }
+            ]
+          ],
+          "source_glyphs_removed": 230,
+          "source_show_operators_rewritten": 83,
+          "edit": "saved",
+          "pdf_sha256": "62db6e1f35f2278b6aa73afe26e8c4bc5fcc40163c4d01cdb274c8b4c8634c20",
+          "quality": "success",
+          "audit": "evaluations/architecture_poc/audits/B-C-initial.json",
+          "failed_checks": [],
+          "verification_seconds": 1.4092930030019488,
+          "physical_lines": [
+            {
+              "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を",
+              "baseline": 526.1
+            },
+            {
+              "text": "占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然として変化",
+              "baseline": 547.1
+            },
+            {
+              "text": "に抵抗します。",
+              "baseline": 568.1
+            },
+            {
+              "text": "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単にな",
+              "baseline": 594.6
+            },
+            {
+              "text": "り、より効果的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失",
+              "baseline": 615.6
+            },
+            {
+              "text": "い、自然と仲間が増える勢いが作られる前に、不信と批評が蔓延するからです。",
+              "baseline": 636.6
+            }
+          ],
+          "safety_checks_passed": true,
+          "lifecycle": {
+            "pdf-alone": {
+              "status": "saved",
+              "seconds": 1.4450829310226254,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/B-C-pdf-alone-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "seconds": 0.01895084700663574,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            },
+            "sidecar": {
+              "status": "saved",
+              "seconds": 1.1357559220050462,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/B-C-sidecar-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "seconds": 0.016089019976789132,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "D": {
+      "document": "libreoffice",
+      "old": "抵抗します。",
+      "new": "抵抗します。このため、移行の意義を丁寧に説明し、実際の作業を通じて疑問を解消することが重要です。",
+      "expected": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然こそこそと、隠れたやり方で変化に抵抗します。このため、移行の意義を丁寧に説明し、実際の作業を通じて疑問を解消することが重要です。",
+      "arms": {
+        "A": {
+          "baseline_routes": {
+            "edit_intent": {
+              "status": "refused",
+              "reason": "the changed characters 。 span 1 owners",
+              "route": null
+            },
+            "page_flow": {
+              "status": "needs-choice",
+              "saved": true,
+              "acceptance_refusal": null
+            }
+          },
+          "timing": {
+            "edit_intent": 0.30942951200995594,
+            "page_flow": 94.59169873700012,
+            "total": 94.90112889002194
+          },
+          "edit": "saved",
+          "pdf_sha256": "47bbebe5bb0204745890908554953037c8dae8b7fa9c9f47c555c5a81987d018",
+          "quality": "audit-failed",
+          "audit": "evaluations/architecture_poc/audits/A-D-initial.json",
+          "failed_checks": [
+            "mupdf_search_new"
+          ],
+          "verification_seconds": 1.6636988559912425,
+          "physical_lines": [
+            {
+              "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他の",
+              "baseline": 526.1
+            },
+            {
+              "text": "メンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然こそこそと、隠れたやり方で変化に",
+              "baseline": 547.7
+            },
+            {
+              "text": "抵抗します。このため、移行の意義を丁寧に説明し、実際の作業を通じて疑問を解消することが重要",
+              "baseline": 568.1
+            },
+            {
+              "text": "です。",
+              "baseline": 588.5
+            },
+            {
+              "text": "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単になり、より効果",
+              "baseline": 615.0
+            },
+            {
+              "text": "的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失い、自然と仲間が増える勢",
+              "baseline": 635.4
+            },
+            {
+              "text": "いが作られる前に、不信と批評が蔓延するからです。",
+              "baseline": 655.9
+            }
+          ],
+          "safety_checks_passed": true,
+          "lifecycle": {
+            "pdf-alone": {
+              "status": "refused",
+              "seconds": 47.940940401982516,
+              "refusal": "PdfError: page-flow proposal cannot be accepted: shared-flow-confirmation: source output marker inventory differs from owned slots",
+              "routes": {
+                "edit_intent": {
+                  "status": "refused",
+                  "reason": "the changed characters 丁寧 span 1 owners",
+                  "acceptance_refusal": null
+                },
+                "page_flow": {
+                  "status": "needs-choice",
+                  "reason": null,
+                  "acceptance_refusal": "PdfError: page-flow proposal cannot be accepted: shared-flow-confirmation: source output marker inventory differs from owned slots"
+                }
+              }
+            },
+            "sidecar": {
+              "status": "saved",
+              "reopen": "restored",
+              "seconds": 64.73193877699669,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/A-D-sidecar-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "reopen": "restored",
+                "seconds": 63.378337703004945,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            }
+          }
+        },
+        "B": {
+          "timing": {
+            "analysis": 0.21046090399613604,
+            "layout": 0.36250551001285203,
+            "save_and_readback": 0.7699442690063734,
+            "total": 1.3429106830153614
+          },
+          "planned_lines": [
+            [
+              {
+                "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を",
+                "baseline": 526.1
+              },
+              {
+                "text": "占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然こそこそ",
+                "baseline": 547.1
+              },
+              {
+                "text": "と、隠れたやり方で変化に抵抗します。このため、移行の意義を丁寧に説明し、実際の作業を通じて",
+                "baseline": 568.1
+              },
+              {
+                "text": "疑問を解消することが重要です。",
+                "baseline": 589.1
+              }
+            ],
+            [
+              {
+                "text": "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単にな",
+                "baseline": 615.6
+              },
+              {
+                "text": "り、より効果的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失",
+                "baseline": 636.6
+              },
+              {
+                "text": "い、自然と仲間が増える勢いが作られる前に、不信と批評が蔓延するからです。",
+                "baseline": 657.6
+              }
+            ]
+          ],
+          "source_glyphs_removed": 230,
+          "source_show_operators_rewritten": 83,
+          "edit": "saved",
+          "pdf_sha256": "aeacc59e6129f2c0fba0f8a4d1f2a517a593d4481c57dce7b2d6b1d89a594d62",
+          "quality": "audit-failed",
+          "audit": "evaluations/architecture_poc/audits/B-D-initial.json",
+          "failed_checks": [
+            "mupdf_search_new"
+          ],
+          "verification_seconds": 1.3747387000184972,
+          "physical_lines": [
+            {
+              "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を",
+              "baseline": 526.1
+            },
+            {
+              "text": "占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然こそこそ",
+              "baseline": 547.1
+            },
+            {
+              "text": "と、隠れたやり方で変化に抵抗します。このため、移行の意義を丁寧に説明し、実際の作業を通じて",
+              "baseline": 568.1
+            },
+            {
+              "text": "疑問を解消することが重要です。",
+              "baseline": 589.1
+            },
+            {
+              "text": "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単にな",
+              "baseline": 615.6
+            },
+            {
+              "text": "り、より効果的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失",
+              "baseline": 636.6
+            },
+            {
+              "text": "い、自然と仲間が増える勢いが作られる前に、不信と批評が蔓延するからです。",
+              "baseline": 657.6
+            }
+          ],
+          "safety_checks_passed": true,
+          "lifecycle": {
+            "pdf-alone": {
+              "status": "saved",
+              "seconds": 1.5830971200193744,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/B-D-pdf-alone-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "seconds": 0.019652383984066546,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            },
+            "sidecar": {
+              "status": "saved",
+              "seconds": 1.2564412929932587,
+              "quality": "success",
+              "audit": "evaluations/architecture_poc/audits/B-D-sidecar-reedit.json",
+              "failed_checks": [],
+              "noop": {
+                "status": "saved",
+                "seconds": 0.018084490002365783,
+                "pixels": {
+                  "mupdf": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ],
+                  "poppler": [
+                    {
+                      "page": 1,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 2,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 3,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 4,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 5,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 6,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 7,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 8,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 9,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    },
+                    {
+                      "page": 10,
+                      "outside_pixels": 0,
+                      "changed_bbox": null
+                    }
+                  ]
+                },
+                "all_pages_zero": true
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

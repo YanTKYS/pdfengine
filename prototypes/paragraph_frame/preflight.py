@@ -18,7 +18,7 @@ REQUESTS = [
 
 def sha(data): return hashlib.sha256(data).hexdigest()
 
-def main():
+def main(output=MANIFEST):
  sources = json.loads((ROOT / 'evaluations/sources.json').read_text())
  specs = [('osaka','word_osaka_guideline',1,[(340,365),(380,384)], [70,334,530,424],70.944,524.5,81.504,346.13,18,18),
           ('libreoffice','lo_migration_ja',9,[(520,570),(590,637)], [55,512,541,710],56.8,539,67.3,526.1,21,26.5)]
@@ -50,7 +50,10 @@ def main():
   text=result['documents'][key]['paragraphs'][0]['text']; assert text.count(old)==1
   start=text.index(old); ids=[g['id'] for g in result['documents'][key]['paragraphs'][0]['glyphs'][start:start+len(old)]]
   result['requests'].append(dict(id=ident,document=key,old=old,new=new,start=start,end=start+len(old),glyph_ids=ids,expected=text.replace(old,new),reedit_old=again,reedit_new=replacement))
- MANIFEST.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+ Path(output).parent.mkdir(parents=True,exist_ok=True)
+ Path(output).write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
  print(json.dumps({k:dict(texts=[p['text'] for p in d['paragraphs']],frame=d['frame'],line_ids=d['line_ids']) for k,d in result['documents'].items()},ensure_ascii=False,indent=2))
 
-if __name__=='__main__': main()
+if __name__=='__main__':
+ import argparse
+ parser=argparse.ArgumentParser();parser.add_argument('--output',default=str(MANIFEST));args=parser.parse_args();main(args.output)
