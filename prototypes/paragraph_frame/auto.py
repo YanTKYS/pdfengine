@@ -10,6 +10,7 @@ import time
 from .auto_detect import detect
 from .auto_style import build,describe
 from .auto_layout import layout
+from .auto_flow import place
 from .auto_writer import write
 from .engine import Refused,sha
 
@@ -26,45 +27,78 @@ def _hyphens_stay_at_line_ends(paragraph,lines):
             raise Refused('reflow would move a line-final hyphen inside a line (soft or hard hyphen is ambiguous)')
 
 
-def _plan(source,page,selection,replacement,occurrence,substitute,stored=True):
-    start=time.perf_counter();c,paragraphs,spec,at,evidence=detect(source,page,selection,occurrence,stored);observed=time.perf_counter()
+def _flow_moves(paragraphs,spec,moves):
+    """Following paragraphs that must be repainted, as {glyph id: (dx, dy)} maps."""
+    active=[]
+    for rows in moves:
+        if not any(dx or dy for _,dx,dy,_ in rows):break
+        active.append(rows)
+    flow=spec['flow']
+    if len(active)>flow['movable']:
+        raise Refused('a following paragraph of the column flow must move but cannot be repainted: '+str(flow['unmovable']))
+    return [{i:(dx,dy) for row,dx,dy,_ in rows for i in row['glyph_ids']} for rows in active],active
+
+
+def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=()):
+    start=time.perf_counter();c,paragraphs,spec,at,evidence=detect(source,page,selection,occurrence,stored,continuation);observed=time.perf_counter()
     try:
         tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=spec['align']=='justify')
         # Alignment is an approved condition: a stored record supplies it after
         # the multi-line evidence has been edited away.
         spec['values'].update(align=spec['align'])
-        lines=layout(tokens,spec)
+        moved=None
+        if spec.get('mode')=='flow':
+            lines,moves=place(tokens,''.join(t['text'] for t in tokens),spec['flow'],align=spec['align'])
+            spec['moves'],active=_flow_moves(paragraphs,spec,moves)
+            paragraphs=paragraphs[:1+len(active)]
+            moved=[dict(paragraph=spec['flow']['target']+1+k,lines=[dict(text=row['text'],baseline=round(row['baseline'],3),to_baseline=round(row['baseline']+dy,3),
+                        to_region=region) for row,dx,dy,region in rows]) for k,rows in enumerate(active)]
+        else:
+            lines=layout(tokens,spec)
+            bottom=spec.get('column_bottom');delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
+            deepest=max([lines[-1]['baseline']]+[p.baselines[-1]+delta for p in paragraphs[1:] if delta>0])
+            if bottom is not None and deepest>bottom+.01:
+                hint=('; candidate continuation(s) '+', '.join(spec['candidates'])+' require explicit approval') if spec['candidates'] else '; no continuation column is linked'
+                raise Refused('capacity: the paragraph would grow below the shared bottom of the side-by-side columns'+hint)
         _hyphens_stay_at_line_ends(paragraphs[0],lines)
         public=dict(schema='auto-paragraph-frame-1',source_sha256=sha(source),page=page,selection=selection,replacement=replacement,occurrence=occurrence,
           substitute=substitute,stored_conditions=stored,evidence=evidence,source_styles=describe(c,paragraphs),paragraphs=[p.text for p in paragraphs],expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):],
-          lines=[dict(text=l['text'],baseline=l['baseline']) for l in lines],source_lines=len(paragraphs[0].baselines),font_counts=counts,substitute_choice=choice,
+          lines=[dict(text=l['text'],baseline=l['baseline'],**({'region':l['region']} if 'region' in l else {})) for l in lines],source_lines=len(paragraphs[0].baselines),font_counts=counts,substitute_choice=choice,
           required_approval=['inferred paragraph and capacity','possible follower translation','source style and any explicit substitute'])
+        public['continuation']=list(continuation)
+        if spec.get('mode')=='flow':
+            public['moved_paragraphs']=moved
+            public['required_approval'].append('column flow continuation and the lines moved between columns')
         public['proposal_sha256']=_digest(public)
         return c,paragraphs,spec,evidence,fonts,lines,public,dict(observation=observed-start,style_layout=time.perf_counter()-observed)
     except Exception:c.close();raise
 
 
-def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True):
-    """``stored_conditions=False`` ignores conditions stored by earlier saves (inference only)."""
-    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions)
+def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True,continuation=()):
+    """``stored_conditions=False`` ignores conditions stored by earlier saves (inference only).
+
+    ``continuation`` lists candidate column links (``column a->b`` ids from a
+    previous proposal's evidence) that the user explicitly approves.
+    """
+    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions,tuple(continuation))
     planned[0].close();return planned[-2]
 
 
 def approve(source,proposal,*,acknowledge_inference=False):
     if acknowledge_inference is not True:raise Refused('explicit inference/format approval required')
     again=propose(source,proposal['page'],proposal['selection'],proposal['replacement'],occurrence=proposal['occurrence'],substitute=proposal['substitute'],
-                  stored_conditions=proposal.get('stored_conditions',True))
+                  stored_conditions=proposal.get('stored_conditions',True),continuation=proposal.get('continuation',()))
     if again!=proposal:raise Refused('stale or altered proposal')
     return dict(proposal=again,approved=True,approval_count=1)
 
 
 def save(source,acceptance,output):
     if acceptance.get('approved') is not True:raise Refused('explicit approval missing')
-    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True))
+    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True),tuple(p.get('continuation',())))
     c,paragraphs,spec,evidence,fonts,lines,again,timing=planned
     try:
         if p!=again:raise Refused('stale or altered accepted proposal')
-        before=time.perf_counter();result=write(c,paragraphs,lines,fonts,spec,evidence,output,approval=dict(proposal_sha256=p['proposal_sha256']))
+        before=time.perf_counter();result=write(c,paragraphs,lines,fonts,spec,evidence,output,approval=dict(proposal_sha256=p['proposal_sha256']),moves=spec.get('moves'))
         result.update(proposal_sha256=p['proposal_sha256'],pdf_sha256=sha(output),font_counts=p['font_counts'],lines=p['lines'],timing=dict(timing,save_and_stage=time.perf_counter()-before,total=time.perf_counter()-start))
         return result
     finally:c.close()

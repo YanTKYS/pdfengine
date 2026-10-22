@@ -1,5 +1,6 @@
 """Position native source codes and verified new glyphs; stage before publishing."""
 from collections import Counter
+from statistics import median
 import os
 from pathlib import Path
 import tempfile
@@ -18,11 +19,18 @@ from . import auto_conditions as conditions
 def glyph_key(g):return (g['unicode'],g['gid'],*g['origin'],*g['bbox'])
 
 
-def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None):
+def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None):
+    """``moves`` (column flow) gives each following paragraph's glyph translations;
+    without it, B2 translates all following paragraphs rigidly when the edited
+    paragraph's last baseline changes."""
     if Path(output).exists():raise Refused('output already exists')
     delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
     if abs(delta)<.001:delta=0.
-    active=paragraphs if delta else paragraphs[:1]
+    if moves is None:
+        active=paragraphs if delta else paragraphs[:1]
+        moves=[{i:(0.,delta) for i in p.ids} for p in active[1:]]
+    else:
+        active=paragraphs[:1+len(moves)]
     selected={i for p in active for i in p.ids};edits=[]
     for e in c.events:
         if any(selected.intersection(ch.source_orders) for ch in e.chars):edits.append((e.operator.start,e.operator.end,serialized_event(e,selected,remove=True)))
@@ -42,10 +50,11 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None):
         resource=font.resource(runs);fontdict[NameObject(name)]=resource.build(writer);built[key]=(name,resource)
     resources[NameObject('/Font')]=fontdict;page[NameObject('/Resources')]=resources
     source,_=source_tokens(c);batches=[(paragraphs[0],[t for l in lines for t in l['tokens']])]
-    for p in active[1:]:
+    for p,move in zip(active[1:],moves):
         placed=[]
         for i in p.ids:
-            t=dict(source[i],x=source[i]['origin'][0],y=source[i]['origin'][1]+delta)
+            dx,dy=move[i]
+            t=dict(source[i],x=source[i]['origin'][0]+dx,y=source[i]['origin'][1]+dy)
             for n,s in enumerate(p.scopes):
                 if s['content_byte_range'][0]<=t['event'].operator.start<s['content_byte_range'][1]:t['scope']=n;break
             placed.append(t)
@@ -78,15 +87,16 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None):
     expected=''.join(t['text'] for _,ts in batches for t in ts)
     try:
         writer.write(draft)
-        stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval)
+        if spec.get('mode')=='flow':stored=store_flow(c,draft,writer,page,spec,selected,[len(ts) for _,ts in batches],approval)
+        else:stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval)
         writer.write(tmp)
         validate_stage(c,tmp,spec,evidence,selected,expected)
-        if stored['record'] is not None:verify_conditions(tmp,spec['page'])
+        if stored['record'] is not None:verify_conditions(tmp,spec['page'],stored['record'])
         os.replace(tmp,output)
     finally:
         for path in (tmp,draft):
             if os.path.exists(path):os.unlink(path)
-    return dict(stored_conditions=stored['summary'],follower_translation=delta,followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF inferred-frame outside pixels'])
+    return dict(stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF inferred-frame outside pixels'])
 
 
 def validate_stage(c,tmp,spec,evidence,selected,expected):
@@ -111,11 +121,11 @@ def validate_stage(c,tmp,spec,evidence,selected,expected):
             return result
         if styled(c,selected)-styled(check):raise Refused('staged protected source code/style changed')
         if ''.join(g['unicode'] for g in added)!=expected:raise Refused('staged drawing text differs from requested paragraphs')
-        frame=pymupdf.Rect(spec['frame'])
+        frames=[pymupdf.Rect(f) for f in spec.get('frames',[spec['frame']])]
         for g in added:
             if not g['unicode'].strip():continue
             box=pymupdf.Rect(g['bbox'])
-            if not frame.contains(box):raise Refused('capacity: staged glyph bounds outside approved inferred frame')
+            if not any(frame.contains(box) for frame in frames):raise Refused('capacity: staged glyph bounds outside approved inferred frame')
             for o in evidence['observed']['obstacles']:
                 # Target/follower glyphs were excluded at detection. A container
                 # (background behind every original line) bounds the frame instead.
@@ -131,8 +141,9 @@ def validate_stage(c,tmp,spec,evidence,selected,expected):
         # oracle audit. Mask only the approved automatically inferred frame.
         a=c.page.get_pixmap(dpi=144,alpha=False);b=check.page.get_pixmap(dpi=144,alpha=False)
         ia=Image.frombytes('RGB',(a.width,a.height),a.samples);ib=Image.frombytes('RGB',(b.width,b.height),b.samples)
-        diff=ImageChops.difference(ia,ib);x0,y0,x1,y1=spec['frame']
-        ImageDraw.Draw(diff).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
+        diff=ImageChops.difference(ia,ib)
+        for x0,y0,x1,y1 in spec.get('frames',[spec['frame']]):
+            ImageDraw.Draw(diff).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
         if diff.getbbox():raise Refused('staged raster changes outside approved inferred frame')
         # Native retained font resources/programs are cloned, never replaced.
         if len(check.document)!=len(c.document):raise Refused('page count changed')
@@ -178,7 +189,7 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
     finally:check.close()
 
 
-def verify_conditions(path,page):
+def verify_conditions(path,page,record=None):
     """The stored record must be readable and match the staged paragraph again."""
     from pdfeditor.page_proposal import _Analysis
     from .auto_detect import clean_rows
@@ -186,6 +197,68 @@ def verify_conditions(path,page):
     try:
         records,status=conditions.read(check,page)
         rows=clean_rows(check,[dict(l) for l in _Analysis(path,page).lines if l['text'].strip()])
-        if status!='present' or conditions.match(check,records[-1],rows) is None:
+        mine=[r for r in records if r==record] if record is not None else records[-1:]
+        if status!='present' or len(mine)!=1 or conditions.match(check,mine[0],rows) is None:
             raise Refused('stored approved conditions do not round-trip in the staged PDF')
+    finally:check.close()
+
+
+def store_flow(c,draft,writer,page,spec,selected,counts,approval):
+    """Record the approved column flow by every drawn line of it after the edit.
+
+    Unchanged paragraphs of the flow are found by their unchanged glyphs; the
+    repainted ones by paint order. Records of single paragraphs inside the
+    flow are replaced by the flow record.
+    """
+    from pdfeditor.page_proposal import _Analysis
+    from .auto_detect import clean_rows
+    state=spec['stored'];flow=spec['flow']
+    flow_ids={i for g in flow['paragraphs'] for r in g for i in r['glyph_ids']}
+    check=ContentPage(draft,spec['page'])
+    try:
+        # Unchanged glyphs keep their identity; map them to their paragraph.
+        index={}
+        for p,g in enumerate(flow['paragraphs']):
+            for r in g:
+                for i in r['glyph_ids']:
+                    if i not in selected:index[glyph_key(c.actual[i])]=p
+        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected);owner={};added=[]
+        for n,g in enumerate(check.actual):
+            key=glyph_key(g)
+            if foreign[key]:
+                foreign[key]-=1
+                if key in index:owner[n]=index[key]
+            else:added.append(n)
+        position=0
+        for k,count in enumerate(counts):
+            for n in added[position:position+count]:owner[n]=flow['target']+k
+            position+=count
+        rows=clean_rows(check,[dict(l) for l in _Analysis(draft,spec['page']).lines if l['text'].strip()])
+        mine=[];separable=True
+        for r in rows:
+            owners={owner.get(i) for i in r['glyph_ids']}
+            if owners=={None}:continue
+            if None in owners or len(owners)!=1:separable=False;break
+            mine.append((r,owners.pop()))
+        covered={i for r,_ in mine for i in r['glyph_ids']}
+        separable=separable and all(i in covered for i in owner if check.actual[i]['unicode'].strip())
+        # Reading order: paragraph order, then the region (column), then baseline.
+        regions=flow['regions']
+        from .auto_flow import region_of
+        record=None
+        if mine and separable:
+            try:
+                mine.sort(key=lambda m:(m[1],region_of(regions,m[0]),m[0]['baseline']))
+                previous=state['records'][state['target']] if state['applied'] else None
+                size=median(r['size'] for r,_ in mine)
+                record=conditions.make_flow(check,mine,regions,dict(pitch=flow['pitch'],gap=flow['gap'],align=spec['align'],size=size),
+                                            [dict(id=l['id'],status=l['status'],evidence=l.get('evidence')) for l in flow['links']],spec['provenance'],spec['origin'],
+                                            dict(count=(previous['approval']['count'] if previous else 0)+1,**(approval or {})))
+            except Refused:record=None
+        records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale'] and not (r.get('kind')!='flow' and conditions.overlaps(r,[x for g in flow['paragraphs'] for x in g]))]
+        if record is not None:records.append(record)
+        if records or state['records']:conditions.attach(writer,page,records,spec['page'])
+        summary=dict(written=record is not None,kind='flow',records_on_page=len(records),applied_before_edit=state['applied'],status_before_edit=state['status'],
+                     reason=None if record is not None else 'flow rows are not separable from foreign glyphs')
+        return dict(record=record,summary=summary)
     finally:check.close()
