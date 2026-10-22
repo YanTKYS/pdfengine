@@ -231,15 +231,18 @@ def qualify(c, marks, ids, rows):
 def _column_bottom(selected, others, blocks, infos, report):
     """Shared bottom of the columns beside the selected paragraph's block.
 
-    Side-by-side same-size columns end on one line: a paragraph that is not
-    in a linked flow may not grow below it into the page margin.
+    Side-by-side columns of the same body style (font, size, colour) form one
+    column grid and end on one line: a paragraph that is not in a linked flow
+    may not grow below it into the page margin. A differently styled column
+    (e.g. white text on an image panel) is an independent frame and keeps the
+    single-column capacity (next protected paint or page edge).
     """
     index = next((k for k, g in enumerate(others) if g is selected), None)
     block = next((b for b, members in enumerate(blocks) if index in members), None)
     if block is None:
         return None, dict(neighbours=0, links=[])
     me = infos[block]
-    beside = [i for b, i in enumerate(infos) if b != block and abs(i['size'] - me['size']) < .1
+    beside = [i for b, i in enumerate(infos) if b != block and i['style'] == me['style']
               and i['top'] <= me['bottom'] and i['bottom'] >= me['top'] and (i['left'] >= me['right'] - .5 or i['right'] <= me['left'] + .5)]
     links = [r for r in report if r['id'].startswith(f'column {block}->')]
     if not beside:
@@ -579,7 +582,7 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
             **{'justify-cjk':'justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept'})[align]
         evidence['column_flow']=dict(mode='single-column',column_bottom=column_bottom,**neighbours)
         if column_bottom is not None:evidence['warnings'].append('Side-by-side columns share a bottom; this paragraph is not in a linked flow and may not grow below it.')
-        spec=dict(page=page,frame=frame,column_bottom=column_bottom,candidates=[l['id'] for l in neighbours['links'] if l['status']=='candidate'],left=left,right=right,first_x=first,align=align,baseline=selected[0]['baseline'],line_height=leading,line_offsets=[r['baseline']-selected[0]['baseline'] for r in selected],
+        spec=dict(page=page,frame=frame,column_bottom=column_bottom,candidates=[l['id'] for l in neighbours['links'] if l['status']=='candidate'],rejected_links=[f"{l['id']}: {l['reason']}" for l in neighbours['links'] if l['status']=='rejected'],left=left,right=right,first_x=first,align=align,baseline=selected[0]['baseline'],line_height=leading,line_offsets=[r['baseline']-selected[0]['baseline'] for r in selected],
                   stored=state,values=values,provenance=provenance,origin=origin)
         return c,paragraphs,spec,start,evidence
     except Exception:c.close();raise

@@ -59,6 +59,7 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
             deepest=max([lines[-1]['baseline']]+[p.baselines[-1]+delta for p in paragraphs[1:] if delta>0])
             if bottom is not None and deepest>bottom+.01:
                 hint=('; candidate continuation(s) '+', '.join(spec['candidates'])+' require explicit approval') if spec['candidates'] else '; no continuation column is linked'
+                if spec['rejected_links']:hint+=' (rejected '+'; '.join(spec['rejected_links'])+')'
                 raise Refused('capacity: the paragraph would grow below the shared bottom of the side-by-side columns'+hint)
         _hyphens_stay_at_line_ends(paragraphs[0],lines)
         public=dict(schema='auto-paragraph-frame-1',source_sha256=sha(source),page=page,selection=selection,replacement=replacement,occurrence=occurrence,

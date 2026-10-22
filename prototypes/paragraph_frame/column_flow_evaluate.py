@@ -51,6 +51,36 @@ def bare(text):
     return re.sub(r'\s+', '', text)
 
 
+def undrawn(doc):
+    """Characters of the generator text that the PDF does not draw, as (with, without) contexts.
+
+    LibreOffice 24.2 omitted some line-final punctuation of justified Japanese
+    lines. The frozen witness (drawn text) is the oracle for those characters;
+    the same contexts are removed from every expected text.
+    """
+    from difflib import SequenceMatcher
+    lines, _ = body(doc, [dict(l, styles=[]) for l in doc['witness']])
+    drawn = ''.join(bare(l['text']) for l in lines)
+    source = bare(''.join(doc['paragraphs']))
+    result = []
+    for op, a0, a1, b0, b1 in SequenceMatcher(None, source, drawn, autojunk=False).get_opcodes():
+        if op == 'equal':
+            continue
+        if op != 'delete':
+            raise ValueError(f'witness differs from the fixture text beyond omissions: {op} {source[a0:a1]!r} {drawn[b0:b1]!r}')
+        result.append((source[a0 - 4:a1 + 4], source[a0 - 4:a0] + source[a1:a1 + 4]))
+    return result
+
+
+def as_drawn(texts, omissions):
+    result = []
+    for text in texts:
+        for with_, without in omissions:
+            text = text.replace(with_, without)
+        result.append(text)
+    return result
+
+
 def source_path(root, manifest, name, fusei):
     doc = manifest['documents'][name]
     if doc['kind'] == 'generated':
@@ -98,16 +128,21 @@ def edit(source, page, old, new, output, continuation=()):
 
 
 def drawn_lines(path, page):
-    """Drawn lines with style: text, x0, x1, baseline, font, size, colour (PyMuPDF, independent of the engine)."""
+    """Drawn lines with style: text, ink x0/x1, baseline, font, size, colour (PyMuPDF, independent of the engine).
+
+    x1 is the end of the last non-space glyph: a drawn word space at a line
+    end has no ink.
+    """
     result = []
     with pymupdf.open(path) as d:
-        for b in d[page - 1].get_text('dict')['blocks']:
+        for b in d[page - 1].get_text('rawdict')['blocks']:
             for line in b.get('lines', []):
-                spans = [s for s in line['spans'] if s['text'].strip()]
-                text = ''.join(s['text'] for s in line['spans'])
+                spans = [s for s in line['spans'] if ''.join(ch['c'] for ch in s['chars']).strip()]
+                text = ''.join(ch['c'] for s in line['spans'] for ch in s['chars'])
                 if not spans:
                     continue
-                result.append(dict(text=text.strip(), x0=round(line['bbox'][0], 2), x1=round(max(s['bbox'][2] for s in spans), 2),
+                ink = [ch['bbox'] for s in spans for ch in s['chars'] if ch['c'].strip()]
+                result.append(dict(text=text.strip(), x0=round(min(b[0] for b in ink), 2), x1=round(max(b[2] for b in ink), 2),
                                    baseline=round(spans[0]['origin'][1], 2), size=round(spans[0]['size'], 2),
                                    styles=sorted({(s['font'], round(s['size'], 2), s['color']) for s in spans})))
     return result
@@ -188,7 +223,7 @@ def audit_step(root, doc, source, output, page, before, after, target, *, tagged
     expected = ''.join(after)
     checks['logical_text_exact'] = bare(''.join(l['text'] for l in fa)) == bare(expected)
     if ' ' in expected:
-        checks['latin_words_exact'] = ' '.join(l['text'] for l in fa).split() == expected.split()
+        checks['latin_words_exact'] = ' '.join(l['text'] for l in fa).split() == ' '.join(after).split()
     styles_b = {s for l in fb for s in map(tuple, l['styles'])}
     checks['styles_unchanged'] = {s for l in fa for s in map(tuple, l['styles'])} <= styles_b
     lefts = {column_of(doc, l): {x['x0'] for x in fb if column_of(doc, x) == column_of(doc, l)} | {doc['columns'][column_of(doc, l)]['x0']} for l in fa}
@@ -285,7 +320,8 @@ def phase_sequences(root, manifest, fusei):
         folder = root / 'sequences' / f'S{n + 1}-{name}'
         shutil.rmtree(folder, ignore_errors=True)
         folder.mkdir(parents=True)
-        current, texts, steps = source_path(root, manifest, name, fusei), doc['paragraphs'], []
+        omissions = undrawn(doc)
+        current, texts, steps = source_path(root, manifest, name, fusei), as_drawn(doc['paragraphs'], omissions), []
         for k, step in enumerate(chain['steps']):
             output = folder / f'step{k + 1}.pdf'
             mapped = [engine_link(current, 1, doc, ident) for ident in step['approve_continuation']]
@@ -300,7 +336,8 @@ def phase_sequences(root, manifest, fusei):
                 continue
             proposal = result['proposal']
             flow = proposal['evidence'].get('column_flow', {})
-            audit = audit_step(root, doc, current, output, 1, texts, step['expected_flow_text'], step['paragraph'], tagged=doc['tagged'], folder=folder / f'step{k + 1}')
+            expected = as_drawn(step['expected_flow_text'], omissions)
+            audit = audit_step(root, doc, current, output, 1, texts, expected, step['paragraph'], tagged=doc['tagged'], folder=folder / f'step{k + 1}')
             record.update(mode=flow.get('mode'), stored_flow_used=flow.get('stored'), links=[(l['id'], l['status']) for l in flow.get('links', [])],
                           moved_paragraphs=len(proposal.get('moved_paragraphs') or []), moved_lines=sum(len(m['lines']) for m in proposal.get('moved_paragraphs') or []),
                           lines_changing_column=sum(1 for m in proposal.get('moved_paragraphs') or [] for l in m['lines'] if l['region'] != l['to_region']),
@@ -309,8 +346,8 @@ def phase_sequences(root, manifest, fusei):
             record['as_expected'] = step['expected_outcome'] == 'flow' and flow.get('mode') == 'flow'
             dump(folder / f'step{k + 1}.audit.json', audit)
             steps.append(record)
-            current, texts = output, step['expected_flow_text']
-        results[f'S{n + 1}'] = dict(document=name, kind=doc['kind'], tagged=doc['tagged'], steps=steps)
+            current, texts = output, expected
+        results[f'S{n + 1}'] = dict(document=name, kind=doc['kind'], tagged=doc['tagged'], undrawn_in_source=omissions, steps=steps)
         print(f'S{n + 1}', name, [(s['outcome'], s.get('audit', {}).get('failed')) for s in steps])
     dump(root / 'sequences.json', results)
     return results
@@ -336,7 +373,7 @@ def phase_singles(root, manifest, fusei):
             flow = result['proposal']['evidence'].get('column_flow', {})
             record.update(mode=flow.get('mode'), links=[(l['id'], l['status'], l.get('reason')) for l in flow.get('links', [])])
             if doc['kind'] == 'generated':
-                paragraphs = doc['paragraphs']
+                paragraphs = as_drawn(doc['paragraphs'], undrawn(doc))
                 after = paragraphs[:case['paragraph']] + [paragraphs[case['paragraph']].replace(case['old'], case['new'])] + paragraphs[case['paragraph'] + 1:]
                 record['audit'] = audit_step(root, doc, source, output, 1, paragraphs, after, case['paragraph'], tagged=doc['tagged'], folder=folder)
                 moved = result['proposal'].get('moved_paragraphs') or []
@@ -373,7 +410,7 @@ def audit_real_fit(doc, source, output, case, folder):
 
 def oracle_columns(doc):
     """Body columns of a real page from the frozen witness (x ranges of the most common size)."""
-    if doc['columns']:
+    if doc.get('columns'):
         return [(c['x0'], c['x1']) for c in doc['columns']]
     sizes = {}
     for l in doc['witness']:

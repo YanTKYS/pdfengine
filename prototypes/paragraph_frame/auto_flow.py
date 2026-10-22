@@ -92,44 +92,51 @@ def _next_sibling(reader, a, b):
 
 
 def link(c, groups, blocks, info, a, b, parent_of, tagged, obstacles):
-    """Evidence for block a continuing in block b, or a rejection reason."""
+    """Evidence for block a continuing in block b, or every reason it is rejected."""
     A, B = info[a], info[b]
+    reasons = []
     if A['style'] != B['style'] or abs(A['size'] - B['size']) > .1:
-        return dict(status='rejected', reason='different body font, size or colour')
-    if B['first_style'] != A['style']:
-        return dict(status='rejected', reason='the next column starts with a heading or differently styled text')
+        reasons.append('different body font, size or colour')
+    elif B['first_style'] != A['style']:
+        reasons.append('the next column starts with a heading or differently styled text')
     if A['pitch'] and B['pitch'] and abs(A['pitch'] - B['pitch']) > .05 * A['pitch']:
-        return dict(status='rejected', reason='different line pitch')
+        reasons.append('different line pitch')
     width_a, width_b = A['right'] - A['left'], B['right'] - B['left']
     if abs(width_a - width_b) > .5 * A['size']:
-        return dict(status='rejected', reason='different column width')
+        reasons.append('different column width')
     if abs(B['top'] - A['top']) > .5 * (A['pitch'] or A['size']):
-        return dict(status='rejected', reason='the columns do not start on the same first line')
+        reasons.append('the columns do not start on the same first line')
     if A['bottom'] < B['bottom'] - .5:
-        return dict(status='rejected', reason='the first column is not filled to the flow bottom')
+        reasons.append('the first column is not filled to the flow bottom')
     above = [o['kind'] for o in obstacles if o['kind'] != 'container' and o['bounds'][0] < B['right'] and o['bounds'][2] > B['left']
              and o['bounds'][3] > A['top'] - 2 * A['size'] and o['bounds'][1] < B['top'] - B['size']]
     if above:
-        return dict(status='rejected', reason='protected paint (' + ', '.join(sorted(set(above))) + ') above the text of the next column')
+        reasons.append('protected paint (' + ', '.join(sorted(set(above))) + ') above the text of the next column')
     lo, hi = max(A['ids']), min(B['ids'])
     own = set(A['ids']) | set(B['ids'])
     if hi < lo or any(c.actual[i]['unicode'].strip() and i not in own for i in range(lo + 1, hi)):
-        return dict(status='rejected', reason='other text is painted between the columns')
+        reasons.append('other text is painted between the columns')
     last, first = groups[blocks[a][-1]], groups[blocks[b][0]]
     if tagged:
         pa, pb = parent_of(last), parent_of(first)
         if pa is not None and pa == pb:
-            return dict(status='determined', evidence='one tagged paragraph spans the column break', split=True)
-        if pa is not None and pb is not None and _next_sibling(c.reader, pa, pb):
-            return dict(status='determined', evidence='consecutive tagged paragraphs under the same parent', split=False)
-        return dict(status='rejected', reason='the tagged structure does not connect the columns')
-    tail, head = last[-1], first[0]
-    text = ''.join(c.actual[i]['unicode'] for i in tail['glyph_ids']).rstrip()
-    full = tail.get('right', tail['pen_end']) >= A['right'] - .5 * A['size']
-    if full and text and text[-1] not in SENTENCE_END:
-        return dict(status='determined', evidence='paragraph split: full last line without a sentence end', split=True)
-    return dict(status='candidate', split=False,
-                evidence='column order, style, measure and paint order match; the break may be a paragraph boundary')
+            found = dict(status='determined', evidence='one tagged paragraph spans the column break', split=True)
+        elif pa is not None and pb is not None and _next_sibling(c.reader, pa, pb):
+            found = dict(status='determined', evidence='consecutive tagged paragraphs under the same parent', split=False)
+        else:
+            reasons.append('the tagged structure does not connect the columns')
+    else:
+        tail = last[-1]
+        text = ''.join(c.actual[i]['unicode'] for i in tail['glyph_ids']).rstrip()
+        full = tail.get('right', tail['pen_end']) >= A['right'] - .5 * A['size']
+        if full and text and text[-1] not in SENTENCE_END:
+            found = dict(status='determined', evidence='paragraph split: full last line without a sentence end', split=True)
+        else:
+            found = dict(status='candidate', split=False,
+                         evidence='column order, style, measure and paint order match; the break may be a paragraph boundary')
+    if reasons:
+        return dict(status='rejected', reason='; '.join(reasons), split=False)
+    return found
 
 
 def find_flows(c, groups, parent_of, tagged, obstacles, approved=()):
