@@ -1,0 +1,5148 @@
+{
+ "schema": "paragraph-frame-column-flow-1",
+ "baseline_commit": "6b4d4f9",
+ "revision": 2,
+ "revisions": [
+  {
+   "revision": 1,
+   "commit": "67048df",
+   "frozen": "before the implementation was evaluated"
+  },
+  {
+   "revision": 2,
+   "reason": "PR #89 review: an untagged column that ends mid-sentence may continue on another page next to a different article; only one tagged paragraph spanning the break determines a continuation, everything else is a candidate needing explicit approval",
+   "changes": [
+    "S1/S3 step 1 and J-capacity approve the candidate column 0->1",
+    "S6 first refuses without approval, then saves with it",
+    "recognition: untagged splits and consecutive tagged paragraphs are candidates",
+    "new negative: gen_columns_ja_articles (untagged and tagged), same style, no heading, aligned, different article"
+   ],
+   "frozen": "before the revised rule was evaluated"
+  }
+ ],
+ "policy": {
+  "frozen_before_implementation": true,
+  "no_case_replacement": true,
+  "inputs": "PDF path, page, selected text, replacement, optional explicit approval of a candidate continuation id. No oracle geometry, no prior PDF, no sidecar, no manual coordinates.",
+  "sequences": "Each step proposes, approves and saves from the PDF written by the previous step only.",
+  "allowed_movement": "Only paragraphs from the edited one to the end of the flow may move, only inside the observed columns of the flow (columns[].allowed), never below the deepest original line of the flow; everything else must stay byte-identical in drawing.",
+  "generated_vs_real": "Generated LibreOffice PDFs prove genuine threaded columns. Their success is reported separately and is not evidence of general real-PDF success.",
+  "real_corpus": "No reachable real PDF shows same-page column continuation: lo_enterprise_en has independent columns, lo_newfeatures_ja wraps around a picture, osaka_fusei_477 has article boxes. Real PDFs are used for in-column edits and must-refuse cases.",
+  "unavailable": "wakayama, okinawa, fccid, courts, cruel.org, takeo, niigata, kyoto, www.city.osaka, arxiv and www.documentfoundation.org were denied by the session network policy (HTTP 403)."
+ },
+ "documents": {
+  "gen_columns_ja": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "efcd4420b72e49837869557fe19ff54867deffb32f9d466edac673942b4d15b9",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "72ce14aa58dc96d62a65272907ae803ea037bde1e4fb14b01a1fd2c3a8d14626",
+   "page": 1,
+   "tagged": false,
+   "witness": [
+    {
+     "text": "地域防災訓練の実施について",
+     "x0": 62.5,
+     "x1": 270.5,
+     "baseline": 70.8,
+     "size": 16.0
+    },
+    {
+     "text": "本市では、大規模な地震や風水害に備えるため",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "毎年秋に地域防災訓練を実施しています。今年",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 103.8,
+     "size": 10.5
+    },
+    {
+     "text": "度は市内の全小学校区で同じ日に訓練を行い、",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 114.3,
+     "size": 10.5
+    },
+    {
+     "text": "避難所の開設から運営までを住民の皆さんと一",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 124.8,
+     "size": 10.5
+    },
+    {
+     "text": "緒に確認します。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 135.3,
+     "size": 10.5
+    },
+    {
+     "text": "訓練当日は、午前九時に防災行政無線で訓練開",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 150.05,
+     "size": 10.5
+    },
+    {
+     "text": "始をお知らせします。参加される方は、各地域",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 160.55,
+     "size": 10.5
+    },
+    {
+     "text": "で指定された一時避難場所に集合してください",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 171.05,
+     "size": 10.5
+    },
+    {
+     "text": "集合後は自主防災組織の班長の案内に従い、安",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 181.55,
+     "size": 10.5
+    },
+    {
+     "text": "否確認や初期消火、応急手当の訓練に順番に参",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 192.05,
+     "size": 10.5
+    },
+    {
+     "text": "加していただきます。避難所では、受付の手順",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 202.55,
+     "size": 10.5
+    },
+    {
+     "text": "や間仕切りの設置、備蓄物資の配布方法を実際",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 213.05,
+     "size": 10.5
+    },
+    {
+     "text": "に体験できます。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 223.55,
+     "size": 10.5
+    },
+    {
+     "text": "小さなお子さんや高齢の方、障がいのある方も",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 238.3,
+     "size": 10.5
+    },
+    {
+     "text": "安心して参加できるよう、各会場に相談窓口を",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 248.8,
+     "size": 10.5
+    },
+    {
+     "text": "設けます。車いすの貸出しや手話通訳が必要な",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 259.3,
+     "size": 10.5
+    },
+    {
+     "text": "方は、事前に危機管理課までご連絡ください。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 269.8,
+     "size": 10.5
+    },
+    {
+     "text": "雨天の場合は内容を一部変更して実施します。",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 284.55,
+     "size": 10.5
+    },
+    {
+     "text": "中止する場合は、前日の午後五時までに市の",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 295.05,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページと防災メールでお知らせします。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 305.55,
+     "size": 10.5
+    },
+    {
+     "text": "訓練の終了後には、参加者アンケートを実施し",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 320.3,
+     "size": 10.5
+    },
+    {
+     "text": "ます。いただいたご意見は、来年度の訓練計画",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 330.8,
+     "size": 10.5
+    },
+    {
+     "text": "や地域ごとの避難所運営マニュアルの見直しに",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 341.3,
+     "size": 10.5
+    },
+    {
+     "text": "活用します。回答は会場の受付のほか、市の",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 351.8,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページからも行えます。",
+     "x0": 310.5,
+     "x1": 457.5,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "各家庭でも、非常持出品の点検や家族との連絡",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 108.05,
+     "size": 10.5
+    },
+    {
+     "text": "方法の確認をお願いします。飲料水や食料は最",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 118.55,
+     "size": 10.5
+    },
+    {
+     "text": "低三日分、できれば一週間分を目安に備蓄し、",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 129.05,
+     "size": 10.5
+    },
+    {
+     "text": "定期的に入れ替えるようにしてください。",
+     "x0": 310.5,
+     "x1": 510.0,
+     "baseline": 139.55,
+     "size": 10.5
+    },
+    {
+     "text": "また、自宅周辺の危険な場所や避難経路を地図",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 154.3,
+     "size": 10.5
+    },
+    {
+     "text": "で確認しておくと、いざというときに落ち着い",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 164.8,
+     "size": 10.5
+    },
+    {
+     "text": "て行動できます。ハザードマップは市役所の窓",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 175.3,
+     "size": 10.5
+    },
+    {
+     "text": "口と市のホームページで入手できます。",
+     "x0": 310.5,
+     "x1": 499.5,
+     "baseline": 185.8,
+     "size": 10.5
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.5,
+     "x1": 284.8,
+     "top": 93.3,
+     "bottom": 351.8,
+     "allowed": [
+      62.0,
+      82.8,
+      285.3,
+      355.3
+     ]
+    },
+    {
+     "x0": 310.5,
+     "x1": 532.9,
+     "top": 93.3,
+     "bottom": 185.8,
+     "allowed": [
+      310.0,
+      82.8,
+      533.4,
+      355.3
+     ]
+    }
+   ],
+   "paragraphs": [
+    "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+    "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+    "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+    "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+    "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+    "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+    "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+   ]
+  },
+  "gen_columns_ja_tagged": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "efcd4420b72e49837869557fe19ff54867deffb32f9d466edac673942b4d15b9",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "a23dd0fb54614de10474a2dbe292b2a307b8f3802251f9dae00c689079ceb527",
+   "page": 1,
+   "tagged": true,
+   "witness": [
+    {
+     "text": "地域防災訓練の実施について",
+     "x0": 62.5,
+     "x1": 270.5,
+     "baseline": 70.8,
+     "size": 16.0
+    },
+    {
+     "text": "本市では、大規模な地震や風水害に備えるため",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "毎年秋に地域防災訓練を実施しています。今年",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 103.8,
+     "size": 10.5
+    },
+    {
+     "text": "度は市内の全小学校区で同じ日に訓練を行い、",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 114.3,
+     "size": 10.5
+    },
+    {
+     "text": "避難所の開設から運営までを住民の皆さんと一",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 124.8,
+     "size": 10.5
+    },
+    {
+     "text": "緒に確認します。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 135.3,
+     "size": 10.5
+    },
+    {
+     "text": "訓練当日は、午前九時に防災行政無線で訓練開",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 150.05,
+     "size": 10.5
+    },
+    {
+     "text": "始をお知らせします。参加される方は、各地域",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 160.55,
+     "size": 10.5
+    },
+    {
+     "text": "で指定された一時避難場所に集合してください",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 171.05,
+     "size": 10.5
+    },
+    {
+     "text": "集合後は自主防災組織の班長の案内に従い、安",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 181.55,
+     "size": 10.5
+    },
+    {
+     "text": "否確認や初期消火、応急手当の訓練に順番に参",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 192.05,
+     "size": 10.5
+    },
+    {
+     "text": "加していただきます。避難所では、受付の手順",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 202.55,
+     "size": 10.5
+    },
+    {
+     "text": "や間仕切りの設置、備蓄物資の配布方法を実際",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 213.05,
+     "size": 10.5
+    },
+    {
+     "text": "に体験できます。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 223.55,
+     "size": 10.5
+    },
+    {
+     "text": "小さなお子さんや高齢の方、障がいのある方も",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 238.3,
+     "size": 10.5
+    },
+    {
+     "text": "安心して参加できるよう、各会場に相談窓口を",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 248.8,
+     "size": 10.5
+    },
+    {
+     "text": "設けます。車いすの貸出しや手話通訳が必要な",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 259.3,
+     "size": 10.5
+    },
+    {
+     "text": "方は、事前に危機管理課までご連絡ください。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 269.8,
+     "size": 10.5
+    },
+    {
+     "text": "雨天の場合は内容を一部変更して実施します。",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 284.55,
+     "size": 10.5
+    },
+    {
+     "text": "中止する場合は、前日の午後五時までに市の",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 295.05,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページと防災メールでお知らせします。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 305.55,
+     "size": 10.5
+    },
+    {
+     "text": "訓練の終了後には、参加者アンケートを実施し",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 320.3,
+     "size": 10.5
+    },
+    {
+     "text": "ます。いただいたご意見は、来年度の訓練計画",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 330.8,
+     "size": 10.5
+    },
+    {
+     "text": "や地域ごとの避難所運営マニュアルの見直しに",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 341.3,
+     "size": 10.5
+    },
+    {
+     "text": "活用します。回答は会場の受付のほか、市の",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 351.8,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページからも行えます。",
+     "x0": 310.5,
+     "x1": 457.5,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "各家庭でも、非常持出品の点検や家族との連絡",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 108.05,
+     "size": 10.5
+    },
+    {
+     "text": "方法の確認をお願いします。飲料水や食料は最",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 118.55,
+     "size": 10.5
+    },
+    {
+     "text": "低三日分、できれば一週間分を目安に備蓄し、",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 129.05,
+     "size": 10.5
+    },
+    {
+     "text": "定期的に入れ替えるようにしてください。",
+     "x0": 310.5,
+     "x1": 510.0,
+     "baseline": 139.55,
+     "size": 10.5
+    },
+    {
+     "text": "また、自宅周辺の危険な場所や避難経路を地図",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 154.3,
+     "size": 10.5
+    },
+    {
+     "text": "で確認しておくと、いざというときに落ち着い",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 164.8,
+     "size": 10.5
+    },
+    {
+     "text": "て行動できます。ハザードマップは市役所の窓",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 175.3,
+     "size": 10.5
+    },
+    {
+     "text": "口と市のホームページで入手できます。",
+     "x0": 310.5,
+     "x1": 499.5,
+     "baseline": 185.8,
+     "size": 10.5
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.5,
+     "x1": 284.8,
+     "top": 93.3,
+     "bottom": 351.8,
+     "allowed": [
+      62.0,
+      82.8,
+      285.3,
+      355.3
+     ]
+    },
+    {
+     "x0": 310.5,
+     "x1": 532.9,
+     "top": 93.3,
+     "bottom": 185.8,
+     "allowed": [
+      310.0,
+      82.8,
+      533.4,
+      355.3
+     ]
+    }
+   ],
+   "paragraphs": [
+    "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+    "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+    "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+    "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+    "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+    "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+    "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+   ]
+  },
+  "gen_columns_en": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "efcd4420b72e49837869557fe19ff54867deffb32f9d466edac673942b4d15b9",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "c83a309ca01a18214b7921c85c02c70a9cd145e5b66666828978c0c46e60e57c",
+   "page": 1,
+   "tagged": false,
+   "witness": [
+    {
+     "text": "Community Library Renovation",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 71.65,
+     "size": 16.0
+    },
+    {
+     "text": "The central library will close for renovation from the",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 96.25,
+     "size": 10.5
+    },
+    {
+     "text": "first of June. During the closure, the mobile library",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 108.35,
+     "size": 10.5
+    },
+    {
+     "text": "will visit each district twice a week, and returns can",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 120.45,
+     "size": 10.5
+    },
+    {
+     "text": "be made at any branch.",
+     "x0": 62.5,
+     "x1": 159.4,
+     "baseline": 132.55,
+     "size": 10.5
+    },
+    {
+     "text": "The renovation adds a quiet study room, a larger",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 148.9,
+     "size": 10.5
+    },
+    {
+     "text": "children's  corner  and  a  meeting  space  that  local",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 161.0,
+     "size": 10.5
+    },
+    {
+     "text": "groups can book free of charge. New shelving will",
+     "x0": 62.5,
+     "x1": 284.5,
+     "baseline": 173.1,
+     "size": 10.5
+    },
+    {
+     "text": "make  the  collection  easier  to  browse,  and  the",
+     "x0": 62.5,
+     "x1": 284.7,
+     "baseline": 185.2,
+     "size": 10.5
+    },
+    {
+     "text": "entrance will be rebuilt so that wheelchair users and",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 197.3,
+     "size": 10.5
+    },
+    {
+     "text": "families  with  prams  can  enter  without  steps.",
+     "x0": 62.5,
+     "x1": 284.5,
+     "baseline": 209.4,
+     "size": 10.5
+    },
+    {
+     "text": "Wireless  access  will  also  be  improved  on  every",
+     "x0": 62.5,
+     "x1": 284.7,
+     "baseline": 221.5,
+     "size": 10.5
+    },
+    {
+     "text": "floor.",
+     "x0": 62.5,
+     "x1": 84.9,
+     "baseline": 233.6,
+     "size": 10.5
+    },
+    {
+     "text": "Library  cards  remain  valid  throughout  the  work.",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 249.95,
+     "size": 10.5
+    },
+    {
+     "text": "Holds placed before the closure can be collected at",
+     "x0": 62.5,
+     "x1": 284.7,
+     "baseline": 262.05,
+     "size": 10.5
+    },
+    {
+     "text": "the branch of your choice, and the online catalogue",
+     "x0": 62.5,
+     "x1": 284.7,
+     "baseline": 274.15,
+     "size": 10.5
+    },
+    {
+     "text": "stays available at all times.",
+     "x0": 62.5,
+     "x1": 175.1,
+     "baseline": 286.25,
+     "size": 10.5
+    },
+    {
+     "text": "The  library  expects  to  reopen  in  the  autumn.",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 302.6,
+     "size": 10.5
+    },
+    {
+     "text": "Updates will be posted on the website and at every",
+     "x0": 62.5,
+     "x1": 284.7,
+     "baseline": 314.7,
+     "size": 10.5
+    },
+    {
+     "text": "branch.",
+     "x0": 62.5,
+     "x1": 93.6,
+     "baseline": 326.8,
+     "size": 10.5
+    },
+    {
+     "text": "Volunteers  who  would  like  to  help  with  the",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 343.15,
+     "size": 10.5
+    },
+    {
+     "text": "reopening events are welcome to register at any",
+     "x0": 310.5,
+     "x1": 532.5,
+     "baseline": 96.25,
+     "size": 10.5
+    },
+    {
+     "text": "branch desk or through the online form before the",
+     "x0": 310.5,
+     "x1": 532.8,
+     "baseline": 108.35,
+     "size": 10.5
+    },
+    {
+     "text": "end of August.",
+     "x0": 310.5,
+     "x1": 372.0,
+     "baseline": 120.45,
+     "size": 10.5
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.5,
+     "x1": 284.8,
+     "top": 96.25,
+     "bottom": 343.15,
+     "allowed": [
+      62.0,
+      85.8,
+      285.3,
+      346.6
+     ]
+    },
+    {
+     "x0": 310.5,
+     "x1": 532.8,
+     "top": 96.25,
+     "bottom": 120.45,
+     "allowed": [
+      310.0,
+      85.8,
+      533.3,
+      346.6
+     ]
+    }
+   ],
+   "paragraphs": [
+    "The central library will close for renovation from the first of June. During the closure, the mobile library will visit each district twice a week, and returns can be made at any branch.",
+    "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps. Wireless access will also be improved on every floor.",
+    "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times.",
+    "The library expects to reopen in the autumn. Updates will be posted on the website and at every branch.",
+    "Volunteers who would like to help with the reopening events are welcome to register at any branch desk or through the online form before the end of August."
+   ]
+  },
+  "gen_columns_en_tagged": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "efcd4420b72e49837869557fe19ff54867deffb32f9d466edac673942b4d15b9",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "cbd830d3a7abab307bfb52d820a79c5b5107c172ce338cb9031a50c0a5c51c63",
+   "page": 1,
+   "tagged": true,
+   "witness": [
+    {
+     "text": "Community Library Renovation",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 71.65,
+     "size": 16.0
+    },
+    {
+     "text": "The central library will close for renovation from the ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 96.25,
+     "size": 10.5
+    },
+    {
+     "text": "first of June. During the closure, the mobile library ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 108.35,
+     "size": 10.5
+    },
+    {
+     "text": "will visit each district twice a week, and returns can ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 120.45,
+     "size": 10.5
+    },
+    {
+     "text": "be made at any branch.",
+     "x0": 62.5,
+     "x1": 159.4,
+     "baseline": 132.55,
+     "size": 10.5
+    },
+    {
+     "text": "The renovation adds a quiet study room, a larger ",
+     "x0": 62.5,
+     "x1": 287.7,
+     "baseline": 148.9,
+     "size": 10.5
+    },
+    {
+     "text": "children's  corner  and  a  meeting  space  that  local ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 161.0,
+     "size": 10.5
+    },
+    {
+     "text": "groups can book free of charge. New shelving will ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 173.1,
+     "size": 10.5
+    },
+    {
+     "text": "make  the  collection  easier  to  browse,  and  the ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 185.2,
+     "size": 10.5
+    },
+    {
+     "text": "entrance will be rebuilt so that wheelchair users and ",
+     "x0": 62.5,
+     "x1": 287.7,
+     "baseline": 197.3,
+     "size": 10.5
+    },
+    {
+     "text": "families  with  prams  can  enter  without  steps. ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 209.4,
+     "size": 10.5
+    },
+    {
+     "text": "Wireless  access  will  also  be  improved  on  every ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 221.5,
+     "size": 10.5
+    },
+    {
+     "text": "floor.",
+     "x0": 62.5,
+     "x1": 84.9,
+     "baseline": 233.6,
+     "size": 10.5
+    },
+    {
+     "text": "Library  cards  remain  valid  throughout  the  work. ",
+     "x0": 62.5,
+     "x1": 287.7,
+     "baseline": 249.95,
+     "size": 10.5
+    },
+    {
+     "text": "Holds placed before the closure can be collected at ",
+     "x0": 62.5,
+     "x1": 287.7,
+     "baseline": 262.05,
+     "size": 10.5
+    },
+    {
+     "text": "the branch of your choice, and the online catalogue ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 274.15,
+     "size": 10.5
+    },
+    {
+     "text": "stays available at all times.",
+     "x0": 62.5,
+     "x1": 175.1,
+     "baseline": 286.25,
+     "size": 10.5
+    },
+    {
+     "text": "The  library  expects  to  reopen  in  the  autumn. ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 302.6,
+     "size": 10.5
+    },
+    {
+     "text": "Updates will be posted on the website and at every ",
+     "x0": 62.5,
+     "x1": 287.7,
+     "baseline": 314.7,
+     "size": 10.5
+    },
+    {
+     "text": "branch.",
+     "x0": 62.5,
+     "x1": 93.6,
+     "baseline": 326.8,
+     "size": 10.5
+    },
+    {
+     "text": "Volunteers  who  would  like  to  help  with  the ",
+     "x0": 62.5,
+     "x1": 287.6,
+     "baseline": 343.15,
+     "size": 10.5
+    },
+    {
+     "text": "reopening events are welcome to register at any ",
+     "x0": 310.5,
+     "x1": 535.7,
+     "baseline": 96.25,
+     "size": 10.5
+    },
+    {
+     "text": "branch desk or through the online form before the ",
+     "x0": 310.5,
+     "x1": 535.7,
+     "baseline": 108.35,
+     "size": 10.5
+    },
+    {
+     "text": "end of August.",
+     "x0": 310.5,
+     "x1": 372.0,
+     "baseline": 120.45,
+     "size": 10.5
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.5,
+     "x1": 287.7,
+     "top": 96.25,
+     "bottom": 343.15,
+     "allowed": [
+      62.0,
+      85.8,
+      288.2,
+      346.6
+     ]
+    },
+    {
+     "x0": 310.5,
+     "x1": 535.7,
+     "top": 96.25,
+     "bottom": 120.45,
+     "allowed": [
+      310.0,
+      85.8,
+      536.2,
+      346.6
+     ]
+    }
+   ],
+   "paragraphs": [
+    "The central library will close for renovation from the first of June. During the closure, the mobile library will visit each district twice a week, and returns can be made at any branch.",
+    "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps. Wireless access will also be improved on every floor.",
+    "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times.",
+    "The library expects to reopen in the autumn. Updates will be posted on the website and at every branch.",
+    "Volunteers who would like to help with the reopening events are welcome to register at any branch desk or through the online form before the end of August."
+   ]
+  },
+  "gen_columns_ja_boundary": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "efcd4420b72e49837869557fe19ff54867deffb32f9d466edac673942b4d15b9",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "a83f8d9eccbb18d878504919ca143ff12cebd6020873c656e01b0c0e288419ef",
+   "page": 1,
+   "tagged": false,
+   "witness": [
+    {
+     "text": "地域防災訓練の実施について",
+     "x0": 62.5,
+     "x1": 270.5,
+     "baseline": 70.8,
+     "size": 16.0
+    },
+    {
+     "text": "本市では、大規模な地震や風水害に備えるため",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "毎年秋に地域防災訓練を実施しています。今年",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 103.8,
+     "size": 10.5
+    },
+    {
+     "text": "度は市内の全小学校区で同じ日に訓練を行い、",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 114.3,
+     "size": 10.5
+    },
+    {
+     "text": "避難所の開設から運営までを住民の皆さんと一",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 124.8,
+     "size": 10.5
+    },
+    {
+     "text": "緒に確認します。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 135.3,
+     "size": 10.5
+    },
+    {
+     "text": "訓練当日は、午前九時に防災行政無線で訓練開",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 150.05,
+     "size": 10.5
+    },
+    {
+     "text": "始をお知らせします。参加される方は、各地域",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 160.55,
+     "size": 10.5
+    },
+    {
+     "text": "で指定された一時避難場所に集合してください",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 171.05,
+     "size": 10.5
+    },
+    {
+     "text": "集合後は自主防災組織の班長の案内に従い、安",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 181.55,
+     "size": 10.5
+    },
+    {
+     "text": "否確認や初期消火、応急手当の訓練に順番に参",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 192.05,
+     "size": 10.5
+    },
+    {
+     "text": "加していただきます。避難所では、受付の手順",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 202.55,
+     "size": 10.5
+    },
+    {
+     "text": "や間仕切りの設置、備蓄物資の配布方法を実際",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 213.05,
+     "size": 10.5
+    },
+    {
+     "text": "に体験できます。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 223.55,
+     "size": 10.5
+    },
+    {
+     "text": "小さなお子さんや高齢の方、障がいのある方も",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 238.3,
+     "size": 10.5
+    },
+    {
+     "text": "安心して参加できるよう、各会場に相談窓口を",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 248.8,
+     "size": 10.5
+    },
+    {
+     "text": "設けます。車いすの貸出しや手話通訳が必要な",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 259.3,
+     "size": 10.5
+    },
+    {
+     "text": "方は、事前に危機管理課までご連絡ください。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 269.8,
+     "size": 10.5
+    },
+    {
+     "text": "雨天の場合は内容を一部変更して実施します。",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 284.55,
+     "size": 10.5
+    },
+    {
+     "text": "中止する場合は、前日の午後五時までに市の",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 295.05,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページと防災メールでお知らせします。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 305.55,
+     "size": 10.5
+    },
+    {
+     "text": "訓練の終了後には、参加者アンケートを実施し",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 320.3,
+     "size": 10.5
+    },
+    {
+     "text": "ます。いただいたご意見は、来年度の訓練計画",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 330.8,
+     "size": 10.5
+    },
+    {
+     "text": "や地域ごとの避難所運営マニュアルの見直しに",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 341.3,
+     "size": 10.5
+    },
+    {
+     "text": "活用します。回答は会場の受付で行えます。",
+     "x0": 62.5,
+     "x1": 272.5,
+     "baseline": 351.8,
+     "size": 10.5
+    },
+    {
+     "text": "各家庭でも、非常持出品の点検や家族との連絡",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "方法の確認をお願いします。飲料水や食料は最",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 103.8,
+     "size": 10.5
+    },
+    {
+     "text": "低三日分、できれば一週間分を目安に備蓄し、",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 114.3,
+     "size": 10.5
+    },
+    {
+     "text": "定期的に入れ替えるようにしてください。",
+     "x0": 310.5,
+     "x1": 510.0,
+     "baseline": 124.8,
+     "size": 10.5
+    },
+    {
+     "text": "また、自宅周辺の危険な場所や避難経路を地図",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 139.55,
+     "size": 10.5
+    },
+    {
+     "text": "で確認しておくと、いざというときに落ち着い",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 150.05,
+     "size": 10.5
+    },
+    {
+     "text": "て行動できます。ハザードマップは市役所の窓",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 160.55,
+     "size": 10.5
+    },
+    {
+     "text": "口と市のホームページで入手できます。",
+     "x0": 310.5,
+     "x1": 499.5,
+     "baseline": 171.05,
+     "size": 10.5
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.5,
+     "x1": 284.8,
+     "top": 93.3,
+     "bottom": 351.8,
+     "allowed": [
+      62.0,
+      82.8,
+      285.3,
+      355.3
+     ]
+    },
+    {
+     "x0": 310.5,
+     "x1": 532.9,
+     "top": 93.3,
+     "bottom": 171.05,
+     "allowed": [
+      310.0,
+      82.8,
+      533.4,
+      355.3
+     ]
+    }
+   ],
+   "paragraphs": [
+    "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+    "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+    "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+    "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+    "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。",
+    "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+    "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+   ]
+  },
+  "gen_columns_ja_boundary_tagged": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "efcd4420b72e49837869557fe19ff54867deffb32f9d466edac673942b4d15b9",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "0d4e3b3182de69ae5cf5d40ba37624a9edad8b002f39502a6dffd1b9fc9e3918",
+   "page": 1,
+   "tagged": true,
+   "witness": [
+    {
+     "text": "地域防災訓練の実施について",
+     "x0": 62.5,
+     "x1": 270.5,
+     "baseline": 70.8,
+     "size": 16.0
+    },
+    {
+     "text": "本市では、大規模な地震や風水害に備えるため",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "毎年秋に地域防災訓練を実施しています。今年",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 103.8,
+     "size": 10.5
+    },
+    {
+     "text": "度は市内の全小学校区で同じ日に訓練を行い、",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 114.3,
+     "size": 10.5
+    },
+    {
+     "text": "避難所の開設から運営までを住民の皆さんと一",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 124.8,
+     "size": 10.5
+    },
+    {
+     "text": "緒に確認します。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 135.3,
+     "size": 10.5
+    },
+    {
+     "text": "訓練当日は、午前九時に防災行政無線で訓練開",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 150.05,
+     "size": 10.5
+    },
+    {
+     "text": "始をお知らせします。参加される方は、各地域",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 160.55,
+     "size": 10.5
+    },
+    {
+     "text": "で指定された一時避難場所に集合してください",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 171.05,
+     "size": 10.5
+    },
+    {
+     "text": "集合後は自主防災組織の班長の案内に従い、安",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 181.55,
+     "size": 10.5
+    },
+    {
+     "text": "否確認や初期消火、応急手当の訓練に順番に参",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 192.05,
+     "size": 10.5
+    },
+    {
+     "text": "加していただきます。避難所では、受付の手順",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 202.55,
+     "size": 10.5
+    },
+    {
+     "text": "や間仕切りの設置、備蓄物資の配布方法を実際",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 213.05,
+     "size": 10.5
+    },
+    {
+     "text": "に体験できます。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 223.55,
+     "size": 10.5
+    },
+    {
+     "text": "小さなお子さんや高齢の方、障がいのある方も",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 238.3,
+     "size": 10.5
+    },
+    {
+     "text": "安心して参加できるよう、各会場に相談窓口を",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 248.8,
+     "size": 10.5
+    },
+    {
+     "text": "設けます。車いすの貸出しや手話通訳が必要な",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 259.3,
+     "size": 10.5
+    },
+    {
+     "text": "方は、事前に危機管理課までご連絡ください。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 269.8,
+     "size": 10.5
+    },
+    {
+     "text": "雨天の場合は内容を一部変更して実施します。",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 284.55,
+     "size": 10.5
+    },
+    {
+     "text": "中止する場合は、前日の午後五時までに市の",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 295.05,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページと防災メールでお知らせします。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 305.55,
+     "size": 10.5
+    },
+    {
+     "text": "訓練の終了後には、参加者アンケートを実施し",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 320.3,
+     "size": 10.5
+    },
+    {
+     "text": "ます。いただいたご意見は、来年度の訓練計画",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 330.8,
+     "size": 10.5
+    },
+    {
+     "text": "や地域ごとの避難所運営マニュアルの見直しに",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 341.3,
+     "size": 10.5
+    },
+    {
+     "text": "活用します。回答は会場の受付で行えます。",
+     "x0": 62.5,
+     "x1": 272.5,
+     "baseline": 351.8,
+     "size": 10.5
+    },
+    {
+     "text": "各家庭でも、非常持出品の点検や家族との連絡",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "方法の確認をお願いします。飲料水や食料は最",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 103.8,
+     "size": 10.5
+    },
+    {
+     "text": "低三日分、できれば一週間分を目安に備蓄し、",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 114.3,
+     "size": 10.5
+    },
+    {
+     "text": "定期的に入れ替えるようにしてください。",
+     "x0": 310.5,
+     "x1": 510.0,
+     "baseline": 124.8,
+     "size": 10.5
+    },
+    {
+     "text": "また、自宅周辺の危険な場所や避難経路を地図",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 139.55,
+     "size": 10.5
+    },
+    {
+     "text": "で確認しておくと、いざというときに落ち着い",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 150.05,
+     "size": 10.5
+    },
+    {
+     "text": "て行動できます。ハザードマップは市役所の窓",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 160.55,
+     "size": 10.5
+    },
+    {
+     "text": "口と市のホームページで入手できます。",
+     "x0": 310.5,
+     "x1": 499.5,
+     "baseline": 171.05,
+     "size": 10.5
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.5,
+     "x1": 284.8,
+     "top": 93.3,
+     "bottom": 351.8,
+     "allowed": [
+      62.0,
+      82.8,
+      285.3,
+      355.3
+     ]
+    },
+    {
+     "x0": 310.5,
+     "x1": 532.9,
+     "top": 93.3,
+     "bottom": 171.05,
+     "allowed": [
+      310.0,
+      82.8,
+      533.4,
+      355.3
+     ]
+    }
+   ],
+   "paragraphs": [
+    "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+    "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+    "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+    "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+    "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。",
+    "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+    "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+   ]
+  },
+  "gen_columns_ja_heading": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "efcd4420b72e49837869557fe19ff54867deffb32f9d466edac673942b4d15b9",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "3caf8c72d448f9c4bfa3c470be331d1341e911cf168a7b0e1306e0b7fb5e59d2",
+   "page": 1,
+   "tagged": false,
+   "witness": [
+    {
+     "text": "地域防災訓練の実施について",
+     "x0": 62.5,
+     "x1": 270.5,
+     "baseline": 70.8,
+     "size": 16.0
+    },
+    {
+     "text": "本市では、大規模な地震や風水害に備えるため",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "毎年秋に地域防災訓練を実施しています。今年",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 103.8,
+     "size": 10.5
+    },
+    {
+     "text": "度は市内の全小学校区で同じ日に訓練を行い、",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 114.3,
+     "size": 10.5
+    },
+    {
+     "text": "避難所の開設から運営までを住民の皆さんと一",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 124.8,
+     "size": 10.5
+    },
+    {
+     "text": "緒に確認します。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 135.3,
+     "size": 10.5
+    },
+    {
+     "text": "訓練当日は、午前九時に防災行政無線で訓練開",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 150.05,
+     "size": 10.5
+    },
+    {
+     "text": "始をお知らせします。参加される方は、各地域",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 160.55,
+     "size": 10.5
+    },
+    {
+     "text": "で指定された一時避難場所に集合してください",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 171.05,
+     "size": 10.5
+    },
+    {
+     "text": "集合後は自主防災組織の班長の案内に従い、安",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 181.55,
+     "size": 10.5
+    },
+    {
+     "text": "否確認や初期消火、応急手当の訓練に順番に参",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 192.05,
+     "size": 10.5
+    },
+    {
+     "text": "加していただきます。避難所では、受付の手順",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 202.55,
+     "size": 10.5
+    },
+    {
+     "text": "や間仕切りの設置、備蓄物資の配布方法を実際",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 213.05,
+     "size": 10.5
+    },
+    {
+     "text": "に体験できます。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 223.55,
+     "size": 10.5
+    },
+    {
+     "text": "小さなお子さんや高齢の方、障がいのある方も",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 238.3,
+     "size": 10.5
+    },
+    {
+     "text": "安心して参加できるよう、各会場に相談窓口を",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 248.8,
+     "size": 10.5
+    },
+    {
+     "text": "設けます。車いすの貸出しや手話通訳が必要な",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 259.3,
+     "size": 10.5
+    },
+    {
+     "text": "方は、事前に危機管理課までご連絡ください。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 269.8,
+     "size": 10.5
+    },
+    {
+     "text": "雨天の場合は内容を一部変更して実施します。",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 284.55,
+     "size": 10.5
+    },
+    {
+     "text": "中止する場合は、前日の午後五時までに市の",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 295.05,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページと防災メールでお知らせします。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 305.55,
+     "size": 10.5
+    },
+    {
+     "text": "訓練の終了後には、参加者アンケートを実施し",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 320.3,
+     "size": 10.5
+    },
+    {
+     "text": "ます。いただいたご意見は、来年度の訓練計画",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 330.8,
+     "size": 10.5
+    },
+    {
+     "text": "や地域ごとの避難所運営マニュアルの見直しに",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 341.3,
+     "size": 10.5
+    },
+    {
+     "text": "活用します。回答は会場の受付で行えます。",
+     "x0": 62.5,
+     "x1": 272.5,
+     "baseline": 351.8,
+     "size": 10.5
+    },
+    {
+     "text": "図書館からのお知らせ",
+     "x0": 310.5,
+     "x1": 440.5,
+     "baseline": 95.5,
+     "size": 13.0
+    },
+    {
+     "text": "各家庭でも、非常持出品の点検や家族との連絡",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 111.95,
+     "size": 10.5
+    },
+    {
+     "text": "方法の確認をお願いします。飲料水や食料は最",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 122.45,
+     "size": 10.5
+    },
+    {
+     "text": "低三日分、できれば一週間分を目安に備蓄し、",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 132.95,
+     "size": 10.5
+    },
+    {
+     "text": "定期的に入れ替えるようにしてください。",
+     "x0": 310.5,
+     "x1": 510.0,
+     "baseline": 143.45,
+     "size": 10.5
+    },
+    {
+     "text": "また、自宅周辺の危険な場所や避難経路を地図",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 158.2,
+     "size": 10.5
+    },
+    {
+     "text": "で確認しておくと、いざというときに落ち着い",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 168.7,
+     "size": 10.5
+    },
+    {
+     "text": "て行動できます。ハザードマップは市役所の窓",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 179.2,
+     "size": 10.5
+    },
+    {
+     "text": "口と市のホームページで入手できます。",
+     "x0": 310.5,
+     "x1": 499.5,
+     "baseline": 189.7,
+     "size": 10.5
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.5,
+     "x1": 284.8,
+     "top": 93.3,
+     "bottom": 351.8,
+     "allowed": [
+      62.0,
+      82.8,
+      285.3,
+      355.3
+     ]
+    },
+    {
+     "x0": 310.5,
+     "x1": 532.9,
+     "top": 111.95,
+     "bottom": 189.7,
+     "allowed": [
+      310.0,
+      101.5,
+      533.4,
+      355.3
+     ]
+    }
+   ],
+   "paragraphs": [
+    "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+    "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+    "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+    "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+    "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。",
+    "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+    "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+   ]
+  },
+  "gen_columns_ja_image": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "efcd4420b72e49837869557fe19ff54867deffb32f9d466edac673942b4d15b9",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "104d2f0b0134abd12da9ae683807d74ff1d909b87bf121a31b38e795419734ba",
+   "page": 1,
+   "tagged": false,
+   "witness": [
+    {
+     "text": "地域防災訓練の実施について",
+     "x0": 62.5,
+     "x1": 270.5,
+     "baseline": 70.8,
+     "size": 16.0
+    },
+    {
+     "text": "本市では、大規模な地震や風水害に備えるため",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 93.3,
+     "size": 10.5
+    },
+    {
+     "text": "毎年秋に地域防災訓練を実施しています。今年",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 103.8,
+     "size": 10.5
+    },
+    {
+     "text": "度は市内の全小学校区で同じ日に訓練を行い、",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 114.3,
+     "size": 10.5
+    },
+    {
+     "text": "避難所の開設から運営までを住民の皆さんと一",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 124.8,
+     "size": 10.5
+    },
+    {
+     "text": "緒に確認します。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 135.3,
+     "size": 10.5
+    },
+    {
+     "text": "訓練当日は、午前九時に防災行政無線で訓練開",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 150.05,
+     "size": 10.5
+    },
+    {
+     "text": "始をお知らせします。参加される方は、各地域",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 160.55,
+     "size": 10.5
+    },
+    {
+     "text": "で指定された一時避難場所に集合してください",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 171.05,
+     "size": 10.5
+    },
+    {
+     "text": "集合後は自主防災組織の班長の案内に従い、安",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 181.55,
+     "size": 10.5
+    },
+    {
+     "text": "否確認や初期消火、応急手当の訓練に順番に参",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 192.05,
+     "size": 10.5
+    },
+    {
+     "text": "加していただきます。避難所では、受付の手順",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 202.55,
+     "size": 10.5
+    },
+    {
+     "text": "や間仕切りの設置、備蓄物資の配布方法を実際",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 213.05,
+     "size": 10.5
+    },
+    {
+     "text": "に体験できます。",
+     "x0": 62.5,
+     "x1": 146.4,
+     "baseline": 223.55,
+     "size": 10.5
+    },
+    {
+     "text": "小さなお子さんや高齢の方、障がいのある方も",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 238.3,
+     "size": 10.5
+    },
+    {
+     "text": "安心して参加できるよう、各会場に相談窓口を",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 248.8,
+     "size": 10.5
+    },
+    {
+     "text": "設けます。車いすの貸出しや手話通訳が必要な",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 259.3,
+     "size": 10.5
+    },
+    {
+     "text": "方は、事前に危機管理課までご連絡ください。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 269.8,
+     "size": 10.5
+    },
+    {
+     "text": "雨天の場合は内容を一部変更して実施します。",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 284.55,
+     "size": 10.5
+    },
+    {
+     "text": "中止する場合は、前日の午後五時までに市の",
+     "x0": 62.5,
+     "x1": 284.6,
+     "baseline": 295.05,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページと防災メールでお知らせします。",
+     "x0": 62.5,
+     "x1": 283.0,
+     "baseline": 305.55,
+     "size": 10.5
+    },
+    {
+     "text": "訓練の終了後には、参加者アンケートを実施し",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 320.3,
+     "size": 10.5
+    },
+    {
+     "text": "ます。いただいたご意見は、来年度の訓練計画",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 330.8,
+     "size": 10.5
+    },
+    {
+     "text": "や地域ごとの避難所運営マニュアルの見直しに",
+     "x0": 62.5,
+     "x1": 284.8,
+     "baseline": 341.3,
+     "size": 10.5
+    },
+    {
+     "text": "活用します。回答は会場の受付で行えます。",
+     "x0": 62.5,
+     "x1": 272.5,
+     "baseline": 351.8,
+     "size": 10.5
+    },
+    {
+     "text": "各家庭でも、非常持出品の点検や家族との連絡",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 172.7,
+     "size": 10.5
+    },
+    {
+     "text": "方法の確認をお願いします。飲料水や食料は最",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 183.2,
+     "size": 10.5
+    },
+    {
+     "text": "低三日分、できれば一週間分を目安に備蓄し、",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 193.7,
+     "size": 10.5
+    },
+    {
+     "text": "定期的に入れ替えるようにしてください。",
+     "x0": 310.5,
+     "x1": 510.0,
+     "baseline": 204.2,
+     "size": 10.5
+    },
+    {
+     "text": "また、自宅周辺の危険な場所や避難経路を地図",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 218.95,
+     "size": 10.5
+    },
+    {
+     "text": "で確認しておくと、いざというときに落ち着い",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 229.45,
+     "size": 10.5
+    },
+    {
+     "text": "て行動できます。ハザードマップは市役所の窓",
+     "x0": 310.5,
+     "x1": 532.9,
+     "baseline": 239.95,
+     "size": 10.5
+    },
+    {
+     "text": "口と市のホームページで入手できます。",
+     "x0": 310.5,
+     "x1": 499.5,
+     "baseline": 250.45,
+     "size": 10.5
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.5,
+     "x1": 284.8,
+     "top": 93.3,
+     "bottom": 351.8,
+     "allowed": [
+      62.0,
+      82.8,
+      285.3,
+      355.3
+     ]
+    },
+    {
+     "x0": 310.5,
+     "x1": 532.9,
+     "top": 172.7,
+     "bottom": 250.45,
+     "allowed": [
+      310.0,
+      162.2,
+      533.4,
+      355.3
+     ]
+    }
+   ],
+   "paragraphs": [
+    "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+    "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+    "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+    "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+    "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。",
+    "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+    "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+   ]
+  },
+  "gen_columns_ja_articles": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "c07adf16ff743fcf9775c8d8b0e961a0ab3beaa979e738f7dd0ac14ba5903a08",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "506654db5d874136889d14b6c049729c6ed0865fa2a5c56e0c6698a77c3f96c2",
+   "page": 1,
+   "tagged": false,
+   "witness": [
+    {
+     "text": "本市では、大規模な地震や風水害に備えるた",
+     "x0": 62.3,
+     "x1": 284.7,
+     "baseline": 92.85,
+     "size": 10.5
+    },
+    {
+     "text": "め、毎年秋に地域防災訓練を実施しています。",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 103.35,
+     "size": 10.5
+    },
+    {
+     "text": "今年度は市内の全小学校区で同じ日に訓練を行",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 113.85,
+     "size": 10.5
+    },
+    {
+     "text": "い、避難所の開設から運営までを住民の皆さん",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 124.35,
+     "size": 10.5
+    },
+    {
+     "text": "と一緒に確認します。",
+     "x0": 62.3,
+     "x1": 167.4,
+     "baseline": 134.85,
+     "size": 10.5
+    },
+    {
+     "text": "訓練当日は、午前九時に防災行政無線で訓練開",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 149.6,
+     "size": 10.5
+    },
+    {
+     "text": "始をお知らせします。参加される方は、各地域",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 160.1,
+     "size": 10.5
+    },
+    {
+     "text": "で指定された一時避難場所に集合してくださ",
+     "x0": 62.3,
+     "x1": 284.7,
+     "baseline": 170.6,
+     "size": 10.5
+    },
+    {
+     "text": "い。集合後は自主防災組織の班長の案内に従",
+     "x0": 62.3,
+     "x1": 284.7,
+     "baseline": 181.1,
+     "size": 10.5
+    },
+    {
+     "text": "い、安否確認や初期消火、応急手当の訓練に順",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 191.6,
+     "size": 10.5
+    },
+    {
+     "text": "番に参加していただきます。避難所では、受付",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 202.1,
+     "size": 10.5
+    },
+    {
+     "text": "の手順や間仕切りの設置、備蓄物資の配布方法",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 212.6,
+     "size": 10.5
+    },
+    {
+     "text": "を実際に体験できます。",
+     "x0": 62.3,
+     "x1": 177.9,
+     "baseline": 223.1,
+     "size": 10.5
+    },
+    {
+     "text": "小さなお子さんや高齢の方、障がいのある方も",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 237.85,
+     "size": 10.5
+    },
+    {
+     "text": "安心して参加できるよう、各会場に相談窓口を",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 248.35,
+     "size": 10.5
+    },
+    {
+     "text": "設けます。車いすの貸出しや手話通訳が必要な",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 258.85,
+     "size": 10.5
+    },
+    {
+     "text": "方は、事前に危機管理課までご連絡ください。",
+     "x0": 62.3,
+     "x1": 282.9,
+     "baseline": 269.35,
+     "size": 10.5
+    },
+    {
+     "text": "雨天の場合は内容を一部変更して実施します。",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 284.1,
+     "size": 10.5
+    },
+    {
+     "text": "中止する場合は、前日の午後五時までに市の",
+     "x0": 62.3,
+     "x1": 284.7,
+     "baseline": 294.6,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページと防災メールでお知らせします。",
+     "x0": 62.3,
+     "x1": 282.9,
+     "baseline": 305.1,
+     "size": 10.5
+    },
+    {
+     "text": "訓練の終了後には、参加者アンケートを実施し",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 319.85,
+     "size": 10.5
+    },
+    {
+     "text": "ます。いただいたご意見は、来年度の訓練計画",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 330.35,
+     "size": 10.5
+    },
+    {
+     "text": "や地域ごとの避難所運営マニュアルの見直しに",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 340.85,
+     "size": 10.5
+    },
+    {
+     "text": "活用します。回答は会場の受付のほか、市役所",
+     "x0": 62.3,
+     "x1": 282.9,
+     "baseline": 351.35,
+     "size": 10.5
+    },
+    {
+     "text": "市立図書館は、空調設備の改修工事のため、来",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 92.85,
+     "size": 10.5
+    },
+    {
+     "text": "月の一日から十日まで休館します。休館中も、",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 103.35,
+     "size": 10.5
+    },
+    {
+     "text": "返却ポストは通常どおり利用できます。",
+     "x0": 310.4,
+     "x1": 499.4,
+     "baseline": 113.85,
+     "size": 10.5
+    },
+    {
+     "text": "予約した資料は、工事の期間中も各地区の公民",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 128.6,
+     "size": 10.5
+    },
+    {
+     "text": "館で受け取ることができます。受け取りの際",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 139.1,
+     "size": 10.5
+    },
+    {
+     "text": "は、利用者カードをお持ちください。",
+     "x0": 310.4,
+     "x1": 488.9,
+     "baseline": 149.6,
+     "size": 10.5
+    },
+    {
+     "text": "工事の終了後は、閲覧席の数を増やし、児童室",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 164.35,
+     "size": 10.5
+    },
+    {
+     "text": "の照明も新しくなります。",
+     "x0": 310.4,
+     "x1": 436.4,
+     "baseline": 174.85,
+     "size": 10.5
+    },
+    {
+     "text": "地域防災訓練の実施について",
+     "x0": 62.5,
+     "x1": 270.5,
+     "baseline": 70.8,
+     "size": 16.0
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.3,
+     "x1": 284.8,
+     "top": 92.85,
+     "bottom": 351.35,
+     "allowed": [
+      61.8,
+      82.3,
+      285.3,
+      354.9
+     ]
+    },
+    {
+     "x0": 310.4,
+     "x1": 532.8,
+     "top": 92.85,
+     "bottom": 174.85,
+     "allowed": [
+      309.9,
+      82.3,
+      533.3,
+      354.9
+     ]
+    }
+   ],
+   "paragraphs": [
+    "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+    "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+    "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+    "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+    "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市役所",
+    "市立図書館は、空調設備の改修工事のため、来月の一日から十日まで休館します。休館中も、返却ポストは通常どおり利用できます。",
+    "予約した資料は、工事の期間中も各地区の公民館で受け取ることができます。受け取りの際は、利用者カードをお持ちください。",
+    "工事の終了後は、閲覧席の数を増やし、児童室の照明も新しくなります。"
+   ]
+  },
+  "gen_columns_ja_articles_tagged": {
+   "kind": "generated",
+   "generator": "prototypes/paragraph_frame/column_fixtures.py",
+   "generator_sha256": "c07adf16ff743fcf9775c8d8b0e961a0ab3beaa979e738f7dd0ac14ba5903a08",
+   "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+   "sha256_at_freeze": "ac81e08952426cbee7afa7f3f266c4cd5cf1540df22ef186ce78cc108f94254b",
+   "page": 1,
+   "tagged": true,
+   "witness": [
+    {
+     "text": "本市では、大規模な地震や風水害に備えるた",
+     "x0": 62.3,
+     "x1": 284.7,
+     "baseline": 92.85,
+     "size": 10.5
+    },
+    {
+     "text": "め、毎年秋に地域防災訓練を実施しています。",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 103.35,
+     "size": 10.5
+    },
+    {
+     "text": "今年度は市内の全小学校区で同じ日に訓練を行",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 113.85,
+     "size": 10.5
+    },
+    {
+     "text": "い、避難所の開設から運営までを住民の皆さん",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 124.35,
+     "size": 10.5
+    },
+    {
+     "text": "と一緒に確認します。",
+     "x0": 62.3,
+     "x1": 167.4,
+     "baseline": 134.85,
+     "size": 10.5
+    },
+    {
+     "text": "訓練当日は、午前九時に防災行政無線で訓練開",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 149.6,
+     "size": 10.5
+    },
+    {
+     "text": "始をお知らせします。参加される方は、各地域",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 160.1,
+     "size": 10.5
+    },
+    {
+     "text": "で指定された一時避難場所に集合してくださ",
+     "x0": 62.3,
+     "x1": 284.7,
+     "baseline": 170.6,
+     "size": 10.5
+    },
+    {
+     "text": "い。集合後は自主防災組織の班長の案内に従",
+     "x0": 62.3,
+     "x1": 284.7,
+     "baseline": 181.1,
+     "size": 10.5
+    },
+    {
+     "text": "い、安否確認や初期消火、応急手当の訓練に順",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 191.6,
+     "size": 10.5
+    },
+    {
+     "text": "番に参加していただきます。避難所では、受付",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 202.1,
+     "size": 10.5
+    },
+    {
+     "text": "の手順や間仕切りの設置、備蓄物資の配布方法",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 212.6,
+     "size": 10.5
+    },
+    {
+     "text": "を実際に体験できます。",
+     "x0": 62.3,
+     "x1": 177.9,
+     "baseline": 223.1,
+     "size": 10.5
+    },
+    {
+     "text": "小さなお子さんや高齢の方、障がいのある方も",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 237.85,
+     "size": 10.5
+    },
+    {
+     "text": "安心して参加できるよう、各会場に相談窓口を",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 248.35,
+     "size": 10.5
+    },
+    {
+     "text": "設けます。車いすの貸出しや手話通訳が必要な",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 258.85,
+     "size": 10.5
+    },
+    {
+     "text": "方は、事前に危機管理課までご連絡ください。",
+     "x0": 62.3,
+     "x1": 282.9,
+     "baseline": 269.35,
+     "size": 10.5
+    },
+    {
+     "text": "雨天の場合は内容を一部変更して実施します。",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 284.1,
+     "size": 10.5
+    },
+    {
+     "text": "中止する場合は、前日の午後五時までに市の",
+     "x0": 62.3,
+     "x1": 284.7,
+     "baseline": 294.6,
+     "size": 10.5
+    },
+    {
+     "text": "ホームページと防災メールでお知らせします。",
+     "x0": 62.3,
+     "x1": 282.9,
+     "baseline": 305.1,
+     "size": 10.5
+    },
+    {
+     "text": "訓練の終了後には、参加者アンケートを実施し",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 319.85,
+     "size": 10.5
+    },
+    {
+     "text": "ます。いただいたご意見は、来年度の訓練計画",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 330.35,
+     "size": 10.5
+    },
+    {
+     "text": "や地域ごとの避難所運営マニュアルの見直しに",
+     "x0": 62.3,
+     "x1": 284.8,
+     "baseline": 340.85,
+     "size": 10.5
+    },
+    {
+     "text": "活用します。回答は会場の受付のほか、市役所",
+     "x0": 62.3,
+     "x1": 282.9,
+     "baseline": 351.35,
+     "size": 10.5
+    },
+    {
+     "text": "市立図書館は、空調設備の改修工事のため、来",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 92.85,
+     "size": 10.5
+    },
+    {
+     "text": "月の一日から十日まで休館します。休館中も、",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 103.35,
+     "size": 10.5
+    },
+    {
+     "text": "返却ポストは通常どおり利用できます。",
+     "x0": 310.4,
+     "x1": 499.4,
+     "baseline": 113.85,
+     "size": 10.5
+    },
+    {
+     "text": "予約した資料は、工事の期間中も各地区の公民",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 128.6,
+     "size": 10.5
+    },
+    {
+     "text": "館で受け取ることができます。受け取りの際",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 139.1,
+     "size": 10.5
+    },
+    {
+     "text": "は、利用者カードをお持ちください。",
+     "x0": 310.4,
+     "x1": 488.9,
+     "baseline": 149.6,
+     "size": 10.5
+    },
+    {
+     "text": "工事の終了後は、閲覧席の数を増やし、児童室",
+     "x0": 310.4,
+     "x1": 532.8,
+     "baseline": 164.35,
+     "size": 10.5
+    },
+    {
+     "text": "の照明も新しくなります。",
+     "x0": 310.4,
+     "x1": 436.4,
+     "baseline": 174.85,
+     "size": 10.5
+    },
+    {
+     "text": "地域防災訓練の実施について",
+     "x0": 62.5,
+     "x1": 270.5,
+     "baseline": 70.8,
+     "size": 16.0
+    }
+   ],
+   "columns": [
+    {
+     "x0": 62.3,
+     "x1": 284.8,
+     "top": 92.85,
+     "bottom": 351.35,
+     "allowed": [
+      61.8,
+      82.3,
+      285.3,
+      354.9
+     ]
+    },
+    {
+     "x0": 310.4,
+     "x1": 532.8,
+     "top": 92.85,
+     "bottom": 174.85,
+     "allowed": [
+      309.9,
+      82.3,
+      533.3,
+      354.9
+     ]
+    }
+   ],
+   "paragraphs": [
+    "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+    "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+    "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+    "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+    "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市役所",
+    "市立図書館は、空調設備の改修工事のため、来月の一日から十日まで休館します。休館中も、返却ポストは通常どおり利用できます。",
+    "予約した資料は、工事の期間中も各地区の公民館で受け取ることができます。受け取りの際は、利用者カードをお持ちください。",
+    "工事の終了後は、閲覧席の数を増やし、児童室の照明も新しくなります。"
+   ]
+  },
+  "lo_enterprise_en": {
+   "kind": "real",
+   "path": "evaluations/realpdf/corpus/lo_enterprise_en.pdf",
+   "sha256": "f96228ca032b60584e5f2e5fd5689290ba7b93b4f39bb8f86c5af5221eec85d4",
+   "page": 2,
+   "tagged": false,
+   "source_url": "https://wiki.documentfoundation.org/images/3/36/EN_Enterprise.pdf",
+   "witness": [
+    {
+     "text": "Writer (Word Processing)",
+     "x0": 29.8,
+     "x1": 155.6,
+     "baseline": 185.4,
+     "size": 12.0
+    },
+    {
+     "text": "Writer has all the features you need from a",
+     "x0": 29.8,
+     "x1": 253.4,
+     "baseline": 206.1,
+     "size": 12.0
+    },
+    {
+     "text": "modern, full-featured word processor. It's",
+     "x0": 29.8,
+     "x1": 253.5,
+     "baseline": 221.0,
+     "size": 12.0
+    },
+    {
+     "text": "simple enough to use for a simple memo,",
+     "x0": 29.8,
+     "x1": 253.4,
+     "baseline": 236.0,
+     "size": 12.0
+    },
+    {
+     "text": "and powerful enough to create complete",
+     "x0": 29.8,
+     "x1": 253.9,
+     "baseline": 251.0,
+     "size": 12.0
+    },
+    {
+     "text": "books with contents, diagrams and indexes.",
+     "x0": 29.8,
+     "x1": 253.2,
+     "baseline": 266.0,
+     "size": 12.0
+    },
+    {
+     "text": "You can concentrate on the message, while",
+     "x0": 29.8,
+     "x1": 253.4,
+     "baseline": 281.0,
+     "size": 12.0
+    },
+    {
+     "text": "Writer will make it look great.",
+     "x0": 29.8,
+     "x1": 175.2,
+     "baseline": 296.0,
+     "size": 12.0
+    },
+    {
+     "text": "Calc (Spreadsheet)",
+     "x0": 29.8,
+     "x1": 124.6,
+     "baseline": 316.7,
+     "size": 12.0
+    },
+    {
+     "text": "Calc is a spreadsheet program designed with",
+     "x0": 29.8,
+     "x1": 252.9,
+     "baseline": 337.4,
+     "size": 12.0
+    },
+    {
+     "text": "the user in mind. First-time users find it",
+     "x0": 29.8,
+     "x1": 253.3,
+     "baseline": 352.3,
+     "size": 12.0
+    },
+    {
+     "text": "intuitive and easy to learn, while profes-",
+     "x0": 29.8,
+     "x1": 253.7,
+     "baseline": 367.3,
+     "size": 12.0
+    },
+    {
+     "text": "sional data miners and number crunchers",
+     "x0": 29.8,
+     "x1": 253.4,
+     "baseline": 382.3,
+     "size": 12.0
+    },
+    {
+     "text": "appreciate the comprehensive range of",
+     "x0": 29.8,
+     "x1": 252.9,
+     "baseline": 397.3,
+     "size": 12.0
+    },
+    {
+     "text": "advanced functions.",
+     "x0": 29.8,
+     "x1": 130.6,
+     "baseline": 412.3,
+     "size": 12.0
+    },
+    {
+     "text": "Impress (Presentation)",
+     "x0": 313.2,
+     "x1": 429.1,
+     "baseline": 185.4,
+     "size": 12.0
+    },
+    {
+     "text": "Impress is an easy and powerful tool for cre-",
+     "x0": 313.2,
+     "x1": 537.2,
+     "baseline": 206.1,
+     "size": 12.0
+    },
+    {
+     "text": "ating highly effective multimedia presenta-",
+     "x0": 313.2,
+     "x1": 537.2,
+     "baseline": 221.0,
+     "size": 12.0
+    },
+    {
+     "text": "tions, which can be enhanced with 2D and",
+     "x0": 313.2,
+     "x1": 536.5,
+     "baseline": 236.0,
+     "size": 12.0
+    },
+    {
+     "text": "3D clip art, transition styles, special effects,",
+     "x0": 313.2,
+     "x1": 536.8,
+     "baseline": 251.0,
+     "size": 12.0
+    },
+    {
+     "text": "high-impact drawing tools and animations.",
+     "x0": 313.2,
+     "x1": 536.6,
+     "baseline": 266.0,
+     "size": 12.0
+    },
+    {
+     "text": "Additionally, it will help you on stage to",
+     "x0": 313.2,
+     "x1": 537.2,
+     "baseline": 281.0,
+     "size": 12.0
+    },
+    {
+     "text": "convey your message to your audience.",
+     "x0": 313.2,
+     "x1": 509.0,
+     "baseline": 296.0,
+     "size": 12.0
+    },
+    {
+     "text": "Draw (Vector Drawings)",
+     "x0": 313.2,
+     "x1": 431.0,
+     "baseline": 316.7,
+     "size": 12.0
+    },
+    {
+     "text": "Draw lets you produce anything from a quick",
+     "x0": 313.2,
+     "x1": 536.8,
+     "baseline": 337.4,
+     "size": 12.0
+    },
+    {
+     "text": "sketch to a complex plan, and gives you the",
+     "x0": 313.2,
+     "x1": 536.8,
+     "baseline": 352.3,
+     "size": 12.0
+    },
+    {
+     "text": "power to communicate with graphics and",
+     "x0": 313.2,
+     "x1": 536.7,
+     "baseline": 367.3,
+     "size": 12.0
+    },
+    {
+     "text": "diagrams. With a maximum page size of 300",
+     "x0": 313.2,
+     "x1": 536.7,
+     "baseline": 382.3,
+     "size": 12.0
+    },
+    {
+     "text": "by 300 centimetres, is an excellent package",
+     "x0": 313.2,
+     "x1": 536.6,
+     "baseline": 397.3,
+     "size": 12.0
+    },
+    {
+     "text": "for large posters or technical drawings.",
+     "x0": 313.2,
+     "x1": 506.1,
+     "baseline": 412.3,
+     "size": 12.0
+    },
+    {
+     "text": "Base (Database)",
+     "x0": 313.2,
+     "x1": 394.4,
+     "baseline": 433.0,
+     "size": 12.0
+    },
+    {
+     "text": "Base is a simple desktop database for the",
+     "x0": 313.2,
+     "x1": 537.0,
+     "baseline": 453.7,
+     "size": 12.0
+    },
+    {
+     "text": "needs of most users, which can be used as a",
+     "x0": 313.2,
+     "x1": 536.5,
+     "baseline": 468.7,
+     "size": 12.0
+    },
+    {
+     "text": "front end to enterprise-class databases.",
+     "x0": 313.2,
+     "x1": 510.5,
+     "baseline": 483.6,
+     "size": 12.0
+    },
+    {
+     "text": "Math (Formula Editor)",
+     "x0": 313.2,
+     "x1": 424.3,
+     "baseline": 504.3,
+     "size": 12.0
+    },
+    {
+     "text": "Math can create mathematical and scientific",
+     "x0": 313.2,
+     "x1": 536.8,
+     "baseline": 525.0,
+     "size": 12.0
+    },
+    {
+     "text": "formulas to add to text documents and",
+     "x0": 313.2,
+     "x1": 537.0,
+     "baseline": 540.0,
+     "size": 12.0
+    },
+    {
+     "text": "presentations.",
+     "x0": 313.2,
+     "x1": 385.1,
+     "baseline": 555.0,
+     "size": 12.0
+    },
+    {
+     "text": "Deploying LibreOffice",
+     "x0": 593.9,
+     "x1": 708.0,
+     "baseline": 40.8,
+     "size": 12.0
+    },
+    {
+     "text": "Deploying LibreOffice does not mean era-",
+     "x0": 593.9,
+     "x1": 809.0,
+     "baseline": 61.6,
+     "size": 12.0
+    },
+    {
+     "text": "dicating MS Office from each and every PC.",
+     "x0": 593.9,
+     "x1": 808.9,
+     "baseline": 76.6,
+     "size": 12.0
+    },
+    {
+     "text": "The goal is to maximize the number of PCs",
+     "x0": 593.9,
+     "x1": 808.8,
+     "baseline": 91.6,
+     "size": 12.0
+    },
+    {
+     "text": "using LibreOffice, fostering interoperability",
+     "x0": 593.9,
+     "x1": 808.6,
+     "baseline": 106.6,
+     "size": 12.0
+    },
+    {
+     "text": "with MS Office by adopting a true ISO",
+     "x0": 593.9,
+     "x1": 809.3,
+     "baseline": 121.6,
+     "size": 12.0
+    },
+    {
+     "text": "standard file format such as ODF.",
+     "x0": 593.9,
+     "x1": 757.8,
+     "baseline": 136.6,
+     "size": 12.0
+    },
+    {
+     "text": "Of course, it will be necessary to educate",
+     "x0": 593.9,
+     "x1": 809.0,
+     "baseline": 157.3,
+     "size": 12.0
+    },
+    {
+     "text": "all users to rely on the ODF document",
+     "x0": 593.9,
+     "x1": 808.8,
+     "baseline": 172.3,
+     "size": 12.0
+    },
+    {
+     "text": "standard to exchange files both internally",
+     "x0": 593.9,
+     "x1": 808.9,
+     "baseline": 187.3,
+     "size": 12.0
+    },
+    {
+     "text": "and externally, as this is the only way to",
+     "x0": 593.9,
+     "x1": 808.8,
+     "baseline": 202.3,
+     "size": 12.0
+    },
+    {
+     "text": "ensure true interoperability, and replace",
+     "x0": 593.9,
+     "x1": 809.0,
+     "baseline": 217.3,
+     "size": 12.0
+    },
+    {
+     "text": "proprietary fonts with free fonts to avoid",
+     "x0": 593.9,
+     "x1": 809.0,
+     "baseline": 232.3,
+     "size": 12.0
+    },
+    {
+     "text": "“visual” issues.",
+     "x0": 593.9,
+     "x1": 668.9,
+     "baseline": 247.3,
+     "size": 12.0
+    },
+    {
+     "text": "The deployment method can be selected",
+     "x0": 593.9,
+     "x1": 809.1,
+     "baseline": 268.0,
+     "size": 12.0
+    },
+    {
+     "text": "according to the existing IT infrastructure.",
+     "x0": 593.9,
+     "x1": 809.1,
+     "baseline": 283.0,
+     "size": 12.0
+    },
+    {
+     "text": "LibreOffice can be mass deployed on",
+     "x0": 593.9,
+     "x1": 808.3,
+     "baseline": 298.0,
+     "size": 12.0
+    },
+    {
+     "text": "Windows by tweaking the .MSI package,",
+     "x0": 593.9,
+     "x1": 809.0,
+     "baseline": 313.0,
+     "size": 12.0
+    },
+    {
+     "text": "and creating a Group Policy Object (GPO)",
+     "x0": 593.9,
+     "x1": 809.1,
+     "baseline": 328.0,
+     "size": 12.0
+    },
+    {
+     "text": "to distribute the software package.",
+     "x0": 593.9,
+     "x1": 766.5,
+     "baseline": 343.0,
+     "size": 12.0
+    },
+    {
+     "text": "The deployment of LibreOffice needs to be",
+     "x0": 593.9,
+     "x1": 808.7,
+     "baseline": 363.8,
+     "size": 12.0
+    },
+    {
+     "text": "planned in advance and should also be",
+     "x0": 593.9,
+     "x1": 809.3,
+     "baseline": 378.8,
+     "size": 12.0
+    },
+    {
+     "text": "coordinated with a training schedule, to",
+     "x0": 593.9,
+     "x1": 809.1,
+     "baseline": 393.8,
+     "size": 12.0
+    },
+    {
+     "text": "ensure that users will be able to use the",
+     "x0": 593.9,
+     "x1": 808.6,
+     "baseline": 408.8,
+     "size": 12.0
+    },
+    {
+     "text": "software after the first training session.",
+     "x0": 593.9,
+     "x1": 786.8,
+     "baseline": 423.8,
+     "size": 12.0
+    },
+    {
+     "text": "The Document Foundation suggests de-",
+     "x0": 593.9,
+     "x1": 809.4,
+     "baseline": 444.5,
+     "size": 12.0
+    },
+    {
+     "text": "ploying LibreOffice in large organizations",
+     "x0": 593.9,
+     "x1": 809.0,
+     "baseline": 459.5,
+     "size": 12.0
+    },
+    {
+     "text": "with the backing of certified professionals:",
+     "x0": 593.9,
+     "x1": 808.7,
+     "baseline": 474.5,
+     "size": 12.0
+    },
+    {
+     "text": "developers for Level 3 support, migrators",
+     "x0": 593.9,
+     "x1": 809.4,
+     "baseline": 489.5,
+     "size": 12.0
+    },
+    {
+     "text": "for assistance in enterprise deployments,",
+     "x0": 593.9,
+     "x1": 809.0,
+     "baseline": 504.5,
+     "size": 12.0
+    },
+    {
+     "text": "and trainers for organization of trainings. A",
+     "x0": 593.9,
+     "x1": 809.3,
+     "baseline": 519.5,
+     "size": 12.0
+    },
+    {
+     "text": "list of these certified professionals is",
+     "x0": 593.9,
+     "x1": 809.0,
+     "baseline": 534.5,
+     "size": 12.0
+    },
+    {
+     "text": "available on the website.",
+     "x0": 593.9,
+     "x1": 717.5,
+     "baseline": 549.5,
+     "size": 12.0
+    }
+   ],
+   "columns": [
+    {
+     "x0": 29.8,
+     "x1": 253.9,
+     "top": 185.4,
+     "bottom": 412.3,
+     "allowed": [
+      29.3,
+      174.9,
+      254.4,
+      558.5
+     ]
+    },
+    {
+     "x0": 313.2,
+     "x1": 537.2,
+     "top": 185.4,
+     "bottom": 555.0,
+     "allowed": [
+      312.7,
+      174.9,
+      537.7,
+      558.5
+     ]
+    },
+    {
+     "x0": 593.9,
+     "x1": 809.4,
+     "top": 40.8,
+     "bottom": 549.5,
+     "allowed": [
+      593.4,
+      30.3,
+      809.9,
+      558.5
+     ]
+    }
+   ],
+   "traits": [
+    "three independent columns, each with its own headings",
+    "column 2 is white text over a full-height image",
+    "column 3 starts at the page top, unlike columns 1 and 2"
+   ]
+  },
+  "osaka_fusei_477": {
+   "kind": "real",
+   "path": "(scratch download, not committed)",
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "page": 7,
+   "tagged": false,
+   "source_url": "https://www.pref.osaka.lg.jp/documents/63847/477.pdf",
+   "witness": [
+    {
+     "text": "府政TOPICS",
+     "x0": 25.2,
+     "x1": 201.0,
+     "baseline": 81.45,
+     "size": 29.62
+    },
+    {
+     "text": "トピックス",
+     "x0": 127.0,
+     "x1": 162.4,
+     "baseline": 55.1,
+     "size": 7.09
+    },
+    {
+     "text": "©2014 大阪府もずやん",
+     "x0": 202.0,
+     "x1": 243.6,
+     "baseline": 88.26,
+     "size": 3.9
+    },
+    {
+     "text": "4月から飲食店のたばこのルールが変わります！",
+     "x0": 31.9,
+     "x1": 238.9,
+     "baseline": 191.4,
+     "size": 11.17
+    },
+    {
+     "text": "4/1（火）に大阪府受動喫煙防止条例が全面施行され、",
+     "x0": 21.2,
+     "x1": 244.7,
+     "baseline": 215.35,
+     "size": 9.57
+    },
+    {
+     "text": "現在、たばこを吸いながら飲食が可能な飲食店のう",
+     "x0": 21.2,
+     "x1": 239.9,
+     "baseline": 228.46,
+     "size": 9.57
+    },
+    {
+     "text": "ち、客席面積30平方メートルを超える飲",
+     "x0": 21.0,
+     "x1": 187.6,
+     "baseline": 241.57,
+     "size": 9.57
+    },
+    {
+     "text": "食店は原則屋内禁煙となります。改めて",
+     "x0": 21.2,
+     "x1": 187.6,
+     "baseline": 254.67,
+     "size": 9.57
+    },
+    {
+     "text": "ルールを確認し、受動喫煙の防止にご協",
+     "x0": 21.0,
+     "x1": 187.7,
+     "baseline": 267.78,
+     "size": 9.57
+    },
+    {
+     "text": "力をお願いします。",
+     "x0": 21.2,
+     "x1": 103.4,
+     "baseline": 280.89,
+     "size": 9.57
+    },
+    {
+     "text": "パスポート（旅券）の申請はお早めに！",
+     "x0": 33.8,
+     "x1": 211.8,
+     "baseline": 309.75,
+     "size": 11.34
+    },
+    {
+     "text": "3/24（月）受理分から旅券が変わります",
+     "x0": 34.0,
+     "x1": 179.0,
+     "baseline": 320.63,
+     "size": 9.21
+    },
+    {
+     "text": "偽造変造対策を強化した「2025年旅券」の発給が始ま",
+     "x0": 21.2,
+     "x1": 239.9,
+     "baseline": 339.37,
+     "size": 9.57
+    },
+    {
+     "text": "ります。国立印刷局で作成した旅券が配送されるため、",
+     "x0": 20.6,
+     "x1": 244.8,
+     "baseline": 352.47,
+     "size": 9.57
+    },
+    {
+     "text": "府パスポートセンターでは申請から交付",
+     "x0": 21.2,
+     "x1": 187.6,
+     "baseline": 365.58,
+     "size": 9.57
+    },
+    {
+     "text": "まで10営業日（従来6営業日）、市町村で",
+     "x0": 20.9,
+     "x1": 187.6,
+     "baseline": 378.69,
+     "size": 9.57
+    },
+    {
+     "text": "は14営業日（従来10営業日）かかります。 ",
+     "x0": 20.9,
+     "x1": 192.6,
+     "baseline": 391.79,
+     "size": 9.57
+    },
+    {
+     "text": "また、同日から申請手数料も改定されます。",
+     "x0": 20.7,
+     "x1": 192.6,
+     "baseline": 404.92,
+     "size": 9.57
+    },
+    {
+     "text": "HP  ■大阪府　パスポートセンター　 ",
+     "x0": 22.5,
+     "x1": 175.2,
+     "baseline": 421.28,
+     "size": 8.27
+    },
+    {
+     "text": "問 府パスポートセンター　",
+     "x0": 21.9,
+     "x1": 135.9,
+     "baseline": 436.74,
+     "size": 8.72
+    },
+    {
+     "text": " 06（6944）6626",
+     "x0": 146.0,
+     "x1": 221.3,
+     "baseline": 437.06,
+     "size": 9.57
+    },
+    {
+     "text": "税の申告や自動車の登録手続きはお済みですか？",
+     "x0": 31.8,
+     "x1": 237.7,
+     "baseline": 470.61,
+     "size": 10.82
+    },
+    {
+     "text": "■税の申告期限",
+     "x0": 21.3,
+     "x1": 89.4,
+     "baseline": 494.56,
+     "size": 9.57
+    },
+    {
+     "text": "所得税（復興特別所得税）の申告期限は3/17（月）、個人",
+     "x0": 21.2,
+     "x1": 239.6,
+     "baseline": 507.67,
+     "size": 9.57
+    },
+    {
+     "text": "事業者の消費税（地方消費税）の申告期限は3/31（月）",
+     "x0": 21.2,
+     "x1": 244.9,
+     "baseline": 520.78,
+     "size": 9.57
+    },
+    {
+     "text": "です。国税庁HP「確定申告書等作成コーナー」でも申告",
+     "x0": 21.1,
+     "x1": 239.6,
+     "baseline": 533.88,
+     "size": 9.57
+    },
+    {
+     "text": "書の作成・送信ができます。",
+     "x0": 21.1,
+     "x1": 136.0,
+     "baseline": 546.99,
+     "size": 9.57
+    },
+    {
+     "text": "■自動車の登録手続き",
+     "x0": 21.3,
+     "x1": 118.1,
+     "baseline": 562.94,
+     "size": 9.57
+    },
+    {
+     "text": "3月下旬は自動車の名義変更や廃車などの登録手続き",
+     "x0": 21.1,
+     "x1": 239.9,
+     "baseline": 576.05,
+     "size": 9.57
+    },
+    {
+     "text": "が1年の中で最も集中し、運輸支局の窓口が極端に混",
+     "x0": 21.0,
+     "x1": 239.6,
+     "baseline": 589.15,
+     "size": 9.57
+    },
+    {
+     "text": "雑します。自動車の登録手続きは、比較的空いている3",
+     "x0": 21.1,
+     "x1": 239.7,
+     "baseline": 602.26,
+     "size": 9.57
+    },
+    {
+     "text": "月中旬までに済ませていただくようお願いします。",
+     "x0": 21.1,
+     "x1": 228.4,
+     "baseline": 615.37,
+     "size": 9.57
+    },
+    {
+     "text": "HP  ■大阪府　自動車登録手続き　 ",
+     "x0": 22.5,
+     "x1": 171.4,
+     "baseline": 630.33,
+     "size": 8.27
+    },
+    {
+     "text": "3月は自殺対策強化月間です",
+     "x0": 34.0,
+     "x1": 166.9,
+     "baseline": 658.76,
+     "size": 11.34
+    },
+    {
+     "text": "3月は24時間電話相談を実施しています",
+     "x0": 34.0,
+     "x1": 183.9,
+     "baseline": 669.65,
+     "size": 9.21
+    },
+    {
+     "text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4",
+     "x0": 21.2,
+     "x1": 239.6,
+     "baseline": 688.38,
+     "size": 9.57
+    },
+    {
+     "text": "人の方が自殺で亡くなられるという深刻な状況です。",
+     "x0": 21.2,
+     "x1": 244.6,
+     "baseline": 701.49,
+     "size": 9.57
+    },
+    {
+     "text": "悩みを抱えている人は、ひとりで悩まず専門機関にご",
+     "x0": 21.2,
+     "x1": 239.5,
+     "baseline": 714.6,
+     "size": 9.57
+    },
+    {
+     "text": "相談ください。また、身近な人の悩みに気づいたら話",
+     "x0": 21.2,
+     "x1": 239.6,
+     "baseline": 727.7,
+     "size": 9.57
+    },
+    {
+     "text": "を聴いて寄り添いましょう。",
+     "x0": 20.9,
+     "x1": 138.8,
+     "baseline": 740.81,
+     "size": 9.57
+    },
+    {
+     "text": "HP  ■こころのオアシス　 ",
+     "x0": 22.5,
+     "x1": 129.5,
+     "baseline": 755.76,
+     "size": 8.27
+    },
+    {
+     "text": " 0570（064）556（こころの健康相談統一ダイヤル）",
+     "x0": 31.3,
+     "x1": 244.6,
+     "baseline": 771.55,
+     "size": 9.57
+    },
+    {
+     "text": "賃貸住宅原状回復トラブルを防止するために",
+     "x0": 33.7,
+     "x1": 227.9,
+     "baseline": 799.43,
+     "size": 11.05
+    },
+    {
+     "text": "大阪府版ガイドラインを公開中",
+     "x0": 33.8,
+     "x1": 153.3,
+     "baseline": 810.32,
+     "size": 9.21
+    },
+    {
+     "text": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用",
+     "x0": 21.2,
+     "x1": 239.8,
+     "baseline": 829.05,
+     "size": 9.57
+    },
+    {
+     "text": "を貸主、借主のどちらが負担するのかといった原状回",
+     "x0": 20.9,
+     "x1": 239.8,
+     "baseline": 842.16,
+     "size": 9.57
+    },
+    {
+     "text": "復をめぐるトラブルが発生しています。大阪府版ガイ",
+     "x0": 21.2,
+     "x1": 239.9,
+     "baseline": 855.27,
+     "size": 9.57
+    },
+    {
+     "text": "ドラインでは、トラブルの未然防止・解決に役立つ情報",
+     "x0": 20.4,
+     "x1": 239.6,
+     "baseline": 868.37,
+     "size": 9.57
+    },
+    {
+     "text": "や相談窓口を掲載しています。ぜひご活用ください。",
+     "x0": 21.1,
+     "x1": 236.0,
+     "baseline": 881.48,
+     "size": 9.57
+    },
+    {
+     "text": "HP  ■大阪府　原状回復　 ",
+     "x0": 22.5,
+     "x1": 133.2,
+     "baseline": 896.43,
+     "size": 8.27
+    },
+    {
+     "text": "問 府住宅相談室　",
+     "x0": 21.9,
+     "x1": 101.5,
+     "baseline": 911.9,
+     "size": 8.72
+    },
+    {
+     "text": " 06（6944）8269",
+     "x0": 111.6,
+     "x1": 186.9,
+     "baseline": 912.22,
+     "size": 9.57
+    },
+    {
+     "text": "3月",
+     "x0": 254.2,
+     "x1": 281.4,
+     "baseline": 76.76,
+     "size": 21.51
+    },
+    {
+     "text": "児童扶養手当・特別児童扶養手当のお知らせ",
+     "x0": 272.7,
+     "x1": 475.2,
+     "baseline": 168.72,
+     "size": 11.28
+    },
+    {
+     "text": "児童扶養手当",
+     "x0": 262.2,
+     "x1": 319.6,
+     "baseline": 192.67,
+     "size": 9.57
+    },
+    {
+     "text": "離婚その他法令に定める理由により、父または母と生",
+     "x0": 262.1,
+     "x1": 480.6,
+     "baseline": 205.43,
+     "size": 9.57
+    },
+    {
+     "text": "計を同じくしていない児童（※）を育てているひとり親",
+     "x0": 262.1,
+     "x1": 480.6,
+     "baseline": 218.18,
+     "size": 9.57
+    },
+    {
+     "text": "家庭などに支給。",
+     "x0": 262.1,
+     "x1": 336.3,
+     "baseline": 230.93,
+     "size": 9.57
+    },
+    {
+     "text": "※18歳到達後最初の3/31までの児童。児童に法令で",
+     "x0": 261.8,
+     "x1": 480.6,
+     "baseline": 243.69,
+     "size": 9.57
+    },
+    {
+     "text": "定める程度の障がいがある場合は、20歳未満の児童。",
+     "x0": 262.1,
+     "x1": 481.4,
+     "baseline": 256.44,
+     "size": 9.57
+    },
+    {
+     "text": "■手当月額（所得額などにより変動します）",
+     "x0": 262.2,
+     "x1": 451.1,
+     "baseline": 269.19,
+     "size": 9.57
+    },
+    {
+     "text": "令和7年4月から次のとおり改定される予定です。",
+     "x0": 262.1,
+     "x1": 471.8,
+     "baseline": 281.94,
+     "size": 9.57
+    },
+    {
+     "text": "1人目は46,690円～11,010円の範囲で支給、2人目以",
+     "x0": 261.8,
+     "x1": 480.5,
+     "baseline": 294.7,
+     "size": 9.57
+    },
+    {
+     "text": "降1人増えるごとに11,030円～5,520円の範囲で加算。",
+     "x0": 262.0,
+     "x1": 485.6,
+     "baseline": 307.45,
+     "size": 9.57
+    },
+    {
+     "text": "（請求者または配偶者および扶養義務者の所得に応じ",
+     "x0": 256.8,
+     "x1": 480.7,
+     "baseline": 320.2,
+     "size": 9.57
+    },
+    {
+     "text": "て、10円きざみで減額されます。）",
+     "x0": 262.0,
+     "x1": 405.4,
+     "baseline": 332.95,
+     "size": 9.57
+    },
+    {
+     "text": "■手当の支給",
+     "x0": 262.2,
+     "x1": 320.8,
+     "baseline": 345.71,
+     "size": 9.57
+    },
+    {
+     "text": "認定されると請求月の翌月分から支給対象となり、奇",
+     "x0": 262.1,
+     "x1": 480.6,
+     "baseline": 358.46,
+     "size": 9.57
+    },
+    {
+     "text": "数月に支払いがあります。",
+     "x0": 262.1,
+     "x1": 372.0,
+     "baseline": 371.21,
+     "size": 9.57
+    },
+    {
+     "text": "■支給期間などによる支給停止制度",
+     "x0": 262.2,
+     "x1": 416.5,
+     "baseline": 383.96,
+     "size": 9.57
+    },
+    {
+     "text": "受給開始から一定期間経過したときは手当が2分の1",
+     "x0": 262.1,
+     "x1": 481.2,
+     "baseline": 396.72,
+     "size": 9.57
+    },
+    {
+     "text": "に減額となりますが、条件に該当する人は一部支給停",
+     "x0": 261.9,
+     "x1": 480.6,
+     "baseline": 409.47,
+     "size": 9.57
+    },
+    {
+     "text": "止適用除外の手続きを行えば、それまでと同様の手当",
+     "x0": 262.1,
+     "x1": 480.7,
+     "baseline": 422.22,
+     "size": 9.57
+    },
+    {
+     "text": "を受給できます。対象となる受給者には、市区町村か",
+     "x0": 261.9,
+     "x1": 480.6,
+     "baseline": 434.98,
+     "size": 9.57
+    },
+    {
+     "text": "ら事前に連絡があります。",
+     "x0": 261.8,
+     "x1": 372.2,
+     "baseline": 447.73,
+     "size": 9.57
+    },
+    {
+     "text": "■公的年金給付などを受給している人の場合",
+     "x0": 262.2,
+     "x1": 454.7,
+     "baseline": 460.48,
+     "size": 9.57
+    },
+    {
+     "text": "公的年金給付などの額が、児童扶養手当の支給額を下",
+     "x0": 262.1,
+     "x1": 480.5,
+     "baseline": 473.23,
+     "size": 9.57
+    },
+    {
+     "text": "回る場合、その差額を児童扶養手当として受給するこ",
+     "x0": 261.9,
+     "x1": 480.8,
+     "baseline": 485.99,
+     "size": 9.57
+    },
+    {
+     "text": "とができます。障害基礎年金などを受給している人に",
+     "x0": 261.8,
+     "x1": 480.7,
+     "baseline": 498.74,
+     "size": 9.57
+    },
+    {
+     "text": "ついては、令和3年3月分から手当額の算出方法と支",
+     "x0": 262.0,
+     "x1": 480.5,
+     "baseline": 511.49,
+     "size": 9.57
+    },
+    {
+     "text": "給制限に関する所得の算出方法が変更されました。既",
+     "x0": 262.1,
+     "x1": 480.5,
+     "baseline": 524.24,
+     "size": 9.57
+    },
+    {
+     "text": "に認定を受けている人は申請不要ですが、障害基礎年",
+     "x0": 261.8,
+     "x1": 480.5,
+     "baseline": 537.0,
+     "size": 9.57
+    },
+    {
+     "text": "金などを受給しているため手当の申請をしていない人",
+     "x0": 262.1,
+     "x1": 480.6,
+     "baseline": 549.75,
+     "size": 9.57
+    },
+    {
+     "text": "はお住まいの市区町村に申請が必要です。",
+     "x0": 261.9,
+     "x1": 437.7,
+     "baseline": 562.5,
+     "size": 9.57
+    },
+    {
+     "text": "特別児童扶養手当",
+     "x0": 262.2,
+     "x1": 338.7,
+     "baseline": 578.1,
+     "size": 9.57
+    },
+    {
+     "text": "20歳未満の法令で定める障がいの状態にある児童を",
+     "x0": 262.0,
+     "x1": 480.8,
+     "baseline": 590.85,
+     "size": 9.57
+    },
+    {
+     "text": "育てている父母（主として児童の生計を維持するいず",
+     "x0": 262.1,
+     "x1": 480.4,
+     "baseline": 603.6,
+     "size": 9.57
+    },
+    {
+     "text": "れか1人）などに支給。",
+     "x0": 262.0,
+     "x1": 354.6,
+     "baseline": 616.35,
+     "size": 9.57
+    },
+    {
+     "text": "■手当月額",
+     "x0": 262.2,
+     "x1": 311.2,
+     "baseline": 629.11,
+     "size": 9.57
+    },
+    {
+     "text": "1級56,800円、2級37,830円",
+     "x0": 261.8,
+     "x1": 378.3,
+     "baseline": 641.86,
+     "size": 9.57
+    },
+    {
+     "text": "障がいの程度に応じて、1級または2級として認定されます。",
+     "x0": 261.9,
+     "x1": 485.6,
+     "baseline": 654.72,
+     "size": 9.37
+    },
+    {
+     "text": "■手当の支給",
+     "x0": 262.2,
+     "x1": 320.8,
+     "baseline": 667.48,
+     "size": 9.57
+    },
+    {
+     "text": "認定されると、請求月の翌月分から支給対象となり、4月",
+     "x0": 262.1,
+     "x1": 481.2,
+     "baseline": 680.23,
+     "size": 9.57
+    },
+    {
+     "text": "（12月分から3月分）、8月（4月分から7月分）、11月（8月",
+     "x0": 256.6,
+     "x1": 481.2,
+     "baseline": 692.98,
+     "size": 9.57
+    },
+    {
+     "text": "分から11月分）に支払われます。",
+     "x0": 262.1,
+     "x1": 391.8,
+     "baseline": 705.74,
+     "size": 9.57
+    },
+    {
+     "text": "児童扶養手当・特別児童扶養手当の",
+     "x0": 267.9,
+     "x1": 416.2,
+     "baseline": 722.75,
+     "size": 9.57
+    },
+    {
+     "text": "認定請求などの手続き",
+     "x0": 267.9,
+     "x1": 363.5,
+     "baseline": 734.08,
+     "size": 9.57
+    },
+    {
+     "text": "■認定請求",
+     "x0": 267.9,
+     "x1": 316.9,
+     "baseline": 746.84,
+     "size": 9.57
+    },
+    {
+     "text": "お住まいの市区町村担当窓口で、必要な書類など",
+     "x0": 267.6,
+     "x1": 474.9,
+     "baseline": 759.59,
+     "size": 9.57
+    },
+    {
+     "text": "を確認・相談のうえ、お手続きください。請求などの",
+     "x0": 267.6,
+     "x1": 475.0,
+     "baseline": 772.34,
+     "size": 9.57
+    },
+    {
+     "text": "手続きには、マイナンバー（個人番号）の記載が必",
+     "x0": 267.8,
+     "x1": 474.9,
+     "baseline": 785.09,
+     "size": 9.57
+    },
+    {
+     "text": "要ですので、マイナンバーと本人確認できる書類を",
+     "x0": 267.8,
+     "x1": 475.1,
+     "baseline": 797.85,
+     "size": 9.57
+    },
+    {
+     "text": "ご提示ください。",
+     "x0": 267.5,
+     "x1": 341.2,
+     "baseline": 810.6,
+     "size": 9.57
+    },
+    {
+     "text": "■その他",
+     "x0": 267.9,
+     "x1": 307.3,
+     "baseline": 823.35,
+     "size": 9.57
+    },
+    {
+     "text": "児童が、施設などに入所しているときや年金を受給",
+     "x0": 267.8,
+     "x1": 474.9,
+     "baseline": 836.1,
+     "size": 9.57
+    },
+    {
+     "text": "できるときは、支給対象外になる場合があります。",
+     "x0": 267.7,
+     "x1": 479.9,
+     "baseline": 848.86,
+     "size": 9.57
+    },
+    {
+     "text": "また、手当額は前年の所得額などにより一部または",
+     "x0": 267.6,
+     "x1": 475.0,
+     "baseline": 861.61,
+     "size": 9.57
+    },
+    {
+     "text": "全部支給停止されるときがあります。",
+     "x0": 267.8,
+     "x1": 423.9,
+     "baseline": 874.36,
+     "size": 9.57
+    },
+    {
+     "text": "HP  ■大阪府  子育て支援のための手当制度　 ",
+     "x0": 263.4,
+     "x1": 451.3,
+     "baseline": 894.31,
+     "size": 8.27
+    },
+    {
+     "text": "問 府家庭支援課　",
+     "x0": 262.9,
+     "x1": 342.4,
+     "baseline": 909.77,
+     "size": 8.72
+    },
+    {
+     "text": " 06（6944）7532",
+     "x0": 352.5,
+     "x1": 427.8,
+     "baseline": 910.1,
+     "size": 9.57
+    },
+    {
+     "text": "令和７年度　府職員採用試験",
+     "x0": 513.7,
+     "x1": 654.0,
+     "baseline": 168.72,
+     "size": 11.34
+    },
+    {
+     "text": "学歴・職務経験不問。警察行政職を除き、日本国籍の有",
+     "x0": 503.1,
+     "x1": 721.5,
+     "baseline": 192.67,
+     "size": 9.57
+    },
+    {
+     "text": "無は問いません。詳細は府職員採用案内HPまで。",
+     "x0": 503.1,
+     "x1": 704.1,
+     "baseline": 206.49,
+     "size": 9.57
+    },
+    {
+     "text": "■①行政・警察行政・技術（大学卒程度）",
+     "x0": 503.2,
+     "x1": 673.0,
+     "baseline": 223.15,
+     "size": 9.57
+    },
+    {
+     "text": "3月に業務セミナーを開催します。受験を考えている",
+     "x0": 503.0,
+     "x1": 721.7,
+     "baseline": 236.96,
+     "size": 9.57
+    },
+    {
+     "text": "人はぜひご参加ください。",
+     "x0": 503.0,
+     "x1": 613.4,
+     "baseline": 250.77,
+     "size": 9.57
+    },
+    {
+     "text": "受験資格",
+     "x0": 503.2,
+     "x1": 541.4,
+     "baseline": 266.72,
+     "size": 9.57
+    },
+    {
+     "text": "【行政・警察行政】平成12年4/2～平成16年4/1生まれの人",
+     "x0": 497.4,
+     "x1": 721.6,
+     "baseline": 280.55,
+     "size": 9.47
+    },
+    {
+     "text": "【技術】平成8年4/2～平成16年4/1生まれの人",
+     "x0": 497.8,
+     "x1": 693.0,
+     "baseline": 295.78,
+     "size": 9.57
+    },
+    {
+     "text": "■②行政・警察行政・技術（社会人等）",
+     "x0": 503.2,
+     "x1": 663.4,
+     "baseline": 312.44,
+     "size": 9.57
+    },
+    {
+     "text": "【春季試験】",
+     "x0": 653.8,
+     "x1": 711.2,
+     "baseline": 312.44,
+     "size": 9.57
+    },
+    {
+     "text": "令和7年10/1採用に向けた春季試験を実施します。全",
+     "x0": 503.1,
+     "x1": 721.5,
+     "baseline": 326.26,
+     "size": 9.57
+    },
+    {
+     "text": "て土日のみで受験できます。",
+     "x0": 503.0,
+     "x1": 622.7,
+     "baseline": 340.07,
+     "size": 9.57
+    },
+    {
+     "text": "受験資格",
+     "x0": 503.2,
+     "x1": 541.4,
+     "baseline": 356.02,
+     "size": 9.57
+    },
+    {
+     "text": "【行政（26-34）】平成3年4/2～平成12年4/1生まれの人",
+     "x0": 497.5,
+     "x1": 721.6,
+     "baseline": 369.83,
+     "size": 9.57
+    },
+    {
+     "text": "【行政（35-49）】昭和51年4/2～平成3年4/1生まれの人",
+     "x0": 497.5,
+     "x1": 721.6,
+     "baseline": 383.65,
+     "size": 9.57
+    },
+    {
+     "text": "【警察行政】平成3年4/2～平成12年4/1生まれの人",
+     "x0": 497.8,
+     "x1": 710.9,
+     "baseline": 397.46,
+     "size": 9.57
+    },
+    {
+     "text": "【技術】昭和51年4/2～平成8年4/1生まれの人",
+     "x0": 497.8,
+     "x1": 691.8,
+     "baseline": 411.28,
+     "size": 9.57
+    },
+    {
+     "text": "日 第1次試験（SPI3）：4/2（水）～17（木）",
+     "x0": 503.8,
+     "x1": 673.4,
+     "baseline": 426.46,
+     "size": 8.72
+    },
+    {
+     "text": "※行政・警察行政（社会人等）のみ4/2（水）～20（日）",
+     "x0": 502.7,
+     "x1": 717.1,
+     "baseline": 440.35,
+     "size": 9.57
+    },
+    {
+     "text": "所 第1次試験：全国主要都市などの会場から選択",
+     "x0": 503.8,
+     "x1": 702.0,
+     "baseline": 454.1,
+     "size": 8.72
+    },
+    {
+     "text": "申 3/1（土）10：00～26（水）13：00 ／インターネット",
+     "x0": 503.8,
+     "x1": 718.8,
+     "baseline": 467.92,
+     "size": 8.72
+    },
+    {
+     "text": "HP  ■大阪府職員採用試験　公務員試験　 ",
+     "x0": 504.4,
+     "x1": 682.1,
+     "baseline": 484.35,
+     "size": 8.27
+    },
+    {
+     "text": "府公立学校教員採用選考テストの実施",
+     "x0": 513.7,
+     "x1": 695.9,
+     "baseline": 521.28,
+     "size": 11.34
+    },
+    {
+     "text": "受験資格など詳しくは受験案内をご確認ください。年",
+     "x0": 503.0,
+     "x1": 721.5,
+     "baseline": 545.23,
+     "size": 9.57
+    },
+    {
+     "text": "齢制限を撤廃し、昭和39年4/2以降に生まれた人は受",
+     "x0": 503.1,
+     "x1": 721.5,
+     "baseline": 558.91,
+     "size": 9.57
+    },
+    {
+     "text": "験することができます。",
+     "x0": 503.1,
+     "x1": 603.7,
+     "baseline": 572.6,
+     "size": 9.57
+    },
+    {
+     "text": "日 １次選考：6/14(土)　2次選考：7月上旬～（予定）",
+     "x0": 503.8,
+     "x1": 720.6,
+     "baseline": 586.2,
+     "size": 8.72
+    },
+    {
+     "text": "申 3/7（金）10：00～4/18（金）18：00／インターネット",
+     "x0": 503.8,
+     "x1": 721.9,
+     "baseline": 599.87,
+     "size": 8.72
+    },
+    {
+     "text": "HP  ■大阪府　教員採用　 ",
+     "x0": 504.4,
+     "x1": 615.1,
+     "baseline": 616.02,
+     "size": 8.27
+    },
+    {
+     "text": "バレンタインジャンボ宝くじ",
+     "x0": 515.7,
+     "x1": 647.6,
+     "baseline": 647.28,
+     "size": 11.34
+    },
+    {
+     "text": "まもなく発売終了！",
+     "x0": 515.3,
+     "x1": 590.2,
+     "baseline": 658.17,
+     "size": 9.21
+    },
+    {
+     "text": "3/10（月）まで、バレンタ",
+     "x0": 503.0,
+     "x1": 605.6,
+     "baseline": 676.9,
+     "size": 9.57
+    },
+    {
+     "text": "インジャンボ（1等・前後",
+     "x0": 502.9,
+     "x1": 605.3,
+     "baseline": 690.36,
+     "size": 9.57
+    },
+    {
+     "text": "賞合わせて3億円）とバ",
+     "x0": 503.0,
+     "x1": 605.2,
+     "baseline": 703.82,
+     "size": 9.57
+    },
+    {
+     "text": "レンタインジャンボミニ",
+     "x0": 502.5,
+     "x1": 605.4,
+     "baseline": 717.29,
+     "size": 9.57
+    },
+    {
+     "text": "（1等・前後賞合わせて3",
+     "x0": 497.8,
+     "x1": 605.4,
+     "baseline": 730.75,
+     "size": 9.57
+    },
+    {
+     "text": "千万円）を発売していま",
+     "x0": 503.1,
+     "x1": 605.5,
+     "baseline": 744.21,
+     "size": 9.57
+    },
+    {
+     "text": "す。この宝くじの収益金の一部は、2025年日本国際博",
+     "x0": 503.0,
+     "x1": 721.5,
+     "baseline": 757.67,
+     "size": 9.57
+    },
+    {
+     "text": "覧会（大阪・関西万博）のための資金に充てられます。",
+     "x0": 503.1,
+     "x1": 719.6,
+     "baseline": 771.13,
+     "size": 9.57
+    },
+    {
+     "text": "府営住宅　令和７年度第１回総合募集",
+     "x0": 512.3,
+     "x1": 691.9,
+     "baseline": 846.2,
+     "size": 11.34
+    },
+    {
+     "text": "一般世帯向け、福祉世帯向け、新婚・子育て世帯向けお",
+     "x0": 501.6,
+     "x1": 720.2,
+     "baseline": 870.16,
+     "size": 9.57
+    },
+    {
+     "text": "よび車いす常用者世帯向けなどの応募区分ごとに募",
+     "x0": 501.5,
+     "x1": 720.1,
+     "baseline": 883.84,
+     "size": 9.57
+    },
+    {
+     "text": "集します。申込書は府内10カ所の情報プラザ（ラック",
+     "x0": 501.6,
+     "x1": 720.4,
+     "baseline": 897.52,
+     "size": 9.57
+    },
+    {
+     "text": "配架）、各市町村で配布します。なお、過去の総合募集",
+     "x0": 501.6,
+     "x1": 720.1,
+     "baseline": 911.2,
+     "size": 9.57
+    },
+    {
+     "text": "お知らせ",
+     "x0": 81.0,
+     "x1": 154.4,
+     "baseline": 155.82,
+     "size": 18.43
+    },
+    {
+     "text": "詳しくはこちら",
+     "x0": 196.1,
+     "x1": 240.0,
+     "baseline": 405.77,
+     "size": 7.4
+    },
+    {
+     "text": "詳しくはこちら",
+     "x0": 196.1,
+     "x1": 240.0,
+     "baseline": 283.03,
+     "size": 7.4
+    },
+    {
+     "text": "募 集",
+     "x0": 575.3,
+     "x1": 618.6,
+     "baseline": 810.63,
+     "size": 18.43
+    },
+    {
+     "text": "日日時 所場所 定定員 ￥料金 申申し込み HP ホームページ 問問い合わせ ",
+     "x0": 23.6,
+     "x1": 315.0,
+     "baseline": 120.71,
+     "size": 8.72
+    },
+    {
+     "text": "電話 ",
+     "x0": 325.9,
+     "x1": 345.6,
+     "baseline": 120.63,
+     "size": 8.5
+    },
+    {
+     "text": "ファクシミリ",
+     "x0": 358.7,
+     "x1": 403.2,
+     "baseline": 120.63,
+     "size": 8.5
+    },
+    {
+     "text": "府政だよりWEB版では、各記事の詳細内容を掲載したホームページを",
+     "x0": 332.5,
+     "x1": 571.2,
+     "baseline": 94.11,
+     "size": 7.44
+    },
+    {
+     "text": "ご案内していますので、併せてご利用ください。",
+     "x0": 332.5,
+     "x1": 496.2,
+     "baseline": 103.32,
+     "size": 7.44
+    },
+    {
+     "text": "※応募・申し込みなどに伴い収集した個人情報は、その目的のためにのみ使用し、それ以外に使用することはありません。",
+     "x0": 409.2,
+     "x1": 726.7,
+     "baseline": 116.17,
+     "size": 6.38
+    },
+    {
+     "text": "※申し込みの際、鉛筆や摩擦熱で消えるインクなどの筆記具は使用しないでください。",
+     "x0": 409.2,
+     "x1": 639.4,
+     "baseline": 123.96,
+     "size": 6.38
+    },
+    {
+     "text": "HP",
+     "x0": 592.2,
+     "x1": 602.5,
+     "baseline": 99.18,
+     "size": 8.27
+    },
+    {
+     "text": "府政だより",
+     "x0": 611.0,
+     "x1": 653.9,
+     "baseline": 99.71,
+     "size": 8.98
+    },
+    {
+     "text": "記事中に問い合わせ先・申し込み先の記載がない場合は、府民お問合せセンターにお問い合わせください。",
+     "x0": 332.5,
+     "x1": 726.7,
+     "baseline": 54.65,
+     "size": 8.5
+    },
+    {
+     "text": " 06（6910）8001　",
+     "x0": 350.3,
+     "x1": 439.0,
+     "baseline": 69.18,
+     "size": 9.92
+    },
+    {
+     "text": " 06（6910）8005　送付先 〒540-8570（住所の記載は不要です）",
+     "x0": 451.8,
+     "x1": 717.9,
+     "baseline": 69.18,
+     "size": 9.92
+    },
+    {
+     "text": "HP https://www.pref.osaka.lg.jp/o070050/fumin/occ/index.html",
+     "x0": 341.5,
+     "x1": 665.3,
+     "baseline": 80.06,
+     "size": 8.27
+    },
+    {
+     "text": "7",
+     "x0": 720.8,
+     "x1": 726.9,
+     "baseline": 34.97,
+     "size": 9.21
+    },
+    {
+     "text": "令和7年（2025年）3月1日",
+     "x0": 620.4,
+     "x1": 708.7,
+     "baseline": 34.43,
+     "size": 7.8
+    }
+   ],
+   "traits": [
+    "Adobe InDesign 16.4 newsletter (府政だより 2025-03), untagged",
+    "three columns of independent articles with their own headings",
+    "body text in Form XObjects with a scaled text matrix",
+    "column 3 last article ends mid-sentence at the column bottom (continues off this page)"
+   ]
+  }
+ },
+ "sequences": [
+  {
+   "document": "gen_columns_ja",
+   "steps": [
+    {
+     "paragraph": 1,
+     "old": "体験できます。",
+     "new": "体験できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。",
+     "approve_continuation": [
+      "column 0->1"
+     ],
+     "expected_outcome": "flow",
+     "purpose": "untagged split is a candidate: approved, growth pushes the following text into column 2",
+     "expected_target": "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "paragraph": 1,
+     "old": "体験できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。",
+     "new": "体験できます。",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "restore: the following text returns to column 1",
+     "expected_target": "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "paragraph": 1,
+     "old": "避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+     "new": "避難所の運営も体験できます。",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "shortening pulls the column-2 text back into column 1",
+     "expected_target": "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所の運営も体験できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所の運営も体験できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "paragraph": 5,
+     "old": "定期的に入れ替えるようにしてください。",
+     "new": "定期的に入れ替えるようにしてください。会場では、備蓄物資の点検方法も確認できます。",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "edit a paragraph that now starts in column 1 and continues in column 2",
+     "expected_target": "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。会場では、備蓄物資の点検方法も確認できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所の運営も体験できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。会場では、備蓄物資の点検方法も確認できます。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "document": "gen_columns_ja_tagged",
+   "steps": [
+    {
+     "paragraph": 1,
+     "old": "体験できます。",
+     "new": "体験できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "tagged: one P spans the column break; growth pushes text into column 2",
+     "expected_target": "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "paragraph": 1,
+     "old": "体験できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。",
+     "new": "体験できます。",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "restore",
+     "expected_target": "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "paragraph": 1,
+     "old": "避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+     "new": "避難所の運営も体験できます。",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "shortening pulls text back",
+     "expected_target": "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所の運営も体験できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所の運営も体験できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "paragraph": 5,
+     "old": "定期的に入れ替えるようにしてください。",
+     "new": "定期的に入れ替えるようにしてください。会場では、備蓄物資の点検方法も確認できます。",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "edit a later paragraph after the moves",
+     "expected_target": "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。会場では、備蓄物資の点検方法も確認できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所の運営も体験できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付のほか、市のホームページからも行えます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。会場では、備蓄物資の点検方法も確認できます。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "document": "gen_columns_en",
+   "steps": [
+    {
+     "paragraph": 2,
+     "old": "at all times.",
+     "new": "at all times. Holds placed before the closure will be kept for the whole of the work.",
+     "approve_continuation": [
+      "column 0->1"
+     ],
+     "expected_outcome": "flow",
+     "purpose": "untagged candidate approved: Latin justified growth pushes text into column 2",
+     "expected_target": "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times. Holds placed before the closure will be kept for the whole of the work.",
+     "expected_flow_text": [
+      "The central library will close for renovation from the first of June. During the closure, the mobile library will visit each district twice a week, and returns can be made at any branch.",
+      "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps. Wireless access will also be improved on every floor.",
+      "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times. Holds placed before the closure will be kept for the whole of the work.",
+      "The library expects to reopen in the autumn. Updates will be posted on the website and at every branch.",
+      "Volunteers who would like to help with the reopening events are welcome to register at any branch desk or through the online form before the end of August."
+     ],
+     "allowed_moving_paragraphs": [
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "paragraph": 2,
+     "old": "at all times. Holds placed before the closure will be kept for the whole of the work.",
+     "new": "at all times.",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "restore",
+     "expected_target": "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times.",
+     "expected_flow_text": [
+      "The central library will close for renovation from the first of June. During the closure, the mobile library will visit each district twice a week, and returns can be made at any branch.",
+      "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps. Wireless access will also be improved on every floor.",
+      "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times.",
+      "The library expects to reopen in the autumn. Updates will be posted on the website and at every branch.",
+      "Volunteers who would like to help with the reopening events are welcome to register at any branch desk or through the online form before the end of August."
+     ],
+     "allowed_moving_paragraphs": [
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "paragraph": 1,
+     "old": "without steps. Wireless access will also be improved on every floor.",
+     "new": "without steps.",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "shortening pulls column-2 text back into column 1",
+     "expected_target": "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps.",
+     "expected_flow_text": [
+      "The central library will close for renovation from the first of June. During the closure, the mobile library will visit each district twice a week, and returns can be made at any branch.",
+      "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps.",
+      "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times.",
+      "The library expects to reopen in the autumn. Updates will be posted on the website and at every branch.",
+      "Volunteers who would like to help with the reopening events are welcome to register at any branch desk or through the online form before the end of August."
+     ],
+     "allowed_moving_paragraphs": [
+      1,
+      2,
+      3,
+      4
+     ]
+    }
+   ]
+  },
+  {
+   "document": "gen_columns_en_tagged",
+   "steps": [
+    {
+     "paragraph": 2,
+     "old": "at all times.",
+     "new": "at all times. Holds placed before the closure will be kept for the whole of the work.",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "tagged Latin growth",
+     "expected_target": "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times. Holds placed before the closure will be kept for the whole of the work.",
+     "expected_flow_text": [
+      "The central library will close for renovation from the first of June. During the closure, the mobile library will visit each district twice a week, and returns can be made at any branch.",
+      "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps. Wireless access will also be improved on every floor.",
+      "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times. Holds placed before the closure will be kept for the whole of the work.",
+      "The library expects to reopen in the autumn. Updates will be posted on the website and at every branch.",
+      "Volunteers who would like to help with the reopening events are welcome to register at any branch desk or through the online form before the end of August."
+     ],
+     "allowed_moving_paragraphs": [
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "paragraph": 2,
+     "old": "at all times. Holds placed before the closure will be kept for the whole of the work.",
+     "new": "at all times.",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "restore",
+     "expected_target": "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times.",
+     "expected_flow_text": [
+      "The central library will close for renovation from the first of June. During the closure, the mobile library will visit each district twice a week, and returns can be made at any branch.",
+      "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps. Wireless access will also be improved on every floor.",
+      "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times.",
+      "The library expects to reopen in the autumn. Updates will be posted on the website and at every branch.",
+      "Volunteers who would like to help with the reopening events are welcome to register at any branch desk or through the online form before the end of August."
+     ],
+     "allowed_moving_paragraphs": [
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "paragraph": 1,
+     "old": "without steps. Wireless access will also be improved on every floor.",
+     "new": "without steps.",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "shortening pulls text back",
+     "expected_target": "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps.",
+     "expected_flow_text": [
+      "The central library will close for renovation from the first of June. During the closure, the mobile library will visit each district twice a week, and returns can be made at any branch.",
+      "The renovation adds a quiet study room, a larger children's corner and a meeting space that local groups can book free of charge. New shelving will make the collection easier to browse, and the entrance will be rebuilt so that wheelchair users and families with prams can enter without steps.",
+      "Library cards remain valid throughout the work. Holds placed before the closure can be collected at the branch of your choice, and the online catalogue stays available at all times.",
+      "The library expects to reopen in the autumn. Updates will be posted on the website and at every branch.",
+      "Volunteers who would like to help with the reopening events are welcome to register at any branch desk or through the online form before the end of August."
+     ],
+     "allowed_moving_paragraphs": [
+      1,
+      2,
+      3,
+      4
+     ]
+    }
+   ]
+  },
+  {
+   "document": "gen_columns_ja_boundary",
+   "steps": [
+    {
+     "paragraph": 4,
+     "old": "回答は会場の受付で行えます。",
+     "new": "回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+     "approve_continuation": [],
+     "expected_outcome": "refused",
+     "purpose": "column break on a paragraph boundary (untagged): only a candidate; refused without approval",
+     "expected_target": null,
+     "expected_flow_text": null,
+     "allowed_moving_paragraphs": []
+    },
+    {
+     "paragraph": 4,
+     "old": "回答は会場の受付で行えます。",
+     "new": "回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+     "approve_continuation": [
+      "column 0->1"
+     ],
+     "expected_outcome": "flow",
+     "purpose": "the same edit after explicit approval of the candidate continuation",
+     "expected_target": "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "paragraph": 4,
+     "old": "回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+     "new": "回答は会場の受付で行えます。",
+     "approve_continuation": [],
+     "expected_outcome": "flow",
+     "purpose": "reopen: the stored approved flow is used without approving again",
+     "expected_target": "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      4,
+      5,
+      6
+     ]
+    }
+   ]
+  },
+  {
+   "document": "gen_columns_ja_boundary_tagged",
+   "steps": [
+    {
+     "paragraph": 4,
+     "old": "回答は会場の受付で行えます。",
+     "new": "回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+     "approve_continuation": [],
+     "expected_outcome": "refused",
+     "purpose": "tagged: consecutive P siblings are only a candidate; refused without approval",
+     "expected_target": null,
+     "expected_flow_text": null,
+     "allowed_moving_paragraphs": []
+    },
+    {
+     "paragraph": 4,
+     "old": "回答は会場の受付で行えます。",
+     "new": "回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+     "approve_continuation": [
+      "column 0->1"
+     ],
+     "expected_outcome": "flow",
+     "purpose": "the same edit after explicit approval",
+     "expected_target": "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+     "expected_flow_text": [
+      "本市では、大規模な地震や風水害に備えるため、毎年秋に地域防災訓練を実施しています。今年度は市内の全小学校区で同じ日に訓練を行い、避難所の開設から運営までを住民の皆さんと一緒に確認します。",
+      "訓練当日は、午前九時に防災行政無線で訓練開始をお知らせします。参加される方は、各地域で指定された一時避難場所に集合してください。集合後は自主防災組織の班長の案内に従い、安否確認や初期消火、応急手当の訓練に順番に参加していただきます。避難所では、受付の手順や間仕切りの設置、備蓄物資の配布方法を実際に体験できます。",
+      "小さなお子さんや高齢の方、障がいのある方も安心して参加できるよう、各会場に相談窓口を設けます。車いすの貸出しや手話通訳が必要な方は、事前に危機管理課までご連絡ください。",
+      "雨天の場合は内容を一部変更して実施します。中止する場合は、前日の午後五時までに市のホームページと防災メールでお知らせします。",
+      "訓練の終了後には、参加者アンケートを実施します。いただいたご意見は、来年度の訓練計画や地域ごとの避難所運営マニュアルの見直しに活用します。回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+      "各家庭でも、非常持出品の点検や家族との連絡方法の確認をお願いします。飲料水や食料は最低三日分、できれば一週間分を目安に備蓄し、定期的に入れ替えるようにしてください。",
+      "また、自宅周辺の危険な場所や避難経路を地図で確認しておくと、いざというときに落ち着いて行動できます。ハザードマップは市役所の窓口と市のホームページで入手できます。"
+     ],
+     "allowed_moving_paragraphs": [
+      4,
+      5,
+      6
+     ]
+    }
+   ]
+  }
+ ],
+ "singles": [
+  {
+   "id": "J-fit",
+   "document": "gen_columns_ja",
+   "paragraph": 3,
+   "old": "前日の午後五時まで",
+   "new": "前日の午後三時まで",
+   "expected_outcome": "saved-in-column",
+   "purpose": "replacement that fits its own lines: nothing else moves",
+   "allowed_moving_paragraphs": [
+    3
+   ]
+  },
+  {
+   "id": "E-fit",
+   "document": "gen_columns_en",
+   "paragraph": 0,
+   "old": "first of June",
+   "new": "first of July",
+   "expected_outcome": "saved-in-column",
+   "purpose": "Latin replacement that fits its own lines",
+   "allowed_moving_paragraphs": [
+    0
+   ]
+  },
+  {
+   "id": "J-capacity",
+   "document": "gen_columns_ja",
+   "paragraph": 0,
+   "old": "一緒に確認します。",
+   "new": "一緒に確認します。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。",
+   "expected_outcome": "refused",
+   "approve_continuation": [
+    "column 0->1"
+   ],
+   "expected_reason": "capacity",
+   "purpose": "growth beyond both columns is refused; no font shrinking, no new region"
+  },
+  {
+   "id": "J-heading",
+   "document": "gen_columns_ja_heading",
+   "paragraph": 4,
+   "old": "回答は会場の受付で行えます。",
+   "new": "回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+   "expected_outcome": "refused",
+   "expected_reason": "capacity",
+   "purpose": "column 2 starts with another article heading: never a continuation region"
+  },
+  {
+   "id": "J-image",
+   "document": "gen_columns_ja_image",
+   "paragraph": 4,
+   "old": "回答は会場の受付で行えます。",
+   "new": "回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。",
+   "expected_outcome": "refused",
+   "expected_reason": "capacity",
+   "purpose": "column 2 starts with a drawing: never a continuation region"
+  },
+  {
+   "id": "J-articles",
+   "document": "gen_columns_ja_articles",
+   "paragraph": 4,
+   "old": "市役所",
+   "new": "市役所の窓口と各地区の公民館",
+   "expected_outcome": "refused",
+   "expected_reason": "capacity",
+   "purpose": "column 1 ends mid-sentence at a full line; column 2 is another article in the same style without a heading: never used without approval"
+  },
+  {
+   "id": "J-articles-tagged",
+   "document": "gen_columns_ja_articles_tagged",
+   "paragraph": 4,
+   "old": "市役所",
+   "new": "市役所の窓口と各地区の公民館",
+   "expected_outcome": "refused",
+   "expected_reason": "capacity",
+   "purpose": "tagged different articles: the structure does not connect the columns"
+  },
+  {
+   "id": "R-enterprise-fit",
+   "document": "lo_enterprise_en",
+   "old": "for a simple memo",
+   "new": "for a simple note",
+   "expected_outcome": "saved-in-column",
+   "purpose": "real PDF: in-column same-length edit (PR #88 E1); no column flow may be chosen"
+  },
+  {
+   "id": "R-enterprise-grow",
+   "document": "lo_enterprise_en",
+   "old": "Writer will make it look great.",
+   "new": "Writer will make it look great and keep it consistent.",
+   "expected_outcome": "refused",
+   "expected_reason": "capacity",
+   "purpose": "real PDF (PR #88 E3): column 2 is an unrelated column over an image; it must not receive the text"
+  },
+  {
+   "id": "R-fusei-grow",
+   "document": "osaka_fusei_477",
+   "old": "なお、過去の総合募集",
+   "new": "なお、過去の総合募集の結果",
+   "expected_outcome": "refused",
+   "purpose": "real PDF: overset article at the column bottom; the neighbouring columns are other articles"
+  }
+ ],
+ "recognition": {
+  "gen_columns_ja": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "candidate"
+   }
+  ],
+  "gen_columns_ja_tagged": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "determined"
+   }
+  ],
+  "gen_columns_en": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "candidate"
+   }
+  ],
+  "gen_columns_en_tagged": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "determined"
+   }
+  ],
+  "gen_columns_ja_boundary": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "candidate"
+   }
+  ],
+  "gen_columns_ja_boundary_tagged": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "candidate"
+   }
+  ],
+  "gen_columns_ja_articles": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "candidate"
+   }
+  ],
+  "gen_columns_ja_articles_tagged": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "not-linked"
+   }
+  ],
+  "gen_columns_ja_heading": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "not-linked"
+   }
+  ],
+  "gen_columns_ja_image": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "not-linked"
+   }
+  ],
+  "lo_enterprise_en": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "not-linked"
+   },
+   {
+    "from_column": 1,
+    "to_column": 2,
+    "expected": "not-linked"
+   }
+  ],
+  "osaka_fusei_477": [
+   {
+    "from_column": 0,
+    "to_column": 1,
+    "expected": "not-linked"
+   },
+   {
+    "from_column": 1,
+    "to_column": 2,
+    "expected": "not-linked"
+   }
+  ]
+ }
+}

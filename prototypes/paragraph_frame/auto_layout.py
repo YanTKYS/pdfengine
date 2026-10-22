@@ -8,23 +8,10 @@ def layout(tokens,spec):
     if not tokens:raise Refused('empty paragraph requires a paragraph-deletion policy')
     spans=[];start=0
     while start<len(tokens):
-        width=spec['right']-(spec['first_x'] if not spans else spec['left']);used=0;ends=[];ink=0;squeeze=0
-        for i in range(start,len(tokens)):
-            used+=tokens[i]['advance']
-            # Line-final Tc/Tw/TJ displacement does not occupy glyph ink, and
-            # whitespace before a break hangs: neither can overflow the line.
-            if not text[i].isspace():ink=used-tokens[i]['advance']+tokens[i].get('nominal_advance',tokens[i]['advance'])
-            if i>start:squeeze+=tokens[i-1].get('squeezable',0)
-            if ink>width+.05+squeeze:break
-            if i+1 in breaks:ends.append(i+1)
+        ends=fit(tokens,text,breaks,start,spec['right']-(spec['first_x'] if not spans else spec['left']))
         if not ends:raise Refused('capacity: no legal line break at original font size')
         end=max(ends);spans.append((start,end));start=end
-    # Avoid a tiny final Japanese line by moving a legal suffix from the
-    # preceding line. No width, font size or paragraph boundaries are changed.
-    if len(spans)>1 and len(text[spans[-1][0]:].strip())<4:
-        a,b=spans[-2];_,end=spans[-1]
-        candidates=[i for i in breaks if a<i<b and len(text[i:end].strip())>=4 and sum(t['advance'] for t in tokens[i:end])<=spec['right']-spec['left']+.05]
-        if candidates:split=max(candidates);spans[-2:]=[(a,split),(split,end)]
+    spans=balance_tail(tokens,text,breaks,spans,spec['right']-spec['left'])
     result=[]
     for line,(a,b) in enumerate(spans):
         x=spec['first_x'] if not line else spec['left']
@@ -36,6 +23,30 @@ def layout(tokens,spec):
             placed.append(dict(token,x=x,y=y));x+=token['advance']+extra.get(n,0)
         result.append(dict(text=text[a:b],baseline=y,tokens=placed,justified=bool(extra)))
     return result
+
+
+def fit(tokens,text,breaks,start,width):
+    """Legal line ends for a line starting at ``start`` that fit ``width`` at the original size."""
+    used=0;ends=[];ink=0;squeeze=0
+    for i in range(start,len(tokens)):
+        used+=tokens[i]['advance']
+        # Line-final Tc/Tw/TJ displacement does not occupy glyph ink, and
+        # whitespace before a break hangs: neither can overflow the line.
+        if not text[i].isspace():ink=used-tokens[i]['advance']+tokens[i].get('nominal_advance',tokens[i]['advance'])
+        if i>start:squeeze+=tokens[i-1].get('squeezable',0)
+        if ink>width+.05+squeeze:break
+        if i+1 in breaks:ends.append(i+1)
+    return ends
+
+
+def balance_tail(tokens,text,breaks,spans,width):
+    """Avoid a tiny final Japanese line by moving a legal suffix from the
+    preceding line. No width, font size or paragraph boundaries are changed."""
+    if len(spans)>1 and len(text[spans[-1][0]:].strip())<4:
+        a,b=spans[-2];_,end=spans[-1]
+        candidates=[i for i in breaks if a<i<b and len(text[i:end].strip())>=4 and sum(t['advance'] for t in tokens[i:end])<=width+.05]
+        if candidates:split=max(candidates);spans=spans[:-2]+[(a,split),(split,end)]
+    return spans
 
 
 def _justification(tokens,width):

@@ -109,11 +109,13 @@ def semantic(path,page):
             a=s['association'];lo,hi=s['content_byte_range']
             drawn=''.join(ch.text for e in c.events if lo<=e.operator.start<hi for ch in e.chars)
             owner=reader.get_object(a['owner_reference']['xref']) if a.get('owner_reference') else {}
-            rows.append(dict(mcid=a.get('mcid'),status=a['status'],drawn=drawn,actualtext=owner.get('/ActualText'),
+            rows.append(dict(mcid=a.get('mcid'),status=a['status'],tag=s['tag'],drawn=drawn,actualtext=owner.get('/ActualText'),
                              role=owner.get('/S'),parent=owner.raw_get('/P').idnum if '/P' in owner else None))
     finally:c.close()
-    checks=dict(complete=marked['complete'],all_tree_backed=all(r['status']=='tree_backed' for r in rows),
-                unique_mcids=len({r['mcid'] for r in rows})==len(rows),
+    # Pagination artifacts are unmarked by definition (PDF 32000-1 §14.8.2.2).
+    content=[r for r in rows if r['tag']!='/Artifact']
+    checks=dict(complete=marked['complete'],all_tree_backed=all(r['status']=='tree_backed' for r in content),
+                unique_mcids=len({r['mcid'] for r in content})==len(content),
                 actualtext_matches_drawn=all(r['actualtext'] is None or r['actualtext']==r['drawn'] for r in rows))
     parents_ok=[]
     def tree(node,parent=None):
@@ -138,7 +140,7 @@ def semantic(path,page):
         for child in node.get('/Kids',[]):out.extend(entries(child))
         return out
     arr=dict(entries(parenttree))[int(reader.pages[page-1]['/StructParents'])]
-    active={r['mcid'] for r in rows}
+    active={r['mcid'] for r in content}
     checks['parent_tree_reverse']=all(type(v.get_object()).__name__=='NullObject' or i in active for i,v in enumerate(arr))
     return dict(tagged=True,checks=checks,tree=graph,rows=rows)
 

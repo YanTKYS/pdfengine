@@ -1,0 +1,1517 @@
+{
+  "schema": "paragraph-frame-column-flow-results-1",
+  "manifest_sha256": "97f8afb3fa266fdc480ee7730724814acf5f8d2b8ef2d330e8c2bbb95bb7b024",
+  "manifest_revision": 2,
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_column_flow.py tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_continuity.py tests/test_paragraph_frame_poc.py",
+    "passed": 77,
+    "failed": 0,
+    "seconds": 92.66,
+    "new_column_flow_tests": 18,
+    "full_suite": "not run (pdfeditor unchanged; the four files are every test importing prototypes.paragraph_frame)"
+  },
+  "regression": {
+    "generalization": {
+      "A": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "B": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "C": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "D": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "F1": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "F2": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "F3": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "native_replacement_search"
+        ],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "F4": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "native_replacement_search"
+        ],
+        "reedit": "quality-audit-failed",
+        "same_as_pr88": true
+      },
+      "N1": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "N2": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "N3": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "native_replacement_search"
+        ],
+        "reedit": "success",
+        "same_as_pr88": true
+      },
+      "N4": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "mupdf_copy_extract",
+          "poppler_copy_extract",
+          "native_replacement_search"
+        ],
+        "reedit": "success",
+        "same_as_pr88": true
+      }
+    },
+    "continuity_sequences": {
+      "Q1-stored": {
+        "steps": [
+          "success",
+          "success",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_pr88": true
+      },
+      "Q1-inference": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_pr88": true
+      },
+      "Q2-stored": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_pr88": true
+      },
+      "Q2-inference": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_pr88": true
+      },
+      "Q3-stored": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_pr88": true
+      },
+      "Q3-inference": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_pr88": true
+      }
+    },
+    "continuity_new": {
+      "E1": {
+        "b2": "saved",
+        "quality": "success",
+        "same_as_pr88": true
+      },
+      "E2": {
+        "b2": "refused",
+        "quality": "None",
+        "same_as_pr88": true
+      },
+      "E3": {
+        "b2": "refused",
+        "quality": "None",
+        "same_as_pr88": true
+      },
+      "E4": {
+        "b2": "saved",
+        "quality": "success",
+        "same_as_pr88": true
+      },
+      "E5": {
+        "b2": "saved",
+        "quality": "success",
+        "same_as_pr88": true
+      },
+      "E6": {
+        "b2": "refused",
+        "quality": "None",
+        "same_as_pr88": true
+      },
+      "S1": {
+        "b2": "refused",
+        "quality": "None",
+        "same_as_pr88": true
+      },
+      "S2": {
+        "b2": "refused",
+        "quality": "None",
+        "same_as_pr88": true
+      }
+    },
+    "all_same_as_pr88": true,
+    "commands": [
+      "generalization_evaluate --phase initial/audit/lifecycle (PR #87 12 cases)",
+      "continuity_evaluate --phase sequences/new (PR #88)"
+    ]
+  },
+  "fixtures": {
+    "gen_columns_ja": {
+      "sha256": "98b5067fbd3d60da996f88a55ae857c2ed23279488c34dc164b070940ebe5418",
+      "sha256_at_freeze": "72ce14aa58dc96d62a65272907ae803ea037bde1e4fb14b01a1fd2c3a8d14626",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_ja_tagged": {
+      "sha256": "90677710485131d818f751ebebfaf5f197908896c2e30e9efcd72112adb1f4ec",
+      "sha256_at_freeze": "a23dd0fb54614de10474a2dbe292b2a307b8f3802251f9dae00c689079ceb527",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_en": {
+      "sha256": "3bf58f7f8993857f8584c0ef9cd7af264c3a95548e0b346a24a1807ea9389de5",
+      "sha256_at_freeze": "c83a309ca01a18214b7921c85c02c70a9cd145e5b66666828978c0c46e60e57c",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_en_tagged": {
+      "sha256": "3630445d739a52a30d4098906712bc06ba1d8ced4376df8d39caf3ca619ce51d",
+      "sha256_at_freeze": "cbd830d3a7abab307bfb52d820a79c5b5107c172ce338cb9031a50c0a5c51c63",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_ja_boundary": {
+      "sha256": "514621c98fd780ef39024a7cc94671f6f417f6e576dd3f1ba75040e719443512",
+      "sha256_at_freeze": "a83f8d9eccbb18d878504919ca143ff12cebd6020873c656e01b0c0e288419ef",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_ja_boundary_tagged": {
+      "sha256": "40b289ffd0311a1ab7955f8072e4cf3f1f226e28de05963f7baa575055c65da5",
+      "sha256_at_freeze": "0d4e3b3182de69ae5cf5d40ba37624a9edad8b002f39502a6dffd1b9fc9e3918",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_ja_heading": {
+      "sha256": "08884a621383fbc8946e1eb1ccd54d97252eee11774dbcab99562b42ac7497bb",
+      "sha256_at_freeze": "3caf8c72d448f9c4bfa3c470be331d1341e911cf168a7b0e1306e0b7fb5e59d2",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_ja_image": {
+      "sha256": "c695049993277d7808f44f95c84c16fca43b19748dca91f7ca52051c4bc59130",
+      "sha256_at_freeze": "104d2f0b0134abd12da9ae683807d74ff1d909b87bf121a31b38e795419734ba",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_ja_articles": {
+      "sha256": "0e6d843eae0eb9a5acf1e458d4d176344cec3f38636b9358bdaec9561f44497a",
+      "sha256_at_freeze": "506654db5d874136889d14b6c049729c6ed0865fa2a5c56e0c6698a77c3f96c2",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_ja_articles_tagged": {
+      "sha256": "854ef32af9d43de269d5f2795ab0ae23fcc7a199a600a292e68bb3d6d6448b1b",
+      "sha256_at_freeze": "ac81e08952426cbee7afa7f3f266c4cd5cf1540df22ef186ce78cc108f94254b",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    }
+  },
+  "sequences": {
+    "S1": {
+      "document": "gen_columns_ja",
+      "kind": "generated",
+      "tagged": false,
+      "steps": [
+        {
+          "step": 1,
+          "purpose": "untagged split is a candidate: approved, growth pushes the following text into column 2",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": false,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 5,
+          "moved_lines": 20,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [
+            "column 0->1"
+          ],
+          "engine_continuation_ids": [
+            "column 1->2"
+          ],
+          "seconds": 3.49
+        },
+        {
+          "step": 2,
+          "purpose": "restore: the following text returns to column 1",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 5,
+          "moved_lines": 20,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 6.32
+        },
+        {
+          "step": 3,
+          "purpose": "shortening pulls the column-2 text back into column 1",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 5,
+          "moved_lines": 20,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 6.44
+        },
+        {
+          "step": 4,
+          "purpose": "edit a paragraph that now starts in column 1 and continues in column 2",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 1,
+          "moved_lines": 4,
+          "lines_changing_column": 0,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 7.6
+        }
+      ]
+    },
+    "S2": {
+      "document": "gen_columns_ja_tagged",
+      "kind": "generated",
+      "tagged": true,
+      "steps": [
+        {
+          "step": 1,
+          "purpose": "tagged: one P spans the column break; growth pushes text into column 2",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": false,
+          "links": [
+            [
+              "column 1->2",
+              "determined"
+            ]
+          ],
+          "moved_paragraphs": 5,
+          "moved_lines": 20,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 4.7
+        },
+        {
+          "step": 2,
+          "purpose": "restore",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "determined"
+            ]
+          ],
+          "moved_paragraphs": 5,
+          "moved_lines": 20,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 8.52
+        },
+        {
+          "step": 3,
+          "purpose": "shortening pulls text back",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "determined"
+            ]
+          ],
+          "moved_paragraphs": 5,
+          "moved_lines": 20,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 11.59
+        },
+        {
+          "step": 4,
+          "purpose": "edit a later paragraph after the moves",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "determined"
+            ]
+          ],
+          "moved_paragraphs": 1,
+          "moved_lines": 4,
+          "lines_changing_column": 0,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 14.05
+        }
+      ]
+    },
+    "S3": {
+      "document": "gen_columns_en",
+      "kind": "generated",
+      "tagged": false,
+      "steps": [
+        {
+          "step": 1,
+          "purpose": "untagged candidate approved: Latin justified growth pushes text into column 2",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": false,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 2,
+          "moved_lines": 7,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [
+            "column 0->1"
+          ],
+          "engine_continuation_ids": [
+            "column 1->2"
+          ],
+          "seconds": 4.41
+        },
+        {
+          "step": 2,
+          "purpose": "restore",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 2,
+          "moved_lines": 7,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 6.56
+        },
+        {
+          "step": 3,
+          "purpose": "shortening pulls column-2 text back into column 1",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 3,
+          "moved_lines": 11,
+          "lines_changing_column": 2,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 7.63
+        }
+      ]
+    },
+    "S4": {
+      "document": "gen_columns_en_tagged",
+      "kind": "generated",
+      "tagged": true,
+      "steps": [
+        {
+          "step": 1,
+          "purpose": "tagged Latin growth",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": false,
+          "links": [
+            [
+              "column 1->2",
+              "determined"
+            ]
+          ],
+          "moved_paragraphs": 2,
+          "moved_lines": 7,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 5.07
+        },
+        {
+          "step": 2,
+          "purpose": "restore",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "determined"
+            ]
+          ],
+          "moved_paragraphs": 2,
+          "moved_lines": 7,
+          "lines_changing_column": 1,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 7.75
+        },
+        {
+          "step": 3,
+          "purpose": "shortening pulls text back",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "determined"
+            ]
+          ],
+          "moved_paragraphs": 3,
+          "moved_lines": 11,
+          "lines_changing_column": 2,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 11.75
+        }
+      ]
+    },
+    "S5": {
+      "document": "gen_columns_ja_boundary",
+      "kind": "generated",
+      "tagged": false,
+      "steps": [
+        {
+          "step": 1,
+          "purpose": "column break on a paragraph boundary (untagged): only a candidate; refused without approval",
+          "expected": "refused",
+          "outcome": "refused",
+          "as_expected": true,
+          "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; candidate continuation(s) column 1->2 require explicit approval",
+          "published": false,
+          "candidates": [
+            "column 1->2"
+          ],
+          "tiers": {
+            "saved": false,
+            "safety": null,
+            "quality": null,
+            "continued_editing": null
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 1.0
+        },
+        {
+          "step": 2,
+          "purpose": "the same edit after explicit approval of the candidate continuation",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": false,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 2,
+          "moved_lines": 8,
+          "lines_changing_column": 0,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [
+            "column 0->1"
+          ],
+          "engine_continuation_ids": [
+            "column 1->2"
+          ],
+          "seconds": 3.46
+        },
+        {
+          "step": 3,
+          "purpose": "reopen: the stored approved flow is used without approving again",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": true,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 2,
+          "moved_lines": 8,
+          "lines_changing_column": 0,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 3.62
+        }
+      ]
+    },
+    "S6": {
+      "document": "gen_columns_ja_boundary_tagged",
+      "kind": "generated",
+      "tagged": true,
+      "steps": [
+        {
+          "step": 1,
+          "purpose": "tagged: consecutive P siblings are only a candidate; refused without approval",
+          "expected": "refused",
+          "outcome": "refused",
+          "as_expected": true,
+          "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; candidate continuation(s) column 1->2 require explicit approval",
+          "published": false,
+          "candidates": [
+            "column 1->2"
+          ],
+          "tiers": {
+            "saved": false,
+            "safety": null,
+            "quality": null,
+            "continued_editing": null
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 1.23
+        },
+        {
+          "step": 2,
+          "purpose": "the same edit after explicit approval",
+          "expected": "flow",
+          "outcome": "saved",
+          "as_expected": true,
+          "mode": "flow",
+          "stored_flow_used": false,
+          "links": [
+            [
+              "column 1->2",
+              "approved"
+            ]
+          ],
+          "moved_paragraphs": 2,
+          "moved_lines": 8,
+          "lines_changing_column": 0,
+          "failed": [],
+          "outside_pixels": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "continued_editing": {
+            "ok": true,
+            "mode": "flow",
+            "stored": true,
+            "status": "applied"
+          },
+          "tiers": {
+            "saved": true,
+            "safety": true,
+            "quality": true,
+            "continued_editing": true
+          },
+          "approve_continuation": [
+            "column 0->1"
+          ],
+          "engine_continuation_ids": [
+            "column 1->2"
+          ],
+          "seconds": 4.06
+        }
+      ]
+    }
+  },
+  "singles": {
+    "J-fit": {
+      "document": "gen_columns_ja",
+      "kind": "generated",
+      "purpose": "replacement that fits its own lines: nothing else moves",
+      "expected": "saved-in-column",
+      "outcome": "saved",
+      "as_expected": true,
+      "mode": "single-column",
+      "links": [
+        [
+          "column 1->2",
+          "candidate",
+          null
+        ]
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "continued_editing": {
+        "ok": true,
+        "mode": "single-column",
+        "stored": null,
+        "status": "applied"
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      },
+      "seconds": 2.65,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "E-fit": {
+      "document": "gen_columns_en",
+      "kind": "generated",
+      "purpose": "Latin replacement that fits its own lines",
+      "expected": "saved-in-column",
+      "outcome": "saved",
+      "as_expected": true,
+      "mode": "single-column",
+      "links": [
+        [
+          "column 1->2",
+          "candidate",
+          null
+        ]
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "continued_editing": {
+        "ok": true,
+        "mode": "single-column",
+        "stored": null,
+        "status": "applied"
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      },
+      "seconds": 3.73,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "J-capacity": {
+      "document": "gen_columns_ja",
+      "kind": "generated",
+      "purpose": "growth beyond both columns is refused; no font shrinking, no new region",
+      "expected": "refused",
+      "outcome": "refused",
+      "as_expected": true,
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the column flow is full; the approved columns on this page cannot hold the text (no font shrinking, no region growth)",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      },
+      "seconds": 0.96,
+      "approve_continuation": [
+        "column 0->1"
+      ],
+      "engine_continuation_ids": [
+        "column 1->2"
+      ]
+    },
+    "J-heading": {
+      "document": "gen_columns_ja_heading",
+      "kind": "generated",
+      "purpose": "column 2 starts with another article heading: never a continuation region",
+      "expected": "refused",
+      "outcome": "refused",
+      "as_expected": true,
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; no continuation column is linked (rejected column 1->2: different body font, size or colour; different column width)",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      },
+      "seconds": 1.13,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "J-image": {
+      "document": "gen_columns_ja_image",
+      "kind": "generated",
+      "purpose": "column 2 starts with a drawing: never a continuation region",
+      "expected": "refused",
+      "outcome": "refused",
+      "as_expected": true,
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; no continuation column is linked (rejected column 1->2: the columns do not start on the same first line; protected paint (filled-vector) above the text of the next column)",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      },
+      "seconds": 1.14,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "J-articles": {
+      "document": "gen_columns_ja_articles",
+      "kind": "generated",
+      "purpose": "column 1 ends mid-sentence at a full line; column 2 is another article in the same style without a heading: never used without approval",
+      "expected": "refused",
+      "outcome": "refused",
+      "as_expected": true,
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; candidate continuation(s) column 1->2 require explicit approval",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      },
+      "seconds": 0.94,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "J-articles-tagged": {
+      "document": "gen_columns_ja_articles_tagged",
+      "kind": "generated",
+      "purpose": "tagged different articles: the structure does not connect the columns",
+      "expected": "refused",
+      "outcome": "refused",
+      "as_expected": true,
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; no continuation column is linked (rejected column 1->2: the tagged structure does not connect the columns)",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      },
+      "seconds": 1.18,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "R-enterprise-fit": {
+      "document": "lo_enterprise_en",
+      "kind": "real",
+      "purpose": "real PDF: in-column same-length edit (PR #88 E1); no column flow may be chosen",
+      "expected": "saved-in-column",
+      "outcome": "saved",
+      "as_expected": true,
+      "mode": "single-column",
+      "links": [
+        [
+          "column 1->2",
+          "rejected",
+          "different body font, size or colour; the first column is not filled to the flow bottom; protected paint (filled-vector, image, vector) above the text of the next column"
+        ]
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "continued_editing": {
+        "ok": true,
+        "mode": "single-column",
+        "stored": null,
+        "status": "applied"
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      },
+      "seconds": 16.95,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "R-enterprise-grow": {
+      "document": "lo_enterprise_en",
+      "kind": "real",
+      "purpose": "real PDF (PR #88 E3): column 2 is an unrelated column over an image; it must not receive the text",
+      "expected": "refused",
+      "outcome": "refused",
+      "as_expected": true,
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      },
+      "seconds": 22.86,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "R-fusei-grow": {
+      "document": "osaka_fusei_477",
+      "kind": "real",
+      "purpose": "real PDF: overset article at the column bottom; the neighbouring columns are other articles",
+      "expected": "refused",
+      "outcome": "refused",
+      "as_expected": true,
+      "reason": "prototypes.paragraph_frame.engine.Refused: non-axis-aligned source text matrix unsupported",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      },
+      "seconds": 3.48,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    }
+  },
+  "recognition": {
+    "pairs": {
+      "gen_columns_ja": [
+        [
+          0,
+          1,
+          "candidate",
+          "candidate",
+          true
+        ]
+      ],
+      "gen_columns_ja_tagged": [
+        [
+          0,
+          1,
+          "determined",
+          "determined",
+          true
+        ]
+      ],
+      "gen_columns_en": [
+        [
+          0,
+          1,
+          "candidate",
+          "candidate",
+          true
+        ]
+      ],
+      "gen_columns_en_tagged": [
+        [
+          0,
+          1,
+          "determined",
+          "determined",
+          true
+        ]
+      ],
+      "gen_columns_ja_boundary": [
+        [
+          0,
+          1,
+          "candidate",
+          "candidate",
+          true
+        ]
+      ],
+      "gen_columns_ja_boundary_tagged": [
+        [
+          0,
+          1,
+          "candidate",
+          "candidate",
+          true
+        ]
+      ],
+      "gen_columns_ja_articles": [
+        [
+          0,
+          1,
+          "candidate",
+          "candidate",
+          true
+        ]
+      ],
+      "gen_columns_ja_articles_tagged": [
+        [
+          0,
+          1,
+          "not-linked",
+          "not-linked",
+          true
+        ]
+      ],
+      "gen_columns_ja_heading": [
+        [
+          0,
+          1,
+          "not-linked",
+          "not-linked",
+          true
+        ]
+      ],
+      "gen_columns_ja_image": [
+        [
+          0,
+          1,
+          "not-linked",
+          "not-linked",
+          true
+        ]
+      ],
+      "lo_enterprise_en": [
+        [
+          0,
+          1,
+          "not-linked",
+          "not-linked",
+          true
+        ],
+        [
+          1,
+          2,
+          "not-linked",
+          "not-linked",
+          true
+        ]
+      ],
+      "osaka_fusei_477": [
+        [
+          0,
+          1,
+          "not-linked",
+          "not-linked",
+          true
+        ],
+        [
+          1,
+          2,
+          "not-linked",
+          "not-linked",
+          true
+        ]
+      ]
+    },
+    "unexpected_links": {},
+    "correct": 14,
+    "total": 14
+  },
+  "survey": {
+    "files": 7,
+    "pages": 31,
+    "errors": 0,
+    "links": {
+      "rejected": 109
+    },
+    "determined_or_candidate": [],
+    "rejection_reasons": [
+      "different body font, size or colour; different column width; protected paint (filled-vector, image) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; protected paint (filled-vector, vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; protected paint (filled-vector) above the text of the next column",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; protected paint (filled-vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; protected paint (filled-vector, image) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; protected paint (filled-vector, vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; protected paint (filled-vector, vector, vector-border) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; protected paint (filled-vector, vector-border) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; protected paint (image) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different column width; the first column is not filled to the flow bottom; protected paint (filled-vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; protected paint (filled-vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; protected paint (filled-vector, image) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector) above the text of the next column",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, image) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, image, vector, vector-border) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (vector) above the text of the next column",
+      "different body font, size or colour; different line pitch; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; the columns do not start on the same first line; protected paint (filled-vector, vector) above the text of the next column; other text is painted between the columns",
+      "different body font, size or colour; the first column is not filled to the flow bottom; protected paint (filled-vector, image, vector) above the text of the next column",
+      "different column width; protected paint (filled-vector) above the text of the next column; other text is painted between the columns",
+      "different column width; protected paint (filled-vector, image) above the text of the next column; other text is painted between the columns",
+      "different column width; protected paint (filled-vector, image, vector) above the text of the next column",
+      "different column width; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "different column width; protected paint (filled-vector, vector) above the text of the next column; other text is painted between the columns",
+      "different column width; protected paint (image) above the text of the next column; other text is painted between the columns",
+      "different column width; protected paint (image, vector) above the text of the next column; other text is painted between the columns",
+      "different column width; protected paint (vector) above the text of the next column",
+      "different column width; the columns do not start on the same first line; other text is painted between the columns",
+      "different column width; the columns do not start on the same first line; protected paint (filled-vector) above the text of the next column; other text is painted between the columns",
+      "different column width; the columns do not start on the same first line; protected paint (filled-vector, image) above the text of the next column; other text is painted between the columns",
+      "different column width; the columns do not start on the same first line; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "different column width; the columns do not start on the same first line; protected paint (filled-vector, vector) above the text of the next column",
+      "different column width; the columns do not start on the same first line; protected paint (image, vector) above the text of the next column",
+      "different column width; the columns do not start on the same first line; protected paint (image, vector) above the text of the next column; other text is painted between the columns",
+      "different column width; the columns do not start on the same first line; protected paint (vector) above the text of the next column",
+      "different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector) above the text of the next column; other text is painted between the columns",
+      "different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, image) above the text of the next column; other text is painted between the columns",
+      "different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "different column width; the first column is not filled to the flow bottom; protected paint (filled-vector, vector) above the text of the next column; other text is painted between the columns",
+      "different line pitch; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, vector) above the text of the next column",
+      "protected paint (filled-vector, image) above the text of the next column; other text is painted between the columns",
+      "protected paint (filled-vector, vector) above the text of the next column",
+      "protected paint (filled-vector, vector) above the text of the next column; other text is painted between the columns",
+      "the columns do not start on the same first line; protected paint (filled-vector) above the text of the next column; other text is painted between the columns",
+      "the columns do not start on the same first line; protected paint (filled-vector, image) above the text of the next column",
+      "the columns do not start on the same first line; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "the columns do not start on the same first line; protected paint (image) above the text of the next column; other text is painted between the columns",
+      "the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, vector) above the text of the next column; other text is painted between the columns",
+      "the first column is not filled to the flow bottom; protected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns",
+      "the next column starts with a heading or differently styled text; different column width; the columns do not start on the same first line; the first column is not filled to the flow bottom; protected paint (filled-vector, vector) above the text of the next column; other text is painted between the columns",
+      "the next column starts with a heading or differently styled text; the first column is not filled to the flow bottom; protected paint (filled-vector, image) above the text of the next column; other text is painted between the columns"
+    ]
+  },
+  "summary": {
+    "steps": 29,
+    "as_expected": 29,
+    "saved": 20,
+    "refused": 9,
+    "tiers": {
+      "safety": {
+        "passed": 20,
+        "of": 20
+      },
+      "quality": {
+        "passed": 20,
+        "of": 20
+      },
+      "continued_editing": {
+        "passed": 20,
+        "of": 20
+      }
+    },
+    "generated_only": {
+      "safety": {
+        "passed": 19,
+        "of": 19
+      },
+      "quality": {
+        "passed": 19,
+        "of": 19
+      },
+      "continued_editing": {
+        "passed": 19,
+        "of": 19
+      }
+    },
+    "real": {
+      "safety": {
+        "passed": 1,
+        "of": 1
+      },
+      "quality": {
+        "passed": 1,
+        "of": 1
+      },
+      "continued_editing": {
+        "passed": 1,
+        "of": 1
+      }
+    }
+  }
+}
