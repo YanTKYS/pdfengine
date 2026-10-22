@@ -3,6 +3,7 @@ from collections import Counter
 from statistics import median
 import os
 from pathlib import Path
+import subprocess
 import tempfile
 import pymupdf
 from pypdf import PdfWriter
@@ -152,7 +153,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     finally:
         for path in (tmp,draft):
             if os.path.exists(path):os.unlink(path)
-    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF inferred-frame outside pixels'])
+    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
 
 
 def _covered(rect,boxes):
@@ -207,13 +208,22 @@ def validate_stage(c,tmp,spec,evidence,selected,expected):
         # oracle audit. Mask only the approved automatically inferred frame.
         a=c.page.get_pixmap(dpi=144,alpha=False);b=check.page.get_pixmap(dpi=144,alpha=False)
         ia=Image.frombytes('RGB',(a.width,a.height),a.samples);ib=Image.frombytes('RGB',(b.width,b.height),b.samples)
-        diff=ImageChops.difference(ia,ib)
-        for x0,y0,x1,y1 in spec.get('frames',[spec['frame']]):
-            ImageDraw.Draw(diff).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
-        if diff.getbbox():raise Refused('staged raster changes outside approved inferred frame')
+        # Poppler too: its text positioning arithmetic differs from MuPDF's.
+        for renderer,(ia,ib) in (('MuPDF',(ia,ib)),('Poppler',(_poppler(c.source,spec['page']),_poppler(tmp,spec['page'])))):
+            diff=ImageChops.difference(ia,ib)
+            for x0,y0,x1,y1 in spec.get('frames',[spec['frame']]):
+                ImageDraw.Draw(diff).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
+            if diff.getbbox():raise Refused(f'staged raster changes outside approved inferred frame ({renderer})')
         # Native retained font resources/programs are cloned, never replaced.
         if len(check.document)!=len(c.document):raise Refused('page count changed')
     finally:check.close()
+
+
+def _poppler(path,page):
+    """One page rendered by Poppler at 144 dpi (RGB)."""
+    with tempfile.TemporaryDirectory() as folder:
+        subprocess.run(['pdftoppm','-f',str(page),'-l',str(page),'-r','144','-png','-singlefile',str(path),folder+'/page'],capture_output=True,check=True)
+        with Image.open(folder+'/page.png') as image:return image.convert('RGB')
 
 
 def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active,approval):

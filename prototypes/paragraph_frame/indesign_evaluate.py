@@ -243,7 +243,16 @@ def phase_samples(root, manifest, args):
         else:
             x0, y0, x1, y1 = r['bbox']
             # Unchanged text may re-wrap inside the paragraph; nothing outside it may change.
-            record['audit'] = audit(source, output, r['page'], [x0 - 3, y0 - 3, x1 + 3, y1 + 3], r['selection'], r['selection'], folder)
+            region = [x0 - 3, y0 - 3, x1 + 3, y1 + 3]
+            record['audit'] = a = audit(source, output, r['page'], region, r['selection'], r['selection'], folder)
+            # The text is unchanged: the relayout must reproduce every glyph of
+            # the paragraph where it was (a squeezed or widened pen step, or a
+            # different line break, is a layout-model error).
+            place = lambda path: sorted((g['c'], g['origin']) for g in chars(path, r['page']) if inside(g['bbox'], region) and g['c'].strip())
+            a['checks']['unchanged_text_same_glyph_positions'] = same = place(source) == place(output)
+            if not same:
+                a['quality'] = False
+                a['failed'].append('unchanged_text_same_glyph_positions')
             record['drawn_in'] = result['save'].get('drawn_in')
         results.append(record)
         print(n, r['document'], r['page'], record['outcome'], record.get('reason') or record.get('audit', {}).get('failed'), flush=True)

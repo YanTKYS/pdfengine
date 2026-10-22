@@ -48,9 +48,11 @@ def source_tokens(c):
             delta=n['origin'][0]-t['origin'][0]
             same=all(t[k]==n[k] for k in ('font_name','size','tz','rise','tc','tw'))
             pair=t['text'] in CLOSING and n['text'] in OPENING
-            if abs(delta-t['advance'])<.25*t['size']:
+            if abs(delta-t['advance'])<.25*t['size'] or abs(delta-t['nominal_advance'])<.25*t['size']:
                 # The observed pen step is kept even across a font switch
                 # (TJ adjustments); only same-style pairs feed the tracking median.
+                # TJ adjustments may also undo a character spacing (Tc), so the
+                # step is compared with the glyph width with and without it.
                 t['tracking']=delta-t['advance'];t['advance']=delta
                 if same:tracking[(t['font_name'],t['size'],t['tz'])].append(t['tracking'])
                 continue
