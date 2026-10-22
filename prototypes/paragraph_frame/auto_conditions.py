@@ -22,6 +22,7 @@ import json
 import math
 import pymupdf
 from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject, TextStringObject
+from . import text_space
 
 KEY = '/PdfEngineB2'
 SCHEMA = 'pdfengine-b2-paragraph-conditions-1'
@@ -35,7 +36,9 @@ def line_record(c, row):
     for e in c.events:
         if any(i in ids for ch in e.chars for i in ch.source_orders):
             s = e.state
-            styles.add((s.font.name, round(s.size, 4), s.fill[0], tuple(round(float(v), 4) for v in s.fill[1])))
+            # Page-space size: ``1 Tf`` under ``Tm 9.6 0 0 9.6`` and ``9.6 Tf`` are one style.
+            size = text_space.size_of(e)
+            styles.add((s.font.name, round(size if size is not None else s.size, 4), s.fill[0], tuple(round(float(v), 4) for v in s.fill[1])))
     return dict(text=''.join(c.actual[i]['unicode'] for i in ids), x=round(c.actual[ids[0]]['origin'][0], 3),
                 baseline=round(row['baseline'], 3), end=round(row['pen_end'], 3),
                 styles=[list(x[:3]) + [list(x[3])] for x in sorted(styles)])

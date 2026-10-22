@@ -7,25 +7,30 @@ from pathlib import Path
 import re
 from pdfeditor.shaped_font import ShapedFont
 from .engine import Refused
+from . import text_space
 
 
 PUNCTUATION=set('、。，．・：；？！）〕］｝〉》」』】（〔［｛〈《「『【')
+OPENING=set('（〔［｛〈《「『【')
 
 
 def family(font):return re.sub(r'^/?[A-Z]{6}\+','',font.basefont).lstrip('/')
 
 
 def source_tokens(c):
+    """Drawn glyphs with page-space size, horizontal scale, spacing and advance (text_space)."""
     tokens={}
     for e in c.events:
+        try:space=text_space.effective(e)
+        except Refused:continue
         for ch in e.chars:
             if len(ch.source_orders)!=1 or len(ch.text)!=1:continue
             i=ch.source_orders[0];g=c.actual[i]
             if g['unicode']!=ch.text or not g['gid'] and ch.text.strip():continue
             tokens[i]=dict(text=ch.text,source_id=i,code=ch.code,font=e.state.font,font_name=e.state.font.name,
-                family=family(e.state.font),size=e.state.size,tz=e.state.tz,fill=e.state.fill,tc=e.state.tc,tw=e.state.tw,
-                rise=e.state.ts,origin=list(g['origin']),advance=ch.advance,gid=g['gid'],bbox=list(g['bbox']),
-                mode='retained-source',scope=None,event=e,tracking=0.,nominal_advance=ch.pdf_width/1000*e.state.size*e.state.tz/100)
+                family=family(e.state.font),size=space['size'],tz=space['tz'],fill=e.state.fill,fill_space=e.state.fill_space,tc=space['tc'],tw=space['tw'],
+                rise=space['rise'],origin=list(g['origin']),advance=ch.advance*space['sx'],gid=g['gid'],bbox=list(g['bbox']),
+                mode='retained-source',scope=None,event=e,tracking=0.,nominal_advance=ch.pdf_width/1000*space['size']*space['tz']/100)
     # Pair displacements include TJ tracking, while line-final advance remains
     # the nominal width. This avoids carrying a line reset into the next line.
     rows=defaultdict(list)
@@ -35,14 +40,22 @@ def source_tokens(c):
         row.sort(key=lambda t:t['origin'][0])
         for t,n in zip(row,row[1:]):
             delta=n['origin'][0]-t['origin'][0]
-            if not all(t[k]==n[k] for k in ('font_name','size','tz','rise','tc','tw')):continue
+            same=all(t[k]==n[k] for k in ('font_name','size','tz','rise','tc','tw'))
             if abs(delta-t['advance'])<.25*t['size']:
+                # The observed pen step is kept even across a font switch
+                # (TJ adjustments); only same-style pairs feed the tracking median.
                 t['tracking']=delta-t['advance'];t['advance']=delta
-                tracking[(t['font_name'],t['size'],t['tz'])].append(t['tracking'])
-            elif t['text'] in PUNCTUATION and .45*t['advance']<=delta<t['advance']:
-                # Japanese writers compress punctuation (約物詰め): keep the
-                # observed advance, but do not let it skew the tracking median.
-                t['tracking']=delta-t['advance'];t['advance']=delta;t['compressed_punctuation']=True
+                if same:tracking[(t['font_name'],t['size'],t['tz'])].append(t['tracking'])
+                continue
+            if not same:continue
+            elif (t['text'] in PUNCTUATION or n['text'] in OPENING) and .35*t['advance']<=delta<t['advance']:
+                # Japanese writers compress punctuation (約物詰め): the space after
+                # closing marks and before opening brackets is removed (half width
+                # plus tracking; InDesign 0.43 em). Keep the observed advance, but
+                # do not let it skew the tracking median.
+                t['tracking']=delta-t['advance'];t['advance']=delta
+                # Only a compressed mark itself is evidence for that mark's width.
+                if t['text'] in PUNCTUATION:t['compressed_punctuation']=True
     med={k:median(v) for k,v in tracking.items()}
     return tokens,med
 
@@ -294,17 +307,18 @@ def describe(c,paragraphs):
     for e in c.events:
         count=sum(len(selected.intersection(ch.source_orders)) for ch in e.chars)
         if not count:continue
-        state=e.state;font=state.font
+        state=e.state;font=state.font;space=text_space.effective(e)
         if font.xref not in programs:
             data=c.document.extract_font(font.xref)[3]
             programs[font.xref]=hashlib.sha256(data).hexdigest() if data else None
-        key=(font.name,state.size,state.tz,state.tc,state.tw,state.ts,state.fill)
+        key=(font.name,space['size'],space['tz'],space['tc'],space['tw'],space['rise'],state.fill)
         if key not in styles:
             resource=font.resource
             if '/DescendantFonts' in resource:resource=resource['/DescendantFonts'][0].get_object()
             descriptor=resource.get('/FontDescriptor');descriptor=descriptor.get_object() if descriptor else {}
-            styles[key]=dict(resource=font.name,base_font=font.basefont,embedded_program_sha256=programs[font.xref],size=state.size,horizontal_scale=state.tz,
-                character_spacing=state.tc,word_spacing=state.tw,text_rise=state.ts,fill=[state.fill[0],[float(v) for v in state.fill[1]]],
+            # Page-space values: a scale in the text matrix or CTM is part of the size.
+            styles[key]=dict(resource=font.name,base_font=font.basefont,embedded_program_sha256=programs[font.xref],size=space['size'],horizontal_scale=space['tz'],
+                character_spacing=space['tc'],word_spacing=space['tw'],text_rise=space['rise'],fill=[state.fill[0],[float(v) for v in state.fill[1]]],
                 descriptor={k:float(descriptor[k]) if k in descriptor else None for k in ('/Flags','/ItalicAngle','/FontWeight')},source_glyph_count=0)
         styles[key]['source_glyph_count']+=count
     return list(styles.values())

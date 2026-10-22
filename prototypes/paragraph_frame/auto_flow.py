@@ -29,6 +29,7 @@ nothing is shrunk or moved onto other content.
 from statistics import median
 from uniseg.linebreak import line_break_boundaries
 from .engine import Refused
+from . import text_space
 from .auto_layout import fit, balance_tail, _justification, _squeezed
 
 SENTENCE_END = '。．.!?！？」』）)'
@@ -42,7 +43,8 @@ def style_of(c, rows):
     for e in c.events:
         n = sum(1 for ch in e.chars for i in ch.source_orders if i in ids and ch.text.strip())
         if n:
-            key = (e.state.font.name, round(e.state.size * abs(e.text_matrix[3] or 1), 2), e.state.fill[0], tuple(round(float(v), 3) for v in e.state.fill[1]))
+            size = text_space.size_of(e)
+            key = (e.state.font.name, round(size if size is not None else e.state.size, 2), e.state.fill[0], tuple(round(float(v), 3) for v in e.state.fill[1]))
             counts[key] = counts.get(key, 0) + n
     return max(counts, key=counts.get) if counts else None
 

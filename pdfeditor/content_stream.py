@@ -183,6 +183,8 @@ class State:
     stroke_opacity: float=1
     clip: tuple=()
     other: dict=field(default_factory=dict)
+    # Fill colour space selected by cs (None: a device space set by g/rg/k).
+    fill_space: str | None=None
 
     def report(self):
         return {"ctm":list(self.ctm),"font_resource":self.font.name if self.font else None,
@@ -274,7 +276,10 @@ class ContentPage:
         if self.document.needs_pass:raise PdfError("password required")
         self.page=self.document[page_number-1]
         self.events=[];self.streams={};self.errors=[];self._font_cache={}
-        self.actual=[];self.boundaries=[]
+        # boundaries: top-level page program. stream_boundaries: every program
+        # (page and each Form XObject invocation), keyed by (stream, invocation),
+        # beginning with the state at the program start (ordinal -1).
+        self.actual=[];self.boundaries=[];self.stream_boundaries={}
         for span in self.page.get_texttrace():
             for c in span["chars"]:
                 self.actual.append({"unicode":chr(c[0]),"gid":c[1],"origin":c[2],"bbox":c[3],
@@ -308,6 +313,10 @@ class ContentPage:
         source_tm, source_lm = tm, lm
         # Structural scope, recorded at top-level operator boundaries only.
         top=depth==0 and not invocation;in_text=False;marked=0;compatibility=0
+        local=self.stream_boundaries.setdefault((xref,invocation),[])
+        start=copy(state);start.other={k:v for k,v in state.other.items() if k!="marked_content"}
+        local.append(Boundary(-1,Operator(0,0,"",[]),start,0,False,0,0,False,False))
+        depth_base=len(stack)
         try:ops=list(operators(data))
         except Exception as exc:
             self.errors.append(f"stream {xref}: {exc}");return state,tm,lm,stack
@@ -336,7 +345,10 @@ class ContentPage:
             elif n=="T*":
                 tm=lm=translate(lm,0,-state.tl)
                 source_tm=source_lm=source_translate(source_lm,0,-state.tl)
-            elif n in {"g","rg","k","cs","sc","scn"}:state.fill=(n,tuple(map(str,a)))
+            elif n in {"g","rg","k","cs","sc","scn"}:
+                state.fill=(n,tuple(map(str,a)))
+                if n=="cs":state.fill_space=str(a[0])
+                elif n in {"g","rg","k"}:state.fill_space=None
             elif n in {"G","RG","K","CS","SC","SCN"}:state.stroke=(n,tuple(map(str,a)))
             elif n=="gs":
                 gs=resources["/ExtGState"][a[0]].get_object()
@@ -393,11 +405,11 @@ class ContentPage:
                 self.events.append(event)
             elif n not in {"ET","sh","MP","DP","BX","EX","d0","d1"}:
                 self.errors.append(f"unsupported operator {n}")
-            if top:
-                # The state in effect between this operator and the next one.
-                snapshot=copy(state);snapshot.other={k:v for k,v in state.other.items() if k!="marked_content"}
-                self.boundaries.append(Boundary(index,op,snapshot,len(stack),in_text,marked,compatibility,
-                                                bool(path),pending_clip is not None))
+            # The state in effect between this operator and the next one.
+            snapshot=copy(state);snapshot.other={k:v for k,v in state.other.items() if k!="marked_content"}
+            boundary=Boundary(index,op,snapshot,len(stack)-depth_base,in_text,marked,compatibility,bool(path),pending_clip is not None)
+            local.append(boundary)
+            if top:self.boundaries.append(boundary)
         return state,tm,lm,stack
 
     def _map_observations(self):
