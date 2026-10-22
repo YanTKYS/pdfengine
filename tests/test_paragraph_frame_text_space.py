@@ -279,3 +279,30 @@ def test_positional_word_gap_without_space_glyph_is_refused(tmp_path):
         propose(source, 1, '申請書は窓口で', '申請書は各窓口で')
     # Other paragraphs of the page are not affected.
     propose(source, 1, '後続段落です。', '後続の段落です。')
+
+
+def test_forms_inheriting_page_resources_are_walked_once(tmp_path):
+    """Forms without /Resources inherit the page's, which name them again: each Form is digested once."""
+    import time
+    plain, _ = page_with(tmp_path, LINES[:3], height=H)
+    r = PdfReader(plain)
+    body = b''.join(ref.get_object().get_data() for ref in r.pages[0]['/Contents'])
+    w = PdfWriter(clone_from=r)
+    p = w.pages[0]
+    xobjects = DictionaryObject()
+    for n in range(6):
+        form = DecodedStreamObject()
+        form.update({NameObject('/Type'): NameObject('/XObject'), NameObject('/Subtype'): NameObject('/Form'),
+                     NameObject('/BBox'): ArrayObject([FloatObject(0), FloatObject(0), FloatObject(300), FloatObject(300)])})
+        form.set_data(body if n == 0 else b'')
+        xobjects[NameObject(f'/Fm{n}')] = w._add_object(form)
+    p['/Resources'][NameObject('/XObject')] = xobjects
+    contents = DecodedStreamObject()
+    contents.set_data(b'q /Fm0 Do Q\n' + b''.join(f'/Fm{n} Do\n'.encode() for n in range(1, 6)))
+    p[NameObject('/Contents')] = w._add_object(contents)
+    source = tmp_path / 'inherit.pdf'
+    w.write(source)
+    began = time.perf_counter()
+    _, result = edit(source, '申請書は窓口で', '申請書は各窓口で', tmp_path / 'out.pdf')
+    assert result['drawn_in'] == 'Form XObject (copy-on-write)'
+    assert time.perf_counter() - began < 60

@@ -96,23 +96,9 @@ def inside(bbox, region):
 
 def programs(path, skip_page):
     """Digests of every page program and Form XObject reachable from pages other than ``skip_page``."""
+    from .form_write import _programs
     r = PdfReader(path)
-    result = {}
-    for n, page in enumerate(r.pages):
-        if n == skip_page - 1:
-            continue
-        contents = page.get_contents()
-        result[(n, ())] = hashlib.sha256(contents.get_data() if contents is not None else b'').hexdigest()
-        stack = [((), page['/Resources'].get_object(), 0)]
-        while stack:
-            prefix, resources, depth = stack.pop()
-            for name, ref in (resources.get('/XObject') or {}).items():
-                form = ref.get_object()
-                if form.get('/Subtype') == '/Form' and depth < 8:
-                    path_ = prefix + (str(name),)
-                    result[(n, path_)] = hashlib.sha256(form.get_data()).hexdigest()
-                    stack.append((path_, form.get('/Resources', resources).get_object(), depth + 1))
-    return result
+    return {(n, k): v for n in range(len(r.pages)) if n != skip_page - 1 for k, v in _programs(r, n).items()}
 
 
 def audit(source, output, page, region, old, new, folder, *, lines=None):

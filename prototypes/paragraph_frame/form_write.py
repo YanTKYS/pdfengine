@@ -297,23 +297,28 @@ def copy_on_write(writer, page, c, stream, invocation, data, fonts):
 
 
 def _programs(reader, page):
-    """Digest of the page program and of every Form reachable from it, by resource name path."""
-    result = {}
+    """Digest of the page program and of every Form reachable from it, keyed by the first name path.
 
-    def walk(resources, prefix, depth):
-        if depth > 8:
-            return
-        for name, ref in (resources.get('/XObject') or {}).items():
-            form = ref.get_object()
-            if form.get('/Subtype') != '/Form':
-                continue
-            path = prefix + (str(name),)
-            result[path] = hashlib.sha256(form.get_data()).hexdigest()
-            walk(form.get('/Resources', resources).get_object(), path, depth + 1)
+    Each Form object is visited once, breadth first (a Form without its own
+    resources inherits its parent's and may reach itself again; shared Forms
+    are reached by many paths). Name paths, not object numbers, are compared
+    between the source and the written file.
+    """
     p = reader.pages[page]
     contents = p.get_contents()
-    result[()] = hashlib.sha256(contents.get_data() if contents is not None else b'').hexdigest()
-    walk(p['/Resources'].get_object(), (), 0)
+    result = {(): hashlib.sha256(contents.get_data() if contents is not None else b'').hexdigest()}
+    seen, queue = set(), [((), p['/Resources'].get_object())]
+    while queue:
+        prefix, resources = queue.pop(0)
+        for name, ref in (resources.get('/XObject') or {}).items():
+            form = ref.get_object()
+            key = ref.idnum if hasattr(ref, 'idnum') else id(form)
+            if key in seen or form.get('/Subtype') != '/Form':
+                continue
+            seen.add(key)
+            path = prefix + (str(name),)
+            result[path] = hashlib.sha256(form.get_data()).hexdigest()
+            queue.append((path, form.get('/Resources', resources).get_object()))
     return result
 
 
