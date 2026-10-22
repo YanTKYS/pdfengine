@@ -61,3 +61,7 @@ tmp/
 # Generated PDFs, rasters and detailed audit JSON stay under tmp/ (regenerable).
 !/evaluations/paragraph_frame_continuity/manifest.json
 !/evaluations/paragraph_frame_continuity/results.json
+
+# Paragraph-frame column flow: manifest (frozen before evaluation) and compact results only.
+!/evaluations/paragraph_frame_column_flow/manifest.json
+!/evaluations/paragraph_frame_column_flow/results.json
