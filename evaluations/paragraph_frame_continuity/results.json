@@ -17,9 +17,10 @@
  },
  "tests": {
   "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_poc.py tests/test_paragraph_frame_continuity.py",
-  "result": "37 passed in 31.04s (run concurrently with the evaluation processes)",
+  "result": "59 passed in 63.37s (after the review fix: per-record validation of stored conditions); before it 37 passed in 31.04s",
   "scope": "every test module importing prototypes.paragraph_frame; pdfeditor modules were not changed",
-  "full_suite": "not run (CLAUDE.md focused policy; no pdfeditor module changed)"
+  "full_suite": "not run (CLAUDE.md focused policy; no pdfeditor module changed)",
+  "real_pdf_evaluation": "not re-run after the review fix: it only drops malformed records, and every record written by the evaluation is well-formed"
  },
  "evaluation_axes": {
   "editing": "requested text saved (B2 saves include refusal before publication when a gate fails)",
@@ -394,7 +395,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "F4-initial": {
    "failed": ["native_replacement_search"],
@@ -405,7 +407,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "F4-reedit": {
    "failed": ["native_replacement_search"],
@@ -416,7 +419,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "N3-initial": {
    "failed": ["native_replacement_search"],
@@ -427,7 +431,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "N4-initial": {
    "failed": ["mupdf_copy_extract","poppler_copy_extract","native_replacement_search"],
@@ -438,7 +443,8 @@
    "mupdf_text_joined_contains": false,
    "poppler_text_joined_contains": false,
    "space_insensitive_contains": true,
-   "classification": "reader-inferred space inside the selection (PDF text information correct)"
+   "classification": "reader-inferred space inside the selection (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q1-stored-step3": {
    "failed": ["native_replacement_search"],
@@ -449,7 +455,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q1-inference-step2": {
    "failed": ["native_replacement_search"],
@@ -460,7 +467,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q1-inference-step3": {
    "failed": ["native_replacement_search"],
@@ -471,7 +479,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q2-stored-step2": {
    "failed": ["native_replacement_search"],
@@ -482,7 +491,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q2-stored-step3": {
    "failed": ["native_replacement_search"],
@@ -493,7 +503,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q2-inference-step2": {
    "failed": ["native_replacement_search"],
@@ -504,7 +515,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q2-inference-step3": {
    "failed": ["native_replacement_search"],
@@ -515,7 +527,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q3-stored-step2": {
    "failed": ["native_replacement_search"],
@@ -526,7 +539,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q3-stored-step3": {
    "failed": ["native_replacement_search"],
@@ -537,7 +551,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q3-inference-step2": {
    "failed": ["native_replacement_search"],
@@ -548,7 +563,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   },
   "Q3-inference-step3": {
    "failed": ["native_replacement_search"],
@@ -559,7 +575,8 @@
    "mupdf_text_joined_contains": true,
    "poppler_text_joined_contains": true,
    "space_insensitive_contains": true,
-   "classification": "reader line-boundary search (PDF text information correct)"
+   "classification": "reader line-boundary search (PDF text information correct)",
+   "quality": "not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked"
   }
  },
  "local_artifacts": {

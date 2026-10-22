@@ -396,6 +396,9 @@ def phase_collect(root, manifest, prior, regression, tests):
             record[arm].pop('warnings', None)
     substitute = load(root / 'substitute-results.json')
     search = load(root / 'search.json')
+    for entry in search.values():
+        # A diagnosis, not a pass: the reader result still differs from the request.
+        entry['quality'] = 'not met in MuPDF/Poppler; other readers (e.g. Acrobat) not checked'
     def axis(chain):
         steps = chain['steps']
         return dict(saved=sum(s['outcome'] == 'saved' for s in steps), steps=len(steps),

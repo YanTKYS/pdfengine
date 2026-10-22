@@ -292,7 +292,7 @@ def detect(source,page,selection,occurrence=0,stored=True):
             selection_match_count=len(matches),warnings=['Occupied width is an inferred capacity, not a stored author frame.','Following same-column paragraphs may translate; protected content never moves.'],manual_geometry_inputs=0)
         if not deltas and not state['applied']:evidence['warnings'].append('No within-paragraph leading is observable; approve the reported inferred/default leading.')
         if state['status'].startswith('stale'):evidence['warnings'].append('Stored approved conditions were not applied: '+state['status'])
-        if record_status.startswith(('unreadable','page modified')):evidence['warnings'].append('Stored conditions: '+record_status)
+        if record_status.startswith(('unreadable','page modified')) or 'malformed' in record_status:evidence['warnings'].append('Stored conditions: '+record_status)
         if unmovable:evidence['warnings'].append('Following paragraph stays fixed and bounds the capacity: '+unmovable)
         if paragraphs[0].hyphens:evidence['warnings'].append('Line-final hyphens are kept as drawn; reflow that moves them is refused.')
         if len(matches)>1:evidence['warnings'].append('Multiple string matches exist; approve the displayed occurrence and paragraph explicitly.')

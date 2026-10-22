@@ -306,3 +306,66 @@ def test_substituted_glyph_is_not_the_font_anchor_of_a_later_edit(tmp_path):
     finally:
         c.close()
     assert not any(name.startswith('/PFAuto') for name in fonts)
+
+
+def _with_records(path, records, out):
+    w = PdfWriter(clone_from=PdfReader(path))
+    conditions.attach(w, w.pages[0], records, 1)
+    w.write(out)
+    return out
+
+
+def _stored(path):
+    c = ContentPage(path, 1)
+    try:
+        return conditions.read(c, 1)[0]
+    finally:
+        c.close()
+
+
+@pytest.mark.parametrize('kind', ['empty', 'no-lines', 'line-key', 'nan', 'reversed', 'leading', 'off-page', 'types', 'align', 'count'])
+def test_malformed_records_are_ignored_and_inference_is_used(world, tmp_path, kind):
+    source, font, _ = world
+    edit(source, '補助事業について、募集を行います。', '募集します。', tmp_path / 'short.pdf', font)
+    good = _stored(tmp_path / 'short.pdf')[0]
+    bad = json.loads(json.dumps(good))
+    if kind == 'empty':
+        bad = {}
+    elif kind == 'no-lines':
+        del bad['lines']
+    elif kind == 'line-key':
+        del bad['lines'][0]['baseline']
+    elif kind == 'nan':
+        bad['conditions']['right'] = float('nan')
+    elif kind == 'reversed':
+        bad['conditions']['left'], bad['conditions']['right'] = bad['conditions']['right'], bad['conditions']['left']
+    elif kind == 'leading':
+        bad['conditions']['line_height'] = 0
+    elif kind == 'off-page':
+        bad['lines'][0]['baseline'] = 10_000
+    elif kind == 'types':
+        bad['lines'] = 'not a list'
+    elif kind == 'align':
+        bad['conditions']['align'] = 'center'
+    elif kind == 'count':
+        bad['approval']['count'] = 0
+    broken = _with_records(tmp_path / 'short.pdf', [bad], tmp_path / 'broken.pdf')
+    p = propose(broken, 1, '募集します。', '補助事業について、募集を行います。', substitute=binding(font))
+    conds = p['evidence']['conditions']
+    assert not conds['applied'] and '1 malformed record(s) ignored' in conds['status']
+    assert any('malformed' in warning for warning in p['evidence']['warnings'])
+    assert p['evidence']['inferred']['left'] != 29  # fresh inference, not the stored value
+    out = tmp_path / 'saved.pdf'
+    save(broken, approve(broken, p, acknowledge_inference=True), out)
+    assert len(_stored(out)) == 1  # the malformed record is not carried forward
+
+
+def test_valid_record_still_applies_next_to_a_malformed_one(world, tmp_path):
+    source, font, _ = world
+    edit(source, '補助事業について、募集を行います。', '募集します。', tmp_path / 'short.pdf', font)
+    good = _stored(tmp_path / 'short.pdf')[0]
+    mixed = _with_records(tmp_path / 'short.pdf', [{'lines': [{}]}, good], tmp_path / 'mixed.pdf')
+    p = propose(mixed, 1, '募集します。', '補助事業について、募集を行います。', substitute=binding(font))
+    conds = p['evidence']['conditions']
+    assert conds['applied'] and p['evidence']['inferred']['left'] == 29
+    assert any('1 malformed record(s) ignored' in warning for warning in p['evidence']['warnings'])

@@ -19,6 +19,7 @@ PDFs without the entry use the ordinary inference unchanged.
 """
 from datetime import datetime, timezone
 import json
+import math
 import pymupdf
 from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject, TextStringObject
 
@@ -51,12 +52,47 @@ def read(c, page):
         data = json.loads(entry['/Private'].get_object().get_data().decode('utf-8'))
         if data.get('schema') != SCHEMA or data.get('page') != page or not isinstance(data.get('records'), list):
             return [], 'unreadable: unsupported schema or page'
+        records = [r for r in data['records'] if valid(r, c.page.rect.width, c.page.rect.height)]
         page_modified = c.reader.pages[page - 1].get('/LastModified')
-        if page_modified is not None and str(page_modified) != str(entry.get('/LastModified')):
-            return data['records'], 'page modified after the conditions were stored'
-        return data['records'], 'present'
+        status = ('page modified after the conditions were stored'
+                  if page_modified is not None and str(page_modified) != str(entry.get('/LastModified')) else 'present')
+        dropped = len(data['records']) - len(records)
+        if dropped:
+            status += f'; {dropped} malformed record(s) ignored'
+        return records, status
     except Exception as exc:  # malformed private data is never trusted
         return [], 'unreadable: ' + type(exc).__name__
+
+
+def _number(value, low=-math.inf, high=math.inf):
+    return type(value) in (int, float) and math.isfinite(value) and low <= value <= high
+
+
+def valid(record, width, height):
+    """Whether a stored record has every field B2 reads, with values on the page.
+
+    A record written by another product, truncated or edited by hand is not
+    repaired; it is dropped, and its paragraph falls back to inference.
+    """
+    try:
+        lines, cond, origin, approval = record['lines'], record['conditions'], record['origin'], record['approval']
+        if not isinstance(lines, list) or not lines or not isinstance(record['provenance'], dict):
+            return False
+        for line in lines:
+            if (not isinstance(line['text'], str) or not line['text'] or not isinstance(line['styles'], list)
+                    or not all(_number(line[k], -1, width + 1) for k in ('x', 'end'))
+                    or not _number(line['baseline'], 0, height) or line['end'] < line['x']):
+                return False
+        if (not all(_number(cond[k], -1, width + 1) for k in ('left', 'right', 'first_x'))
+                or not cond['left'] < cond['right'] or not _number(cond['line_height'], 0, height) or cond['line_height'] <= 0
+                or not _number(cond['bottom'], 0, height + 1)
+                or cond.get('align', 'start') not in ('start', 'justify', 'justify-cjk')):
+            return False
+        if not isinstance(origin['provenance']['line_height'], str) or not isinstance(origin['values'], dict):
+            return False
+        return type(approval['count']) is int and approval['count'] >= 1
+    except (KeyError, TypeError, AttributeError):
+        return False
 
 
 def match(c, record, rows):
