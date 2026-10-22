@@ -171,7 +171,7 @@ LibreOfficeの出力は、作成日時が入るためバイト単位で同じに
 - 編集した段落の各行がMuPDFで検索できる。
 - タグ付きPDFでは、各 `/P` のMCIDが描く文字列が期待した段落と一致する。
 
-1手順の時間は、生成PDFで1〜16秒、enterpriseで21〜26秒（別プロセスで、提案・承認・保存を行う）。連続編集では手順が進むほど長くなる。追加したfont resourceとrecordの解析が増えるためである。
+1手順の時間は、生成PDFで1〜14秒、enterpriseで17〜23秒（別プロセスで、提案・承認・保存を行う）。連続編集では手順が進むほど長くなる。追加したfont resourceとrecordの解析が増えるためである。
 
 ### 5.3 段の継続の認識
 
@@ -290,9 +290,10 @@ for p in initial audit lifecycle; do .venv/bin/python -m prototypes.paragraph_fr
 for p in sequences new; do .venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<cont> --phase $p; done
 ```
 
-- **focused tests**：`prototypes.paragraph_frame` をimportする4ファイルで **76 passed（91.52秒）**。
-  - 新規の `test_paragraph_frame_column_flow.py` は17件である。対象は次のとおり。
-    - 段の継続の判定（タグなし、Word形式のタグ、LibreOffice形式のタグ）
+- **focused tests**：`prototypes.paragraph_frame` をimportする4ファイルで **77 passed（92.66秒）**。
+  - 新規の `test_paragraph_frame_column_flow.py` は18件である。対象は次のとおり。
+    - 段の継続の判定（タグなしは候補で承認が必要、Word形式・LibreOffice形式のタグで1つの `/P` が段をまたぐ場合は確定）
+    - 同じ書体・見出しなし・行もそろった別記事の段を、承認なしに使わないこと（タグなしは候補、別の節としてタグ付けされていれば却下）
     - 長文化で次の段へ流して元に戻すこと、短文化で引き戻して再び流すこと（保存した流れを使う）
     - 候補は承認が必要で、承認は保存されること
     - 見出し・図形で始まる隣の段を使わないこと

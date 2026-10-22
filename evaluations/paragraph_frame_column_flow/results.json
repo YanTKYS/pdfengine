@@ -1,12 +1,13 @@
 {
   "schema": "paragraph-frame-column-flow-results-1",
-  "manifest_sha256": "103773bbf6b5c9d01ad617e8aa7cfe425f1c1d0379c7aaeef8392c684ca6c1e6",
+  "manifest_sha256": "97f8afb3fa266fdc480ee7730724814acf5f8d2b8ef2d330e8c2bbb95bb7b024",
+  "manifest_revision": 2,
   "tests": {
     "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_column_flow.py tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_continuity.py tests/test_paragraph_frame_poc.py",
-    "passed": 76,
+    "passed": 77,
     "failed": 0,
-    "seconds": 91.52,
-    "new_column_flow_tests": 17,
+    "seconds": 92.66,
+    "new_column_flow_tests": 18,
     "full_suite": "not run (pdfeditor unchanged; the four files are every test importing prototypes.paragraph_frame)"
   },
   "regression": {
@@ -200,57 +201,71 @@
   },
   "fixtures": {
     "gen_columns_ja": {
-      "sha256": "059e0700bb5e4029a3d6d58ecd9d4d70b2aa70501d0c2a26e4b36447161b91a2",
+      "sha256": "98b5067fbd3d60da996f88a55ae857c2ed23279488c34dc164b070940ebe5418",
       "sha256_at_freeze": "72ce14aa58dc96d62a65272907ae803ea037bde1e4fb14b01a1fd2c3a8d14626",
       "witness_matches": true,
       "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
       "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
     },
     "gen_columns_ja_tagged": {
-      "sha256": "f1a7115abcaf7265b239294491d957d13168e4b4f3c4eefa7ef22dacde6ca62f",
+      "sha256": "90677710485131d818f751ebebfaf5f197908896c2e30e9efcd72112adb1f4ec",
       "sha256_at_freeze": "a23dd0fb54614de10474a2dbe292b2a307b8f3802251f9dae00c689079ceb527",
       "witness_matches": true,
       "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
       "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
     },
     "gen_columns_en": {
-      "sha256": "8ca43ed699b1662a08bec7020b8d127e873e81501015efc1baf13c0030b55fd9",
+      "sha256": "3bf58f7f8993857f8584c0ef9cd7af264c3a95548e0b346a24a1807ea9389de5",
       "sha256_at_freeze": "c83a309ca01a18214b7921c85c02c70a9cd145e5b66666828978c0c46e60e57c",
       "witness_matches": true,
       "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
       "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
     },
     "gen_columns_en_tagged": {
-      "sha256": "f3d031d60b4237b9738172a941f55d4a2a121a5aa36a1d4abfe9ced76a650e9b",
+      "sha256": "3630445d739a52a30d4098906712bc06ba1d8ced4376df8d39caf3ca619ce51d",
       "sha256_at_freeze": "cbd830d3a7abab307bfb52d820a79c5b5107c172ce338cb9031a50c0a5c51c63",
       "witness_matches": true,
       "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
       "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
     },
     "gen_columns_ja_boundary": {
-      "sha256": "f1e56aa1fc885b2f29b33f83340e19e89c54162bdc2288f25b5ec51556253745",
+      "sha256": "514621c98fd780ef39024a7cc94671f6f417f6e576dd3f1ba75040e719443512",
       "sha256_at_freeze": "a83f8d9eccbb18d878504919ca143ff12cebd6020873c656e01b0c0e288419ef",
       "witness_matches": true,
       "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
       "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
     },
     "gen_columns_ja_boundary_tagged": {
-      "sha256": "b08279172d290f974357688decf54b867fe56d33e58ff183ff06cdfed8de7e4f",
+      "sha256": "40b289ffd0311a1ab7955f8072e4cf3f1f226e28de05963f7baa575055c65da5",
       "sha256_at_freeze": "0d4e3b3182de69ae5cf5d40ba37624a9edad8b002f39502a6dffd1b9fc9e3918",
       "witness_matches": true,
       "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
       "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
     },
     "gen_columns_ja_heading": {
-      "sha256": "ffeec77b1b36bcf61243b32c7cd7a3265812188737f0e8573526e2b7b13ae5d5",
+      "sha256": "08884a621383fbc8946e1eb1ccd54d97252eee11774dbcab99562b42ac7497bb",
       "sha256_at_freeze": "3caf8c72d448f9c4bfa3c470be331d1341e911cf168a7b0e1306e0b7fb5e59d2",
       "witness_matches": true,
       "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
       "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
     },
     "gen_columns_ja_image": {
-      "sha256": "6471c9259c719ac91d7a3b0d8effb90456734f671d90726fe70e6f0503903d64",
+      "sha256": "c695049993277d7808f44f95c84c16fca43b19748dca91f7ca52051c4bc59130",
       "sha256_at_freeze": "104d2f0b0134abd12da9ae683807d74ff1d909b87bf121a31b38e795419734ba",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_ja_articles": {
+      "sha256": "0e6d843eae0eb9a5acf1e458d4d176344cec3f38636b9358bdaec9561f44497a",
+      "sha256_at_freeze": "506654db5d874136889d14b6c049729c6ed0865fa2a5c56e0c6698a77c3f96c2",
+      "witness_matches": true,
+      "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
+      "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
+    },
+    "gen_columns_ja_articles_tagged": {
+      "sha256": "854ef32af9d43de269d5f2795ab0ae23fcc7a199a600a292e68bb3d6d6448b1b",
+      "sha256_at_freeze": "ac81e08952426cbee7afa7f3f266c4cd5cf1540df22ef186ce78cc108f94254b",
       "witness_matches": true,
       "libreoffice": "LibreOffice 24.2.7.2 420(Build:2)",
       "libreoffice_at_freeze": "LibreOffice 24.2.7.2 420(Build:2)"
@@ -264,7 +279,7 @@
       "steps": [
         {
           "step": 1,
-          "purpose": "growth beyond column 1 pushes the following text into column 2",
+          "purpose": "untagged split is a candidate: approved, growth pushes the following text into column 2",
           "expected": "flow",
           "outcome": "saved",
           "as_expected": true,
@@ -273,7 +288,7 @@
           "links": [
             [
               "column 1->2",
-              "determined"
+              "approved"
             ]
           ],
           "moved_paragraphs": 5,
@@ -296,8 +311,12 @@
             "quality": true,
             "continued_editing": true
           },
-          "approve_continuation": [],
-          "engine_continuation_ids": [],
+          "approve_continuation": [
+            "column 0->1"
+          ],
+          "engine_continuation_ids": [
+            "column 1->2"
+          ],
           "seconds": 3.49
         },
         {
@@ -311,7 +330,7 @@
           "links": [
             [
               "column 1->2",
-              "determined"
+              "approved"
             ]
           ],
           "moved_paragraphs": 5,
@@ -336,7 +355,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 5.9
+          "seconds": 6.32
         },
         {
           "step": 3,
@@ -349,7 +368,7 @@
           "links": [
             [
               "column 1->2",
-              "determined"
+              "approved"
             ]
           ],
           "moved_paragraphs": 5,
@@ -374,7 +393,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 6.65
+          "seconds": 6.44
         },
         {
           "step": 4,
@@ -387,7 +406,7 @@
           "links": [
             [
               "column 1->2",
-              "determined"
+              "approved"
             ]
           ],
           "moved_paragraphs": 1,
@@ -412,7 +431,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 8.24
+          "seconds": 7.6
         }
       ]
     },
@@ -457,7 +476,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 5.59
+          "seconds": 4.7
         },
         {
           "step": 2,
@@ -495,7 +514,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 8.53
+          "seconds": 8.52
         },
         {
           "step": 3,
@@ -533,7 +552,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 10.81
+          "seconds": 11.59
         },
         {
           "step": 4,
@@ -571,7 +590,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 15.74
+          "seconds": 14.05
         }
       ]
     },
@@ -582,7 +601,7 @@
       "steps": [
         {
           "step": 1,
-          "purpose": "Latin justified growth pushes text into column 2",
+          "purpose": "untagged candidate approved: Latin justified growth pushes text into column 2",
           "expected": "flow",
           "outcome": "saved",
           "as_expected": true,
@@ -591,7 +610,7 @@
           "links": [
             [
               "column 1->2",
-              "determined"
+              "approved"
             ]
           ],
           "moved_paragraphs": 2,
@@ -614,9 +633,13 @@
             "quality": true,
             "continued_editing": true
           },
-          "approve_continuation": [],
-          "engine_continuation_ids": [],
-          "seconds": 4.44
+          "approve_continuation": [
+            "column 0->1"
+          ],
+          "engine_continuation_ids": [
+            "column 1->2"
+          ],
+          "seconds": 4.41
         },
         {
           "step": 2,
@@ -629,7 +652,7 @@
           "links": [
             [
               "column 1->2",
-              "determined"
+              "approved"
             ]
           ],
           "moved_paragraphs": 2,
@@ -654,7 +677,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 5.36
+          "seconds": 6.56
         },
         {
           "step": 3,
@@ -667,7 +690,7 @@
           "links": [
             [
               "column 1->2",
-              "determined"
+              "approved"
             ]
           ],
           "moved_paragraphs": 3,
@@ -692,7 +715,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 6.92
+          "seconds": 7.63
         }
       ]
     },
@@ -737,7 +760,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 4.67
+          "seconds": 5.07
         },
         {
           "step": 2,
@@ -775,7 +798,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 8.34
+          "seconds": 7.75
         },
         {
           "step": 3,
@@ -813,7 +836,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 10.06
+          "seconds": 11.75
         }
       ]
     },
@@ -841,7 +864,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 0.98
+          "seconds": 1.0
         },
         {
           "step": 2,
@@ -883,7 +906,7 @@
           "engine_continuation_ids": [
             "column 1->2"
           ],
-          "seconds": 2.92
+          "seconds": 3.46
         },
         {
           "step": 3,
@@ -921,7 +944,7 @@
           },
           "approve_continuation": [],
           "engine_continuation_ids": [],
-          "seconds": 4.14
+          "seconds": 3.62
         }
       ]
     },
@@ -932,7 +955,28 @@
       "steps": [
         {
           "step": 1,
-          "purpose": "tagged: consecutive P siblings determine the reading order across the break",
+          "purpose": "tagged: consecutive P siblings are only a candidate; refused without approval",
+          "expected": "refused",
+          "outcome": "refused",
+          "as_expected": true,
+          "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; candidate continuation(s) column 1->2 require explicit approval",
+          "published": false,
+          "candidates": [
+            "column 1->2"
+          ],
+          "tiers": {
+            "saved": false,
+            "safety": null,
+            "quality": null,
+            "continued_editing": null
+          },
+          "approve_continuation": [],
+          "engine_continuation_ids": [],
+          "seconds": 1.23
+        },
+        {
+          "step": 2,
+          "purpose": "the same edit after explicit approval",
           "expected": "flow",
           "outcome": "saved",
           "as_expected": true,
@@ -941,7 +985,7 @@
           "links": [
             [
               "column 1->2",
-              "determined"
+              "approved"
             ]
           ],
           "moved_paragraphs": 2,
@@ -964,9 +1008,13 @@
             "quality": true,
             "continued_editing": true
           },
-          "approve_continuation": [],
-          "engine_continuation_ids": [],
-          "seconds": 3.27
+          "approve_continuation": [
+            "column 0->1"
+          ],
+          "engine_continuation_ids": [
+            "column 1->2"
+          ],
+          "seconds": 4.06
         }
       ]
     }
@@ -979,11 +1027,11 @@
       "expected": "saved-in-column",
       "outcome": "saved",
       "as_expected": true,
-      "mode": "flow",
+      "mode": "single-column",
       "links": [
         [
           "column 1->2",
-          "determined",
+          "candidate",
           null
         ]
       ],
@@ -994,8 +1042,8 @@
       },
       "continued_editing": {
         "ok": true,
-        "mode": "flow",
-        "stored": true,
+        "mode": "single-column",
+        "stored": null,
         "status": "applied"
       },
       "tiers": {
@@ -1004,7 +1052,9 @@
         "quality": true,
         "continued_editing": true
       },
-      "seconds": 2.33
+      "seconds": 2.65,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
     },
     "E-fit": {
       "document": "gen_columns_en",
@@ -1013,11 +1063,11 @@
       "expected": "saved-in-column",
       "outcome": "saved",
       "as_expected": true,
-      "mode": "flow",
+      "mode": "single-column",
       "links": [
         [
           "column 1->2",
-          "determined",
+          "candidate",
           null
         ]
       ],
@@ -1028,8 +1078,8 @@
       },
       "continued_editing": {
         "ok": true,
-        "mode": "flow",
-        "stored": true,
+        "mode": "single-column",
+        "stored": null,
         "status": "applied"
       },
       "tiers": {
@@ -1038,7 +1088,9 @@
         "quality": true,
         "continued_editing": true
       },
-      "seconds": 3.57
+      "seconds": 3.73,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
     },
     "J-capacity": {
       "document": "gen_columns_ja",
@@ -1055,7 +1107,13 @@
         "quality": null,
         "continued_editing": null
       },
-      "seconds": 1.36
+      "seconds": 0.96,
+      "approve_continuation": [
+        "column 0->1"
+      ],
+      "engine_continuation_ids": [
+        "column 1->2"
+      ]
     },
     "J-heading": {
       "document": "gen_columns_ja_heading",
@@ -1072,7 +1130,9 @@
         "quality": null,
         "continued_editing": null
       },
-      "seconds": 1.05
+      "seconds": 1.13,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
     },
     "J-image": {
       "document": "gen_columns_ja_image",
@@ -1089,7 +1149,47 @@
         "quality": null,
         "continued_editing": null
       },
-      "seconds": 0.99
+      "seconds": 1.14,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "J-articles": {
+      "document": "gen_columns_ja_articles",
+      "kind": "generated",
+      "purpose": "column 1 ends mid-sentence at a full line; column 2 is another article in the same style without a heading: never used without approval",
+      "expected": "refused",
+      "outcome": "refused",
+      "as_expected": true,
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; candidate continuation(s) column 1->2 require explicit approval",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      },
+      "seconds": 0.94,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
+    },
+    "J-articles-tagged": {
+      "document": "gen_columns_ja_articles_tagged",
+      "kind": "generated",
+      "purpose": "tagged different articles: the structure does not connect the columns",
+      "expected": "refused",
+      "outcome": "refused",
+      "as_expected": true,
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; no continuation column is linked (rejected column 1->2: the tagged structure does not connect the columns)",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      },
+      "seconds": 1.18,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
     },
     "R-enterprise-fit": {
       "document": "lo_enterprise_en",
@@ -1123,7 +1223,9 @@
         "quality": true,
         "continued_editing": true
       },
-      "seconds": 21.34
+      "seconds": 16.95,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
     },
     "R-enterprise-grow": {
       "document": "lo_enterprise_en",
@@ -1140,7 +1242,9 @@
         "quality": null,
         "continued_editing": null
       },
-      "seconds": 25.79
+      "seconds": 22.86,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
     },
     "R-fusei-grow": {
       "document": "osaka_fusei_477",
@@ -1157,7 +1261,9 @@
         "quality": null,
         "continued_editing": null
       },
-      "seconds": 4.6
+      "seconds": 3.48,
+      "approve_continuation": [],
+      "engine_continuation_ids": []
     }
   },
   "recognition": {
@@ -1166,8 +1272,8 @@
         [
           0,
           1,
-          "determined",
-          "determined",
+          "candidate",
+          "candidate",
           true
         ]
       ],
@@ -1184,8 +1290,8 @@
         [
           0,
           1,
-          "determined",
-          "determined",
+          "candidate",
+          "candidate",
           true
         ]
       ],
@@ -1211,8 +1317,26 @@
         [
           0,
           1,
-          "determined",
-          "determined",
+          "candidate",
+          "candidate",
+          true
+        ]
+      ],
+      "gen_columns_ja_articles": [
+        [
+          0,
+          1,
+          "candidate",
+          "candidate",
+          true
+        ]
+      ],
+      "gen_columns_ja_articles_tagged": [
+        [
+          0,
+          1,
+          "not-linked",
+          "not-linked",
           true
         ]
       ],
@@ -1268,8 +1392,8 @@
       ]
     },
     "unexpected_links": {},
-    "correct": 12,
-    "total": 12
+    "correct": 14,
+    "total": 14
   },
   "survey": {
     "files": 7,
@@ -1343,10 +1467,10 @@
     ]
   },
   "summary": {
-    "steps": 26,
-    "as_expected": 26,
+    "steps": 29,
+    "as_expected": 29,
     "saved": 20,
-    "refused": 6,
+    "refused": 9,
     "tiers": {
       "safety": {
         "passed": 20,
