@@ -28,7 +28,7 @@ MANIFEST = Path('evaluations/paragraph_frame_indesign/manifest.json')
 RESULTS = MANIFEST.parent / 'results.json'
 CLASSES = [('transform', r'text matrix|rotated|mirrored|non-axis'),
            ('form', r'Form XObject|invocation'),
-           ('encoding', r'Unicode|ligature|ToUnicode|Identity-H|Widths|provenance|witness|one-code|occurrence not found|code mapping|line-join space'),
+           ('encoding', r'Unicode|ligature|ToUnicode|Identity-H|Widths|provenance|witness|one-code|occurrence not found|code mapping|line-join space|positional gap'),
            ('glyphs', r'missing source glyph|substitute'),
            ('marked-content', r'marked-content|scope|semantic|ActualText|span adapter|unbound marked'),
            ('paint', r'non-fill|transparent|source color|horizontal scale|text rise'),

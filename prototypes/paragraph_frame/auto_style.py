@@ -193,6 +193,13 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
         line=min(paragraph.baselines,key=lambda b:abs(b-t['origin'][1]))
         offset=t['origin'][1]-line
         t['baseline_offset']=offset if .01<abs(offset)<.35*t['size'] else 0.
+    # A wider gap between two glyphs of one line than the kept pen steps
+    # (a word space drawn as positioning, as TeX does, or wide letter
+    # spacing) has no token to carry it: the relayout would close it up.
+    line_of=lambda t:min(paragraph.baselines,key=lambda b:abs(b-t['origin'][1]))
+    for t,n in zip(base,base[1:]):
+        if line_of(t)==line_of(n) and t['text'].strip() and n['text'].strip() and n['origin'][0]-t['origin'][0]-t['advance']>.1*t['size']:
+            raise Refused('positional gap within a line without a space glyph (word space or letter spacing drawn by positioning) is unsupported')
     for t in base:
         for n,s in enumerate(paragraph.scopes):
             if s['content_byte_range'][0]<=t['event'].operator.start<s['content_byte_range'][1]:t['scope']=n;break

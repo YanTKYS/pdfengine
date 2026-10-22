@@ -160,7 +160,11 @@ def inside_text(boundaries, data, event, containers=()):
     if (not b.text_object or b.operator.end < low or b.marked_content_depth != depth or b.pending_path or b.pending_clip
             or b.state.tr >= 4 or clipping or not _axis_aligned(b.state.ctm)):
         return None
-    return b, b' '.join(number(v) for v in event.text_matrix) + b' Tm\n'
+    # The interpreter's text matrix went through a renderer's float32 round
+    # trip; a glyph-first operator carries the exact source arithmetic (later
+    # Td/T* moves are relative to it, so sub-pixel placement stays the same).
+    exact = event.atoms[0].source_text_matrix if event.atoms and not isinstance(event.atoms[0], (int, float)) else None
+    return b, b' '.join(number(v) for v in (exact or event.text_matrix)) + b' Tm\n'
 
 
 def insertion(boundary, frames, height):

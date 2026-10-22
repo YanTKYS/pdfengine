@@ -260,3 +260,22 @@ def test_indirect_font_dictionary_keeps_font_references(tmp_path):
     fonts = PdfReader(out).pages[0]['/Resources']['/Font']
     assert all(isinstance(fonts.raw_get(k), IndirectObject) for k in fonts)
     assert painting(str(out), 1)['fonts'].items() >= painting(str(source), 1)['fonts'].items()
+
+
+def test_positional_word_gap_without_space_glyph_is_refused(tmp_path):
+    """TeX-like spacing: a gap drawn by a TJ adjustment, with no space glyph, would close up on relayout."""
+    plain, _ = page_with(tmp_path, LINES, height=H)
+
+    streams = []
+
+    def gap(data):
+        # Split the second line's glyph string after four glyphs with a -400 (0.4 em) move.
+        streams.append(data)
+        if len(streams) != 2:
+            return data
+        return re.sub(rb'\[<([0-9a-f]{16})([0-9a-f]+)>\]TJ', rb'[<\1> -400 <\2>]TJ', data, count=1)
+    source = rewrite(plain, tmp_path / 'gap.pdf', gap)
+    with pytest.raises(Refused, match='positional gap within a line'):
+        propose(source, 1, '申請書は窓口で', '申請書は各窓口で')
+    # Other paragraphs of the page are not affected.
+    propose(source, 1, '後続段落です。', '後続の段落です。')
