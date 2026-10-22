@@ -22,7 +22,8 @@ def normalized(text):
     # A break between two Latin words is a word space (CJK lines join directly).
     result=''
     for line in (l.strip() for l in text.splitlines()):
-        if result and line and result[-1].isascii() and result[-1].isalnum() and line[0].isascii() and line[0].isalnum():result+=' '
+        # (the same rule as B2's logical text: not after a hyphen or a space).
+        if result and line and result[-1].isascii() and not result[-1].isspace() and result[-1]!='-' and line[0].isascii() and line[0].isalnum():result+=' '
         result+=line
     return result
 

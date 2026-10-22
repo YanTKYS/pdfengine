@@ -305,50 +305,150 @@ def phase_substitute(root, manifest, prior, subst, fonts):
             record['audit'] = summary_of_audit(result)
         out[case['id']] = record
         print(case['id'], record.get('choice'), record.get('audit', {}).get('outcome'), flush=True)
-    dump(root / 'substitute.json', out)
+    dump(root / 'substitute-results.json', out)
     return out
 
 
-def phase_search(root, manifest, prior, regression):
-    """Separate reader line-boundary search from PDF text information for failed searches."""
-    out = {}
-    for case in prior['requests']:
-        for kind, path, needle, audit_path in (
-                ('initial', regression / f"{case['id']}.pdf", case['new'], regression / f"{case['id']}.audit.json"),
-                ('reedit', regression / f"{case['id']}-reedit.pdf", case['reedit_new'], regression / f"{case['id']}.lifecycle.audit.json")):
-            if not path.exists() or not audit_path.exists():
-                continue
-            result = load(audit_path)
-            failed = [k for k in result['failed'] if k.endswith('_copy_extract') or k == 'native_replacement_search']
-            if not failed:
-                continue
-            spec = prior['documents'][case['document']]
-            with pymupdf.open(path) as d:
-                page = d[spec['page'] - 1]
-                lines = [''.join(s['text'] for s in l['spans']) for b in page.get_text('dict')['blocks'] if 'lines' in b for l in b['lines']]
-                text = page.get_text()
-                hits = page.search_for(needle)
-            joined = normalized(text)
-            text_layer = extract(str(path), spec['page'], root)
-            crosses = not any(needle in l for l in lines)
-            out[f"{case['id']}-{kind}"] = dict(
-                failed=failed, needle=needle, internal_drawn_text_exact=result['checks'].get('exact_drawn_paragraphs'),
-                needle_crosses_reader_line=crosses, mupdf_search_hits=len(hits),
-                mupdf_text_joined_contains=needle in joined, poppler_text_joined_contains=needle in normalized(text_layer['poppler']),
-                classification=('reader line-boundary search (text information correct)'
-                                if result['checks'].get('exact_drawn_paragraphs') and crosses and needle in joined else
-                                'reader extraction spacing (inferred space inside the selection)' if result['checks'].get('exact_drawn_paragraphs') and not crosses else
+def classify_search(path, page, needle, result, root):
+    """Separate reader line-boundary search from PDF text information for one output."""
+    with pymupdf.open(path) as d:
+        p = d[page - 1]
+        lines = [''.join(s['text'] for s in l['spans']) for b in p.get_text('dict')['blocks'] if 'lines' in b for l in b['lines']]
+        joined = normalized(p.get_text())
+        hits = p.search_for(needle)
+    poppler = normalized(extract(str(path), page, root)['poppler'])
+    exact = result['checks'].get('exact_drawn_paragraphs')
+    crosses = not any(needle in l for l in lines)
+    spaceless = needle.replace(' ', '') in joined.replace(' ', '')
+    return dict(needle=needle, internal_drawn_text_exact=exact, needle_crosses_reader_line=crosses, mupdf_search_hits=len(hits),
+                mupdf_text_joined_contains=needle in joined, poppler_text_joined_contains=needle in poppler,
+                space_insensitive_contains=spaceless,
+                classification=('reader line-boundary search (PDF text information correct)' if exact and crosses and needle in joined else
+                                'reader-inferred space inside the selection (PDF text information correct)' if exact and spaceless else
                                 'PDF text information'))
+
+
+def phase_search(root, manifest, prior, regression, sequences):
+    out = {}
+    if regression:
+        for case in prior['requests']:
+            for kind, path, needle, audit_path in (
+                    ('initial', regression / f"{case['id']}.pdf", case['new'], regression / f"{case['id']}.audit.json"),
+                    ('reedit', regression / f"{case['id']}-reedit.pdf", case['reedit_new'], regression / f"{case['id']}.lifecycle.audit.json")):
+                if not path.exists() or not audit_path.exists():
+                    continue
+                result = load(audit_path)
+                failed = [k for k in result['failed'] if k.endswith('_copy_extract') or k == 'native_replacement_search']
+                if failed:
+                    page = prior['documents'][case['document']]['page']
+                    out[f"{case['id']}-{kind}"] = dict(failed=failed, **classify_search(path, page, needle, result, root / 'search'))
+    if sequences:
+        for name, chain in load(sequences / 'sequences.json').items():
+            page = prior['documents'][chain['document']]['page']
+            for step in chain['steps']:
+                failed = step.get('audit', {}).get('failed', [])
+                failed = [k for k in failed if k.endswith('_copy_extract') or k == 'native_replacement_search']
+                if failed:
+                    folder = sequences / 'sequences' / name
+                    result = load(folder / f"step{step['step']}.audit.json")
+                    out[f"{name}-step{step['step']}"] = dict(failed=failed, **classify_search(folder / f"step{step['step']}.pdf", page, step['new'],
+                                                                                            result, root / 'search'))
     dump(root / 'search.json', out)
+    print(json.dumps({k: v['classification'] for k, v in out.items()}, ensure_ascii=False, indent=1))
     return out
+
+
+def compact(value, depth=0, limit=3):
+    """JSON with structure indented to ``limit`` levels; each deeper record on one line."""
+    if depth >= limit or not isinstance(value, (dict, list)) or not value:
+        return json.dumps(value, ensure_ascii=False, separators=(',', ':'), default=list)
+    pad, inner = ' ' * depth, ' ' * (depth + 1)
+    if isinstance(value, dict):
+        items = [inner + json.dumps(k, ensure_ascii=False) + ': ' + compact(v, depth + 1, limit) for k, v in value.items()]
+        return '{\n' + ',\n'.join(items) + '\n' + pad + '}'
+    return '[\n' + ',\n'.join(inner + compact(v, depth + 1, limit) for v in value) + '\n' + pad + ']'
+
+
+def phase_collect(root, manifest, prior, regression, tests):
+    """Compact, git-managed evidence; detailed audits/PDFs/rasters stay under the roots."""
+    pr87 = load(Path('evaluations/paragraph_frame_generalization/results.json'))
+    reg = {}
+    for case in prior['requests']:
+        k = case['id']
+        first, again, noop = (load(regression / f'{k}{suffix}.json') for suffix in ('.audit', '.lifecycle.audit', '.noop.audit'))
+        save = load(regression / f'{k}.save.json')
+        old = pr87['cases'][k]['arms']['B2']
+        reg[k] = dict(initial=dict(quality=first['outcome'], failed=first['failed'], pdf_sha256=first['output_sha256'],
+                                   outside_pixels={r: sum(v['outside_pixels'] for v in rows) for r, rows in first['pixels'].items()}),
+                      pdf_alone_reedit=dict(quality=again['outcome'], failed=again['failed'], pdf_sha256=again['output_sha256']),
+                      noop=noop['outcome'], stored_conditions_written=save['stored_conditions']['written'],
+                      font_counts=save['font_counts'], pr87_font_counts=old['font_counts'],
+                      lines_same_as_pr87=[l['text'] for l in save['lines']] == [l['text'] for l in old['lines']],
+                      line_lengths=[len(l['text']) for l in save['lines']], pr87_line_lengths=[len(l['text']) for l in old['lines']],
+                      pr87=dict(initial=old['quality'], failed=old['failed_checks'], reedit=old['lifecycle']['quality']))
+    sequences = load(root / 'sequences.json')
+    for chain in sequences.values():
+        for step in chain['steps']:
+            step.pop('rows', None)
+    new = load(root / 'new.json')
+    for record in new.values():
+        for arm in ('B2',):
+            record[arm].pop('warnings', None)
+    substitute = load(root / 'substitute-results.json')
+    search = load(root / 'search.json')
+    def axis(chain):
+        steps = chain['steps']
+        return dict(saved=sum(s['outcome'] == 'saved' for s in steps), steps=len(steps),
+                    safety_pass=sum(s.get('audit', {}).get('outcome') in ('success', 'quality-audit-failed') for s in steps),
+                    quality_pass=sum(s.get('audit', {}).get('outcome') == 'success' for s in steps),
+                    restore_equals_original=next((s.get('restore_equals_original') for s in steps if s['category'] == 'restore-original-text'), None),
+                    approved_conditions_kept=all(abs(s['proposed']['left'] - steps[0]['proposed']['left']) < .01
+                                                 and abs(s['proposed']['right'] - steps[0]['proposed']['right']) < .01
+                                                 and abs(s['proposed']['line_height'] - steps[0]['proposed']['line_height']) < .01
+                                                 for s in steps if 'proposed' in s))
+    result = dict(
+        schema='paragraph-frame-continuity-results-1', recorded='2026-10-22', base_commit='279736f',
+        manifest=dict(path=str(MANIFEST), sha256=sha(MANIFEST), frozen_commit='8f93488'),
+        sources_unchanged={d['id']: sha(d['path']) == d['sha256'] for d in list(prior['documents'].values()) + [x for x in manifest['documents'].values() if 'regions' in x]},
+        tests=tests,
+        evaluation_axes=dict(
+            editing='requested text saved (B2 saves include refusal before publication when a gate fails)',
+            display_semantic_quality='independent audit: safety checks + copy/extract + native search',
+            continuity='chains: approved left/right/leading kept, restore-original-text reproduces original lines, x and baselines'),
+        summary=dict(
+            regression=dict(initial_quality=dict(Counter(v['initial']['quality'] for v in reg.values())),
+                            pdf_alone_reedit_quality=dict(Counter(v['pdf_alone_reedit']['quality'] for v in reg.values())),
+                            noop=dict(Counter(v['noop'] for v in reg.values())),
+                            same_outcomes_as_pr87=all(v['initial']['quality'] == v['pr87']['initial'] and v['initial']['failed'] == v['pr87']['failed']
+                                                      and v['pdf_alone_reedit']['quality'] == v['pr87']['reedit'] for v in reg.values())),
+            sequences={k: axis(v) for k, v in sequences.items()},
+            new=dict(B2=dict(Counter(r['B2']['edit'] + ('/' + r['B2']['audit']['outcome'] if r['B2'].get('audit') else '') for r in new.values())),
+                     A=dict(Counter(r['A']['edit'] for r in new.values())), B1=dict(Counter(r['B1']['edit'] for r in new.values()))),
+            search=dict(Counter(v['classification'] for v in search.values()))),
+        regression=reg, sequences=sequences, new=new, substitute=substitute, search=search,
+        local_artifacts=dict(regression=str(regression), continuity=str(root),
+                             note='generated PDFs, rasters and detailed audit JSON are regenerable and stay local'),
+        reproduce=[
+            '.venv/bin/python -m pytest -q tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_poc.py tests/test_paragraph_frame_continuity.py',
+            '.venv/bin/python -m prototypes.paragraph_frame.continuity_preflight  # must reproduce the committed manifest',
+            'for p in initial audit lifecycle; do .venv/bin/python -m prototypes.paragraph_frame.generalization_evaluate --root tmp/<reg> --phase $p; done',
+            '.venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase sequences',
+            '.venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase new',
+            '.venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase substitute --fonts <BIZUDMincho-Regular.ttf> <BIZUDGothic-Regular.ttf>',
+            '.venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase search --regression-root tmp/<reg> --sequences-root tmp/<new>',
+            '.venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase collect --regression-root tmp/<reg> --tests <file>'])
+    RESULTS.write_text(compact(result) + '\n')
+    print(json.dumps(result['summary'], ensure_ascii=False, indent=1))
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', required=True, type=Path)
-    parser.add_argument('--phase', required=True, choices=['sequences', 'new', 'substitute', 'search'])
+    parser.add_argument('--phase', required=True, choices=['sequences', 'new', 'substitute', 'search', 'collect'])
     parser.add_argument('--regression-root', type=Path, help='root used for generalization_evaluate (search phase)')
+    parser.add_argument('--sequences-root', type=Path, help='root of the sequences phase (search phase)')
     parser.add_argument('--fonts', nargs='*', default=[], help='additional approved substitute candidates (substitute phase)')
+    parser.add_argument('--tests', type=Path, help='JSON file with the focused test record (collect phase)')
     args = parser.parse_args()
     manifest, prior = load(MANIFEST), load(PRIOR)
     for spec in list(prior['documents'].values()) + [d for d in manifest['documents'].values() if 'regions' in d]:
@@ -362,8 +462,10 @@ def main():
         phase_new(args.root, manifest, subst)
     elif args.phase == 'substitute':
         phase_substitute(args.root, manifest, prior, subst, args.fonts)
+    elif args.phase == 'search':
+        phase_search(args.root, manifest, prior, args.regression_root, args.sequences_root)
     else:
-        phase_search(args.root, manifest, prior, args.regression_root)
+        phase_collect(args.root, manifest, prior, args.regression_root, load(args.tests) if args.tests else None)
 
 
 if __name__ == '__main__':

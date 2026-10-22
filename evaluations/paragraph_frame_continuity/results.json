@@ -1,0 +1,580 @@
+{
+ "schema": "paragraph-frame-continuity-results-1",
+ "recorded": "2026-10-22",
+ "base_commit": "279736f",
+ "manifest": {
+  "path": "evaluations/paragraph_frame_continuity/manifest.json",
+  "sha256": "a52e014612bb9bbf29bbdd6a6a3d8a7964dc1f037c5878e35edf85463ae9474a",
+  "frozen_commit": "8f93488"
+ },
+ "sources_unchanged": {
+  "word_osaka_guideline": true,
+  "lo_migration_ja": true,
+  "word_osaka_fire_notice": true,
+  "lo_newfeatures_ja": true,
+  "lo_enterprise_en": true,
+  "word_osaka_symposium": true
+ },
+ "tests": {
+  "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_poc.py tests/test_paragraph_frame_continuity.py",
+  "result": "37 passed in 31.04s (run concurrently with the evaluation processes)",
+  "scope": "every test module importing prototypes.paragraph_frame; pdfeditor modules were not changed",
+  "full_suite": "not run (CLAUDE.md focused policy; no pdfeditor module changed)"
+ },
+ "evaluation_axes": {
+  "editing": "requested text saved (B2 saves include refusal before publication when a gate fails)",
+  "display_semantic_quality": "independent audit: safety checks + copy/extract + native search",
+  "continuity": "chains: approved left/right/leading kept, restore-original-text reproduces original lines, x and baselines"
+ },
+ "summary": {
+  "regression": {
+   "initial_quality": {"success":8,"quality-audit-failed":4},
+   "pdf_alone_reedit_quality": {"success":11,"quality-audit-failed":1},
+   "noop": {"success":12},
+   "same_outcomes_as_pr87": true
+  },
+  "sequences": {
+   "Q1-stored": {"saved":4,"steps":4,"safety_pass":4,"quality_pass":3,"restore_equals_original":true,"approved_conditions_kept":true},
+   "Q1-inference": {"saved":4,"steps":4,"safety_pass":4,"quality_pass":2,"restore_equals_original":false,"approved_conditions_kept":false},
+   "Q2-stored": {"saved":4,"steps":4,"safety_pass":4,"quality_pass":2,"restore_equals_original":true,"approved_conditions_kept":true},
+   "Q2-inference": {"saved":4,"steps":4,"safety_pass":4,"quality_pass":2,"restore_equals_original":false,"approved_conditions_kept":false},
+   "Q3-stored": {"saved":4,"steps":4,"safety_pass":4,"quality_pass":2,"restore_equals_original":true,"approved_conditions_kept":true},
+   "Q3-inference": {"saved":4,"steps":4,"safety_pass":4,"quality_pass":2,"restore_equals_original":false,"approved_conditions_kept":false}
+  },
+  "new": {
+   "B2": {"saved/success":3,"refused":5},
+   "A": {"refused":6,"not attempted":2},
+   "B1": {"refused":8}
+  },
+  "search": {
+   "reader line-boundary search (PDF text information correct)": 15,
+   "reader-inferred space inside the selection (PDF text information correct)": 1
+  }
+ },
+ "regression": {
+  "A": {
+   "initial": {"quality":"success","failed":[],"pdf_sha256":"2d120112dbb0cb5874500cbc9d37e784604f416e7bea83b04b85a75143cd5131","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"77bd581742f1d2e895855c8c83df2697390456bf8d582adc6e5dbdb00640632e"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":47,"source-code-witness":1},
+   "pr87_font_counts": {"retained-source":47,"source-code-witness":1},
+   "lines_same_as_pr87": true,
+   "line_lengths": [42,6],
+   "pr87_line_lengths": [42,6],
+   "pr87": {"initial":"success","failed":[],"reedit":"success"}
+  },
+  "B": {
+   "initial": {"quality":"success","failed":[],"pdf_sha256":"2fcebc80cccccdc8eecb1d4cce3f5a90d66f11fb4220641966a5d65e0b2990d4","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"c97e97fa8330b5aab2ad3469d3d3a48395aa3df8a0b1d6c941590ad7e2421f21"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":43,"source-code-witness":23,"approved-substitute":4},
+   "pr87_font_counts": {"retained-source":43,"source-code-witness":23,"approved-substitute":4},
+   "lines_same_as_pr87": true,
+   "line_lengths": [42,28],
+   "pr87_line_lengths": [42,28],
+   "pr87": {"initial":"success","failed":[],"reedit":"success"}
+  },
+  "C": {
+   "initial": {"quality":"success","failed":[],"pdf_sha256":"0a6635e534d0314203747d96e052835ca6028bc23f6ef4b44eed7f18ba3e6aac","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"9982cba9e72ecdce4f0f6cec4ecd3c238c4a926df9b99da731362d02d14938c0"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":94,"source-code-witness":3},
+   "pr87_font_counts": {"retained-source":94,"source-code-witness":3},
+   "lines_same_as_pr87": true,
+   "line_lengths": [50,47],
+   "pr87_line_lengths": [50,47],
+   "pr87": {"initial":"success","failed":[],"reedit":"success"}
+  },
+  "D": {
+   "initial": {"quality":"success","failed":[],"pdf_sha256":"fd236f7fdff5c01b10080a499169663076df8c00c6dea4be8bec9c475f42496a","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"2c0612ff1ffe5505bf95bc9103c9481166f26e5a2d6436ea7f507720ddc96309"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":107,"source-code-witness":27,"sibling-subset-witness":9,"approved-substitute":4,"source-resource-witness":2},
+   "pr87_font_counts": {"retained-source":107,"source-code-witness":27,"approved-substitute":15},
+   "lines_same_as_pr87": true,
+   "line_lengths": [50,51,48],
+   "pr87_line_lengths": [50,51,48],
+   "pr87": {"initial":"success","failed":[],"reedit":"success"}
+  },
+  "F1": {
+   "initial": {"quality":"success","failed":[],"pdf_sha256":"acb5831358b914b1df164362af2db4506f9cdc84bfde86ac3079798be29c7053","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"961cb42f8ff574dbb1e82751809c7f6639da80ff1b879c1df0ed6f5ed7b971cc"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"approved-substitute":2,"retained-source":74},
+   "pr87_font_counts": {"approved-substitute":2,"retained-source":74},
+   "lines_same_as_pr87": true,
+   "line_lengths": [45,31],
+   "pr87_line_lengths": [45,31],
+   "pr87": {"initial":"success","failed":[],"reedit":"success"}
+  },
+  "F2": {
+   "initial": {"quality":"success","failed":[],"pdf_sha256":"ab3f315e4be412b9208e8fb11547d180acf0dc63b3183719a0202a60cd87a2f6","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"141ea3fac9f9474459dd739cea70d9d8acb94d326e04d5045fc858fc34dedd0d"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":63,"source-code-witness":7},
+   "pr87_font_counts": {"retained-source":63,"source-code-witness":7},
+   "lines_same_as_pr87": true,
+   "line_lengths": [45,25],
+   "pr87_line_lengths": [45,25],
+   "pr87": {"initial":"success","failed":[],"reedit":"success"}
+  },
+  "F3": {
+   "initial": {"quality":"quality-audit-failed","failed":["native_replacement_search"],"pdf_sha256":"02cf42e8ea4a3e787438bed43da610d452de34884692af2d2eb1301397979e77","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"66a9fcc7903b80f77c1ef28b1bc7fe67256859d8dff96150ada1f5e9e680ca3b"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":76,"approved-substitute":15,"same-program-new-code":1,"source-code-witness":25},
+   "pr87_font_counts": {"retained-source":76,"approved-substitute":15,"same-program-new-code":1,"source-code-witness":25},
+   "lines_same_as_pr87": false,
+   "line_lengths": [45,47,25],
+   "pr87_line_lengths": [45,46,26],
+   "pr87": {"initial":"quality-audit-failed","failed":["native_replacement_search"],"reedit":"success"}
+  },
+  "F4": {
+   "initial": {"quality":"quality-audit-failed","failed":["native_replacement_search"],"pdf_sha256":"76e41f9552b2982e1ff8f3ed1a332c967aa7e152eb53ea4b5f1c7da13ee507a6","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"quality-audit-failed","failed":["native_replacement_search"],"pdf_sha256":"082671567047571dc291abbb4f640f278563e837a2fe8b33d2b91bf799cdba52"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":66,"source-code-witness":11,"approved-substitute":3},
+   "pr87_font_counts": {"retained-source":66,"source-code-witness":11,"approved-substitute":3},
+   "lines_same_as_pr87": false,
+   "line_lengths": [47,33],
+   "pr87_line_lengths": [45,35],
+   "pr87": {"initial":"quality-audit-failed","failed":["native_replacement_search"],"reedit":"quality-audit-failed"}
+  },
+  "N1": {
+   "initial": {"quality":"success","failed":[],"pdf_sha256":"1b4a51bbf9b8fa8543188dcf3f705452d957d95c3a6df070447dddccd6471025","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"a203602eb8ef6113b51f3699feda712837eab73ed2576c47beada6705be59c7a"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":65,"approved-substitute":1,"source-code-witness":2},
+   "pr87_font_counts": {"retained-source":65,"approved-substitute":1,"source-code-witness":2},
+   "lines_same_as_pr87": true,
+   "line_lengths": [62,6],
+   "pr87_line_lengths": [62,6],
+   "pr87": {"initial":"success","failed":[],"reedit":"success"}
+  },
+  "N2": {
+   "initial": {"quality":"success","failed":[],"pdf_sha256":"ad8319e85dafe0bbed7bddd048d906673e0c688b416bc3c0a02659d4a6ef1920","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"9e72c48eaa6f17ff0d32ddb7b3d75eb4479c698fa15a6670833f5198e044413d"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":53,"approved-substitute":1,"source-code-witness":1},
+   "pr87_font_counts": {"retained-source":53,"approved-substitute":1,"source-code-witness":1},
+   "lines_same_as_pr87": true,
+   "line_lengths": [55],
+   "pr87_line_lengths": [55],
+   "pr87": {"initial":"success","failed":[],"reedit":"success"}
+  },
+  "N3": {
+   "initial": {"quality":"quality-audit-failed","failed":["native_replacement_search"],"pdf_sha256":"c86a8c1309640495286c50acc7ee2f759874144c70830a53f0087a32abe391dc","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"a63528cb9e3b7637f96a467a57afe05d488b57a36eab5158179919dede19ce04"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":68,"approved-substitute":13,"source-code-witness":31,"sibling-subset-witness":10,"source-resource-witness":3},
+   "pr87_font_counts": {"retained-source":68,"approved-substitute":26,"source-code-witness":31},
+   "lines_same_as_pr87": false,
+   "line_lengths": [62,53,10],
+   "pr87_line_lengths": [62,52,11],
+   "pr87": {"initial":"quality-audit-failed","failed":["native_replacement_search"],"reedit":"success"}
+  },
+  "N4": {
+   "initial": {"quality":"quality-audit-failed","failed":["mupdf_copy_extract","poppler_copy_extract","native_replacement_search"],"pdf_sha256":"58f44a8e4176c7c3a029e82c12b453d440f6baba4ef3c8dfbeaf264d52aebad1","outside_pixels":{"mupdf":0,"poppler":0}},
+   "pdf_alone_reedit": {"quality":"success","failed":[],"pdf_sha256":"26f2bd0b73b26d192c017ae7b28c53d732d2057ab34af0172ac8f006dfde7367"},
+   "noop": "success",
+   "stored_conditions_written": true,
+   "font_counts": {"retained-source":63,"source-resource-witness":1,"source-code-witness":2,"approved-substitute":1},
+   "pr87_font_counts": {"retained-source":63,"approved-substitute":2,"source-code-witness":2},
+   "lines_same_as_pr87": true,
+   "line_lengths": [62,5],
+   "pr87_line_lengths": [62,5],
+   "pr87": {"initial":"quality-audit-failed","failed":["mupdf_copy_extract","poppler_copy_extract","native_replacement_search"],"reedit":"success"}
+  }
+ },
+ "sequences": {
+  "Q1-stored": {
+   "sequence": "Q1",
+   "document": "newfeatures",
+   "tagged": false,
+   "mode": "stored",
+   "original": {"lines":2,"first_x":34.1,"continuation_x":[28.5],"right_extent":566.895,"pitch":[15.7],"first_baseline":128.8,"fonts":["/F1"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},
+   "steps": [{"step":1,"category":"shorten-to-one-line","old":"追加・更新された幾つかの注目の新機能","new":"主な新機能","outcome":"saved","seconds":6.27,"pdf_sha256":"713fa69a6a93cd79c0fb989479a9ecea0294507f803cf1b7983e6236ec8bced0","conditions":"absent","proposed":{"left":28.5,"right":566.885,"first_x":34.1,"line_height":15.7,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で主な新機能をご紹介します。"],"font_counts":{"retained-source":53,"approved-substitute":1,"source-code-witness":1},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"absent","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"713fa69a6a93cd79c0fb989479a9ecea0294507f803cf1b7983e6236ec8bced0","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[]},"layout":{"lines":1,"first_x":34.1,"continuation_x":[],"right_extent":487.457,"pitch":[],"first_baseline":128.8,"fonts":["/F1","/PFAuto7"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},"followers_at_original_positions":true},{"step":2,"category":"restore-original-text","old":"主な新機能","new":"追加・更新された幾つかの注目の新機能","outcome":"saved","seconds":5.82,"pdf_sha256":"4e6a945fa181f47facded8367b56428ea0c17edff7d61d9cab5d2171da1426e0","conditions":"applied","proposed":{"left":28.5,"right":566.885,"first_x":34.1,"line_height":15.7,"leading_basis":"approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"},"planned_lines":["LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご","紹介します。"],"font_counts":{"retained-source":53,"source-code-witness":9,"source-resource-witness":6},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":true,"status_before_edit":"applied","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"4e6a945fa181f47facded8367b56428ea0c17edff7d61d9cab5d2171da1426e0","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[]},"layout":{"lines":2,"first_x":34.1,"continuation_x":[28.5],"right_extent":565.24,"pitch":[15.7],"first_baseline":128.8,"fonts":["/F1"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},"restore_equals_original":true,"followers_at_original_positions":true},{"step":3,"category":"grow-beyond-original","old":"ご紹介します。","new":"ご紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。","outcome":"saved","seconds":7.5,"pdf_sha256":"08af012050c71201f7919999cc02745a470035b824625832cbe6c46c1fa7ad04","conditions":"applied","proposed":{"left":28.5,"right":566.885,"first_x":34.1,"line_height":15.7,"leading_basis":"approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"},"planned_lines":["LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご","紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。"],"font_counts":{"retained-source":68,"approved-substitute":7,"source-code-witness":19,"sibling-subset-witness":4,"source-resource-witness":2},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":true,"status_before_edit":"applied","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"08af012050c71201f7919999cc02745a470035b824625832cbe6c46c1fa7ad04","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[]},"layout":{"lines":2,"first_x":34.1,"continuation_x":[28.5],"right_extent":565.24,"pitch":[15.7],"first_baseline":128.8,"fonts":["/F1","/F5","/PFAuto8"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},"followers_at_original_positions":true},{"step":4,"category":"replace-other-text","old":"普段の作業で必要な機能","new":"日常業務でよく使う機能","outcome":"saved","seconds":8.87,"pdf_sha256":"ec248c9bbf9746009ba5dbb5e936d67eca7882e7c02ac029819850b0b1442d0c","conditions":"applied","proposed":{"left":28.5,"right":566.885,"first_x":34.1,"line_height":15.7,"leading_basis":"approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"},"planned_lines":["LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご","紹介します。導入前に変更点を確認し、日常業務でよく使う機能を試してください。"],"font_counts":{"retained-source":91,"source-resource-witness":1,"approved-substitute":3,"source-code-witness":5},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":true,"status_before_edit":"applied","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"ec248c9bbf9746009ba5dbb5e936d67eca7882e7c02ac029819850b0b1442d0c","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[]},"layout":{"lines":2,"first_x":34.1,"continuation_x":[28.5],"right_extent":565.24,"pitch":[15.7],"first_baseline":128.8,"fonts":["/F1","/F5","/PFAuto8","/PFAuto9"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},"followers_at_original_positions":true}],
+   "final_noop": "success"
+  },
+  "Q1-inference": {
+   "sequence": "Q1",
+   "document": "newfeatures",
+   "tagged": false,
+   "mode": "inference",
+   "original": {"lines":2,"first_x":34.1,"continuation_x":[28.5],"right_extent":566.895,"pitch":[15.7],"first_baseline":128.8,"fonts":["/F1"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},
+   "steps": [{"step":1,"category":"shorten-to-one-line","old":"追加・更新された幾つかの注目の新機能","new":"主な新機能","outcome":"saved","seconds":6.15,"pdf_sha256":"7ebce91f70755c286b34ad65d4808e3e478e095829e8eba2e1578a6b4da55f07","conditions":"not consulted","proposed":{"left":28.5,"right":566.885,"first_x":34.1,"line_height":15.7,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で主な新機能をご紹介します。"],"font_counts":{"retained-source":53,"approved-substitute":1,"source-code-witness":1},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"7ebce91f70755c286b34ad65d4808e3e478e095829e8eba2e1578a6b4da55f07","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[]},"layout":{"lines":1,"first_x":34.1,"continuation_x":[],"right_extent":487.457,"pitch":[],"first_baseline":128.8,"fonts":["/F1","/PFAuto7"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},"followers_at_original_positions":true},{"step":2,"category":"restore-original-text","old":"主な新機能","new":"追加・更新された幾つかの注目の新機能","outcome":"saved","seconds":6.57,"pdf_sha256":"08840e51d50af759f8881e1833438b4b9d8c6d385e9e4204aeafcc325a0467a9","conditions":"not consulted","proposed":{"left":34.1,"right":487.457,"first_x":34.1,"line_height":16.5,"leading_basis":"unobserved: 1.5 em default"},"planned_lines":["LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの","注目の新機能をご紹介します。"],"font_counts":{"retained-source":53,"source-code-witness":9,"source-resource-witness":6},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"08840e51d50af759f8881e1833438b4b9d8c6d385e9e4204aeafcc325a0467a9","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[]},"layout":{"lines":2,"first_x":34.1,"continuation_x":[34.1],"right_extent":480.057,"pitch":[16.5],"first_baseline":128.8,"fonts":["/F1"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},"restore_equals_original":false,"followers_at_original_positions":true},{"step":3,"category":"grow-beyond-original","old":"ご紹介します。","new":"ご紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。","outcome":"saved","seconds":7.39,"pdf_sha256":"69e6ce779130369fc45e1242eb837cc39f38c5349f8a61cef4a71497ebc0dc4a","conditions":"not consulted","proposed":{"left":34.1,"right":480.046,"first_x":34.1,"line_height":16.5,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの","注目の新機能をご紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してく","ださい。"],"font_counts":{"retained-source":68,"approved-substitute":7,"source-code-witness":19,"sibling-subset-witness":4,"source-resource-witness":2},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"69e6ce779130369fc45e1242eb837cc39f38c5349f8a61cef4a71497ebc0dc4a","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[]},"layout":{"lines":3,"first_x":34.1,"continuation_x":[34.1],"right_extent":480.057,"pitch":[16.5],"first_baseline":128.8,"fonts":["/F1","/F5","/PFAuto8"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},"followers_at_original_positions":true},{"step":4,"category":"replace-other-text","old":"普段の作業で必要な機能","new":"日常業務でよく使う機能","outcome":"saved","seconds":7.96,"pdf_sha256":"e2a7ab71174556818598950d85a057d23c3ecefaa7411479b5ca2a237194afdc","conditions":"not consulted","proposed":{"left":34.1,"right":480.046,"first_x":34.1,"line_height":16.5,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの","注目の新機能をご紹介します。導入前に変更点を確認し、日常業務でよく使う機能を試してく","ださい。"],"font_counts":{"retained-source":91,"source-resource-witness":1,"approved-substitute":3,"source-code-witness":5},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"e2a7ab71174556818598950d85a057d23c3ecefaa7411479b5ca2a237194afdc","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[]},"layout":{"lines":3,"first_x":34.1,"continuation_x":[34.1],"right_extent":480.057,"pitch":[16.5],"first_baseline":128.8,"fonts":["/F1","/F5","/PFAuto8","/PFAuto9"],"sizes":[11.0],"fills":["[\"rg\", [0.0, 0.0, 0.0]]"]},"followers_at_original_positions":true}],
+   "final_noop": "success"
+  },
+  "Q2-stored": {
+   "sequence": "Q2",
+   "document": "osaka",
+   "tagged": true,
+   "mode": "stored",
+   "original": {"lines":2,"first_x":81.504,"continuation_x":[70.944],"right_extent":522.914,"pitch":[18.0],"first_baseline":346.13,"fonts":["/F1"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},
+   "steps": [{"step":1,"category":"shorten-to-one-line","old":"国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。","new":"ガイドラインを送付します。","outcome":"saved","seconds":6.98,"pdf_sha256":"cdae022a381bc81eca2ba7d24d0d8fa3d6f04a3fc609e96f95924d06e3ef35db","conditions":"absent","proposed":{"left":70.944,"right":528.1,"first_x":81.504,"line_height":18.0,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["標記につきまして、ガイドラインを送付します。 "],"font_counts":{"retained-source":14,"source-code-witness":8,"approved-substitute":1},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"absent","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"cdae022a381bc81eca2ba7d24d0d8fa3d6f04a3fc609e96f95924d06e3ef35db","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":-18.0,"translation_spread":0.0}]},"layout":{"lines":1,"first_x":81.504,"continuation_x":[],"right_extent":313.224,"pitch":[],"first_baseline":346.13,"fonts":["/F1","/PFAuto4"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":false},{"step":2,"category":"restore-original-text","old":"ガイドラインを送付します。","new":"国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。","outcome":"saved","seconds":7.2,"pdf_sha256":"8d07446ee086f97b80b5b83ad9a8866bf21030cecc75a5816bded380762b5ec1","conditions":"applied","proposed":{"left":70.944,"right":528.1,"first_x":81.504,"line_height":18.0,"leading_basis":"approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"},"planned_lines":["標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送","付いたします。 "],"font_counts":{"retained-source":14,"source-code-witness":30,"same-program-new-code":6},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":true,"status_before_edit":"applied","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"8d07446ee086f97b80b5b83ad9a8866bf21030cecc75a5816bded380762b5ec1","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":18.0,"translation_spread":0.0}]},"layout":{"lines":2,"first_x":81.504,"continuation_x":[70.944],"right_extent":524.54,"pitch":[18.0],"first_baseline":346.13,"fonts":["/F1","/PFAuto5"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"restore_equals_original":true,"followers_at_original_positions":true},{"step":3,"category":"grow-beyond-original","old":"参考に送付いたします。","new":"参考に送付いたします。内容を確認のうえ、関係者への周知をお願いします。","outcome":"saved","seconds":9.17,"pdf_sha256":"932eb69859051fcf995980ca3252b1abb674300774cf2898ef57893505fb1aeb","conditions":"applied","proposed":{"left":70.944,"right":528.1,"first_x":81.504,"line_height":18.0,"leading_basis":"approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"},"planned_lines":["標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送","付いたします。内容を確認のうえ、関係者への周知をお願いします。 "],"font_counts":{"retained-source":50,"source-code-witness":17,"approved-substitute":7},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":true,"status_before_edit":"applied","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"932eb69859051fcf995980ca3252b1abb674300774cf2898ef57893505fb1aeb","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"layout":{"lines":2,"first_x":81.504,"continuation_x":[70.944],"right_extent":524.54,"pitch":[18.0],"first_baseline":346.13,"fonts":["/F1","/PFAuto5","/PFAuto6"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":true},{"step":4,"category":"replace-other-text","old":"関係者への周知","new":"会員への周知","outcome":"saved","seconds":7.53,"pdf_sha256":"6de9c237b1c1dbc0fa3268d7e39e30aae1a52a3f4115dcfc5378eb96530765ab","conditions":"applied","proposed":{"left":70.944,"right":528.1,"first_x":81.504,"line_height":18.0,"leading_basis":"approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"},"planned_lines":["標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送","付いたします。内容を確認のうえ、会員への周知をお願いします。 "],"font_counts":{"retained-source":71,"source-code-witness":2},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":true,"status_before_edit":"applied","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"6de9c237b1c1dbc0fa3268d7e39e30aae1a52a3f4115dcfc5378eb96530765ab","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"layout":{"lines":2,"first_x":81.504,"continuation_x":[70.944],"right_extent":524.54,"pitch":[18.0],"first_baseline":346.13,"fonts":["/F1","/PFAuto5","/PFAuto6"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":true}],
+   "final_noop": "success"
+  },
+  "Q2-inference": {
+   "sequence": "Q2",
+   "document": "osaka",
+   "tagged": true,
+   "mode": "inference",
+   "original": {"lines":2,"first_x":81.504,"continuation_x":[70.944],"right_extent":522.914,"pitch":[18.0],"first_baseline":346.13,"fonts":["/F1"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},
+   "steps": [{"step":1,"category":"shorten-to-one-line","old":"国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。","new":"ガイドラインを送付します。","outcome":"saved","seconds":6.97,"pdf_sha256":"48d28be31874a3910d19978c8289b75ccada0cc53a9c10f8b7961a417a4482a2","conditions":"not consulted","proposed":{"left":70.944,"right":528.1,"first_x":81.504,"line_height":18.0,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["標記につきまして、ガイドラインを送付します。 "],"font_counts":{"retained-source":14,"source-code-witness":8,"approved-substitute":1},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"48d28be31874a3910d19978c8289b75ccada0cc53a9c10f8b7961a417a4482a2","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":-18.0,"translation_spread":0.0}]},"layout":{"lines":1,"first_x":81.504,"continuation_x":[],"right_extent":313.224,"pitch":[],"first_baseline":346.13,"fonts":["/F1","/PFAuto4"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":false},{"step":2,"category":"restore-original-text","old":"ガイドラインを送付します。","new":"国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。","outcome":"saved","seconds":8.43,"pdf_sha256":"dafda21cedf17d26dd6a8de4093fb259fbe2eac9f5a0053d34c063db075da130","conditions":"not consulted","proposed":{"left":81.504,"right":528.1,"first_x":81.504,"line_height":18.0,"leading_basis":"peer paragraph gap"},"planned_lines":["標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送","付いたします。 "],"font_counts":{"retained-source":14,"source-code-witness":30,"same-program-new-code":6},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"dafda21cedf17d26dd6a8de4093fb259fbe2eac9f5a0053d34c063db075da130","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":18.0,"translation_spread":0.0}]},"layout":{"lines":2,"first_x":81.504,"continuation_x":[81.504],"right_extent":524.54,"pitch":[18.0],"first_baseline":346.13,"fonts":["/F1","/PFAuto5"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"restore_equals_original":false,"followers_at_original_positions":true},{"step":3,"category":"grow-beyond-original","old":"参考に送付いたします。","new":"参考に送付いたします。内容を確認のうえ、関係者への周知をお願いします。","outcome":"saved","seconds":9.03,"pdf_sha256":"b762447e0b00fc088c00cdc3841d0a6881d8ce65d7631226f60909d18cca1c09","conditions":"not consulted","proposed":{"left":81.504,"right":528.1,"first_x":81.504,"line_height":18.0,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送","付いたします。内容を確認のうえ、関係者への周知をお願いします。 "],"font_counts":{"retained-source":50,"source-code-witness":17,"approved-substitute":7},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"b762447e0b00fc088c00cdc3841d0a6881d8ce65d7631226f60909d18cca1c09","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"layout":{"lines":2,"first_x":81.504,"continuation_x":[81.504],"right_extent":524.54,"pitch":[18.0],"first_baseline":346.13,"fonts":["/F1","/PFAuto5","/PFAuto6"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":true},{"step":4,"category":"replace-other-text","old":"関係者への周知","new":"会員への周知","outcome":"saved","seconds":8.76,"pdf_sha256":"d58ccb1887b43158b90d9172536dcfc09d9a1a6e83aa2ff348c08a873f16b3ed","conditions":"not consulted","proposed":{"left":81.504,"right":528.1,"first_x":81.504,"line_height":18.0,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送","付いたします。内容を確認のうえ、会員への周知をお願いします。 "],"font_counts":{"retained-source":71,"source-code-witness":2},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"d58ccb1887b43158b90d9172536dcfc09d9a1a6e83aa2ff348c08a873f16b3ed","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"layout":{"lines":2,"first_x":81.504,"continuation_x":[81.504],"right_extent":524.54,"pitch":[18.0],"first_baseline":346.13,"fonts":["/F1","/PFAuto5","/PFAuto6"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":true}],
+   "final_noop": "success"
+  },
+  "Q3-stored": {
+   "sequence": "Q3",
+   "document": "fire",
+   "tagged": true,
+   "mode": "stored",
+   "original": {"lines":2,"first_x":64.464,"continuation_x":[53.88],"right_extent":547.072,"pitch":[19.8],"first_baseline":284.57,"fonts":["/F2"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},
+   "steps": [{"step":1,"category":"shorten-to-one-line","old":"地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。","new":"感染症対策をお願いします。","outcome":"saved","seconds":5.78,"pdf_sha256":"28257419b8e226283d38c7daec37134644df102cf26fbf93499777241e6be6ed","conditions":"absent","proposed":{"left":53.88,"right":547.072,"first_x":64.464,"line_height":19.8,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["標記災害に際して、感染症の発生及びまん延が懸念される場合は、感染症対策をお願いします。 "],"font_counts":{"retained-source":38,"source-code-witness":6},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"absent","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"28257419b8e226283d38c7daec37134644df102cf26fbf93499777241e6be6ed","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":-19.79998779296875,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":-19.79998779296875,"translation_spread":0.0}]},"layout":{"lines":1,"first_x":64.464,"continuation_x":[],"right_extent":509.106,"pitch":[],"first_baseline":284.57,"fonts":["/F2"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":false},{"step":2,"category":"restore-original-text","old":"感染症対策をお願いします。","new":"地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。","outcome":"saved","seconds":6.79,"pdf_sha256":"38e9aaf9cd6758958759911cfa5da36372cb32df6877b56d9264660fbf4959cd","conditions":"applied","proposed":{"left":53.88,"right":547.072,"first_x":64.464,"line_height":19.8,"leading_basis":"approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"},"planned_lines":["標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、","感染症対策を円滑かつ適切に実施いただくようお願いします。 "],"font_counts":{"retained-source":38,"source-code-witness":33,"same-program-new-code":5},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":true,"status_before_edit":"applied","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"38e9aaf9cd6758958759911cfa5da36372cb32df6877b56d9264660fbf4959cd","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0}]},"layout":{"lines":2,"first_x":64.464,"continuation_x":[53.88],"right_extent":547.072,"pitch":[19.8],"first_baseline":284.57,"fonts":["/F2","/PFAuto3"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"restore_equals_original":true,"followers_at_original_positions":true},{"step":3,"category":"grow-beyond-original","old":"お願いします。","new":"お願いします。関係機関と情報を共有してください。","outcome":"saved","seconds":9.25,"pdf_sha256":"00d5ea0518f9635d806872a62f6d8b48487341ac058e3e08046f2e42e2440e18","conditions":"applied","proposed":{"left":53.88,"right":547.072,"first_x":64.464,"line_height":19.8,"leading_basis":"approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"},"planned_lines":["標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の","上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関と情報を共有してく","ださい。 "],"font_counts":{"retained-source":76,"approved-substitute":5,"same-program-new-code":2,"source-code-witness":10},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":true,"status_before_edit":"applied","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"00d5ea0518f9635d806872a62f6d8b48487341ac058e3e08046f2e42e2440e18","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0}]},"layout":{"lines":3,"first_x":64.464,"continuation_x":[53.88],"right_extent":526.471,"pitch":[19.8],"first_baseline":284.57,"fonts":["/F2","/PFAuto3","/PFAuto4","/PFAuto5"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":false},{"step":4,"category":"replace-other-text","old":"円滑かつ適切に","new":"迅速かつ確実に","outcome":"saved","seconds":10.8,"pdf_sha256":"500abcaa4e677ec8ca8831f22b44fd63a0bd33ce2bbcc538bb13bf37a6db8d76","conditions":"applied","proposed":{"left":53.88,"right":547.072,"first_x":64.464,"line_height":19.8,"leading_basis":"approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"},"planned_lines":["標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の","上、感染症対策を迅速かつ確実に実施いただくようお願いします。関係機関と情報を共有してく","ださい。 "],"font_counts":{"retained-source":87,"approved-substitute":3,"source-code-witness":3},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":true,"status_before_edit":"applied","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"500abcaa4e677ec8ca8831f22b44fd63a0bd33ce2bbcc538bb13bf37a6db8d76","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"layout":{"lines":3,"first_x":64.464,"continuation_x":[53.88],"right_extent":526.471,"pitch":[19.8],"first_baseline":284.57,"fonts":["/F2","/PFAuto3","/PFAuto4","/PFAuto5","/PFAuto6"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":false}],
+   "final_noop": "success"
+  },
+  "Q3-inference": {
+   "sequence": "Q3",
+   "document": "fire",
+   "tagged": true,
+   "mode": "inference",
+   "original": {"lines":2,"first_x":64.464,"continuation_x":[53.88],"right_extent":547.072,"pitch":[19.8],"first_baseline":284.57,"fonts":["/F2"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},
+   "steps": [{"step":1,"category":"shorten-to-one-line","old":"地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。","new":"感染症対策をお願いします。","outcome":"saved","seconds":5.69,"pdf_sha256":"459316d51c13b06fb395a8cded048ee2d41c4f7a5d91468b91257ec85159e99a","conditions":"not consulted","proposed":{"left":53.88,"right":547.072,"first_x":64.464,"line_height":19.8,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["標記災害に際して、感染症の発生及びまん延が懸念される場合は、感染症対策をお願いします。 "],"font_counts":{"retained-source":38,"source-code-witness":6},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"459316d51c13b06fb395a8cded048ee2d41c4f7a5d91468b91257ec85159e99a","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":-19.79998779296875,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":-19.79998779296875,"translation_spread":0.0}]},"layout":{"lines":1,"first_x":64.464,"continuation_x":[],"right_extent":509.106,"pitch":[],"first_baseline":284.57,"fonts":["/F2"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":false},{"step":2,"category":"restore-original-text","old":"感染症対策をお願いします。","new":"地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。","outcome":"saved","seconds":7.6,"pdf_sha256":"c3bdab5b069fd355257629ce9d1425ef0cd02ea8dea0fe457db0205bee15dd25","conditions":"not consulted","proposed":{"left":53.88,"right":541.78,"first_x":64.464,"line_height":19.8,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の","上、感染症対策を円滑かつ適切に実施いただくようお願いします。 "],"font_counts":{"retained-source":38,"source-code-witness":33,"same-program-new-code":5},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"c3bdab5b069fd355257629ce9d1425ef0cd02ea8dea0fe457db0205bee15dd25","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0}]},"layout":{"lines":2,"first_x":64.464,"continuation_x":[53.88],"right_extent":526.731,"pitch":[19.8],"first_baseline":284.57,"fonts":["/F2","/PFAuto3"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"restore_equals_original":false,"followers_at_original_positions":true},{"step":3,"category":"grow-beyond-original","old":"お願いします。","new":"お願いします。関係機関と情報を共有してください。","outcome":"saved","seconds":10.46,"pdf_sha256":"2b8e78c3dcfa69cb1db6882cb12284ea1ee3d48ad4ca35a0dbf6fc2efe89edfe","conditions":"not consulted","proposed":{"left":53.88,"right":541.78,"first_x":64.464,"line_height":19.8,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の","上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関と情報を共有してく","ださい。 "],"font_counts":{"retained-source":76,"approved-substitute":5,"same-program-new-code":2,"source-code-witness":10},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"2b8e78c3dcfa69cb1db6882cb12284ea1ee3d48ad4ca35a0dbf6fc2efe89edfe","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0}]},"layout":{"lines":3,"first_x":64.464,"continuation_x":[53.88],"right_extent":526.731,"pitch":[19.8],"first_baseline":284.57,"fonts":["/F2","/PFAuto3","/PFAuto4","/PFAuto5"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":false},{"step":4,"category":"replace-other-text","old":"円滑かつ適切に","new":"迅速かつ確実に","outcome":"saved","seconds":11.6,"pdf_sha256":"6eaba57866b54530c898806905927d815768803c00f6c1d4db09b7d2c3139a74","conditions":"not consulted","proposed":{"left":53.88,"right":541.78,"first_x":64.464,"line_height":19.8,"leading_basis":"median within-paragraph observed gaps"},"planned_lines":["標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の","上、感染症対策を迅速かつ確実に実施いただくようお願いします。関係機関と情報を共有してく","ださい。 "],"font_counts":{"retained-source":87,"approved-substitute":3,"source-code-witness":3},"stored_after_save":{"written":true,"records_on_page":1,"applied_before_edit":false,"status_before_edit":"not consulted","reason":null},"audit":{"outcome":"success","failed":[],"output_sha256":"6eaba57866b54530c898806905927d815768803c00f6c1d4db09b7d2c3139a74","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"layout":{"lines":3,"first_x":64.464,"continuation_x":[53.88],"right_extent":526.731,"pitch":[19.8],"first_baseline":284.57,"fonts":["/F2","/PFAuto3","/PFAuto4","/PFAuto5","/PFAuto6"],"sizes":[10.56],"fills":["[\"g\", [0.0]]"]},"followers_at_original_positions":false}],
+   "final_noop": "success"
+  }
+ },
+ "new": {
+  "E1": {
+   "id": "E1",
+   "document": "enterprise",
+   "category": "same-length",
+   "old": "for a simple memo",
+   "new": "for a simple note",
+   "B2": {"edit":"saved","reason":null,"seconds":22.01,"lines":["Writer has all the features you need from a ","modern, full-featured word processor. It's ","simple enough to use for a simple note, and ","powerful enough to create complete books ","with contents, diagrams and indexes. You ","can concentrate on the message, while ","Writer will make it look great."],"font_counts":{"retained-source":272,"implicit-line-join":6,"source-code-witness":4},"alignment":"justify: non-final lines end at the right edge","containers":[[0.0,0.0,847.5,600.9000244140625]],"follower_translation":0.0,"pdf_sha256":"69989ceccaa27f3856a38d57f51fd590c9096403ecadf97d590dc2b2b1cef0dd","audit":{"outcome":"success","failed":[],"output_sha256":"69989ceccaa27f3856a38d57f51fd590c9096403ecadf97d590dc2b2b1cef0dd","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"reedit":{"edit":"saved","reason":null,"conditions":"applied","audit":{"outcome":"success","failed":[],"output_sha256":"a74d374e998162a0a66ed76e06757c13fe157a91ccd46894846e45c2526c1041","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"noop":"success"}},
+   "A": {"edit":"refused","routes":{"edit_intent":"refused","page_flow":"PdfError: line_ids must be consecutive in observed page order"}},
+   "B1": {"edit":"refused","reason":"Refused: expected exactly two indented paragraphs in the approved frame"}
+  },
+  "E2": {
+   "id": "E2",
+   "document": "enterprise",
+   "category": "shorten",
+   "old": "can be selected according to",
+   "new": "depends on",
+   "B2": {"edit":"refused","reason":"prototypes.paragraph_frame.engine.Refused: paragraph glyphs lack content-stream provenance: Unicode restoration is unavailable or multi-character ligature is unsupported","seconds":2.03},
+   "A": {"edit":"refused","routes":{"edit_intent":"refused","page_flow":"PdfError: line_ids must be consecutive in observed page order"}},
+   "B1": {"edit":"refused","reason":"Refused: expected exactly two indented paragraphs in the approved frame"}
+  },
+  "E3": {
+   "id": "E3",
+   "document": "enterprise",
+   "category": "grow-wrap",
+   "old": "Writer will make it look great.",
+   "new": "Writer will make it look great and keep it consistent.",
+   "B2": {"edit":"refused","reason":"prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame","seconds":25.24},
+   "A": {"edit":"refused","routes":{"edit_intent":"refused","page_flow":"PdfError: line_ids must be consecutive in observed page order"}},
+   "B1": {"edit":"refused","reason":"Refused: expected exactly two indented paragraphs in the approved frame"}
+  },
+  "E4": {
+   "id": "E4",
+   "document": "enterprise",
+   "category": "cross-line",
+   "old": "It's simple enough to use",
+   "new": "It is simple enough to use",
+   "B2": {"edit":"saved","reason":null,"seconds":19.13,"lines":["Writer has all the features you need from a ","modern, full-featured word processor. It is ","simple enough to use for a simple memo, ","and powerful enough to create complete ","books with contents, diagrams and indexes. ","You can concentrate on the message, while ","Writer will make it look great."],"font_counts":{"retained-source":275,"implicit-line-join":6,"source-code-witness":2},"alignment":"justify: non-final lines end at the right edge","containers":[[0.0,0.0,847.5,600.9000244140625]],"follower_translation":0.0,"pdf_sha256":"226fa10056dbff0fa42258aa4123fa24c59b1ae8106d7a69b03d9900e3b461b6","audit":{"outcome":"success","failed":[],"output_sha256":"226fa10056dbff0fa42258aa4123fa24c59b1ae8106d7a69b03d9900e3b461b6","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"reedit":{"edit":"saved","reason":null,"conditions":"applied","audit":{"outcome":"success","failed":[],"output_sha256":"dbf91c524deae7435557af5732ee08f2002866f2b8b3780c92c528542b5dcd09","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]},"noop":"success"}},
+   "A": {"edit":"refused","routes":{"edit_intent":"refused","page_flow":"PdfError: line_ids must be consecutive in observed page order"}},
+   "B1": {"edit":"refused","reason":"Refused: expected exactly two indented paragraphs in the approved frame"}
+  },
+  "E5": {
+   "id": "E5",
+   "document": "enterprise",
+   "category": "white-text-over-image",
+   "old": "from a quick sketch",
+   "new": "from a rough sketch",
+   "B2": {"edit":"saved","reason":null,"seconds":28.41,"lines":["Draw lets you produce anything from a ","rough sketch to a complex plan, and gives ","you the power to communicate with ","graphics and diagrams. With a maximum ","page size of 300 by 300 centimetres, is an ","excellent package for large posters or ","technical drawings."],"font_counts":{"retained-source":243,"source-code-witness":5,"implicit-line-join":5},"alignment":"justify: non-final lines end at the right edge","containers":[[0.0,0.0,847.5,600.9000244140625],[286.29998779296875,-31.199951171875,569.7999877929688,776.4000244140625]],"follower_translation":15.0,"pdf_sha256":"46ac73b8912c224e48e8a4e369ab5d50730fae0066434460ab72d1ceee89be9d","audit":{"outcome":"success","failed":[],"output_sha256":"46ac73b8912c224e48e8a4e369ab5d50730fae0066434460ab72d1ceee89be9d","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":15.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":15.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":15.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":15.0,"translation_spread":0.0}]},"reedit":{"edit":"saved","reason":null,"conditions":"applied","audit":{"outcome":"success","failed":[],"output_sha256":"cd3ece96121fc9d5fb6dfc7e0338070dd092e223e26a1aae86386e688b242232","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":-15.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":-15.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":-15.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":-15.0,"translation_spread":0.0}]},"noop":"success"}},
+   "A": {"edit":"refused","routes":{"edit_intent":"refused","page_flow":"PdfError: line_ids must be consecutive in observed page order"}},
+   "B1": {"edit":"refused","reason":"Refused: expected exactly two indented paragraphs in the approved frame"}
+  },
+  "E6": {
+   "id": "E6",
+   "document": "enterprise",
+   "category": "hyphenated-paragraph",
+   "old": "First-time users find it",
+   "new": "New users find it",
+   "B2": {"edit":"refused","reason":"prototypes.paragraph_frame.engine.Refused: reflow would move a line-final hyphen inside a line (soft or hard hyphen is ambiguous)","seconds":2.81},
+   "A": {"edit":"refused","routes":{"edit_intent":"refused","page_flow":"PdfError: line_ids must be consecutive in observed page order"}},
+   "B1": {"edit":"refused","reason":"Refused: expected exactly two indented paragraphs in the approved frame"}
+  },
+  "S1": {
+   "id": "S1",
+   "document": "symposium",
+   "category": "same-length-no-unicode",
+   "old": "別添のとおり",
+   "new": "下記のとおり",
+   "B2": {"edit":"refused","reason":"prototypes.paragraph_frame.engine.Refused: selected string occurrence not found in one inferred paragraph","seconds":1.15},
+   "A": {"edit":"not attempted","reason":"the selected text has no Unicode occurrence in the PDF"},
+   "B1": {"edit":"refused","reason":"Refused: expected exactly two indented paragraphs in the approved frame"}
+  },
+  "S2": {
+   "id": "S2",
+   "document": "symposium",
+   "category": "shorten-no-unicode",
+   "old": "多くの方々に御参加いただけるよう御配慮の程よろしくお願いします。",
+   "new": "御参加をお願いします。",
+   "B2": {"edit":"refused","reason":"prototypes.paragraph_frame.engine.Refused: selected string occurrence not found in one inferred paragraph","seconds":1.12},
+   "A": {"edit":"not attempted","reason":"the selected text has no Unicode occurrence in the PDF"},
+   "B1": {"edit":"refused","reason":"Refused: expected exactly two indented paragraphs in the approved frame"}
+  }
+ },
+ "substitute": {
+  "B": {
+   "edit": "saved",
+   "reason": null,
+   "font_counts": {"retained-source":43,"source-code-witness":23,"approved-substitute":4},
+   "choice": {"5":{"chosen":"BIZUDGothic-Regular.ttf","scores":{"substitute.ttf":0.01757,"BIZUDMincho-Regular.ttf":0.04126,"BIZUDGothic-Regular.ttf":0.01328}}},
+   "audit": {"outcome":"success","failed":[],"output_sha256":"791193526148b9000d5b8ef9fa83b413418b2548d3d9ddd288c06a5cd87ea6a8","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]}
+  },
+  "D": {
+   "edit": "saved",
+   "reason": null,
+   "font_counts": {"retained-source":107,"source-code-witness":27,"sibling-subset-witness":9,"approved-substitute":4,"source-resource-witness":2},
+   "choice": {"64":{"chosen":"BIZUDMincho-Regular.ttf","scores":{"substitute.ttf":0.10029,"BIZUDMincho-Regular.ttf":0.04573,"BIZUDGothic-Regular.ttf":0.08279}}},
+   "audit": {"outcome":"success","failed":[],"output_sha256":"48e685e55d02cdabd4e43bf360c669a25d86af38e55965b678548c830d2f26de","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]}
+  },
+  "F1": {
+   "edit": "saved",
+   "reason": null,
+   "font_counts": {"approved-substitute":2,"retained-source":74},
+   "choice": {"9":{"chosen":"BIZUDGothic-Regular.ttf","scores":{"substitute.ttf":0.02203,"BIZUDMincho-Regular.ttf":0.05019,"BIZUDGothic-Regular.ttf":0.01798}}},
+   "audit": {"outcome":"success","failed":[],"output_sha256":"f80273cd40ff1f4febe8a851d80fdfe3533e56ca2d60214b865293ed95a0313a","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]}
+  },
+  "F3": {
+   "edit": "saved",
+   "reason": null,
+   "font_counts": {"retained-source":76,"approved-substitute":15,"same-program-new-code":1,"source-code-witness":25},
+   "choice": {"9":{"chosen":"BIZUDGothic-Regular.ttf","scores":{"substitute.ttf":0.02203,"BIZUDMincho-Regular.ttf":0.05019,"BIZUDGothic-Regular.ttf":0.01798}}},
+   "audit": {"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"f9dc33aaac24a1e82a7a5457847a7c62dd70c8f789ea9069853d3ef7c813201c","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":19.79998779296875,"translation_spread":0.0}]}
+  },
+  "F4": {
+   "edit": "saved",
+   "reason": null,
+   "font_counts": {"retained-source":66,"source-code-witness":11,"approved-substitute":3},
+   "choice": {"9":{"chosen":"BIZUDGothic-Regular.ttf","scores":{"substitute.ttf":0.02203,"BIZUDMincho-Regular.ttf":0.05019,"BIZUDGothic-Regular.ttf":0.01798}}},
+   "audit": {"outcome":"quality-audit-failed","failed":["native_replacement_search"],"output_sha256":"191431ca6e9683f54ebadff76131b52d379e63eae04fad0cd7657b2d249d966e","outside_pixels":{"mupdf":0,"poppler":0},"follower_metrics":[{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0},{"original_code_style":true,"rigid_translation":true,"dy":0.0,"translation_spread":0.0}]}
+  },
+  "N1": {
+   "edit": "refused",
+   "reason": "prototypes.paragraph_frame.engine.Refused: staged raster changes outside approved inferred frame"
+  },
+  "N3": {
+   "edit": "refused",
+   "reason": "prototypes.paragraph_frame.engine.Refused: staged raster changes outside approved inferred frame"
+  },
+  "N4": {
+   "edit": "refused",
+   "reason": "prototypes.paragraph_frame.engine.Refused: staged raster changes outside approved inferred frame"
+  }
+ },
+ "search": {
+  "F3-initial": {
+   "failed": ["native_replacement_search"],
+   "needle": "感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関で情報を共有し、支援が必要な方に確実に対応できるよう準備を進めてください。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "F4-initial": {
+   "failed": ["native_replacement_search"],
+   "needle": "地域の実情に合わせて、別紙の内容に留意し、",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "F4-reedit": {
+   "failed": ["native_replacement_search"],
+   "needle": "内容を確認",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "N3-initial": {
+   "failed": ["native_replacement_search"],
+   "needle": "ご紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。保存した文書の表示や印刷結果も確認すると安心です。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "N4-initial": {
+   "failed": ["mupdf_copy_extract","poppler_copy_extract","native_replacement_search"],
+   "needle": "LibreOffice 4.1.1は8月末に",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": false,
+   "poppler_text_joined_contains": false,
+   "space_insensitive_contains": true,
+   "classification": "reader-inferred space inside the selection (PDF text information correct)"
+  },
+  "Q1-stored-step3": {
+   "failed": ["native_replacement_search"],
+   "needle": "ご紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q1-inference-step2": {
+   "failed": ["native_replacement_search"],
+   "needle": "追加・更新された幾つかの注目の新機能",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q1-inference-step3": {
+   "failed": ["native_replacement_search"],
+   "needle": "ご紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q2-stored-step2": {
+   "failed": ["native_replacement_search"],
+   "needle": "国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q2-stored-step3": {
+   "failed": ["native_replacement_search"],
+   "needle": "参考に送付いたします。内容を確認のうえ、関係者への周知をお願いします。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q2-inference-step2": {
+   "failed": ["native_replacement_search"],
+   "needle": "国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q2-inference-step3": {
+   "failed": ["native_replacement_search"],
+   "needle": "参考に送付いたします。内容を確認のうえ、関係者への周知をお願いします。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q3-stored-step2": {
+   "failed": ["native_replacement_search"],
+   "needle": "地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q3-stored-step3": {
+   "failed": ["native_replacement_search"],
+   "needle": "お願いします。関係機関と情報を共有してください。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q3-inference-step2": {
+   "failed": ["native_replacement_search"],
+   "needle": "地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  },
+  "Q3-inference-step3": {
+   "failed": ["native_replacement_search"],
+   "needle": "お願いします。関係機関と情報を共有してください。",
+   "internal_drawn_text_exact": true,
+   "needle_crosses_reader_line": true,
+   "mupdf_search_hits": 0,
+   "mupdf_text_joined_contains": true,
+   "poppler_text_joined_contains": true,
+   "space_insensitive_contains": true,
+   "classification": "reader line-boundary search (PDF text information correct)"
+  }
+ },
+ "local_artifacts": {
+  "regression": "tmp/cont-reg",
+  "continuity": "tmp/cont-final",
+  "note": "generated PDFs, rasters and detailed audit JSON are regenerable and stay local"
+ },
+ "reproduce": [
+  ".venv/bin/python -m pytest -q tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_poc.py tests/test_paragraph_frame_continuity.py",
+  ".venv/bin/python -m prototypes.paragraph_frame.continuity_preflight  # must reproduce the committed manifest",
+  "for p in initial audit lifecycle; do .venv/bin/python -m prototypes.paragraph_frame.generalization_evaluate --root tmp/<reg> --phase $p; done",
+  ".venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase sequences",
+  ".venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase new",
+  ".venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase substitute --fonts <BIZUDMincho-Regular.ttf> <BIZUDGothic-Regular.ttf>",
+  ".venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase search --regression-root tmp/<reg> --sequences-root tmp/<new>",
+  ".venv/bin/python -m prototypes.paragraph_frame.continuity_evaluate --root tmp/<new> --phase collect --regression-root tmp/<reg> --tests <file>"
+ ]
+}
