@@ -28,10 +28,11 @@ MANIFEST = Path('evaluations/paragraph_frame_indesign/manifest.json')
 RESULTS = MANIFEST.parent / 'results.json'
 CLASSES = [('transform', r'text matrix|rotated|mirrored|non-axis'),
            ('form', r'Form XObject|invocation'),
-           ('encoding', r'Unicode|ligature|ToUnicode|Identity-H|Widths|provenance|witness|one-code|occurrence not found|code mapping'),
+           ('encoding', r'Unicode|ligature|ToUnicode|Identity-H|Widths|provenance|witness|one-code|occurrence not found|code mapping|line-join space'),
            ('glyphs', r'missing source glyph|substitute'),
-           ('marked-content', r'marked-content|scope|semantic|ActualText|span adapter'),
-           ('layout', r'capacity|paragraph|frame|hyphen|column|insertion|clip|graphics state|collides')]
+           ('marked-content', r'marked-content|scope|semantic|ActualText|span adapter|unbound marked'),
+           ('paint', r'non-fill|transparent|source color|horizontal scale|text rise'),
+           ('layout', r'capacity|paragraph|frame|hyphen|column|insertion|clip|graphics state|collides|paint order|reading order|line break')]
 
 
 def dump(path, value):
@@ -291,7 +292,7 @@ def phase_collect(root, manifest, args):
                     lost=lost),
         samples=dict(newly=samples['newly'], sampled=samples['sampled'], saved=len(sample_saved),
                      safety=sum(s['audit']['safety'] for s in sample_saved), quality=sum(s['audit']['quality'] for s in sample_saved),
-                     refused=[dict(document=s['document'], page=s['page'], selection=s['selection'], reason=s['reason'], reason_class=s['reason_class'])
+                     refused=[dict(document=s['document'], page=s['page'], selection=s['selection'], reason=s['reason'], reason_class=classify(s['reason']))
                               for s in samples['results'] if s['outcome'] == 'refused'],
                      failed=[dict(document=s['document'], page=s['page'], selection=s['selection'], failed=s['audit']['failed'])
                              for s in sample_saved if s['audit']['failed']],
