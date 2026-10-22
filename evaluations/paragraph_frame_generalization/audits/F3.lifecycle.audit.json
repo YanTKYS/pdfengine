@@ -1,0 +1,1018 @@
+{
+  "outcome": "success",
+  "checks": {
+    "foreign_exact_code_gid_resource_size_scale_color_position": true,
+    "exact_drawn_paragraphs": true,
+    "inside_fixed_oracle": true,
+    "foreign_drawings": true,
+    "foreign_images": true,
+    "foreign_links": true,
+    "foreign_annots": true,
+    "source_font_programs_retained": true,
+    "semantic_internal": true,
+    "semantic_structure_order_languages_preserved": true,
+    "semantic_scope_inventory": true,
+    "semantic_foreign_actualtext": true,
+    "retained_target_original_code_and_style": true,
+    "follower_original_code_style_rigid_translation": true,
+    "mupdf_copy_extract": true,
+    "poppler_copy_extract": true,
+    "native_replacement_search": true,
+    "outside_pixels_zero": true
+  },
+  "failed": [],
+  "source_sha256": "0377f1c8eb83dc8b38e13484ee6585f14720866b0498835742db12c99b2868df",
+  "output_sha256": "39f78c060f5c0e1925a010d3b8ed863b83aad9f0000d8d9d7812819e0d9a5e35",
+  "native_search": {
+    "original_selection_hits": 4,
+    "replacement_hits": 4
+  },
+  "follower_metrics": [
+    {
+      "original_code_style": true,
+      "rigid_translation": true,
+      "dy": 0.0,
+      "translation_spread": 0.0
+    },
+    {
+      "original_code_style": true,
+      "rigid_translation": true,
+      "dy": 0.0,
+      "translation_spread": 0.0
+    }
+  ],
+  "retained_target_glyphs_verified": 115,
+  "pixels": {
+    "mupdf": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": [
+          907,
+          591,
+          949,
+          611
+        ]
+      }
+    ],
+    "poppler": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": [
+          907,
+          590,
+          949,
+          610
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "mupdf": {
+      "raw": " 事\n務\n連\n絡  \n令和７年３月2 7 日  \n  \n都\n道\n府\n県  \n各 保健所設置市 衛生主管部（局）御中 \n特\n別\n区  \n厚生労働省健康・生活衛生局感染症対策部感染症対策課 \n令和７年３月23 日に発生した林野火災に係る感染症対策等について \n \n標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の\n上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関で情報を確認し、支援が必\n要な方に確実に対応できるよう準備を進めてください。 \nなお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑\nかつ適切に実施いただくようお願いします。 \nまた、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物\n対策室が所管となるので参考までにお知らせします。 \n \n \n厚生労働省健康・生活衛生局 \n感染症対策部感染症対策課 \n直通：03-3595-2257 \n",
+      "paragraph_exact": true,
+      "source_raw": " 事\n務\n連\n絡  \n令和７年３月2 7 日  \n  \n都\n道\n府\n県  \n各 保健所設置市 衛生主管部（局）御中 \n特\n別\n区  \n厚生労働省健康・生活衛生局感染症対策部感染症対策課 \n令和７年３月23 日に発生した林野火災に係る感染症対策等について \n \n標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の\n上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関で情報を共有し、支援が必\n要な方に確実に対応できるよう準備を進めてください。 \nなお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑\nかつ適切に実施いただくようお願いします。 \nまた、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物\n対策室が所管となるので参考までにお知らせします。 \n \n \n厚生労働省健康・生活衛生局 \n感染症対策部感染症対策課 \n直通：03-3595-2257 \n",
+      "whole_page_inherited_spacing": true,
+      "comparison": "logical paragraph"
+    },
+    "poppler": {
+      "raw": "事\n務\n連\n絡\n令 和 ７ 年 ３ 月 27 日\n都 道 府 県\n各 保健所設置市\n特\n\n別\n\n衛生主管部（局）御中\n\n区\n厚生労働省健康・生活衛生局感染症対策部感染症対策課\n\n令和７年３月 23 日に発生した林野火災に係る感染症対策等について\n\n標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の\n上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関で情報を確認し、支援が必\n要な方に確実に対応できるよう準備を進めてください。\nなお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑\nかつ適切に実施いただくようお願いします。\nまた、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物\n対策室が所管となるので参考までにお知らせします。\n\n厚生労働省健康・生活衛生局\n感染症対策部感染症対策課\n直通：03-3595-2257\n\n\f",
+      "paragraph_exact": true,
+      "source_raw": "事\n務\n連\n絡\n令 和 ７ 年 ３ 月 27 日\n都 道 府 県\n各 保健所設置市\n特\n\n別\n\n衛生主管部（局）御中\n\n区\n厚生労働省健康・生活衛生局感染症対策部感染症対策課\n\n令和７年３月 23 日に発生した林野火災に係る感染症対策等について\n\n標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の\n上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関で情報を共有し、支援が必\n要な方に確実に対応できるよう準備を進めてください。\nなお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑\nかつ適切に実施いただくようお願いします。\nまた、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物\n対策室が所管となるので参考までにお知らせします。\n\n厚生労働省健康・生活衛生局\n感染症対策部感染症対策課\n直通：03-3595-2257\n\n\f",
+      "whole_page_inherited_spacing": true,
+      "comparison": "logical paragraph"
+    }
+  },
+  "semantic": {
+    "tagged": true,
+    "checks": {
+      "complete": true,
+      "all_tree_backed": true,
+      "unique_mcids": true,
+      "actualtext_matches_drawn": true,
+      "all_parent_backlinks": true,
+      "parent_tree_reverse": true
+    },
+    "tree": {
+      "/Type": "/StructTreeRoot",
+      "/RoleMap": {
+        "/Footnote": "/Note",
+        "/Endnote": "/Note",
+        "/Textbox": "/Sect",
+        "/Header": "/Sect",
+        "/Footer": "/Sect",
+        "/InlineShape": "/Sect",
+        "/Annotation": "/Sect",
+        "/Artifact": "/Sect",
+        "/Workbook": "/Document",
+        "/Worksheet": "/Part",
+        "/Macrosheet": "/Part",
+        "/Chartsheet": "/Part",
+        "/Dialogsheet": "/Part",
+        "/Slide": "/Part",
+        "/Chart": "/Sect",
+        "/Diagram": "/Figure",
+        "/Title": "/H1"
+      },
+      "/ParentTreeNextKey": 1,
+      "/K": [
+        {
+          "/S": "/Document",
+          "/Type": "/StructElem",
+          "/K": [
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 39,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 0
+                    }
+                  ]
+                },
+                {
+                  "mcid": 1
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 2
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 3
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 41,
+              "/K": [
+                {
+                  "mcid": 4
+                },
+                {
+                  "mcid": 5
+                },
+                {
+                  "mcid": 6
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 7
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 44,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 9
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 10
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/Figure",
+              "/Type": "/StructElem",
+              "/K": [
+                {
+                  "mcid": 34
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 48,
+              "/K": [
+                {
+                  "mcid": 11
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 12
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 13
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 51,
+              "/K": [
+                {
+                  "mcid": 14
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 15
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 53,
+              "/K": [
+                {
+                  "mcid": 16
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 17
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 18
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 56,
+              "/K": [
+                {
+                  "mcid": 19
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 58,
+              "/K": [
+                {
+                  "mcid": 21
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "23",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 22
+                    }
+                  ]
+                },
+                {
+                  "mcid": 23
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 24
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 61,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 25
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 63,
+              "/K": [
+                {
+                  "mcid": 26
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 27
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 65,
+              "/K": [
+                {
+                  "mcid": 28
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 29
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 67,
+              "/K": [
+                {
+                  "mcid": 30
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 31
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 69,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 32
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/Textbox",
+              "/Type": "/StructElem",
+              "/K": [
+                {
+                  "/S": "/P",
+                  "/Type": "/StructElem",
+                  "_xref": 72,
+                  "/K": [
+                    {
+                      "mcid": 36
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/Lang": "en",
+                      "/K": [
+                        {
+                          "mcid": 37
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/P",
+                  "/Type": "/StructElem",
+                  "_xref": 74,
+                  "/K": [
+                    {
+                      "mcid": 38
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/Lang": "en",
+                      "/K": [
+                        {
+                          "mcid": 39
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/P",
+                  "/Type": "/StructElem",
+                  "_xref": 76,
+                  "/K": [
+                    {
+                      "mcid": 40
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "03",
+                      "/Lang": "en",
+                      "/K": [
+                        {
+                          "mcid": 41
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "-",
+                      "/Lang": "en",
+                      "/K": [
+                        {
+                          "mcid": 42
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "3595",
+                      "/Lang": "en",
+                      "/K": [
+                        {
+                          "mcid": 43
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "-",
+                      "/Lang": "en",
+                      "/K": [
+                        {
+                          "mcid": 44
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "2257",
+                      "/Lang": "en",
+                      "/K": [
+                        {
+                          "mcid": 45
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/Lang": "en",
+                      "/K": [
+                        {
+                          "mcid": 46
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Figure",
+                  "/Type": "/StructElem",
+                  "/K": [
+                    {
+                      "mcid": 35
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 84,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/Lang": "en",
+                  "/K": [
+                    {
+                      "mcid": 33
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "rows": [
+      {
+        "mcid": 0,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 39
+      },
+      {
+        "mcid": 1,
+        "status": "tree_backed",
+        "drawn": "事務連絡",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 2,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 39
+      },
+      {
+        "mcid": 3,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 39
+      },
+      {
+        "mcid": 4,
+        "status": "tree_backed",
+        "drawn": "令和７年３月",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 5,
+        "status": "tree_backed",
+        "drawn": "27",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 6,
+        "status": "tree_backed",
+        "drawn": "日",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 7,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 41
+      },
+      {
+        "mcid": 8,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 41
+      },
+      {
+        "mcid": 9,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 44
+      },
+      {
+        "mcid": 10,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 44
+      },
+      {
+        "mcid": 11,
+        "status": "tree_backed",
+        "drawn": "都道府県",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 12,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 48
+      },
+      {
+        "mcid": 13,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 48
+      },
+      {
+        "mcid": 14,
+        "status": "tree_backed",
+        "drawn": "各 保健所設置市 衛生主管部（局）御中",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 15,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 51
+      },
+      {
+        "mcid": 16,
+        "status": "tree_backed",
+        "drawn": "特別区",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 17,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 53
+      },
+      {
+        "mcid": 18,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 53
+      },
+      {
+        "mcid": 19,
+        "status": "tree_backed",
+        "drawn": "厚生労働省健康・生活衛生局感染症対策部感染症対策課",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 20,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 56
+      },
+      {
+        "mcid": 21,
+        "status": "tree_backed",
+        "drawn": "令和７年３月",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 22,
+        "status": "tree_backed",
+        "drawn": "23",
+        "actualtext": "23",
+        "role": "/Span",
+        "parent": 58
+      },
+      {
+        "mcid": 23,
+        "status": "tree_backed",
+        "drawn": "日に発生した林野火災に係る感染症対策等について",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 24,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 58
+      },
+      {
+        "mcid": 25,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 61
+      },
+      {
+        "mcid": 26,
+        "status": "tree_backed",
+        "drawn": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関で情報を確認し、支援が必要な方に確実に対応できるよう準備を進めてください。",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 27,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 63
+      },
+      {
+        "mcid": 28,
+        "status": "tree_backed",
+        "drawn": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 29,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 65
+      },
+      {
+        "mcid": 30,
+        "status": "tree_backed",
+        "drawn": "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 40
+      },
+      {
+        "mcid": 31,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 67
+      },
+      {
+        "mcid": 32,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 69
+      },
+      {
+        "mcid": 33,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 84
+      },
+      {
+        "mcid": 34,
+        "status": "tree_backed",
+        "drawn": "",
+        "actualtext": null,
+        "role": "/Figure",
+        "parent": 40
+      },
+      {
+        "mcid": 35,
+        "status": "tree_backed",
+        "drawn": "",
+        "actualtext": null,
+        "role": "/Figure",
+        "parent": 71
+      },
+      {
+        "mcid": 36,
+        "status": "tree_backed",
+        "drawn": "厚生労働省健康・生活衛生局",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 71
+      },
+      {
+        "mcid": 37,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 72
+      },
+      {
+        "mcid": 38,
+        "status": "tree_backed",
+        "drawn": "感染症対策部感染症対策課",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 71
+      },
+      {
+        "mcid": 39,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 74
+      },
+      {
+        "mcid": 40,
+        "status": "tree_backed",
+        "drawn": "直通：",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 71
+      },
+      {
+        "mcid": 41,
+        "status": "tree_backed",
+        "drawn": "03",
+        "actualtext": "03",
+        "role": "/Span",
+        "parent": 76
+      },
+      {
+        "mcid": 42,
+        "status": "tree_backed",
+        "drawn": "-",
+        "actualtext": "-",
+        "role": "/Span",
+        "parent": 76
+      },
+      {
+        "mcid": 43,
+        "status": "tree_backed",
+        "drawn": "3595",
+        "actualtext": "3595",
+        "role": "/Span",
+        "parent": 76
+      },
+      {
+        "mcid": 44,
+        "status": "tree_backed",
+        "drawn": "-",
+        "actualtext": "-",
+        "role": "/Span",
+        "parent": 76
+      },
+      {
+        "mcid": 45,
+        "status": "tree_backed",
+        "drawn": "2257",
+        "actualtext": "2257",
+        "role": "/Span",
+        "parent": 76
+      },
+      {
+        "mcid": 46,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 76
+      }
+    ]
+  },
+  "timing": 1.8548098870087415
+}

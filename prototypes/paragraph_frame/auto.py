@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import time
 from .auto_detect import detect
-from .auto_style import build
+from .auto_style import build,describe
 from .auto_layout import layout
 from .auto_writer import write
 from .engine import Refused,sha
@@ -23,7 +23,7 @@ def _plan(source,page,selection,replacement,occurrence,substitute):
         tokens,fonts,counts=build(c,paragraphs[0],at,selection,replacement,substitute)
         lines=layout(tokens,spec)
         public=dict(schema='auto-paragraph-frame-1',source_sha256=sha(source),page=page,selection=selection,replacement=replacement,occurrence=occurrence,
-          substitute=substitute,evidence=evidence,paragraphs=[p.text for p in paragraphs],expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):],
+          substitute=substitute,evidence=evidence,source_styles=describe(c,paragraphs),paragraphs=[p.text for p in paragraphs],expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):],
           lines=[dict(text=l['text'],baseline=l['baseline']) for l in lines],source_lines=len(paragraphs[0].baselines),font_counts=counts,
           required_approval=['inferred paragraph and capacity','possible follower translation','source style and any explicit substitute'])
         public['proposal_sha256']=_digest(public)

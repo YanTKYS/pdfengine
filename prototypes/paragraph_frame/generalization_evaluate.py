@@ -13,11 +13,12 @@ import subprocess
 import sys
 import time
 import pymupdf
-from .auto import propose,approve,save
+from .auto import propose,approve,save,_plan
+from .auto_writer import validate_stage
 from .baseline import run as baseline
 from .engine import rewrite
 from .generalization_audit import audit,audit_noop,records,key,ids
-from pdfeditor.page_proposal import accept_page_flow_report,replace_in_flow
+from pdfeditor.page_proposal import accept_page_flow_report,replace_in_flow,_Analysis
 from pdfeditor.shared_flow import edit_shared_flow
 
 MANIFEST=Path('evaluations/paragraph_frame_generalization/manifest.json')
@@ -60,8 +61,37 @@ def continuation_oracle(spec,case,first):
     return result
 
 
+def a_output(root,ident):
+    folder=root/('A-'+ident)
+    return next((folder/name for name in ('auto-edited.pdf','flow-edited.pdf','edited.pdf') if (folder/name).exists()),None)
+
+
+def a_continuation(case,spec,first,root,substitute):
+    ident=case['id'];oracle=continuation_oracle(spec,case,first);oracle['path']=str(first)
+    selected={i for p in oracle['paragraphs'] for i in p['glyph_ids']}
+    oracle['line_ids']=[l['id'] for l in _Analysis(first,spec['page']).lines if selected.intersection(l['glyph_ids'])]
+    target=oracle['paragraphs'][0];at=target['text'].index(case['reedit_old'])
+    changed=dict(old=case['reedit_old'],new=case['reedit_new'],expected=case['expected'].replace(case['reedit_old'],case['reedit_new']),glyph_ids=target['glyph_ids'][at:at+len(case['reedit_old'])])
+    payload=root/('A-'+ident+'-lifecycle-input.json');folder=root/('A-'+ident+'-lifecycle');receipt=root/('A-'+ident+'.lifecycle.json')
+    if receipt.exists():raise ValueError('existing A continuation receipt; use a new root')
+    dump(payload,dict(case=changed,spec=oracle,font=substitute['path'],root=str(folder),substitute=substitute))
+    # Public data only: the child never receives a private saved-flow sidecar.
+    code="""import json,sys
+from pathlib import Path
+from prototypes.paragraph_frame.baseline import run
+from prototypes.paragraph_frame.generalization_evaluate import a_auto_region
+x=json.load(open(sys.argv[1]));sub=x.pop('substitute');r=run(**x)
+if r['outcome']=='refused':
+ try:r['auto_region']=a_auto_region(x['case'],x['spec'],Path(x['root']),sub);r['outcome']='saved-needs-independent-audit'
+ except Exception as e:r['auto_region']=dict(status='refused',reason=type(e).__name__+': '+str(e))
+Path(sys.argv[2]).write_text(json.dumps(r,ensure_ascii=False,indent=2))
+"""
+    subprocess.run([sys.executable,'-c',code,str(payload),str(receipt)],check=True,capture_output=True)
+    return json.loads(receipt.read_text())
+
+
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--root',required=True,type=Path);parser.add_argument('--phase',required=True,choices=['initial','baseline','audit','lifecycle','noop-audit']);parser.add_argument('--cases',nargs='*');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--root',required=True,type=Path);parser.add_argument('--phase',required=True,choices=['initial','baseline','audit','lifecycle','noop-audit','audit-A','lifecycle-A','qualify']);parser.add_argument('--cases',nargs='*');args=parser.parse_args()
     manifest=json.loads(MANIFEST.read_text());root=args.root;root.mkdir(parents=True,exist_ok=True)
     font=root/'substitute.ttf'
     if not font.exists():font.write_bytes(pymupdf.Font('cjk').buffer)
@@ -107,6 +137,25 @@ def main():
                 noop=root/(ident+'-noop.pdf')
                 if not noop.exists():subprocess.run([sys.executable,'-m','prototypes.paragraph_frame.generalization_cli','noop','--source',str(output),'--output',str(noop)],check=True,capture_output=True)
                 dump(root/(ident+'.noop.audit.json'),audit_noop(output,noop,spec['page'],root/(ident+'-noop-audit')))
+            elif args.phase=='audit-A':
+                first=a_output(root,ident)
+                if first is None:raise ValueError('no saved A candidate')
+                result=audit(spec['path'],first,spec,case,root/('A-'+ident+'-audit'),arm='A');dump(root/('A-'+ident+'.audit.json'),result)
+            elif args.phase=='lifecycle-A':
+                first=a_output(root,ident)
+                if first is None:raise ValueError('no saved A candidate')
+                result=a_continuation(case,spec,first,root,substitute)
+            elif args.phase=='qualify':
+                receipt=root/'final-qualification.json';qualified=json.loads(receipt.read_text()) if receipt.exists() else {};qualified[ident]={}
+                for mode,source,output,old,new in [('initial',spec['path'],paths[ident],case['old'],case['new']),('reedit',paths[ident],root/(ident+'-reedit.pdf'),case['reedit_old'],case['reedit_new'])]:
+                    c,paragraphs,geometry,evidence,fonts,lines,proposal,timing=_plan(source,spec['page'],old,new,0,substitute)
+                    try:
+                        delta=lines[-1]['baseline']-paragraphs[0].baselines[-1];active=paragraphs if abs(delta)>=.001 else paragraphs[:1]
+                        selected={i for p in active for i in p.ids};expected=''.join(l['text'] for l in lines)+''.join(p.text for p in active[1:])
+                        validate_stage(c,output,geometry,evidence,selected,expected)
+                        qualified[ident][mode]=dict(status='pass',font_counts=proposal['font_counts'],lines=proposal['lines'],inferred=evidence['inferred'],confidence=evidence['confidence'],paragraphs=proposal['paragraphs'],source_styles=proposal['source_styles'],warnings=evidence['warnings'])
+                    finally:c.close()
+                dump(receipt,qualified);result=dict(outcome='qualified read-only')
             else:
                 result=audit_noop(root/(ident+'-reedit.pdf'),root/(ident+'-noop.pdf'),spec['page'],root/(ident+'-noop-audit'));dump(root/(ident+'.noop.audit.json'),result)
             print(ident,args.phase,result.get('outcome','saved'),flush=True)

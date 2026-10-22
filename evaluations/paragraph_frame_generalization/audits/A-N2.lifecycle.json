@@ -1,0 +1,362 @@
+{
+  "edit_intent": {
+    "status": "refused",
+    "reason": "the changed characters 主 span 1 owners",
+    "route": null,
+    "normalized": {
+      "page": 1,
+      "selection": {
+        "schema_version": 1,
+        "source_sha256": "306e6cf5fa148f186734eb1f27fc1348ede55e2544d398bb6d3de518ff05d619",
+        "page": 1,
+        "page_observation_sha256": "d010e40f3f5d9de0d4718da18488901a7822f101bb1f077c39fad11539462b60",
+        "glyph_ids": [
+          133,
+          134
+        ],
+        "explicitly_supplied_width": null,
+        "inferred_available_width": null
+      },
+      "selected_text": "主な",
+      "replacement": "便利な",
+      "kept_prefix": "",
+      "kept_suffix": "な",
+      "changed_ids": [
+        133
+      ],
+      "changed_text": "主",
+      "inserted": "便利",
+      "rule": "changed characters only",
+      "owner": null,
+      "selection_owners": [
+        {
+          "mcid": null,
+          "owner": null,
+          "glyph_ids": [
+            133,
+            134
+          ]
+        }
+      ],
+      "reason": "the changed characters 主 span 1 owners"
+    }
+  },
+  "page_flow": {
+    "status": "needs-choice",
+    "refusals": [],
+    "unresolved": [
+      {
+        "code": "explicit-substitution-required",
+        "style": "style-1",
+        "detail": "choose a qualified provider explicitly; substitution must name relation=substituted"
+      },
+      {
+        "code": "explicit-substitution-required",
+        "style": "style-2",
+        "detail": "choose a qualified provider explicitly; substitution must name relation=substituted"
+      }
+    ],
+    "paragraphs": [
+      {
+        "id": "P1",
+        "order": 1,
+        "page": 1,
+        "text": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で主な新機能をご紹介します。",
+        "line_ids": [
+          "p1-l3"
+        ],
+        "glyph_ids": [
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119,
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128,
+          129,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135,
+          136,
+          137,
+          138,
+          139,
+          140,
+          141,
+          142,
+          143,
+          144,
+          145
+        ],
+        "line_joiner": "",
+        "lines": [
+          {
+            "id": "p1-l3",
+            "text": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で主な新機能をご紹介します。",
+            "baseline": 128.79998779296875
+          }
+        ],
+        "bounds": [
+          34.099998474121094,
+          120.01797485351562,
+          488.28204345703125,
+          131.03282165527344
+        ],
+        "first_baseline": 128.79998779296875,
+        "last_baseline": 128.79998779296875,
+        "style_spans": [
+          {
+            "start": 0,
+            "end": 42,
+            "style_id": "s0"
+          },
+          {
+            "start": 42,
+            "end": 47,
+            "style_id": "s1"
+          },
+          {
+            "start": 47,
+            "end": 55,
+            "style_id": "s0"
+          }
+        ],
+        "policy": {
+          "min_line_height": {
+            "value": 11.014846801757812,
+            "evidence": "observed-line-box"
+          },
+          "first_line_indent": {
+            "value": 0.0,
+            "evidence": "observed-first-line-offset"
+          },
+          "keep_together": {
+            "value": false,
+            "evidence": "single-region-flow"
+          },
+          "break_before": {
+            "value": "auto",
+            "evidence": "single-region-flow"
+          },
+          "break_after": {
+            "value": "auto",
+            "evidence": "single-region-flow"
+          },
+          "empty": {
+            "value": {
+              "kind": "reserve-line",
+              "ascent": 8.782012939453125,
+              "descent": 2.2328338623046875
+            },
+            "evidence": "observed-line-box"
+          },
+          "text_placement": {
+            "value": "preserve-source-adjacency",
+            "evidence": "observed source glyph adjacency; not an inferred tracking or justify policy",
+            "editing": "retain existing codes and same-line adjacent source gaps; shape replacement and new boundaries normally"
+          }
+        },
+        "evidence": "inference line grouping and paragraph segmentation (candidate, not truth)"
+      }
+    ],
+    "styles": [
+      {
+        "id": "style-1",
+        "observed": {
+          "font_name": "IPAPMincho",
+          "font_size": 11.0,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "baseline_shift": -0.0,
+          "fill": [
+            "rg",
+            [
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "physical_styles": [
+          "P1:s0"
+        ],
+        "source_font": {
+          "name": "IPAPMincho",
+          "embedded_program": "TrueType hmtx",
+          "checked_characters": 39,
+          "program_sha256": "311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5",
+          "cmap_coverage": 0,
+          "missing_new_characters": [
+            "な",
+            "便",
+            "利"
+          ]
+        },
+        "providers": {
+          "outcome": "no-metric-verified-provider",
+          "verified": [],
+          "name_matched_rejections": [
+            {
+              "path": "/workspace/pdfengine/tmp/generalization/A-N2-lifecycle/font-cache/311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5.ttf",
+              "font_index": 0,
+              "postscript_name": "IPAPMincho",
+              "reason": "missing glyph U+0020"
+            }
+          ],
+          "evaluated_faces": 3,
+          "qualification": "glyph presence/outline + embedded em advance (exact) + PDF width (written decimal quantum); names only order candidates",
+          "new_text": "便利な",
+          "covering_metric_providers": [],
+          "substitutes": [
+            {
+              "path": "/workspace/pdfengine/tmp/generalization/substitute.ttf",
+              "sha256": "ee38813ea00c3e32add4268fff7fff9e39417b4913cb13be2415164a47807cc2",
+              "font_index": 0,
+              "instance_sha256": "d030ae3c9f37b2d7b213095ca330dd5defbb4311d64d9d9596cd6e2262ca9dc4",
+              "variations": {},
+              "postscript_name": "",
+              "family": "Droid Sans Fallback",
+              "checked_text": "便利な",
+              "qualification": "editable embedding + actual HarfBuzz shaping + visible glyphs; no source-metric equivalence claim",
+              "source_metric_qualified": false,
+              "source_program_identical": false
+            }
+          ],
+          "coverage_rejections": [],
+          "substitute_authority": "explicit caller choice; only new glyphs; source appearance not claimed"
+        }
+      },
+      {
+        "id": "style-2",
+        "observed": {
+          "font_name": "ProvidedFont",
+          "font_size": 11.0,
+          "horizontal_scale": 1.0,
+          "tracking": 0.0,
+          "baseline_shift": -0.0,
+          "fill": [
+            "rg",
+            [
+              "0",
+              "0",
+              "0"
+            ]
+          ],
+          "observed_color": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "physical_styles": [
+          "P1:s1"
+        ],
+        "source_font": {
+          "name": "ProvidedFont",
+          "embedded_program": "TrueType hmtx",
+          "checked_characters": 5,
+          "program_sha256": "b24661d5eea1bf210eba18dda9b512341c0a41cbda85d52e19b1af21a5a1bbe5",
+          "cmap_coverage": 5,
+          "missing_new_characters": [
+            "便",
+            "利"
+          ]
+        },
+        "providers": {
+          "outcome": "ambiguous-metric-verified",
+          "verified": [
+            {
+              "sha256": "b24661d5eea1bf210eba18dda9b512341c0a41cbda85d52e19b1af21a5a1bbe5",
+              "font_index": 0,
+              "path": "/workspace/pdfengine/tmp/generalization/A-N2-lifecycle/font-cache/b24661d5eea1bf210eba18dda9b512341c0a41cbda85d52e19b1af21a5a1bbe5.ttf",
+              "postscript_name": "",
+              "family": "Droid Sans Fallback",
+              "name_match": false
+            },
+            {
+              "sha256": "ee38813ea00c3e32add4268fff7fff9e39417b4913cb13be2415164a47807cc2",
+              "font_index": 0,
+              "path": "/workspace/pdfengine/tmp/generalization/substitute.ttf",
+              "postscript_name": "",
+              "family": "Droid Sans Fallback",
+              "name_match": false
+            }
+          ],
+          "name_matched_rejections": [],
+          "evaluated_faces": 3,
+          "qualification": "glyph presence/outline + embedded em advance (exact) + PDF width (written decimal quantum); names only order candidates",
+          "new_text": "便利な",
+          "covering_metric_providers": [],
+          "substitutes": [
+            {
+              "path": "/workspace/pdfengine/tmp/generalization/substitute.ttf",
+              "sha256": "ee38813ea00c3e32add4268fff7fff9e39417b4913cb13be2415164a47807cc2",
+              "font_index": 0,
+              "instance_sha256": "d030ae3c9f37b2d7b213095ca330dd5defbb4311d64d9d9596cd6e2262ca9dc4",
+              "variations": {},
+              "postscript_name": "",
+              "family": "Droid Sans Fallback",
+              "checked_text": "便利な",
+              "qualification": "editable embedding + actual HarfBuzz shaping + visible glyphs; no source-metric equivalence claim",
+              "source_metric_qualified": true,
+              "source_program_identical": false
+            }
+          ],
+          "coverage_rejections": [],
+          "substitute_authority": "explicit caller choice; only new glyphs; source appearance not claimed"
+        }
+      }
+    ],
+    "width_candidates": null,
+    "acceptance_refusal": "PdfError: page-flow proposal cannot be accepted: region: the column region collides with foreign content: filled-vector, filled-vector, image"
+  },
+  "timing": {
+    "edit_intent": 0.248363985971082,
+    "page_flow": 6.619153497042134,
+    "total": 6.867517863982357
+  },
+  "outcome": "refused",
+  "auto_region": {
+    "status": "refused",
+    "reason": "'modified' timestamp seems very low; regarding as unix timestamp\n'modified' timestamp seems very low; regarding as unix timestamp\n'modified' timestamp seems very low; regarding as unix timestamp\n'modified' timestamp seems very low; regarding as unix timestamp\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/workspace/pdfengine/prototypes/paragraph_frame/generalization_evaluate.py\", line 36, in a_auto_region\n    accepted=accept_page_flow_report(spec['path'],proposal,provider_choices=choices,overrides=dict(width=spec['right']-spec['left'],paragraph_starts=starts))\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/pdfengine/pdfeditor/page_proposal.py\", line 1208, in accept_page_flow_report\n    raise PdfError('page-flow proposal cannot be accepted: ' + '; '.join(\npdfeditor.backend.PdfError: page-flow proposal cannot be accepted: shared-flow-confirmation: source output marker inventory differs from owned slots\n"
+  }
+}

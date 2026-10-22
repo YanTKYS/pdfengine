@@ -39,7 +39,7 @@ def structural(tree):
 
 def ids(p):return p.get('glyph_ids',[g['id'] for g in p.get('glyphs',[])])
 
-def audit(source,output,spec,case,root,*,expected=None):
+def audit(source,output,spec,case,root,*,expected=None,arm='B2'):
     start=time.perf_counter();root=Path(root);root.mkdir(parents=True,exist_ok=True);checks={}
     want=expected or case['expected'];oldrows=records(source,spec['page']);newrows=records(output,spec['page'])
     selected={i for p in spec['paragraphs'] for i in ids(p)};foreign=Counter(key(r) for r in oldrows if r['id'] not in selected);remain=Counter(foreign);changed=[]
@@ -75,6 +75,14 @@ def audit(source,output,spec,case,root,*,expected=None):
     mapping=[(i,i) for i in range(at)]+[(i,i+len(new)-len(old)) for i in range(end,len(target))]
     if expected is not None:raise ValueError('Lifecycle must supply updated source oracle and concrete edit for style verification')
     stylekeys=('text','code','gid','font','size','tz','fill','tr','opacity')
+    common_affix_retention=sum(all(target[i][k]==changed[j][k] for k in stylekeys) for i,j in mapping) if len(changed)>=len(want) else 0
+    all_retained_count=len(mapping)
+    if arm=='A':
+        # Existing replace_in_flow replaces the user's complete selection;
+        # explicitly approved regenerated common affixes are a fidelity metric,
+        # not corruption of protected source outside the user's selection.
+        begin=spec['paragraphs'][0]['text'].index(old);finish=begin+len(old)
+        mapping=[(i,j) for i,j in mapping if i<begin or i>=finish]
     checks['retained_target_original_code_and_style']=all(all(target[i][k]==changed[j][k] for k in stylekeys) for i,j in mapping) if len(changed)>=len(want) else False
     follower_metrics=[];offset=len(want)
     for p in spec['paragraphs'][1:]:
@@ -101,7 +109,7 @@ def audit(source,output,spec,case,root,*,expected=None):
     safe=all(checks[k] for k in safety_keys);quality=all(checks.values())
     return dict(outcome='success' if quality else 'quality-audit-failed' if safe else 'safety-audit-failed',checks=checks,
       failed=[k for k,v in checks.items() if not v],source_sha256=hashlib.sha256(Path(source).read_bytes()).hexdigest(),output_sha256=hashlib.sha256(Path(output).read_bytes()).hexdigest(),
-      native_search=dict(original_selection_hits=original_search_count,replacement_hits=len(found)),follower_metrics=follower_metrics,retained_target_glyphs_verified=len(mapping),pixels=raster,extraction=extraction,semantic=sa,timing=time.perf_counter()-start)
+      target_fidelity=dict(unchanged_including_selected_affixes=all_retained_count,preserved_original_code_style=common_affix_retention,protection_policy='outside full selected range' if arm=='A' else 'outside normalized changed middle'),native_search=dict(original_selection_hits=original_search_count,replacement_hits=len(found)),follower_metrics=follower_metrics,retained_target_glyphs_verified=len(mapping),pixels=raster,extraction=extraction,semantic=sa,timing=time.perf_counter()-start)
 
 
 def semantic_identity(snapshot):

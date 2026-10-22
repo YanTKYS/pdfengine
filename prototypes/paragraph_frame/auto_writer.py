@@ -74,54 +74,59 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output):
     stream=DecodedStreamObject();stream.set_data(data);page[NameObject('/Contents')]=writer._add_object(stream.flate_encode())
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);fd,tmp=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
     try:
-        writer.write(tmp);check=ContentPage(tmp,spec['page'])
-        try:
-            if check.errors:raise Refused('staged source interpretation failed')
-            foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected);remain=Counter(foreign);added=[]
-            for g in check.actual:
-                key=glyph_key(g)
-                if remain[key]:remain[key]-=1
-                else:added.append(g)
-            if +remain:raise Refused('staged protected text changed')
-            def styled(content,exclude=None):
-                result=Counter()
-                for event in content.events:
-                    for ch in event.chars:
-                        for i in ch.source_orders:
-                            if exclude and i in exclude:continue
-                            state=event.state
-                            result[(glyph_key(content.actual[i]),ch.code,state.font.name,state.size,state.tz,state.fill,state.tr,state.opacity)]+=1
-                return result
-            if styled(c,selected)-styled(check):raise Refused('staged protected source code/style changed')
-            expected=''.join(t['text'] for _,ts in batches for t in ts)
-            if ''.join(g['unicode'] for g in added)!=expected:raise Refused('staged drawing text differs from requested paragraphs')
-            frame=pymupdf.Rect(spec['frame'])
-            for g in added:
-                if not g['unicode'].strip():continue
-                box=pymupdf.Rect(g['bbox'])
-                if not frame.contains(box):raise Refused('capacity: staged glyph bounds outside approved inferred frame')
-                for o in evidence['observed']['obstacles']:
-                    if o['kind']=='foreign-text':
-                        # Target/follower observations were excluded at detection.
-                        pass
-                    overlap=box&pymupdf.Rect(o['bounds'])
-                    if not overlap.is_empty and overlap.width>.05 and overlap.height>.05:raise Refused('staged glyph collides with protected '+o['kind'])
-            original_paint=painting(c.source,spec['page']);staged_paint=painting(tmp,spec['page'])
-            if any(original_paint[k]!=staged_paint[k] for k in ('drawings','images','links','annots')):raise Refused('staged protected non-text paint changed')
-            if any(staged_paint['fonts'].get(k)!=v for k,v in original_paint['fonts'].items()):raise Refused('staged original font program changed')
-            if not all(semantic(tmp,spec['page'])['checks'].values()):raise Refused('staged semantic structure/ActualText inconsistency')
-            if any(not g['gid'] for g in added if g['unicode'].strip()):raise Refused('staged missing glyph')
-            # A cheap publication gate complements later all-page, two-renderer
-            # oracle audit. Mask only the approved automatically inferred frame.
-            a=c.page.get_pixmap(dpi=144,alpha=False);b=check.page.get_pixmap(dpi=144,alpha=False)
-            ia=Image.frombytes('RGB',(a.width,a.height),a.samples);ib=Image.frombytes('RGB',(b.width,b.height),b.samples)
-            diff=ImageChops.difference(ia,ib);x0,y0,x1,y1=spec['frame']
-            ImageDraw.Draw(diff).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
-            if diff.getbbox():raise Refused('staged raster changes outside approved inferred frame')
-            # Native retained font resources/programs are cloned, never replaced.
-            if len(check.document)!=len(c.document):raise Refused('page count changed')
-        finally:check.close()
+        writer.write(tmp)
+        validate_stage(c,tmp,spec,evidence,selected,''.join(t['text'] for _,ts in batches for t in ts))
         os.replace(tmp,output)
     finally:
         if os.path.exists(tmp):os.unlink(tmp)
     return dict(follower_translation=delta,followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF inferred-frame outside pixels'])
+
+
+def validate_stage(c,tmp,spec,evidence,selected,expected):
+    """Read-only publication checks, also callable on existing saved candidates."""
+    check=ContentPage(tmp,spec['page'])
+    try:
+        if check.errors:raise Refused('staged source interpretation failed')
+        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected);remain=Counter(foreign);added=[]
+        for g in check.actual:
+            key=glyph_key(g)
+            if remain[key]:remain[key]-=1
+            else:added.append(g)
+        if +remain:raise Refused('staged protected text changed')
+        def styled(content,exclude=None):
+            result=Counter()
+            for event in content.events:
+                for ch in event.chars:
+                    for i in ch.source_orders:
+                        if exclude and i in exclude:continue
+                        state=event.state
+                        result[(glyph_key(content.actual[i]),ch.code,state.font.name,state.size,state.tz,state.fill,state.tr,state.opacity)]+=1
+            return result
+        if styled(c,selected)-styled(check):raise Refused('staged protected source code/style changed')
+        if ''.join(g['unicode'] for g in added)!=expected:raise Refused('staged drawing text differs from requested paragraphs')
+        frame=pymupdf.Rect(spec['frame'])
+        for g in added:
+            if not g['unicode'].strip():continue
+            box=pymupdf.Rect(g['bbox'])
+            if not frame.contains(box):raise Refused('capacity: staged glyph bounds outside approved inferred frame')
+            for o in evidence['observed']['obstacles']:
+                if o['kind']=='foreign-text':
+                    # Target/follower observations were excluded at detection.
+                    pass
+                overlap=box&pymupdf.Rect(o['bounds'])
+                if not overlap.is_empty and overlap.width>.05 and overlap.height>.05:raise Refused('staged glyph collides with protected '+o['kind'])
+        original_paint=painting(c.source,spec['page']);staged_paint=painting(tmp,spec['page'])
+        if any(original_paint[k]!=staged_paint[k] for k in ('drawings','images','links','annots')):raise Refused('staged protected non-text paint changed')
+        if any(staged_paint['fonts'].get(k)!=v for k,v in original_paint['fonts'].items()):raise Refused('staged original font program changed')
+        if not all(semantic(tmp,spec['page'])['checks'].values()):raise Refused('staged semantic structure/ActualText inconsistency')
+        if any(not g['gid'] for g in added if g['unicode'].strip()):raise Refused('staged missing glyph')
+        # A cheap publication gate complements later all-page, two-renderer
+        # oracle audit. Mask only the approved automatically inferred frame.
+        a=c.page.get_pixmap(dpi=144,alpha=False);b=check.page.get_pixmap(dpi=144,alpha=False)
+        ia=Image.frombytes('RGB',(a.width,a.height),a.samples);ib=Image.frombytes('RGB',(b.width,b.height),b.samples)
+        diff=ImageChops.difference(ia,ib);x0,y0,x1,y1=spec['frame']
+        ImageDraw.Draw(diff).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
+        if diff.getbbox():raise Refused('staged raster changes outside approved inferred frame')
+        # Native retained font resources/programs are cloned, never replaced.
+        if len(check.document)!=len(c.document):raise Refused('page count changed')
+    finally:check.close()

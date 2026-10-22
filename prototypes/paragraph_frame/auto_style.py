@@ -94,3 +94,25 @@ def build(c,paragraph,start,old,new,substitute=None):
         newtokens.append(t)
     result=tokens[:at]+newtokens+tokens[stop:]
     return result,fonts,dict(Counter(t['mode'] for t in result))
+
+
+def describe(c,paragraphs):
+    """Public observations for approval; absent style metadata stays unknown."""
+    selected={i for p in paragraphs for i in p.ids};styles={};programs={}
+    for e in c.events:
+        count=sum(len(selected.intersection(ch.source_orders)) for ch in e.chars)
+        if not count:continue
+        state=e.state;font=state.font
+        if font.xref not in programs:
+            data=c.document.extract_font(font.xref)[3]
+            programs[font.xref]=hashlib.sha256(data).hexdigest() if data else None
+        key=(font.name,state.size,state.tz,state.tc,state.tw,state.ts,state.fill)
+        if key not in styles:
+            resource=font.resource
+            if '/DescendantFonts' in resource:resource=resource['/DescendantFonts'][0].get_object()
+            descriptor=resource.get('/FontDescriptor');descriptor=descriptor.get_object() if descriptor else {}
+            styles[key]=dict(resource=font.name,base_font=font.basefont,embedded_program_sha256=programs[font.xref],size=state.size,horizontal_scale=state.tz,
+                character_spacing=state.tc,word_spacing=state.tw,text_rise=state.ts,fill=[state.fill[0],[float(v) for v in state.fill[1]]],
+                descriptor={k:float(descriptor[k]) if k in descriptor else None for k in ('/Flags','/ItalicAngle','/FontWeight')},source_glyph_count=0)
+        styles[key]['source_glyph_count']+=count
+    return list(styles.values())

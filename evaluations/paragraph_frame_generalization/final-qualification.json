@@ -1,0 +1,3057 @@
+{
+  "A": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 47,
+        "source-code-witness": 1
+      },
+      "lines": [
+        {
+          "text": "標記に関して、国立感染症研究所においてガイドラインが作成されましたので、参考に送付い",
+          "baseline": 346.1299743652344
+        },
+        {
+          "text": "たします。 ",
+          "baseline": 364.1299743652344
+        }
+      ],
+      "inferred": {
+        "frame": [
+          70.44400024414062,
+          335.0699739456177,
+          528.6000073242187,
+          426.0589294433594
+        ],
+        "left": 70.94400024414062,
+        "right": 528.1000073242187,
+        "first_x": 81.50399780273438,
+        "baseline": 346.1299743652344,
+        "line_height": 18.0,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          18.0
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+        "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 91
+        },
+        {
+          "resource": "/F3",
+          "base_font": "/BCDGEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 2
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 46,
+        "source-code-witness": 2
+      },
+      "lines": [
+        {
+          "text": "標記について、国立感染症研究所においてガイドラインが作成されましたので、参考に送付い",
+          "baseline": 346.1299743652344
+        },
+        {
+          "text": "たします。 ",
+          "baseline": 364.1299743652344
+        }
+      ],
+      "inferred": {
+        "frame": [
+          70.44400024414062,
+          335.0699739456177,
+          528.6000073242187,
+          426.0589294433594
+        ],
+        "left": 70.94400024414062,
+        "right": 528.1000073242187,
+        "first_x": 81.50399780273438,
+        "baseline": 346.1299743652344,
+        "line_height": 18.0,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          18.0
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記に関して、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+        "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 47
+        },
+        {
+          "resource": "/F3",
+          "base_font": "/BCDGEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 1
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 42
+        },
+        {
+          "resource": "/F3",
+          "base_font": "/BCDGEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 1
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  },
+  "B": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 43,
+        "source-code-witness": 23,
+        "approved-substitute": 4
+      },
+      "lines": [
+        {
+          "text": "標記のガイドラインにつきまして、内容をご確認いただけるよう国立感染症研究所においてガ",
+          "baseline": 346.1299743652344
+        },
+        {
+          "text": "イドラインが作成されましたので、参考に送付いたします。 ",
+          "baseline": 364.1299743652344
+        }
+      ],
+      "inferred": {
+        "frame": [
+          70.44400024414062,
+          335.0699739456177,
+          528.6000073242187,
+          426.0589294433594
+        ],
+        "left": 70.94400024414062,
+        "right": 528.1000073242187,
+        "first_x": 81.50399780273438,
+        "baseline": 346.1299743652344,
+        "line_height": 18.0,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          18.0
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+        "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 91
+        },
+        {
+          "resource": "/F3",
+          "base_font": "/BCDGEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 2
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 69,
+        "approved-substitute": 1
+      },
+      "lines": [
+        {
+          "text": "標記のガイドラインにつきまして、内容を再確認いただけるよう国立感染症研究所においてガ",
+          "baseline": 346.1299743652344
+        },
+        {
+          "text": "イドラインが作成されましたので、参考に送付いたします。 ",
+          "baseline": 364.1299743652344
+        }
+      ],
+      "inferred": {
+        "frame": [
+          70.44400024414062,
+          335.0699739456177,
+          528.6000073242187,
+          426.0589294433594
+        ],
+        "left": 70.94400024414062,
+        "right": 528.1000073242187,
+        "first_x": 81.50399780273438,
+        "baseline": 346.1299743652344,
+        "line_height": 18.0,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          18.0
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記のガイドラインにつきまして、内容をご確認いただけるよう国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+        "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 65
+        },
+        {
+          "resource": "/PFAuto4",
+          "base_font": "/SUNJDU+ProvidedFont",
+          "embedded_program_sha256": "124827f385e4ab87e1347ea7c5e1c2a5cc6c9518aa4df05591cd37ecb999138f",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 4
+        },
+        {
+          "resource": "/F3",
+          "base_font": "/BCDGEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 1
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 42
+        },
+        {
+          "resource": "/F3",
+          "base_font": "/BCDGEE+MS-Gothic",
+          "embedded_program_sha256": "5e5ded281865f30d096f0f2b8b55969b1f80ea9396cc4e98af9acba406f2eddf",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 1
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  },
+  "C": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 94,
+        "source-code-witness": 3
+      },
+      "lines": [
+        {
+          "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他の",
+          "baseline": 526.0999755859375
+        },
+        {
+          "text": "メンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然として変化に抵抗します。",
+          "baseline": 547.7000122070312
+        }
+      ],
+      "inferred": {
+        "frame": [
+          56.29999923706055,
+          515.0999755859375,
+          539.2304912109375,
+          841.0
+        ],
+        "left": 56.79999923706055,
+        "right": 538.7304912109375,
+        "first_x": 67.30000305175781,
+        "baseline": 526.0999755859375,
+        "line_height": 20.45001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          26.5
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然こそこそと、隠れたやり方で変化に抵抗します。",
+        "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単になり、より効果的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失い、自然と仲間が増える勢いが作られる前に、不信と批評が蔓延するからです。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+MS-PMincho",
+          "embedded_program_sha256": "8e494f18aeceaf0433fe6bc4627fe545efe44dc006c7c044bee6411486651ada",
+          "size": 10.5,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 177
+        },
+        {
+          "resource": "/F7",
+          "base_font": "/HAAAAA+MS-PMincho",
+          "embedded_program_sha256": "a97c3caa69587f9e404d17c67c799de982bb7df4eabc83335551a52c5e1a67eb",
+          "size": 10.5,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 20
+        },
+        {
+          "resource": "/F5",
+          "base_font": "/FAAAAA+MS-PMincho",
+          "embedded_program_sha256": "e4be644343dc693518aeeceeb5ead4ddacf55eedfa2cc3b97a5590eb74b3e5bc",
+          "size": 10.5,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 30
+        },
+        {
+          "resource": "/F4",
+          "base_font": "/EAAAAA+TimesNewRomanPSMT",
+          "embedded_program_sha256": "7f63a7918860fa073a279468cca45bca34ea037dd3062b21f96f77e7fa28a68c",
+          "size": 12.0,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 3
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 92,
+        "approved-substitute": 3
+      },
+      "lines": [
+        {
+          "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他の",
+          "baseline": 526.0999755859375
+        },
+        {
+          "text": "メンバーが変化を受け入れたときには決まり事に従ったふりをしますが、なおも変化に抵抗します。",
+          "baseline": 547.7000122070312
+        }
+      ],
+      "inferred": {
+        "frame": [
+          56.29999923706055,
+          515.0999755859375,
+          538.9639892578125,
+          841.0
+        ],
+        "left": 56.79999923706055,
+        "right": 538.4639892578125,
+        "first_x": 67.30000305175781,
+        "baseline": 526.0999755859375,
+        "line_height": 20.5,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          26.5
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然として変化に抵抗します。",
+        "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単になり、より効果的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失い、自然と仲間が増える勢いが作られる前に、不信と批評が蔓延するからです。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+MS-PMincho",
+          "embedded_program_sha256": "8e494f18aeceaf0433fe6bc4627fe545efe44dc006c7c044bee6411486651ada",
+          "size": 10.5,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 169
+        },
+        {
+          "resource": "/F7",
+          "base_font": "/HAAAAA+MS-PMincho",
+          "embedded_program_sha256": "a97c3caa69587f9e404d17c67c799de982bb7df4eabc83335551a52c5e1a67eb",
+          "size": 10.5,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 19
+        },
+        {
+          "resource": "/F5",
+          "base_font": "/FAAAAA+MS-PMincho",
+          "embedded_program_sha256": "e4be644343dc693518aeeceeb5ead4ddacf55eedfa2cc3b97a5590eb74b3e5bc",
+          "size": 10.5,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 29
+        },
+        {
+          "resource": "/F4",
+          "base_font": "/EAAAAA+TimesNewRomanPSMT",
+          "embedded_program_sha256": "7f63a7918860fa073a279468cca45bca34ea037dd3062b21f96f77e7fa28a68c",
+          "size": 12.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 3
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  },
+  "D": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 107,
+        "source-code-witness": 27,
+        "approved-substitute": 15
+      },
+      "lines": [
+        {
+          "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他の",
+          "baseline": 526.0999755859375
+        },
+        {
+          "text": "メンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然こそこそと、隠れたやり方で変化に",
+          "baseline": 547.7000122070312
+        },
+        {
+          "text": "抵抗します。このため、移行の意義を丁寧に説明し、実際の作業を通じて疑問を解消することが重要です。",
+          "baseline": 568.0999755859375
+        }
+      ],
+      "inferred": {
+        "frame": [
+          56.29999923706055,
+          515.0999755859375,
+          539.2304912109375,
+          841.0
+        ],
+        "left": 56.79999923706055,
+        "right": 538.7304912109375,
+        "first_x": 67.30000305175781,
+        "baseline": 526.0999755859375,
+        "line_height": 20.45001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          26.5
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然こそこそと、隠れたやり方で変化に抵抗します。",
+        "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単になり、より効果的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失い、自然と仲間が増える勢いが作られる前に、不信と批評が蔓延するからです。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+MS-PMincho",
+          "embedded_program_sha256": "8e494f18aeceaf0433fe6bc4627fe545efe44dc006c7c044bee6411486651ada",
+          "size": 10.5,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 177
+        },
+        {
+          "resource": "/F7",
+          "base_font": "/HAAAAA+MS-PMincho",
+          "embedded_program_sha256": "a97c3caa69587f9e404d17c67c799de982bb7df4eabc83335551a52c5e1a67eb",
+          "size": 10.5,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 20
+        },
+        {
+          "resource": "/F5",
+          "base_font": "/FAAAAA+MS-PMincho",
+          "embedded_program_sha256": "e4be644343dc693518aeeceeb5ead4ddacf55eedfa2cc3b97a5590eb74b3e5bc",
+          "size": 10.5,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 30
+        },
+        {
+          "resource": "/F4",
+          "base_font": "/EAAAAA+TimesNewRomanPSMT",
+          "embedded_program_sha256": "7f63a7918860fa073a279468cca45bca34ea037dd3062b21f96f77e7fa28a68c",
+          "size": 12.0,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 3
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 147,
+        "approved-substitute": 2
+      },
+      "lines": [
+        {
+          "text": "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他の",
+          "baseline": 526.0999755859375
+        },
+        {
+          "text": "メンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然こそこそと、隠れたやり方で変化に",
+          "baseline": 547.7000122070312
+        },
+        {
+          "text": "抵抗します。このため、移行の意義を十分に説明し、実際の作業を通じて疑問を解消することが重要です。",
+          "baseline": 568.0999755859375
+        }
+      ],
+      "inferred": {
+        "frame": [
+          56.29999923706055,
+          515.0999755859375,
+          538.9639892578125,
+          841.0
+        ],
+        "left": 56.79999923706055,
+        "right": 538.4639892578125,
+        "first_x": 67.30000305175781,
+        "baseline": 526.0999755859375,
+        "line_height": 20.45001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          26.5
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "ラガード、あるいは保守的伝統主義者は常に古いやり方のほうがよいと考えています。残り16%を占め、他のメンバーが変化を受け入れたときには決まり事に従ったふりをしますが、依然こそこそと、隠れたやり方で変化に抵抗します。このため、移行の意義を丁寧に説明し、実際の作業を通じて疑問を解消することが重要です。",
+        "変化管理コミュニケーション計画の作成にこれらの戦略を利用すると、この仕事は大変簡単になり、より効果的になります。変化管理プロジェクトが多すぎると失敗します。管理がその焦点を失い、自然と仲間が増える勢いが作られる前に、不信と批評が蔓延するからです。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+MS-PMincho",
+          "embedded_program_sha256": "8e494f18aeceaf0433fe6bc4627fe545efe44dc006c7c044bee6411486651ada",
+          "size": 10.5,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 108
+        },
+        {
+          "resource": "/F7",
+          "base_font": "/HAAAAA+MS-PMincho",
+          "embedded_program_sha256": "a97c3caa69587f9e404d17c67c799de982bb7df4eabc83335551a52c5e1a67eb",
+          "size": 10.5,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 7
+        },
+        {
+          "resource": "/F5",
+          "base_font": "/FAAAAA+MS-PMincho",
+          "embedded_program_sha256": "e4be644343dc693518aeeceeb5ead4ddacf55eedfa2cc3b97a5590eb74b3e5bc",
+          "size": 10.5,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 16
+        },
+        {
+          "resource": "/F4",
+          "base_font": "/EAAAAA+TimesNewRomanPSMT",
+          "embedded_program_sha256": "7f63a7918860fa073a279468cca45bca34ea037dd3062b21f96f77e7fa28a68c",
+          "size": 12.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 3
+        },
+        {
+          "resource": "/PFAuto7",
+          "base_font": "/JEWGOR+ProvidedFont",
+          "embedded_program_sha256": "8b864a880efb8f30636f6cc6313a05649e5c2a2ea0f40ddfd78c7b170c2a15cb",
+          "size": 10.5,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 15
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+MS-PMincho",
+          "embedded_program_sha256": "8e494f18aeceaf0433fe6bc4627fe545efe44dc006c7c044bee6411486651ada",
+          "size": 10.5,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 96
+        },
+        {
+          "resource": "/F5",
+          "base_font": "/FAAAAA+MS-PMincho",
+          "embedded_program_sha256": "e4be644343dc693518aeeceeb5ead4ddacf55eedfa2cc3b97a5590eb74b3e5bc",
+          "size": 10.5,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 14
+        },
+        {
+          "resource": "/F7",
+          "base_font": "/HAAAAA+MS-PMincho",
+          "embedded_program_sha256": "a97c3caa69587f9e404d17c67c799de982bb7df4eabc83335551a52c5e1a67eb",
+          "size": 10.5,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 13
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  },
+  "F1": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "approved-substitute": 2,
+        "retained-source": 74
+      },
+      "lines": [
+        {
+          "text": "本件災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の",
+          "baseline": 284.57000732421875
+        },
+        {
+          "text": "上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+          "baseline": 304.3699951171875
+        }
+      ],
+      "inferred": {
+        "frame": [
+          53.380001068115234,
+          273.51000690460205,
+          547.5715356445312,
+          426.90001220703124
+        ],
+        "left": 53.880001068115234,
+        "right": 547.0715356445312,
+        "first_x": 64.46399688720703,
+        "baseline": 284.57000732421875,
+        "line_height": 19.79998779296875,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          19.79998779296875,
+          19.800018310546875
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+        "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+        "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 205
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": -0.12,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 6
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 3
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves.",
+        "Multiple string matches exist; approve the displayed occurrence and paragraph explicitly."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "approved-substitute": 2,
+        "retained-source": 74
+      },
+      "lines": [
+        {
+          "text": "今回災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の",
+          "baseline": 284.57000732421875
+        },
+        {
+          "text": "上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+          "baseline": 304.3699951171875
+        }
+      ],
+      "inferred": {
+        "frame": [
+          53.380001068115234,
+          273.51000690460205,
+          542.279970703125,
+          426.90001220703124
+        ],
+        "left": 53.880001068115234,
+        "right": 541.779970703125,
+        "first_x": 64.46399688720703,
+        "baseline": 284.57000732421875,
+        "line_height": 19.79998779296875,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          19.79998779296875,
+          19.800018310546875
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "本件災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+        "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+        "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/PFAuto3",
+          "base_font": "/GSKBIA+ProvidedFont",
+          "embedded_program_sha256": "20600a69f29c5b2256859ee8a19ec629841d9dc72b732d97f3ec68504c9ba2eb",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 2
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 73
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 1
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 132
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": -0.12,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 4
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 2
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  },
+  "F2": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 63,
+        "source-code-witness": 7
+      },
+      "lines": [
+        {
+          "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の",
+          "baseline": 284.57000732421875
+        },
+        {
+          "text": "上、感染症対策を適切に実施するようお願いします。 ",
+          "baseline": 304.3699951171875
+        }
+      ],
+      "inferred": {
+        "frame": [
+          53.380001068115234,
+          273.51000690460205,
+          547.5715356445312,
+          426.90001220703124
+        ],
+        "left": 53.880001068115234,
+        "right": 547.0715356445312,
+        "first_x": 64.46399688720703,
+        "baseline": 284.57000732421875,
+        "line_height": 19.79998779296875,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          19.79998779296875,
+          19.800018310546875
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+        "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+        "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 205
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": -0.12,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 6
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 3
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 68,
+        "approved-substitute": 1,
+        "source-code-witness": 1
+      },
+      "lines": [
+        {
+          "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の",
+          "baseline": 284.57000732421875
+        },
+        {
+          "text": "上、感染症対策を確実に実施するようお願いします。 ",
+          "baseline": 304.3699951171875
+        }
+      ],
+      "inferred": {
+        "frame": [
+          53.380001068115234,
+          273.51000690460205,
+          542.279970703125,
+          426.90001220703124
+        ],
+        "left": 53.880001068115234,
+        "right": 541.779970703125,
+        "first_x": 64.46399688720703,
+        "baseline": 284.57000732421875,
+        "line_height": 19.79998779296875,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          19.79998779296875,
+          19.800018310546875
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を適切に実施するようお願いします。 ",
+        "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+        "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 69
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 1
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 132
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": -0.12,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 4
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 2
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves.",
+        "Multiple string matches exist; approve the displayed occurrence and paragraph explicitly."
+      ]
+    }
+  },
+  "F3": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 76,
+        "approved-substitute": 15,
+        "same-program-new-code": 1,
+        "source-code-witness": 25
+      },
+      "lines": [
+        {
+          "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の",
+          "baseline": 284.57000732421875
+        },
+        {
+          "text": "上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関で情報を共有し、支援が必",
+          "baseline": 304.3699951171875
+        },
+        {
+          "text": "要な方に確実に対応できるよう準備を進めてください。 ",
+          "baseline": 324.16998291015625
+        }
+      ],
+      "inferred": {
+        "frame": [
+          53.380001068115234,
+          273.51000690460205,
+          547.5715356445312,
+          426.90001220703124
+        ],
+        "left": 53.880001068115234,
+        "right": 547.0715356445312,
+        "first_x": 64.46399688720703,
+        "baseline": 284.57000732421875,
+        "line_height": 19.79998779296875,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          19.79998779296875,
+          19.800018310546875
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+        "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+        "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 205
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": -0.12,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 6
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 3
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 115,
+        "approved-substitute": 2
+      },
+      "lines": [
+        {
+          "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の",
+          "baseline": 284.57000732421875
+        },
+        {
+          "text": "上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関で情報を確認し、支援が必",
+          "baseline": 304.3699951171875
+        },
+        {
+          "text": "要な方に確実に対応できるよう準備を進めてください。 ",
+          "baseline": 324.16998291015625
+        }
+      ],
+      "inferred": {
+        "frame": [
+          53.380001068115234,
+          273.51000690460205,
+          542.279970703125,
+          426.90001220703124
+        ],
+        "left": 53.880001068115234,
+        "right": 541.779970703125,
+        "first_x": 64.46399688720703,
+        "baseline": 284.57000732421875,
+        "line_height": 19.79998779296875,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          19.79998779296875,
+          19.800018310546875
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関で情報を共有し、支援が必要な方に確実に対応できるよう準備を進めてください。 ",
+        "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+        "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 236
+        },
+        {
+          "resource": "/PFAuto3",
+          "base_font": "/PKCMJR+ProvidedFont",
+          "embedded_program_sha256": "5dc0505a71c7f293ede6e026df05a8866ab1789775f92a958e0a6fcb5a81dc6e",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 15
+        },
+        {
+          "resource": "/PFAuto4",
+          "base_font": "/BHKHPT+MS-Gothic",
+          "embedded_program_sha256": "4f07a62191e3ba91c29124a1e39b84db72b86ebd0a601fe544318df372d52204",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 1
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 3
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  },
+  "F4": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 66,
+        "source-code-witness": 11,
+        "approved-substitute": 3
+      },
+      "lines": [
+        {
+          "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に合わせて、別紙の内",
+          "baseline": 284.57000732421875
+        },
+        {
+          "text": "容に留意し、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+          "baseline": 304.3699951171875
+        }
+      ],
+      "inferred": {
+        "frame": [
+          53.380001068115234,
+          273.51000690460205,
+          547.5715356445312,
+          426.90001220703124
+        ],
+        "left": 53.880001068115234,
+        "right": 547.0715356445312,
+        "first_x": 64.46399688720703,
+        "baseline": 284.57000732421875,
+        "line_height": 19.79998779296875,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          19.79998779296875,
+          19.800018310546875
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+        "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+        "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 205
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": -0.12,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 6
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 3
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 77,
+        "source-code-witness": 1,
+        "approved-substitute": 2
+      },
+      "lines": [
+        {
+          "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に合わせて、別紙の内",
+          "baseline": 284.57000732421875
+        },
+        {
+          "text": "容を確認し、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+          "baseline": 304.3699951171875
+        }
+      ],
+      "inferred": {
+        "frame": [
+          53.380001068115234,
+          273.51000690460205,
+          542.279970703125,
+          426.90001220703124
+        ],
+        "left": 53.880001068115234,
+        "right": 541.779970703125,
+        "first_x": 64.46399688720703,
+        "baseline": 284.57000732421875,
+        "line_height": 19.79998779296875,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [
+          19.79998779296875,
+          19.800018310546875
+        ],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "high: ordered P children",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に合わせて、別紙の内容に留意し、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+        "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+        "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。 "
+      ],
+      "source_styles": [
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 76
+        },
+        {
+          "resource": "/PFAuto3",
+          "base_font": "/YJLUDG+ProvidedFont",
+          "embedded_program_sha256": "18f38de4edf0fa874207c29163cfdcdd30fa8db0b2748fecaad6c96a97ab1350",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 3
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 1
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 132
+        },
+        {
+          "resource": "/F2",
+          "base_font": "/BCDFEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": -0.12,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 4
+        },
+        {
+          "resource": "/F1",
+          "base_font": "/BCDEEE+MS-Gothic",
+          "embedded_program_sha256": "3cd40c90c113b6a56eb7be1c999b6018a421e80943e703c92795965c4c6f50d9",
+          "size": 10.56,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "g",
+            [
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 32.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": 400.0
+          },
+          "source_glyph_count": 2
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  },
+  "N1": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 65,
+        "approved-substitute": 1,
+        "source-code-witness": 2
+      },
+      "lines": [
+        {
+          "text": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの便利な新機能をご",
+          "baseline": 128.79998779296875
+        },
+        {
+          "text": "紹介します。",
+          "baseline": 144.5
+        }
+      ],
+      "inferred": {
+        "frame": [
+          28.0,
+          117.29998779296875,
+          567.385123046875,
+          173.5
+        ],
+        "left": 28.5,
+        "right": 566.885123046875,
+        "first_x": 34.099998474121094,
+        "baseline": 128.79998779296875,
+        "line_height": 15.70001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+IPAPMincho",
+          "embedded_program_sha256": "311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5",
+          "size": 11.0,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 68
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 66,
+        "approved-substitute": 2
+      },
+      "lines": [
+        {
+          "text": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの有用な新機能をご",
+          "baseline": 128.79998779296875
+        },
+        {
+          "text": "紹介します。",
+          "baseline": 144.5
+        }
+      ],
+      "inferred": {
+        "frame": [
+          28.0,
+          117.29998779296875,
+          566.3181064453125,
+          173.5
+        ],
+        "left": 28.5,
+        "right": 565.8181064453125,
+        "first_x": 34.099998474121094,
+        "baseline": 128.79998779296875,
+        "line_height": 15.70001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの便利な新機能をご紹介します。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+IPAPMincho",
+          "embedded_program_sha256": "311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5",
+          "size": 11.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 67
+        },
+        {
+          "resource": "/PFAuto7",
+          "base_font": "/AGNGNU+ProvidedFont",
+          "embedded_program_sha256": "b60627068f965a23247dd75d978cc0b3db98f4265fa04f26346ab8f52369298a",
+          "size": 11.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 1
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  },
+  "N2": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 53,
+        "approved-substitute": 1,
+        "source-code-witness": 1
+      },
+      "lines": [
+        {
+          "text": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で主な新機能をご紹介します。",
+          "baseline": 128.79998779296875
+        }
+      ],
+      "inferred": {
+        "frame": [
+          28.0,
+          117.29998779296875,
+          567.385123046875,
+          173.5
+        ],
+        "left": 28.5,
+        "right": 566.885123046875,
+        "first_x": 34.099998474121094,
+        "baseline": 128.79998779296875,
+        "line_height": 15.70001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+IPAPMincho",
+          "embedded_program_sha256": "311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5",
+          "size": 11.0,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 68
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 54,
+        "approved-substitute": 2
+      },
+      "lines": [
+        {
+          "text": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で便利な新機能をご紹介",
+          "baseline": 128.79998779296875
+        },
+        {
+          "text": "します。",
+          "baseline": 145.29998779296875
+        }
+      ],
+      "inferred": {
+        "frame": [
+          33.599998474121094,
+          117.29998779296875,
+          487.95709228515625,
+          173.5
+        ],
+        "left": 34.099998474121094,
+        "right": 487.45709228515625,
+        "first_x": 34.099998474121094,
+        "baseline": 128.79998779296875,
+        "line_height": 16.5,
+        "leading_basis": "unobserved: 1.5 em default",
+        "paragraph_gap": [],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で主な新機能をご紹介します。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+IPAPMincho",
+          "embedded_program_sha256": "311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5",
+          "size": 11.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 54
+        },
+        {
+          "resource": "/PFAuto7",
+          "base_font": "/QBYWAP+ProvidedFont",
+          "embedded_program_sha256": "2a694c30b60fab00990470176412692872df82352a3a0ad3cd557d64bd93d1d1",
+          "size": 11.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 1
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves.",
+        "No within-paragraph leading is observable; approve the reported inferred/default leading."
+      ]
+    }
+  },
+  "N3": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 68,
+        "approved-substitute": 26,
+        "source-code-witness": 31
+      },
+      "lines": [
+        {
+          "text": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご",
+          "baseline": 128.79998779296875
+        },
+        {
+          "text": "紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。保存した文書の表示や印刷結果",
+          "baseline": 144.5
+        },
+        {
+          "text": "も確認すると安心です。",
+          "baseline": 160.20001220703125
+        }
+      ],
+      "inferred": {
+        "frame": [
+          28.0,
+          117.29998779296875,
+          567.385123046875,
+          173.5
+        ],
+        "left": 28.5,
+        "right": 566.885123046875,
+        "first_x": 34.099998474121094,
+        "baseline": 128.79998779296875,
+        "line_height": 15.70001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+IPAPMincho",
+          "embedded_program_sha256": "311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5",
+          "size": 11.0,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 68
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 123,
+        "source-code-witness": 1,
+        "approved-substitute": 1
+      },
+      "lines": [
+        {
+          "text": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご",
+          "baseline": 128.79998779296875
+        },
+        {
+          "text": "紹介します。導入前に変更点を点検し、普段の作業で必要な機能を試してください。保存した文書の表示や印刷結果も",
+          "baseline": 144.5
+        },
+        {
+          "text": "確認すると安心です。",
+          "baseline": 160.20001220703125
+        }
+      ],
+      "inferred": {
+        "frame": [
+          28.0,
+          117.29998779296875,
+          567.385123046875,
+          173.5
+        ],
+        "left": 28.5,
+        "right": 566.885123046875,
+        "first_x": 34.099998474121094,
+        "baseline": 128.79998779296875,
+        "line_height": 15.70001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。保存した文書の表示や印刷結果も確認すると安心です。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+IPAPMincho",
+          "embedded_program_sha256": "311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5",
+          "size": 11.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 99
+        },
+        {
+          "resource": "/PFAuto7",
+          "base_font": "/DGDKSG+ProvidedFont",
+          "embedded_program_sha256": "6b541d0ae220644da9b46f6c5a46d5bb4cf1f5f8394e69d60d18c6d49ebd88ac",
+          "size": 11.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 26
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  },
+  "N4": {
+    "initial": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 63,
+        "approved-substitute": 2,
+        "source-code-witness": 2
+      },
+      "lines": [
+        {
+          "text": "LibreOffice 4.1.1は8月末にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹",
+          "baseline": 128.79998779296875
+        },
+        {
+          "text": "介します。",
+          "baseline": 144.5
+        }
+      ],
+      "inferred": {
+        "frame": [
+          28.0,
+          117.29998779296875,
+          567.385123046875,
+          173.5
+        ],
+        "left": 28.5,
+        "right": 566.885123046875,
+        "first_x": 34.099998474121094,
+        "baseline": 128.79998779296875,
+        "line_height": 15.70001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+IPAPMincho",
+          "embedded_program_sha256": "311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5",
+          "size": 11.0,
+          "horizontal_scale": 100,
+          "character_spacing": 0,
+          "word_spacing": 0,
+          "text_rise": 0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 68
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    },
+    "reedit": {
+      "status": "pass",
+      "font_counts": {
+        "retained-source": 66,
+        "approved-substitute": 2
+      },
+      "lines": [
+        {
+          "text": "LibreOffice 4.1.1は8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご",
+          "baseline": 128.79998779296875
+        },
+        {
+          "text": "紹介します。",
+          "baseline": 144.5
+        }
+      ],
+      "inferred": {
+        "frame": [
+          28.0,
+          117.29998779296875,
+          562.9591064453125,
+          173.5
+        ],
+        "left": 28.5,
+        "right": 562.4591064453125,
+        "first_x": 34.099998474121094,
+        "baseline": 128.79998779296875,
+        "line_height": 15.70001220703125,
+        "leading_basis": "median within-paragraph observed gaps",
+        "paragraph_gap": [],
+        "baseline_policy": "existing target line baselines are observed and retained; added lines use inferred median leading"
+      },
+      "confidence": {
+        "paragraph": "medium: indentation, spacing and style continuity",
+        "right": "medium: maximum occupied pen extent; author frame absent",
+        "bottom": "medium: next protected paint/annotation or page edge",
+        "top": "medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked"
+      },
+      "paragraphs": [
+        "LibreOffice 4.1.1は8月末にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。"
+      ],
+      "source_styles": [
+        {
+          "resource": "/F1",
+          "base_font": "/BAAAAA+IPAPMincho",
+          "embedded_program_sha256": "311a720aa822cb4e23c35836bef0ad810814a56e07b2b40e9709c75e304ab9a5",
+          "size": 11.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 6.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 65
+        },
+        {
+          "resource": "/PFAuto7",
+          "base_font": "/FSOBJL+ProvidedFont",
+          "embedded_program_sha256": "87e25c35a58db0dd2ea908597fbda424b7dee38fdad13c2340cea5447b86973f",
+          "size": 11.0,
+          "horizontal_scale": 100.0,
+          "character_spacing": 0.0,
+          "word_spacing": 0.0,
+          "text_rise": 0.0,
+          "fill": [
+            "rg",
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "descriptor": {
+            "/Flags": 4.0,
+            "/ItalicAngle": 0.0,
+            "/FontWeight": null
+          },
+          "source_glyph_count": 2
+        }
+      ],
+      "warnings": [
+        "Occupied width is an inferred capacity, not a stored author frame.",
+        "Following same-column paragraphs may translate; protected content never moves."
+      ]
+    }
+  }
+}

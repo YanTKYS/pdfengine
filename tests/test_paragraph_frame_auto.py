@@ -22,6 +22,8 @@ def binding(font):return dict(path=str(font),sha256=hashlib.sha256(font.read_byt
 def test_selection_only_approval_reedit(fixture,tmp_path):
     source,font,_=fixture;p=propose(source,1,'本文','編集本文',substitute=binding(font))
     assert p['evidence']['manual_geometry_inputs']==0 and p['paragraphs'][0]=='本文です。'
+    assert p['source_styles'][0]['embedded_program_sha256']
+    p=json.loads(json.dumps(p))  # CLI proposal file must retain approval equality.
     with pytest.raises(Refused,match='approval'):approve(source,p)
     wrong=deepcopy(p);wrong['evidence']['inferred']['right']+=100
     with pytest.raises(Refused,match='altered'):approve(source,wrong,acknowledge_inference=True)
@@ -54,7 +56,13 @@ def test_color_scale_spacing_and_source_witness(tmp_path):
         assert {e.state.tz for e in b.events if e.chars}=={90}
         assert {e.state.size for e in b.events if e.chars}=={11}
         assert all(e.state.font.name=='/Fixture' for e in b.events if e.chars)
+        assert all(abs(x['origin'][0]-y['origin'][0])<.0001 and x['origin'][1]==y['origin'][1] for x,y in zip(a.actual,b.actual))
     finally:a.close();b.close()
+    # Recovered positioned glyphs must not add the original Tc a second time.
+    again=propose(out,1,'本文本文','本文です');last=tmp_path/'again.pdf'
+    save(out,approve(out,again,acknowledge_inference=True),last)
+    with pymupdf.open(styled) as first,pymupdf.open(last) as final:
+        assert first[0].get_pixmap().samples==final[0].get_pixmap().samples
 
 
 def test_overflow_and_empty_do_not_publish(fixture,tmp_path):
