@@ -7,7 +7,7 @@ import tempfile
 import pymupdf
 from pypdf import PdfWriter
 from pypdf.generic import DictionaryObject,NameObject,TextStringObject,DecodedStreamObject
-from pdfeditor.content_stream import ContentPage,serialized_event
+from pdfeditor.content_stream import ContentPage,number,serialized_event
 from .auto_style import source_tokens
 from .audit import painting,semantic
 from PIL import Image,ImageChops,ImageDraw
@@ -48,13 +48,21 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     starts={e.operator.start for e in removed}
     # Keep content (reading) order: before the edited text if no other text
     # lies in between, else right after its text object, else spliced into
-    # the text object where the edited text starts.
+    # the text object right before the edited text. When the first edited
+    # operator keeps glyphs drawn before the edit (and the last none after
+    # it), the place after its text object comes first.
     safe=form_write.safe_boundaries(boundaries,first,containers)
-    choice=safe[-1] if safe and not form_write.foreign_text_between(program,safe[-1].operator.end,first,starts) else None
-    if choice is None:
-        after=form_write.after_text(boundaries,program,first,last,containers)
-        if after is not None and not form_write.foreign_text_between(program,last,after.operator.end,starts):choice=after
-    if choice is None and not any(p.scopes for p in active):choice=form_write.inside_text(boundaries,program,first,containers)
+    kept=lambda e:[bool(selected.intersection(ch.source_orders)) for ch in e.chars]
+    head,tail=kept(min(removed,key=lambda e:e.operator.start)),kept(max(removed,key=lambda e:e.operator.start))
+    lead=not head[0];trail=not tail[-1]
+    before=safe[-1] if safe and not form_write.foreign_text_between(program,safe[-1].operator.end,first,starts) else None
+    after=form_write.after_text(boundaries,program,first,last,containers)
+    if after is not None and form_write.foreign_text_between(program,last,after.operator.end,starts):after=None
+    choice=(after or before) if lead and not trail else (before or after)
+    restore=b''
+    if choice is None and not any(p.scopes for p in active):
+        spliced=form_write.inside_text(boundaries,program,min(removed,key=lambda e:e.operator.start),containers)
+        if spliced:choice,restore=spliced
     if choice is None and safe:choice=safe[-1]
     if choice is None:raise Refused('no safe insertion point before the edited text')
     # New drawing is placed in default user space under the inverse CTM.
@@ -79,6 +87,19 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
             placed.append(t)
         batches.append((p,placed))
     data=c.streams[stream];ops=[]
+    # Laid-out positions come from rendered (float32) glyph origins; where they
+    # are the source's own coordinates, write the exact source values, so that
+    # renderers order lines and words as in the source.
+    pool=([],[])
+    for e in removed:
+        A,B,C,D,E,F=e.state.ctm
+        for ch in e.chars:
+            if ch.source_text_matrix:
+                a,b,c_,d,e_,f=ch.source_text_matrix;u,v=e.state.ts*c_+e_,e.state.ts*d+f
+                pool[0].append(u*A+v*C+E);pool[1].append(u*B+v*D+F)
+    def exact(value,axis):
+        best=min(pool[axis],key=lambda p:abs(p-value),default=value)
+        return best if abs(best-value)<1e-3 else value
     for p,tokens in batches:
         scopegroups=[(n,[t for t in tokens if t['scope']==n]) for n in range(len(p.scopes))] if p.scopes else [(None,tokens)]
         if ''.join(t['text'] for _,ts in scopegroups for t in ts)!=''.join(t['text'] for t in tokens):raise Refused('replacement crosses incompatible scope reading order')
@@ -89,6 +110,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
                 if '/ActualText' in owner:
                     writer.get_object(lookup[s['association']['owner_reference']['xref']])[NameObject('/ActualText')]=TextStringObject(''.join(t['text'] for t in ts))
             ops.append(b'q\n'+prefix+b'BT\n0 Tc 0 Tw 0 Ts 0 Tr\n')
+            run=None
             for t in ts:
                 name=t['font_name'];code=t['code'];x=t['x'];y=t['y']
                 if t.get('font_key'):
@@ -96,10 +118,23 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
                     x+=g.x_offset*t['size']/font.upem*t['tz']/100;y-=g.y_offset*t['size']/font.upem
                 color=' '.join(str(float(v)) for v in t['fill'][1])+' '+t['fill'][0]
                 if t['fill'][0] in ('sc','scn'):color=t['fill_space']+' cs '+color
-                ops.append(f'{color}\n{name} {t["size"]:.9f} Tf {t["tz"]:.9f} Tz 1 0 0 1 {x:.9f} {c.page.rect.height-y:.9f} Tm <{code.hex()}> Tj\n'.encode())
+                # Consecutive glyphs of one original font and style on one
+                # baseline form one TJ, kerned to the laid-out pen positions,
+                # like the source: text extraction joins them as the source.
+                # Kerns are rounded to 1/100 000 em (float noise would be read
+                # as word breaks); the pen follows the written kerns.
+                key=None if t.get('font_key') else (name,t['size'],t['tz'],color,y)
+                if key is not None and run is not None and run[0]==key:
+                    unit=t['size']*t['tz']/100000;kern=round((run[1]-x)/unit,2)
+                    ops[-1]=ops[-1][:-4]+(b' '+number(kern)+b' ' if kern else b'')+f'<{code.hex()}>]TJ\n'.encode()
+                    run=(key,run[1]-kern*unit+t['nominal_advance'])
+                    continue
+                x=exact(x,0)
+                ops.append(f'{color}\n{name} {t["size"]:.9f} Tf {t["tz"]:.9f} Tz 1 0 0 1 {x:.9f} {exact(c.page.rect.height-y,1):.9f} Tm [<{code.hex()}>]TJ\n'.encode())
+                run=None if key is None else (key,x+t['nominal_advance'])
             ops.append(b'ET\nQ\n')
             if n is not None:ops.append(b'EMC\n')
-    edits.append((insertion,insertion,form_write.wrap(choice,b''.join(ops))))
+    edits.append((insertion,insertion,form_write.wrap(choice,b''.join(ops),restore)))
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
     clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts)
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);fd,tmp=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)

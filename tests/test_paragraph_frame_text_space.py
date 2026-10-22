@@ -198,8 +198,9 @@ def test_named_fill_colour_space_is_selected_again(tmp_path):
     assert colours == {0x0000ff}
 
 
-def test_column_in_one_text_object_keeps_reading_order(tmp_path):
-    """Like InDesign: one BT block draws the whole column; the edit is spliced in as ET … BT."""
+@pytest.mark.parametrize('moves', ['absolute', 'relative'])
+def test_column_in_one_text_object_keeps_reading_order(tmp_path, moves):
+    """Like InDesign: one BT block draws the whole column; the edit is spliced in as ET … BT Tm."""
     lines = LINES + [(40, 170, '最後の段落になります。')]
     plain, _ = page_with(tmp_path, lines, height=H)
     w = PdfWriter(clone_from=PdfReader(plain))
@@ -207,6 +208,15 @@ def test_column_in_one_text_object_keeps_reading_order(tmp_path):
     body = b''.join(ref.get_object().get_data() for ref in page['/Contents'])
     body = re.sub(rb'\s*ET\s*Q\s*q\s*BT\s*', b'\n', body)
     assert body.count(b'BT') == 1
+    if moves == 'relative':
+        origins = [(float(x), float(y)) for x, y in re.findall(rb'1 0 0 1 ([\d.]+) ([\d.]+) Tm', body)]
+        steps = iter([None] + [(x - a, y - b) for (a, b), (x, y) in zip(origins, origins[1:])])
+
+        def td(match):
+            step = next(steps)
+            return match.group(0) if step is None else f'{step[0]:g} {step[1]:g} Td'.encode()
+        body = re.sub(rb'1 0 0 1 [\d.]+ [\d.]+ Tm', td, body)
+        assert body.count(b'Tm') == 1
     contents = DecodedStreamObject()
     contents.set_data(body)
     page[NameObject('/Contents')] = w._add_object(contents)
@@ -220,6 +230,13 @@ def test_column_in_one_text_object_keeps_reading_order(tmp_path):
         with pymupdf.open(path) as d:
             return d[0].get_text().replace(' ', '').split()
     assert words(out) == [t.replace('後続段落', '次の段落') for t in words(source)]
+    from prototypes.paragraph_frame.audit import extract
+    poppler = [re.sub(r'\s+', '', extract(path, 1, tmp_path)['poppler']) for path in (source, out)]
+    assert poppler[1] == poppler[0].replace('後続段落', '次の段落')
+    # The new line is one kerned TJ run in the original font, like the source.
+    data = PdfReader(out).pages[0].get_contents().get_data()
+    runs = re.findall(rb'Tz 1 0 0 1 \S+ \S+ Tm (\[[^\]]*\])TJ', data)
+    assert [run.count(b'<') for run in runs] == [len('次の段落です。')]
     assert painting(str(out), 1)['drawings'] == painting(str(source), 1)['drawings']
     again, _ = edit(out, '次の段落です。', '後続段落です。', tmp_path / 'again.pdf')
     assert again['evidence']['conditions']['status'] == 'applied'

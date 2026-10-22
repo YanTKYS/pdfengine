@@ -13,6 +13,7 @@ from . import text_space
 PUNCTUATION=set('、。，．・：；？！）〕］｝〉》」』】（〔［｛〈《「『【')
 # Marks whose leading space is removed too (opening brackets, middle dots).
 OPENING=set('（〔［｛〈《「『【・：；')
+CLOSING=set('、。，．）〕］｝〉》」』】')
 
 
 def family(font):return re.sub(r'^/?[A-Z]{6}\+','',font.basefont).lstrip('/')
@@ -46,20 +47,24 @@ def source_tokens(c):
         for t,n in zip(row,row[1:]):
             delta=n['origin'][0]-t['origin'][0]
             same=all(t[k]==n[k] for k in ('font_name','size','tz','rise','tc','tw'))
+            pair=t['text'] in CLOSING and n['text'] in OPENING
             if abs(delta-t['advance'])<.25*t['size']:
                 # The observed pen step is kept even across a font switch
                 # (TJ adjustments); only same-style pairs feed the tracking median.
                 t['tracking']=delta-t['advance'];t['advance']=delta
                 if same:tracking[(t['font_name'],t['size'],t['tz'])].append(t['tracking'])
                 continue
-            elif (t['text'] in PUNCTUATION or n['text'] in OPENING) and .2*t['advance']<=delta<t['advance']:
+            elif (t['text'] in PUNCTUATION or n['text'] in OPENING) and (0 if pair else .2)*t['advance']<=delta<t['advance']:
                 # Japanese writers compress punctuation (約物詰め): the space after
                 # closing marks and before opening brackets is removed (half width
-                # plus tracking; InDesign down to 0.24 em). Keep the observed advance, but
-                # do not let it skew the tracking median.
-                t['tracking']=delta-t['advance'];t['advance']=delta
-                # Only a compressed mark itself is evidence for that mark's width.
-                if t['text'] in PUNCTUATION:t['compressed_punctuation']=True
+                # plus tracking; InDesign down to 0.24 em). A closing mark directly
+                # followed by an opening one may lose both halves (「）【」 in one em
+                # box, step 0). Keep the observed advance, but do not let it skew
+                # the tracking median.
+                own=delta>=.2*t['advance'];t['tracking']=delta-t['advance'];t['advance']=delta
+                # Only a compressed mark itself is evidence for that mark's width,
+                # not a pair step below that, which depends on the next mark.
+                if t['text'] in PUNCTUATION and own:t['compressed_punctuation']=True
     med={k:median(v) for k,v in tracking.items()}
     return tokens,med
 

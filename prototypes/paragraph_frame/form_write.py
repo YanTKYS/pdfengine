@@ -123,39 +123,44 @@ def foreign_text_between(data, low, high, removed):
     return any(o.name in SHOWS and low <= o.start < high and o.start not in removed for o in operators(data))
 
 
-def inside_text(boundaries, data, first, containers=()):
-    """A boundary inside the text object, right before the absolute Tm that starts the edited text.
+def inside_text(boundaries, data, event, containers=()):
+    """``(boundary, restore)`` inside the text object, right before the first edited text operator.
 
-    Producers such as InDesign draw a whole column in one text object; the
-    new drawing is spliced in as ``ET … BT`` there. BT/ET only reset the text
-    matrix, which the following Tm sets again, so the remaining text keeps
-    its place, and reading and paint order are exact. Not after text clipping
-    (Tr >= 4) in the text object, or with marked content opened inside it.
+    Producers such as InDesign draw a whole column in one text object, with
+    relative line moves; the new drawing is spliced in there as
+    ``ET … BT <matrix> Tm``. BT/ET only reset the text and line matrices, and
+    the restored ``Tm`` sets both again to their values at that point (they
+    must be equal: no text shown on the line before it), so the remaining
+    text keeps its place and reading and paint order are exact. Not after
+    text clipping (Tr >= 4) in the text object, or with marked content opened
+    inside it.
     """
+    if event.operator.name not in ('Tj', 'TJ') or any(abs(x - y) > 1e-9 for x, y in zip(event.text_matrix, event.line_matrix)):
+        return None
+    first = event.operator.start
     ops = list(operators(data))
     depth = len(containers)
     low = containers[-1]['content_byte_range'][0] if containers else 0
-    found = None
-    by_end = {o.end: n for n, o in enumerate(ops)}
+    before = [b for b in boundaries if b.operator.end <= first]
+    if not before:
+        return None
+    b = before[-1]
+    if any(o.start >= b.operator.end and o.start < first for o in ops):
+        return None
     # Text clip modes accumulate a clip that ET applies; any of them earlier
     # in the text object rules out an ET there.
-    clipping, used = [], False
+    clipping = False
     for o in ops:
-        if o.name == 'BT':
-            used = False
-        elif o.name == 'Tr' and o.args and float(o.args[-1]) >= 4:
-            used = True
-        clipping.append(used)
-    for b in boundaries:
-        if b.operator.end > first:
+        if o.start >= first:
             break
-        n = by_end.get(b.operator.end)
-        if (n is None or n + 1 >= len(ops) or ops[n + 1].name != 'Tm' or ops[n + 1].start > first or not b.text_object
-                or b.operator.end < low or b.marked_content_depth != depth or b.pending_path or b.pending_clip
-                or b.state.tr >= 4 or clipping[n] or not _axis_aligned(b.state.ctm)):
-            continue
-        found = b
-    return found
+        if o.name == 'BT':
+            clipping = False
+        elif o.name == 'Tr' and o.args and float(o.args[-1]) >= 4:
+            clipping = True
+    if (not b.text_object or b.operator.end < low or b.marked_content_depth != depth or b.pending_path or b.pending_clip
+            or b.state.tr >= 4 or clipping or not _axis_aligned(b.state.ctm)):
+        return None
+    return b, b' '.join(number(v) for v in event.text_matrix) + b' Tm\n'
 
 
 def insertion(boundary, frames, height):
@@ -184,9 +189,9 @@ def insertion(boundary, frames, height):
     return b' '.join(number(v) for v in inverse(state.ctm)) + b' cm\n'
 
 
-def wrap(boundary, drawing):
+def wrap(boundary, drawing, restore=b''):
     """The inserted bytes at ``boundary``: inside a text object they are closed off by ET/BT."""
-    return b'\nET\n' + drawing + b'BT\n' if boundary.text_object else b'\n' + drawing
+    return b'\nET\n' + drawing + b'BT\n' + restore if boundary.text_object else b'\n' + drawing
 
 
 def _clone(writer, original, data, resources):
