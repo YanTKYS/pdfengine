@@ -65,3 +65,7 @@ tmp/
 # Paragraph-frame column flow: manifest (frozen before evaluation) and compact results only.
 !/evaluations/paragraph_frame_column_flow/manifest.json
 !/evaluations/paragraph_frame_column_flow/results.json
+
+# InDesign-style text support (text matrix/CTM, Form XObject): manifest and compact results only.
+!/evaluations/paragraph_frame_indesign/manifest.json
+!/evaluations/paragraph_frame_indesign/results.json

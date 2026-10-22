@@ -1,0 +1,892 @@
+{
+ "schema": "paragraph-frame-indesign-1",
+ "baseline_commit": "f17055d",
+ "policy": {
+  "frozen_before_implementation": true,
+  "no_case_replacement": true,
+  "inputs": "PDF path, page, selected text, replacement. No oracle geometry, no manual coordinates.",
+  "success": "saved alone is not success: safety (raster outside the allowed region unchanged in MuPDF and Poppler, protected glyphs, paint, fonts, Form objects), quality (text, extraction, search, style, metrics) and PDF-alone re-edit are judged separately",
+  "generated": "generated PDFs (shared and nested Form XObjects) are tests only; they are not counted as real-PDF success",
+  "network": "pref.osaka.lg.jp now answers with a WAF error page (HTTP 408) and most hosts are denied by the session policy (HTTP 403); real PDFs come from the PR #89 download and the mozilla/pdf.js test corpus on raw.githubusercontent.com"
+ },
+ "documents": {
+  "osaka_fusei_477": {
+   "path": "(scratch download, not committed)",
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "source_url": "https://www.pref.osaka.lg.jp/documents/63847/477.pdf",
+   "producer": "Adobe PDF Library 16.0 / Adobe InDesign 16.4 (Windows)",
+   "pages": [
+    7
+   ],
+   "structure": "1 Tf with Tm 9.567 0 0 9.567 on the page; page header in a page-local Form XObject (/Fm9)"
+  },
+  "tracemonkey": {
+   "path": "(scratch download, not committed)",
+   "sha256": "3662ff519e485810520552bf301d8c3b2b917fd2f83303f4965d7abed367e113",
+   "source_url": "https://raw.githubusercontent.com/mozilla/pdf.js/master/test/pdfs/tracemonkey.pdf",
+   "producer": "pdfeTeX-1.21a",
+   "corpus": "mozilla/pdf.js test/pdfs (real-world documents)",
+   "structure": "figure on p2 is a Form XObject (/Im1): Tm 12 0 0 -12 under cm 0.431 0 0 -0.431 (reflections cancel)"
+  },
+  "issue17730": {
+   "path": "(scratch download, not committed)",
+   "sha256": "d1d3be1674f4756d82630d68f08a8088f5b912c58f3379f45eb63b025ad99b14",
+   "source_url": "https://raw.githubusercontent.com/mozilla/pdf.js/master/test/pdfs/issue17730.pdf",
+   "producer": "Antenna House PDF Output Library 7.3.1851",
+   "corpus": "mozilla/pdf.js test/pdfs (real-world documents)",
+   "structure": "Antenna House: CTM scale with scaled Tm"
+  },
+  "issue7014": {
+   "path": "(scratch download, not committed)",
+   "sha256": "c56341a940c28792a5d56eec886daab0d4c8eef24c141900610fcdf5930ceed2",
+   "source_url": "https://raw.githubusercontent.com/mozilla/pdf.js/master/test/pdfs/issue7014.pdf",
+   "producer": "Mac OS X 10.11.2 Quartz PDFContext",
+   "corpus": "mozilla/pdf.js test/pdfs (real-world documents)",
+   "structure": "Quartz PDFContext: 1 Tf with scaled Tm; TeX ligatures"
+  },
+  "issue14117": {
+   "path": "(scratch download, not committed)",
+   "sha256": "52537869a32f0bc04a6f676b9ded451cca0c744024fb36491d051494d96d4548",
+   "source_url": "https://raw.githubusercontent.com/mozilla/pdf.js/master/test/pdfs/issue14117.pdf",
+   "producer": "",
+   "corpus": "mozilla/pdf.js test/pdfs (real-world documents)"
+  },
+  "issue14297": {
+   "path": "(scratch download, not committed)",
+   "sha256": "4041c1e3e2446bd236d536ce88fe5e97b30605f04813e600a00c58bf19e8c89b",
+   "source_url": "https://raw.githubusercontent.com/mozilla/pdf.js/master/test/pdfs/issue14297.pdf",
+   "producer": "",
+   "corpus": "mozilla/pdf.js test/pdfs (real-world documents)"
+  },
+  "160F-2019": {
+   "path": "(scratch download, not committed)",
+   "sha256": "f41f0818365ffd14ca4e55c0556355193bd76632b970d60cc2dec554cac6f379",
+   "source_url": "https://raw.githubusercontent.com/mozilla/pdf.js/master/test/pdfs/160F-2019.pdf",
+   "producer": "Acrobat Distiller 5.0.5 (Windows)",
+   "corpus": "mozilla/pdf.js test/pdfs (real-world documents)"
+  },
+  "canvas": {
+   "path": "(scratch download, not committed)",
+   "sha256": "3548b2605bef8ff9656efe8ef8fd94814dfbcf94f547c7d1ff8603e8a46cef6b",
+   "source_url": "https://raw.githubusercontent.com/mozilla/pdf.js/master/test/pdfs/canvas.pdf",
+   "producer": "GPL Ghostscript 8.60",
+   "corpus": "mozilla/pdf.js test/pdfs (real-world documents)"
+  }
+ },
+ "requests": [
+  {
+   "id": "F-same",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "old": "悩みを抱えている人は",
+   "new": "悩みを持っている人は",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "InDesign scaled Tm: same-length replacement",
+   "kind": "paragraph",
+   "after": null,
+   "lines": [
+    {
+     "text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4",
+     "baseline": 688.38,
+     "bbox": [
+      21.17,
+      676.99,
+      239.63,
+      691.54
+     ]
+    },
+    {
+     "text": "人の方が自殺で亡くなられるという深刻な状況です。",
+     "baseline": 701.49,
+     "bbox": [
+      21.16,
+      690.1,
+      244.61,
+      704.65
+     ]
+    },
+    {
+     "text": "悩みを抱えている人は、ひとりで悩まず専門機関にご",
+     "baseline": 714.6,
+     "bbox": [
+      21.19,
+      703.2,
+      239.5,
+      717.75
+     ]
+    },
+    {
+     "text": "相談ください。また、身近な人の悩みに気づいたら話",
+     "baseline": 727.7,
+     "bbox": [
+      21.18,
+      716.31,
+      239.61,
+      730.86
+     ]
+    },
+    {
+     "text": "を聴いて寄り添いましょう。",
+     "baseline": 740.81,
+     "bbox": [
+      20.94,
+      729.42,
+      138.82,
+      743.97
+     ]
+    }
+   ],
+   "allowed_region": [
+    18.94,
+    674.99,
+    246.61,
+    745.97
+   ]
+  },
+  {
+   "id": "F-same-reedit",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "old": "悩みを持っている人は",
+   "new": "悩みを抱えている人は",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "PDF-alone re-edit: restore the original text",
+   "kind": "paragraph",
+   "after": "F-same",
+   "lines": [
+    {
+     "text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4",
+     "baseline": 688.38,
+     "bbox": [
+      21.17,
+      676.99,
+      239.63,
+      691.54
+     ]
+    },
+    {
+     "text": "人の方が自殺で亡くなられるという深刻な状況です。",
+     "baseline": 701.49,
+     "bbox": [
+      21.16,
+      690.1,
+      244.61,
+      704.65
+     ]
+    },
+    {
+     "text": "悩みを抱えている人は、ひとりで悩まず専門機関にご",
+     "baseline": 714.6,
+     "bbox": [
+      21.19,
+      703.2,
+      239.5,
+      717.75
+     ]
+    },
+    {
+     "text": "相談ください。また、身近な人の悩みに気づいたら話",
+     "baseline": 727.7,
+     "bbox": [
+      21.18,
+      716.31,
+      239.61,
+      730.86
+     ]
+    },
+    {
+     "text": "を聴いて寄り添いましょう。",
+     "baseline": 740.81,
+     "bbox": [
+      20.94,
+      729.42,
+      138.82,
+      743.97
+     ]
+    }
+   ],
+   "allowed_region": [
+    18.94,
+    674.99,
+    246.61,
+    745.97
+   ]
+  },
+  {
+   "id": "F-short",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "old": "損耗などの補修や修繕の費用を",
+   "new": "修繕の費用を",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "InDesign scaled Tm: shorten",
+   "kind": "paragraph",
+   "after": null,
+   "lines": [
+    {
+     "text": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用",
+     "baseline": 829.05,
+     "bbox": [
+      21.18,
+      817.66,
+      239.8,
+      832.21
+     ]
+    },
+    {
+     "text": "を貸主、借主のどちらが負担するのかといった原状回",
+     "baseline": 842.16,
+     "bbox": [
+      20.93,
+      830.77,
+      239.77,
+      845.32
+     ]
+    },
+    {
+     "text": "復をめぐるトラブルが発生しています。大阪府版ガイ",
+     "baseline": 855.27,
+     "bbox": [
+      21.17,
+      843.87,
+      239.92,
+      858.42
+     ]
+    },
+    {
+     "text": "ドラインでは、トラブルの未然防止・解決に役立つ情報",
+     "baseline": 868.37,
+     "bbox": [
+      20.38,
+      856.98,
+      239.64,
+      871.53
+     ]
+    },
+    {
+     "text": "や相談窓口を掲載しています。ぜひご活用ください。",
+     "baseline": 881.48,
+     "bbox": [
+      21.08,
+      870.09,
+      236.01,
+      884.64
+     ]
+    }
+   ],
+   "allowed_region": [
+    18.38,
+    815.66,
+    241.92,
+    886.64
+   ]
+  },
+  {
+   "id": "F-wrap",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "old": "深刻な状況です。",
+   "new": "深刻な状況が続いています。",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "InDesign scaled Tm: longer text re-wraps the following lines (the last line has room)",
+   "kind": "paragraph",
+   "after": null,
+   "lines": [
+    {
+     "text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4",
+     "baseline": 688.38,
+     "bbox": [
+      21.17,
+      676.99,
+      239.63,
+      691.54
+     ]
+    },
+    {
+     "text": "人の方が自殺で亡くなられるという深刻な状況です。",
+     "baseline": 701.49,
+     "bbox": [
+      21.16,
+      690.1,
+      244.61,
+      704.65
+     ]
+    },
+    {
+     "text": "悩みを抱えている人は、ひとりで悩まず専門機関にご",
+     "baseline": 714.6,
+     "bbox": [
+      21.19,
+      703.2,
+      239.5,
+      717.75
+     ]
+    },
+    {
+     "text": "相談ください。また、身近な人の悩みに気づいたら話",
+     "baseline": 727.7,
+     "bbox": [
+      21.18,
+      716.31,
+      239.61,
+      730.86
+     ]
+    },
+    {
+     "text": "を聴いて寄り添いましょう。",
+     "baseline": 740.81,
+     "bbox": [
+      20.94,
+      729.42,
+      138.82,
+      743.97
+     ]
+    }
+   ],
+   "allowed_region": [
+    18.94,
+    674.99,
+    246.61,
+    745.97
+   ]
+  },
+  {
+   "id": "F-grow-line",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "old": "原状回復をめぐるトラブルが発生しています。",
+   "new": "原状回復をめぐるトラブルが発生しています。退去の前に契約書の内容を確認してください。",
+   "expected_outcome": "refused",
+   "expected_reason": "capacity",
+   "purpose": "growth needs a new line, but the label box below the paragraph is protected",
+   "kind": "paragraph",
+   "after": null,
+   "lines": [
+    {
+     "text": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用",
+     "baseline": 829.05,
+     "bbox": [
+      21.18,
+      817.66,
+      239.8,
+      832.21
+     ]
+    },
+    {
+     "text": "を貸主、借主のどちらが負担するのかといった原状回",
+     "baseline": 842.16,
+     "bbox": [
+      20.93,
+      830.77,
+      239.77,
+      845.32
+     ]
+    },
+    {
+     "text": "復をめぐるトラブルが発生しています。大阪府版ガイ",
+     "baseline": 855.27,
+     "bbox": [
+      21.17,
+      843.87,
+      239.92,
+      858.42
+     ]
+    },
+    {
+     "text": "ドラインでは、トラブルの未然防止・解決に役立つ情報",
+     "baseline": 868.37,
+     "bbox": [
+      20.38,
+      856.98,
+      239.64,
+      871.53
+     ]
+    },
+    {
+     "text": "や相談窓口を掲載しています。ぜひご活用ください。",
+     "baseline": 881.48,
+     "bbox": [
+      21.08,
+      870.09,
+      236.01,
+      884.64
+     ]
+    }
+   ],
+   "allowed_region": [
+    18.38,
+    815.66,
+    241.92,
+    886.64
+   ]
+  },
+  {
+   "id": "F-form",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "old": "3月1日",
+   "new": "3月7日",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "text in the page-local Form XObject /Fm9 (page header)",
+   "kind": "form",
+   "after": null,
+   "lines": [
+    {
+     "text": "令和7年（2025年）3月1日",
+     "baseline": 34.43,
+     "bbox": [
+      620.42,
+      25.16,
+      708.66,
+      37.32
+     ]
+    }
+   ],
+   "allowed_region": [
+    618.42,
+    23.16,
+    710.66,
+    39.32
+   ]
+  },
+  {
+   "id": "T-form",
+   "document": "tracemonkey",
+   "page": 2,
+   "old": "Bytecodes",
+   "new": "Bytecode",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "figure label in Form XObject /Im1 under reflected Tm and CTM",
+   "kind": "form",
+   "after": null,
+   "lines": [
+    {
+     "text": "Bytecodes",
+     "baseline": 222.14,
+     "bbox": [
+      403.82,
+      218.16,
+      427.95,
+      223.33
+     ]
+    }
+   ],
+   "allowed_region": [
+    401.82,
+    216.16,
+    429.95,
+    225.33
+   ]
+  },
+  {
+   "id": "T-form-reedit",
+   "document": "tracemonkey",
+   "page": 2,
+   "old": "Bytecode",
+   "new": "Bytecodes",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "PDF-alone re-edit of the Form text",
+   "kind": "form",
+   "after": "T-form",
+   "lines": [
+    {
+     "text": "Bytecodes",
+     "baseline": 222.14,
+     "bbox": [
+      403.82,
+      218.16,
+      427.95,
+      223.33
+     ]
+    }
+   ],
+   "allowed_region": [
+    401.82,
+    216.16,
+    429.95,
+    225.33
+   ]
+  },
+  {
+   "id": "A-same",
+   "document": "issue17730",
+   "page": 1,
+   "old": "two types of links",
+   "new": "two kinds of links",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "Antenna House CTM+Tm: same-length replacement",
+   "kind": "paragraph",
+   "after": null,
+   "lines": [
+    {
+     "text": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external",
+     "baseline": 124.18,
+     "bbox": [
+      61.69,
+      115.27,
+      533.62,
+      126.34
+     ]
+    },
+    {
+     "text": "document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its",
+     "baseline": 138.18,
+     "bbox": [
+      61.7,
+      129.27,
+      533.71,
+      140.34
+     ]
+    },
+    {
+     "text": "destination may be either an ID or a page number. The external-destination property indicates to link to an external",
+     "baseline": 152.18,
+     "bbox": [
+      61.7,
+      143.27,
+      533.57,
+      154.34
+     ]
+    },
+    {
+     "text": "document. Its destination may be either an external file or a website.",
+     "baseline": 166.18,
+     "bbox": [
+      61.69,
+      157.27,
+      335.25,
+      168.34
+     ]
+    }
+   ],
+   "allowed_region": [
+    59.69,
+    113.27,
+    535.7,
+    170.34
+   ]
+  },
+  {
+   "id": "A-short",
+   "document": "issue17730",
+   "page": 1,
+   "old": "Its destination may be either an external file or a website.",
+   "new": "Its destination may be a file or a website.",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "Antenna House: shorten",
+   "kind": "paragraph",
+   "after": null,
+   "lines": [
+    {
+     "text": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external",
+     "baseline": 124.18,
+     "bbox": [
+      61.69,
+      115.27,
+      533.62,
+      126.34
+     ]
+    },
+    {
+     "text": "document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its",
+     "baseline": 138.18,
+     "bbox": [
+      61.7,
+      129.27,
+      533.71,
+      140.34
+     ]
+    },
+    {
+     "text": "destination may be either an ID or a page number. The external-destination property indicates to link to an external",
+     "baseline": 152.18,
+     "bbox": [
+      61.7,
+      143.27,
+      533.57,
+      154.34
+     ]
+    },
+    {
+     "text": "document. Its destination may be either an external file or a website.",
+     "baseline": 166.18,
+     "bbox": [
+      61.69,
+      157.27,
+      335.25,
+      168.34
+     ]
+    }
+   ],
+   "allowed_region": [
+    59.69,
+    113.27,
+    535.7,
+    170.34
+   ]
+  },
+  {
+   "id": "A-grow-line",
+   "document": "issue17730",
+   "page": 1,
+   "old": "or a website.",
+   "new": "or a website. The link may point to a page number in the same document.",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "Antenna House: growth adds a line above the next heading",
+   "kind": "paragraph",
+   "after": null,
+   "lines": [
+    {
+     "text": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external",
+     "baseline": 124.18,
+     "bbox": [
+      61.69,
+      115.27,
+      533.62,
+      126.34
+     ]
+    },
+    {
+     "text": "document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its",
+     "baseline": 138.18,
+     "bbox": [
+      61.7,
+      129.27,
+      533.71,
+      140.34
+     ]
+    },
+    {
+     "text": "destination may be either an ID or a page number. The external-destination property indicates to link to an external",
+     "baseline": 152.18,
+     "bbox": [
+      61.7,
+      143.27,
+      533.57,
+      154.34
+     ]
+    },
+    {
+     "text": "document. Its destination may be either an external file or a website.",
+     "baseline": 166.18,
+     "bbox": [
+      61.69,
+      157.27,
+      335.25,
+      168.34
+     ]
+    }
+   ],
+   "allowed_region": [
+    59.69,
+    113.27,
+    535.7,
+    184.34
+   ]
+  },
+  {
+   "id": "A-reedit",
+   "document": "issue17730",
+   "page": 1,
+   "old": "two kinds of links",
+   "new": "two types of links",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "PDF-alone re-edit after A-same",
+   "kind": "paragraph",
+   "after": "A-same",
+   "lines": [
+    {
+     "text": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external",
+     "baseline": 124.18,
+     "bbox": [
+      61.69,
+      115.27,
+      533.62,
+      126.34
+     ]
+    },
+    {
+     "text": "document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its",
+     "baseline": 138.18,
+     "bbox": [
+      61.7,
+      129.27,
+      533.71,
+      140.34
+     ]
+    },
+    {
+     "text": "destination may be either an ID or a page number. The external-destination property indicates to link to an external",
+     "baseline": 152.18,
+     "bbox": [
+      61.7,
+      143.27,
+      533.57,
+      154.34
+     ]
+    },
+    {
+     "text": "document. Its destination may be either an external file or a website.",
+     "baseline": 166.18,
+     "bbox": [
+      61.69,
+      157.27,
+      335.25,
+      168.34
+     ]
+    }
+   ],
+   "allowed_region": [
+    59.69,
+    113.27,
+    535.7,
+    170.34
+   ]
+  },
+  {
+   "id": "Q-ligature",
+   "document": "issue7014",
+   "page": 1,
+   "old": "to emit generic code",
+   "new": "to emit general code",
+   "expected_outcome": "refused",
+   "expected_reason": "ligature",
+   "purpose": "Quartz scaled Tm, but the paragraph contains TeX ligatures (fi) whose provenance is one glyph for two characters",
+   "kind": "paragraph",
+   "after": null,
+   "lines": [
+    {
+     "text": "Dynamic languages such as JavaScript are more difﬁcult to com-",
+     "baseline": 358.05,
+     "bbox": [
+      54.0,
+      349.76,
+      293.11,
+      360.57
+     ]
+    },
+    {
+     "text": "pile than statically typed ones. Since no concrete type information",
+     "baseline": 368.01,
+     "bbox": [
+      54.0,
+      359.73,
+      293.11,
+      370.53
+     ]
+    },
+    {
+     "text": "is available, traditional compilers need to emit generic code that can",
+     "baseline": 377.97,
+     "bbox": [
+      54.0,
+      369.69,
+      293.11,
+      380.49
+     ]
+    },
+    {
+     "text": "handle all possible type combinations at runtime. We present an al-",
+     "baseline": 387.94,
+     "bbox": [
+      54.0,
+      379.65,
+      293.11,
+      390.46
+     ]
+    },
+    {
+     "text": "ternative compilation technique for dynamically-typed languages",
+     "baseline": 397.9,
+     "bbox": [
+      54.0,
+      389.61,
+      293.11,
+      400.42
+     ]
+    },
+    {
+     "text": "that identiﬁes frequently executed loop traces at run-time and then",
+     "baseline": 407.86,
+     "bbox": [
+      54.0,
+      399.58,
+      293.11,
+      410.38
+     ]
+    }
+   ],
+   "allowed_region": [
+    52.0,
+    347.76,
+    295.11,
+    412.38
+   ]
+  }
+ ],
+ "survey": {
+  "pages": {
+   "osaka_fusei_477": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "tracemonkey": [
+    1,
+    2
+   ],
+   "issue17730": [
+    1,
+    2
+   ],
+   "issue7014": [
+    1
+   ],
+   "issue14117": [
+    1
+   ],
+   "issue14297": [
+    1
+   ],
+   "160F-2019": [
+    1
+   ],
+   "canvas": [
+    1
+   ]
+  },
+  "control_corpus": [
+   "word_osaka_guideline:1",
+   "word_osaka_fire_notice:1",
+   "word_osaka_symposium:1",
+   "lo_newfeatures_ja:1",
+   "lo_enterprise_en:2",
+   "lo_migration_ja:1"
+  ],
+  "protocol": "Every paragraph group of the page (prototypes.paragraph_frame.auto_detect.observe) is proposed with an unchanged-text edit: the selection is the shortest prefix of the paragraph text (at least 6 characters) that occurs once on the page; the replacement equals the selection. Outcome: proposed, or the refusal reason class. The same protocol runs on main (f17055d) and on the change; newly proposable groups are then saved and audited on a fixed sample.",
+  "reason_classes": {
+   "transform": "text matrix/CTM",
+   "form": "Form XObject",
+   "encoding": "ToUnicode, ligature or encoding",
+   "glyphs": "missing source glyph",
+   "layout": "capacity, paragraph or semantics",
+   "other": "other"
+  }
+ }
+}
