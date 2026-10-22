@@ -10,11 +10,12 @@ inferred from what the page proves:
   text, no protected paint above B in its column, and paint order A then B
   with no other text in between;
 * evidence classes:
-    - determined: one tagged /P spans the break, consecutive tagged /P siblings,
-      or (untagged) a paragraph split at a full last line that does not end a
-      sentence;
-    - candidate: everything else that matches; it is used only after the user
-      approves the link by its id;
+    - determined: one tagged /P spans the break (the structure proves the
+      thread);
+    - candidate: everything else that matches, including consecutive tagged
+      /P siblings and an untagged column that ends mid-sentence at a full line
+      (it may continue on another page next to another article); it is used
+      only after the user approves the link by its id;
     - rejected: anything that fails the checks above, or a tagged structure
       that does not connect the blocks.
 
@@ -117,12 +118,16 @@ def link(c, groups, blocks, info, a, b, parent_of, tagged, obstacles):
     if hi < lo or any(c.actual[i]['unicode'].strip() and i not in own for i in range(lo + 1, hi)):
         reasons.append('other text is painted between the columns')
     last, first = groups[blocks[a][-1]], groups[blocks[b][0]]
+    # Only the structure can prove that the next column continues this text.
+    # A column that ends mid-sentence may continue on another page while the
+    # next column holds another article in the same style.
     if tagged:
         pa, pb = parent_of(last), parent_of(first)
         if pa is not None and pa == pb:
             found = dict(status='determined', evidence='one tagged paragraph spans the column break', split=True)
         elif pa is not None and pb is not None and _next_sibling(c.reader, pa, pb):
-            found = dict(status='determined', evidence='consecutive tagged paragraphs under the same parent', split=False)
+            found = dict(status='candidate', split=False,
+                         evidence='consecutive tagged paragraphs under the same parent; reading order is not proof of a threaded column')
         else:
             reasons.append('the tagged structure does not connect the columns')
     else:
@@ -130,10 +135,12 @@ def link(c, groups, blocks, info, a, b, parent_of, tagged, obstacles):
         text = ''.join(c.actual[i]['unicode'] for i in tail['glyph_ids']).rstrip()
         full = tail.get('right', tail['pen_end']) >= A['right'] - .5 * A['size']
         if full and text and text[-1] not in SENTENCE_END:
-            found = dict(status='determined', evidence='paragraph split: full last line without a sentence end', split=True)
+            # Approving it joins the two parts into one paragraph.
+            found = dict(status='candidate', split=True,
+                         evidence='untagged: column A ends mid-sentence at a full line, but its text may continue elsewhere')
         else:
             found = dict(status='candidate', split=False,
-                         evidence='column order, style, measure and paint order match; the break may be a paragraph boundary')
+                         evidence='untagged: column order, style, measure and paint order match; the break may be a paragraph boundary')
     if reasons:
         return dict(status='rejected', reason='; '.join(reasons), split=False)
     return found

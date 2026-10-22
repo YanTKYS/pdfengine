@@ -364,9 +364,11 @@ def phase_singles(root, manifest, fusei):
         folder.mkdir(parents=True)
         source = source_path(root, manifest, case['document'], fusei)
         output = folder / 'out.pdf'
-        result = edit(source, doc['page'], case['old'], case['new'], output)
+        mapped = [engine_link(source, doc['page'], doc, ident) for ident in case.get('approve_continuation', [])]
+        result = edit(source, doc['page'], case['old'], case['new'], output, [m for m in mapped if m])
         record = dict(id=case['id'], document=case['document'], kind=doc['kind'], purpose=case['purpose'], expected_outcome=case['expected_outcome'],
-                      outcome=result['outcome'], seconds=round(result['seconds'], 2))
+                      outcome=result['outcome'], seconds=round(result['seconds'], 2),
+                      approve_continuation=case.get('approve_continuation', []), engine_continuation_ids=mapped)
         if result['outcome'] == 'refused':
             record.update(reason=result['reason'], published=result['published'])
             record['as_expected'] = (case['expected_outcome'] == 'refused' and not result['published']
@@ -502,7 +504,8 @@ def phase_collect(root, manifest, regression, tests):
                                as_expected=v['as_expected'], **({'reason': v['reason'], 'published': v['published']} if v['outcome'] == 'refused' else
                                                                 dict(mode=v['mode'], links=v['links'], failed=v['audit']['failed'],
                                                                      outside_pixels=v['audit']['details']['outside_pixels'], continued_editing=v['continued_editing'])),
-                               tiers=tiers(v), seconds=v['seconds']) for k, v in singles.items()}
+                               tiers=tiers(v), seconds=v['seconds'], approve_continuation=v['approve_continuation'],
+                               engine_continuation_ids=v['engine_continuation_ids']) for k, v in singles.items()}
     statuses = [l['status'] for doc in survey.values() for p in doc['pages'].values() for l in p.get('links', [])]
     flagged = [dict(file=name, page=page, **l) for name, doc in survey.items() for page, p in doc['pages'].items() for l in p.get('links', [])
                if l['status'] in ('determined', 'candidate')]
@@ -512,7 +515,8 @@ def phase_collect(root, manifest, regression, tests):
         rows = [s for s in steps if s['tiers']['saved'] and (kind is None or kind_of(s, compact_sequences, compact_singles) == kind)]
         return sum(1 for s in rows if s['tiers'][tier]), len(rows)
     result = dict(
-        schema='paragraph-frame-column-flow-results-1', manifest_sha256=sha(MANIFEST), tests=tests, regression=regression,
+        schema='paragraph-frame-column-flow-results-1', manifest_sha256=sha(MANIFEST), manifest_revision=manifest.get('revision', 1),
+        tests=tests, regression=regression,
         fixtures=fixtures_, sequences=compact_sequences, singles=compact_singles,
         recognition=dict(pairs={k: [(p['from_column'], p['to_column'], p['expected'], p['got'], p['correct']) for p in v['pairs']] for k, v in recognition.items()},
                          unexpected_links={k: v['unexpected_links'] for k, v in recognition.items() if v['unexpected_links']},

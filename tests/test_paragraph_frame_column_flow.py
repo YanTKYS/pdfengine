@@ -72,6 +72,11 @@ def tag(path, paragraphs, tmp_path, *, style):
     return out
 
 
+def approval(path, kind):
+    """Untagged columns are only a candidate continuation: the user approves it by id."""
+    return [] if kind != 'untagged' else [l['id'] for l in recognize(str(path), 1)['links'] if l['status'] == 'candidate']
+
+
 def edit(source, old, new, out, **options):
     proposal = propose(source, 1, old, new, **options)
     save(source, approve(source, proposal, acknowledge_inference=True), out)
@@ -97,18 +102,50 @@ def split(request, tmp_path):
     return path, request.param
 
 
-def test_split_paragraph_is_a_determined_continuation(split):
+def test_only_a_tagged_paragraph_across_the_break_determines_the_continuation(split):
     path, kind = split
     links = recognize(str(path), 1)['links']
-    assert [(l['status'], l['split']) for l in links] == [('determined', True)]
-    assert ('one tagged paragraph' in links[0]['evidence']) == (kind != 'untagged')
+    if kind == 'untagged':
+        # A column that ends mid-sentence may continue on another page.
+        assert [(l['status'], l['split']) for l in links] == [('candidate', True)]
+        with pytest.raises(Refused, match='candidate continuation.*require explicit approval'):
+            propose(path, 1, *GROW)
+    else:
+        assert [(l['status'], l['split']) for l in links] == [('determined', True)]
+        assert 'one tagged paragraph' in links[0]['evidence']
+
+
+def test_same_style_aligned_column_of_another_article_is_never_used_unapproved(tmp_path):
+    """Column 1 ends mid-sentence (continued elsewhere); column 2 is another article, same style, no heading."""
+    other = ['図書館は工事のため来月の', '一日から十日まで休館しま', 'す。']
+    col2 = [(40, other[0]), (55, other[1]), (70, other[2])]
+    path = columns(tmp_path, SPLIT[0], col2)
+    assert [l['status'] for l in recognize(str(path), 1)['links']] == ['candidate']
+    with pytest.raises(Refused, match='capacity: .*candidate continuation'):
+        propose(path, 1, *GROW)
+    # Tagged as separate articles (no P across the break, not consecutive): rejected.
+    tagged = tag(path, [[0, 1, 2], [3, 4], [5, 6, 7]], tmp_path, style='word')
+    w = PdfWriter(clone_from=PdfReader(tagged))
+    root = w._root_object['/StructTreeRoot'].get_object()
+    first, second, third = root['/K']
+    sect_a = w._add_object(obj(Type=NameObject('/StructElem'), S=NameObject('/Sect'), P=root.indirect_reference, K=ArrayObject([first, second])))
+    sect_b = w._add_object(obj(Type=NameObject('/StructElem'), S=NameObject('/Sect'), P=root.indirect_reference, K=ArrayObject([third])))
+    for kid, parent in ((first, sect_a), (second, sect_a), (third, sect_b)):
+        kid.get_object()[NameObject('/P')] = parent
+    root[NameObject('/K')] = ArrayObject([sect_a, sect_b])
+    articles = tmp_path / 'articles.pdf'
+    w.write(articles)
+    links = recognize(str(articles), 1)['links']
+    assert [l['status'] for l in links] == ['rejected'] and 'tagged structure does not connect' in links[0]['reason']
+    with pytest.raises(Refused, match='capacity'):
+        propose(articles, 1, *GROW)
 
 
 def test_growth_moves_following_lines_into_the_next_column_and_back(split, tmp_path):
     path, kind = split
     original = drawn(path)
     grown = tmp_path / 'grown.pdf'
-    proposal = edit(path, *GROW, grown)
+    proposal = edit(path, *GROW, grown, continuation=approval(path, kind))
     assert proposal['evidence']['column_flow']['mode'] == 'flow'
     assert [l['region'] for l in proposal['lines']] == [0, 0, 0, 0]
     lines = drawn(grown)
@@ -131,9 +168,9 @@ def test_growth_moves_following_lines_into_the_next_column_and_back(split, tmp_p
 
 
 def test_shortening_pulls_the_next_column_back(split, tmp_path):
-    path, _ = split
+    path, kind = split
     short = tmp_path / 'short.pdf'
-    edit(path, '募集を行います。申請書は窓口で配布します。', '募集を行います。', short)
+    edit(path, '募集を行います。申請書は窓口で配布します。', '募集を行います。', short, continuation=approval(path, kind))
     lines = drawn(short)
     assert [t for col, _, t in lines if col == 1] == [P1[0], '募集を行います。'] + P2
     assert [(y, t) for col, y, t in lines if col == 2] == [(40, P3[0]), (55, P3[1]), (70, P3[2])]
@@ -181,15 +218,15 @@ def test_unrelated_or_blocked_next_column_is_never_used(tmp_path, blocker):
 
 
 def test_growth_beyond_every_column_is_refused_without_shrinking(split):
-    path, _ = split
+    path, kind = split
     with pytest.raises(Refused, match='capacity: the column flow is full'):
-        propose(path, 1, GROW[0], GROW[0] + '郵送でも受け付けます。' * 12)
+        propose(path, 1, GROW[0], GROW[0] + '郵送でも受け付けます。' * 12, continuation=approval(path, kind))
 
 
 def test_external_paint_in_a_stored_region_makes_the_flow_stale(tmp_path):
     path = columns(tmp_path, *SPLIT)
     short = tmp_path / 'short.pdf'
-    edit(path, '募集を行います。申請書は窓口で配布します。', '募集を行います。', short)
+    edit(path, '募集を行います。申請書は窓口で配布します。', '募集を行います。', short, continuation=approval(path, 'untagged'))
     changed = tmp_path / 'changed.pdf'
     d = pymupdf.open(short)
     d[0].draw_rect(pymupdf.Rect(COL2, 80, COL2 + 100, 110), color=None, fill=(.9, .2, .2))
@@ -210,7 +247,7 @@ def _page(path):
 def test_flow_records_are_validated(tmp_path):
     path = columns(tmp_path, *SPLIT)
     grown = tmp_path / 'grown.pdf'
-    edit(path, *GROW, grown)
+    edit(path, *GROW, grown, continuation=approval(path, 'untagged'))
     c, page = _page(grown)
     try:
         records, status = conditions.read(c, page)
