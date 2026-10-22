@@ -10,7 +10,7 @@ import time
 from .auto_detect import detect
 from .auto_style import build,describe
 from .auto_layout import layout
-from .auto_flow import place
+from .auto_flow import place,region_of
 from .auto_writer import write
 from .engine import Refused,sha
 
@@ -51,8 +51,8 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
             lines,moves=place(tokens,''.join(t['text'] for t in tokens),spec['flow'],align=spec['align'])
             spec['moves'],active=_flow_moves(paragraphs,spec,moves)
             paragraphs=paragraphs[:1+len(active)]
-            moved=[dict(paragraph=spec['flow']['target']+1+k,lines=[dict(text=row['text'],baseline=round(row['baseline'],3),to_baseline=round(row['baseline']+dy,3),
-                        to_region=region) for row,dx,dy,region in rows]) for k,rows in enumerate(active)]
+            moved=[dict(paragraph=spec['flow']['target']+1+k,lines=[dict(text=row['text'],baseline=round(row['baseline'],3),region=region_of(spec['flow']['regions'],row),
+                        to_baseline=round(row['baseline']+dy,3),to_region=region) for row,dx,dy,region in rows]) for k,rows in enumerate(active)]
         else:
             lines=layout(tokens,spec)
             bottom=spec.get('column_bottom');delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
