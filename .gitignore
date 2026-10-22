@@ -56,3 +56,8 @@ tmp/
 !/evaluations/architecture_poc/manifest.json
 !/evaluations/architecture_poc/results.json
 !/evaluations/architecture_poc/audits/*.json
+
+# Paragraph-frame continuous editing: manifest, compact results and reproduction only.
+# Generated PDFs, rasters and detailed audit JSON stay under tmp/ (regenerable).
+!/evaluations/paragraph_frame_continuity/manifest.json
+!/evaluations/paragraph_frame_continuity/results.json

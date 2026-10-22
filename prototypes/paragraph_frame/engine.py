@@ -31,6 +31,10 @@ class Paragraph:
     baselines: list
     scopes: list
     parent: int | None
+    # Text indices of implicit Latin line-join spaces (not source glyphs) and
+    # source glyph IDs of line-final hyphens between Latin letters.
+    joins: tuple = ()
+    hyphens: tuple = ()
 
 
 GEOMETRY_KEYS=('page','frame','left','right','first_x','baseline','line_height','paragraph_gap')

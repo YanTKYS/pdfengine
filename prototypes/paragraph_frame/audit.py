@@ -19,7 +19,13 @@ from pdfeditor.marked_content import observe_marked_content
 
 def normalized(text):
     # Only presentation line edges are stripped; internal spaces are meaningful.
-    return ''.join(line.strip() for line in text.splitlines())
+    # A break between two Latin words is a word space (CJK lines join directly).
+    result=''
+    for line in (l.strip() for l in text.splitlines()):
+        # (the same rule as B2's logical text: not after a hyphen or a space).
+        if result and line and result[-1].isascii() and not result[-1].isspace() and result[-1]!='-' and line[0].isascii() and line[0].isalnum():result+=' '
+        result+=line
+    return result
 
 
 def extract(path,page,root):

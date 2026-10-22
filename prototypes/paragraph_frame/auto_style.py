@@ -9,6 +9,9 @@ from pdfeditor.shaped_font import ShapedFont
 from .engine import Refused
 
 
+PUNCTUATION=set('、。，．・：；？！）〕］｝〉》」』】（〔［｛〈《「『【')
+
+
 def family(font):return re.sub(r'^/?[A-Z]{6}\+','',font.basefont).lstrip('/')
 
 
@@ -32,20 +35,167 @@ def source_tokens(c):
         row.sort(key=lambda t:t['origin'][0])
         for t,n in zip(row,row[1:]):
             delta=n['origin'][0]-t['origin'][0]
-            if all(t[k]==n[k] for k in ('font_name','size','tz','rise','tc','tw')) and abs(delta-t['advance'])<.25*t['size']:
+            if not all(t[k]==n[k] for k in ('font_name','size','tz','rise','tc','tw')):continue
+            if abs(delta-t['advance'])<.25*t['size']:
                 t['tracking']=delta-t['advance'];t['advance']=delta
                 tracking[(t['font_name'],t['size'],t['tz'])].append(t['tracking'])
+            elif t['text'] in PUNCTUATION and .45*t['advance']<=delta<t['advance']:
+                # Japanese writers compress punctuation (約物詰め): keep the
+                # observed advance, but do not let it skew the tracking median.
+                t['tracking']=delta-t['advance'];t['advance']=delta;t['compressed_punctuation']=True
     med={k:median(v) for k,v in tracking.items()}
     return tokens,med
 
 
-def build(c,paragraph,start,old,new,substitute=None):
+def resource_witnesses(c,font):
+    """Unicode -> (code, gid) of an original font resource, from the resource itself.
+
+    A character deleted by an earlier edit has no drawn occurrence any more,
+    but the unchanged embedded program and its ToUnicode still define it. Only
+    an unambiguous inverse mapping whose glyph has an outline and whose PDF
+    width equals the program advance is a witness. Type0/Identity-H (CID ->
+    GID map) and simple TrueType (code -> glyph through the (1,0)/(3,0) cmap).
+    """
+    from io import BytesIO
+    from fontTools.ttLib import TTFont
+    if font.error or font.subtype not in ('/Type0','/TrueType'):return {}
+    try:program=TTFont(BytesIO(c.document.extract_font(font.xref)[3]))
+    except Exception:return {}
+    try:
+        if 'glyf' not in program or 'hmtx' not in program:return {}
+        order=program.getGlyphOrder();upem=program['head'].unitsPerEm
+        if font.subtype=='/Type0':
+            descendant=font.resource['/DescendantFonts'][0].get_object()
+            mapping=descendant.get('/CIDToGIDMap','/Identity')
+            table=None if str(mapping)=='/Identity' else mapping.get_object().get_data()
+            def gid_of(value):return value if table is None else int.from_bytes(table[2*value:2*value+2] or b'\0\0','big')
+        else:
+            cmaps=[t.cmap for t in program['cmap'].tables if (t.platformID,t.platEncID) in ((1,0),(3,0))]
+            def gid_of(value):
+                name=next((m.get(value) or m.get(0xF000|value) for m in cmaps if m.get(value) or m.get(0xF000|value)),None)
+                return program.getGlyphID(name) if name else 0
+        found={}
+        keys={ord(k) for k in font.unicode_map if isinstance(k,str) and len(k)==1}
+        for value in set(font.widths)|keys:
+            if value>=256**font.unit:continue
+            code=value.to_bytes(font.unit,'big')
+            try:char=font.decode(code)[0][1]
+            except Exception:continue
+            found.setdefault(char,[]).append(value)
+        result={}
+        for char,values in found.items():
+            if len(values)!=1 or values[0] not in font.widths:continue
+            value=values[0];gid=gid_of(value)
+            if not 0<gid<len(order):continue
+            glyph=program['glyf'][order[gid]]
+            if not char.isspace() and not (glyph.isComposite() or glyph.numberOfContours>0):continue
+            if abs(program['hmtx'][order[gid]][0]*1000/upem-font.widths[value])>1:continue
+            result[char]=(value.to_bytes(font.unit,'big'),gid)
+        return result
+    finally:program.close()
+
+
+def sibling_fonts(c,font):
+    """Page font resources that are other subsets of the same embedded face.
+
+    Producers split a face over several subsets (LibreOffice: 256 codes each).
+    Same family after the subset tag, same subtype and descriptor style; the
+    anchor's own resource always comes first.
+    """
+    from pdfeditor.content_stream import FontCodec
+    def style(f):
+        d=f.resource.get('/FontDescriptor') or (f.resource['/DescendantFonts'][0].get_object().get('/FontDescriptor') if '/DescendantFonts' in f.resource else None)
+        d=d.get_object() if d else {}
+        return (family(f),f.subtype,d.get('/Flags'),d.get('/ItalicAngle'),d.get('/FontWeight'),d.get('/StemV'))
+    result=[]
+    for name,ref in c.reader.pages[c.page.number]['/Resources']['/Font'].items():
+        other=FontCodec(ref,name)
+        if other.xref!=font.xref and not other.error and style(other)==style(font):result.append(other)
+    return result
+
+
+def build(c,paragraph,start,old,new,substitute=None,justify=False):
     source,tracking=source_tokens(c)
-    try:tokens=[copy(source[i]) for i in paragraph.ids]
+    try:base=[copy(source[i]) for i in paragraph.ids]
     except KeyError:raise Refused('selected source glyph lacks a concrete code/GID witness')
-    for t in tokens:
+    for t in base:
         for n,s in enumerate(paragraph.scopes):
             if s['content_byte_range'][0]<=t['event'].operator.start<s['content_byte_range'][1]:t['scope']=n;break
+    fonts={};cache={}
+    candidates=[]
+    # One approved substitute, or several approved candidates of which B2 picks,
+    # per source font, the one whose measured glyph weight is closest.
+    for item in (substitute if isinstance(substitute,list) else [substitute] if substitute else []):
+        if item.get('relation')!='substituted' or item.get('font_index',0)!=0:raise Refused('explicit substitute relation/font index required')
+        raw=Path(item['path']).read_bytes()
+        if hashlib.sha256(raw).hexdigest()!=item['sha256']:raise Refused('substitute font hash mismatch')
+        candidates.append((item['sha256'],raw,ShapedFont(raw)))
+    chosen={}
+
+    def substitute_for(anchor):
+        """The approved substitute for this source font, measured once per font."""
+        xref=anchor['font'].xref
+        if xref not in chosen:
+            if len(candidates)==1:chosen[xref]=(candidates[0],None)
+            else:
+                scores=weight_scores(c,[t for t in base if t['font'].xref==xref],candidates)
+                best=min(range(len(candidates)),key=lambda n:(scores[n]['distance'] is None,scores[n]['distance'] or 0,n))
+                chosen[xref]=(candidates[best],scores)
+        return chosen[xref][0]
+
+    def resolve(char,anchor,mode=None):
+        """A new token in the anchor's style: source witness, same program, then approved substitute."""
+        t=copy(anchor);t.update(text=char,source_id=None,origin=None,bbox=None)
+        # Never silently borrow another font resource merely because Unicode
+        # happens to match. A source witness must be in the anchor resource.
+        witnesses=[v for v in source.values() if v['text']==char and v['font'].xref==anchor['font'].xref]
+        if witnesses:
+            w=witnesses[0];t.update(code=w['code'],gid=w['gid'],mode=mode or 'source-code-witness')
+            nominal=anchor['font'].decode(w['code'])[0][2]/1000*anchor['size']
+            t['nominal_advance']=nominal*anchor['tz']/100
+            t['advance']=(nominal+anchor['tc']+(anchor['tw'] if w['code']==b' ' else 0))*anchor['tz']/100+tracking.get((anchor['font_name'],anchor['size'],anchor['tz']),0)
+            return t
+        xref=anchor['font'].xref
+        if ('fonts',xref) not in cache:cache[('fonts',xref)]=[anchor['font']]+sibling_fonts(c,anchor['font'])
+        for n,owner in enumerate(cache[('fonts',xref)]):
+            if ('resource',owner.xref) not in cache:cache[('resource',owner.xref)]=resource_witnesses(c,owner)
+            if char in cache[('resource',owner.xref)]:
+                code,gid=cache[('resource',owner.xref)][char]
+                t.update(code=code,gid=gid,font=owner,font_name=owner.name,mode=mode or ('source-resource-witness' if not n else 'sibling-subset-witness'))
+                nominal=owner.decode(code)[0][2]/1000*anchor['size']
+                t['nominal_advance']=nominal*anchor['tz']/100
+                t['advance']=(nominal+anchor['tc']+(anchor['tw'] if code==b' ' else 0))*anchor['tz']/100+tracking.get((anchor['font_name'],anchor['size'],anchor['tz']),0)
+                return t
+        if xref not in cache:
+            try:
+                data=c.document.extract_font(xref)[3];cache[xref]=ShapedFont(data) if data else None
+            except Exception:cache[xref]=None
+        font=cache[xref];kind=mode or 'same-program-new-code';key='source:'+str(xref)
+        try:
+            run=font.shape(char) if font else None
+            if run is None or len(run.glyphs)!=1 or not run.glyphs[0].gid:raise ValueError('absent Unicode glyph')
+        except Exception:
+            if mode:raise Refused('implicit line-join space has no glyph in the source font')
+            if not candidates:raise Refused('missing source glyph requires explicit substitute approval: '+char)
+            digest,_,font=substitute_for(anchor);key='substitute' if len(candidates)==1 else 'substitute:'+digest[:12]
+            kind='approved-substitute';run=font.shape(char)
+        if len(run.glyphs)!=1 or not run.glyphs[0].gid:raise Refused('one shaped glyph per scalar required')
+        g=run.glyphs[0];fonts[key]=font;t.update(mode=kind,font_key=key,shaped=g,gid=g.gid,code=None)
+        t['nominal_advance']=g.advance*anchor['size']/font.upem*anchor['tz']/100
+        t['advance']=(g.advance*anchor['size']/font.upem+anchor['tc'])*anchor['tz']/100+tracking.get((anchor['font_name'],anchor['size'],anchor['tz']),0)
+        return t
+
+    # Justified word spaces were stretched by the source writer; the new layout
+    # stretches them again per line, so retained spaces start from their
+    # nominal width (glyph width with Tc/Tw, without the justification).
+    if justify:
+        for t in base:
+            if t['text']==' ':t['advance']=t['nominal_advance']+(t['tc']+t['tw'])*t['tz']/100
+    # One token per logical character. A Latin line join has no source glyph;
+    # it is drawn as a space in the preceding glyph's style.
+    tokens=[];rest=iter(base)
+    for n,char in enumerate(paragraph.text):
+        tokens.append(resolve(' ',tokens[-1],'implicit-line-join') if n in paragraph.joins else next(rest))
     # Only the changed middle needs new characters. Unchanged prefix/suffix
     # keep source code, resource, style and source occurrence evidence.
     prefix=0
@@ -55,45 +205,87 @@ def build(c,paragraph,start,old,new,substitute=None):
     at=start+prefix; stop=start+len(old)-suffix; inserted=new[prefix:len(new)-suffix if suffix else len(new)]
     anchor_index=min(at,len(tokens)-1)
     if at>0 and not tokens[anchor_index]['text'].strip() and inserted.strip():anchor_index=at-1
+    # A glyph drawn by an earlier B2 save with a generated resource (a new
+    # code or an approved substitute) is not the paragraph's source font. The
+    # style anchor is the nearest original-resource glyph of the same size.
+    def generated(t):return t['font_name'].startswith('/PFAuto')
+    if generated(tokens[anchor_index]):
+        order=sorted(range(len(tokens)),key=lambda j:(abs(j-anchor_index),j>anchor_index))
+        anchor_index=next((j for j in order if tokens[j]['text'].strip() and not generated(tokens[j])
+                           and tokens[j]['size']==tokens[anchor_index]['size']),anchor_index)
     anchor=copy(tokens[anchor_index])
-    if not inserted:return tokens[:at]+tokens[stop:],{},dict(Counter(t['mode'] for t in tokens[:at]+tokens[stop:]))
-    fonts={};cache={};newtokens=[]
-    substitute_font=None
-    if substitute:
-        if substitute.get('relation')!='substituted' or substitute.get('font_index',0)!=0:raise Refused('explicit substitute relation/font index required')
-        path=Path(substitute['path']);raw=path.read_bytes()
-        if hashlib.sha256(raw).hexdigest()!=substitute['sha256']:raise Refused('substitute font hash mismatch')
-        substitute_font=ShapedFont(raw)
-    for char in inserted:
-        t=copy(anchor);t.update(text=char,source_id=None,origin=None,bbox=None)
-        # Never silently borrow another font resource merely because Unicode
-        # happens to match. A source witness must be in the anchor resource.
-        witnesses=[v for v in source.values() if v['text']==char and v['font'].xref==anchor['font'].xref]
-        if witnesses:
-            w=witnesses[0];t.update(code=w['code'],gid=w['gid'],mode='source-code-witness')
-            nominal=anchor['font'].decode(w['code'])[0][2]/1000*anchor['size']
-            t['nominal_advance']=nominal*anchor['tz']/100
-            t['advance']=(nominal+anchor['tc']+(anchor['tw'] if w['code']==b' ' else 0))*anchor['tz']/100+tracking.get((anchor['font_name'],anchor['size'],anchor['tz']),0)
-        else:
-            xref=anchor['font'].xref
-            if xref not in cache:
-                try:
-                    data=c.document.extract_font(xref)[3];cache[xref]=ShapedFont(data) if data else None
-                except Exception:cache[xref]=None
-            font=cache[xref];mode='same-program-new-code';key='source:'+str(xref)
-            try:
-                run=font.shape(char) if font else None
-                if run is None or len(run.glyphs)!=1 or not run.glyphs[0].gid:raise ValueError('absent Unicode glyph')
-            except Exception:
-                if substitute_font is None:raise Refused('missing source glyph requires explicit substitute approval: '+char)
-                font=substitute_font;key='substitute';mode='approved-substitute';run=font.shape(char)
-            if len(run.glyphs)!=1 or not run.glyphs[0].gid:raise Refused('one shaped glyph per scalar required')
-            g=run.glyphs[0];fonts[key]=font;t.update(mode=mode,font_key=key,shaped=g,gid=g.gid,code=None)
-            t['nominal_advance']=g.advance*anchor['size']/font.upem*anchor['tz']/100
-            t['advance']=(g.advance*anchor['size']/font.upem+anchor['tc']+(0))*anchor['tz']/100+tracking.get((anchor['font_name'],anchor['size'],anchor['tz']),0)
-        newtokens.append(t)
+    newtokens=[resolve(char,anchor) for char in inserted]
+    # New CJK glyphs may be squeezed by the per-glyph compression the source
+    # writer used for ordinary CJK glyphs of the same font and size (median of
+    # observed reductions; capped at 0.05 em). Layout applies it only to a line
+    # that would otherwise overflow, so restored text breaks as it did before.
+    reductions=defaultdict(list)
+    for t in base:
+        gap=t['nominal_advance']-t['advance']
+        if ord(t['text'])>=0x2E80 and t['text'] not in PUNCTUATION and gap>.001:reductions[(t['font_name'],t['size'])].append(gap)
+    for t in newtokens:
+        seen=reductions.get((anchor['font_name'],anchor['size']),[])
+        if len(seen)>=3 and ord(t['text'])>=0x2E80 and t['text'] not in PUNCTUATION:t['squeezable']=min(median(seen),.05*t['size'])
+    # New punctuation takes the compression its character had in the source
+    # paragraph (median of observed advances), never more.
+    observed=defaultdict(list)
+    for t in base:
+        if t.get('compressed_punctuation'):observed[(t['text'],t['font_name'],t['size'])].append(t['advance'])
+    for t in newtokens:
+        seen=observed.get((t['text'],t['font_name'],t['size']))
+        if seen and median(seen)<t['advance']:t['advance']=median(seen)
     result=tokens[:at]+newtokens+tokens[stop:]
-    return result,fonts,dict(Counter(t['mode'] for t in result))
+    choice={str(xref):dict(chosen_sha256=pick[0],scores=scores) for xref,(pick,scores) in chosen.items() if scores is not None}
+    return result,fonts,dict(Counter(t['mode'] for t in result)),choice
+
+
+def _density(image):
+    """Fraction of ink pixels in a glyph box; ink differs from the box's border colour."""
+    from PIL import ImageChops,ImageStat
+    gray=image.convert('L');w,h=gray.size
+    border=[gray.getpixel((x,y)) for x in range(w) for y in (0,h-1)]+[gray.getpixel((x,y)) for y in range(h) for x in (0,w-1)]
+    background=sorted(border)[len(border)//2]
+    diff=ImageChops.difference(gray,gray.point(lambda v:background)).point(lambda v:255 if v>96 else 0)
+    return ImageStat.Stat(diff).mean[0]/255
+
+
+def weight_scores(c,tokens,candidates,limit=24):
+    """Glyph-weight distance of each candidate to the source font, per shared character.
+
+    The source weight is measured on the PDF's own rendering of retained
+    glyphs (em box at the glyph origin); a candidate draws the same characters
+    in the same em box. The mean absolute difference of ink density is a
+    simple, alignment-free proxy for stroke weight and face size.
+    """
+    from io import BytesIO
+    from PIL import Image,ImageDraw,ImageFont
+    import pymupdf
+    zoom=4;samples=[]
+    seen=set()
+    for t in tokens:
+        if t['text'].strip() and ord(t['text'])>=0x2E80 and t['text'] not in seen and t['origin']:
+            seen.add(t['text']);samples.append(t)
+        if len(samples)>=limit:break
+    if not samples:return [dict(distance=None,characters=0) for _ in candidates]
+    pix=c.page.get_pixmap(matrix=pymupdf.Matrix(zoom,zoom),alpha=False)
+    page=Image.frombytes('RGB',(pix.width,pix.height),pix.samples)
+    source={}
+    for t in samples:
+        x,y=t['origin'];em=t['size']
+        box=(round(x*zoom),round((y-.88*em)*zoom),round((x+em)*zoom),round((y+.12*em)*zoom))
+        source[t['text']]=_density(page.crop(box))
+    result=[]
+    for digest,raw,font in candidates:
+        size=round(samples[0]['size']*zoom);face=ImageFont.truetype(BytesIO(raw),size)
+        distances=[]
+        for char,weight in source.items():
+            try:
+                if not font.shape(char).glyphs[0].gid:continue
+            except Exception:continue
+            image=Image.new('L',(size,size),255);ImageDraw.Draw(image).text((0,round(.88*size)),char,font=face,fill=0,anchor='ls')
+            distances.append(abs(_density(image)-weight))
+        result.append(dict(sha256=digest,distance=round(sum(distances)/len(distances),5) if distances else None,characters=len(distances)))
+    return result
 
 
 def describe(c,paragraphs):

@@ -1,0 +1,586 @@
+{
+  "schema": "paragraph-frame-continuity-1",
+  "baseline_commit": "279736f",
+  "regression_manifest": {
+    "path": "evaluations/paragraph_frame_generalization/manifest.json",
+    "sha256": "7e5db28409a54b57a5616c869df75f5c6cf0763bc71d3f55b9d1c3614f0eb7d9",
+    "cases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "N1",
+      "N2",
+      "N3",
+      "N4"
+    ]
+  },
+  "policy": {
+    "frozen_before_implementation": true,
+    "no_case_replacement": true,
+    "b2_inputs": "PDF path, page, selected text, replacement, optional explicit substitute approval. No oracle geometry, no prior PDF, no sidecar, no manual coordinates.",
+    "sequences": "Each step proposes, approves and saves from the PDF written by the previous step only, in a separate process. The original PDF is never an input after step 1.",
+    "stability": "Compare each saved target paragraph with the original: continuation left edge, first-line x, right capacity, line pitch, font resource/program, size, colour and follower positions. After restore-original-text the original line text, x and baselines are the expected layout.",
+    "unavailable": "wakayama, okinawa and fcc_chrome hosts were denied by the session network policy (HTTP 403) after domains were requested; reachable unused sources were used instead."
+  },
+  "font": {
+    "origin": "pymupdf.Font('cjk').buffer",
+    "name": "Droid Sans Fallback Regular",
+    "sha256": "ee38813ea00c3e32add4268fff7fff9e39417b4913cb13be2415164a47807cc2",
+    "relation": "substituted",
+    "font_index": 0
+  },
+  "documents": {
+    "osaka": {
+      "id": "word_osaka_guideline",
+      "path": "evaluations/realpdf/corpus/word_osaka_guideline.pdf",
+      "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+      "source_url": "https://www.pref.osaka.lg.jp/documents/63648/guideline_tsuuchi.pdf",
+      "page": 1,
+      "tagged": true,
+      "frame": [70, 334, 530, 424],
+      "oracle": "evaluations/paragraph_frame_generalization/manifest.json#documents.osaka",
+      "paragraphs": [
+        {
+          "text": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+          "source_line_baselines": [346.13, 364.13]
+        },
+        {
+          "text": "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。 ",
+          "source_line_baselines": [382.13]
+        }
+      ]
+    },
+    "fire": {
+      "id": "word_osaka_fire_notice",
+      "path": "evaluations/realpdf/corpus/word_osaka_fire_notice.pdf",
+      "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+      "source_url": "https://www.pref.osaka.lg.jp/documents/63648/20250327jimurennraku.pdf",
+      "page": 1,
+      "tagged": true,
+      "frame": [52, 272, 550, 431],
+      "oracle": "evaluations/paragraph_frame_generalization/manifest.json#documents.fire",
+      "paragraphs": [
+        {
+          "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+          "source_line_baselines": [284.57, 304.37]
+        },
+        {
+          "text": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+          "source_line_baselines": [324.17, 343.97]
+        },
+        {
+          "text": "また、災害廃棄物に起因する害虫及び悪臭への対策については環境省環境再生・資源循環局災害廃棄物対策室が所管となるので参考までにお知らせします。 ",
+          "source_line_baselines": [363.77, 383.57]
+        }
+      ]
+    },
+    "newfeatures": {
+      "id": "lo_newfeatures_ja",
+      "path": "evaluations/realpdf/corpus/lo_newfeatures_ja.pdf",
+      "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+      "source_url": "https://wiki.documentfoundation.org/images/b/b7/LO4.1_NewFeatures.pdf",
+      "page": 1,
+      "tagged": false,
+      "frame": [27, 116, 569, 175],
+      "oracle": "evaluations/paragraph_frame_generalization/manifest.json#documents.newfeatures",
+      "paragraphs": [
+        {
+          "text": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。",
+          "source_line_baselines": [128.8, 144.5]
+        }
+      ]
+    },
+    "enterprise": {
+      "id": "lo_enterprise_en",
+      "path": "evaluations/realpdf/corpus/lo_enterprise_en.pdf",
+      "sha256": "f96228ca032b60584e5f2e5fd5689290ba7b93b4f39bb8f86c5af5221eec85d4",
+      "source_url": "https://wiki.documentfoundation.org/images/3/36/EN_Enterprise.pdf",
+      "page": 2,
+      "tagged": false,
+      "role": "unused-holdout",
+      "traits": [
+        "LibreOffice 5.1 Draw, untagged, English, landscape",
+        "three justified columns sharing baselines",
+        "TJ word-space justification",
+        "bold heading runs",
+        "column 2 is white text over a full-column image",
+        "line-end soft hyphenation (cre-/ating, profes-/sional, de-/ploying)"
+      ],
+      "regions": {
+        "col1": {
+          "frame": [27, 192, 257, 428],
+          "paragraphs": [
+            {
+              "line_ids": [
+                "p2-l14",
+                "p2-l17",
+                "p2-l20",
+                "p2-l23",
+                "p2-l25",
+                "p2-l28",
+                "p2-l31"
+              ],
+              "drawn_text": "Writer has all the features you need from amodern, full-featured word processor. It'ssimple enough to use for a simple memo,and powerful enough to create completebooks with contents, diagrams and indexes.You can concentrate on the message, whileWriter will make it look great.",
+              "text": "Writer has all the features you need from a modern, full-featured word processor. It's simple enough to use for a simple memo, and powerful enough to create complete books with contents, diagrams and indexes. You can concentrate on the message, while Writer will make it look great.",
+              "glyph_ids": [
+                [24, 299]
+              ],
+              "source_line_baselines": [206.1, 221.0, 236.0, 251.0, 266.0, 281.0, 296.0],
+              "line_x": [29.8, 29.8, 29.8, 29.8, 29.8, 29.8, 29.8],
+              "line_pen_end": [253.432, 253.528, 253.372, 253.876, 253.192, 253.372, 175.228]
+            },
+            {
+              "line_ids": [
+                "p2-l35"
+              ],
+              "drawn_text": "Calc (Spreadsheet)",
+              "text": "Calc (Spreadsheet)",
+              "glyph_ids": [
+                [300, 317]
+              ],
+              "source_line_baselines": [316.7],
+              "line_x": [29.8],
+              "line_pen_end": [124.592]
+            },
+            {
+              "line_ids": [
+                "p2-l38",
+                "p2-l41",
+                "p2-l44",
+                "p2-l47",
+                "p2-l50",
+                "p2-l53"
+              ],
+              "drawn_text": "Calc is a spreadsheet program designed withthe user in mind. First-time users find itintuitive and easy to learn, while profes-sional data miners and number crunchersappreciate the comprehensive range ofadvanced functions.",
+              "text": "Calc is a spreadsheet program designed with the user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions.",
+              "glyph_ids": [
+                [318, 539]
+              ],
+              "source_line_baselines": [337.4, 352.3, 367.3, 382.3, 397.3, 412.3],
+              "line_x": [29.8, 29.8, 29.8, 29.8, 29.8, 29.8],
+              "line_pen_end": [252.88, 253.336, 253.732, 253.384, 252.916, 130.636]
+            }
+          ]
+        },
+        "col1-calc": {
+          "frame": [27, 324, 257, 428],
+          "paragraphs": [
+            {
+              "line_ids": [
+                "p2-l38",
+                "p2-l41",
+                "p2-l44",
+                "p2-l47",
+                "p2-l50",
+                "p2-l53"
+              ],
+              "drawn_text": "Calc is a spreadsheet program designed withthe user in mind. First-time users find itintuitive and easy to learn, while profes-sional data miners and number crunchersappreciate the comprehensive range ofadvanced functions.",
+              "text": "Calc is a spreadsheet program designed with the user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions.",
+              "glyph_ids": [
+                [318, 539]
+              ],
+              "source_line_baselines": [337.4, 352.3, 367.3, 382.3, 397.3, 412.3],
+              "line_x": [29.8, 29.8, 29.8, 29.8, 29.8, 29.8],
+              "line_pen_end": [252.88, 253.336, 253.732, 253.384, 252.916, 130.636]
+            }
+          ]
+        },
+        "col2-draw": {
+          "frame": [311, 324, 540, 598],
+          "paragraphs": [
+            {
+              "line_ids": [
+                "p2-l39",
+                "p2-l42",
+                "p2-l45",
+                "p2-l48",
+                "p2-l51",
+                "p2-l54"
+              ],
+              "drawn_text": "Draw lets you produce anything from a quicksketch to a complex plan, and gives you thepower to communicate with graphics anddiagrams. With a maximum page size of 300by 300 centimetres, is an excellent packagefor large posters or technical drawings.",
+              "text": "Draw lets you produce anything from a quick sketch to a complex plan, and gives you the power to communicate with graphics and diagrams. With a maximum page size of 300 by 300 centimetres, is an excellent package for large posters or technical drawings.",
+              "glyph_ids": [
+                [880, 1127]
+              ],
+              "source_line_baselines": [337.4, 352.3, 367.3, 382.3, 397.3, 412.3],
+              "line_x": [313.2, 313.2, 313.2, 313.2, 313.2, 313.2],
+              "line_pen_end": [536.808, 536.832, 536.748, 536.652, 536.628, 506.112]
+            },
+            {
+              "line_ids": [
+                "p2-l56"
+              ],
+              "drawn_text": "Base (Database)",
+              "text": "Base (Database)",
+              "glyph_ids": [
+                [1128, 1142]
+              ],
+              "source_line_baselines": [433.0],
+              "line_x": [313.2],
+              "line_pen_end": [394.448]
+            },
+            {
+              "line_ids": [
+                "p2-l58",
+                "p2-l60",
+                "p2-l62"
+              ],
+              "drawn_text": "Base is a simple desktop database for theneeds of most users, which can be used as afront end to enterprise-class databases.",
+              "text": "Base is a simple desktop database for the needs of most users, which can be used as a front end to enterprise-class databases.",
+              "glyph_ids": [
+                [1143, 1266]
+              ],
+              "source_line_baselines": [453.7, 468.7, 483.6],
+              "line_x": [313.2, 313.2, 313.2],
+              "line_pen_end": [537.024, 536.532, 510.48]
+            },
+            {
+              "line_ids": [
+                "p2-l64"
+              ],
+              "drawn_text": "Math (Formula Editor)",
+              "text": "Math (Formula Editor)",
+              "glyph_ids": [
+                [1267, 1287]
+              ],
+              "source_line_baselines": [504.3],
+              "line_x": [313.2],
+              "line_pen_end": [424.296]
+            },
+            {
+              "line_ids": [
+                "p2-l67",
+                "p2-l69",
+                "p2-l71"
+              ],
+              "drawn_text": "Math can create mathematical and scientificformulas to add to text documents andpresentations.",
+              "text": "Math can create mathematical and scientific formulas to add to text documents and presentations.",
+              "glyph_ids": [
+                [1288, 1381]
+              ],
+              "source_line_baselines": [525.0, 540.0, 555.0],
+              "line_x": [313.2, 313.2, 313.2],
+              "line_pen_end": [536.76, 537.024, 385.068]
+            }
+          ]
+        },
+        "col3-deploy": {
+          "frame": [592, 255, 812, 598],
+          "paragraphs": [
+            {
+              "line_ids": [
+                "p2-l27",
+                "p2-l30"
+              ],
+              "drawn_text": "The deployment method can be selectedaccording to the existing IT infrastructure.",
+              "text": "The deployment method can be selected according to the existing IT infrastructure.",
+              "glyph_ids": [
+                [1903, 1983]
+              ],
+              "source_line_baselines": [268.0, 283.0],
+              "line_x": [593.9, 593.9],
+              "line_pen_end": [809.133, 809.145]
+            },
+            {
+              "line_ids": [
+                "p2-l33",
+                "p2-l34",
+                "p2-l37",
+                "p2-l40"
+              ],
+              "drawn_text": "LibreOffice can be mass deployed onWindows by tweaking the .MSI package,and creating a Group Policy Object (GPO)to distribute the software package.",
+              "text": "LibreOffice can be mass deployed on Windows by tweaking the .MSI package, and creating a Group Policy Object (GPO) to distribute the software package.",
+              "glyph_ids": [
+                [1984, 2130]
+              ],
+              "source_line_baselines": [298.0, 313.0, 328.0, 343.0],
+              "line_x": [593.9, 593.9, 593.9, 593.9],
+              "line_pen_end": [808.28, 808.952, 809.12, 766.473]
+            },
+            {
+              "line_ids": [
+                "p2-l43",
+                "p2-l46",
+                "p2-l49",
+                "p2-l52",
+                "p2-l55"
+              ],
+              "drawn_text": "The deployment of LibreOffice needs to beplanned in advance and should also becoordinated with a training schedule, toensure that users will be able to use thesoftware after the first training session.",
+              "text": "The deployment of LibreOffice needs to be planned in advance and should also be coordinated with a training schedule, to ensure that users will be able to use the software after the first training session.",
+              "glyph_ids": [
+                [2131, 2331]
+              ],
+              "source_line_baselines": [363.8, 378.8, 393.8, 408.8, 423.8],
+              "line_x": [593.9, 593.9, 593.9, 593.9, 593.9],
+              "line_pen_end": [808.725, 809.324, 809.133, 808.581, 786.777]
+            },
+            {
+              "line_ids": [
+                "p2-l57",
+                "p2-l59",
+                "p2-l61",
+                "p2-l63",
+                "p2-l65",
+                "p2-l66",
+                "p2-l68",
+                "p2-l70"
+              ],
+              "drawn_text": "The Document Foundation suggests de-ploying LibreOffice in large organizationswith the backing of certified professionals:developers for Level 3 support, migratorsfor assistance in enterprise deployments,and trainers for organization of trainings. Alist of these certified professionals isavailable on the website.",
+              "text": "The Document Foundation suggests de-ploying LibreOffice in large organizations with the backing of certified professionals: developers for Level 3 support, migrators for assistance in enterprise deployments, and trainers for organization of trainings. A list of these certified professionals is available on the website.",
+              "glyph_ids": [
+                [2332, 2645]
+              ],
+              "source_line_baselines": [444.5, 459.5, 474.5, 489.5, 504.5, 519.5, 534.5, 549.5],
+              "line_x": [593.9, 593.9, 593.9, 593.9, 593.9, 593.9, 593.9, 593.9],
+              "line_pen_end": [809.397, 809.012, 808.701, 809.433, 808.953, 809.301, 808.965, 717.477]
+            }
+          ]
+        }
+      }
+    },
+    "symposium": {
+      "id": "word_osaka_symposium",
+      "path": "evaluations/realpdf/corpus/word_osaka_symposium.pdf",
+      "sha256": "cf9510c66d1a333e9e0936da8a10428f65ad29955f85b55628b5528ae2d3b586",
+      "source_url": "https://www.pref.osaka.lg.jp/documents/63648/jimurennraku_1.pdf",
+      "page": 1,
+      "tagged": false,
+      "role": "unused-holdout",
+      "traits": [
+        "Ghostscript 9.27 re-distilled Word notice, untagged, Japanese",
+        "five Generic CID fonts with Identity-H",
+        "no ToUnicode: every glyph extracts as U+FFFD",
+        "first-line indent, justified Japanese body"
+      ],
+      "regions": {
+        "body1": {
+          "frame": [83, 343, 516, 418],
+          "paragraphs": [
+            {
+              "line_ids": [
+                "p1-l20",
+                "p1-l21",
+                "p1-l22",
+                "p1-l23"
+              ],
+              "drawn_text": "������������������������������������������������������������������������������������������������������������������",
+              "text": "������������������������������������������������������������������������������������������������������������������",
+              "glyph_ids": [
+                [156, 269]
+              ],
+              "source_line_baselines": [357.291, 375.891, 394.611, 413.211],
+              "line_x": [97.222, 85.102, 85.102, 85.102],
+              "line_pen_end": [501.29, 501.047, 501.254, 185.208]
+            }
+          ],
+          "visual_text": "令和７年１月26日（日）に仙台国際センター（宮城県仙台市）において、公益社団法人日本医師会・公益社団法人日本獣医師会・厚生労働省による連携シンポジウム「人・動物におけるカビが関わる疾病」を別添のとおり開催することとなりました。"
+        },
+        "body4": {
+          "frame": [83, 586, 516, 623],
+          "paragraphs": [
+            {
+              "line_ids": [
+                "p1-l33",
+                "p1-l34"
+              ],
+              "drawn_text": "����������������������������������������������������������������������",
+              "text": "����������������������������������������������������������������������",
+              "glyph_ids": [
+                [561, 630]
+              ],
+              "source_line_baselines": [599.71, 618.43],
+              "line_x": [97.223, 85.103],
+              "line_pen_end": [501.291, 512.738]
+            }
+          ],
+          "visual_text": "つきましては、関係者の皆様へ本シンポジウムの開催について広く周知いただき、多くの方々に御参加いただけるよう御配慮の程よろしくお願いします。"
+        }
+      }
+    }
+  },
+  "sequences": [
+    {
+      "id": "Q1",
+      "document": "newfeatures",
+      "tagged": false,
+      "purpose": "PR #87 N2: shorten to one line, then grow again",
+      "steps": [
+        {
+          "old": "追加・更新された幾つかの注目の新機能",
+          "new": "主な新機能",
+          "category": "shorten-to-one-line",
+          "expected_target": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で主な新機能をご紹介します。"
+        },
+        {
+          "old": "主な新機能",
+          "new": "追加・更新された幾つかの注目の新機能",
+          "category": "restore-original-text",
+          "expected_target": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。"
+        },
+        {
+          "old": "ご紹介します。",
+          "new": "ご紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。",
+          "category": "grow-beyond-original",
+          "expected_target": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。導入前に変更点を確認し、普段の作業で必要な機能を試してください。"
+        },
+        {
+          "old": "普段の作業で必要な機能",
+          "new": "日常業務でよく使う機能",
+          "category": "replace-other-text",
+          "expected_target": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。導入前に変更点を確認し、日常業務でよく使う機能を試してください。"
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "document": "osaka",
+      "tagged": true,
+      "purpose": "Word P/Span: shorten to one line, follower moves up and back",
+      "steps": [
+        {
+          "old": "国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。",
+          "new": "ガイドラインを送付します。",
+          "category": "shorten-to-one-line",
+          "expected_target": "標記につきまして、ガイドラインを送付します。 "
+        },
+        {
+          "old": "ガイドラインを送付します。",
+          "new": "国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。",
+          "category": "restore-original-text",
+          "expected_target": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 "
+        },
+        {
+          "old": "参考に送付いたします。",
+          "new": "参考に送付いたします。内容を確認のうえ、関係者への周知をお願いします。",
+          "category": "grow-beyond-original",
+          "expected_target": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。内容を確認のうえ、関係者への周知をお願いします。 "
+        },
+        {
+          "old": "関係者への周知",
+          "new": "会員への周知",
+          "category": "replace-other-text",
+          "expected_target": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。内容を確認のうえ、会員への周知をお願いします。 "
+        }
+      ]
+    },
+    {
+      "id": "Q3",
+      "document": "fire",
+      "tagged": true,
+      "purpose": "Word direct-P MCIDs: shorten to one line, two followers move",
+      "steps": [
+        {
+          "old": "地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。",
+          "new": "感染症対策をお願いします。",
+          "category": "shorten-to-one-line",
+          "expected_target": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、感染症対策をお願いします。 "
+        },
+        {
+          "old": "感染症対策をお願いします。",
+          "new": "地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。",
+          "category": "restore-original-text",
+          "expected_target": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 "
+        },
+        {
+          "old": "お願いします。",
+          "new": "お願いします。関係機関と情報を共有してください。",
+          "category": "grow-beyond-original",
+          "expected_target": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。関係機関と情報を共有してください。 "
+        },
+        {
+          "old": "円滑かつ適切に",
+          "new": "迅速かつ確実に",
+          "category": "replace-other-text",
+          "expected_target": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を迅速かつ確実に実施いただくようお願いします。関係機関と情報を共有してください。 "
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "id": "E1",
+      "document": "enterprise",
+      "region": "col1",
+      "category": "same-length",
+      "old": "for a simple memo",
+      "new": "for a simple note",
+      "expected": "Writer has all the features you need from a modern, full-featured word processor. It's simple enough to use for a simple note, and powerful enough to create complete books with contents, diagrams and indexes. You can concentrate on the message, while Writer will make it look great.",
+      "selectable_by_unicode": true
+    },
+    {
+      "id": "E2",
+      "document": "enterprise",
+      "region": "col3-deploy",
+      "category": "shorten",
+      "old": "can be selected according to",
+      "new": "depends on",
+      "expected": "The deployment method depends on the existing IT infrastructure.",
+      "selectable_by_unicode": true
+    },
+    {
+      "id": "E3",
+      "document": "enterprise",
+      "region": "col1",
+      "category": "grow-wrap",
+      "old": "Writer will make it look great.",
+      "new": "Writer will make it look great and keep it consistent.",
+      "expected": "Writer has all the features you need from a modern, full-featured word processor. It's simple enough to use for a simple memo, and powerful enough to create complete books with contents, diagrams and indexes. You can concentrate on the message, while Writer will make it look great and keep it consistent.",
+      "selectable_by_unicode": true
+    },
+    {
+      "id": "E4",
+      "document": "enterprise",
+      "region": "col1",
+      "category": "cross-line",
+      "old": "It's simple enough to use",
+      "new": "It is simple enough to use",
+      "expected": "Writer has all the features you need from a modern, full-featured word processor. It is simple enough to use for a simple memo, and powerful enough to create complete books with contents, diagrams and indexes. You can concentrate on the message, while Writer will make it look great.",
+      "selectable_by_unicode": true
+    },
+    {
+      "id": "E5",
+      "document": "enterprise",
+      "region": "col2-draw",
+      "category": "white-text-over-image",
+      "old": "from a quick sketch",
+      "new": "from a rough sketch",
+      "expected": "Draw lets you produce anything from a rough sketch to a complex plan, and gives you the power to communicate with graphics and diagrams. With a maximum page size of 300 by 300 centimetres, is an excellent package for large posters or technical drawings.",
+      "selectable_by_unicode": true
+    },
+    {
+      "id": "E6",
+      "document": "enterprise",
+      "region": "col1-calc",
+      "category": "hyphenated-paragraph",
+      "old": "First-time users find it",
+      "new": "New users find it",
+      "expected": "Calc is a spreadsheet program designed with the user in mind. New users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions.",
+      "selectable_by_unicode": true
+    },
+    {
+      "id": "S1",
+      "document": "symposium",
+      "region": "body1",
+      "category": "same-length-no-unicode",
+      "old": "別添のとおり",
+      "new": "下記のとおり",
+      "expected": "令和７年１月26日（日）に仙台国際センター（宮城県仙台市）において、公益社団法人日本医師会・公益社団法人日本獣医師会・厚生労働省による連携シンポジウム「人・動物におけるカビが関わる疾病」を下記のとおり開催することとなりました。",
+      "selectable_by_unicode": false
+    },
+    {
+      "id": "S2",
+      "document": "symposium",
+      "region": "body4",
+      "category": "shorten-no-unicode",
+      "old": "多くの方々に御参加いただけるよう御配慮の程よろしくお願いします。",
+      "new": "御参加をお願いします。",
+      "expected": "つきましては、関係者の皆様へ本シンポジウムの開催について広く周知いただき、御参加をお願いします。",
+      "selectable_by_unicode": false
+    }
+  ]
+}

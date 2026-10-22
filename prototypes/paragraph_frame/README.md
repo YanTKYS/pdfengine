@@ -123,3 +123,18 @@ A/B1 intentionally retain their older public/manual input contracts.
 saved candidates without saving them again. `generalization_collect` copies only
 JSON evidence into the evaluation directory. PDF publication is one atomic rename;
 PDF and optional JSON receipts are not a crash-atomic bundle.
+
+## B2: continuous editing from the PDF alone
+
+A save stores the approved conditions of the edited paragraph in the page
+`/PieceInfo` entry `/PdfEngineB2` (`auto_conditions.py`): the exact drawn lines,
+approved left/right/first-line x/leading/bottom/alignment and the provenance
+of each value (observed, inferred, default, approved-stored). A later proposal
+applies a record only when every recorded line is drawn again exactly and no
+protected paint entered the approved width; otherwise it reports the record
+stale and infers afresh. PDFs without records behave as before.
+`propose(..., stored_conditions=False)` gives the earlier inference-only result.
+
+`continuity_evaluate` runs the frozen chains, unused-PDF requests, substitute
+comparison, search classification and the compact collection. See
+[the continuous-editing report](../../docs/paragraph-frame-continuous-editing.md).
