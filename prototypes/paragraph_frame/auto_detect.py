@@ -95,6 +95,8 @@ def clean_rows(c, rows):
             continue
         first = min(inked)
         r['glyph_ids'] = [i for i in ids if c.actual[i]['unicode'].strip() or c.actual[i]['origin'][0] > first + .001]
+        # The row starts at its first kept glyph, not at a removed leading blank.
+        r['x'] = min(c.actual[i]['origin'][0] for i in r['glyph_ids'])
         result.append(r)
     return result
 

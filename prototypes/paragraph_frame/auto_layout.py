@@ -20,7 +20,7 @@ def layout(tokens,spec):
         y=spec['baseline']+offset;placed=[]
         extra=_justification(tokens[a:b],spec['right']-x) if spec.get('align')=='justify' and line<len(spans)-1 else _squeezed(tokens[a:b],spec['right']-x)
         for n,token in enumerate(tokens[a:b]):
-            placed.append(dict(token,x=x,y=y));x+=token['advance']+extra.get(n,0)
+            placed.append(dict(token,x=x,y=y+token.get('baseline_offset',0.)));x+=token['advance']+extra.get(n,0)
         result.append(dict(text=text[a:b],baseline=y,tokens=placed,justified=bool(extra)))
     return result
 

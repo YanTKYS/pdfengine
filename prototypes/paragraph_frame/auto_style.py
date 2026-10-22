@@ -11,7 +11,8 @@ from . import text_space
 
 
 PUNCTUATION=set('、。，．・：；？！）〕］｝〉》」』】（〔［｛〈《「『【')
-OPENING=set('（〔［｛〈《「『【')
+# Marks whose leading space is removed too (opening brackets, middle dots).
+OPENING=set('（〔［｛〈《「『【・：；')
 
 
 def family(font):return re.sub(r'^/?[A-Z]{6}\+','',font.basefont).lstrip('/')
@@ -33,10 +34,14 @@ def source_tokens(c):
                 mode='retained-source',scope=None,event=e,tracking=0.,nominal_advance=ch.pdf_width/1000*space['size']*space['tz']/100)
     # Pair displacements include TJ tracking, while line-final advance remains
     # the nominal width. This avoids carrying a line reset into the next line.
-    rows=defaultdict(list)
-    for i,t in tokens.items():rows[round(t['origin'][1],2)].append(t)
+    # One row per drawn line: mixed sizes on a line are centred on slightly
+    # different baselines (within 0.35 em of each other).
+    rows=[]
+    for t in sorted(tokens.values(),key=lambda t:t['origin'][1]):
+        if rows and abs(t['origin'][1]-rows[-1][0]['origin'][1])<=.35*min(t['size'],rows[-1][0]['size']):rows[-1].append(t)
+        else:rows.append([t])
     tracking=defaultdict(list)
-    for row in rows.values():
+    for row in rows:
         row.sort(key=lambda t:t['origin'][0])
         for t,n in zip(row,row[1:]):
             delta=n['origin'][0]-t['origin'][0]
@@ -47,11 +52,10 @@ def source_tokens(c):
                 t['tracking']=delta-t['advance'];t['advance']=delta
                 if same:tracking[(t['font_name'],t['size'],t['tz'])].append(t['tracking'])
                 continue
-            if not same:continue
-            elif (t['text'] in PUNCTUATION or n['text'] in OPENING) and .35*t['advance']<=delta<t['advance']:
+            elif (t['text'] in PUNCTUATION or n['text'] in OPENING) and .2*t['advance']<=delta<t['advance']:
                 # Japanese writers compress punctuation (約物詰め): the space after
                 # closing marks and before opening brackets is removed (half width
-                # plus tracking; InDesign 0.43 em). Keep the observed advance, but
+                # plus tracking; InDesign down to 0.24 em). Keep the observed advance, but
                 # do not let it skew the tracking median.
                 t['tracking']=delta-t['advance'];t['advance']=delta
                 # Only a compressed mark itself is evidence for that mark's width.
@@ -178,6 +182,12 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
     source,tracking=source_tokens(c)
     try:base=[copy(source[i]) for i in paragraph.ids]
     except KeyError:raise Refused('selected source glyph lacks a concrete code/GID witness')
+    # Mixed sizes on one line may be centred on their own baselines; keep each
+    # glyph's observed offset from its line (new glyphs copy their anchor's).
+    for t in base:
+        line=min(paragraph.baselines,key=lambda b:abs(b-t['origin'][1]))
+        offset=t['origin'][1]-line
+        t['baseline_offset']=offset if .01<abs(offset)<.35*t['size'] else 0.
     for t in base:
         for n,s in enumerate(paragraph.scopes):
             if s['content_byte_range'][0]<=t['event'].operator.start<s['content_byte_range'][1]:t['scope']=n;break

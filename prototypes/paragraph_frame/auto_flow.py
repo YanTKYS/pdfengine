@@ -254,7 +254,7 @@ def place(tokens, text, flow, *, align='start'):
         extra = _justification(tokens[a:b], width) if align == 'justify' and n < len(spans) - 1 else _squeezed(tokens[a:b], width)
         placed = []
         for k, token in enumerate(tokens[a:b]):
-            placed.append(dict(token, x=x, y=baseline))
+            placed.append(dict(token, x=x, y=baseline + token.get('baseline_offset', 0.)))
             x += token['advance'] + extra.get(k, 0)
         lines.append(dict(text=text[a:b], baseline=baseline, tokens=placed, region=r, justified=bool(extra)))
     moves = []
