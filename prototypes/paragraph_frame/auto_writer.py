@@ -44,13 +44,21 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     first=min(e.operator.start for e in removed)
     containers=active[0].containers
     if any([x['id'] for x in p.containers]!=[x['id'] for x in containers] for p in active):raise Refused('edited paragraphs lie in different marked-content containers')
-    boundaries=c.stream_boundaries[(stream,invocation)]
+    boundaries=c.stream_boundaries[(stream,invocation)];program=c.streams[stream];last=max(e.operator.end for e in removed)
+    starts={e.operator.start for e in removed}
+    # Keep content (reading) order: before the edited text if no other text
+    # lies in between, else right after its text object, else spliced into
+    # the text object where the edited text starts.
     safe=form_write.safe_boundaries(boundaries,first,containers)
-    after=form_write.after_text(boundaries,c.streams[stream],first,max(e.operator.end for e in removed),containers)
-    if after is not None:safe.append(after)
-    if not safe:raise Refused('no safe insertion point before the edited text')
+    choice=safe[-1] if safe and not form_write.foreign_text_between(program,safe[-1].operator.end,first,starts) else None
+    if choice is None:
+        after=form_write.after_text(boundaries,program,first,last,containers)
+        if after is not None and not form_write.foreign_text_between(program,last,after.operator.end,starts):choice=after
+    if choice is None and not any(p.scopes for p in active):choice=form_write.inside_text(boundaries,program,first,containers)
+    if choice is None and safe:choice=safe[-1]
+    if choice is None:raise Refused('no safe insertion point before the edited text')
     # New drawing is placed in default user space under the inverse CTM.
-    prefix=form_write.insertion(safe[-1],spec.get('frames',[spec['frame']]),c.page.rect.height);insertion=safe[-1].operator.end
+    prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.rect.height);insertion=choice.operator.end
     if any(a<insertion<b for a,b,_ in edits):raise Refused('insertion intersects removal')
     writer=PdfWriter(clone_from=c.reader);page=writer.pages[spec['page']-1];lookup=writer._id_translated[id(c.reader)]
     taken=set(form_write.program_fonts(c,invocation));built={};new_fonts={}
@@ -91,7 +99,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
                 ops.append(f'{color}\n{name} {t["size"]:.9f} Tf {t["tz"]:.9f} Tz 1 0 0 1 {x:.9f} {c.page.rect.height-y:.9f} Tm <{code.hex()}> Tj\n'.encode())
             ops.append(b'ET\nQ\n')
             if n is not None:ops.append(b'EMC\n')
-    edits.append((insertion,insertion,b'\n'+b''.join(ops)))
+    edits.append((insertion,insertion,form_write.wrap(choice,b''.join(ops))))
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
     clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts)
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);fd,tmp=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
@@ -109,7 +117,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     finally:
         for path in (tmp,draft):
             if os.path.exists(path):os.unlink(path)
-    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(safe[-1].state.ctm),stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF inferred-frame outside pixels'])
+    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF inferred-frame outside pixels'])
 
 
 def _covered(rect,boxes):

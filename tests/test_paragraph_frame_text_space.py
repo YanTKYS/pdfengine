@@ -196,3 +196,30 @@ def test_named_fill_colour_space_is_selected_again(tmp_path):
     with pymupdf.open(out) as d:
         colours = {s['color'] for b in d[0].get_text('dict')['blocks'] for l in b.get('lines', []) for s in l['spans']}
     assert colours == {0x0000ff}
+
+
+def test_column_in_one_text_object_keeps_reading_order(tmp_path):
+    """Like InDesign: one BT block draws the whole column; the edit is spliced in as ET … BT."""
+    lines = LINES + [(40, 170, '最後の段落になります。')]
+    plain, _ = page_with(tmp_path, lines, height=H)
+    w = PdfWriter(clone_from=PdfReader(plain))
+    page = w.pages[0]
+    body = b''.join(ref.get_object().get_data() for ref in page['/Contents'])
+    body = re.sub(rb'\s*ET\s*Q\s*q\s*BT\s*', b'\n', body)
+    assert body.count(b'BT') == 1
+    contents = DecodedStreamObject()
+    contents.set_data(body)
+    page[NameObject('/Contents')] = w._add_object(contents)
+    source = tmp_path / 'column.pdf'
+    w.write(source)
+    out = tmp_path / 'out.pdf'
+    _, result = edit(source, '後続段落です。', '次の段落です。', out)
+    assert result['insertion_inside_text_object'] is True
+
+    def words(path):
+        with pymupdf.open(path) as d:
+            return d[0].get_text().replace(' ', '').split()
+    assert words(out) == [t.replace('後続段落', '次の段落') for t in words(source)]
+    assert painting(str(out), 1)['drawings'] == painting(str(source), 1)['drawings']
+    again, _ = edit(out, '次の段落です。', '後続段落です。', tmp_path / 'again.pdf')
+    assert again['evidence']['conditions']['status'] == 'applied'

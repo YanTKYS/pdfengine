@@ -115,6 +115,49 @@ def after_text(boundaries, data, first, last, containers=()):
     return None
 
 
+SHOWS = {'Tj', 'TJ', "'", '"'}
+
+
+def foreign_text_between(data, low, high, removed):
+    """Whether a text-showing operator that is not removed lies in [low, high)."""
+    return any(o.name in SHOWS and low <= o.start < high and o.start not in removed for o in operators(data))
+
+
+def inside_text(boundaries, data, first, containers=()):
+    """A boundary inside the text object, right before the absolute Tm that starts the edited text.
+
+    Producers such as InDesign draw a whole column in one text object; the
+    new drawing is spliced in as ``ET … BT`` there. BT/ET only reset the text
+    matrix, which the following Tm sets again, so the remaining text keeps
+    its place, and reading and paint order are exact. Not after text clipping
+    (Tr >= 4) in the text object, or with marked content opened inside it.
+    """
+    ops = list(operators(data))
+    depth = len(containers)
+    low = containers[-1]['content_byte_range'][0] if containers else 0
+    found = None
+    by_end = {o.end: n for n, o in enumerate(ops)}
+    # Text clip modes accumulate a clip that ET applies; any of them earlier
+    # in the text object rules out an ET there.
+    clipping, used = [], False
+    for o in ops:
+        if o.name == 'BT':
+            used = False
+        elif o.name == 'Tr' and o.args and float(o.args[-1]) >= 4:
+            used = True
+        clipping.append(used)
+    for b in boundaries:
+        if b.operator.end > first:
+            break
+        n = by_end.get(b.operator.end)
+        if (n is None or n + 1 >= len(ops) or ops[n + 1].name != 'Tm' or ops[n + 1].start > first or not b.text_object
+                or b.operator.end < low or b.marked_content_depth != depth or b.pending_path or b.pending_clip
+                or b.state.tr >= 4 or clipping[n] or not _axis_aligned(b.state.ctm)):
+            continue
+        found = b
+    return found
+
+
 def insertion(boundary, frames, height):
     """Bytes that put new drawing in default user space at ``boundary``, or a refusal."""
     state = boundary.state
@@ -139,6 +182,11 @@ def insertion(boundary, frames, height):
     if tuple(state.ctm) == IDENTITY:
         return b''
     return b' '.join(number(v) for v in inverse(state.ctm)) + b' cm\n'
+
+
+def wrap(boundary, drawing):
+    """The inserted bytes at ``boundary``: inside a text object they are closed off by ET/BT."""
+    return b'\nET\n' + drawing + b'BT\n' if boundary.text_object else b'\n' + drawing
 
 
 def _clone(writer, original, data, resources):
