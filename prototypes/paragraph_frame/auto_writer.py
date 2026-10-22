@@ -44,7 +44,10 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     first=min(e.operator.start for e in removed)
     containers=active[0].containers
     if any([x['id'] for x in p.containers]!=[x['id'] for x in containers] for p in active):raise Refused('edited paragraphs lie in different marked-content containers')
-    safe=form_write.safe_boundaries(c.stream_boundaries[(stream,invocation)],first,containers)
+    boundaries=c.stream_boundaries[(stream,invocation)]
+    safe=form_write.safe_boundaries(boundaries,first,containers)
+    after=form_write.after_text(boundaries,c.streams[stream],first,max(e.operator.end for e in removed),containers)
+    if after is not None:safe.append(after)
     if not safe:raise Refused('no safe insertion point before the edited text')
     # New drawing is placed in default user space under the inverse CTM.
     prefix=form_write.insertion(safe[-1],spec.get('frames',[spec['frame']]),c.page.rect.height);insertion=safe[-1].operator.end

@@ -67,14 +67,19 @@ def resource_witnesses(c,font):
     but the unchanged embedded program and its ToUnicode still define it. Only
     an unambiguous inverse mapping whose glyph has an outline and whose PDF
     width equals the program advance is a witness. Type0/Identity-H (CID ->
-    GID map) and simple TrueType (code -> glyph through the (1,0)/(3,0) cmap).
+    GID map) and simple TrueType (code -> glyph through the (1,0)/(3,0) cmap);
+    Type0 over a CID-keyed CFF program (InDesign, Illustrator: CID -> glyph
+    through the CFF charset).
     """
     from io import BytesIO
     from fontTools.ttLib import TTFont
     if font.error or font.subtype not in ('/Type0','/TrueType'):return {}
-    try:program=TTFont(BytesIO(c.document.extract_font(font.xref)[3]))
-    except Exception:return {}
+    data=c.document.extract_font(font.xref)[3]
+    try:program=TTFont(BytesIO(data))
+    except Exception:
+        return _cff_witnesses(font,data) if font.subtype=='/Type0' else {}
     try:
+        if 'CFF ' in program and font.subtype=='/Type0':return _cff_witnesses(font,program['CFF '].cff)
         if 'glyf' not in program or 'hmtx' not in program:return {}
         order=program.getGlyphOrder();upem=program['head'].unitsPerEm
         if font.subtype=='/Type0':
@@ -106,6 +111,48 @@ def resource_witnesses(c,font):
             result[char]=(value.to_bytes(font.unit,'big'),gid)
         return result
     finally:program.close()
+
+
+def _inverse(font):
+    """Unicode -> (the only code of the resource that decodes to it, its PDF width incl. /DW)."""
+    found={}
+    for key,target in font.unicode_map.items():
+        value=ord(key) if isinstance(key,str) and len(key)==1 else None
+        if value is None or not isinstance(target,str) or len(target)!=1 or value>=256**font.unit:continue
+        try:code,char,width=font.decode(value.to_bytes(font.unit,'big'))[0]
+        except Exception:continue
+        found.setdefault(char,[]).append((value,width))
+    return {char:values[0] for char,values in found.items() if len(values)==1}
+
+
+def _cff_witnesses(font,data):
+    """Witnesses of an Identity-H Type0 font over a CID-keyed CFF program."""
+    from io import BytesIO
+    from fontTools.cffLib import CFFFontSet
+    from fontTools.misc.psCharStrings import T2WidthExtractor
+    descendant=font.resource['/DescendantFonts'][0].get_object()
+    if str(font.resource.get('/Encoding'))!='/Identity-H' or descendant.get('/Subtype')!='/CIDFontType0':return {}
+    try:
+        if isinstance(data,(bytes,bytearray)):
+            cff=CFFFontSet();cff.decompile(BytesIO(data),None)
+        else:cff=data
+        top=cff[cff.fontNames[0]]
+        if not hasattr(top,'ROS'):return {}
+        strings=top.CharStrings;names=set(top.charset)
+    except Exception:return {}
+    result={}
+    for char,(cid,width) in _inverse(font).items():
+        name=f'cid{cid:05d}'
+        if name not in names:continue
+        try:
+            glyph=strings[name];glyph.decompile();private=glyph.private
+            meter=T2WidthExtractor(getattr(private,'Subrs',[]),top.GlobalSubrs,private.nominalWidthX,private.defaultWidthX)
+            meter.execute(glyph)
+            if not char.isspace() and glyph.calcBounds(strings) is None:continue
+            if abs(meter.width-width)>1:continue
+        except Exception:continue
+        result[char]=(cid.to_bytes(font.unit,'big'),list(top.charset).index(name))
+    return result
 
 
 def sibling_fonts(c,font):

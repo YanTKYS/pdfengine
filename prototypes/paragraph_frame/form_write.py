@@ -86,6 +86,35 @@ def _harmless(gs):
             and gs.get('/SMask', '/None') == '/None' and gs.get('/ca', 1) == 1 and str(gs.get('/AIS', 'False')) == 'False')
 
 
+# Operators that neither paint nor clip anything but text.
+TEXT_ONLY = {'BT', 'ET', 'Tf', 'Tm', 'Td', 'TD', 'T*', 'Tc', 'Tw', 'Tz', 'TL', 'Ts', 'Tr', 'Tj', 'TJ', "'", '"', 'g', 'rg', 'k', 'G', 'RG', 'K',
+             'cs', 'sc', 'scn', 'CS', 'SC', 'SCN', 'gs', 'BDC', 'BMC', 'EMC', 'q', 'Q', 'cm', 'ri', 'i', 'w', 'J', 'j', 'M', 'd'}
+
+
+def after_text(boundaries, data, first, last, containers=()):
+    """The first safe boundary after the edited text when only text lies between.
+
+    Producers often draw a heading and the following paragraph in one text
+    object; the boundary before it would move the new text in front of the
+    heading in content (reading) order. After that text object, nothing but
+    text was painted in between, so paint order is kept as well.
+    """
+    depth = len(containers)
+    high = containers[-1]['end_byte_range'][0] if containers else len(data)
+    ops = [o for o in operators(data) if o.start >= first]
+    for b in boundaries:
+        if b.operator.end < last or b.ordinal < 0:
+            continue
+        if b.operator.end > high:
+            return None
+        if any(o.name not in TEXT_ONLY for o in ops if o.start < b.operator.end):
+            return None
+        if (b.marked_content_depth == depth and not b.text_object and not b.pending_path and not b.pending_clip
+                and _axis_aligned(b.state.ctm)):
+            return b
+    return None
+
+
 def insertion(boundary, frames, height):
     """Bytes that put new drawing in default user space at ``boundary``, or a refusal."""
     state = boundary.state
