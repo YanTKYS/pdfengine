@@ -12,12 +12,13 @@ from .audit import painting,semantic
 from PIL import Image,ImageChops,ImageDraw
 import math
 from .engine import Refused,_check_insertion_state
+from . import auto_conditions as conditions
 
 
 def glyph_key(g):return (g['unicode'],g['gid'],*g['origin'],*g['bbox'])
 
 
-def write(c,paragraphs,lines,fonts,spec,evidence,output):
+def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None):
     if Path(output).exists():raise Refused('output already exists')
     delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
     if abs(delta)<.001:delta=0.
@@ -73,13 +74,19 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output):
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
     stream=DecodedStreamObject();stream.set_data(data);page[NameObject('/Contents')]=writer._add_object(stream.flate_encode())
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);fd,tmp=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
+    fd,draft=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
+    expected=''.join(t['text'] for _,ts in batches for t in ts)
     try:
+        writer.write(draft)
+        stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval)
         writer.write(tmp)
-        validate_stage(c,tmp,spec,evidence,selected,''.join(t['text'] for _,ts in batches for t in ts))
+        validate_stage(c,tmp,spec,evidence,selected,expected)
+        if stored['record'] is not None:verify_conditions(tmp,spec['page'])
         os.replace(tmp,output)
     finally:
-        if os.path.exists(tmp):os.unlink(tmp)
-    return dict(follower_translation=delta,followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF inferred-frame outside pixels'])
+        for path in (tmp,draft):
+            if os.path.exists(path):os.unlink(path)
+    return dict(stored_conditions=stored['summary'],follower_translation=delta,followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF inferred-frame outside pixels'])
 
 
 def validate_stage(c,tmp,spec,evidence,selected,expected):
@@ -110,9 +117,9 @@ def validate_stage(c,tmp,spec,evidence,selected,expected):
             box=pymupdf.Rect(g['bbox'])
             if not frame.contains(box):raise Refused('capacity: staged glyph bounds outside approved inferred frame')
             for o in evidence['observed']['obstacles']:
-                if o['kind']=='foreign-text':
-                    # Target/follower observations were excluded at detection.
-                    pass
+                # Target/follower glyphs were excluded at detection. A container
+                # (background behind every original line) bounds the frame instead.
+                if o['kind']=='container':continue
                 overlap=box&pymupdf.Rect(o['bounds'])
                 if not overlap.is_empty and overlap.width>.05 and overlap.height>.05:raise Refused('staged glyph collides with protected '+o['kind'])
         original_paint=painting(c.source,spec['page']);staged_paint=painting(tmp,spec['page'])
@@ -129,4 +136,56 @@ def validate_stage(c,tmp,spec,evidence,selected,expected):
         if diff.getbbox():raise Refused('staged raster changes outside approved inferred frame')
         # Native retained font resources/programs are cloned, never replaced.
         if len(check.document)!=len(c.document):raise Refused('page count changed')
+    finally:check.close()
+
+
+def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active,approval):
+    """Record the approved conditions of the edited paragraph by its drawn lines.
+
+    The lines are observed in the staged PDF itself, with the same analysis the
+    next proposal uses. If they cannot be separated from foreign glyphs, no
+    record is stored and the next edit falls back to inference.
+    """
+    from pdfeditor.page_proposal import _Analysis
+    from .auto_detect import clean_rows
+    state=spec['stored'];records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale']]
+    if delta:
+        moved=[n for n,p in zip(state['followers'],active[1:]) if n is not None]
+        records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale'] and n not in moved]
+        records+=[conditions.shifted(state['records'][n],delta) for n in moved]
+    check=ContentPage(draft,spec['page'])
+    try:
+        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected);added=[]
+        for n,g in enumerate(check.actual):
+            key=glyph_key(g)
+            if foreign[key]:foreign[key]-=1
+            else:added.append(n)
+        target=set(added[:target_count])
+        rows=clean_rows(check,[dict(l) for l in _Analysis(draft,spec['page']).lines if l['text'].strip()])
+        mine=[r for r in rows if set(r['glyph_ids'])<=target]
+        covered={i for r in mine for i in r['glyph_ids']}
+        inked={i for i in target if check.actual[i]['unicode'].strip()}
+        record=None
+        if mine and inked<=covered and all(not set(r['glyph_ids'])&target for r in rows if r not in mine):
+            values=spec['values'];previous=state['records'][state['target']] if state['applied'] else None
+            record=conditions.make(check,mine,conditions=dict(values,frame=spec['frame']),provenance=spec['provenance'],origin=spec['origin'],
+                                   approval=dict(count=(previous['approval']['count'] if previous else 0)+1,**(approval or {})))
+            records.append(record)
+        if records or state['records']:conditions.attach(writer,page,records,spec['page'])
+        summary=dict(written=record is not None,records_on_page=len(records),applied_before_edit=state['applied'],status_before_edit=state['status'],
+                     reason=None if record is not None else 'edited paragraph rows are not separable from foreign glyphs')
+        return dict(record=record,summary=summary)
+    finally:check.close()
+
+
+def verify_conditions(path,page):
+    """The stored record must be readable and match the staged paragraph again."""
+    from pdfeditor.page_proposal import _Analysis
+    from .auto_detect import clean_rows
+    check=ContentPage(path,page)
+    try:
+        records,status=conditions.read(check,page)
+        rows=clean_rows(check,[dict(l) for l in _Analysis(path,page).lines if l['text'].strip()])
+        if status!='present' or conditions.match(check,records[-1],rows) is None:
+            raise Refused('stored approved conditions do not round-trip in the staged PDF')
     finally:check.close()

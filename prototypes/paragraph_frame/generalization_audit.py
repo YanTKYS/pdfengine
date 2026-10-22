@@ -71,8 +71,11 @@ def audit(source,output,spec,case,root,*,expected=None,arm='B2'):
     old=case['old'];new=case['new'];prefix=0;suffix=0
     while prefix<min(len(old),len(new)) and old[prefix]==new[prefix]:prefix+=1
     while suffix<min(len(old)-prefix,len(new)-prefix) and old[-suffix-1]==new[-suffix-1]:suffix+=1
-    target=[r for r in oldrows if r['id'] in ids(spec['paragraphs'][0])];at=spec['paragraphs'][0]['text'].index(old)+prefix;end=at+len(old)-prefix-suffix
-    mapping=[(i,i) for i in range(at)]+[(i,i+len(new)-len(old)) for i in range(end,len(target))]
+    target=[r for r in oldrows if r['id'] in ids(spec['paragraphs'][0])];text=spec['paragraphs'][0]['text'];at=text.index(old)+prefix;end=at+len(old)-prefix-suffix
+    # Logical text indices -> source glyph indices. Implicit Latin line-join
+    # spaces (oracle 'joins') have no source glyph; the edit draws them.
+    joins=set(spec['paragraphs'][0].get('joins',()));glyph=lambda i:i-sum(1 for j in joins if j<i)
+    mapping=[(glyph(i),i) for i in range(at) if i not in joins]+[(glyph(i),i+len(new)-len(old)) for i in range(end,len(text)) if i not in joins]
     if expected is not None:raise ValueError('Lifecycle must supply updated source oracle and concrete edit for style verification')
     stylekeys=('text','code','gid','font','size','tz','fill','tr','opacity')
     common_affix_retention=sum(all(target[i][k]==changed[j][k] for k in stylekeys) for i,j in mapping) if len(changed)>=len(want) else 0
