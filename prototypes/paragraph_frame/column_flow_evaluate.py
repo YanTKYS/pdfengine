@@ -283,15 +283,17 @@ def tagged_paragraphs(path, page):
     return result[1:]  # the title paragraph is outside the flow
 
 
-def reopen(output, page, new):
-    """Continued editing: a proposal from the saved PDF alone uses the stored approved flow."""
+def reopen(output, page, new, *, flow=True):
+    """Continued editing: a proposal from the saved PDF alone uses the stored approved flow
+    (or, for a single-column edit, the stored paragraph conditions)."""
     try:
         p = propose(str(output), page, new[-12:], new[-12:])
     except Refused as exc:
         return dict(ok=False, reason=str(exc))
-    flow = p['evidence'].get('column_flow', {})
-    return dict(ok=flow.get('mode') == 'flow' and flow.get('stored') is True and p['evidence']['conditions']['status'] == 'applied',
-                mode=flow.get('mode'), stored=flow.get('stored'), status=p['evidence']['conditions']['status'])
+    found = p['evidence'].get('column_flow', {})
+    applied = p['evidence']['conditions']['status'] == 'applied'
+    ok = applied and (found.get('mode') == 'flow' and found.get('stored') is True if flow else found.get('mode') == 'single-column')
+    return dict(ok=ok, mode=found.get('mode'), stored=found.get('stored'), status=p['evidence']['conditions']['status'])
 
 
 def phase_fixtures(root, manifest):
@@ -382,6 +384,8 @@ def phase_singles(root, manifest, fusei):
             else:
                 record['audit'] = audit_real_fit(doc, source, output, case, folder)
                 record['as_expected'] = case['expected_outcome'] == 'saved-in-column' and flow.get('mode') == 'single-column'
+        if record['outcome'] == 'saved':
+            record['continued_editing'] = reopen(output, doc['page'], case['new'], flow=record['mode'] == 'flow')
         results[case['id']] = record
         print(case['id'], record['outcome'], record.get('reason') or record.get('audit', {}).get('failed'))
     dump(root / 'singles.json', results)
@@ -497,7 +501,7 @@ def phase_collect(root, manifest, regression, tests):
     compact_singles = {k: dict(document=v['document'], kind=v['kind'], purpose=v['purpose'], expected=v['expected_outcome'], outcome=v['outcome'],
                                as_expected=v['as_expected'], **({'reason': v['reason'], 'published': v['published']} if v['outcome'] == 'refused' else
                                                                 dict(mode=v['mode'], links=v['links'], failed=v['audit']['failed'],
-                                                                     outside_pixels=v['audit']['details']['outside_pixels'])),
+                                                                     outside_pixels=v['audit']['details']['outside_pixels'], continued_editing=v['continued_editing'])),
                                tiers=tiers(v), seconds=v['seconds']) for k, v in singles.items()}
     statuses = [l['status'] for doc in survey.values() for p in doc['pages'].values() for l in p.get('links', [])]
     flagged = [dict(file=name, page=page, **l) for name, doc in survey.items() for page, p in doc['pages'].items() for l in p.get('links', [])
