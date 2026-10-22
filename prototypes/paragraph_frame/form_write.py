@@ -212,6 +212,15 @@ def _fresh(names, base):
     return name
 
 
+def _entries(resources, key):
+    """A new dictionary with the entries of ``resources[key]``, references kept as references.
+
+    ``dict()`` of an IndirectObject (what ``get`` returns) would resolve every
+    value and write the font dictionaries and programs inline.
+    """
+    return DictionaryObject(dict(resources[key])) if key in resources else DictionaryObject()
+
+
 def copy_on_write(writer, page, c, stream, invocation, data, fonts):
     """Install the edited program ``data``: the page contents, or clones along a Form invocation chain.
 
@@ -223,7 +232,7 @@ def copy_on_write(writer, page, c, stream, invocation, data, fonts):
     resources = DictionaryObject(dict(page['/Resources']))
     if not invocation:
         if fonts:
-            fontdict = DictionaryObject(dict(resources.get('/Font', DictionaryObject())))
+            fontdict = _entries(resources, '/Font')
             fontdict.update({NameObject(k): v for k, v in fonts.items()})
             resources[NameObject('/Font')] = fontdict
         page[NameObject('/Resources')] = resources
@@ -247,7 +256,7 @@ def copy_on_write(writer, page, c, stream, invocation, data, fonts):
         original = link['original']
         form_resources = DictionaryObject(dict(link['resources']))
         if k == len(chain) - 1 and fonts:
-            fontdict = DictionaryObject(dict(form_resources.get('/Font', DictionaryObject())))
+            fontdict = _entries(form_resources, '/Font')
             fontdict.update({NameObject(n): v for n, v in fonts.items()})
             form_resources[NameObject('/Font')] = fontdict
         if entry is not None:

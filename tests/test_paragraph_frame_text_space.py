@@ -4,8 +4,8 @@ import re
 import pymupdf
 import pytest
 from pypdf import PdfReader, PdfWriter
-from pypdf.generic import ArrayObject, DecodedStreamObject, DictionaryObject, FloatObject, NameObject
-from test_paragraph_frame_continuity import page_with
+from pypdf.generic import ArrayObject, DecodedStreamObject, DictionaryObject, FloatObject, IndirectObject, NameObject
+from test_paragraph_frame_continuity import binding, page_with
 from prototypes.paragraph_frame.auto import approve, propose, save
 from prototypes.paragraph_frame.audit import painting
 from prototypes.paragraph_frame.engine import Refused
@@ -240,3 +240,23 @@ def test_column_in_one_text_object_keeps_reading_order(tmp_path, moves):
     assert painting(str(out), 1)['drawings'] == painting(str(source), 1)['drawings']
     again, _ = edit(out, '次の段落です。', '後続段落です。', tmp_path / 'again.pdf')
     assert again['evidence']['conditions']['status'] == 'applied'
+
+
+def test_indirect_font_dictionary_keeps_font_references(tmp_path):
+    """A new font joins an indirect /Font dictionary; the original fonts stay referenced, not inlined."""
+    plain, font = page_with(tmp_path, LINES, height=H)
+    with pymupdf.open(plain) as d:
+        d.subset_fonts()
+        d.save(tmp_path / 'subset.pdf')
+    w = PdfWriter(clone_from=PdfReader(tmp_path / 'subset.pdf'))
+    resources = w.pages[0]['/Resources']
+    resources[NameObject('/Font')] = w._add_object(DictionaryObject(dict(resources['/Font'])))
+    source = tmp_path / 'indirect.pdf'
+    w.write(source)
+    out = tmp_path / 'out.pdf'
+    # 各 is not in the embedded subset: the approved substitute adds a font resource.
+    proposal, _ = edit(source, '申請書は窓口で', '申請書は各窓口で', out, substitute=binding(font))
+    assert proposal['font_counts'].get('approved-substitute') == 1
+    fonts = PdfReader(out).pages[0]['/Resources']['/Font']
+    assert all(isinstance(fonts.raw_get(k), IndirectObject) for k in fonts)
+    assert painting(str(out), 1)['fonts'].items() >= painting(str(source), 1)['fonts'].items()
