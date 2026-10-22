@@ -1,0 +1,21 @@
+{
+  "outcome": "success",
+  "pixels": {
+    "mupdf": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      }
+    ],
+    "poppler": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      }
+    ]
+  },
+  "glyphs_exact": true,
+  "semantic_exact": true
+}

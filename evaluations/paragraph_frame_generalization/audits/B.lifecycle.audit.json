@@ -1,0 +1,2083 @@
+{
+  "outcome": "success",
+  "checks": {
+    "foreign_exact_code_gid_resource_size_scale_color_position": true,
+    "exact_drawn_paragraphs": true,
+    "inside_fixed_oracle": true,
+    "foreign_drawings": true,
+    "foreign_images": true,
+    "foreign_links": true,
+    "foreign_annots": true,
+    "source_font_programs_retained": true,
+    "semantic_internal": true,
+    "semantic_structure_order_languages_preserved": true,
+    "semantic_scope_inventory": true,
+    "semantic_foreign_actualtext": true,
+    "retained_target_original_code_and_style": true,
+    "follower_original_code_style_rigid_translation": true,
+    "mupdf_copy_extract": true,
+    "poppler_copy_extract": true,
+    "native_replacement_search": true,
+    "outside_pixels_zero": true
+  },
+  "failed": [],
+  "source_sha256": "6b5f496a3318aa7022c7150f626b4623a605c080b40f8a56f0a1b49357298feb",
+  "output_sha256": "939471edd11baba9dfcff2d87e01fc63f85d67b5690fdd8bb775fd361ab04fe3",
+  "native_search": {
+    "original_selection_hits": 2,
+    "replacement_hits": 2
+  },
+  "follower_metrics": [
+    {
+      "original_code_style": true,
+      "rigid_translation": true,
+      "dy": 0.0,
+      "translation_spread": 0.0
+    }
+  ],
+  "retained_target_glyphs_verified": 69,
+  "pixels": {
+    "mupdf": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": [
+          565,
+          673,
+          585,
+          694
+        ]
+      }
+    ],
+    "poppler": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": [
+          565,
+          673,
+          585,
+          694
+        ]
+      }
+    ]
+  },
+  "extraction": {
+    "mupdf": {
+      "raw": "感対第\n3 3 1 8 号 \n令和７年３月27 日 \n \n各関係団体長 様 \n \n大阪府健康医療部保健医療室長  \n \n \n「感染症発生動向調査事業における届出の質向上のための \nガイドライン【医師向け】」について \n \n \n日頃より、本府保健医療行政の推進に御協力いただき、厚く御礼申し上げます。 \n標記のガイドラインにつきまして、内容を再確認いただけるよう国立感染症研究所においてガ\nイドラインが作成されましたので、参考に送付いたします。 \nつきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。 \n \n \n【添付資料】 \n・感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】 \n \n【参考】 \n・国立感染症研究所 \nhttps://www.niid.go.jp/niid/ja/idwr.html \n・国立健康危機管理研究機構 感染症情報提供サイト \nhttps://id-info.jihs.go.jp/surveillance/idwr/index.html \n・感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】 \nhttps://www.niid.go.jp/niid/images/idwr/kanja/guideline/guideline2025dc.pdf \n \n \n大阪府健康医療部 保健医療室 \n感染症対策課 防疫グループ \nT E L 06-6944-9156 \nF A X 06-4397-3205 \n",
+      "paragraph_exact": true,
+      "source_raw": "感対第\n3 3 1 8 号 \n令和７年３月27 日 \n \n各関係団体長 様 \n \n大阪府健康医療部保健医療室長  \n \n \n「感染症発生動向調査事業における届出の質向上のための \nガイドライン【医師向け】」について \n \n \n日頃より、本府保健医療行政の推進に御協力いただき、厚く御礼申し上げます。 \n標記のガイドラインにつきまして、内容をご確認いただけるよう国立感染症研究所においてガ\nイドラインが作成されましたので、参考に送付いたします。 \nつきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。 \n \n \n【添付資料】 \n・感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】 \n \n【参考】 \n・国立感染症研究所 \nhttps://www.niid.go.jp/niid/ja/idwr.html \n・国立健康危機管理研究機構 感染症情報提供サイト \nhttps://id-info.jihs.go.jp/surveillance/idwr/index.html \n・感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】 \nhttps://www.niid.go.jp/niid/images/idwr/kanja/guideline/guideline2025dc.pdf \n \n \n大阪府健康医療部 保健医療室 \n感染症対策課 防疫グループ \nT E L 06-6944-9156 \nF A X 06-4397-3205 \n",
+      "whole_page_inherited_spacing": true,
+      "comparison": "logical paragraph"
+    },
+    "poppler": {
+      "raw": "感 対 第 3318 号\n令 和 ７ 年 ３ 月 27 日\n各関係団体長 様\n大阪府健康医療部保健医療室長\n\n「感染症発生動向調査事業における届出の質向上のための\nガイドライン【医師向け】\n」について\n\n日頃より、本府保健医療行政の推進に御協力いただき、厚く御礼申し上げます。\n標記のガイドラインにつきまして、内容を再確認いただけるよう国立感染症研究所においてガ\nイドラインが作成されましたので、参考に送付いたします。\nつきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。\n\n【添付資料】\n・感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】\n【参考】\n・国立感染症研究所\n\nhttps://www.niid.go.jp/niid/ja/idwr.html\n・国立健康危機管理研究機構 感染症情報提供サイト\nhttps://id-info.jihs.go.jp/surveillance/idwr/index.html\n・感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】\nhttps://www.niid.go.jp/niid/images/idwr/kanja/guideline/guideline2025dc.pdf\n\n大阪府健康医療部 保健医療室\n感染症対策課 防疫グループ\nT E L 06-6944-9156\nF A X 06-4397-3205\n\n\f",
+      "paragraph_exact": true,
+      "source_raw": "感 対 第 3318 号\n令 和 ７ 年 ３ 月 27 日\n各関係団体長 様\n大阪府健康医療部保健医療室長\n\n「感染症発生動向調査事業における届出の質向上のための\nガイドライン【医師向け】\n」について\n\n日頃より、本府保健医療行政の推進に御協力いただき、厚く御礼申し上げます。\n標記のガイドラインにつきまして、内容をご確認いただけるよう国立感染症研究所においてガ\nイドラインが作成されましたので、参考に送付いたします。\nつきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。\n\n【添付資料】\n・感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】\n【参考】\n・国立感染症研究所\n\nhttps://www.niid.go.jp/niid/ja/idwr.html\n・国立健康危機管理研究機構 感染症情報提供サイト\nhttps://id-info.jihs.go.jp/surveillance/idwr/index.html\n・感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】\nhttps://www.niid.go.jp/niid/images/idwr/kanja/guideline/guideline2025dc.pdf\n\n大阪府健康医療部 保健医療室\n感染症対策課 防疫グループ\nT E L 06-6944-9156\nF A X 06-4397-3205\n\n\f",
+      "whole_page_inherited_spacing": true,
+      "comparison": "logical paragraph"
+    }
+  },
+  "semantic": {
+    "tagged": true,
+    "checks": {
+      "complete": true,
+      "all_tree_backed": true,
+      "unique_mcids": true,
+      "actualtext_matches_drawn": true,
+      "all_parent_backlinks": true,
+      "parent_tree_reverse": true
+    },
+    "tree": {
+      "/Type": "/StructTreeRoot",
+      "/RoleMap": {
+        "/Footnote": "/Note",
+        "/Endnote": "/Note",
+        "/Textbox": "/Sect",
+        "/Header": "/Sect",
+        "/Footer": "/Sect",
+        "/InlineShape": "/Sect",
+        "/Annotation": "/Sect",
+        "/Artifact": "/Sect",
+        "/Workbook": "/Document",
+        "/Worksheet": "/Part",
+        "/Macrosheet": "/Part",
+        "/Chartsheet": "/Part",
+        "/Dialogsheet": "/Part",
+        "/Slide": "/Part",
+        "/Chart": "/Sect",
+        "/Diagram": "/Figure"
+      },
+      "/ParentTreeNextKey": 4,
+      "/K": [
+        {
+          "/S": "/Document",
+          "/Type": "/StructElem",
+          "/K": [
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 43,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/K": {
+                    "mcid": 0
+                  }
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "3",
+                  "/K": [
+                    {
+                      "mcid": 1
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "318",
+                  "/K": [
+                    {
+                      "mcid": 2
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/K": {
+                    "mcid": 3
+                  }
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 4
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 45,
+              "/K": [
+                {
+                  "mcid": 5
+                },
+                {
+                  "mcid": 6
+                },
+                {
+                  "mcid": 7
+                },
+                {
+                  "mcid": 8
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 46,
+              "/K": [
+                {
+                  "mcid": 9
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 47,
+              "/K": [
+                {
+                  "mcid": 10
+                },
+                {
+                  "mcid": 11
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 48,
+              "/K": [
+                {
+                  "mcid": 12
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 49,
+              "/K": [
+                {
+                  "mcid": 13
+                },
+                {
+                  "mcid": 14
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 50,
+              "/K": [
+                {
+                  "mcid": 15
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 51,
+              "/K": [
+                {
+                  "mcid": 16
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 52,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "「感染症発生動向調査事業における届出の質向上のための",
+                  "/K": [
+                    {
+                      "mcid": 17
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 18
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 55,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "ガイドライン【医師向け】」について",
+                  "/K": [
+                    {
+                      "mcid": 19
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 20
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 58,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 21
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 60,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 22
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 62,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "日頃より、本府保健医療行政の推進に御協力いただき、厚く御礼申し上げます。",
+                  "/K": [
+                    {
+                      "mcid": 23
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 24
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 65,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "標記のガイドラインにつきまして、内容を再確認いただけるよう",
+                  "/K": [
+                    {
+                      "mcid": 25
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "",
+                  "/K": [
+                    {
+                      "mcid": 26
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "",
+                  "/K": [
+                    {
+                      "mcid": 27
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+                  "/K": [
+                    {
+                      "mcid": 28
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "付いたします。",
+                  "/K": [
+                    {
+                      "mcid": 29
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 30
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 72,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/K": {
+                    "mcid": 31
+                  }
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 32
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 75,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 33
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 77,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 34
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 79,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "【",
+                  "/K": [
+                    {
+                      "mcid": 35
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "添付資料",
+                  "/K": [
+                    {
+                      "mcid": 36
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "】",
+                  "/K": [
+                    {
+                      "mcid": 37
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 38
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 84,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "・",
+                  "/K": [
+                    {
+                      "mcid": 39
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "感染症発生動向調査事業における届出の質向上のための",
+                  "/K": [
+                    {
+                      "mcid": 40
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "ガイドライン【医師向け",
+                  "/K": [
+                    {
+                      "mcid": 41
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "】",
+                  "/K": [
+                    {
+                      "mcid": 42
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 43
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 90,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 44
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 92,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "【参考】",
+                  "/K": [
+                    {
+                      "mcid": 45
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 46
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 95,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "・",
+                  "/K": [
+                    {
+                      "mcid": 47
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "国立感染症研究所",
+                  "/K": [
+                    {
+                      "mcid": 48
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 49
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 99,
+              "/K": [
+                {
+                  "/S": "/Link",
+                  "/Type": "/StructElem",
+                  "/K": [
+                    {
+                      "/Type": "/OBJR",
+                      "/Obj": {
+                        "/Subtype": "/Link",
+                        "/Rect": [
+                          68.65,
+                          310.67,
+                          269.18,
+                          328.67
+                        ],
+                        "/BS": {
+                          "/W": 0
+                        },
+                        "/F": 4,
+                        "/A": {
+                          "/Type": "/Action",
+                          "/S": "/URI",
+                          "/URI": "https://www.niid.go.jp/niid/ja/idwr.html"
+                        },
+                        "/StructParent": 1
+                      }
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "https://www.niid.go.jp/niid/ja/idwr.html",
+                      "/K": [
+                        {
+                          "mcid": 50
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 51
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/K": {
+                    "mcid": 52
+                  }
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 105,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "・",
+                  "/K": [
+                    {
+                      "mcid": 53
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "国立健康危機管理研究機構",
+                  "/K": [
+                    {
+                      "mcid": 54
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 55
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "感染症情報提供サイト",
+                  "/K": [
+                    {
+                      "mcid": 56
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 57
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 111,
+              "/K": [
+                {
+                  "/S": "/Link",
+                  "/Type": "/StructElem",
+                  "/K": [
+                    {
+                      "/Type": "/OBJR",
+                      "/Obj": {
+                        "/Subtype": "/Link",
+                        "/Rect": [
+                          68.65,
+                          274.67,
+                          337.67,
+                          292.67
+                        ],
+                        "/BS": {
+                          "/W": 0
+                        },
+                        "/F": 4,
+                        "/A": {
+                          "/Type": "/Action",
+                          "/S": "/URI",
+                          "/URI": "https://id-info.jihs.go.jp/surveillance/idwr/index.html"
+                        },
+                        "/StructParent": 2
+                      }
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "https://id",
+                      "/K": [
+                        {
+                          "mcid": 58
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "-",
+                      "/K": [
+                        {
+                          "mcid": 59
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "info.jihs.go.jp/surveillance/idwr/index.html",
+                      "/K": [
+                        {
+                          "mcid": 60
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 61
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/K": {
+                    "mcid": 62
+                  }
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 119,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "・",
+                  "/K": [
+                    {
+                      "mcid": 63
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": "感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】",
+                  "/K": [
+                    {
+                      "mcid": 64
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 65
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 123,
+              "/K": [
+                {
+                  "/S": "/Link",
+                  "/Type": "/StructElem",
+                  "/K": [
+                    {
+                      "/Type": "/OBJR",
+                      "/Obj": {
+                        "/Subtype": "/Link",
+                        "/Rect": [
+                          68.65,
+                          238.67,
+                          466.9,
+                          256.67
+                        ],
+                        "/BS": {
+                          "/W": 0
+                        },
+                        "/F": 4,
+                        "/A": {
+                          "/Type": "/Action",
+                          "/S": "/URI",
+                          "/URI": "https://www.niid.go.jp/niid/images/idwr/kanja/guideline/guideline2025dc.pdf"
+                        },
+                        "/StructParent": 3
+                      }
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "https://www.niid.go.jp/niid/images/idwr/kanja/guideline/guideline2025dc.pdf",
+                      "/K": [
+                        {
+                          "mcid": 66
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 67
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/K": {
+                    "mcid": 68
+                  }
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 129,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 69
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/P",
+              "/Type": "/StructElem",
+              "_xref": 131,
+              "/K": [
+                {
+                  "/S": "/Span",
+                  "/Type": "/StructElem",
+                  "/ActualText": " ",
+                  "/K": [
+                    {
+                      "mcid": 70
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "/S": "/Textbox",
+              "/Type": "/StructElem",
+              "/K": [
+                {
+                  "/S": "/P",
+                  "/Type": "/StructElem",
+                  "_xref": 134,
+                  "/K": [
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "大阪府健康医療部",
+                      "/K": [
+                        {
+                          "mcid": 72
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/K": [
+                        {
+                          "mcid": 73
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "保健医療室",
+                      "/K": [
+                        {
+                          "mcid": 74
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/K": [
+                        {
+                          "mcid": 75
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/P",
+                  "/Type": "/StructElem",
+                  "_xref": 139,
+                  "/K": [
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "感染症対策課",
+                      "/K": [
+                        {
+                          "mcid": 76
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/K": [
+                        {
+                          "mcid": 77
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "防疫",
+                      "/K": [
+                        {
+                          "mcid": 78
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "グループ",
+                      "/K": [
+                        {
+                          "mcid": 79
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/K": [
+                        {
+                          "mcid": 80
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/P",
+                  "/Type": "/StructElem",
+                  "_xref": 145,
+                  "/K": [
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/K": {
+                        "mcid": 81
+                      }
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/K": [
+                        {
+                          "mcid": 82
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "06",
+                      "/K": [
+                        {
+                          "mcid": 83
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "-",
+                      "/K": [
+                        {
+                          "mcid": 84
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "6944",
+                      "/K": [
+                        {
+                          "mcid": 85
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "-",
+                      "/K": [
+                        {
+                          "mcid": 86
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "9156",
+                      "/K": [
+                        {
+                          "mcid": 87
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/K": [
+                        {
+                          "mcid": 88
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/P",
+                  "/Type": "/StructElem",
+                  "_xref": 154,
+                  "/K": [
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/K": {
+                        "mcid": 89
+                      }
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/K": [
+                        {
+                          "mcid": 90
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "06",
+                      "/K": [
+                        {
+                          "mcid": 91
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "-",
+                      "/K": [
+                        {
+                          "mcid": 92
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "4397",
+                      "/K": [
+                        {
+                          "mcid": 93
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "-",
+                      "/K": [
+                        {
+                          "mcid": 94
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": "3205",
+                      "/K": [
+                        {
+                          "mcid": 95
+                        }
+                      ]
+                    },
+                    {
+                      "/S": "/Span",
+                      "/Type": "/StructElem",
+                      "/ActualText": " ",
+                      "/K": [
+                        {
+                          "mcid": 96
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "/S": "/Figure",
+                  "/Type": "/StructElem",
+                  "/K": [
+                    {
+                      "mcid": 71
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "rows": [
+      {
+        "mcid": 0,
+        "status": "tree_backed",
+        "drawn": "感対第",
+        "actualtext": null,
+        "role": "/Span",
+        "parent": 43
+      },
+      {
+        "mcid": 1,
+        "status": "tree_backed",
+        "drawn": "3",
+        "actualtext": "3",
+        "role": "/Span",
+        "parent": 43
+      },
+      {
+        "mcid": 2,
+        "status": "tree_backed",
+        "drawn": "318",
+        "actualtext": "318",
+        "role": "/Span",
+        "parent": 43
+      },
+      {
+        "mcid": 3,
+        "status": "tree_backed",
+        "drawn": "号",
+        "actualtext": null,
+        "role": "/Span",
+        "parent": 43
+      },
+      {
+        "mcid": 4,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 43
+      },
+      {
+        "mcid": 5,
+        "status": "tree_backed",
+        "drawn": "令和７年３月",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 6,
+        "status": "tree_backed",
+        "drawn": "27",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 7,
+        "status": "tree_backed",
+        "drawn": "日",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 8,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 9,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 10,
+        "status": "tree_backed",
+        "drawn": "各関係団体長 様",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 11,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 12,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 13,
+        "status": "tree_backed",
+        "drawn": "大阪府健康医療部保健医療室長 ",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 14,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 15,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 16,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": null,
+        "role": "/P",
+        "parent": 44
+      },
+      {
+        "mcid": 17,
+        "status": "tree_backed",
+        "drawn": "「感染症発生動向調査事業における届出の質向上のための",
+        "actualtext": "「感染症発生動向調査事業における届出の質向上のための",
+        "role": "/Span",
+        "parent": 52
+      },
+      {
+        "mcid": 18,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 52
+      },
+      {
+        "mcid": 19,
+        "status": "tree_backed",
+        "drawn": "ガイドライン【医師向け】」について",
+        "actualtext": "ガイドライン【医師向け】」について",
+        "role": "/Span",
+        "parent": 55
+      },
+      {
+        "mcid": 20,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 55
+      },
+      {
+        "mcid": 21,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 58
+      },
+      {
+        "mcid": 22,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 60
+      },
+      {
+        "mcid": 23,
+        "status": "tree_backed",
+        "drawn": "日頃より、本府保健医療行政の推進に御協力いただき、厚く御礼申し上げます。",
+        "actualtext": "日頃より、本府保健医療行政の推進に御協力いただき、厚く御礼申し上げます。",
+        "role": "/Span",
+        "parent": 62
+      },
+      {
+        "mcid": 24,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 62
+      },
+      {
+        "mcid": 25,
+        "status": "tree_backed",
+        "drawn": "標記のガイドラインにつきまして、内容を再確認いただけるよう",
+        "actualtext": "標記のガイドラインにつきまして、内容を再確認いただけるよう",
+        "role": "/Span",
+        "parent": 65
+      },
+      {
+        "mcid": 26,
+        "status": "tree_backed",
+        "drawn": "",
+        "actualtext": "",
+        "role": "/Span",
+        "parent": 65
+      },
+      {
+        "mcid": 27,
+        "status": "tree_backed",
+        "drawn": "",
+        "actualtext": "",
+        "role": "/Span",
+        "parent": 65
+      },
+      {
+        "mcid": 28,
+        "status": "tree_backed",
+        "drawn": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+        "actualtext": "国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+        "role": "/Span",
+        "parent": 65
+      },
+      {
+        "mcid": 29,
+        "status": "tree_backed",
+        "drawn": "付いたします。",
+        "actualtext": "付いたします。",
+        "role": "/Span",
+        "parent": 65
+      },
+      {
+        "mcid": 30,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 65
+      },
+      {
+        "mcid": 31,
+        "status": "tree_backed",
+        "drawn": "つきましては、内容について御了知の上、貴会員に周知いただきますようお願いいたします。",
+        "actualtext": null,
+        "role": "/Span",
+        "parent": 72
+      },
+      {
+        "mcid": 32,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 72
+      },
+      {
+        "mcid": 33,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 75
+      },
+      {
+        "mcid": 34,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 77
+      },
+      {
+        "mcid": 35,
+        "status": "tree_backed",
+        "drawn": "【",
+        "actualtext": "【",
+        "role": "/Span",
+        "parent": 79
+      },
+      {
+        "mcid": 36,
+        "status": "tree_backed",
+        "drawn": "添付資料",
+        "actualtext": "添付資料",
+        "role": "/Span",
+        "parent": 79
+      },
+      {
+        "mcid": 37,
+        "status": "tree_backed",
+        "drawn": "】",
+        "actualtext": "】",
+        "role": "/Span",
+        "parent": 79
+      },
+      {
+        "mcid": 38,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 79
+      },
+      {
+        "mcid": 39,
+        "status": "tree_backed",
+        "drawn": "・",
+        "actualtext": "・",
+        "role": "/Span",
+        "parent": 84
+      },
+      {
+        "mcid": 40,
+        "status": "tree_backed",
+        "drawn": "感染症発生動向調査事業における届出の質向上のための",
+        "actualtext": "感染症発生動向調査事業における届出の質向上のための",
+        "role": "/Span",
+        "parent": 84
+      },
+      {
+        "mcid": 41,
+        "status": "tree_backed",
+        "drawn": "ガイドライン【医師向け",
+        "actualtext": "ガイドライン【医師向け",
+        "role": "/Span",
+        "parent": 84
+      },
+      {
+        "mcid": 42,
+        "status": "tree_backed",
+        "drawn": "】",
+        "actualtext": "】",
+        "role": "/Span",
+        "parent": 84
+      },
+      {
+        "mcid": 43,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 84
+      },
+      {
+        "mcid": 44,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 90
+      },
+      {
+        "mcid": 45,
+        "status": "tree_backed",
+        "drawn": "【参考】",
+        "actualtext": "【参考】",
+        "role": "/Span",
+        "parent": 92
+      },
+      {
+        "mcid": 46,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 92
+      },
+      {
+        "mcid": 47,
+        "status": "tree_backed",
+        "drawn": "・",
+        "actualtext": "・",
+        "role": "/Span",
+        "parent": 95
+      },
+      {
+        "mcid": 48,
+        "status": "tree_backed",
+        "drawn": "国立感染症研究所",
+        "actualtext": "国立感染症研究所",
+        "role": "/Span",
+        "parent": 95
+      },
+      {
+        "mcid": 49,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 95
+      },
+      {
+        "mcid": 50,
+        "status": "tree_backed",
+        "drawn": "https://www.niid.go.jp/niid/ja/idwr.html",
+        "actualtext": "https://www.niid.go.jp/niid/ja/idwr.html",
+        "role": "/Span",
+        "parent": 100
+      },
+      {
+        "mcid": 51,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 99
+      },
+      {
+        "mcid": 52,
+        "status": "tree_backed",
+        "drawn": "",
+        "actualtext": null,
+        "role": "/Span",
+        "parent": 99
+      },
+      {
+        "mcid": 53,
+        "status": "tree_backed",
+        "drawn": "・",
+        "actualtext": "・",
+        "role": "/Span",
+        "parent": 105
+      },
+      {
+        "mcid": 54,
+        "status": "tree_backed",
+        "drawn": "国立健康危機管理研究機構",
+        "actualtext": "国立健康危機管理研究機構",
+        "role": "/Span",
+        "parent": 105
+      },
+      {
+        "mcid": 55,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 105
+      },
+      {
+        "mcid": 56,
+        "status": "tree_backed",
+        "drawn": "感染症情報提供サイト",
+        "actualtext": "感染症情報提供サイト",
+        "role": "/Span",
+        "parent": 105
+      },
+      {
+        "mcid": 57,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 105
+      },
+      {
+        "mcid": 58,
+        "status": "tree_backed",
+        "drawn": "https://id",
+        "actualtext": "https://id",
+        "role": "/Span",
+        "parent": 112
+      },
+      {
+        "mcid": 59,
+        "status": "tree_backed",
+        "drawn": "-",
+        "actualtext": "-",
+        "role": "/Span",
+        "parent": 112
+      },
+      {
+        "mcid": 60,
+        "status": "tree_backed",
+        "drawn": "info.jihs.go.jp/surveillance/idwr/index.html",
+        "actualtext": "info.jihs.go.jp/surveillance/idwr/index.html",
+        "role": "/Span",
+        "parent": 112
+      },
+      {
+        "mcid": 61,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 111
+      },
+      {
+        "mcid": 62,
+        "status": "tree_backed",
+        "drawn": "",
+        "actualtext": null,
+        "role": "/Span",
+        "parent": 111
+      },
+      {
+        "mcid": 63,
+        "status": "tree_backed",
+        "drawn": "・",
+        "actualtext": "・",
+        "role": "/Span",
+        "parent": 119
+      },
+      {
+        "mcid": 64,
+        "status": "tree_backed",
+        "drawn": "感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】",
+        "actualtext": "感染症発生動向調査事業における届出の質向上のためのガイドライン【医師向け】",
+        "role": "/Span",
+        "parent": 119
+      },
+      {
+        "mcid": 65,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 119
+      },
+      {
+        "mcid": 66,
+        "status": "tree_backed",
+        "drawn": "https://www.niid.go.jp/niid/images/idwr/kanja/guideline/guideline2025dc.pdf",
+        "actualtext": "https://www.niid.go.jp/niid/images/idwr/kanja/guideline/guideline2025dc.pdf",
+        "role": "/Span",
+        "parent": 124
+      },
+      {
+        "mcid": 67,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 123
+      },
+      {
+        "mcid": 68,
+        "status": "tree_backed",
+        "drawn": "",
+        "actualtext": null,
+        "role": "/Span",
+        "parent": 123
+      },
+      {
+        "mcid": 69,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 129
+      },
+      {
+        "mcid": 70,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 131
+      },
+      {
+        "mcid": 71,
+        "status": "tree_backed",
+        "drawn": "",
+        "actualtext": null,
+        "role": "/Figure",
+        "parent": 133
+      },
+      {
+        "mcid": 72,
+        "status": "tree_backed",
+        "drawn": "大阪府健康医療部",
+        "actualtext": "大阪府健康医療部",
+        "role": "/Span",
+        "parent": 134
+      },
+      {
+        "mcid": 73,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 134
+      },
+      {
+        "mcid": 74,
+        "status": "tree_backed",
+        "drawn": "保健医療室",
+        "actualtext": "保健医療室",
+        "role": "/Span",
+        "parent": 134
+      },
+      {
+        "mcid": 75,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 134
+      },
+      {
+        "mcid": 76,
+        "status": "tree_backed",
+        "drawn": "感染症対策課",
+        "actualtext": "感染症対策課",
+        "role": "/Span",
+        "parent": 139
+      },
+      {
+        "mcid": 77,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 139
+      },
+      {
+        "mcid": 78,
+        "status": "tree_backed",
+        "drawn": "防疫",
+        "actualtext": "防疫",
+        "role": "/Span",
+        "parent": 139
+      },
+      {
+        "mcid": 79,
+        "status": "tree_backed",
+        "drawn": "グループ",
+        "actualtext": "グループ",
+        "role": "/Span",
+        "parent": 139
+      },
+      {
+        "mcid": 80,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 139
+      },
+      {
+        "mcid": 81,
+        "status": "tree_backed",
+        "drawn": "TEL",
+        "actualtext": null,
+        "role": "/Span",
+        "parent": 145
+      },
+      {
+        "mcid": 82,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 145
+      },
+      {
+        "mcid": 83,
+        "status": "tree_backed",
+        "drawn": "06",
+        "actualtext": "06",
+        "role": "/Span",
+        "parent": 145
+      },
+      {
+        "mcid": 84,
+        "status": "tree_backed",
+        "drawn": "-",
+        "actualtext": "-",
+        "role": "/Span",
+        "parent": 145
+      },
+      {
+        "mcid": 85,
+        "status": "tree_backed",
+        "drawn": "6944",
+        "actualtext": "6944",
+        "role": "/Span",
+        "parent": 145
+      },
+      {
+        "mcid": 86,
+        "status": "tree_backed",
+        "drawn": "-",
+        "actualtext": "-",
+        "role": "/Span",
+        "parent": 145
+      },
+      {
+        "mcid": 87,
+        "status": "tree_backed",
+        "drawn": "9156",
+        "actualtext": "9156",
+        "role": "/Span",
+        "parent": 145
+      },
+      {
+        "mcid": 88,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 145
+      },
+      {
+        "mcid": 89,
+        "status": "tree_backed",
+        "drawn": "FAX",
+        "actualtext": null,
+        "role": "/Span",
+        "parent": 154
+      },
+      {
+        "mcid": 90,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 154
+      },
+      {
+        "mcid": 91,
+        "status": "tree_backed",
+        "drawn": "06",
+        "actualtext": "06",
+        "role": "/Span",
+        "parent": 154
+      },
+      {
+        "mcid": 92,
+        "status": "tree_backed",
+        "drawn": "-",
+        "actualtext": "-",
+        "role": "/Span",
+        "parent": 154
+      },
+      {
+        "mcid": 93,
+        "status": "tree_backed",
+        "drawn": "4397",
+        "actualtext": "4397",
+        "role": "/Span",
+        "parent": 154
+      },
+      {
+        "mcid": 94,
+        "status": "tree_backed",
+        "drawn": "-",
+        "actualtext": "-",
+        "role": "/Span",
+        "parent": 154
+      },
+      {
+        "mcid": 95,
+        "status": "tree_backed",
+        "drawn": "3205",
+        "actualtext": "3205",
+        "role": "/Span",
+        "parent": 154
+      },
+      {
+        "mcid": 96,
+        "status": "tree_backed",
+        "drawn": " ",
+        "actualtext": " ",
+        "role": "/Span",
+        "parent": 154
+      }
+    ]
+  },
+  "timing": 1.4958959060022607
+}

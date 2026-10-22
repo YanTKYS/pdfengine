@@ -32,7 +32,9 @@ def run(case,spec,font,root):
         choices={style['id']:{k:substitute[k] for k in ('sha256','font_index','relation')} for style in proposal['styles']}
         (root/'flow-proposal.json').write_text(json.dumps(proposal,ensure_ascii=False,indent=2))
         record['page_flow']={k:proposal.get(k) for k in ('status','refusals','unresolved','paragraphs','styles','width_candidates')}
-        starts=[spec['line_ids'][0],spec['line_ids'][len(spec['paragraphs'][0]['source_line_baselines'])]]
+        starts=[];offset=0
+        for paragraph in spec['paragraphs']:
+            starts.append(spec['line_ids'][offset]);offset+=len(paragraph['source_line_baselines'])
         accepted=accept_page_flow_report(source,proposal,provider_choices=choices,overrides=dict(width=spec['right']-spec['left'],region_top=spec['frame'][1],region_bottom=spec['frame'][3],paragraph_starts=starts))
         state=accepted['state']
         target=next(p for p in state['paragraphs'].values() if case['old'] in p['logical']['text'])

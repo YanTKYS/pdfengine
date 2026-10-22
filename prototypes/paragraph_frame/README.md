@@ -97,3 +97,29 @@ unrotated frame; ordinary page text; simple Span/P structure; editable
 TrueType fonts; no page crossing, Form text, mixed semantic references,
 IDTree, complex marked-content semantics or automatic font matching.
 No GUI or production module is changed. Commercial SDK arm C is untested.
+
+## B2: selection-driven inference and source-font preservation
+
+The separate `auto.py` API adds `propose(source, page, selection, replacement,
+occurrence=0, substitute=None)`, `approve(..., acknowledge_inference=True)`, and
+`save(...)`. It accepts no frame, line-height or paragraph-coordinate arguments.
+Review the proposed paragraphs, inferred capacity, confidence, source styles and
+fallback counts before approving. Acceptance is bound to the PDF and font hashes;
+it is recomputed at approval and save.
+
+`generalization_cli` exposes those steps as JSON files. The optional substitute
+JSON must contain `path`, `sha256`, `font_index: 0`, and
+`relation: "substituted"`. Only missing source glyphs use it. An existing output
+is rejected. `reedit` is an evaluation convenience that still requires the explicit
+`--acknowledge-inference` flag. `noop` means unedited PDF serialization, not reflow.
+
+See [the generalization report](../../docs/paragraph-frame-generalization.md) for
+the frozen twelve-request comparison, exact limitations and reproduction commands.
+Use a **new output root** for initial/baseline experiments. Audit and qualification
+phases can reuse existing PDFs read-only. The evaluation oracle never enters B2;
+A/B1 intentionally retain their older public/manual input contracts.
+
+`generalization_evaluate --phase qualify` applies current publication checks to
+saved candidates without saving them again. `generalization_collect` copies only
+JSON evidence into the evaluation directory. PDF publication is one atomic rename;
+PDF and optional JSON receipts are not a crash-atomic bundle.

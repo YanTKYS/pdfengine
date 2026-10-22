@@ -1,0 +1,154 @@
+{
+  "outcome": "quality-audit-failed",
+  "checks": {
+    "foreign_exact_code_gid_resource_size_scale_color_position": true,
+    "exact_drawn_paragraphs": true,
+    "inside_fixed_oracle": true,
+    "foreign_drawings": true,
+    "foreign_images": true,
+    "foreign_links": true,
+    "foreign_annots": true,
+    "source_font_programs_retained": true,
+    "semantic_internal": true,
+    "semantic_structure_order_languages_preserved": true,
+    "retained_target_original_code_and_style": true,
+    "follower_original_code_style_rigid_translation": true,
+    "mupdf_copy_extract": false,
+    "poppler_copy_extract": false,
+    "native_replacement_search": false,
+    "outside_pixels_zero": true
+  },
+  "failed": [
+    "mupdf_copy_extract",
+    "poppler_copy_extract",
+    "native_replacement_search"
+  ],
+  "source_sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+  "output_sha256": "0779cd632ffc7ddbead920663773b327578a02ea80f8ddf864fddee71064afec",
+  "native_search": {
+    "original_selection_hits": 0,
+    "replacement_hits": 0
+  },
+  "follower_metrics": [],
+  "retained_target_glyphs_verified": 63,
+  "pixels": {
+    "mupdf": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": [
+          58,
+          239,
+          1133,
+          291
+        ]
+      },
+      {
+        "page": 2,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 3,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 4,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 5,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 6,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 7,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 8,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      }
+    ],
+    "poppler": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": [
+          58,
+          238,
+          1133,
+          291
+        ]
+      },
+      {
+        "page": 2,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 3,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 4,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 5,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 6,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 7,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 8,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      }
+    ]
+  },
+  "extraction": {
+    "mupdf": {
+      "raw": "    　　     LibreOffice 日本語チーム\nLibreOffice 4.1 の新機能紹介\nLibreOffice 4.1.1 は8月末にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹\n介します。\n　　　Calc\n使いやすさの向上\nCalc をより使いやすくするための工夫が取り\n入れられます。\n•\n線と散布図のグラフの線種にステップ\n（階段状チャート）が追加されました。\n•\n選択したセルの個数がカウントされるように\nなりました\n(ステータスバーの右側を右クリックすると、\n表示メニューが現れます。「選択した個数\n（G)」を指定すると表示がかわります)\n新たに追加された関数群\nODF OpenFormula で定義されている新しい関数が利用できるようになりました。\nNUMBERVALUE\n指定の条件にあったセルの値を平均します\nSKEWP\n複数の範囲において複数の条件を満たすセルの値の平均値\n                                                                                    1/8　　　　　                             http://ja.libreoffice.org\n図 2: 複数ページフィールド選択\n1. 図: グラフィックウィザード\n",
+      "paragraph_exact": false,
+      "source_raw": "    　　     LibreOffice 日本語チーム\nLibreOffice 4.1 の新機能紹介\nLibreOffice 4.1.1 が8 月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご\n紹介します。\n　　　Calc\n使いやすさの向上\nCalc をより使いやすくするための工夫が取り\n入れられます。\n•\n線と散布図のグラフの線種にステップ\n（階段状チャート）が追加されました。\n•\n選択したセルの個数がカウントされるように\nなりました\n(ステータスバーの右側を右クリックすると、\n表示メニューが現れます。「選択した個数\n（G)」を指定すると表示がかわります)\n新たに追加された関数群\nODF OpenFormula で定義されている新しい関数が利用できるようになりました。\nNUMBERVALUE\n指定の条件にあったセルの値を平均します\nSKEWP\n複数の範囲において複数の条件を満たすセルの値の平均値\n                                                                                    1/8　　　　　                             http://ja.libreoffice.org\n図 2: 複数ページフィールド選択\n1. 図: グラフィックウィザード\n",
+      "whole_page_inherited_spacing": false,
+      "comparison": "unmatched; no whitespace normalization beyond line edges"
+    },
+    "poppler": {
+      "raw": "LibreOffice 日本語チーム\n\nLibreOffice 4.1 の新機能紹介\nLibreOffice 4.1.1 は8月末にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹\n介します。\n\nCalc\n使いやすさの向上\nCalc をより使いやすくするための工夫が取り\n入れられます。\n•\n\n線と散布図のグラフの線種にステップ\n（階段状チャート）が追加されました。\n\n1. 図: グラフィックウィザード\n\n•\n\n選択したセルの個数がカウントされるように\nなりました\n(ステータスバーの右側を右クリックすると、\n表示メニューが現れます。「選択した個数\n（G)」を指定すると表示がかわります)\n\n図 2: 複数ページフィールド選択\n\n新たに追加された関数群\nODF OpenFormula で定義されている新しい関数が利用できるようになりました。\nNUMBERVALUE\n\n指定の条件にあったセルの値を平均します\n\nSKEWP\n\n複数の範囲において複数の条件を満たすセルの値の平均値\n\n1/8\n\nhttp://ja.libreoffice.org\n\n\f",
+      "paragraph_exact": false,
+      "source_raw": "LibreOffice 日本語チーム\n\nLibreOffice 4.1 の新機能紹介\nLibreOffice 4.1.1 が 8 月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご\n紹介します。\n\nCalc\n使いやすさの向上\nCalc をより使いやすくするための工夫が取り\n入れられます。\n•\n\n線と散布図のグラフの線種にステップ\n（階段状チャート）が追加されました。\n\n1. 図: グラフィックウィザード\n\n•\n\n選択したセルの個数がカウントされるように\nなりました\n(ステータスバーの右側を右クリックすると、\n表示メニューが現れます。「選択した個数\n（G)」を指定すると表示がかわります)\n\n図 2: 複数ページフィールド選択\n\n新たに追加された関数群\nODF OpenFormula で定義されている新しい関数が利用できるようになりました。\nNUMBERVALUE\n\n指定の条件にあったセルの値を平均します\n\nSKEWP\n\n複数の範囲において複数の条件を満たすセルの値の平均値\n\n1/8\n\nhttp://ja.libreoffice.org\n\n\f",
+      "whole_page_inherited_spacing": false,
+      "comparison": "unmatched; no whitespace normalization beyond line edges"
+    }
+  },
+  "semantic": {
+    "tagged": false,
+    "checks": {
+      "no_struct_tree": true
+    },
+    "tree": null
+  },
+  "timing": 1.3002881219726987
+}

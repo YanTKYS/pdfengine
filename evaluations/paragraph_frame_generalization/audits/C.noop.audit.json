@@ -1,0 +1,111 @@
+{
+  "outcome": "success",
+  "pixels": {
+    "mupdf": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 2,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 3,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 4,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 5,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 6,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 7,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 8,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 9,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 10,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      }
+    ],
+    "poppler": [
+      {
+        "page": 1,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 2,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 3,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 4,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 5,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 6,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 7,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 8,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 9,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      },
+      {
+        "page": 10,
+        "outside_pixels": 0,
+        "changed_bbox": null
+      }
+    ]
+  },
+  "glyphs_exact": true,
+  "semantic_exact": true
+}
