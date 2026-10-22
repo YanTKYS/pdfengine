@@ -92,7 +92,9 @@ def painting(path,page):
     with pymupdf.open(path) as d:
         p=d[page-1]
         drawings=[{k:v for k,v in x.items() if k!='seqno'} for x in p.get_drawings()]
-        images=p.get_image_info(hashes=True,xrefs=False)
+        # 'number' is the block index among text and image blocks; it changes
+        # when text blocks are reordered and does not identify the image.
+        images=[{k:v for k,v in x.items() if k!='number'} for x in p.get_image_info(hashes=True,xrefs=False)]
         links=[{k:v for k,v in x.items() if k not in ('xref','id')} for x in p.get_links()]
         annots=[dict(type=a.type,rect=list(a.rect),info=a.info) for a in (p.annots() or [])]
         fonts={f[4]:hashlib.sha256(d.extract_font(f[0])[3]).hexdigest() for f in p.get_fonts(full=True)}

@@ -589,6 +589,10 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         # Existing paints intersecting a proposed frame remain protected; the
         # writer checks actual new ink, not just this envelope.
         frame=[left-.5,top,right+.5,bottom]
+        # The paragraph's own ink is always replaceable: the frame contains every
+        # original glyph box of the edited paragraphs (overhangs, tall marks).
+        inked=[c.actual[i]['bbox'] for i in ids if c.actual[i]['unicode'].strip()]
+        if inked:frame=[min(frame[0],min(b[0] for b in inked)),min(frame[1],min(b[1] for b in inked)),max(frame[2],max(b[2] for b in inked)),max(frame[3],max(b[3] for b in inked))]
         for box in containers:frame=[max(frame[0],box[0]),max(frame[1],box[1]),min(frame[2],box[2]),min(frame[3],box[3])]
         paragraphs=[target_paragraph]+follower_paragraphs
         values=dict(left=left,right=right,first_x=first,line_height=leading,bottom=bottom)

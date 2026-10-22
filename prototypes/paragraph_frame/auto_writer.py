@@ -112,6 +112,12 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(safe[-1].state.ctm),stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF inferred-frame outside pixels'])
 
 
+def _covered(rect,boxes):
+    """Whether the corners and centre of ``rect`` lie in the given boxes."""
+    points=[pymupdf.Point(x,y) for x in (rect.x0+.01,rect.x1-.01) for y in (rect.y0+.01,rect.y1-.01)]+[(rect.tl+rect.br)/2]
+    return all(any(b.contains(p) for b in boxes) for p in points)
+
+
 def validate_stage(c,tmp,spec,evidence,selected,expected):
     """Read-only publication checks, also callable on existing saved candidates."""
     check=ContentPage(tmp,spec['page'])
@@ -134,6 +140,7 @@ def validate_stage(c,tmp,spec,evidence,selected,expected):
             return result
         if styled(c,selected)-styled(check):raise Refused('staged protected source code/style changed')
         if ''.join(g['unicode'] for g in added)!=expected:raise Refused('staged drawing text differs from requested paragraphs')
+        old_boxes=[pymupdf.Rect(c.actual[i]['bbox'])+(-.3,-.3,.3,.3) for i in selected if c.actual[i]['unicode'].strip()]
         frames=[pymupdf.Rect(f) for f in spec.get('frames',[spec['frame']])]
         for g in added:
             if not g['unicode'].strip():continue
@@ -144,7 +151,10 @@ def validate_stage(c,tmp,spec,evidence,selected,expected):
                 # (background behind every original line) bounds the frame instead.
                 if o['kind']=='container':continue
                 overlap=box&pymupdf.Rect(o['bounds'])
-                if not overlap.is_empty and overlap.width>.05 and overlap.height>.05:raise Refused('staged glyph collides with protected '+o['kind'])
+                # New ink may overlap protected paint only where the replaced
+                # glyphs already did (text on part of a band or label).
+                if not overlap.is_empty and overlap.width>.05 and overlap.height>.05 and not _covered(overlap,old_boxes):
+                    raise Refused('staged glyph collides with protected '+o['kind'])
         original_paint=painting(c.source,spec['page']);staged_paint=painting(tmp,spec['page'])
         if any(original_paint[k]!=staged_paint[k] for k in ('drawings','images','links','annots')):raise Refused('staged protected non-text paint changed')
         if any(staged_paint['fonts'].get(k)!=v for k,v in original_paint['fonts'].items()):raise Refused('staged original font program changed')
