@@ -10,6 +10,13 @@ its witness matches.
 Expected outcomes, expected logical texts and the allowed movement ranges come
 from the fixture definitions and the observed columns, never from the engine.
 
+Revision 2 (review of PR #89): only one tagged paragraph spanning the break
+determines a continuation; untagged mid-sentence breaks and consecutive tagged
+paragraphs are candidates that need explicit approval. Cases and texts are
+unchanged; approvals and expected outcomes follow the rule, and a
+same-style different-article negative is added. ``--previous`` keeps the
+revision-1 entries of unchanged documents byte for byte.
+
   .venv/bin/python -m prototypes.paragraph_frame.column_flow_preflight \
       --fixtures tmp/column-fixtures --fusei <path to 477.pdf> \
       --out evaluations/paragraph_frame_column_flow/manifest.json
@@ -75,6 +82,7 @@ JA_SHORT = ('避難所では、受付の手順や間仕切りの設置、備蓄�
 JA_TAIL = ('定期的に入れ替えるようにしてください。', '定期的に入れ替えるようにしてください。会場では、備蓄物資の点検方法も確認できます。')
 JA_FIT = ('前日の午後五時まで', '前日の午後三時まで')
 JA_FLOOD = ('一緒に確認します。', '一緒に確認します。' + '各会場では、備蓄物資の点検方法や家族との連絡方法も確認できます。' * 14)
+JA_ARTICLE = ('市役所', '市役所の窓口と各地区の公民館')
 JA_P5 = ('回答は会場の受付で行えます。', '回答は会場の受付で行えます。会場では、備蓄物資の点検方法も確認できます。')
 EN_GROW = ('at all times.', 'at all times. Holds placed before the closure will be kept for the whole of the work.')
 EN_SHORT = ('without steps. Wireless access will also be improved on every floor.', 'without steps.')
@@ -100,8 +108,10 @@ def main():
     parser.add_argument('--fixtures', type=Path, required=True)
     parser.add_argument('--fusei', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
+    parser.add_argument('--previous', type=Path, help='manifest of the previous revision')
     args = parser.parse_args()
     version = subprocess.run(['soffice', '--version'], capture_output=True, text=True).stdout.strip()
+    previous = json.loads(args.previous.read_text()) if args.previous else None
     generator = sha(Path(fixtures.__file__))
     documents = {}
     for name, (doc, tagged) in fixtures.DOCUMENTS.items():
@@ -109,7 +119,12 @@ def main():
         lines = witness(path, 1)
         documents[name] = dict(kind='generated', generator='prototypes/paragraph_frame/column_fixtures.py', generator_sha256=generator,
                                libreoffice=version, sha256_at_freeze=sha(path), page=1, tagged=tagged, witness=lines,
-                               columns=columns(lines), paragraphs=body(doc))
+                               columns=columns(lines), paragraphs=body(doc) if body(doc) else [p for part in doc['frames'] for p in part])
+        old = previous['documents'].get(name) if previous else None
+        if old is not None:
+            if old['witness'] != lines:
+                raise SystemExit(f'{name}: the regenerated fixture differs from the previous revision')
+            documents[name] = old
     enterprise = Path('evaluations/realpdf/corpus/lo_enterprise_en.pdf')
     documents['lo_enterprise_en'] = dict(kind='real', path=str(enterprise), sha256=sha(enterprise), page=2, tagged=False,
                                          source_url='https://wiki.documentfoundation.org/images/3/36/EN_Enterprise.pdf',
@@ -127,7 +142,7 @@ def main():
     j, e = fixtures.JA, fixtures.EN
     sequences = [
         sequence('gen_columns_ja', j, [
-            (1, JA_GROW, [], 'flow', 'growth beyond column 1 pushes the following text into column 2'),
+            (1, JA_GROW, ['column 0->1'], 'flow', 'untagged split is a candidate: approved, growth pushes the following text into column 2'),
             (1, JA_GROW[::-1], [], 'flow', 'restore: the following text returns to column 1'),
             (1, JA_SHORT, [], 'flow', 'shortening pulls the column-2 text back into column 1'),
             (5, JA_TAIL, [], 'flow', 'edit a paragraph that now starts in column 1 and continues in column 2')]),
@@ -137,7 +152,7 @@ def main():
             (1, JA_SHORT, [], 'flow', 'shortening pulls text back'),
             (5, JA_TAIL, [], 'flow', 'edit a later paragraph after the moves')]),
         sequence('gen_columns_en', e, [
-            (2, EN_GROW, [], 'flow', 'Latin justified growth pushes text into column 2'),
+            (2, EN_GROW, ['column 0->1'], 'flow', 'untagged candidate approved: Latin justified growth pushes text into column 2'),
             (2, EN_GROW[::-1], [], 'flow', 'restore'),
             (1, EN_SHORT, [], 'flow', 'shortening pulls column-2 text back into column 1')]),
         sequence('gen_columns_en_tagged', e, [
@@ -149,19 +164,24 @@ def main():
             (4, JA_P5, ['column 0->1'], 'flow', 'the same edit after explicit approval of the candidate continuation'),
             (4, JA_P5[::-1], [], 'flow', 'reopen: the stored approved flow is used without approving again')]),
         sequence('gen_columns_ja_boundary_tagged', fixtures.JA_BOUNDARY, [
-            (4, JA_P5, [], 'flow', 'tagged: consecutive P siblings determine the reading order across the break')]),
+            (4, JA_P5, [], 'refused', 'tagged: consecutive P siblings are only a candidate; refused without approval'),
+            (4, JA_P5, ['column 0->1'], 'flow', 'the same edit after explicit approval')]),
     ]
     singles = [
         dict(id='J-fit', document='gen_columns_ja', paragraph=3, old=JA_FIT[0], new=JA_FIT[1], expected_outcome='saved-in-column',
              purpose='replacement that fits its own lines: nothing else moves', allowed_moving_paragraphs=[3]),
         dict(id='E-fit', document='gen_columns_en', paragraph=0, old=EN_FIT[0], new=EN_FIT[1], expected_outcome='saved-in-column',
              purpose='Latin replacement that fits its own lines', allowed_moving_paragraphs=[0]),
-        dict(id='J-capacity', document='gen_columns_ja', paragraph=0, old=JA_FLOOD[0], new=JA_FLOOD[1], expected_outcome='refused',
+        dict(id='J-capacity', document='gen_columns_ja', paragraph=0, old=JA_FLOOD[0], new=JA_FLOOD[1], expected_outcome='refused', approve_continuation=['column 0->1'],
              expected_reason='capacity', purpose='growth beyond both columns is refused; no font shrinking, no new region'),
         dict(id='J-heading', document='gen_columns_ja_heading', paragraph=4, old=JA_P5[0], new=JA_P5[1], expected_outcome='refused',
              expected_reason='capacity', purpose='column 2 starts with another article heading: never a continuation region'),
         dict(id='J-image', document='gen_columns_ja_image', paragraph=4, old=JA_P5[0], new=JA_P5[1], expected_outcome='refused',
              expected_reason='capacity', purpose='column 2 starts with a drawing: never a continuation region'),
+        dict(id='J-articles', document='gen_columns_ja_articles', paragraph=4, old=JA_ARTICLE[0], new=JA_ARTICLE[1], expected_outcome='refused',
+             expected_reason='capacity', purpose='column 1 ends mid-sentence at a full line; column 2 is another article in the same style without a heading: never used without approval'),
+        dict(id='J-articles-tagged', document='gen_columns_ja_articles_tagged', paragraph=4, old=JA_ARTICLE[0], new=JA_ARTICLE[1], expected_outcome='refused',
+             expected_reason='capacity', purpose='tagged different articles: the structure does not connect the columns'),
         dict(id='R-enterprise-fit', document='lo_enterprise_en', old='for a simple memo', new='for a simple note', expected_outcome='saved-in-column',
              purpose='real PDF: in-column same-length edit (PR #88 E1); no column flow may be chosen'),
         dict(id='R-enterprise-grow', document='lo_enterprise_en', old='Writer will make it look great.', new='Writer will make it look great and keep it consistent.',
@@ -171,19 +191,29 @@ def main():
              purpose='real PDF: overset article at the column bottom; the neighbouring columns are other articles'),
     ]
     recognition = {
-        'gen_columns_ja': [dict(from_column=0, to_column=1, expected='determined')],
+        'gen_columns_ja': [dict(from_column=0, to_column=1, expected='candidate')],
         'gen_columns_ja_tagged': [dict(from_column=0, to_column=1, expected='determined')],
-        'gen_columns_en': [dict(from_column=0, to_column=1, expected='determined')],
+        'gen_columns_en': [dict(from_column=0, to_column=1, expected='candidate')],
         'gen_columns_en_tagged': [dict(from_column=0, to_column=1, expected='determined')],
         'gen_columns_ja_boundary': [dict(from_column=0, to_column=1, expected='candidate')],
-        'gen_columns_ja_boundary_tagged': [dict(from_column=0, to_column=1, expected='determined')],
+        'gen_columns_ja_boundary_tagged': [dict(from_column=0, to_column=1, expected='candidate')],
+        'gen_columns_ja_articles': [dict(from_column=0, to_column=1, expected='candidate')],
+        'gen_columns_ja_articles_tagged': [dict(from_column=0, to_column=1, expected='not-linked')],
         'gen_columns_ja_heading': [dict(from_column=0, to_column=1, expected='not-linked')],
         'gen_columns_ja_image': [dict(from_column=0, to_column=1, expected='not-linked')],
         'lo_enterprise_en': [dict(from_column=0, to_column=1, expected='not-linked'), dict(from_column=1, to_column=2, expected='not-linked')],
         'osaka_fusei_477': [dict(from_column=0, to_column=1, expected='not-linked'), dict(from_column=1, to_column=2, expected='not-linked')],
     }
     manifest = dict(
-        schema=SCHEMA, baseline_commit=subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True).stdout.strip(),
+        schema=SCHEMA, baseline_commit=previous['baseline_commit'] if previous else subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True).stdout.strip(),
+        revision=2 if previous else 1,
+        revisions=[dict(revision=1, commit='67048df', frozen='before the implementation was evaluated'),
+                   dict(revision=2, reason='PR #89 review: an untagged column that ends mid-sentence may continue on another page next to a different article; '
+                                           'only one tagged paragraph spanning the break determines a continuation, everything else is a candidate needing explicit approval',
+                        changes=['S1/S3 step 1 and J-capacity approve the candidate column 0->1', 'S6 first refuses without approval, then saves with it',
+                                 'recognition: untagged splits and consecutive tagged paragraphs are candidates',
+                                 'new negative: gen_columns_ja_articles (untagged and tagged), same style, no heading, aligned, different article'],
+                        frozen='before the revised rule was evaluated')] if previous else [dict(revision=1, frozen='before the implementation was evaluated')],
         policy=dict(
             frozen_before_implementation=True, no_case_replacement=True,
             inputs='PDF path, page, selected text, replacement, optional explicit approval of a candidate continuation id. No oracle geometry, no prior PDF, no sidecar, no manual coordinates.',

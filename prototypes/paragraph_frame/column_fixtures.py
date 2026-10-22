@@ -5,7 +5,8 @@ documents provide genuinely threaded columns: a Writer section with two
 unbalanced (newspaper) columns on a short page. LibreOffice itself fills
 column 1 to the page bottom and continues the same paragraph in column 2,
 which stays partly empty. Variants break the columns at a paragraph boundary
-or start column 2 with another article's heading or a drawing. They are generated evidence and are reported separately from
+or start column 2 with another article's heading or a drawing; the articles
+variant places two unthreaded frames of different articles side by side. They are generated evidence and are reported separately from
 real PDFs. Output depends on the LibreOffice version, which is recorded.
 
   .venv/bin/python -m prototypes.paragraph_frame.column_fixtures --out tmp/column-fixtures
@@ -42,6 +43,13 @@ JA = dict(
 # on a paragraph boundary, so untagged geometry alone cannot prove a thread.
 _BOUNDARY = JA['body'][:4] + [JA['body'][4].replace('回答は会場の受付のほか、市のホームページからも行えます。', '回答は会場の受付で行えます。')]
 JA_BOUNDARY = dict(JA, body=_BOUNDARY + JA['body'][5:])
+# Two independent text frames side by side (no thread): frame 1 ends
+# mid-sentence at a full line (its article continues on another page), frame 2
+# holds a different article in the same style, without a heading, on the same lines.
+JA_ARTICLES = dict(JA, body=[], frames=(JA['body'][:4] + [JA['body'][4].replace('市のホームページからも行えます。', '市役所')], [
+    '市立図書館は、空調設備の改修工事のため、来月の一日から十日まで休館します。休館中も、返却ポストは通常どおり利用できます。',
+    '予約した資料は、工事の期間中も各地区の公民館で受け取ることができます。受け取りの際は、利用者カードをお持ちください。',
+    '工事の終了後は、閲覧席の数を増やし、児童室の照明も新しくなります。']))
 # Column 2 holds another article (heading first) or starts with a drawing.
 JA_HEADING = dict(JA, body=_BOUNDARY + [('heading', '図書館からのお知らせ')] + JA['body'][5:])
 JA_IMAGE = dict(JA, body=_BOUNDARY + [('rect', ('7.5cm', '2.6cm'))] + JA['body'][5:])
@@ -70,8 +78,19 @@ def _paragraph(item):
     raise ValueError(kind)
 
 
+def _frames(doc):
+    """Two page-anchored text frames at the column positions."""
+    left, right = doc['frames']
+    frame = ('<draw:frame draw:style-name="fr1" draw:name="{name}" text:anchor-type="page" text:anchor-page-number="1" '
+             'svg:x="{x}" svg:y="2.95cm" svg:width="7.85cm" svg:height="9.5cm" draw:z-index="{z}"><draw:text-box>{body}</draw:text-box></draw:frame>')
+    return ''.join(frame.format(name=f'Article{n + 1}', x=x, z=n, body=''.join(_paragraph(p) for p in texts))
+                   for n, (x, texts) in enumerate((('2.2cm', left), ('10.95cm', right))))
+
+
 def fodt(doc):
-    paragraphs = ''.join(_paragraph(p) for p in doc['body'])
+    paragraphs = ''.join(_paragraph(p) for p in doc.get('body', []))
+    frames = _frames(doc) if 'frames' in doc else ""
+    section = f'<text:section text:style-name="Sect1" text:name="Columns">{paragraphs}</text:section>' if paragraphs else ""
     face = escape(doc['font'])
     return f'''<?xml version="1.0" encoding="UTF-8"?>
 <office:document {NS} office:version="1.3" office:mimetype="application/vnd.oasis.opendocument.text">
@@ -86,14 +105,15 @@ def fodt(doc):
  <style:style style:name="Title" style:family="paragraph"><style:paragraph-properties fo:margin-bottom="0.4cm"/><style:text-properties fo:font-size="16pt" style:font-size-asian="16pt" fo:font-weight="bold" style:font-weight-asian="bold"/></style:style>
  <style:style style:name="Heading" style:family="paragraph"><style:paragraph-properties fo:break-before="column" fo:margin-bottom="0.2cm"/><style:text-properties fo:font-size="13pt" style:font-size-asian="13pt" fo:font-weight="bold" style:font-weight-asian="bold"/></style:style>
  <style:style style:name="Break" style:family="paragraph"><style:paragraph-properties fo:break-before="column" fo:margin-bottom="0.2cm"/></style:style>
+ <style:style style:name="fr1" style:family="graphic"><style:graphic-properties fo:border="none" fo:padding="0cm" style:wrap="none" style:vertical-pos="from-top" style:vertical-rel="page" style:horizontal-pos="from-left" style:horizontal-rel="page" draw:auto-grow-height="false"/></style:style>
  <style:style style:name="gr1" style:family="graphic"><style:graphic-properties draw:fill="solid" draw:fill-color="#9fb8d0" draw:stroke="none"/></style:style>
  <style:style style:name="Sect1" style:family="section"><style:section-properties text:dont-balance-text-columns="true"><style:columns fo:column-count="2" fo:column-gap="0.9cm"/></style:section-properties></style:style>
  <style:page-layout style:name="pm1"><style:page-layout-properties fo:page-width="21cm" fo:page-height="15cm" fo:margin-top="2cm" fo:margin-bottom="2cm" fo:margin-left="2.2cm" fo:margin-right="2.2cm"/></style:page-layout>
 </office:automatic-styles>
 <office:master-styles><style:master-page style:name="Standard" style:page-layout-name="pm1"/></office:master-styles>
-<office:body><office:text>
+<office:body><office:text>{frames}
 <text:p text:style-name="Title">{escape(doc['title'])}</text:p>
-<text:section text:style-name="Sect1" text:name="Columns">{paragraphs}</text:section>
+{section}
 </office:text></office:body></office:document>
 '''
 
@@ -113,7 +133,8 @@ def export(doc, out, *, tagged):
 DOCUMENTS = {'gen_columns_ja': (JA, False), 'gen_columns_ja_tagged': (JA, True),
              'gen_columns_en': (EN, False), 'gen_columns_en_tagged': (EN, True),
              'gen_columns_ja_boundary': (JA_BOUNDARY, False), 'gen_columns_ja_boundary_tagged': (JA_BOUNDARY, True),
-             'gen_columns_ja_heading': (JA_HEADING, False), 'gen_columns_ja_image': (JA_IMAGE, False)}
+             'gen_columns_ja_heading': (JA_HEADING, False), 'gen_columns_ja_image': (JA_IMAGE, False),
+             'gen_columns_ja_articles': (JA_ARTICLES, False), 'gen_columns_ja_articles_tagged': (JA_ARTICLES, True)}
 
 
 def main():
