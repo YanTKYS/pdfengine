@@ -557,3 +557,9 @@ def test_text_after_a_placed_object_sets_its_own_state_when_the_inherited_one_di
     gs = PdfReader(out).pages[0]['/Resources']['/ExtGState']
     neutral = next(v.get_object() for k, v in gs.items() if k.startswith('/PFNeutral'))
     assert (neutral['/OP'], neutral['/op']) == (True, True)
+
+
+def test_right_to_left_text_is_detected():
+    from prototypes.paragraph_frame.auto_detect import right_to_left
+    assert right_to_left('.םידליה לכ ומכ') and right_to_left('abc مرحبا')
+    assert not right_to_left('本年度の補助事業 2019 (abc)')

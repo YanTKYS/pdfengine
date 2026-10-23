@@ -200,6 +200,15 @@ def _marker(c, row):
     return first if first and (unicodedata.category(first) == 'So' or first in '•・‣⁃◦※') else None
 
 
+def right_to_left(text):
+    """Whether text has right-to-left letters (Hebrew, Arabic …).
+
+    Glyphs are laid out left to right in drawing order; right-to-left
+    scripts need bidirectional reordering and line breaking.
+    """
+    return any(unicodedata.bidirectional(ch) in ('R', 'AL') for ch in text)
+
+
 def _numeric(value):
     try:
         float(value)
@@ -248,6 +257,8 @@ def qualify(c, marks, ids, rows):
         # Its size is the drawn size of its glyphs (kept as they are).
         sizes.update({i:text_space.effective(e)['size'] for e in c.events for ch in e.chars for i in ch.source_orders if i in set(fixed)})
     text,joins,hyphens=group_text(c,rows)
+    if right_to_left(text):
+        raise Refused('right-to-left text requires a bidirectional layout adapter')
     return Paragraph(text,ids,[sizes[i] for i in ids],[r['baseline'] for r in rows],scopes,parent,tuple(joins),tuple(hyphens),containers,fixed)
 
 
