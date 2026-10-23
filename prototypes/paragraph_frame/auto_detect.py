@@ -543,8 +543,9 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         column_bottom,neighbours=_column_bottom(selected,others,blocks,infos,report)
         left=min(r['x'] for r in selected); first=selected[0]['x']
         # A single-line paragraph borrows the observed continuation edge from
-        # nearby same-size body rows, never from a manifest.
-        nearby=[r for r in rows if abs(r['size']-size)<.1 and abs(r['baseline']-selected[0]['baseline'])<8*size and first-1.6*size<=r['x']<=first+.1 and _overlap(r,selected[0])]
+        # nearby same-size body rows, never from a manifest. A paragraph of
+        # several lines shows its own continuation edge.
+        nearby=[r for r in rows if len(selected)==1 and abs(r['size']-size)<.1 and abs(r['baseline']-selected[0]['baseline'])<8*size and first-1.6*size<=r['x']<=first+.1 and _overlap(r,selected[0])]
         left=min([left]+[r['x'] for r in nearby]); followers=[];follower_records=[]
         previous=selected;column=dict(x=min(r['x'] for r in selected),pen_end=max(r['pen_end'] for r in selected))
         for group in groups[target+1:]:

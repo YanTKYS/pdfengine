@@ -229,7 +229,7 @@ def run_request(r, source, folder, sub=None):
     save = result['save']
     record.update(lines=[l['text'] for l in result['proposal']['lines']], font_counts=result['proposal']['font_counts'],
                   insertion_inside_text_object=save.get('insertion_inside_text_object'), timing={k: round(v, 2) for k, v in save['timing'].items()})
-    record['audit'] = audit(source, output, r['page'], r['allowed_region'], r['old'], r['new'], folder, lines=r['lines'])
+    record['audit'] = audit(source, output, r['page'], r['allowed_region'], r['old'], r['new'], folder, lines=r['lines'], occurrence=occurrence)
     mcids = [s['mcid'] for s in r['structure'] if s.get('status') == 'tree_backed']
     record['structure'] = structure_audit(source, output, r['page'], r['expected_text'], mcids)
     record['supplementary'] = supplementary(source, output, r['page'], r['allowed_region'], r['old'], r['new'], r['lines'])

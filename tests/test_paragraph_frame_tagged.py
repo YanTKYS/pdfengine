@@ -490,3 +490,11 @@ def test_lines_short_of_a_wider_follower_are_not_justified(tmp_path):
     # Its glyphs stay where they were (the line may take more words: the
     # inferred width reaches the follower's edge).
     assert first_line(out)[:len(first_line(source))] == first_line(source)
+
+
+def test_paragraph_of_several_lines_keeps_its_own_left_edge(tmp_path):
+    # A label to the left (a table row heading) is not this paragraph's edge.
+    source = _glyph_page(tmp_path, [(30, 40, 'Balance at the start', 11), (40, 60, 'Cumulative effects of', 11),
+                                    (40, 73, 'changes in accounting', 11), (40, 86, 'policies', 11)])
+    proposal = propose(str(source), 1, 'changes in accounting policies', 'policy changes')
+    assert proposal['evidence']['inferred']['left'] == pytest.approx(40, abs=.01)
