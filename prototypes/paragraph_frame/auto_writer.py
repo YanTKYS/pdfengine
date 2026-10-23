@@ -78,17 +78,29 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     # New drawing is placed in default user space under the inverse CTM, at
     # the first candidate whose inherited state (opacity, ExtGState, clip) is
     # proven harmless for the approved frames.
-    problem=None;neutral=None;own_overprint=form_write.overprint([e.state for e in removed])
+    problem=None;neutral=None
     # The edited text itself was drawn opaque and with harmless ExtGStates:
     # where the inherited state is not proven harmless, the new drawing sets
     # that state again (a neutral ExtGState with the text's own overprint).
     own=all(form_write.drawn_neutral(e.state) for e in removed)
-    taken_gs=set(form_write.program_fonts(c,invocation,'/ExtGState'));neutral_resource='/PFNeutral'
-    while neutral_resource in taken_gs:neutral_resource+='x'
-    for choice,restore in candidates:
+    # Overprint of each glyph as drawn (InDesign: black text overprints, a
+    # coloured marker does not). Glyphs of different overprint each get a
+    # neutral ExtGState of their own.
+    variant=lambda state:tuple(sorted(form_write.overprint([state]).items()))
+    variants=sorted({variant(e.state) for e in removed})
+    if len(variants)>1 and not own:raise Refused('edited text with mixed overprint is not drawn opaque')
+    own_overprint=dict(variants[0]) if len(variants)==1 else None
+    taken_gs=set(form_write.program_fonts(c,invocation,'/ExtGState'));gs_names={}
+    for v in variants:
+        name='/PFNeutral'+(str(len(gs_names)) if gs_names else '')
+        while name in taken_gs:name+='x'
+        gs_names[v]=name
+    neutral_resource=gs_names[variants[0]]
+    for choice,restore in candidates if own_overprint is not None else ():
         try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,text_overprint=own_overprint);break
         except Refused as exc:problem=problem or exc
     else:
+        problem=problem or Refused('no safe insertion point before the edited text')
         if not own:raise problem
         for choice,restore in candidates:
             try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=True);break
@@ -151,9 +163,11 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
                 if n is not None:ops.append(b'EMC\n')
                 continue
             ops.append(b'q\n'+prefix+b'BT\n0 Tc 0 Tw 0 Ts 0 Tr\n')
-            run=None
+            run=None;current=variants[0]
             for t in ts:
                 name=t['font_name'];code=t['code'];x=t['x'];y=t['y']
+                if len(variants)>1 and variant(t['event'].state)!=current:
+                    current=variant(t['event'].state);ops.append(gs_names[current].encode()+b' gs\n');run=None
                 if t.get('font_key'):
                     name,res=built[t['font_key']];g=t['shaped'];font=fonts[t['font_key']];code=res.code(g)
                     x+=g.x_offset*t['size']/font.upem*t['tz']/100;y-=g.y_offset*t['size']/font.upem
@@ -227,7 +241,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
             rewritten.add(p.parent)
 
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
-    clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts,{neutral:writer._add_object(form_write.neutral_gs(own_overprint))} if neutral else None)
+    clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts,{name:writer._add_object(form_write.neutral_gs(dict(v))) for v,name in gs_names.items()} if neutral else None)
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);fd,tmp=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
     fd,draft=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
     expected=''.join(t['text'] for _,ts in batches for t in ts if not t.get('fixed'))

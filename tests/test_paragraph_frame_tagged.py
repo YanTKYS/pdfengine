@@ -563,3 +563,32 @@ def test_right_to_left_text_is_detected():
     from prototypes.paragraph_frame.auto_detect import right_to_left
     assert right_to_left('.םידליה לכ ומכ') and right_to_left('abc مرحبا')
     assert not right_to_left('本年度の補助事業 2019 (abc)')
+
+
+def test_glyphs_keep_their_own_overprint(tmp_path):
+    # Lines 1 and 3 overprint, line 2 does not: each glyph keeps its own
+    # overprint (a neutral ExtGState for each); the new glyph takes its
+    # neighbour's.
+    plain, _ = page_with(tmp_path, LINES, height=300)
+    w = PdfWriter(clone_from=PdfReader(plain))
+    p = w.pages[0]
+    _gstates(w, p, OPon={'/Type': NameObject('/ExtGState'), '/OP': BooleanObject(True), '/op': BooleanObject(True), '/OPM': NumberObject(1)},
+             OPoff={'/Type': NameObject('/ExtGState'), '/OP': BooleanObject(False), '/op': BooleanObject(False), '/OPM': NumberObject(0)})
+    for n, ref in enumerate(p['/Contents']):
+        s = ref.get_object()
+        s.set_data((b'/OPoff gs\n' if n == 1 else b'/OPon gs\n') + s.get_data())
+    w.write(tmp_path / 'mixed.pdf')
+    out = tmp_path / 'out.pdf'
+    edit(tmp_path / 'mixed.pdf', '申請書は窓口で', '申請書は各窓口で', out)
+    from pdfeditor.content_stream import ContentPage
+    c = ContentPage(str(out), 1)
+    try:
+        drawn = {'True': '', 'False': ''}
+        for e in c.events:
+            text = ''.join(ch.text for ch in e.chars)
+            if text.strip() and '後続' not in text:
+                drawn[str(e.state.blend.get('/OP', 'False'))] += text
+    finally:
+        c.close()
+    assert drawn['True'].replace(' ', '') == '本年度の補助事業について、募集をます。'
+    assert drawn['False'].replace(' ', '') == '行います。申請書は各窓口で配布し'
