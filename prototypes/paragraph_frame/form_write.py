@@ -44,22 +44,42 @@ def program_fonts(c, invocation, kind='/Font'):
     return [str(k) for k in (scope.get(kind) or {}).keys()]
 
 
-# Opaque, normal-blend painting without soft mask or overprint: the state an
-# edited text that qualified was drawn with, set again over an inherited one.
+# Opaque, normal-blend painting without soft mask: the state an edited text
+# that qualified was drawn with, set again over an inherited one (with the
+# text's own overprint entries, see neutral_gs).
 NEUTRAL_GS = {'/Type': '/ExtGState', '/ca': 1, '/CA': 1, '/BM': '/Normal', '/SMask': '/None', '/AIS': False, '/OP': False, '/op': False}
 
 
+OVERPRINT = ('/OP', '/op', '/OPM')
+
+
 def drawn_neutral(state):
-    """Whether text was painted with the neutral state: opaque, normal blend, no soft mask, alpha not shape."""
+    """Whether text was painted with the neutral state: opaque, normal blend, no soft mask.
+
+    With alpha 1 and no soft mask, /AIS (alpha is shape) has no effect.
+    Overprint is not transparency; the neutral state repeats the text's own.
+    """
     b = state.blend
     return (state.opacity == 1 and state.stroke_opacity == 1 and b.get('/BM', '/Normal') in ('/Normal', '/Compatible')
-            and b.get('/SMask', '/None') == '/None' and b.get('/AIS', 'False') == 'False')
+            and b.get('/SMask', '/None') == '/None')
 
 
-def neutral_gs():
+def overprint(states):
+    """The overprint entries (/OP /op /OPM) the text was drawn with, or a refusal when they differ."""
+    found = {tuple((k, str(s.blend.get(k, {'/OPM': '0'}.get(k, 'False')))) for k in OVERPRINT) for s in states}
+    if len(found) != 1:
+        raise Refused('edited text is drawn with different overprint settings')
+    return dict(found.pop())
+
+
+def neutral_gs(own=None):
+    """The neutral ExtGState, with the edited text's own overprint entries (``overprint``)."""
     from pypdf.generic import BooleanObject, NumberObject
+    entries = dict(NEUTRAL_GS)
+    for k, v in (own or {}).items():
+        entries[k] = int(v) if k == '/OPM' else v == 'True'
     return DictionaryObject({NameObject(k): (BooleanObject(v) if isinstance(v, bool) else NumberObject(v) if isinstance(v, int) else NameObject(v))
-                             for k, v in NEUTRAL_GS.items()})
+                             for k, v in entries.items()})
 
 
 def _axis_aligned(m):
@@ -216,15 +236,19 @@ def _float32(value):
     return struct.unpack('f', struct.pack('f', value))[0]
 
 
-def insertion(boundary, frames, page, neutral=False):
+def insertion(boundary, frames, page, neutral=False, text_overprint=None):
     """Bytes that put new drawing in default user space at ``boundary``, or a refusal.
 
     ``frames`` are page (top-left) rectangles; ``page`` is the page's
     transformation from default user space to them (any MediaBox origin).
     With ``neutral`` the drawing sets the neutral ExtGState itself, so an
-    inherited transparency state does not matter (only clips do).
+    inherited transparency state does not matter (only clips do). Without it,
+    the inherited overprint entries must be the edited text's own
+    (``text_overprint``, see ``overprint``).
     """
     state = boundary.state
+    if not neutral and text_overprint is not None and overprint([state]) != text_overprint:
+        raise Refused('inherited insertion overprint differs from the edited text')
     if not neutral:
         if state.opacity != 1 or state.stroke_opacity != 1:
             raise Refused('unsupported inherited insertion graphics state')

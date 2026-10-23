@@ -78,9 +78,9 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     # New drawing is placed in default user space under the inverse CTM, at
     # the first candidate whose inherited state (opacity, ExtGState, clip) is
     # proven harmless for the approved frames.
-    problem=None;neutral=None
+    problem=None;neutral=None;own_overprint=form_write.overprint([e.state for e in removed])
     for choice,restore in candidates:
-        try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix);break
+        try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,text_overprint=own_overprint);break
         except Refused as exc:problem=problem or exc
     else:
         # The edited text itself was drawn opaque and with harmless ExtGStates:
@@ -201,7 +201,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
             for b in boundaries:
                 if not end<=b.operator.end<=limit or b.marked_content_depth!=len(containers) or b.text_object:continue
                 if form_write.foreign_text_between(data,end,b.operator.end,starts):break
-                try:pre=form_write.insertion(b,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=bool(neutral));spot=b;break
+                try:pre=form_write.insertion(b,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=bool(neutral),text_overprint=own_overprint);spot=b;break
                 except Refused as exc:problem=exc
             if spot is None:raise Refused('no safe insertion point after an inline placed object'+(f' ({problem})' if problem else ''))
             if neutral:pre+=neutral.encode()+b' gs\n'
@@ -220,7 +220,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
             rewritten.add(p.parent)
 
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
-    clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts,{neutral:writer._add_object(form_write.neutral_gs())} if neutral else None)
+    clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts,{neutral:writer._add_object(form_write.neutral_gs(own_overprint))} if neutral else None)
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);fd,tmp=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
     fd,draft=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
     expected=''.join(t['text'] for _,ts in batches for t in ts if not t.get('fixed'))

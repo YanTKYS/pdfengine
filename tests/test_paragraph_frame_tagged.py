@@ -509,3 +509,29 @@ def test_record_keeps_paint_that_extends_beyond_the_page(tmp_path):
     out = tmp_path / 'out.pdf'
     edit(plain, '申請書は窓口で', '申請書は各窓口で', out)
     assert propose(str(out), 1, '各窓口で', '窓口で')['evidence']['conditions']['status'] == 'applied'
+
+
+def test_opaque_text_with_alpha_is_shape_and_overprint_is_edited(tmp_path):
+    # InDesign: /AIS true and overprint on opaque text. With alpha 1 and no
+    # soft mask, alpha-is-shape has no effect; the text's overprint is kept
+    # when the neutral state has to be set over an inherited transparent one.
+    plain, _ = page_with(tmp_path, LINES, height=300)
+    w = PdfWriter(clone_from=PdfReader(plain))
+    p = w.pages[0]
+    _gstates(w, p, Glass={'/Type': NameObject('/ExtGState'), '/ca': FloatObject(.5)},
+             Ink={'/Type': NameObject('/ExtGState'), '/ca': FloatObject(1), '/CA': FloatObject(1), '/AIS': BooleanObject(True),
+                  '/OP': BooleanObject(True), '/op': BooleanObject(True), '/OPM': NumberObject(1)})
+    streams = list(p['/Contents'])
+    for ref in streams:
+        s = ref.get_object()
+        s.set_data(s.get_data().replace(b'BT\n', b'BT\n/Ink gs\n'))
+    first = DecodedStreamObject()
+    first.set_data(b'/Glass gs\n')
+    p[NameObject('/Contents')] = ArrayObject([w._add_object(first), streams[3]] + streams[:3])
+    w.write(tmp_path / 'ink.pdf')
+    out = tmp_path / 'out.pdf'
+    edit(tmp_path / 'ink.pdf', '申請書は窓口で', '申請書は各窓口で', out)
+    assert drawn_text(out) == drawn_text(tmp_path / 'ink.pdf').replace('窓口', '各窓口')
+    gs = PdfReader(out).pages[0]['/Resources']['/ExtGState']
+    neutral = next(v.get_object() for k, v in gs.items() if k.startswith('/PFNeutral'))
+    assert (neutral['/OP'], neutral['/op'], neutral['/OPM'], neutral['/ca']) == (True, True, 1, 1)
