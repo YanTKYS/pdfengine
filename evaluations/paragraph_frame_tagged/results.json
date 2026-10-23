@@ -4,11 +4,11 @@
   "tests": {
     "focused": {
       "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_tagged.py tests/test_paragraph_frame_text_space.py tests/test_paragraph_frame_column_flow.py tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_continuity.py tests/test_paragraph_frame_poc.py tests/test_adjacent_span.py tests/test_marked_content.py tests/test_single_span_actualtext.py tests/test_tagged_page_proposal.py",
-      "commit": "ef5903e",
-      "passed": 253,
+      "commit": "fa6db75",
+      "passed": 254,
       "failed": 0,
-      "seconds": 321.3,
-      "new_tests": 27,
+      "seconds": 327.4,
+      "new_tests": 28,
       "selection": "every test importing prototypes.paragraph_frame.auto, auto_detect, auto_conditions, auto_style or semantics, and every test importing pdfeditor.marked_content"
     },
     "content_stream_importers": {
@@ -18,11 +18,421 @@
       "skipped": 5,
       "failed": 0,
       "seconds": 2687.3,
-      "note": "the right-to-left refusal (ef5903e) came after; it is covered by the focused run"
+      "note": "the right-to-left refusal (ef5903e) and per-glyph overprint (fa6db75) came after; they change prototypes/paragraph_frame only and are covered by the focused run"
     },
     "full_suite": "not run (CLAUDE.md: focused tests and the importers of the changed pdfeditor modules)"
   },
-  "regression": null,
+  "regression": {
+    "generalization": {
+      "A": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "B": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "C": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "D": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "F1": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "F2": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "F3": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "native_replacement_search"
+        ],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "F4": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "native_replacement_search"
+        ],
+        "reedit": "quality-audit-failed",
+        "reedit_failed": [
+          "native_replacement_search"
+        ],
+        "same_as_committed": true
+      },
+      "N1": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "N2": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "N3": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "native_replacement_search"
+        ],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "N4": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "mupdf_copy_extract",
+          "poppler_copy_extract",
+          "native_replacement_search"
+        ],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      }
+    },
+    "continuity_sequences": {
+      "Q1-stored": {
+        "steps": [
+          "success",
+          "success",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      },
+      "Q1-inference": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      },
+      "Q2-stored": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      },
+      "Q2-inference": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      },
+      "Q3-stored": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "success",
+          "success"
+        ],
+        "same_as_committed": false
+      },
+      "Q3-inference": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      }
+    },
+    "continuity_new": {
+      "E1": {
+        "edit": "saved",
+        "audit": "success",
+        "same_as_committed": true
+      },
+      "E2": {
+        "edit": "refused",
+        "audit": null,
+        "same_as_committed": true
+      },
+      "E3": {
+        "edit": "refused",
+        "audit": null,
+        "same_as_committed": true
+      },
+      "E4": {
+        "edit": "saved",
+        "audit": "success",
+        "same_as_committed": true
+      },
+      "E5": {
+        "edit": "saved",
+        "audit": "success",
+        "same_as_committed": true
+      },
+      "E6": {
+        "edit": "saved",
+        "audit": "success",
+        "same_as_committed": false
+      },
+      "S1": {
+        "edit": "refused",
+        "audit": null,
+        "same_as_committed": true
+      },
+      "S2": {
+        "edit": "refused",
+        "audit": null,
+        "same_as_committed": true
+      }
+    },
+    "column_flow": {
+      "sequences": {
+        "S1": {
+          "steps": [
+            "saved",
+            "saved",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S2": {
+          "steps": [
+            "saved",
+            "saved",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S3": {
+          "steps": [
+            "saved",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S4": {
+          "steps": [
+            "saved",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S5": {
+          "steps": [
+            "refused",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S6": {
+          "steps": [
+            "refused",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        }
+      },
+      "singles": {
+        "J-fit": {
+          "outcome": "saved",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "E-fit": {
+          "outcome": "saved",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-capacity": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-heading": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-image": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-articles": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-articles-tagged": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "R-enterprise-fit": {
+          "outcome": "saved",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "R-enterprise-grow": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "R-fusei-grow": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        }
+      },
+      "recognition_same_as_committed": true,
+      "recognition_correct": 14,
+      "recognition_total": 14
+    },
+    "indesign": {
+      "requests": {
+        "F-same": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "F-same-reedit": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "F-short": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "F-wrap": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "F-grow-line": {
+          "outcome": "refused",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "F-form": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "T-form": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "T-form-reedit": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "A-same": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "A-short": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "A-grow-line": {
+          "outcome": "refused",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "A-reedit": {
+          "outcome": "saved",
+          "failed": [],
+          "same_as_committed": true
+        },
+        "Q-ligature": {
+          "outcome": "refused",
+          "failed": [],
+          "same_as_committed": true
+        }
+      },
+      "samples": {
+        "sampled": 74,
+        "saved": 63,
+        "safety": 62,
+        "quality": 53,
+        "committed": {
+          "sampled": 74,
+          "saved": 62,
+          "safety": 62,
+          "quality": 53
+        },
+        "same_as_committed": false,
+        "newly_failed": [
+          [
+            "osaka_fusei_477",
+            7,
+            "児童扶養手当・特別児童扶養手当の認",
+            [
+              "raster_outside_region_mupdf",
+              "raster_outside_region_poppler",
+              "glyphs_outside_region_identical",
+              "unchanged_text_same_glyph_positions"
+            ]
+          ]
+        ],
+        "newly_passed": [],
+        "newly_refused": []
+      }
+    },
+    "differences_from_pr90_recorded_regression": [],
+    "differences": 3
+  },
   "requests": {
     "L-same": {
       "document": "prefilled_f1040",
