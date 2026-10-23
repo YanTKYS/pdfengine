@@ -404,7 +404,10 @@ def observe(c,marks,analysis):
         if candidate is not None:
             prev=candidate[-1]; prevparents={parent_by_id.get(i) for i in prev['glyph_ids']}
             gap=r['baseline']-prev['baseline']; size=r['size']
-            if parent is not None:new=prevparents!={parent}
+            # One structure element continues, unless the row is placed apart
+            # in it: another size, and not starting at a continuation x (a
+            # note marker under a title in one table cell).
+            if parent is not None:new=prevparents!={parent} or (abs(size-prev['size'])>=.1 and not -1.6*size<=r['x']-prev['x']<.2*size)
             else:
                 same_size=abs(size-prev['size'])<.1
                 # Continuations start at the same or a slightly smaller x;
@@ -631,6 +634,11 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         if unmovable:evidence['warnings'].append('Following paragraph stays fixed and bounds the capacity: '+unmovable)
         if paragraphs[0].hyphens:evidence['warnings'].append('Line-final hyphens are kept as drawn; reflow that moves them is refused.')
         if len(matches)>1:evidence['warnings'].append('Multiple string matches exist; approve the displayed occurrence and paragraph explicitly.')
+        # Lines centred on the first line, starting well inside it, are a
+        # centred paragraph: reflow would align them at the start.
+        centre=lambda r:(r['x']+r['pen_end'])/2
+        if len(selected)>1 and all(r['x']-selected[0]['x']>2*size and abs(centre(r)-centre(selected[0]))<size for r in selected[1:]):
+            raise Refused('centred paragraph requires a centre-alignment adapter')
         # A space-separated (non-CJK) paragraph whose non-final lines all end at
         # the right edge is justified; reflow keeps that alignment. CJK text
         # keeps its observed per-character tracking instead.

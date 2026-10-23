@@ -422,3 +422,37 @@ def test_list_items_opening_with_one_marker_are_separate_paragraphs(tmp_path):
     with pymupdf.open(out) as d:
         lines = [''.join(s['text'] for s in l['spans']) for b in d[0].get_text('dict')['blocks'] for l in b.get('lines', [])]
     assert lines == ['●申請書は各窓口で配布します。', '●提出は郵送でも受け付けます。', '●締切は五月末日です。']
+
+
+def test_row_placed_apart_in_one_element_is_not_a_continuation(tmp_path):
+    """A smaller note mark set apart in the cell (not at a continuation x) is its own paragraph."""
+    lines = [(40, 60, '本年度の補助事業について、募集を'), (150, 70, '注１'), (40, 76, '行います。')]
+
+    def one_sequence(data):
+        data[1] = data[1].replace(b'/Fixture 11 Tf', b'/Fixture 7 Tf')
+        return [b'/TD <</MCID 0>> BDC\n' + data[0], data[1], data[2] + b'\nEMC\n']
+    source, _ = tagged(tmp_path, [dict(role='/TD', kids=[])], lines=lines, edit_streams=one_sequence)
+    w = PdfWriter(clone_from=PdfReader(source))
+    cell = w._root_object['/StructTreeRoot']['/K'][0].get_object()
+    cell[NameObject('/K')] = ArrayObject([NumberObject(0)])
+    w._root_object['/StructTreeRoot']['/ParentTree'].get_object()['/Nums'][1].get_object().append(cell.indirect_reference)
+    w.write(tmp_path / 'cell.pdf')
+    source = tmp_path / 'cell.pdf'
+    out = tmp_path / 'out.pdf'
+    proposal, _ = edit(source, '補助事業', '補助金事業', out)
+    assert proposal['paragraphs'][0] == '本年度の補助事業について、募集を行います。'
+
+    def note(path):
+        with pymupdf.open(path) as d:
+            return [(c['c'], c['origin']) for b in d[0].get_text('rawdict')['blocks'] for l in b.get('lines', [])
+                    for s in l['spans'] for c in s['chars'] if c['c'] in '注１']
+    assert note(out) == note(source)
+    structure_unchanged(source, out)
+
+
+def test_centred_paragraph_is_refused(tmp_path):
+    # Line 2 is centred under line 1; reflow would align it at the start.
+    lines = [(40, 60, '本年度の補助事業について、募集を'), (100.5, 76, '行います。'), (40, 130, '後続段落です。')]
+    source, _ = tagged(tmp_path, [dict(role='/P', kids=[0, 1]), dict(role='/P', kids=[2])], lines=lines)
+    with pytest.raises(Refused, match='centred paragraph'):
+        propose(str(source), 1, '補助事業', '補助金事業')

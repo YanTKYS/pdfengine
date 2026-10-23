@@ -46,9 +46,37 @@ def source_of(doc, args):
     return args.pdfjs / f'{doc}.pdf'
 
 
-def edit(source, page, old, new, output, substitute=None):
+def locate(source, page, old, box):
+    """The occurrence of ``old`` whose paragraph is the frozen one (its first
+    line lies in the frozen box), counted as the engine counts matches. The
+    frozen request names its paragraph by its first words and box; the first
+    match on the page may be another paragraph."""
+    from pdfeditor.content_stream import ContentPage
+    from pdfeditor.marked_content import observe_marked_content
+    from pdfeditor.page_proposal import _Analysis
+    from .auto_detect import group_text, observe
+    c = ContentPage(str(source), page)
+    try:
+        _, _, groups = observe(c, observe_marked_content(str(source), page), _Analysis(str(source), page))
+        k = 0
+        for g in groups:
+            text = group_text(c, g)[0]
+            x0, y0, x1, y1 = g[0]['bbox']
+            inside_box = box[0] - 3 <= (x0 + x1) / 2 <= box[2] + 3 and box[1] - 3 <= (y0 + y1) / 2 <= box[3] + 3
+            at = 0
+            while (pos := text.find(old, at)) >= 0:
+                if inside_box:
+                    return k
+                k += 1
+                at = pos + 1
+        return 0
+    finally:
+        c.close()
+
+
+def edit(source, page, old, new, output, substitute=None, occurrence=0):
     command = [sys.executable, '-m', 'prototypes.paragraph_frame.generalization_cli', 'reedit', '--source', str(source), '--page', str(page),
-               '--old', old, '--new', new, '--output', str(output), '--acknowledge-inference']
+               '--old', old, '--new', new, '--output', str(output), '--acknowledge-inference', '--occurrence', str(occurrence)]
     if substitute:
         command += ['--substitute-json', str(substitute)]
     started = time.perf_counter()
@@ -187,8 +215,9 @@ def run_request(r, source, folder, sub=None):
     for p in (output, output.with_suffix('.proposal.json'), output.with_suffix('.save.json')):
         if p.exists():
             p.unlink()
-    result = edit(source, r['page'], r['old'], r['new'], output, sub)
-    record = dict(outcome=result['outcome'], seconds=result['seconds'])
+    occurrence = locate(source, r['page'], r['old'], r['box'])
+    result = edit(source, r['page'], r['old'], r['new'], output, sub, occurrence)
+    record = dict(outcome=result['outcome'], seconds=result['seconds'], occurrence=occurrence)
     if result['outcome'] == 'refused':
         record.update(reason=result['reason'], reason_class=classify(result['reason']), published=result['published'])
         return record, None
