@@ -14,6 +14,11 @@ Every save is audited for safety and quality (indesign_evaluate.audit: both
 renderers, region, extraction) and for structure: the structure tree is
 unchanged except the ActualText of the edited elements, every ActualText
 equals its drawn text, and the paragraph's MCIDs draw the expected text.
+Requests edit the frozen paragraph (``locate``). Beside the audit, never in
+place of it, ``supplementary`` reports the text inside the allowed region by
+both renderers and, as a control, the audit's line-grid checks applied to the
+source itself. Continued editing selects the new text with enough context to
+be unique on the page.
 ``collect`` writes the compact results; generated PDFs stay under ``--root``.
 """
 import argparse
@@ -348,8 +353,9 @@ def phase_collect(root, manifest, args):
 
     def compact(v):
         if v['outcome'] != 'saved':
-            return {k: v.get(k) for k in ('outcome', 'reason', 'reason_class', 'published', 'seconds')}
-        return dict(outcome='saved', seconds=v['seconds'], lines=v['lines'], font_counts=v['font_counts'], failed=v['audit']['failed'],
+            return {k: v.get(k) for k in ('outcome', 'reason', 'reason_class', 'published', 'seconds', 'occurrence')}
+        return dict(outcome='saved', seconds=v['seconds'], occurrence=v.get('occurrence'), lines=v['lines'], font_counts=v['font_counts'],
+                    failed=v['audit']['failed'], supplementary=v.get('supplementary'),
                     structure_failed=v['structure']['failed'], structure_details=v['structure']['details'],
                     outside_pixels=v['audit']['details']['outside_pixels'], continued_editing=v['continued_editing'], tiers=tiers(v), timing=v['timing'])
     compact_requests = {k: dict({x: v[x] for x in ('document', 'purpose', 'expected', 'expected_reason', 'after')},
@@ -369,10 +375,14 @@ def phase_collect(root, manifest, args):
                      safety=sum(s['audit']['safety'] for s in saved), quality=sum(s['audit']['quality'] for s in saved),
                      structure=sum(s['structure']['passed'] for s in saved),
                      continued_editing=sum(bool((s.get('continued_editing') or {}).get('ok')) for s in saved),
+                     supplementary={k: sum(bool(s['supplementary'].get(k)) for s in saved)
+                                    for k in ('region_extraction_mupdf', 'region_extraction_poppler')},
                      refused=[dict(document=s['document'], page=s['page'], selection=s['selection'], kind=s['kind'], reason=s['reason'])
                               for s in samples['results'] if s['outcome'] == 'refused'],
                      failed=[dict(document=s['document'], page=s['page'], selection=s['selection'], kind=s['kind'], failed=s['audit']['failed'],
-                                  structure_failed=s['structure']['failed']) for s in saved if s['audit']['failed'] or s['structure']['failed']],
+                                  structure_failed=s['structure']['failed'], supplementary=s['supplementary'],
+                                  continued_editing=s.get('continued_editing'))
+                             for s in saved if s['audit']['failed'] or s['structure']['failed']],
                      seconds=[s['seconds'] for s in samples['results']]))
     dump(RESULTS, result)
     print(json.dumps(result['survey']['pr90_structural_refusals'], ensure_ascii=False)[:600])
