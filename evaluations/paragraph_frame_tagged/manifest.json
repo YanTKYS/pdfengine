@@ -1,0 +1,1833 @@
+{
+ "schema": "paragraph-frame-tagged-manifest-1",
+ "baseline_commit": "2aefe3e (main after PR #90)",
+ "frozen_at": "2aefe3e",
+ "policy": "Frozen before implementation. Expected outcomes follow the page layout and structure, not the engine. A request whose outcome differs is reported as such; refusals never count as success.",
+ "documents": {
+  "prefilled_f1040": {
+   "producer": "Adobe LiveCycle Designer ES 8.2",
+   "source": "pdf.js test/pdfs",
+   "sha256": "899edb271684d2451337e225268003324a583a7d3429e23efd69f1654adf9bf9",
+   "path": "(scratch download, not committed)"
+  },
+  "160F-2019": {
+   "producer": "Acrobat Distiller 5.0.5 (Windows)",
+   "source": "pdf.js test/pdfs",
+   "sha256": "f41f0818365ffd14ca4e55c0556355193bd76632b970d60cc2dec554cac6f379",
+   "path": "(scratch download, not committed)"
+  },
+  "word_osaka_fire_notice": {
+   "producer": "Microsoft Word for Microsoft 365",
+   "source": "evaluations/realpdf/corpus",
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+   "path": "evaluations/realpdf/corpus/word_osaka_fire_notice.pdf"
+  },
+  "issue14297": {
+   "producer": "Adobe InDesign (placed PDF figure)",
+   "source": "pdf.js test/pdfs",
+   "sha256": "4041c1e3e2446bd236d536ce88fe5e97b30605f04813e600a00c58bf19e8c89b",
+   "path": "(scratch download, not committed)"
+  },
+  "osaka_fusei_477": {
+   "producer": "Adobe PDF Library 16.0 / Adobe InDesign 16.4 (Windows)",
+   "source": "PR #89 download",
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "path": "(scratch download, not committed)"
+  }
+ },
+ "requests": [
+  {
+   "id": "L-same",
+   "document": "prefilled_f1040",
+   "page": 1,
+   "old": "compensation",
+   "new": "remuneration",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "LiveCycle /P under /Div with an IDTree: same-length replacement",
+   "expected_text": "Unemployment remuneration.................",
+   "paragraph": "Unemployment compensation.................",
+   "box": [
+    136.8,
+    507.17,
+    446.22,
+    515.18
+   ],
+   "lines": [
+    {
+     "text": "Unemployment compensation",
+     "bbox": [
+      136.8,
+      506.1,
+      244.4,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      252.0,
+      506.1,
+      254.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      264.0,
+      506.1,
+      266.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      276.0,
+      506.1,
+      278.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      288.0,
+      506.1,
+      290.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      300.0,
+      506.1,
+      302.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      312.0,
+      506.1,
+      314.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      324.0,
+      506.1,
+      326.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      336.0,
+      506.1,
+      338.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      348.0,
+      506.1,
+      350.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      360.0,
+      506.1,
+      362.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      372.0,
+      506.1,
+      374.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      384.0,
+      506.1,
+      386.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      396.0,
+      506.1,
+      398.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      408.0,
+      506.1,
+      410.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      420.0,
+      506.1,
+      422.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      432.0,
+      506.1,
+      434.22,
+      515.42
+     ],
+     "baseline": 513.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      444.0,
+      506.1,
+      446.22,
+      515.42
+     ],
+     "baseline": 513.71
+    }
+   ],
+   "allowed_region": [
+    133.8,
+    504.17,
+    449.22,
+    518.18
+   ],
+   "structure": [
+    {
+     "tag": "/Content",
+     "mcid": 122,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 42,
+     "glyphs": 42,
+     "owner": 1314,
+     "roles": [
+      "/P",
+      "/Div",
+      "/Sect",
+      "/Part"
+     ],
+     "actual_text": null,
+     "lang": null
+    }
+   ]
+  },
+  {
+   "id": "L-reedit",
+   "document": "prefilled_f1040",
+   "page": 1,
+   "old": "remuneration",
+   "new": "compensation",
+   "after": "L-same",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "PDF-alone re-edit: restore the original word",
+   "expected_text": "Unemployment compensation.................",
+   "paragraph": "Unemployment remuneration.................",
+   "box": [
+    136.8,
+    507.17,
+    446.22,
+    515.18
+   ],
+   "lines": null,
+   "allowed_region": [
+    133.8,
+    504.17,
+    449.22,
+    518.18
+   ],
+   "structure": [
+    {
+     "tag": "/Content",
+     "mcid": 122,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 42,
+     "glyphs": 42,
+     "owner": 1314,
+     "roles": [
+      "/P",
+      "/Div",
+      "/Sect",
+      "/Part"
+     ],
+     "actual_text": null,
+     "lang": null
+    }
+   ]
+  },
+  {
+   "id": "L-short",
+   "document": "prefilled_f1040",
+   "page": 1,
+   "old": "(See instructions.) If",
+   "new": "If",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "shorten a four-line paragraph of one structure element",
+   "expected_text": "Head of household (with qualifying person). If the qualifying person is a child but not your dependent, enter this ▶child’s name here.  ",
+   "paragraph": "Head of household (with qualifying person). (See instructions.) If the qualifying person is a child but not your dependent, enter this ▶child’s name here.  ",
+   "box": [
+    374.4,
+    184.5,
+    573.93,
+    213.31
+   ],
+   "lines": [
+    {
+     "text": "Head of household (with qualifying person). (See instructions.) If ",
+     "bbox": [
+      374.4,
+      183.58,
+      569.6,
+      191.51
+     ],
+     "baseline": 190.05
+    },
+    {
+     "text": "the qualifying person is a child but not your dependent, enter this ",
+     "bbox": [
+      374.4,
+      194.58,
+      573.93,
+      202.51
+     ],
+     "baseline": 201.06
+    },
+    {
+     "text": "child’s name here.  ▶",
+     "bbox": [
+      374.4,
+      205.59,
+      439.86,
+      213.51
+     ],
+     "baseline": 212.06
+    }
+   ],
+   "allowed_region": [
+    371.4,
+    181.5,
+    576.93,
+    216.31
+   ],
+   "structure": [
+    {
+     "tag": "/Content",
+     "mcid": 43,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 156,
+     "glyphs": 156,
+     "owner": 1505,
+     "roles": [
+      "/P",
+      "/Div",
+      "/Sect",
+      "/Part"
+     ],
+     "actual_text": null,
+     "lang": null
+    }
+   ]
+  },
+  {
+   "id": "L-wrap",
+   "document": "prefilled_f1040",
+   "page": 1,
+   "old": "are correct.",
+   "new": "are correct and complete.",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "lengthen a two-line paragraph; the lines re-wrap",
+   "expected_text": "Make sure the SSN(s) above and on line 6c are correct and complete.",
+   "paragraph": "Make sure the SSN(s) above and on line 6c are correct.",
+   "box": [
+    484.8,
+    123.64,
+    575.55,
+    139.04
+   ],
+   "lines": [
+    {
+     "text": "Make sure the SSN(s) above ",
+     "bbox": [
+      484.8,
+      122.69,
+      575.55,
+      130.85
+     ],
+     "baseline": 129.36
+    },
+    {
+     "text": "and on line 6c are correct.",
+     "bbox": [
+      488.3,
+      131.09,
+      570.1,
+      139.26
+     ],
+     "baseline": 137.76
+    }
+   ],
+   "allowed_region": [
+    481.8,
+    120.64,
+    578.55,
+    154.64
+   ],
+   "structure": [
+    {
+     "tag": "/Content",
+     "mcid": 27,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 54,
+     "glyphs": 54,
+     "owner": 1521,
+     "roles": [
+      "/P",
+      "/Div",
+      "/Sect",
+      "/Part"
+     ],
+     "actual_text": null,
+     "lang": null
+    }
+   ]
+  },
+  {
+   "id": "L-cross",
+   "document": "prefilled_f1040",
+   "page": 1,
+   "old": "aOrdinary",
+   "new": "a Ordinary",
+   "after": null,
+   "expected_outcome": "refused",
+   "expected_reason": "edit crosses structure elements",
+   "purpose": "the selection spans two /P elements drawn on one line",
+   "expected_text": "9 a Ordinary dividends. Attach Schedule B if required ...........",
+   "paragraph": "9 aOrdinary dividends. Attach Schedule B if required ...........",
+   "box": [
+    117.95,
+    375.17,
+    446.22,
+    383.18
+   ],
+   "lines": [
+    {
+     "text": "9 a",
+     "bbox": [
+      117.95,
+      373.91,
+      126.99,
+      383.45
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": "Ordinary dividends. Attach Schedule B if required ",
+     "bbox": [
+      136.8,
+      374.09,
+      315.8,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      324.0,
+      374.09,
+      326.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      336.0,
+      374.09,
+      338.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      348.0,
+      374.09,
+      350.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      360.0,
+      374.09,
+      362.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      372.0,
+      374.09,
+      374.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      384.0,
+      374.09,
+      386.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      396.0,
+      374.09,
+      398.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      408.0,
+      374.09,
+      410.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      420.0,
+      374.09,
+      422.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      432.0,
+      374.09,
+      434.22,
+      383.42
+     ],
+     "baseline": 381.71
+    },
+    {
+     "text": ".",
+     "bbox": [
+      444.0,
+      374.09,
+      446.22,
+      383.42
+     ],
+     "baseline": 381.71
+    }
+   ],
+   "allowed_region": [
+    114.95,
+    372.17,
+    449.22,
+    386.18
+   ],
+   "structure": [
+    {
+     "tag": "/Content",
+     "mcid": 81,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 2,
+     "glyphs": 2,
+     "owner": 1384,
+     "roles": [
+      "/P",
+      "/Div",
+      "/Sect",
+      "/Part"
+     ],
+     "actual_text": null,
+     "lang": null
+    },
+    {
+     "tag": "/Content",
+     "mcid": 82,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 1383,
+     "roles": [
+      "/P",
+      "/Div",
+      "/Sect",
+      "/Part"
+     ],
+     "actual_text": null,
+     "lang": null
+    },
+    {
+     "tag": "/Content",
+     "mcid": 83,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 61,
+     "glyphs": 61,
+     "owner": 1382,
+     "roles": [
+      "/P",
+      "/Div",
+      "/Sect",
+      "/Part"
+     ],
+     "actual_text": null,
+     "lang": null
+    }
+   ]
+  },
+  {
+   "id": "D-same",
+   "document": "160F-2019",
+   "page": 1,
+   "old": "exonéré",
+   "new": "exempté",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "Distiller /TD owning its MCID (no /Type): same-length replacement",
+   "expected_text": "montant net exempté",
+   "paragraph": "montant net exonéré",
+   "box": [
+    350.96,
+    581.19,
+    424.54,
+    589.23
+   ],
+   "lines": [
+    {
+     "text": "montant net exonéré",
+     "bbox": [
+      350.96,
+      579.18,
+      424.54,
+      589.88
+     ],
+     "baseline": 587.27
+    }
+   ],
+   "allowed_region": [
+    347.96,
+    578.19,
+    427.54,
+    592.23
+   ],
+   "structure": [
+    {
+     "tag": "/P",
+     "mcid": 445,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 19,
+     "glyphs": 19,
+     "owner": 127,
+     "roles": [
+      "/TD",
+      "/TR",
+      "/Table",
+      "/Sect"
+     ],
+     "actual_text": null,
+     "lang": null
+    }
+   ]
+  },
+  {
+   "id": "D-reedit",
+   "document": "160F-2019",
+   "page": 1,
+   "old": "exempté",
+   "new": "exonéré",
+   "after": "D-same",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "PDF-alone re-edit: restore the original word",
+   "expected_text": "montant net exonéré",
+   "paragraph": "montant net exempté",
+   "box": [
+    350.96,
+    581.19,
+    424.54,
+    589.23
+   ],
+   "lines": null,
+   "allowed_region": [
+    347.96,
+    578.19,
+    427.54,
+    592.23
+   ],
+   "structure": [
+    {
+     "tag": "/P",
+     "mcid": 445,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 19,
+     "glyphs": 19,
+     "owner": 127,
+     "roles": [
+      "/TD",
+      "/TR",
+      "/Table",
+      "/Sect"
+     ],
+     "actual_text": null,
+     "lang": null
+    }
+   ]
+  },
+  {
+   "id": "D-short",
+   "document": "160F-2019",
+   "page": 1,
+   "old": "ne peut se faire que",
+   "new": "se fait uniquement",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "shorten the text of a table cell",
+   "expected_text": "cette transmission se fait uniquement par voie électronique",
+   "paragraph": "cette transmission ne peut se faire que par voie électronique",
+   "box": [
+    66.32,
+    713.65,
+    251.45,
+    720.61
+   ],
+   "lines": [
+    {
+     "text": "cette transmission ne peut se faire que par voie électronique",
+     "bbox": [
+      66.32,
+      711.91,
+      251.45,
+      721.17
+     ],
+     "baseline": 718.91
+    }
+   ],
+   "allowed_region": [
+    63.32,
+    710.65,
+    254.45,
+    723.61
+   ],
+   "structure": [
+    {
+     "tag": "/P",
+     "mcid": 363,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 61,
+     "glyphs": 61,
+     "owner": 109,
+     "roles": [
+      "/TD",
+      "/TR",
+      "/Table",
+      "/Sect"
+     ],
+     "actual_text": null,
+     "lang": null
+    }
+   ]
+  },
+  {
+   "id": "D-shared",
+   "document": "160F-2019",
+   "page": 1,
+   "old": "Certificat de salaire",
+   "new": "Attestation de salaire",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "one MCID draws this and another visual paragraph: the MCID stays one sequence",
+   "expected_text": "Attestation de salaire, de retenue d'impôt et de crédits d'impôt ",
+   "paragraph": "Certificat de salaire, de retenue d'impôt et de crédits d'impôt ",
+   "box": [
+    63.56,
+    52.78,
+    525.64,
+    68.74
+   ],
+   "lines": [
+    {
+     "text": "Certificat de salaire, de retenue d'impôt et de crédits d'impôt ",
+     "bbox": [
+      63.56,
+      48.18,
+      525.64,
+      70.43
+     ],
+     "baseline": 64.43
+    }
+   ],
+   "allowed_region": [
+    60.56,
+    49.78,
+    528.64,
+    71.74
+   ],
+   "structure": [
+    {
+     "tag": "/P",
+     "mcid": 457,
+     "status": "tree_backed",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 64,
+     "glyphs": 83,
+     "owner": 131,
+     "roles": [
+      "/TD",
+      "/TR",
+      "/Table",
+      "/Sect"
+     ],
+     "actual_text": null,
+     "lang": null
+    }
+   ]
+  },
+  {
+   "id": "W-span",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "old": "2257",
+   "new": "2258",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "Word /Span leaf with ActualText and /Lang: same-length replacement inside one span",
+   "expected_text": "直通：03-3595-2258 ",
+   "paragraph": "直通：03-3595-2257 ",
+   "box": [
+    381.31,
+    471.84,
+    481.18,
+    482.4
+   ],
+   "lines": [
+    {
+     "text": "直通：03-3595-2257 ",
+     "bbox": [
+      381.31,
+      471.84,
+      481.18,
+      482.4
+     ],
+     "baseline": 480.91
+    }
+   ],
+   "allowed_region": [
+    378.31,
+    468.84,
+    484.18,
+    485.4
+   ],
+   "structure": [
+    {
+     "tag": "/Span",
+     "mcid": 40,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 3,
+     "glyphs": 3,
+     "owner": 63,
+     "roles": [
+      "/P",
+      "/Sect",
+      "/Document",
+      null
+     ],
+     "actual_text": null,
+     "lang": null
+    },
+    {
+     "tag": "/Span",
+     "mcid": 41,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 2,
+     "glyphs": 2,
+     "owner": 64,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "03",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 42,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 65,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "-",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 43,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 4,
+     "glyphs": 4,
+     "owner": 66,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "3595",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 44,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 67,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "-",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 45,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 4,
+     "glyphs": 4,
+     "owner": 68,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "2257",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 46,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 69,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": " ",
+     "lang": "en"
+    }
+   ]
+  },
+  {
+   "id": "W-cross",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "old": "03-3595",
+   "new": "06-6941",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "replacement across three /Span leaves; unchanged characters stay in their spans",
+   "expected_text": "直通：06-6941-2257 ",
+   "paragraph": "直通：03-3595-2257 ",
+   "box": [
+    381.31,
+    471.84,
+    481.18,
+    482.4
+   ],
+   "lines": [
+    {
+     "text": "直通：03-3595-2257 ",
+     "bbox": [
+      381.31,
+      471.84,
+      481.18,
+      482.4
+     ],
+     "baseline": 480.91
+    }
+   ],
+   "allowed_region": [
+    378.31,
+    468.84,
+    484.18,
+    485.4
+   ],
+   "structure": [
+    {
+     "tag": "/Span",
+     "mcid": 40,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 3,
+     "glyphs": 3,
+     "owner": 63,
+     "roles": [
+      "/P",
+      "/Sect",
+      "/Document",
+      null
+     ],
+     "actual_text": null,
+     "lang": null
+    },
+    {
+     "tag": "/Span",
+     "mcid": 41,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 2,
+     "glyphs": 2,
+     "owner": 64,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "03",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 42,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 65,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "-",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 43,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 4,
+     "glyphs": 4,
+     "owner": 66,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "3595",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 44,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 67,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "-",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 45,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 4,
+     "glyphs": 4,
+     "owner": 68,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "2257",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 46,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 69,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": " ",
+     "lang": "en"
+    }
+   ]
+  },
+  {
+   "id": "W-reedit",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "old": "06-6941",
+   "new": "03-3595",
+   "after": "W-cross",
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "PDF-alone re-edit across the spans: restore the original",
+   "expected_text": "直通：03-3595-2257 ",
+   "paragraph": "直通：06-6941-2257 ",
+   "box": [
+    381.31,
+    471.84,
+    481.18,
+    482.4
+   ],
+   "lines": null,
+   "allowed_region": [
+    378.31,
+    468.84,
+    484.18,
+    485.4
+   ],
+   "structure": [
+    {
+     "tag": "/Span",
+     "mcid": 40,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 3,
+     "glyphs": 3,
+     "owner": 63,
+     "roles": [
+      "/P",
+      "/Sect",
+      "/Document",
+      null
+     ],
+     "actual_text": null,
+     "lang": null
+    },
+    {
+     "tag": "/Span",
+     "mcid": 41,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 2,
+     "glyphs": 2,
+     "owner": 64,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "03",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 42,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 65,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "-",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 43,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 4,
+     "glyphs": 4,
+     "owner": 66,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "3595",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 44,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 67,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "-",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 45,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 4,
+     "glyphs": 4,
+     "owner": 68,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": "2257",
+     "lang": "en"
+    },
+    {
+     "tag": "/Span",
+     "mcid": 46,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 69,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Sect",
+      "/Document"
+     ],
+     "actual_text": " ",
+     "lang": "en"
+    }
+   ]
+  },
+  {
+   "id": "W-grow",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "old": "円滑かつ適切に",
+   "new": "円滑かつ適切かつ迅速に",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "Word /P with one /Span: lengthen a two-line paragraph",
+   "expected_text": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切かつ迅速に実施いただくようお願いします。 ",
+   "paragraph": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+   "box": [
+    53.88,
+    315.1,
+    541.78,
+    345.46
+   ],
+   "lines": [
+    {
+     "text": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑",
+     "bbox": [
+      64.46,
+      315.1,
+      541.78,
+      325.66
+     ],
+     "baseline": 324.17
+    },
+    {
+     "text": "かつ適切に実施いただくようお願いします。 ",
+     "bbox": [
+      53.88,
+      334.9,
+      269.33,
+      345.46
+     ],
+     "baseline": 343.97
+    }
+   ],
+   "allowed_region": [
+    50.88,
+    312.1,
+    544.78,
+    378.16
+   ],
+   "structure": [
+    {
+     "tag": "/Span",
+     "mcid": 28,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 66,
+     "glyphs": 66,
+     "owner": 52,
+     "roles": [
+      "/P",
+      "/Document",
+      null
+     ],
+     "actual_text": null,
+     "lang": null
+    },
+    {
+     "tag": "/Span",
+     "mcid": 29,
+     "status": "tree_backed",
+     "properties": [
+      "/Lang",
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1,
+     "owner": 53,
+     "roles": [
+      "/Span",
+      "/P",
+      "/Document",
+      null
+     ],
+     "actual_text": " ",
+     "lang": "en"
+    }
+   ]
+  },
+  {
+   "id": "I-same",
+   "document": "issue14297",
+   "page": 1,
+   "old": "beginning",
+   "new": "inception",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "MCIDs without a structure tree (orphan /Figure) as a container: same-length replacement",
+   "expected_text": "Adjusted balance at inception of year",
+   "paragraph": "Adjusted balance at beginning of year",
+   "box": [
+    651.04,
+    243.03,
+    709.97,
+    258.54
+   ],
+   "lines": [
+    {
+     "text": "Adjusted balance at ",
+     "bbox": [
+      651.04,
+      241.41,
+      709.97,
+      250.06
+     ],
+     "baseline": 247.95
+    },
+    {
+     "text": "beginning of year",
+     "bbox": [
+      651.04,
+      250.41,
+      700.93,
+      259.06
+     ],
+     "baseline": 256.95
+    }
+   ],
+   "allowed_region": [
+    648.04,
+    240.03,
+    712.97,
+    261.54
+   ],
+   "structure": [
+    {
+     "tag": "/Figure",
+     "mcid": 4008,
+     "status": "orphan_mcid",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 37,
+     "glyphs": 2108
+    },
+    {
+     "tag": "/PlacedPDF",
+     "mcid": null,
+     "status": "unmarked",
+     "properties": [
+      "/Metadata"
+     ],
+     "glyphs_in_paragraph": 37,
+     "glyphs": 2108
+    }
+   ]
+  },
+  {
+   "id": "I-short",
+   "document": "issue14297",
+   "page": 1,
+   "old": "changes in accounting policies",
+   "new": "policy changes",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "MCIDs without a structure tree: shorten",
+   "expected_text": "Cumulative effects of policy changes",
+   "paragraph": "Cumulative effects of changes in accounting policies",
+   "box": [
+    657.54,
+    212.66,
+    724.06,
+    237.16
+   ],
+   "lines": [
+    {
+     "text": "Cumulative effects of ",
+     "bbox": [
+      657.54,
+      211.03,
+      720.07,
+      219.69
+     ],
+     "baseline": 217.57
+    },
+    {
+     "text": "changes in accounting ",
+     "bbox": [
+      657.54,
+      220.03,
+      724.06,
+      228.69
+     ],
+     "baseline": 226.57
+    },
+    {
+     "text": "policies",
+     "bbox": [
+      657.54,
+      229.03,
+      679.22,
+      237.69
+     ],
+     "baseline": 235.57
+    }
+   ],
+   "allowed_region": [
+    654.54,
+    209.66,
+    727.06,
+    240.16
+   ],
+   "structure": [
+    {
+     "tag": "/Figure",
+     "mcid": 4008,
+     "status": "orphan_mcid",
+     "properties": [
+      "/MCID"
+     ],
+     "glyphs_in_paragraph": 52,
+     "glyphs": 2108
+    },
+    {
+     "tag": "/PlacedPDF",
+     "mcid": null,
+     "status": "unmarked",
+     "properties": [
+      "/Metadata"
+     ],
+     "glyphs_in_paragraph": 52,
+     "glyphs": 2108
+    }
+   ]
+  },
+  {
+   "id": "F-marker",
+   "document": "osaka_fusei_477",
+   "page": 2,
+   "old": "良い医療",
+   "new": "良質な医療",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "InDesign paragraph with an unmarked /Span ActualText marker sequence: lengthen",
+   "expected_text": "診療履歴に基づいたより良質な医療が受けられます。手続きなしで高額医療費の限度を超える支払いが免除されます。 マイナポータルから自身の特定健診情報などを閲覧でき、健康管理に役立ちます。",
+   "paragraph": "診療履歴に基づいたより良い医療が受けられます。手続きなしで高額医療費の限度を超える支払いが免除されます。 マイナポータルから自身の特定健診情報などを閲覧でき、健康管理に役立ちます。",
+   "box": [
+    50.36,
+    652.42,
+    377.12,
+    705.22
+   ],
+   "lines": [
+    {
+     "text": "●診療履歴に基づいたより良い医療が受けられます。",
+     "bbox": [
+      42.51,
+      648.09,
+      291.8,
+      664.26
+     ],
+     "baseline": 659.4
+    },
+    {
+     "text": "●手続きなしで高額医療費の限度を超える支払いが免除されます。",
+     "bbox": [
+      42.51,
+      662.61,
+      355.03,
+      678.78
+     ],
+     "baseline": 673.93
+    },
+    {
+     "text": "●\u0007マイナポータルから自身の特定健診情報などを閲覧でき、健康管理に",
+     "bbox": [
+      42.51,
+      677.14,
+      377.12,
+      693.31
+     ],
+     "baseline": 688.46
+    },
+    {
+     "text": "役立ちます。",
+     "bbox": [
+      50.41,
+      690.25,
+      113.45,
+      706.42
+     ],
+     "baseline": 702.91
+    }
+   ],
+   "allowed_region": [
+    47.36,
+    649.42,
+    380.12,
+    708.22
+   ],
+   "structure": [
+    {
+     "tag": "/Span",
+     "mcid": null,
+     "status": "unmarked",
+     "properties": [
+      "/ActualText"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1
+    }
+   ]
+  },
+  {
+   "id": "F-icon",
+   "document": "osaka_fusei_477",
+   "page": 2,
+   "old": "フリーダイヤル",
+   "new": "フリーダイアル",
+   "after": null,
+   "expected_outcome": "saved",
+   "expected_reason": null,
+   "purpose": "inline placed object (/PlacedPDF icon) at the line start: same-length replacement after it",
+   "expected_text": "問 マイナンバー総合フリーダイアル　",
+   "paragraph": "問 マイナンバー総合フリーダイヤル　",
+   "box": [
+    36.15,
+    894.95,
+    200.06,
+    905.21
+   ],
+   "lines": [
+    {
+     "text": "問 マイナンバー総合フリーダイヤル　",
+     "bbox": [
+      36.15,
+      890.85,
+      200.06,
+      906.54
+     ],
+     "baseline": 902.48
+    }
+   ],
+   "allowed_region": [
+    33.15,
+    891.95,
+    203.06,
+    908.21
+   ],
+   "structure": [
+    {
+     "tag": "/PlacedPDF",
+     "mcid": null,
+     "status": "unmarked",
+     "properties": [
+      "/Metadata"
+     ],
+     "glyphs_in_paragraph": 1,
+     "glyphs": 1
+    }
+   ]
+  }
+ ],
+ "survey": {
+  "pr90_population": "the 23 pages of the PR #90 survey (evaluations/paragraph_frame_indesign/manifest.json)",
+  "extended_tagged": {
+   "prefilled_f1040": [
+    1,
+    2
+   ],
+   "issue16500": [
+    1
+   ],
+   "issue6782": [
+    1
+   ],
+   "issue11656": [
+    1
+   ],
+   "zero_descent": [
+    1
+   ],
+   "pr20043": [
+    1
+   ],
+   "issue16553": [
+    1
+   ],
+   "issue14627": [
+    1
+   ],
+   "issue16263": [
+    1
+   ],
+   "issue14130": [
+    1
+   ],
+   "issue15262": [
+    1
+   ],
+   "issue8702": [
+    1,
+    2
+   ]
+  },
+  "protocol": "Same as PR #90: every paragraph group of the page is proposed with an unchanged-text edit (shortest unique prefix of at least 6 characters); main (2aefe3e) and the change are compared per paragraph. Refusal reasons are classified, and the structure of each refused paragraph is recorded with tagged_diagnose.",
+  "outcome_tiers": "proposed (survey), saved, safety audit, quality audit, PDF-alone re-edit; never merged into one count"
+ }
+}

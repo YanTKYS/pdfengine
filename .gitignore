@@ -69,3 +69,5 @@ tmp/
 # InDesign-style text support (text matrix/CTM, Form XObject): manifest and compact results only.
 !/evaluations/paragraph_frame_indesign/manifest.json
 !/evaluations/paragraph_frame_indesign/results.json
+!/evaluations/paragraph_frame_tagged/manifest.json
+!/evaluations/paragraph_frame_tagged/results.json
