@@ -4,10 +4,13 @@
 
 ## 結論
 
-- **従来B2が拒否していた実PDFの段落のうち、@@NEWLY@@段落を新たに編集できるようになった。** これは提案の段階の件数で、方式の異なる実PDF 8文書・@@PAGES@@ページの全段落（@@PARA@@段落）を、main と今回の変更で同じ手順で比べた（§4.1）。
-  - main で編集を提案できたのは@@MAIN@@段落で、今回は@@NEW@@段落である。
+- **従来B2が拒否していた実PDFの段落のうち、585段落を新たに編集の提案ができるようになった。** 方式の異なる実PDF 8文書・17ページと、対照のWord・LibreOffice 6文書の全段落（1,032段落）を、main と今回の変更で同じ手順で比べた（§4.1）。
+  - 8文書（955段落）では、main で提案できたのは21段落、今回は674段落で、584段落が新たに提案できる。対照6文書では1段落増えた。
   - main で提案できた段落のうち、今回提案できなくなったものは**0件**だった。
-  - 新たに提案できる段落から@@SAMPLED@@段落を抜き出し、実際に保存して監査した。結果は保存@@S_SAVED@@件で、安全性合格@@S_SAFE@@件、品質合格@@S_QUAL@@件である。
+  - これは提案の段階の件数である。新たに提案できる段落から74段落を抜き出し、実際に保存して監査した。
+    - 保存できたのは62件（84%）、12件は保存の段階で拒否した（公開していない）。
+    - 保存した62件はすべて安全性に合格した（許可した領域の外の変化なし）。
+    - 品質にも合格したのは53件（74件の72%）である。残る9件は、両端揃えなどの再配分で文字が最大0.8 pt横にずれたもの（7件）と、MuPDFの抽出順が変わったもの（2件）である（§4.3）。
 - **府政だより477号（Adobe InDesign）は、main では1段落も編集できなかった。** 今回は p7 の本文で次を保存した。いずれも保存・安全性・品質・PDF単体からの再編集に合格した。
   - 同じ文字数の置換
   - 元に戻す再編集
@@ -17,17 +20,30 @@
 - **Form XObject内の文字は、コピーオンライト方式で編集できるようになった。** 編集した呼び出し1回分についてだけFormを複製し、その `Do` 演算子の参照先を複製に付け替える。元のFormと、ほかの呼び出し・ほかのページは変えない。
   - 実PDFでは、府政だよりのヘッダ（Form `/Fm9`）と、tracemonkey p2 の図ラベル（Quartzが作った図のForm `/Im1`）を保存した。
   - 共有Formと入れ子Formは、生成PDFのテストで確認した。
-- **残る拒否理由**（今回の変更後、提案できなかった段落の内訳）：
+- **残る拒否理由**（今回の変更後、提案できなかった段落の内訳。障壁の分類は依頼の5分類に対応させた）：
 
-  | 理由 | 段落数 |
-  |---|---|
-  | マーク付きコンテンツ | @@MC@@ |
-  | 文字エンコード・グリフの由来 | @@ENC@@ |
-  | 描画状態（白抜き以外の塗り方、透明） | @@PAINT@@ |
-  | レイアウト | @@LAYOUT@@ |
-  | 回転文字 | @@ROT@@ |
+  | 理由 | 障壁の分類 | 段落数 |
+  |---|---|---|
+  | マーク付きコンテンツ（タグ付きPDFの意味構造、置き換え文字列） | 編集領域（意味構造） | 135 |
+  | 文字エンコード・グリフの由来（合字、ToUnicodeなし、重ね描き、行の継ぎ目の空白） | エンコード | 84 |
+  | 描画状態（塗り以外の描画モード、透明） | フォント（描画方法） | 43 |
+  | レイアウト（描画順、改行できない、段の下端） | 編集領域 | 24 |
+  | 回転文字 | 文字座標 | 12 |
+  | Form XObject | XObject | 0 |
 
   回転・せん断・打ち消し合わない反転は、引き続き拒否する。
+
+## 評価観点別のまとめ
+
+| 観点 | 結果 |
+|---|---|
+| 編集可能範囲 | 8文書955段落で、提案できる段落が21→674。新たに584段落（対照を含め585）。府政だよりは0→536。提案できなくなった段落は0。Form XObject内の文字も編集できる |
+| 描画精度 | 固定した編集要求の保存10件、保存サンプル62件のすべてで、許可した領域の外の画素差はMuPDF・Popplerとも0。変更しない段落の再組版では、7件で行内の文字が最大0.8 pt横にずれた（行の分かれ方は同じ） |
+| フォント再現 | 元のフォントプログラムは全件で同一。InDesignのCFF CIDフォントでも、消えた文字を埋め込みフォントから見つけ直す。サブセットにない文字（「契」）は、代わりのフォントの承認がなければ拒否する |
+| 書換え安全性 | 元のグリフを実際に取り除き、白塗りは使わない。共有Formは呼び出し単位で複製し、ほかの呼び出し・ほかのページは変えない（`unchanged_elsewhere`）。公開前の画素比較にPopplerを加えた。危険な場合は公開せずに拒否する（保存サンプル12件、編集要求3件） |
+| 再組版 | 短文化・長文化・折り返しを保存（府政だより、Antenna House）。約物詰め、和欧間のアキ、タブ、TeXの語間、字間を打ち消すTJ調整を観測値として保つ。両端揃えの行の余りの配分は、元の生成ソフトと一致しないことがある |
+| 再編集 | 保存した10件すべてで、保存したPDFだけから次の提案を作り、保存した条件が適用された（Form内の文字の再編集を含む） |
+| 性能 | 府政だよりの編集は、提案から公開前の検査まで（別プロセス、PDFの読み込みを含む）約21〜28秒。提案だけなら全文書の中央値で約3秒（§5.5） |
 
 ## 1. 拒否の原因の調査
 
@@ -88,6 +104,7 @@ PR #89では「Form内の文字が多い」と報告したが、これは誤り�
   その位置で有効なクリップとForm BBoxが、承認した枠を含むことを確かめる。
 - `content_stream.py` は、ページだけでなく各Formの呼び出しごとにも、演算子の境界と描画状態を記録するようにした（`stream_boundaries`）。既存の `boundaries` は変えていない。
 - **対象外**：MCIDを持つマーク付きコンテンツがForm内にある場合（タグ付きFormの意味構造）は拒否する。
+- **再編集**：複製したFormの文字を再び編集すると、その複製をさらに複製する（T-form-reedit：`/Im1PF` → `/Im1PFPF`）。前の複製は、どこからも描かれないままリソースに残る。複製を参照する呼び出しが1つだけなら、その場で書き換えてよいはずだが、今回は常に複製する安全な側にとどめた。
 
 ## 4. 実PDFでの評価
 
@@ -100,7 +117,16 @@ PR #89では「Form内の文字が多い」と報告したが、これは誤り�
 
 | 文書（生成元） | 段落 | main | 今回 | 新たに編集可 |
 |---|---|---|---|---|
-@@SURVEY_TABLE@@
+| osaka_fusei_477（InDesign） | 683 | 0 | 536 | 482 |
+| tracemonkey（pdfTeX＋Quartzの図） | 68 | 21 | 42 | 19 |
+| issue17730（Antenna House） | 13 | 0 | 13 | 13 |
+| issue7014（Quartz） | 28 | 0 | 20 | 19 |
+| issue14117（Microsoft Print to PDF） | 36 | 0 | 27 | 27 |
+| issue14297（タグ付き） | 44 | 0 | 0 | 0 |
+| 160F-2019（タグ付き） | 47 | 0 | 0 | 0 |
+| canvas（Ghostscript） | 36 | 0 | 36 | 24 |
+| **計（8文書）** | **955** | **21** | **674** | **584** |
+| 対照（Word・LibreOffice 6文書） | 77 | 59 | 60 | 1 |
 
 - 「新たに編集可」は、main で拒否され、今回は提案できた段落の数である。段落の分け方が変わった場合（下記）、main 側に対応する段落がないことがあり、その分は「main」「今回」の差と一致しない。
 - 対照として、従来から編集できたWord・LibreOffice 6文書でも同じ比較をした。提案できる段落が減ったものはない。
@@ -108,7 +134,25 @@ PR #89では「Form内の文字が多い」と報告したが、これは誤り�
 
 ### 4.2 固定した編集要求（13件、別プロセス、PDF単体）
 
-@@REQUEST_TABLE@@
+| ID | 内容 | 期待 | 結果 | 安全性 | 品質 | PDF単体の再編集 | 秒 |
+|---|---|---|---|---|---|---|---|
+| F-same | InDesign scaled Tm: same-length replacement | 保存 | 保存 | 合格 | 合格 | 合格 | 27.6 |
+| F-same-reedit | PDF-alone re-edit: restore the original text | 保存 | 保存 | 合格 | 合格 | 合格 | 27.5 |
+| F-short | InDesign scaled Tm: shorten | 保存 | 保存 | 合格 | 合格 | 合格 | 26.7 |
+| F-wrap | InDesign scaled Tm: longer text re-wraps the following lines (the last line has room) | 保存 | 保存 | 合格 | 合格 | 合格 | 27.2 |
+| F-grow-line | growth needs a new line, but the label box below the paragraph is protected | 拒否 | 拒否（missing source glyph: 契） | — | — | — | 4.0 |
+| F-form | text in the page-local Form XObject /Fm9 (page header) | 保存 | 保存 | 合格 | 合格 | 合格 | 20.6 |
+| T-form | figure label in Form XObject /Im1 under reflected Tm and CTM | 保存 | 保存 | 合格 | 合格 | 合格 | 28.1 |
+| T-form-reedit | PDF-alone re-edit of the Form text | 保存 | 保存 | 合格 | 合格 | 合格 | 27.5 |
+| A-same | Antenna House CTM+Tm: same-length replacement | 保存 | 保存 | 合格 | 合格 | 合格 | 6.7 |
+| A-short | Antenna House: shorten | 保存 | 保存 | 合格 | 合格 | 合格 | 7.0 |
+| A-grow-line | Antenna House: growth adds a line above the next heading | 保存 | 拒否（capacity） | — | — | — | 6.2 |
+| A-reedit | PDF-alone re-edit after A-same | 保存 | 保存 | 合格 | 合格 | 合格 | 7.1 |
+| Q-ligature | Quartz scaled Tm, but the paragraph contains TeX ligatures (fi) whose provenance is one glyph for two characters | 拒否 | 拒否（selected string not found） | — | — | — | 3.3 |
+
+保存10件、拒否3件。保存した10件の安全性合格10件、品質合格10件、再編集合格10件。期待どおり12件/13件。
+
+Form内の編集：F-form（複製したForm /Fm9）、T-form（複製したForm /Im1）、T-form-reedit（複製したForm /Im1PF）。いずれも元のFormとほかのページは変わっていない（`unchanged_elsewhere`）。
 
 各観点の判定基準は次のとおり。
 
@@ -135,7 +179,51 @@ PR #89では「Form内の文字が多い」と報告したが、これは誤り�
 
 ### 4.3 新たに編集可能になった段落の保存監査
 
-@@SAMPLES@@
+新たに提案できる585段落から、府政だより p7 の全段落と、ほかの文書の先頭5段落ずつ、計74段落を抜き出した。それぞれ同じ文字列への置換を保存し、§4.2と同じ監査をした（許可領域は段落の外接矩形＋3pt）。
+
+| 文書 | 抜き出し | 保存 | 安全性合格 | 品質合格 |
+|---|---|---|---|---|
+| osaka_fusei_477 | 48 | 38 | 38 | 34 |
+| canvas | 5 | 5 | 5 | 3 |
+| issue14117 | 5 | 4 | 4 | 4 |
+| issue17730 | 5 | 5 | 5 | 4 |
+| issue7014 | 5 | 5 | 5 | 3 |
+| tracemonkey | 5 | 4 | 4 | 4 |
+| word_osaka_guideline | 1 | 1 | 1 | 1 |
+| **計** | **74** | **62** | **62** | **53** |
+
+保存時に拒否したもの（公開していない）：
+- osaka_fusei_477 p7「4/1（火）」：staged glyph collides with protected image（layout）
+- osaka_fusei_477 p7「3/24（月」：capacity: staged glyph bounds outside approved inferred frame（layout）
+- osaka_fusei_477 p7「偽造変造対策」：staged glyph collides with protected image（layout）
+- osaka_fusei_477 p7「06（6944）6」：capacity: staged glyph bounds outside approved inferred frame（layout）
+- osaka_fusei_477 p7「3/10（月」：staged glyph collides with protected image（layout）
+- osaka_fusei_477 p7「児童扶養手当・特別児童扶養手当の認」：capacity: staged glyph bounds outside approved inferred frame（layout）
+- osaka_fusei_477 p7「千万円）を発」：staged glyph collides with protected image（layout）
+- osaka_fusei_477 p7「0570（0」：capacity: staged glyph bounds outside approved inferred frame（layout）
+- osaka_fusei_477 p7「06（6944）7」：capacity: staged glyph bounds outside approved inferred frame（layout）
+- osaka_fusei_477 p7「06（6944）8」：capacity: staged glyph bounds outside approved inferred frame（layout）
+- issue14117 p1「Adm: 1」：capacity: staged glyph bounds outside approved inferred frame（layout）
+- tracemonkey p2「Symbol」：capacity: staged glyph bounds outside approved inferred frame（layout）
+
+保存したが品質の項目で不合格があったもの（安全性はすべて合格）：
+- osaka_fusei_477 p7「学歴・職務経」：unchanged_text_same_glyph_positions
+- osaka_fusei_477 p7「令和5年の大」：unchanged_text_same_glyph_positions
+- osaka_fusei_477 p7「賃貸住宅の退」：unchanged_text_same_glyph_positions
+- osaka_fusei_477 p7「一般世帯向け」：unchanged_text_same_glyph_positions
+- canvas p1「HTML5 」：unchanged_text_same_glyph_positions
+- canvas p1「globalC」：unchanged_text_same_glyph_positions
+- issue17730 p1「There 」：unchanged_text_same_glyph_positions
+- issue7014 p1「,Brend」：extraction_mupdf
+- issue7014 p1「Mohamm」：extraction_mupdf
+
+内訳と原因：
+
+- **保存の段階での拒否（12件）**：変更しない文字列でも、再組版した文字が推定した枠からはみ出す（capacity、8件）か、保護した画像に重なる（4件）。府政だよりの電話番号の行や、画像の横で折り返す段落である。B2の推定した枠と行の組み方が、元の組版を再現できない場合で、公開せずに拒否している。
+- **文字位置のずれ（7件、`unchanged_text_same_glyph_positions`）**：行の分かれ方はすべて元と同じで、行内の文字が最大0.1〜0.8 pt横にずれた。府政だよりの3件と issue17730 は両端揃え（InDesign、Antenna House）で、B2が行の余りを元の生成ソフトと違う方法で配分している。残る3件（府政だより1件、canvas 2件）は左揃えと推定した段落である。canvas の1件では、Ghostscriptが置いた幅の狭い空白（0.73 pt）の後で位置が0.7 ptずれた。ほかの2件の原因は個別に特定していない。
+- **MuPDFの抽出順（2件、issue7014）**：著者名の右肩の記号（⇤、ベースラインより3.96 pt上）が、B2の行のまとまり（0.35 em以内）に入らず、別の行として扱われる。保存後の内容の順序では記号が名前の後にまとめて並び、MuPDFの抽出順が変わる。描画位置とPopplerの抽出は元と同じである。
+
+評価手順の追加（manifest固定後）：保存サンプルの監査に「変更しない文字列の位置がすべて元と同じ」（文字と原点、0.1 pt単位）を加えた。抽出の比較は空白を無視するため、語間が詰まる誤りを見逃していたためである。この検査は固定した基準より厳しく、結果を良く見せる変更ではない。
 
 ## 5. 共通処理として加えた改善
 
@@ -185,30 +273,49 @@ PR #89では「Form内の文字が多い」と報告したが、これは誤り�
 
 ## 5.5 性能
 
-@@PERF@@
+すべて1プロセスの実測値（4コアのコンテナ、評価を並行して実行したため参考値）。
+
+- 提案（全段落比較、今回）：1032件、中央値2.96秒、90%点8.77秒、最大10.04秒。main は981件、中央値3.35秒（多くは早い段階で拒否するため短い）。
+- 編集要求（提案・承認・保存・公開前検査を含む別プロセス）：13件、中央値20.6秒、最大28.1秒。
+- 保存サンプル：74件、中央値20.9秒、最大28.6秒。
 
 ## 6. 回帰評価
 
-@@REGRESSION@@
+PR #87〜#89 の評価を、最終のコード（`3393b34`）で別プロセスとして実行し直し、コミット済みの結果と比べた（結果は `results.json` の `regression`）。
+
+| 評価 | 件数 | コミット済みの結果と同じ | 違い |
+|---|---|---|---|
+| PR #87 一般化（初回編集・PDF単体の再編集） | 12 | 12 | なし |
+| PR #88 保存条件の連続編集（Q1〜Q3、4手順ずつ） | 6系列 | 5 | Q3-stored の手順3が品質合格になった（従来は `native_replacement_search` 不合格）。行の切れ目も、保存した条件どおり1行目の「上、」を保つ |
+| PR #88 新規の編集要求（E1〜E6、S1〜S2） | 8 | 7 | E6 は従来「行末のハイフンが行中に移る」で拒否していたが、今回は保存し監査に合格した（空白の幅を保つため、元と同じ位置で行が分かれる） |
+| PR #89 段組の流れ（系列・単独） | 6系列＋10件 | すべて | なし |
+| PR #89 段の続きの認定 | 14組 | 14組 | なし（14/14正解） |
+
+違いはいずれも改善で、悪化したものはない。
+
+回帰評価の途中で、今回の変更による次の不具合を見つけて直した。いずれも生成PDFのfocused testsでは見つからず、実PDFの回帰評価で見つかった。
+- **フォント辞書の展開**：ページの `/Font` が間接参照の場合、新しいフォントを加えるときに元のフォント辞書とフォントプログラムを直接埋め込んでしまい、公開前の検査で拒否していた（PR #87 D、N1〜N4）。参照のまま加えるよう直した。
+- **Form XObjectの走査の爆発**：`/Resources` を持たないFormは親のリソースを継承し、自分自身を再び参照できる。編集以外の場所が変わっていないことの検査で、名前の経路を深さ8まで列挙していたため、計算が終わらずメモリ不足で強制終了していた（PR #87 N1〜N4）。各Formを1回だけ訪れるよう直した。
+- **後続段落の剛体移動**：新しい書き方（TJの連続描画、正確な座標）を後続段落にも使ったため、MuPDFの単精度の計算で移動後の位置が完全な平行移動にならなかった（PR #87 F3、PR #88 Q2・Q3・E5 の安全性監査）。後続段落は従来どおり1文字ずつ描く。
 
 ## 7. 残る障壁と次の技術判断
 
 障壁の種類ごとに、次に必要な対応を挙げる。
 
-1. **マーク付きコンテンツ**（@@MC@@段落。主に 160F-2019・issue14297 のタグ付きPDFと府政だより）
+1. **マーク付きコンテンツ**（135段落。主に 160F-2019・issue14297 のタグ付きPDFと府政だより）
    - 「入れ子・混在したスコープ」と「ParentTreeに結び付かないMCID（unbound）」が多い。
    - タグ付きPDFでは、1行の中に複数のスコープがある場合や、スコープが段落と1対1でない場合を扱う、意味構造の付け替えが必要になる。
    - 府政だよりでは、`/Span /ActualText` で置き換え文字列を持つ見出しと、`/PlacedPDF` の境界をまたぐ段落が残る。
-2. **文字エンコード・グリフの由来**（@@ENC@@段落）
+2. **文字エンコード・グリフの由来**（84段落）
    - 合字・ToUnicodeなしの文字は、これまでと同じ障壁である。
    - 同じ位置に同じ文字を重ね描きする「疑似太字」では、描画元を一意に決められない（ambiguous provenance）。
    - TeXのように語間の空白をグリフとして描かないPDFもある。行の折り返しで生じる空白をフォントで描けないものは、「implicit line-join space has no glyph」として拒否している。
    - 行の中の語間・字間を位置の移動だけで表す段落（TeX）は、空きを直前の文字の送り幅として保つようにした。ただし、TeXの段落テキストには空白がないため、語をまたぐ選択文字列は見つからない（Q-ligature）。
    - 次の段階は、空白を位置の移動として表す入出力方式と、重ね描きを1つの描画として扱う方法である。
-3. **描画状態**（@@PAINT@@段落）
+3. **描画状態**（43段落）
    - 塗りのない文字（描画モードが塗り以外）、透明な文字、パターン色の文字である。
    - 府政だよりの白抜き文字（塗り＋線）もここに入る。
-4. **回転文字**（@@ROT@@段落）
+4. **回転文字**（12段落）
    - 縦書き・回転ラベルである。行の向きの推定と、回転した座標系での組版が必要になる。
 5. **Form XObject**
    - 今回、タグのないFormについては、ページ内・入れ子・共有の編集ができるようになった。
@@ -242,4 +349,9 @@ for p in requests samples collect; do
   - www.pref.osaka.lg.jp は、現在WAFのエラーページ（HTTP 408）を返す。
   - ほとんどのホストは、セッションのネットワーク方針で拒否される（HTTP 403）。
 
-@@TESTS@@
+実行したテスト（いずれも `-q`）：
+
+- focused tests（`prototypes.paragraph_frame` の auto・auto_writer・auto_style・form_write を使うテストすべて、5ファイル）：**99件合格、0件不合格、101.5秒**（`3393b34`）。そのうち `tests/test_paragraph_frame_text_space.py` の22件が今回の追加である。
+- `pdfeditor/content_stream.py` を使うテスト37ファイル：**1,327件合格、5件skip、0件不合格、2,771.7秒**。`content_stream.py` は `48ad3e4` で1回だけ変更し、その後は変えていない。このテストはその変更の後に実行した。
+- full suite（約2,200件）は**実行していない**。`pdfeditor` の変更は `content_stream.py` の1回だけで、それを使うテストは上記で全件実行したため。
+- 実PDFの評価（§4、§6）は上記のとおり実行した。外部のPDFビューア（Acrobatなど）での確認は行っていない。
