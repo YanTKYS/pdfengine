@@ -102,6 +102,10 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         best=min(pool[axis],key=lambda p:abs(p-value),default=value)
         return best if abs(best-value)<1e-3 else value
     for p,tokens in batches:
+        # Following paragraphs are repainted as a rigid translation of their
+        # rendered glyph origins, one positioned glyph each; runs and exact
+        # source coordinates apply to the edited paragraph.
+        edited=p is batches[0][0]
         scopegroups=[(n,[t for t in tokens if t['scope']==n]) for n in range(len(p.scopes))] if p.scopes else [(None,tokens)]
         if ''.join(t['text'] for _,ts in scopegroups for t in ts)!=''.join(t['text'] for t in tokens):raise Refused('replacement crosses incompatible scope reading order')
         for n,ts in scopegroups:
@@ -124,14 +128,14 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
                 # like the source: text extraction joins them as the source.
                 # Kerns are rounded to 1/100 000 em (float noise would be read
                 # as word breaks); the pen follows the written kerns.
-                key=None if t.get('font_key') else (name,t['size'],t['tz'],color,y)
+                key=None if t.get('font_key') or not edited else (name,t['size'],t['tz'],color,y)
                 if key is not None and run is not None and run[0]==key:
                     unit=t['size']*t['tz']/100000;kern=round((run[1]-x)/unit,2)
                     ops[-1]=ops[-1][:-4]+(b' '+number(kern)+b' ' if kern else b'')+f'<{code.hex()}>]TJ\n'.encode()
                     run=(key,run[1]-kern*unit+t['nominal_advance'])
                     continue
-                x=exact(x,0)
-                ops.append(f'{color}\n{name} {t["size"]:.9f} Tf {t["tz"]:.9f} Tz 1 0 0 1 {x:.9f} {exact(c.page.rect.height-y,1):.9f} Tm [<{code.hex()}>]TJ\n'.encode())
+                x,top=(exact(x,0),exact(c.page.rect.height-y,1)) if edited else (x,c.page.rect.height-y)
+                ops.append(f'{color}\n{name} {t["size"]:.9f} Tf {t["tz"]:.9f} Tz 1 0 0 1 {x:.9f} {top:.9f} Tm [<{code.hex()}>]TJ\n'.encode())
                 run=None if key is None else (key,x+t['nominal_advance'])
             ops.append(b'ET\nQ\n')
             if n is not None:ops.append(b'EMC\n')

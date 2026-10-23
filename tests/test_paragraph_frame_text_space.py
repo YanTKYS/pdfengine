@@ -329,3 +329,28 @@ def test_space_keeps_its_observed_width(tmp_path):
             return [(c['c'], round(c['origin'][0], 2), round(c['origin'][1], 2)) for b in d[0].get_text('rawdict')['blocks']
                     for l in b.get('lines', []) for s in l['spans'] for c in s['chars']]
     assert glyphs(out) == glyphs(source)
+
+
+def test_following_paragraph_moves_as_an_exact_rigid_translation(tmp_path):
+    """A paragraph pushed down keeps every glyph's x exactly and one common vertical offset."""
+    plain, _ = page_with(tmp_path, [(40, 60, '本年度の補助事業について、募集を'), (29, 76, '行います。'), (40, 100, '後続段落です。')], height=H)
+    # A fractional size: rendered origins are not exactly representable sums.
+    plain = rewrite(plain, tmp_path / 'fractional.pdf', lambda d: d.replace(b'/Fixture 11 Tf', b'/Fixture 10.37 Tf'))
+    out = tmp_path / 'out.pdf'
+    # The paragraph shortens to one line; the following paragraph moves up.
+    edit(plain, '補助事業について、募集を行います。', '募集します。', out)
+
+    def follower(path):
+        with pymupdf.open(path) as d:
+            return [(c['c'], c['origin']) for b in d[0].get_text('rawdict')['blocks'] for l in b.get('lines', [])
+                    for s in l['spans'] for c in s['chars'] if c['c'] in '後続段落です。' and c['origin'][1] > 80]
+    before, after = follower(plain), follower(out)
+    assert [c for c, _ in before] == [c for c, _ in after] and len(before) == len('後続段落です。')
+    assert all(a[0] == b[0] for (_, a), (_, b) in zip(before, after))
+    offsets = {b[1] - a[1] for (_, a), (_, b) in zip(before, after)}
+    assert len(offsets) == 1 and offsets.pop() < -10
+    # It is repainted one positioned glyph each at its rendered origin (exact
+    # in MuPDF's float32 arithmetic); kerned runs are for the edited paragraph.
+    data = PdfReader(out).pages[0].get_contents().get_data()
+    runs = [run.count(b'<') for run in re.findall(rb'Tz 1 0 0 1 \S+ \S+ Tm (\[[^\]]*\])TJ', data)]
+    assert runs.count(1) == len('後続段落です。') and sum(n for n in runs if n > 1) == len('本年度の募集します。')
