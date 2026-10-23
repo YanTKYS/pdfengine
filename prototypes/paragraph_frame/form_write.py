@@ -36,12 +36,30 @@ def drawing_site(c, events):
     return sites.pop()
 
 
-def program_fonts(c, invocation):
-    """Font resource names in effect in the page program or at the end of a Form invocation chain."""
+def program_fonts(c, invocation, kind='/Font'):
+    """Resource names of one kind in effect in the page program or at the end of a Form invocation chain."""
     scope = c.pdf_page['/Resources'].get_object()
     for _, _, name in invocation:
         scope = scope['/XObject'][name].get_object().get('/Resources', scope).get_object()
-    return [str(k) for k in (scope.get('/Font') or {}).keys()]
+    return [str(k) for k in (scope.get(kind) or {}).keys()]
+
+
+# Opaque, normal-blend painting without soft mask or overprint: the state an
+# edited text that qualified was drawn with, set again over an inherited one.
+NEUTRAL_GS = {'/Type': '/ExtGState', '/ca': 1, '/CA': 1, '/BM': '/Normal', '/SMask': '/None', '/AIS': False, '/OP': False, '/op': False}
+
+
+def drawn_neutral(state):
+    """Whether text was painted with the neutral state: opaque, normal blend, no soft mask, alpha not shape."""
+    b = state.blend
+    return (state.opacity == 1 and state.stroke_opacity == 1 and b.get('/BM', '/Normal') in ('/Normal', '/Compatible')
+            and b.get('/SMask', '/None') == '/None' and b.get('/AIS', 'False') == 'False')
+
+
+def neutral_gs():
+    from pypdf.generic import BooleanObject, NumberObject
+    return DictionaryObject({NameObject(k): (BooleanObject(v) if isinstance(v, bool) else NumberObject(v) if isinstance(v, int) else NameObject(v))
+                             for k, v in NEUTRAL_GS.items()})
 
 
 def _axis_aligned(m):
@@ -54,24 +72,40 @@ def _rect(points):
     return pymupdf.Rect(min(xs), min(ys), max(xs), max(ys))
 
 
-def _page_rect(x0, y0, x1, y1, ctm, height):
-    """A user-space rectangle under ``ctm`` in page (top-left) coordinates."""
-    m = pymupdf.Matrix(*ctm)
-    corners = [pymupdf.Point(x, y) * m for x in (x0, x1) for y in (y0, y1)]
-    r = _rect(corners)
-    return pymupdf.Rect(r.x0, height - r.y1, r.x1, height - r.y0)
+def _page_rect(x0, y0, x1, y1, ctm, page):
+    """A user-space rectangle under ``ctm`` in page (top-left) coordinates; ``page`` maps default user space there."""
+    m = pymupdf.Matrix(*ctm) * pymupdf.Matrix(page)
+    return _rect([pymupdf.Point(x, y) * m for x in (x0, x1) for y in (y0, y1)])
 
 
-def safe_boundaries(boundaries, first, containers=()):
+def clip_rect(clip, page):
+    """A Form BBox or single-rectangle clip in page coordinates, or None for any other clip."""
+    if clip.get('rule') == 'Form BBox':
+        x0, y0, x1, y1 = clip['bbox']
+        return _page_rect(min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1), clip['ctm'], page)
+    if 'path' in clip and len(clip['path']) == 1 and clip['path'][0]['operator'] == 're' and _axis_aligned(clip['path'][0]['ctm']):
+        x, y, w, h = clip['path'][0]['args']
+        return _page_rect(min(x, x + w), min(y, y + h), max(x, x + w), max(y, y + h), clip['path'][0]['ctm'], page)
+    return None
+
+
+def safe_boundaries(boundaries, first, containers=(), reemitted=()):
     """Boundaries before ``first`` outside text objects, paths and clips, under an axis-aligned CTM.
 
     With no ``containers`` the boundary is outside marked content. Otherwise it
     lies inside the innermost container, at its nesting depth, so the new
     drawing stays in the same labelled or layered sequence as the old text.
+    A boundary directly inside a ``reemitted`` sequence (whose BDC/EMC the edit
+    removes) is at that depth too: a producer may set the clip of the text
+    inside its sequence (Distiller: ``BDC Q q re W n BT …``).
     """
     depth = len(containers)
     low = containers[-1]['content_byte_range'][0] if containers else 0
-    return [b for b in boundaries if low <= b.operator.end <= first and b.marked_content_depth == depth and not b.text_object
+
+    def level(b):
+        inside = any(s['content_byte_range'][0] <= b.operator.end <= s['content_byte_range'][1] for s in reemitted)
+        return b.marked_content_depth - (1 if inside else 0)
+    return [b for b in boundaries if low <= b.operator.end <= first and level(b) == depth and not b.text_object
             and not b.pending_path and not b.pending_clip and _axis_aligned(b.state.ctm)]
 
 
@@ -182,24 +216,26 @@ def _float32(value):
     return struct.unpack('f', struct.pack('f', value))[0]
 
 
-def insertion(boundary, frames, height):
-    """Bytes that put new drawing in default user space at ``boundary``, or a refusal."""
+def insertion(boundary, frames, page, neutral=False):
+    """Bytes that put new drawing in default user space at ``boundary``, or a refusal.
+
+    ``frames`` are page (top-left) rectangles; ``page`` is the page's
+    transformation from default user space to them (any MediaBox origin).
+    With ``neutral`` the drawing sets the neutral ExtGState itself, so an
+    inherited transparency state does not matter (only clips do).
+    """
     state = boundary.state
-    if state.opacity != 1 or state.stroke_opacity != 1:
-        raise Refused('unsupported inherited insertion graphics state')
-    for key, value in state.other.items():
-        if key in LINE_STATE:
-            continue
-        if not (key.startswith('ExtGState:') and _harmless(value)):
-            raise Refused('unsupported inherited insertion graphics state: ' + key)
+    if not neutral:
+        if state.opacity != 1 or state.stroke_opacity != 1:
+            raise Refused('unsupported inherited insertion graphics state')
+        for key, value in state.other.items():
+            if key in LINE_STATE:
+                continue
+            if not (key.startswith('ExtGState:') and _harmless(value)):
+                raise Refused('unsupported inherited insertion graphics state: ' + key)
     for clip in state.clip:
-        if clip.get('rule') == 'Form BBox':
-            x0, y0, x1, y1 = clip['bbox']
-            area = _page_rect(min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1), clip['ctm'], height)
-        elif 'path' in clip and len(clip['path']) == 1 and clip['path'][0]['operator'] == 're' and _axis_aligned(clip['path'][0]['ctm']):
-            x, y, w, h = clip['path'][0]['args']
-            area = _page_rect(min(x, x + w), min(y, y + h), max(x, x + w), max(y, y + h), clip['path'][0]['ctm'], height)
-        else:
+        area = clip_rect(clip, page)
+        if area is None:
             raise Refused('nonrectangular insertion clip')
         if not all(area.contains(pymupdf.Rect(f)) for f in frames):
             raise Refused('insertion clip does not contain approved frame')
@@ -240,12 +276,12 @@ def _entries(resources, key):
     return DictionaryObject(dict(resources[key])) if key in resources else DictionaryObject()
 
 
-def copy_on_write(writer, page, c, stream, invocation, data, fonts):
+def copy_on_write(writer, page, c, stream, invocation, data, fonts, gstates=None):
     """Install the edited program ``data``: the page contents, or clones along a Form invocation chain.
 
-    ``fonts`` maps new font resource names to written font objects; they are
-    added to the resources of the program that draws them. Returns the clone
-    summary (empty for the page program).
+    ``fonts`` (and ``gstates``) map new font (ExtGState) resource names to
+    written objects; they are added to the resources of the program that
+    draws them. Returns the clone summary (empty for the page program).
     """
     lookup = writer._id_translated[id(c.reader)]
     resources = DictionaryObject(dict(page['/Resources']))
@@ -254,6 +290,10 @@ def copy_on_write(writer, page, c, stream, invocation, data, fonts):
             fontdict = _entries(resources, '/Font')
             fontdict.update({NameObject(k): v for k, v in fonts.items()})
             resources[NameObject('/Font')] = fontdict
+        if gstates:
+            gsdict = _entries(resources, '/ExtGState')
+            gsdict.update({NameObject(k): v for k, v in gstates.items()})
+            resources[NameObject('/ExtGState')] = gsdict
         page[NameObject('/Resources')] = resources
         stream_object = DecodedStreamObject()
         stream_object.set_data(data)
@@ -278,6 +318,10 @@ def copy_on_write(writer, page, c, stream, invocation, data, fonts):
             fontdict = _entries(form_resources, '/Font')
             fontdict.update({NameObject(n): v for n, v in fonts.items()})
             form_resources[NameObject('/Font')] = fontdict
+        if k == len(chain) - 1 and gstates:
+            gsdict = _entries(form_resources, '/ExtGState')
+            gsdict.update({NameObject(n): v for n, v in gstates.items()})
+            form_resources[NameObject('/ExtGState')] = gsdict
         if entry is not None:
             xobjects = DictionaryObject(dict(form_resources['/XObject']))
             xobjects[NameObject(entry[0])] = entry[1]

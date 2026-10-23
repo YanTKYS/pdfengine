@@ -11,6 +11,8 @@ from pdfeditor.page_proposal import _Analysis
 from . import auto_conditions as conditions
 from . import auto_flow as flowing
 from .engine import Paragraph, Refused, _check_inbound
+from . import form_write
+from . import semantics
 from . import text_space
 
 LATIN_END = ',.;:!?)]\'"%'
@@ -84,6 +86,39 @@ def split_gutters(c, row):
     return result
 
 
+def split_blocks(c, row, block):
+    """Pieces of a row whose glyphs belong to different structure block elements (table cells side by side).
+
+    ``block`` maps glyph IDs to their block element. A row is split only when
+    each element's glyphs are contiguous along the line; blank or unmarked
+    glyphs stay with the piece before them.
+    """
+    order = sorted(row['glyph_ids'], key=lambda i: c.actual[i]['origin'][0])
+    owners = [block.get(i) for i in order]
+    named = [o for o in owners if o is not None]
+    runs = [o for k, o in enumerate(named) if not k or o != named[k - 1]]
+    if len(runs) < 2 or len(runs) != len(set(runs)):
+        return [row]
+    pieces, current = [], None
+    for i, o in zip(order, owners):
+        if o is not None and o != current:
+            pieces.append([]);current = o
+        if not pieces:
+            pieces.append([])
+        pieces[-1].append(i)
+    result = []
+    for n, ids in enumerate(pieces):
+        boxes = [c.actual[i]['bbox'] for i in ids]
+        visible = [i for i in ids if c.actual[i]['unicode'].strip()] or ids
+        last = n == len(pieces) - 1
+        result.append(dict(row, id=row['id'] + f'.b{n}', text=''.join(c.actual[i]['unicode'] for i in ids),
+                           glyph_ids=sorted(ids), x=c.actual[ids[0]]['origin'][0], starts=[c.actual[i]['origin'][0] for i in ids],
+                           right=row['right'] if last else c.actual[visible[-1]]['bbox'][2],
+                           pen_end=row['pen_end'] if last else c.actual[ids[-1]]['bbox'][2],
+                           bbox=[min(b[0] for b in boxes), row['bbox'][1], max(b[2] for b in boxes), row['bbox'][3]]))
+    return result
+
+
 def clean_rows(c, rows):
     """Analysis rows split at column gutters, with independent blank-only paints at a row start removed."""
     result = []
@@ -129,38 +164,28 @@ def _numeric(value):
         return False
 
 
-def role(reader, element):
-    """Standard structure type of an element, following the RoleMap (e.g. /Standard -> /P)."""
-    kind = element.get('/S')
-    root = reader.trailer['/Root'].get('/StructTreeRoot')
-    rolemap = root.get_object().get('/RoleMap') if root is not None else None
-    seen = set()
-    while rolemap is not None and kind in rolemap and kind not in seen:
-        seen.add(kind)
-        kind = rolemap[kind]
-    return kind
-
-
-def _paragraph_of(reader, owner):
-    """The /P element owning a scope: the owner itself or its parent."""
-    if role(reader, owner) == '/P':
-        return owner.indirect_reference
-    parent = owner.get('/P')
-    return parent if parent is not None and role(reader, parent.get_object()) == '/P' else None
-
-
 def qualify(c, marks, ids, rows):
     chosen=set(ids)
     owned={i for e in c.events for ch in e.chars for i in ch.source_orders}
     if not chosen<=owned:
         reasons=sorted({e.error for e in c.events if e.error}) or ['trace glyph without a content-stream character']
         raise Refused('paragraph glyphs lack content-stream provenance: '+'; '.join(reasons))
+    # Marked content and structure: kept containers, re-emitted sequences and
+    # fixed inline objects (semantics.analyse); anything unprovable is refused.
+    scopes,parent,containers,fixed=semantics.analyse(c,marks,ids)
+    # A fixed inline object is neither removed nor redrawn: only the text
+    # drawn around it must qualify.
+    drawn=[i for i in ids if i not in set(fixed)];chosen=set(drawn)
     events=[e for e in c.events if any(chosen.intersection(ch.source_orders) for ch in e.chars)]
-    if [i for e in events for ch in e.chars for i in ch.source_orders if i in chosen]!=ids:
-        raise Refused('source paint order differs from paragraph reading order')
+    # Every glyph is painted once. Its paint order may differ from reading
+    # order (a line-start marker painted after its line): the new drawing is
+    # written in reading order, and marked-content order is checked by the writer.
+    if sorted(i for e in events for ch in e.chars for i in ch.source_orders if i in chosen)!=sorted(drawn):
+        raise Refused('paragraph glyphs are not each painted once')
     for e in events:
         # Text in a Form XObject is rewritten in a per-invocation clone (form_write).
-        if e.state.tr!=0 or e.state.opacity!=1:
+        # Only opaque, normal-blend text without a soft mask is reproduced.
+        if e.state.tr!=0 or not form_write.drawn_neutral(e.state):
             raise Refused('non-fill or transparent selected text unsupported')
         # Scaled text matrices and CTMs are page-space sizes (text_space);
         # rotation, shear and uncancelled reflection stay refused.
@@ -175,88 +200,11 @@ def qualify(c, marks, ids, rows):
             raise Refused('unsupported source color or horizontal scale')
         if any(len(ch.source_orders)!=1 or len(ch.text)!=1 for ch in e.chars if chosen.intersection(ch.source_orders)):
             raise Refused('one-code/one-Unicode/one-occurrence witness required')
-    def inside(s,e):
-        return (e.stream_xref==s['stream_xref'] and e.invocation==tuple(tuple(i) for i in s['invocation'])
-                and s['content_byte_range'][0]<=e.operator.start<s['content_byte_range'][1])
-    scopes=[];containers=[]
-    for s in marks['scopes']:
-        hits={i for e in c.events if inside(s,e) for ch in e.chars for i in ch.source_orders}
-        if not hits & chosen:continue
-        if s['association']['status']=='unmarked':
-            # No MCID: not part of the structure tree. A sequence that only
-            # labels or layers content (/PlacedPDF, /OC) must enclose the whole
-            # paragraph; replacement text (ActualText) cannot be kept true.
-            props=s['properties'] if isinstance(s['properties'],dict) else {}
-            if '/ActualText' in props or '/Alt' in props or s['tag']=='/Span':raise Refused('replacement-text marked content requires a span adapter')
-            if not chosen<=hits:raise Refused('paragraph crosses a marked-content container')
-            containers.append(s);continue
-        if not hits<=chosen or s['invocation'] or set(s['enclosing_scope_ids'])-{x['id'] for x in containers}:
-            raise Refused('mixed or nested marked-content scope')
-        scopes.append(s)
-    if any(set(s['enclosing_scope_ids'])!={x['id'] for x in containers} for s in scopes) and scopes and containers:
-        raise Refused('mixed or nested marked-content scope')
-    # A previous edit may leave an ordered empty scope. Its semantic child
-    # remains part of the paragraph even though no glyph can select it.
-    parent_candidates=set()
-    for s in scopes:
-        a=s['association']
-        if a['status']=='tree_backed':
-            owner=c.reader.get_object(a['owner_reference']['xref'])
-            parent_candidates.add(a['owner_reference']['xref'] if role(c.reader,owner)=='/P' else owner.raw_get('/P').idnum)
-    if len(parent_candidates)==1:
-        chosen_parent=next(iter(parent_candidates))
-        for s in marks['scopes']:
-            if s in scopes or s['association']['status']!='tree_backed':continue
-            a=s['association'];owner=c.reader.get_object(a['owner_reference']['xref'])
-            parent_id=a['owner_reference']['xref'] if role(c.reader,owner)=='/P' else owner.raw_get('/P').idnum
-            if parent_id!=chosen_parent:continue
-            lo,hi=s['content_byte_range']
-            if not any(ch.source_orders for e in c.events if lo<=e.operator.start<hi for ch in e.chars):
-                if s['invocation'] or s['enclosing_scope_ids']:raise Refused('nested empty scope')
-                scopes.append(s)
-        scopes.sort(key=lambda s:s['begin_byte_range'][0])
-    parent=None
-    root=c.reader.trailer['/Root'].get('/StructTreeRoot')
-    if root and '/IDTree' in root:raise Refused('IDTree references require richer semantic adapter')
-    if scopes:
-        parents=set()
-        for s in scopes:
-            a=s['association']
-            if set(s['properties'])-{'/MCID','/Lang'}:raise Refused('unsupported scope semantics')
-            if a['status']!='tree_backed':raise Refused('unbound marked content')
-            owner=c.reader.get_object(a['owner_reference']['xref'])
-            text=''.join(ch.text for e in c.events if s['content_byte_range'][0]<=e.operator.start<s['content_byte_range'][1] for ch in e.chars)
-            if '/ActualText' in owner and str(owner['/ActualText'])!=text:raise Refused('source ActualText differs from drawing')
-            # /A carries layout attributes (LibreOffice: /Placement /Block); it is kept untouched.
-            if role(c.reader,owner) not in ('/Span','/P') or set(owner)-{'/Type','/S','/P','/K','/Pg','/ActualText','/Lang','/A'}:raise Refused('unsupported leaf semantics')
-            parents.add(a['owner_reference']['xref'] if role(c.reader,owner)=='/P' else owner.raw_get('/P').idnum)
-        if len(parents)!=1:raise Refused('multiple semantic paragraph parents')
-        parent=parents.pop(); p=c.reader.get_object(parent)
-        if role(c.reader,p)!='/P' or set(p)-{'/Type','/S','/P','/K','/Pg','/Lang','/A'}:raise Refused('unsupported paragraph semantics')
-        def kids(node):
-            k=node['/K'];return list(k) if isinstance(k,list) else [k]
-        actual=[]
-        for item in kids(p):
-            if hasattr(item,'idnum'):actual.append(('span',item.idnum))
-            elif isinstance(item,int):actual.append(('mcid',int(item)))
-            else:raise Refused('unsupported paragraph child')
-        # A leaf /Span may own several marked-content sequences (LibreOffice:
-        # one MCID per drawn line); they must be exactly its ordered kids.
-        expected=[];leaves={}
-        for s in scopes:
-            owner=s['association']['owner_reference']['xref']
-            if owner==parent:expected.append(('mcid',s['association']['mcid']));continue
-            if not expected or expected[-1]!=('span',owner):expected.append(('span',owner))
-            leaves.setdefault(owner,[]).append(s['association']['mcid'])
-        if actual!=expected:raise Refused('paragraph child order/coverage mismatch')
-        for owner,mcids in leaves.items():
-            leaf=c.reader.get_object(owner);items=kids(leaf)
-            if not all(isinstance(i,int) for i in items) or [int(i) for i in items]!=mcids:raise Refused('span child order/coverage mismatch')
-            if len(mcids)>1 and '/ActualText' in leaf:raise Refused('ActualText on a multi-sequence span requires a span-level adapter')
-    elif root:raise Refused('tagged selected glyphs lack semantic association')
+    if fixed:
+        # Its size is the drawn size of its glyphs (kept as they are).
+        sizes.update({i:text_space.effective(e)['size'] for e in c.events for ch in e.chars for i in ch.source_orders if i in set(fixed)})
     text,joins,hyphens=group_text(c,rows)
-    containers.sort(key=lambda s:len(s['enclosing_scope_ids']))
-    return Paragraph(text,ids,[sizes[i] for i in ids],[r['baseline'] for r in rows],scopes,parent,tuple(joins),tuple(hyphens),tuple(containers))
+    return Paragraph(text,ids,[sizes[i] for i in ids],[r['baseline'] for r in rows],scopes,parent,tuple(joins),tuple(hyphens),containers,fixed)
 
 
 def _column_bottom(selected, others, blocks, infos, report):
@@ -374,16 +322,20 @@ def observe(c,marks,analysis):
     """Analysis rows, their semantic /P parents and paragraph groups of one page."""
     # Preserve meaningful spaces while dropping independent blank-only paints.
     rows=clean_rows(c,[dict(l) for l in analysis.lines if l['text'].strip()])
+    # The structure element that a glyph's text belongs to: a block element
+    # (paragraph, heading, table cell, list body …) or the block parent of an
+    # inline leaf. A drawn row that joins several of them is split.
     parent_by_id={}
     for s in marks['scopes']:
         a=s['association']
-        if a['status']=='tree_backed':
-            owner=c.reader.get_object(a['owner_reference']['xref']); pr=_paragraph_of(c.reader,owner)
+        if a['status']=='tree_backed' and not s['invocation']:
+            owner=c.reader.get_object(a['owner_reference']['xref']); pr=semantics.block_of(c.reader,owner)
             if pr is not None:
                 for e in c.events:
-                    if s['content_byte_range'][0]<=e.operator.start<s['content_byte_range'][1]:
+                    if e.stream_xref==s['stream_xref'] and not e.invocation and s['content_byte_range'][0]<=e.operator.start<s['content_byte_range'][1]:
                         for ch in e.chars:
-                            for i in ch.source_orders:parent_by_id[i]=pr.idnum
+                            for i in ch.source_orders:parent_by_id[i]=pr.indirect_reference.idnum
+    rows=[piece for r in rows for piece in split_blocks(c,r,parent_by_id)]
     # Paint style of each inked glyph: a row that shares no font and fill with
     # the previous row (a white label on a coloured box) does not continue it.
     paint={i:(e.state.font.name if e.state.font else None,e.state.fill) for e in c.events for ch in e.chars for i in ch.source_orders if ch.text.strip()}
@@ -444,7 +396,9 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
     c=ContentPage(source,page)
     try:
         if c.errors:raise Refused('incomplete source interpretation: '+str(c.errors))
-        if c.page.rotation or c.page.rect.x0 or c.page.rect.y0:raise Refused('rotated/nonzero-origin page')
+        # Any MediaBox origin is mapped through the page transformation; a
+        # rotated page is not supported.
+        if c.page.rotation:raise Refused('rotated page')
         marks=observe_marked_content(source,page)
         if not marks['complete']:raise Refused('incomplete marked-content observation')
         analysis=_Analysis(source,page)
@@ -594,6 +548,14 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         inked=[c.actual[i]['bbox'] for i in ids if c.actual[i]['unicode'].strip()]
         if inked:frame=[min(frame[0],min(b[0] for b in inked)),min(frame[1],min(b[1] for b in inked)),max(frame[2],max(b[2] for b in inked)),max(frame[3],max(b[3] for b in inked))]
         for box in containers:frame=[max(frame[0],box[0]),max(frame[1],box[1]),min(frame[2],box[2]),min(frame[3],box[3])]
+        # Ink outside the clip the text is drawn under (a table cell, a text
+        # box) would not show: rectangular clips bound the frame too.
+        own={i for r in selected for i in r['glyph_ids']}-set(target_paragraph.fixed)
+        for e in c.events:
+            if not any(i in own for ch in e.chars for i in ch.source_orders):continue
+            for clip in e.state.clip:
+                box=form_write.clip_rect(clip,c.page.transformation_matrix)
+                if box is not None:frame=[max(frame[0],box.x0),max(frame[1],box.y0),min(frame[2],box.x1),min(frame[3],box.y1)]
         paragraphs=[target_paragraph]+follower_paragraphs
         values=dict(left=left,right=right,first_x=first,line_height=leading,bottom=bottom)
         origin=records[state['target']]['origin'] if state['applied'] else dict(values=values,provenance=provenance)
