@@ -63,7 +63,8 @@ def pixels(a,b,root,spec=None):
                 delta=ImageChops.difference(ia.convert('RGB'),ib.convert('RGB'))
                 changed=delta.getbbox()
                 if spec and page==spec['page']:
-                    x0,y0,x1,y1=spec['frame'];ImageDraw.Draw(delta).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
+                    for x0,y0,x1,y1 in spec.get('frames') or [spec['frame']]:
+                        ImageDraw.Draw(delta).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
                 r,g,b=delta.split();mono=ImageChops.lighter(ImageChops.lighter(r,g),b)
                 outside=ia.width*ia.height-mono.histogram()[0]
                 vals.append(dict(page=page,outside_pixels=outside,changed_bbox=changed))

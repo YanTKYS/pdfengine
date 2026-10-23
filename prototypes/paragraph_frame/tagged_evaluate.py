@@ -22,6 +22,7 @@ be unique on the page.
 ``collect`` writes the compact results; generated PDFs stay under ``--root``.
 """
 import argparse
+from collections import Counter
 import json
 from pathlib import Path
 import re
@@ -311,30 +312,42 @@ def phase_samples(root, manifest, args):
     dump(root / 'samples.json', dict(newly=len(newly), sampled=len(sample), results=results))
 
 
-def follower_moves(source, output, page, region, proposal, save):
-    """Whether every glyph changed outside the allowed region is a glyph of a
-    following paragraph the proposal declared, translated by the declared
-    vertical distance (B2 moves following paragraphs of the column rigidly).
+def outside_changes(source, output, page, region, proposal, save, folder):
+    """What changed outside the allowed region of a saved sample.
 
-    Reported beside the safety audit, never in place of it.
+    ``own_text_in_frame``: no glyph outside the region was removed or moved,
+    and every new glyph and changed pixel outside it lies in the frame the
+    proposal declared and the user approved (a re-wrapped line may run past
+    the paragraph's old box; an added line lies below it).
+    ``declared_follower_moves``: the glyphs that changed are those of the
+    following paragraphs the proposal declared, translated rigidly by the
+    declared distance. Reported beside the safety audit, never in place of it.
     """
-    delta = save.get('follower_translation')
-    if not isinstance(delta, (int, float)):
-        return dict(explained=False, reason='no rigid follower translation')
-    lines = proposal['evidence']['observed']['lines'][proposal['source_lines']:]
-    boxes = [pymupdf.Rect(l['bbox']) for l in lines]
+    from .audit import pixels
+    frames = proposal['evidence']['inferred'].get('frames') or [proposal['evidence']['inferred']['frame']]
     key = lambda g: (g['c'], g['size'], g['font'], g['color'])
-    outside = lambda path: [g for g in chars(path, page) if not inside(g['bbox'], region)]
-    before, after = outside(source), outside(output)
-    gone = [g for g in before if (key(g), g['origin']) not in {(key(a), a['origin']) for a in after}]
-    new = [g for g in after if (key(g), g['origin']) not in {(key(b), b['origin']) for b in before}]
-    declared = all(any(b.contains(pymupdf.Point((g['bbox'][0] + g['bbox'][2]) / 2, (g['bbox'][1] + g['bbox'][3]) / 2)) for b in boxes) for g in gone)
-    shifted = sorted((key(g), (g['origin'][0], round(g['origin'][1] + delta, 1))) for g in gone)
-    landed = sorted((key(g), g['origin']) for g in new)
-    same = len(shifted) == len(landed) and all(a[0] == b[0] and abs(a[1][0] - b[1][0]) <= .1 and abs(a[1][1] - b[1][1]) <= .15
-                                              for a, b in zip(shifted, landed))
-    return dict(explained=bool(gone) and declared and same, changed_outside=len(gone), declared_followers=declared, translated_by=round(delta, 2),
-                rigid=same)
+    before = Counter((key(g), g['origin']) for g in chars(source, page) if not inside(g['bbox'], region))
+    after_glyphs = [g for g in chars(output, page) if not inside(g['bbox'], region)]
+    after = Counter((key(g), g['origin']) for g in after_glyphs)
+    gone, new = before - after, after - before
+    new_boxes = [g['bbox'] for g in after_glyphs if (key(g), g['origin']) in new]
+    in_frame = all(any(inside(b, f) for f in frames) for b in new_boxes)
+    raster = pixels(str(source), str(output), folder / 'pixels-frame', dict(page=page, frames=[region] + frames))
+    raster = {k: sum(v['outside_pixels'] for v in pages) for k, pages in raster.items()}
+    out = dict(removed_or_moved_outside=sum(gone.values()), new_outside=sum(new.values()), new_outside_in_frame=in_frame,
+               pixels_outside_region_and_frame=raster)
+    out['own_text_in_frame'] = not gone and in_frame and not any(raster.values())
+    delta = save.get('follower_translation')
+    if gone and isinstance(delta, (int, float)):
+        lines = proposal['evidence']['observed']['lines'][proposal['source_lines']:]
+        boxes = [pymupdf.Rect(l['bbox']) for l in lines]
+        declared = all(any(b.contains(pymupdf.Point((o[0]), o[1] - .1)) for b in boxes) for (_, o) in gone.elements())
+        shifted = sorted((k, (o[0], round(o[1] + delta, 1))) for k, o in gone.elements())
+        landed = sorted(new.elements())
+        rigid = len(shifted) == len(landed) and all(a[0] == b[0] and abs(a[1][0] - b[1][0]) <= .1 and abs(a[1][1] - b[1][1]) <= .15
+                                                    for a, b in zip(shifted, landed))
+        out['declared_follower_moves'] = declared and rigid
+    return out
 
 
 def track_pr90(previous, current):
@@ -439,7 +452,7 @@ def phase_collect(root, manifest, args):
         x0, y0, x1, y1 = bbox[(s['document'], s['page'], s['selection'])]
         pitch = max(4.0, (y1 - y0) / max(1, len(proposal['lines'])))
         region = [x0 - 3, y0 - 3, x1 + 3, y1 + 3 + (pitch if s['kind'] == 'lengthen' else 0)]
-        s['outside_changes'] = follower_moves(source_of(s['document'], args), folder / 'out.pdf', s['page'], region, proposal, save)
+        s['outside_changes'] = outside_changes(source_of(s['document'], args), folder / 'out.pdf', s['page'], region, proposal, save, folder)
     result = dict(
         schema='paragraph-frame-tagged-results-1', manifest_sha256=sha(MANIFEST), tests=load(args.tests_json) if args.tests_json else None,
         regression=load(args.regression_json) if args.regression_json else None, requests=compact_requests,
@@ -457,7 +470,8 @@ def phase_collect(root, manifest, args):
                                     for k in ('region_extraction_mupdf', 'region_extraction_poppler')},
                      refused=[dict(document=s['document'], page=s['page'], selection=s['selection'], kind=s['kind'], reason=s['reason'])
                               for s in samples['results'] if s['outcome'] == 'refused'],
-                     safety_failures_explained_by_declared_follower_moves=sum(bool((s.get('outside_changes') or {}).get('explained')) for s in saved),
+                     safety_failed_with_own_text_in_frame=sum(bool((s.get('outside_changes') or {}).get('own_text_in_frame')) for s in saved),
+                     safety_failed_with_declared_follower_moves=sum(bool((s.get('outside_changes') or {}).get('declared_follower_moves')) for s in saved),
                      failed=[dict(document=s['document'], page=s['page'], selection=s['selection'], kind=s['kind'], failed=s['audit']['failed'],
                                   structure_failed=s['structure']['failed'], supplementary=s['supplementary'],
                                   outside_changes=s.get('outside_changes'), continued_editing=s.get('continued_editing'))
