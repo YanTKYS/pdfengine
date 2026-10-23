@@ -1,0 +1,2946 @@
+{
+  "schema": "paragraph-frame-tagged-results-1",
+  "manifest_sha256": "2fa082f3f19413dc596c92e2ecc2d0e9afffce606b551d2543f49c831bbdccb8",
+  "tests": {
+    "focused": {
+      "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_tagged.py tests/test_paragraph_frame_text_space.py tests/test_paragraph_frame_column_flow.py tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_continuity.py tests/test_paragraph_frame_poc.py tests/test_adjacent_span.py tests/test_marked_content.py tests/test_single_span_actualtext.py tests/test_tagged_page_proposal.py",
+      "commit": "ef5903e",
+      "passed": 253,
+      "failed": 0,
+      "seconds": 321.3,
+      "new_tests": 27,
+      "selection": "every test importing prototypes.paragraph_frame.auto, auto_detect, auto_conditions, auto_style or semantics, and every test importing pdfeditor.marked_content"
+    },
+    "content_stream_importers": {
+      "what": "the 39 test files importing pdfeditor.content_stream (changed in this PR: State.blend)",
+      "commit": "3229429 (engine as in 583e01c)",
+      "passed": 1360,
+      "skipped": 5,
+      "failed": 0,
+      "seconds": 2687.3,
+      "note": "the right-to-left refusal (ef5903e) came after; it is covered by the focused run"
+    },
+    "full_suite": "not run (CLAUDE.md: focused tests and the importers of the changed pdfeditor modules)"
+  },
+  "regression": null,
+  "requests": {
+    "L-same": {
+      "document": "prefilled_f1040",
+      "purpose": "LiveCycle /P under /Div with an IDTree: same-length replacement",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "saved",
+        "seconds": 82.53,
+        "occurrence": 0,
+        "lines": [
+          "Unemployment remuneration................."
+        ],
+        "font_counts": {
+          "retained-source": 35,
+          "source-code-witness": 7
+        },
+        "failed": [
+          "extraction_poppler"
+        ],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": true,
+          "source_control_left_edges_are_line_starts": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 0,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "remuneration"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": false,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 4.98,
+          "style_layout": 0.07,
+          "save_and_stage": 65.75,
+          "total": 70.8
+        },
+        "as_expected": true
+      }
+    },
+    "L-reedit": {
+      "document": "prefilled_f1040",
+      "purpose": "PDF-alone re-edit: restore the original word",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": "L-same",
+      "frozen": {
+        "outcome": "saved",
+        "seconds": 75.86,
+        "occurrence": 0,
+        "lines": [
+          "Unemployment compensation................."
+        ],
+        "font_counts": {
+          "retained-source": 35,
+          "source-code-witness": 7
+        },
+        "failed": [
+          "extraction_poppler"
+        ],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 0,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "compensation"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": false,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 4.57,
+          "style_layout": 0.09,
+          "save_and_stage": 61.56,
+          "total": 66.23
+        },
+        "as_expected": true
+      }
+    },
+    "L-short": {
+      "document": "prefilled_f1040",
+      "purpose": "shorten a four-line paragraph of one structure element",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "saved",
+        "seconds": 51.07,
+        "occurrence": 0,
+        "lines": [
+          "Head of household (with qualifying person). If the qualifying ",
+          "person is a child but not your dependent, enter this child’s name ",
+          "here.  ▶"
+        ],
+        "font_counts": {
+          "retained-source": 136
+        },
+        "failed": [
+          "extraction_poppler",
+          "baselines_on_the_paragraph_grid",
+          "left_edges_observed"
+        ],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": false,
+          "source_control_left_edges_are_line_starts": false
+        },
+        "structure_failed": [
+          "paragraph_mcids_draw_the_new_text"
+        ],
+        "structure_details": {
+          "actualtext_changed_elements": 0,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "n). If the"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": false,
+          "structure": false,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 5.02,
+          "style_layout": 0.08,
+          "save_and_stage": 34.79,
+          "total": 39.89
+        },
+        "as_expected": true
+      }
+    },
+    "L-wrap": {
+      "document": "prefilled_f1040",
+      "purpose": "lengthen a two-line paragraph; the lines re-wrap",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "refused",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout",
+        "published": false,
+        "seconds": 25.47,
+        "occurrence": 0,
+        "as_expected": false
+      }
+    },
+    "L-cross": {
+      "document": "prefilled_f1040",
+      "purpose": "the selection spans two /P elements drawn on one line",
+      "expected": "refused",
+      "expected_reason": "edit crosses structure elements",
+      "after": null,
+      "frozen": {
+        "outcome": "refused",
+        "reason": "prototypes.paragraph_frame.engine.Refused: selected string occurrence not found in one inferred paragraph",
+        "reason_class": "encoding",
+        "published": false,
+        "seconds": 5.66,
+        "occurrence": 0,
+        "as_expected": true
+      }
+    },
+    "D-same": {
+      "document": "160F-2019",
+      "purpose": "Distiller /TD owning its MCID (no /Type): same-length replacement",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "refused",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout",
+        "published": false,
+        "seconds": 10.36,
+        "occurrence": 0,
+        "as_expected": false
+      }
+    },
+    "D-reedit": {
+      "document": "160F-2019",
+      "purpose": "PDF-alone re-edit: restore the original word",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": "D-same",
+      "frozen": {
+        "outcome": "not run",
+        "reason": "the previous step was not saved",
+        "reason_class": null,
+        "published": null,
+        "seconds": null,
+        "occurrence": null,
+        "as_expected": false
+      }
+    },
+    "D-short": {
+      "document": "160F-2019",
+      "purpose": "shorten the text of a table cell",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "saved",
+        "seconds": 14.87,
+        "occurrence": 0,
+        "lines": [
+          "cette transmission se fait uniquement par voie électronique"
+        ],
+        "font_counts": {
+          "retained-source": 41,
+          "source-code-witness": 18
+        },
+        "failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": true,
+          "source_control_left_edges_are_line_starts": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 0,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "se fait uniquement"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": true,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 1.79,
+          "style_layout": 0.05,
+          "save_and_stage": 8.32,
+          "total": 10.15
+        },
+        "as_expected": true
+      }
+    },
+    "D-shared": {
+      "document": "160F-2019",
+      "purpose": "one MCID draws this and another visual paragraph: the MCID stays one sequence",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "refused",
+        "reason": "prototypes.paragraph_frame.engine.Refused: centred paragraph requires a centre-alignment adapter",
+        "reason_class": "layout",
+        "published": false,
+        "seconds": 2.57,
+        "occurrence": 0,
+        "as_expected": false
+      }
+    },
+    "W-span": {
+      "document": "word_osaka_fire_notice",
+      "purpose": "Word /Span leaf with ActualText and /Lang: same-length replacement inside one span",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "refused",
+        "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 8",
+        "reason_class": "glyphs",
+        "published": false,
+        "seconds": 1.16,
+        "occurrence": 0,
+        "as_expected": false
+      },
+      "substitute": {
+        "outcome": "saved",
+        "seconds": 7.14,
+        "occurrence": 0,
+        "lines": [
+          "直通：03-3595-2258 "
+        ],
+        "font_counts": {
+          "retained-source": 15,
+          "approved-substitute": 1
+        },
+        "failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": true,
+          "source_control_left_edges_are_line_starts": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 1,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "2258"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": true,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 0.3,
+          "style_layout": 0.86,
+          "save_and_stage": 2.72,
+          "total": 3.88
+        }
+      }
+    },
+    "W-cross": {
+      "document": "word_osaka_fire_notice",
+      "purpose": "replacement across three /Span leaves; unchanged characters stay in their spans",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "refused",
+        "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 6",
+        "reason_class": "glyphs",
+        "published": false,
+        "seconds": 1.36,
+        "occurrence": 0,
+        "as_expected": false
+      },
+      "substitute": {
+        "outcome": "saved",
+        "seconds": 6.92,
+        "occurrence": 0,
+        "lines": [
+          "直通：06-6941-2257 "
+        ],
+        "font_counts": {
+          "retained-source": 12,
+          "approved-substitute": 4
+        },
+        "failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": true,
+          "source_control_left_edges_are_line_starts": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 2,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "06-6941"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": true,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 0.33,
+          "style_layout": 0.84,
+          "save_and_stage": 2.68,
+          "total": 3.86
+        }
+      }
+    },
+    "W-reedit": {
+      "document": "word_osaka_fire_notice",
+      "purpose": "PDF-alone re-edit across the spans: restore the original",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": "W-cross",
+      "frozen": {
+        "outcome": "not run",
+        "reason": "the previous step was not saved",
+        "reason_class": null,
+        "published": null,
+        "seconds": null,
+        "occurrence": null,
+        "as_expected": false
+      },
+      "substitute": {
+        "outcome": "saved",
+        "seconds": 6.59,
+        "occurrence": 0,
+        "lines": [
+          "直通：03-3595-2257 "
+        ],
+        "font_counts": {
+          "retained-source": 12,
+          "same-program-new-code": 2,
+          "source-code-witness": 2
+        },
+        "failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 2,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "03-3595"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": true,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 0.36,
+          "style_layout": 0.82,
+          "save_and_stage": 2.31,
+          "total": 3.49
+        }
+      }
+    },
+    "W-grow": {
+      "document": "word_osaka_fire_notice",
+      "purpose": "Word /P with one /Span: lengthen a two-line paragraph",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "refused",
+        "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 迅",
+        "reason_class": "glyphs",
+        "published": false,
+        "seconds": 1.22,
+        "occurrence": 1,
+        "as_expected": false
+      },
+      "substitute": {
+        "outcome": "saved",
+        "seconds": 7.22,
+        "occurrence": 1,
+        "lines": [
+          "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑",
+          "かつ適切かつ迅速に実施いただくようお願いします。 "
+        ],
+        "font_counts": {
+          "retained-source": 67,
+          "source-code-witness": 2,
+          "approved-substitute": 2
+        },
+        "failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": false,
+          "source_control_left_edges_are_line_starts": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 0,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "円滑かつ適切かつ迅速に"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": true,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 0.29,
+          "style_layout": 0.89,
+          "save_and_stage": 3.23,
+          "total": 4.41
+        }
+      }
+    },
+    "I-same": {
+      "document": "issue14297",
+      "purpose": "MCIDs without a structure tree (orphan /Figure) as a container: same-length replacement",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "saved",
+        "seconds": 28.86,
+        "occurrence": 1,
+        "lines": [
+          "Adjusted balance at ",
+          "inception of year"
+        ],
+        "font_counts": {
+          "retained-source": 28,
+          "source-code-witness": 9
+        },
+        "failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": true,
+          "source_control_left_edges_are_line_starts": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 0,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "inception"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": true,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 4.23,
+          "style_layout": 0.06,
+          "save_and_stage": 14.35,
+          "total": 18.65
+        },
+        "as_expected": true
+      }
+    },
+    "I-short": {
+      "document": "issue14297",
+      "purpose": "MCIDs without a structure tree: shorten",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "saved",
+        "seconds": 28.27,
+        "occurrence": 0,
+        "lines": [
+          "Cumulative effects of ",
+          "policy changes"
+        ],
+        "font_counts": {
+          "retained-source": 24,
+          "source-code-witness": 12
+        },
+        "failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": true,
+          "source_control_left_edges_are_line_starts": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 0,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "policy changes"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": true,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 4.12,
+          "style_layout": 0.1,
+          "save_and_stage": 14.85,
+          "total": 19.07
+        },
+        "as_expected": true
+      }
+    },
+    "F-marker": {
+      "document": "osaka_fusei_477",
+      "purpose": "InDesign paragraph with an unmarked /Span ActualText marker sequence: lengthen",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "refused",
+        "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 質",
+        "reason_class": "glyphs",
+        "published": false,
+        "seconds": 3.71,
+        "occurrence": 0,
+        "as_expected": false
+      },
+      "substitute": {
+        "outcome": "saved",
+        "seconds": 23.23,
+        "occurrence": 0,
+        "lines": [
+          "●診療履歴に基づいたより良質な医療が受けられます。"
+        ],
+        "font_counts": {
+          "retained-source": 23,
+          "approved-substitute": 1,
+          "source-code-witness": 1
+        },
+        "failed": [
+          "baselines_on_the_paragraph_grid"
+        ],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": false,
+          "source_control_left_edges_are_line_starts": true
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 0,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "良質な医療"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": false,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 1.85,
+          "style_layout": 0.89,
+          "save_and_stage": 13.94,
+          "total": 16.68
+        }
+      }
+    },
+    "F-icon": {
+      "document": "osaka_fusei_477",
+      "purpose": "inline placed object (/PlacedPDF icon) at the line start: same-length replacement after it",
+      "expected": "saved",
+      "expected_reason": null,
+      "after": null,
+      "frozen": {
+        "outcome": "saved",
+        "seconds": 19.95,
+        "occurrence": 0,
+        "lines": [
+          "問 マイナンバー総合フリーダイアル　"
+        ],
+        "font_counts": {
+          "retained-source": 17,
+          "source-code-witness": 1
+        },
+        "failed": [
+          "baselines_on_the_paragraph_grid"
+        ],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true,
+          "source_control_baselines_on_the_paragraph_grid": false,
+          "source_control_left_edges_are_line_starts": false
+        },
+        "structure_failed": [],
+        "structure_details": {
+          "actualtext_changed_elements": 0,
+          "sequences_removed": {}
+        },
+        "outside_pixels": {
+          "mupdf": 0,
+          "poppler": 0
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "フリーダイアル"
+        },
+        "tiers": {
+          "saved": true,
+          "safety": true,
+          "quality": false,
+          "structure": true,
+          "continued_editing": true
+        },
+        "timing": {
+          "observation": 1.78,
+          "style_layout": 0.09,
+          "save_and_stage": 13.13,
+          "total": 14.99
+        },
+        "as_expected": true
+      }
+    }
+  },
+  "survey": {
+    "main_commit": "2aefe3e",
+    "pr90_population": {
+      "paragraphs": 1054,
+      "main_proposed": 727,
+      "new_proposed": 883,
+      "newly": 108,
+      "lost": 0
+    },
+    "extended_tagged": {
+      "paragraphs": 196,
+      "main_proposed": 12,
+      "new_proposed": 183,
+      "newly": 111,
+      "lost": 0
+    },
+    "main_structural_refusals": {
+      "total": 114,
+      "newly_proposable": 100,
+      "went": {
+        "proposed": 100,
+        "refused: centred paragraph requires a centre-alignment adapter": 1,
+        "refused: implicit line-join space has no glyph in the source font": 1,
+        "refused: paragraph crosses a marked-content sequence": 1,
+        "refused: an inline placed object would move in the new layout": 8,
+        "refused: unsupported structure role /Span": 3
+      }
+    },
+    "pr90_survey_refusals": {
+      "total": 135,
+      "same_paragraph_proposed": 100,
+      "redivided_proposed": 19,
+      "refused": {
+        "centred paragraph requires a centre-alignment adapter": 2,
+        "implicit line-join space has no glyph in the source font": 1,
+        "paragraph crosses a marked-content sequence": 1,
+        "an inline placed object would move in the new layout": 8,
+        "unsupported structure role /Span": 3
+      },
+      "not_surveyed": 1,
+      "rows": [
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "n° d'i",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "page :",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "année ",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "modèle 1",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "Certif",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "centred paragraph requires a centre-alignment adapter"
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "bonifiés",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "position",
+          "outcome": "refused",
+          "reason": "centred paragraph requires a centre-alignment adapter"
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "salarié(",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "prénom",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "numéro",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "locali",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "code p",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "classe",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "1 péri",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "2A) ré",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "6 7B) ",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "sous-t",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "n° dos",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "I) fid",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "1.coti",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "cotisations sociales n",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "10coti",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "déductions  ",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "téléph",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "J) ind",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "17C) e",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "1.sala",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "supplémenta",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "nombre de jours i",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "nombre de jours n",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "21 22 ",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "not surveyed (shorter than the survey minimum)",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "2.autr",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "montan",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "certifié",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "25D) r",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "26E) i",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "27F) c",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "signatu",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "28G) c",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "1) le ",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "cette ",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "2) Ind",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "Nationale de Santé,",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "P = pe",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "abattement c",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "employeurs q",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "160F-2019",
+          "page": 1,
+          "selection": "modèle d",
+          "pr90_reason": "Refused: unbound marked content",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "¥233,5",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Items that w",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Balance at beginning of year¥175,820¥202,834",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "63,809¥",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Changes in f",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Cumula",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(31,87",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "64,457",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Remeas",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(23,57",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "84,501",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Adjust",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "1,958,",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "2,398,",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "111,202",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "2,509,",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "11,678",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Total items that w",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "151,11",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(56,97",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(4,048",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Items that m",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(23,09",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Exchan",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(49,36",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "61,880",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(7,826",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(93,69",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Net ch",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(2,434",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(1,890",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(1,048",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Total items that m",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "63,154",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "implicit line-join space has no glyph in the source font"
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(51,77",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Total o",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Comprehensive income a",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Non-controlling ",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "7,630¥",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "Balance at beginning of year¥175,820¥202,832",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(78,82",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(7,107",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "(84,39",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "issue14297",
+          "page": 1,
+          "selection": "¥175,820¥202,7",
+          "pr90_reason": "Refused: mixed or nested marked-content scope",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 1,
+          "selection": "06（6910）8005",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 1,
+          "selection": "この記事のお",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 1,
+          "selection": "大会当日、8",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "paragraph crosses a marked-content sequence"
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "診療履歴に基",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "・ 骨折、脱",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "・ 交通事故",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "※ 骨折およ",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "・ 医師の同意書等を得た､神",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "もの・ 保険",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "病を治療中の",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "・ 医師の同意書等を得た､筋",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "position",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "もの・ 疲労",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "問 マイナン",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 2,
+          "selection": "問 府国民健",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 3,
+          "selection": "万博特集記事",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 5,
+          "selection": "◀ 鏡面の膜",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 5,
+          "selection": "ティスト」の",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 7,
+          "selection": "HP htt",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 7,
+          "selection": "HP府政だよ",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 7,
+          "selection": "日日時 所場",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 7,
+          "selection": "日 第1次試",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "an inline placed object would move in the new layout"
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 7,
+          "selection": "問 府パスポ",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 7,
+          "selection": "受験資格など",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "an inline placed object would move in the new layout"
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 7,
+          "selection": "問 府家庭支",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 7,
+          "selection": "問 府住宅相",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "で応募割れが",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "an inline placed object would move in the new layout"
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "好評につき、",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "an inline placed object would move in the new layout"
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "国勢調査員は",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "an inline placed object would move in the new layout"
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "問 府民の森",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "問 府統計課",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "南河内地域の",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "an inline placed object would move in the new layout"
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "第一部：一、",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "日 4/20",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "問 府地域生",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "大阪府、大阪",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "an inline placed object would move in the new layout"
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "大川が最も華",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "an inline placed object would move in the new layout"
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "申 4/15",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "問 堺市長寿",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "申込先 〒5",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "その他 チケ",
+          "pr90_reason": "Refused: replacement-text marked content requires a span adapter",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "HP 大阪府",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "osaka_fusei_477",
+          "page": 8,
+          "selection": "問 府魅力づ",
+          "pr90_reason": "Refused: paragraph crosses a marked-content container",
+          "match": "selection",
+          "outcome": "proposed",
+          "reason": null
+        },
+        {
+          "document": "word_osaka_guideline",
+          "page": 1,
+          "selection": "https://www.niid.go.jp/niid/j",
+          "pr90_reason": "Refused: multiple semantic paragraph parents",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "unsupported structure role /Span"
+        },
+        {
+          "document": "word_osaka_guideline",
+          "page": 1,
+          "selection": "https://i",
+          "pr90_reason": "Refused: multiple semantic paragraph parents",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "unsupported structure role /Span"
+        },
+        {
+          "document": "word_osaka_guideline",
+          "page": 1,
+          "selection": "https://www.niid.go.jp/niid/i",
+          "pr90_reason": "Refused: multiple semantic paragraph parents",
+          "match": "selection",
+          "outcome": "refused",
+          "reason": "unsupported structure role /Span"
+        }
+      ]
+    },
+    "documents": {
+      "160F-2019": {
+        "paragraphs": 51,
+        "main_proposed": 0,
+        "new_proposed": 49,
+        "newly": 27,
+        "lost": 0,
+        "new_refusals": {
+          "centred paragraph requires a centre-alignment adapter": 1,
+          "paragraph glyphs lack content-stream provenance: trace glyph without a": 1
+        }
+      },
+      "canvas": {
+        "paragraphs": 36,
+        "main_proposed": 36,
+        "new_proposed": 36,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {}
+      },
+      "issue11656": {
+        "paragraphs": 4,
+        "main_proposed": 0,
+        "new_proposed": 0,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "paragraph child order/coverage mismatch": 2,
+          "right-to-left text requires a bidirectional layout adapter": 1,
+          "mixed or nested marked-content scope": 1
+        }
+      },
+      "issue14117": {
+        "paragraphs": 36,
+        "main_proposed": 27,
+        "new_proposed": 28,
+        "newly": 1,
+        "lost": 0,
+        "new_refusals": {
+          "unsupported source color or horizontal scale": 8
+        }
+      },
+      "issue14130": {
+        "paragraphs": 2,
+        "main_proposed": 0,
+        "new_proposed": 0,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "paragraph glyphs lack content-stream provenance: explicit simple-font ": 2
+        }
+      },
+      "issue14297": {
+        "paragraphs": 44,
+        "main_proposed": 0,
+        "new_proposed": 43,
+        "newly": 43,
+        "lost": 0,
+        "new_refusals": {
+          "implicit line-join space has no glyph in the source font": 1
+        }
+      },
+      "issue14627": {
+        "paragraphs": 3,
+        "main_proposed": 0,
+        "new_proposed": 0,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "tagged selected glyphs lack semantic association": 3
+        }
+      },
+      "issue15262": {
+        "paragraphs": 1,
+        "main_proposed": 0,
+        "new_proposed": 1,
+        "newly": 1,
+        "lost": 0,
+        "new_refusals": {}
+      },
+      "issue16500": {
+        "paragraphs": 8,
+        "main_proposed": 7,
+        "new_proposed": 7,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "paragraph glyphs lack content-stream provenance: trace glyph without a": 1
+        }
+      },
+      "issue16553": {
+        "paragraphs": 2,
+        "main_proposed": 1,
+        "new_proposed": 1,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "paragraph glyphs lack content-stream provenance: trace glyph without a": 1
+        }
+      },
+      "issue17730": {
+        "paragraphs": 13,
+        "main_proposed": 13,
+        "new_proposed": 13,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {}
+      },
+      "issue6782": {
+        "paragraphs": 1,
+        "main_proposed": 0,
+        "new_proposed": 1,
+        "newly": 1,
+        "lost": 0,
+        "new_refusals": {}
+      },
+      "issue7014": {
+        "paragraphs": 28,
+        "main_proposed": 20,
+        "new_proposed": 20,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "implicit line-join space has no glyph in the source font": 7,
+          "paragraph glyphs lack content-stream provenance: ambiguous or unmatche": 1
+        }
+      },
+      "issue8702": {
+        "paragraphs": 1,
+        "main_proposed": 1,
+        "new_proposed": 1,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {}
+      },
+      "lo_enterprise_en": {
+        "paragraphs": 17,
+        "main_proposed": 12,
+        "new_proposed": 12,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "paragraph glyphs lack content-stream provenance: Unicode restoration i": 5
+        }
+      },
+      "lo_migration_ja": {
+        "paragraphs": 14,
+        "main_proposed": 10,
+        "new_proposed": 10,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "non-fill or transparent selected text unsupported": 4
+        }
+      },
+      "lo_newfeatures_ja": {
+        "paragraphs": 17,
+        "main_proposed": 14,
+        "new_proposed": 14,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "non-fill or transparent selected text unsupported": 3
+        }
+      },
+      "osaka_fusei_477": {
+        "paragraphs": 701,
+        "main_proposed": 529,
+        "new_proposed": 592,
+        "newly": 37,
+        "lost": 0,
+        "new_refusals": {
+          "non-fill or transparent selected text unsupported": 35,
+          "rotated or sheared text (text matrix x CTM) is not supported": 12,
+          "paragraph crosses a marked-content sequence": 1,
+          "paragraph glyphs lack content-stream provenance: ambiguous or unmatche": 49,
+          "capacity: the paragraph would grow below the shared bottom of the side": 3,
+          "an inline placed object would move in the new layout": 9
+        }
+      },
+      "pr20043": {
+        "paragraphs": 1,
+        "main_proposed": 0,
+        "new_proposed": 0,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "rotated page": 1
+        }
+      },
+      "prefilled_f1040": {
+        "paragraphs": 170,
+        "main_proposed": 0,
+        "new_proposed": 169,
+        "newly": 109,
+        "lost": 0,
+        "new_refusals": {
+          "paragraph glyphs lack content-stream provenance: trace glyph without a": 1
+        }
+      },
+      "tracemonkey": {
+        "paragraphs": 68,
+        "main_proposed": 42,
+        "new_proposed": 42,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "implicit line-join space has no glyph in the source font": 23,
+          "capacity: no legal line break at original font size": 3
+        }
+      },
+      "word_osaka_fire_notice": {
+        "paragraphs": 9,
+        "main_proposed": 8,
+        "new_proposed": 8,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "non-fill or transparent selected text unsupported": 1
+        }
+      },
+      "word_osaka_guideline": {
+        "paragraphs": 19,
+        "main_proposed": 16,
+        "new_proposed": 16,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "unsupported structure role /Span": 3
+        }
+      },
+      "word_osaka_symposium": {
+        "paragraphs": 1,
+        "main_proposed": 0,
+        "new_proposed": 0,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {
+          "paragraph glyphs lack content-stream provenance: ambiguous or unmatche": 1
+        }
+      },
+      "zero_descent": {
+        "paragraphs": 3,
+        "main_proposed": 3,
+        "new_proposed": 3,
+        "newly": 0,
+        "lost": 0,
+        "new_refusals": {}
+      }
+    },
+    "lost": []
+  },
+  "samples": {
+    "newly": 211,
+    "sampled": 26,
+    "edits": 52,
+    "saved": 31,
+    "safety": 24,
+    "quality": 20,
+    "structure": 31,
+    "continued_editing": 29,
+    "supplementary": {
+      "region_extraction_mupdf": 26,
+      "region_extraction_poppler": 25
+    },
+    "refused": [
+      {
+        "document": "160F-2019",
+        "page": 1,
+        "selection": "n° d'i",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      },
+      {
+        "document": "160F-2019",
+        "page": 1,
+        "selection": "salarié(",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size"
+      },
+      {
+        "document": "160F-2019",
+        "page": 1,
+        "selection": "code p",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      },
+      {
+        "document": "160F-2019",
+        "page": 1,
+        "selection": "signatu",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; no continuation column is linked"
+      },
+      {
+        "document": "issue14297",
+        "page": 1,
+        "selection": "¥233,5",
+        "kind": "shorten",
+        "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+      },
+      {
+        "document": "issue14297",
+        "page": 1,
+        "selection": "¥233,5",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size"
+      },
+      {
+        "document": "issue14297",
+        "page": 1,
+        "selection": "64,457",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size"
+      },
+      {
+        "document": "issue14297",
+        "page": 1,
+        "selection": "111,202",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size"
+      },
+      {
+        "document": "issue14297",
+        "page": 1,
+        "selection": "Items that m",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      },
+      {
+        "document": "issue14297",
+        "page": 1,
+        "selection": "Comprehensive income a",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      },
+      {
+        "document": "issue15262",
+        "page": 1,
+        "selection": "file:/",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 1,
+        "selection": "06（6910）8005",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 3,
+        "selection": "万博特集記事",
+        "kind": "shorten",
+        "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 3,
+        "selection": "万博特集記事",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "日日時 所場",
+        "kind": "shorten",
+        "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "日日時 所場",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; no continuation column is linked"
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 1,
+        "selection": "Depart",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 1,
+        "selection": "Presid",
+        "kind": "shorten",
+        "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 1,
+        "selection": "Presid",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 1,
+        "selection": "Add nu",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 2,
+        "selection": "Additional t",
+        "kind": "lengthen",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      }
+    ],
+    "safety_failed_with_own_text_in_frame": 5,
+    "safety_failed_with_declared_follower_moves": 0,
+    "failed": [
+      {
+        "document": "160F-2019",
+        "page": 1,
+        "selection": "nombre de jours i",
+        "kind": "shorten",
+        "failed": [
+          "raster_outside_region_mupdf",
+          "raster_outside_region_poppler",
+          "glyphs_outside_region_identical"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": false,
+          "region_extraction_poppler": false
+        },
+        "outside_changes": {
+          "removed_or_moved_outside": 0,
+          "new_outside": 2,
+          "new_outside_in_frame": true,
+          "pixels_outside_region_and_frame": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "own_text_in_frame": true
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "nombre de jours mpos"
+        }
+      },
+      {
+        "document": "160F-2019",
+        "page": 1,
+        "selection": "nombre de jours i",
+        "kind": "lengthen",
+        "failed": [
+          "raster_outside_region_mupdf",
+          "raster_outside_region_poppler",
+          "glyphs_outside_region_identical"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": false,
+          "region_extraction_poppler": false
+        },
+        "outside_changes": {
+          "removed_or_moved_outside": 0,
+          "new_outside": 3,
+          "new_outside_in_frame": true,
+          "pixels_outside_region_and_frame": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "own_text_in_frame": true
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "nombre de jours ii"
+        }
+      },
+      {
+        "document": "issue14297",
+        "page": 1,
+        "selection": "111,202",
+        "kind": "shorten",
+        "failed": [
+          "extraction_mupdf",
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": null,
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "111,20",
+          "occurrence": 1
+        }
+      },
+      {
+        "document": "issue14297",
+        "page": 1,
+        "selection": "Net ch",
+        "kind": "lengthen",
+        "failed": [
+          "raster_outside_region_mupdf",
+          "raster_outside_region_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": {
+          "removed_or_moved_outside": 0,
+          "new_outside": 0,
+          "new_outside_in_frame": true,
+          "pixels_outside_region_and_frame": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "own_text_in_frame": true
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "Net chh"
+        }
+      },
+      {
+        "document": "issue6782",
+        "page": 1,
+        "selection": "Our so",
+        "kind": "lengthen",
+        "failed": [
+          "raster_outside_region_mupdf",
+          "raster_outside_region_poppler",
+          "glyphs_outside_region_identical"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": false
+        },
+        "outside_changes": {
+          "removed_or_moved_outside": 0,
+          "new_outside": 4,
+          "new_outside_in_frame": true,
+          "pixels_outside_region_and_frame": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "own_text_in_frame": true
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "Our soo"
+        }
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 1,
+        "selection": "06（6910）8005",
+        "kind": "shorten",
+        "failed": [
+          "extraction_mupdf"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": false,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": null,
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "06（6910）800",
+          "occurrence": 1
+        }
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 2,
+        "selection": "もの・ 保険",
+        "kind": "shorten",
+        "failed": [
+          "extraction_mupdf",
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": false,
+          "region_extraction_poppler": false
+        },
+        "outside_changes": null,
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "もの・ 保"
+        }
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 2,
+        "selection": "もの・ 保険",
+        "kind": "lengthen",
+        "failed": [
+          "extraction_mupdf",
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": false,
+          "region_extraction_poppler": false
+        },
+        "outside_changes": null,
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "もの・ 保険険"
+        }
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 8,
+        "selection": "問 府統計課",
+        "kind": "lengthen",
+        "failed": [
+          "glyphs_outside_region_identical",
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": {
+          "removed_or_moved_outside": 0,
+          "new_outside": 1,
+          "new_outside_in_frame": false,
+          "pixels_outside_region_and_frame": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "own_text_in_frame": false
+        },
+        "continued_editing": {
+          "ok": false,
+          "status": "absent",
+          "selection": "問 府統計課課"
+        }
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 8,
+        "selection": "問 堺市長寿",
+        "kind": "shorten",
+        "failed": [
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": null,
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "問 堺市長"
+        }
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 8,
+        "selection": "問 堺市長寿",
+        "kind": "lengthen",
+        "failed": [
+          "glyphs_outside_region_identical"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": {
+          "removed_or_moved_outside": 0,
+          "new_outside": 1,
+          "new_outside_in_frame": false,
+          "pixels_outside_region_and_frame": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "own_text_in_frame": false
+        },
+        "continued_editing": {
+          "ok": false,
+          "status": "absent",
+          "selection": "問 堺市長寿寿"
+        }
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 1,
+        "selection": "Form  ",
+        "kind": "shorten",
+        "failed": [
+          "extraction_mupdf",
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": null,
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "For  1040"
+        }
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 1,
+        "selection": "Form  ",
+        "kind": "lengthen",
+        "failed": [
+          "raster_outside_region_mupdf",
+          "raster_outside_region_poppler",
+          "extraction_mupdf",
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": false
+        },
+        "outside_changes": {
+          "removed_or_moved_outside": 0,
+          "new_outside": 0,
+          "new_outside_in_frame": true,
+          "pixels_outside_region_and_frame": {
+            "mupdf": 0,
+            "poppler": 0
+          },
+          "own_text_in_frame": true
+        },
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "Formm"
+        }
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 2,
+        "selection": "Additional t",
+        "kind": "shorten",
+        "failed": [
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": null,
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "Additional ax o"
+        }
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 2,
+        "selection": "Amount  ",
+        "kind": "shorten",
+        "failed": [
+          "extraction_mupdf",
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": null,
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "Amoun  You"
+        }
+      },
+      {
+        "document": "prefilled_f1040",
+        "page": 2,
+        "selection": "Amount  ",
+        "kind": "lengthen",
+        "failed": [
+          "extraction_mupdf",
+          "extraction_poppler"
+        ],
+        "structure_failed": [],
+        "supplementary": {
+          "region_extraction_mupdf": true,
+          "region_extraction_poppler": true
+        },
+        "outside_changes": null,
+        "continued_editing": {
+          "ok": true,
+          "status": "applied",
+          "selection": "Amountt"
+        }
+      }
+    ],
+    "seconds": [
+      15.19,
+      9.88,
+      14.84,
+      2.63,
+      14.66,
+      10.24,
+      18.03,
+      17.57,
+      15.93,
+      17.22,
+      15.38,
+      2.7,
+      24.59,
+      5.8,
+      31.13,
+      5.34,
+      26.92,
+      5.57,
+      37.63,
+      31.46,
+      36.87,
+      36.63,
+      39.46,
+      32.33,
+      1.35,
+      1.07,
+      2.19,
+      1.88,
+      47.08,
+      40.59,
+      24.78,
+      24.9,
+      2.79,
+      3.1,
+      4.66,
+      3.45,
+      79.02,
+      69.85,
+      42.68,
+      37.57,
+      44.01,
+      24.99,
+      25.35,
+      24.18,
+      51.11,
+      30.54,
+      105.39,
+      108.77,
+      59.47,
+      42.97,
+      97.07,
+      98.46
+    ]
+  }
+}
