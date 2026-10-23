@@ -96,9 +96,10 @@ def valid(record, width, height):
             return False
         if not isinstance(origin['provenance']['line_height'], str) or not isinstance(origin['values'], dict):
             return False
+        # Paint may extend beyond the page (a background image): finite bounds only.
         known = record.get('present', [])
         if not isinstance(known, list) or not all(isinstance(k, list) and len(k) == 5 and isinstance(k[0], str)
-                                                  and all(_number(v, -1, max(width, height) + 1) for v in k[1:]) for k in known):
+                                                  and all(_number(v) for v in k[1:]) for k in known):
             return False
         return type(approval['count']) is int and approval['count'] >= 1
     except (KeyError, TypeError, AttributeError):

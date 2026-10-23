@@ -498,3 +498,14 @@ def test_paragraph_of_several_lines_keeps_its_own_left_edge(tmp_path):
                                     (40, 73, 'changes in accounting', 11), (40, 86, 'policies', 11)])
     proposal = propose(str(source), 1, 'changes in accounting policies', 'policy changes')
     assert proposal['evidence']['inferred']['left'] == pytest.approx(40, abs=.01)
+
+
+def test_record_keeps_paint_that_extends_beyond_the_page(tmp_path):
+    # A panel behind the text bleeds off the page; the record lists it as
+    # present and stays valid, so the edit is saved and continues.
+    def panel(p):
+        p.draw_rect(pymupdf.Rect(-20, 20, 320, 140), color=None, fill=(.9, .9, 1))
+    plain, _ = page_with(tmp_path, LINES, height=300, before=panel)
+    out = tmp_path / 'out.pdf'
+    edit(plain, '申請書は窓口で', '申請書は各窓口で', out)
+    assert propose(str(out), 1, '各窓口で', '窓口で')['evidence']['conditions']['status'] == 'applied'
