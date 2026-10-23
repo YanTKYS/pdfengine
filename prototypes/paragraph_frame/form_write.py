@@ -129,10 +129,10 @@ def inside_text(boundaries, data, event, containers=()):
 
     Producers such as InDesign draw a whole column in one text object, with
     relative line moves; the new drawing is spliced in there as
-    ``ET … BT <matrix> Tm``. BT/ET only reset the text and line matrices, and
-    the restored ``Tm`` sets both again to their values at that point (they
-    must be equal: no text shown on the line before it), so the remaining
-    text keeps its place and reading and paint order are exact. Not after
+    ``ET … BT <restore>``. BT/ET only reset the text and line matrices, and
+    the restore sets both again to their values at that point (they must be
+    equal: no text shown on the line before it), so the remaining text keeps
+    its place and reading and paint order are exact. Not after
     text clipping (Tr >= 4) in the text object, or with marked content opened
     inside it.
     """
@@ -161,10 +161,18 @@ def inside_text(boundaries, data, event, containers=()):
     if (not b.text_object or b.operator.end < low or b.marked_content_depth != depth or b.pending_path or b.pending_clip
             or b.state.tr >= 4 or clipping or not _axis_aligned(b.state.ctm)):
         return None
-    # Later Td/T* moves are relative to this matrix. MuPDF accumulates it in
-    # float32 (the interpreter's value), Poppler in double (the exact source
-    # arithmetic a glyph-first operator carries): the exact value is written
-    # where it rounds to the same float32, so both keep their placement.
+    # Later Td/T* moves are relative to this matrix, and renderers keep it in
+    # their own arithmetic (MuPDF float32, Poppler double). Replaying the
+    # text object's own positioning (and leading) operators up to here, from
+    # its last absolute Tm, reproduces it in
+    # every renderer exactly. Line-showing operators (' and ") cannot be
+    # replayed; then the matrix is written: the exact source value where it
+    # rounds to MuPDF's float32 value (glyph identity), else MuPDF's value.
+    opened = max((n for n, o in enumerate(ops) if o.name == 'BT' and o.start < first), default=None)
+    moves = [o for o in ops[opened + 1:] if o.start < first and o.name in ('Tm', 'Td', 'TD', 'T*', 'TL', "'", '"')] if opened is not None else None
+    if moves is not None and not any(o.name in ("'", '"') for o in moves):
+        last = max((n for n, o in enumerate(moves) if o.name == 'Tm'), default=0)
+        return b, b''.join(data[o.start:o.end] + b'\n' for o in moves[last:])
     exact = event.atoms[0].source_text_matrix if event.atoms and not isinstance(event.atoms[0], (int, float)) else None
     matrix = [e if exact and _float32(e) == _float32(v) else v for e, v in zip(exact or event.text_matrix, event.text_matrix)]
     return b, b' '.join(number(v) for v in matrix) + b' Tm\n'

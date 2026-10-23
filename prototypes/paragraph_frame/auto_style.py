@@ -61,6 +61,12 @@ def source_tokens(c):
                 # than the glyph); justified layouts reset and stretch spaces
                 # again per line (build).
                 t['tracking']=delta-t['advance'];t['advance']=delta
+            elif t['text'].strip() and n['text'].strip() and t['advance']<delta<t['advance']+4*t['size']:
+                # A wider gap without a space glyph: a word space drawn by
+                # positioning (TeX), Latin/CJK spacing or a tab (Word,
+                # LibreOffice). It stays with the glyph before it; build drops
+                # it at a line end of the paragraph.
+                t['positional_gap']=delta-t['advance'];t['advance']=delta
             elif (t['text'] in PUNCTUATION or n['text'] in OPENING) and (0 if pair else .2)*t['advance']<=delta<t['advance']:
                 # Japanese writers compress punctuation (約物詰め): the space after
                 # closing marks and before opening brackets is removed (half width
@@ -200,13 +206,12 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
         line=min(paragraph.baselines,key=lambda b:abs(b-t['origin'][1]))
         offset=t['origin'][1]-line
         t['baseline_offset']=offset if .01<abs(offset)<.35*t['size'] else 0.
-    # A wider gap between two glyphs of one line than the kept pen steps
-    # (a word space drawn as positioning, as TeX does, or wide letter
-    # spacing) has no token to carry it: the relayout would close it up.
+    # A positional gap belongs inside a line of this paragraph; after its
+    # last glyph on a line it is the distance to other text (a column).
     line_of=lambda t:min(paragraph.baselines,key=lambda b:abs(b-t['origin'][1]))
-    for t,n in zip(base,base[1:]):
-        if line_of(t)==line_of(n) and t['text'].strip() and n['text'].strip() and n['origin'][0]-t['origin'][0]-t['advance']>.1*t['size']:
-            raise Refused('positional gap within a line without a space glyph (word space or letter spacing drawn by positioning) is unsupported')
+    for t,n in zip(base,base[1:]+[None]):
+        if t.get('positional_gap') and (n is None or line_of(t)!=line_of(n)):
+            t['advance']-=t.pop('positional_gap')
     for t in base:
         for n,s in enumerate(paragraph.scopes):
             if s['content_byte_range'][0]<=t['event'].operator.start<s['content_byte_range'][1]:t['scope']=n;break
@@ -234,7 +239,7 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
 
     def resolve(char,anchor,mode=None):
         """A new token in the anchor's style: source witness, same program, then approved substitute."""
-        t=copy(anchor);t.update(text=char,source_id=None,origin=None,bbox=None)
+        t=copy(anchor);t.update(text=char,source_id=None,origin=None,bbox=None);t.pop('positional_gap',None)
         # Never silently borrow another font resource merely because Unicode
         # happens to match. A source witness must be in the anchor resource.
         witnesses=[v for v in source.values() if v['text']==char and v['font'].xref==anchor['font'].xref]
@@ -323,6 +328,9 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
     for t in newtokens:
         seen=observed.get((t['text'],t['font_name'],t['size']))
         if seen and median(seen)<t['advance']:t['advance']=median(seen)
+    # A positional gap after the replaced text stays after its replacement.
+    if newtokens and stop>at and tokens[stop-1].get('positional_gap'):
+        gap=tokens[stop-1]['positional_gap'];newtokens[-1]['advance']+=gap;newtokens[-1]['positional_gap']=gap
     result=tokens[:at]+newtokens+tokens[stop:]
     choice={str(xref):dict(chosen_sha256=pick[0],scores=scores) for xref,(pick,scores) in chosen.items() if scores is not None}
     return result,fonts,dict(Counter(t['mode'] for t in result)),choice

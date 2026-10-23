@@ -262,23 +262,32 @@ def test_indirect_font_dictionary_keeps_font_references(tmp_path):
     assert painting(str(out), 1)['fonts'].items() >= painting(str(source), 1)['fonts'].items()
 
 
-def test_positional_word_gap_without_space_glyph_is_refused(tmp_path):
-    """TeX-like spacing: a gap drawn by a TJ adjustment, with no space glyph, would close up on relayout."""
-    plain, _ = page_with(tmp_path, LINES, height=H)
-
+def test_positional_gap_without_space_glyph_is_kept(tmp_path):
+    """TeX-like spacing: a gap drawn by a TJ adjustment, with no space glyph, stays where it is."""
+    # (A last line of four characters or more: B2 avoids shorter ones.)
+    plain, _ = page_with(tmp_path, LINES[:2] + [(40, 92, 'ます。ご確認ください。'), LINES[3]], height=H)
     streams = []
 
     def gap(data):
-        # Split the second line's glyph string after four glyphs with a -400 (0.4 em) move.
+        # Split the second line's glyph string after four glyphs (行います) with a -400 (0.4 em) move.
         streams.append(data)
         if len(streams) != 2:
             return data
         return re.sub(rb'\[<([0-9a-f]{16})([0-9a-f]+)>\]TJ', rb'[<\1> -400 <\2>]TJ', data, count=1)
     source = rewrite(plain, tmp_path / 'gap.pdf', gap)
-    with pytest.raises(Refused, match='positional gap within a line'):
-        propose(source, 1, '申請書は窓口で', '申請書は各窓口で')
-    # Other paragraphs of the page are not affected.
-    propose(source, 1, '後続段落です。', '後続の段落です。')
+
+    def glyphs(path):
+        with pymupdf.open(path) as d:
+            return [(c['c'], round(c['origin'][0], 2), round(c['origin'][1], 2)) for b in d[0].get_text('rawdict')['blocks']
+                    for l in b.get('lines', []) for s in l['spans'] for c in s['chars']]
+    # Unchanged text keeps every glyph, the gap included.
+    edit(source, '申請書は窓口で', '申請書は窓口で', tmp_path / 'same.pdf')
+    assert glyphs(tmp_path / 'same.pdf') == glyphs(source)
+    # A replacement that ends at the gap keeps the gap after it.
+    edit(source, '行います', '行う', tmp_path / 'short.pdf')
+    line = [(c, x) for c, x, y in glyphs(tmp_path / 'short.pdf') if y == 76]
+    (_, u), (_, stop) = line[1], line[2]
+    assert [c for c, _ in line[:3]] == ['行', 'う', '。'] and stop - u == pytest.approx(11 + 4.4, abs=.05)
 
 
 def test_forms_inheriting_page_resources_are_walked_once(tmp_path):
