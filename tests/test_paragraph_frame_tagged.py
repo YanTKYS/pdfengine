@@ -46,9 +46,13 @@ def tagged(tmp_path, blocks, *, lines=LINES, tree=True, name='tagged.pdf', root=
     for block in blocks:
         parent = root_ref
         for role in block.get('within', ()):
-            parent = element(w, role, parent, page)
-            parent.get_object()[NameObject('/K')] = ArrayObject()
-            refs.append(parent) if parent.get_object()['/P'] is root_ref else None
+            child = element(w, role, parent, page)
+            child.get_object()[NameObject('/K')] = ArrayObject()
+            if parent is root_ref:
+                refs.append(child)
+            else:
+                parent.get_object()['/K'].append(child)
+            parent = child
         b = element(w, block['role'], parent, page, typed=block.get('typed', True), **block.get('entries', {}))
         if parent is root_ref:
             refs.append(b)
@@ -456,3 +460,14 @@ def test_centred_paragraph_is_refused(tmp_path):
     source, _ = tagged(tmp_path, [dict(role='/P', kids=[0, 1]), dict(role='/P', kids=[2])], lines=lines)
     with pytest.raises(Refused, match='centred paragraph'):
         propose(str(source), 1, '補助事業', '補助金事業')
+
+
+def test_replacement_text_on_an_enclosing_element_is_refused(tmp_path):
+    source, _ = tagged(tmp_path, [dict(role='/P', kids=[0, 1, 2], within=('/Sect',)), dict(role='/P', kids=[3])])
+    w = PdfWriter(clone_from=PdfReader(source))
+    section = w._root_object['/StructTreeRoot']['/K'][0].get_object()
+    section[NameObject('/ActualText')] = TextStringObject(FIRST)
+    w.write(tmp_path / 'section.pdf')
+    propose(str(source), 1, '申請書は窓口で', '申請書は各窓口で')
+    with pytest.raises(Refused, match='enclosing structure element has replacement text'):
+        propose(str(tmp_path / 'section.pdf'), 1, '申請書は窓口で', '申請書は各窓口で')

@@ -201,6 +201,16 @@ def _structure(c, marks, bound, emitted):
         raise Refused('multiple semantic paragraph parents')
     parent = blocks.pop()
     block = reader.get_object(parent)
+    # Replacement text or a description on an enclosing element (a table, a
+    # section) covers this text too; the edit would leave it stale.
+    node, depth = block.get('/P'), 0
+    while node is not None and depth < 64:
+        node = node.get_object()
+        if node.get('/Type') == '/StructTreeRoot':
+            break
+        if {'/ActualText', '/Alt', '/E'} & set(node.keys()):
+            raise Refused('an enclosing structure element has replacement text or an alternate description')
+        node, depth = node.get('/P'), depth + 1
 
     def kids(node):
         k = node.get('/K')
