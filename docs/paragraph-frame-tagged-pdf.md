@@ -250,4 +250,44 @@ issue8702 の1ページ目は、main と今回のコードのどちらでも調�
 
 ## 6. テストと再現
 
-@@TESTS@@
+### テスト
+
+`tests/test_paragraph_frame_tagged.py`（新規、27関数・28件）。合成したタグ付きPDFで、次を確かめる。
+
+- 構造の正規形が書き換えで安定すること
+- `/Type` のない `/TD`、共有MCID、Span をまたぐ編集（ActualText・Lang）、構造ツリーのないMCID、IDTree
+- 置き換え文字列の原子（残す・分けない）、インライン配置物（動かさない、クリップがEMCの後まで続く場合、状態の引き継ぎが違う場合）
+- 拒否：`/Alt`・`/Figure`、囲む要素の置き換え文字列、中央揃え、ブレンドした文字、右から左の文字
+- 同じ行のセル、ずれたベースラインの記号、箇条書きの記号、離れた位置の別サイズの行
+- MediaBox の原点、透明度の引き継ぎ、`/AIS` とオーバープリント、グリフごとのオーバープリント
+- 後続段落より短い行を両端揃えにしないこと、複数行の段落の左端、ページからはみ出す描画を含む記録
+
+各テストは、対応する修正を外すと失敗することを確かめた。
+
+実行したテスト（CLAUDE.md の方針どおり、full suite は実行していない）：
+
+| 範囲 | コミット | 結果 | 時間 |
+|---|---|---|---|
+| focused：`prototypes.paragraph_frame` の auto・auto_detect・auto_conditions・auto_style・semantics を import するテストと、`pdfeditor.marked_content` を import するテスト（10ファイル） | `fa6db75` | 254 passed | 327秒 |
+| `pdfeditor.content_stream`（`State.blend` を追加）を import する39ファイル | `3229429`（エンジンは `583e01c`） | 1,360 passed、5 skipped | 2,687秒 |
+| full suite | — | 未実行 | — |
+
+`583e01c` の後の変更（右から左の文字の拒否、グリフごとのオーバープリント）は `prototypes/paragraph_frame` だけを変え、focused の範囲で確かめた。
+
+### 実PDFの評価の再現
+
+PDFはコミットしていない。pdf.js のテストPDFは pdf.js リポジトリの `test/pdfs` から、府政だより477号は PR #89 と同じ取得元から取得する。Word のPDFは `evaluations/realpdf/corpus` にある。各PDFの sha256 は manifest に記録した。
+
+```
+# 調査（ページごと、main は PR #90 マージ後の worktree で）
+.venv/bin/python prototypes/paragraph_frame/indesign_survey.py <pdf> <page> tmp/tg-survey/new-<doc>-<page>.json
+# 固定した要求、実際の変更の保存監査、集計
+.venv/bin/python -m prototypes.paragraph_frame.tagged_evaluate --root tmp/tg-final --fusei <477.pdf> --pdfjs <dir> --phase requests
+.venv/bin/python -m prototypes.paragraph_frame.tagged_evaluate --root tmp/tg-final --fusei <477.pdf> --pdfjs <dir> --phase samples --survey tmp/tg-survey
+.venv/bin/python -m prototypes.paragraph_frame.tagged_evaluate --root tmp/tg-final --fusei <477.pdf> --pdfjs <dir> --phase collect \
+    --survey tmp/tg-survey --pr90-survey tmp/id-survey-final --tests-json tests.json --regression-json regression.json
+# 拒否の分類
+.venv/bin/python -m prototypes.paragraph_frame.tagged_diagnose <pdf> <page> <out.json>
+```
+
+PR #87〜#90 の回帰は、各PRの評価スクリプト（`generalization_evaluate`、`continuity_evaluate`、`column_flow_evaluate`、`indesign_evaluate`）を同じ引数で実行し、コミット済みの結果と比べた。
