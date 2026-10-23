@@ -130,11 +130,12 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     def exact(value,axis):
         best=min(pool[axis],key=lambda p:abs(p-value),default=value)
         return best if abs(best-value)<1e-3 else value
-    for p,tokens in batches:
+    def emit(p,tokens,edited,prefix):
+        """Drawing of ``tokens`` of paragraph ``p``: its sequences re-emitted around their glyphs."""
+        ops=[]
         # Following paragraphs are repainted as a rigid translation of their
         # rendered glyph origins, one positioned glyph each; runs and exact
         # source coordinates apply to the edited paragraph.
-        edited=p is batches[0][0]
         runs=scope_runs(c,p,[t for t in tokens if not t.get('fixed')])
         for n,ts in runs:
             if n is not None:
@@ -173,11 +174,42 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
                 run=None if key is None else (key,x+t['nominal_advance'])
             ops.append(b'ET\nQ\n')
             if n is not None:ops.append(b'EMC\n')
-        # Replacement text of the paragraph element itself follows its new text.
+        return ops
+    # An inline placed object stays where it is in the content: the text
+    # after it is inserted after its sequence, so content order is kept.
+    head,first_tokens=batches[0]
+    pieces=[[]]
+    for t in first_tokens:
+        if t.get('fixed'):
+            if t['scope'] not in [x for x,_ in pieces[1:]]:pieces.append((t['scope'],[]))
+            continue
+        (pieces[-1] if not isinstance(pieces[-1],tuple) else pieces[-1][1]).append(t)
+    parts=[(None,pieces[0])]+[(n,ts) for n,ts in pieces[1:]]
+    if len(parts)>1 and any(x['kind']=='mcid' for x in head.scopes):raise Refused('structured marked content around an inline placed object')
+    drawn=[]
+    for k,(n,ts) in enumerate(parts):
+        if not k:
+            at,pre,wrapped=insertion,prefix,(choice,restore)
+        else:
+            end=head.scopes[n]['end_byte_range'][1]
+            spot=next((b for b in boundaries if b.operator.end==end and b.marked_content_depth==len(containers) and not b.text_object),None)
+            if spot is None:raise Refused('no safe insertion point after an inline placed object')
+            pre=form_write.insertion(spot,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=bool(neutral))
+            if neutral:pre+=neutral.encode()+b' gs\n'
+            at,wrapped=spot.operator.end,(spot,b'')
+            if any(a<at<b for a,b,_ in edits):raise Refused('insertion intersects removal')
+        ops=emit(head,ts,True,pre) if ts else []
+        if k==len(parts)-1:
+            for p,tokens in batches[1:]:ops+=emit(p,tokens,False,pre)
+        drawn.append((at,wrapped,ops))
+    for at,(spot,restore_),ops in drawn:
+        if ops:edits.append((at,at,form_write.wrap(spot,b''.join(ops),restore_)))
+    # Replacement text of a paragraph element itself follows its new text.
+    for p,tokens in batches:
         if p.parent is not None and '/ActualText' in c.reader.get_object(p.parent):
             writer.get_object(lookup[p.parent])[NameObject('/ActualText')]=TextStringObject(''.join(t['text'] for t in tokens if not t.get('fixed')))
             rewritten.add(p.parent)
-    edits.append((insertion,insertion,form_write.wrap(choice,b''.join(ops),restore)))
+
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
     clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts,{neutral:writer._add_object(form_write.neutral_gs())} if neutral else None)
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);fd,tmp=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
