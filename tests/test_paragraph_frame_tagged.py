@@ -471,3 +471,22 @@ def test_replacement_text_on_an_enclosing_element_is_refused(tmp_path):
     propose(str(source), 1, '申請書は窓口で', '申請書は各窓口で')
     with pytest.raises(Refused, match='enclosing structure element has replacement text'):
         propose(str(tmp_path / 'section.pdf'), 1, '申請書は窓口で', '申請書は各窓口で')
+
+
+def test_lines_short_of_a_wider_follower_are_not_justified(tmp_path):
+    # Line 1 is the longer line of its paragraph but stops short of the
+    # following paragraph's edge: it is not justified to that edge.
+    source = _glyph_page(tmp_path, [(40, 60, 'Adjusted balance at', 11), (40, 73, 'beginning of year', 11),
+                                    (40, 95, 'Comprehensive income for the year', 11)])
+    proposal = propose(str(source), 1, 'beginning', 'inception')
+    assert proposal['evidence']['inferred']['alignment'] == 'start'
+    out = tmp_path / 'out.pdf'
+    save(str(source), approve(str(source), proposal, acknowledge_inference=True), str(out))
+
+    def first_line(path):
+        with pymupdf.open(path) as d:
+            return [(c['c'], round(c['origin'][0], 2)) for b in d[0].get_text('rawdict')['blocks'] for l in b.get('lines', [])
+                    for s in l['spans'] for c in s['chars'] if abs(c['origin'][1] - 60) < .1]
+    # Its glyphs stay where they were (the line may take more words: the
+    # inferred width reaches the follower's edge).
+    assert first_line(out)[:len(first_line(source))] == first_line(source)

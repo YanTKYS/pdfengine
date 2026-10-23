@@ -642,8 +642,11 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         # A space-separated (non-CJK) paragraph whose non-final lines all end at
         # the right edge is justified; reflow keeps that alignment. CJK text
         # keeps its observed per-character tracking instead.
-        justified=len(selected)>1 and ' ' in paragraphs[0].text and all(ord(ch)<0x2E80 for ch in paragraphs[0].text) and all(abs(r['pen_end']-max(x['pen_end'] for x in selected))<.75 for r in selected[:-1])
-        flush=len(selected)>1 and all(abs(r['pen_end']-max(x['pen_end'] for x in selected))<.75 for r in selected[:-1])
+        # The edge is the frame's right edge (approved, or the widest line of
+        # the paragraph and its followers): a paragraph whose lines stop short
+        # of a wider follower is not justified to it.
+        flush=len(selected)>1 and all(abs(r['pen_end']-right)<.75 for r in selected[:-1])
+        justified=flush and ' ' in paragraphs[0].text and all(ord(ch)<0x2E80 for ch in paragraphs[0].text)
         cjk=flush and not justified and any(ord(ch)>=0x2E80 for ch in paragraphs[0].text)
         align='justify' if justified else 'justify-cjk' if cjk else 'start'
         if state['applied']:align=records[state['target']]['conditions'].get('align',align)
