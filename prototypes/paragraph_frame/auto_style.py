@@ -7,42 +7,77 @@ from pathlib import Path
 import re
 from pdfeditor.shaped_font import ShapedFont
 from .engine import Refused
+from . import text_space
 
 
 PUNCTUATION=set('、。，．・：；？！）〕］｝〉》」』】（〔［｛〈《「『【')
+# Marks whose leading space is removed too (opening brackets, middle dots).
+OPENING=set('（〔［｛〈《「『【・：；')
+CLOSING=set('、。，．）〕］｝〉》」』】')
 
 
 def family(font):return re.sub(r'^/?[A-Z]{6}\+','',font.basefont).lstrip('/')
 
 
 def source_tokens(c):
+    """Drawn glyphs with page-space size, horizontal scale, spacing and advance (text_space)."""
     tokens={}
     for e in c.events:
+        try:space=text_space.effective(e)
+        except Refused:continue
         for ch in e.chars:
             if len(ch.source_orders)!=1 or len(ch.text)!=1:continue
             i=ch.source_orders[0];g=c.actual[i]
             if g['unicode']!=ch.text or not g['gid'] and ch.text.strip():continue
             tokens[i]=dict(text=ch.text,source_id=i,code=ch.code,font=e.state.font,font_name=e.state.font.name,
-                family=family(e.state.font),size=e.state.size,tz=e.state.tz,fill=e.state.fill,tc=e.state.tc,tw=e.state.tw,
-                rise=e.state.ts,origin=list(g['origin']),advance=ch.advance,gid=g['gid'],bbox=list(g['bbox']),
-                mode='retained-source',scope=None,event=e,tracking=0.,nominal_advance=ch.pdf_width/1000*e.state.size*e.state.tz/100)
+                family=family(e.state.font),size=space['size'],tz=space['tz'],fill=e.state.fill,fill_space=e.state.fill_space,tc=space['tc'],tw=space['tw'],
+                rise=space['rise'],origin=list(g['origin']),advance=ch.advance*space['sx'],gid=g['gid'],bbox=list(g['bbox']),
+                mode='retained-source',scope=None,event=e,tracking=0.,nominal_advance=ch.pdf_width/1000*space['size']*space['tz']/100)
     # Pair displacements include TJ tracking, while line-final advance remains
     # the nominal width. This avoids carrying a line reset into the next line.
-    rows=defaultdict(list)
-    for i,t in tokens.items():rows[round(t['origin'][1],2)].append(t)
+    # One row per drawn line: mixed sizes on a line are centred on slightly
+    # different baselines (within 0.35 em of each other).
+    rows=[]
+    for t in sorted(tokens.values(),key=lambda t:t['origin'][1]):
+        if rows and abs(t['origin'][1]-rows[-1][0]['origin'][1])<=.35*min(t['size'],rows[-1][0]['size']):rows[-1].append(t)
+        else:rows.append([t])
     tracking=defaultdict(list)
-    for row in rows.values():
+    for row in rows:
         row.sort(key=lambda t:t['origin'][0])
         for t,n in zip(row,row[1:]):
             delta=n['origin'][0]-t['origin'][0]
-            if not all(t[k]==n[k] for k in ('font_name','size','tz','rise','tc','tw')):continue
-            if abs(delta-t['advance'])<.25*t['size']:
+            same=all(t[k]==n[k] for k in ('font_name','size','tz','rise','tc','tw'))
+            pair=t['text'] in CLOSING and n['text'] in OPENING
+            if abs(delta-t['advance'])<.25*t['size'] or abs(delta-t['nominal_advance'])<.25*t['size']:
+                # The observed pen step is kept even across a font switch
+                # (TJ adjustments); only same-style pairs feed the tracking median.
+                # TJ adjustments may also undo a character spacing (Tc), so the
+                # step is compared with the glyph width with and without it.
                 t['tracking']=delta-t['advance'];t['advance']=delta
-                tracking[(t['font_name'],t['size'],t['tz'])].append(t['tracking'])
-            elif t['text'] in PUNCTUATION and .45*t['advance']<=delta<t['advance']:
-                # Japanese writers compress punctuation (約物詰め): keep the
-                # observed advance, but do not let it skew the tracking median.
-                t['tracking']=delta-t['advance'];t['advance']=delta;t['compressed_punctuation']=True
+                if same:tracking[(t['font_name'],t['size'],t['tz'])].append(t['tracking'])
+                continue
+            elif not t['text'].strip() and 0<delta<2*t['size']:
+                # A space keeps its observed width (a writer may set it wider
+                # than the glyph); justified layouts reset and stretch spaces
+                # again per line (build).
+                t['tracking']=delta-t['advance'];t['advance']=delta
+            elif t['text'].strip() and n['text'].strip() and t['advance']<delta<t['advance']+4*t['size']:
+                # A wider gap without a space glyph: a word space drawn by
+                # positioning (TeX), Latin/CJK spacing or a tab (Word,
+                # LibreOffice). It stays with the glyph before it; build drops
+                # it at a line end of the paragraph.
+                t['positional_gap']=delta-t['advance'];t['advance']=delta
+            elif (t['text'] in PUNCTUATION or n['text'] in OPENING) and (0 if pair else .2)*t['advance']<=delta<t['advance']:
+                # Japanese writers compress punctuation (約物詰め): the space after
+                # closing marks and before opening brackets is removed (half width
+                # plus tracking; InDesign down to 0.24 em). A closing mark directly
+                # followed by an opening one may lose both halves (「）【」 in one em
+                # box, step 0). Keep the observed advance, but do not let it skew
+                # the tracking median.
+                own=delta>=.2*t['advance'];t['tracking']=delta-t['advance'];t['advance']=delta
+                # Only a compressed mark itself is evidence for that mark's width,
+                # not a pair step below that, which depends on the next mark.
+                if t['text'] in PUNCTUATION and own:t['compressed_punctuation']=True
     med={k:median(v) for k,v in tracking.items()}
     return tokens,med
 
@@ -54,14 +89,19 @@ def resource_witnesses(c,font):
     but the unchanged embedded program and its ToUnicode still define it. Only
     an unambiguous inverse mapping whose glyph has an outline and whose PDF
     width equals the program advance is a witness. Type0/Identity-H (CID ->
-    GID map) and simple TrueType (code -> glyph through the (1,0)/(3,0) cmap).
+    GID map) and simple TrueType (code -> glyph through the (1,0)/(3,0) cmap);
+    Type0 over a CID-keyed CFF program (InDesign, Illustrator: CID -> glyph
+    through the CFF charset).
     """
     from io import BytesIO
     from fontTools.ttLib import TTFont
     if font.error or font.subtype not in ('/Type0','/TrueType'):return {}
-    try:program=TTFont(BytesIO(c.document.extract_font(font.xref)[3]))
-    except Exception:return {}
+    data=c.document.extract_font(font.xref)[3]
+    try:program=TTFont(BytesIO(data))
+    except Exception:
+        return _cff_witnesses(font,data) if font.subtype=='/Type0' else {}
     try:
+        if 'CFF ' in program and font.subtype=='/Type0':return _cff_witnesses(font,program['CFF '].cff)
         if 'glyf' not in program or 'hmtx' not in program:return {}
         order=program.getGlyphOrder();upem=program['head'].unitsPerEm
         if font.subtype=='/Type0':
@@ -95,6 +135,48 @@ def resource_witnesses(c,font):
     finally:program.close()
 
 
+def _inverse(font):
+    """Unicode -> (the only code of the resource that decodes to it, its PDF width incl. /DW)."""
+    found={}
+    for key,target in font.unicode_map.items():
+        value=ord(key) if isinstance(key,str) and len(key)==1 else None
+        if value is None or not isinstance(target,str) or len(target)!=1 or value>=256**font.unit:continue
+        try:code,char,width=font.decode(value.to_bytes(font.unit,'big'))[0]
+        except Exception:continue
+        found.setdefault(char,[]).append((value,width))
+    return {char:values[0] for char,values in found.items() if len(values)==1}
+
+
+def _cff_witnesses(font,data):
+    """Witnesses of an Identity-H Type0 font over a CID-keyed CFF program."""
+    from io import BytesIO
+    from fontTools.cffLib import CFFFontSet
+    from fontTools.misc.psCharStrings import T2WidthExtractor
+    descendant=font.resource['/DescendantFonts'][0].get_object()
+    if str(font.resource.get('/Encoding'))!='/Identity-H' or descendant.get('/Subtype')!='/CIDFontType0':return {}
+    try:
+        if isinstance(data,(bytes,bytearray)):
+            cff=CFFFontSet();cff.decompile(BytesIO(data),None)
+        else:cff=data
+        top=cff[cff.fontNames[0]]
+        if not hasattr(top,'ROS'):return {}
+        strings=top.CharStrings;names=set(top.charset)
+    except Exception:return {}
+    result={}
+    for char,(cid,width) in _inverse(font).items():
+        name=f'cid{cid:05d}'
+        if name not in names:continue
+        try:
+            glyph=strings[name];glyph.decompile();private=glyph.private
+            meter=T2WidthExtractor(getattr(private,'Subrs',[]),top.GlobalSubrs,private.nominalWidthX,private.defaultWidthX)
+            meter.execute(glyph)
+            if not char.isspace() and glyph.calcBounds(strings) is None:continue
+            if abs(meter.width-width)>1:continue
+        except Exception:continue
+        result[char]=(cid.to_bytes(font.unit,'big'),list(top.charset).index(name))
+    return result
+
+
 def sibling_fonts(c,font):
     """Page font resources that are other subsets of the same embedded face.
 
@@ -118,6 +200,18 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
     source,tracking=source_tokens(c)
     try:base=[copy(source[i]) for i in paragraph.ids]
     except KeyError:raise Refused('selected source glyph lacks a concrete code/GID witness')
+    # Mixed sizes on one line may be centred on their own baselines; keep each
+    # glyph's observed offset from its line (new glyphs copy their anchor's).
+    for t in base:
+        line=min(paragraph.baselines,key=lambda b:abs(b-t['origin'][1]))
+        offset=t['origin'][1]-line
+        t['baseline_offset']=offset if .01<abs(offset)<.35*t['size'] else 0.
+    # A positional gap belongs inside a line of this paragraph; after its
+    # last glyph on a line it is the distance to other text (a column).
+    line_of=lambda t:min(paragraph.baselines,key=lambda b:abs(b-t['origin'][1]))
+    for t,n in zip(base,base[1:]+[None]):
+        if t.get('positional_gap') and (n is None or line_of(t)!=line_of(n)):
+            t['advance']-=t.pop('positional_gap')
     for t in base:
         for n,s in enumerate(paragraph.scopes):
             if s['content_byte_range'][0]<=t['event'].operator.start<s['content_byte_range'][1]:t['scope']=n;break
@@ -145,7 +239,7 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
 
     def resolve(char,anchor,mode=None):
         """A new token in the anchor's style: source witness, same program, then approved substitute."""
-        t=copy(anchor);t.update(text=char,source_id=None,origin=None,bbox=None)
+        t=copy(anchor);t.update(text=char,source_id=None,origin=None,bbox=None);t.pop('positional_gap',None)
         # Never silently borrow another font resource merely because Unicode
         # happens to match. A source witness must be in the anchor resource.
         witnesses=[v for v in source.values() if v['text']==char and v['font'].xref==anchor['font'].xref]
@@ -234,6 +328,9 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
     for t in newtokens:
         seen=observed.get((t['text'],t['font_name'],t['size']))
         if seen and median(seen)<t['advance']:t['advance']=median(seen)
+    # A positional gap after the replaced text stays after its replacement.
+    if newtokens and stop>at and tokens[stop-1].get('positional_gap'):
+        gap=tokens[stop-1]['positional_gap'];newtokens[-1]['advance']+=gap;newtokens[-1]['positional_gap']=gap
     result=tokens[:at]+newtokens+tokens[stop:]
     choice={str(xref):dict(chosen_sha256=pick[0],scores=scores) for xref,(pick,scores) in chosen.items() if scores is not None}
     return result,fonts,dict(Counter(t['mode'] for t in result)),choice
@@ -294,17 +391,18 @@ def describe(c,paragraphs):
     for e in c.events:
         count=sum(len(selected.intersection(ch.source_orders)) for ch in e.chars)
         if not count:continue
-        state=e.state;font=state.font
+        state=e.state;font=state.font;space=text_space.effective(e)
         if font.xref not in programs:
             data=c.document.extract_font(font.xref)[3]
             programs[font.xref]=hashlib.sha256(data).hexdigest() if data else None
-        key=(font.name,state.size,state.tz,state.tc,state.tw,state.ts,state.fill)
+        key=(font.name,space['size'],space['tz'],space['tc'],space['tw'],space['rise'],state.fill)
         if key not in styles:
             resource=font.resource
             if '/DescendantFonts' in resource:resource=resource['/DescendantFonts'][0].get_object()
             descriptor=resource.get('/FontDescriptor');descriptor=descriptor.get_object() if descriptor else {}
-            styles[key]=dict(resource=font.name,base_font=font.basefont,embedded_program_sha256=programs[font.xref],size=state.size,horizontal_scale=state.tz,
-                character_spacing=state.tc,word_spacing=state.tw,text_rise=state.ts,fill=[state.fill[0],[float(v) for v in state.fill[1]]],
+            # Page-space values: a scale in the text matrix or CTM is part of the size.
+            styles[key]=dict(resource=font.name,base_font=font.basefont,embedded_program_sha256=programs[font.xref],size=space['size'],horizontal_scale=space['tz'],
+                character_spacing=space['tc'],word_spacing=space['tw'],text_rise=space['rise'],fill=[state.fill[0],[float(v) for v in state.fill[1]]],
                 descriptor={k:float(descriptor[k]) if k in descriptor else None for k in ('/Flags','/ItalicAngle','/FontWeight')},source_glyph_count=0)
         styles[key]['source_glyph_count']+=count
     return list(styles.values())

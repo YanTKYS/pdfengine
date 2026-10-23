@@ -1,0 +1,1486 @@
+{
+  "schema": "paragraph-frame-indesign-results-1",
+  "manifest_sha256": "e3b4fb5131fb6fcd54a9139a1de54259a096f7977710f1aab7e02a876add0f21",
+  "tests": {
+    "focused": {
+      "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_text_space.py tests/test_paragraph_frame_column_flow.py tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_continuity.py tests/test_paragraph_frame_poc.py",
+      "commit": "3393b34",
+      "passed": 99,
+      "failed": 0,
+      "seconds": 101.5,
+      "new_tests": 22,
+      "selection": "every test importing prototypes.paragraph_frame.auto, auto_writer, auto_style or form_write"
+    },
+    "content_stream_importers": {
+      "what": "the 37 test files importing pdfeditor.content_stream (changed once, in 48ad3e4: stream_boundaries, fill_space)",
+      "commit": "48ad3e4 (pdfeditor unchanged since)",
+      "passed": 1327,
+      "skipped": 5,
+      "failed": 0,
+      "seconds": 2771.7
+    },
+    "full_suite": "not run"
+  },
+  "regression": {
+    "generalization": {
+      "A": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "B": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "C": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "D": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "F1": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "F2": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "F3": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "native_replacement_search"
+        ],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "F4": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "native_replacement_search"
+        ],
+        "reedit": "quality-audit-failed",
+        "reedit_failed": [
+          "native_replacement_search"
+        ],
+        "same_as_committed": true
+      },
+      "N1": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "N2": {
+        "initial": "success",
+        "initial_failed": [],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "N3": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "native_replacement_search"
+        ],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      },
+      "N4": {
+        "initial": "quality-audit-failed",
+        "initial_failed": [
+          "mupdf_copy_extract",
+          "poppler_copy_extract",
+          "native_replacement_search"
+        ],
+        "reedit": "success",
+        "reedit_failed": [],
+        "same_as_committed": true
+      }
+    },
+    "continuity_sequences": {
+      "Q1-stored": {
+        "steps": [
+          "success",
+          "success",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      },
+      "Q1-inference": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      },
+      "Q2-stored": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      },
+      "Q2-inference": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      },
+      "Q3-stored": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "success",
+          "success"
+        ],
+        "same_as_committed": false
+      },
+      "Q3-inference": {
+        "steps": [
+          "success",
+          "quality-audit-failed",
+          "quality-audit-failed",
+          "success"
+        ],
+        "same_as_committed": true
+      }
+    },
+    "continuity_new": {
+      "E1": {
+        "edit": "saved",
+        "audit": "success",
+        "same_as_committed": true
+      },
+      "E2": {
+        "edit": "refused",
+        "audit": null,
+        "same_as_committed": true
+      },
+      "E3": {
+        "edit": "refused",
+        "audit": null,
+        "same_as_committed": true
+      },
+      "E4": {
+        "edit": "saved",
+        "audit": "success",
+        "same_as_committed": true
+      },
+      "E5": {
+        "edit": "saved",
+        "audit": "success",
+        "same_as_committed": true
+      },
+      "E6": {
+        "edit": "saved",
+        "audit": "success",
+        "same_as_committed": false
+      },
+      "S1": {
+        "edit": "refused",
+        "audit": null,
+        "same_as_committed": true
+      },
+      "S2": {
+        "edit": "refused",
+        "audit": null,
+        "same_as_committed": true
+      }
+    },
+    "column_flow": {
+      "sequences": {
+        "S1": {
+          "steps": [
+            "saved",
+            "saved",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S2": {
+          "steps": [
+            "saved",
+            "saved",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S3": {
+          "steps": [
+            "saved",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S4": {
+          "steps": [
+            "saved",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S5": {
+          "steps": [
+            "refused",
+            "saved",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "S6": {
+          "steps": [
+            "refused",
+            "saved"
+          ],
+          "as_expected": true,
+          "same_as_committed": true
+        }
+      },
+      "singles": {
+        "J-fit": {
+          "outcome": "saved",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "E-fit": {
+          "outcome": "saved",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-capacity": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-heading": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-image": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-articles": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "J-articles-tagged": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "R-enterprise-fit": {
+          "outcome": "saved",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "R-enterprise-grow": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        },
+        "R-fusei-grow": {
+          "outcome": "refused",
+          "as_expected": true,
+          "same_as_committed": true
+        }
+      },
+      "recognition_same_as_committed": true,
+      "recognition_correct": 14,
+      "recognition_total": 14
+    },
+    "differences": 2
+  },
+  "requests": {
+    "F-same": {
+      "document": "osaka_fusei_477",
+      "kind": "paragraph",
+      "purpose": "InDesign scaled Tm: same-length replacement",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 27.59,
+      "after": null,
+      "drawn_in": "page",
+      "form_clones": [],
+      "insertion_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "lines": [
+        "令和5年の大阪府の自殺者数は1,383人と、1日に約4",
+        "人の方が自殺で亡くなられるという深刻な状況です。",
+        "悩みを持っている人は、ひとりで悩まず専門機関にご",
+        "相談ください。また、身近な人の悩みに気づいたら話",
+        "を聴いて寄り添いましょう。"
+      ],
+      "source_styles": [
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 1,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 2.62,
+        "style_layout": 0.17,
+        "save_and_stage": 18.11,
+        "total": 20.91
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "F-same-reedit": {
+      "document": "osaka_fusei_477",
+      "kind": "paragraph",
+      "purpose": "PDF-alone re-edit: restore the original text",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 27.47,
+      "after": "F-same",
+      "drawn_in": "page",
+      "form_clones": [],
+      "insertion_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "lines": [
+        "令和5年の大阪府の自殺者数は1,383人と、1日に約4",
+        "人の方が自殺で亡くなられるという深刻な状況です。",
+        "悩みを抱えている人は、ひとりで悩まず専門機関にご",
+        "相談ください。また、身近な人の悩みに気づいたら話",
+        "を聴いて寄り添いましょう。"
+      ],
+      "source_styles": [
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 1,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 2.73,
+        "style_layout": 0.51,
+        "save_and_stage": 16.71,
+        "total": 19.95
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "F-short": {
+      "document": "osaka_fusei_477",
+      "kind": "paragraph",
+      "purpose": "InDesign scaled Tm: shorten",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 26.7,
+      "after": null,
+      "drawn_in": "page",
+      "form_clones": [],
+      "insertion_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "lines": [
+        "賃貸住宅の退去の際に、修繕の費用を貸主、借主のど",
+        "ちらが負担するのかといった原状回復をめぐるトラ",
+        "ブルが発生しています。大阪府版ガイドラインでは、",
+        "トラブルの未然防止・解決に役立つ情報や相談窓口を",
+        "掲載しています。ぜひご活用ください。"
+      ],
+      "source_styles": [
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 1,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 2.64,
+        "style_layout": 0.1,
+        "save_and_stage": 17.53,
+        "total": 20.28
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "F-wrap": {
+      "document": "osaka_fusei_477",
+      "kind": "paragraph",
+      "purpose": "InDesign scaled Tm: longer text re-wraps the following lines (the last line has room)",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 27.23,
+      "after": null,
+      "drawn_in": "page",
+      "form_clones": [],
+      "insertion_ctm": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "lines": [
+        "令和5年の大阪府の自殺者数は1,383人と、1日に約4",
+        "人の方が自殺で亡くなられるという深刻な状況が続い",
+        "ています。悩みを抱えている人は、ひとりで悩まず専",
+        "門機関にご相談ください。また、身近な人の悩みに気",
+        "づいたら話を聴いて寄り添いましょう。"
+      ],
+      "source_styles": [
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        },
+        {
+          "size": 9.567,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_3"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 0,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 2.69,
+        "style_layout": 0.1,
+        "save_and_stage": 17.81,
+        "total": 20.6
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "F-grow-line": {
+      "document": "osaka_fusei_477",
+      "kind": "paragraph",
+      "purpose": "growth needs a new line, but the label box below the paragraph is protected",
+      "expected": "refused",
+      "expected_reason": "capacity",
+      "outcome": "refused",
+      "as_expected": true,
+      "seconds": 4.03,
+      "after": null,
+      "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 契",
+      "reason_class": "glyphs",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      }
+    },
+    "F-form": {
+      "document": "osaka_fusei_477",
+      "kind": "form",
+      "purpose": "text in the page-local Form XObject /Fm9 (page header)",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 20.64,
+      "after": null,
+      "drawn_in": "Form XObject (copy-on-write)",
+      "form_clones": [
+        {
+          "form": "/Fm9",
+          "clone": "/Fm9PF",
+          "source_object": 594
+        }
+      ],
+      "insertion_ctm": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "lines": [
+        "令和7年（2025年）3月7日"
+      ],
+      "source_styles": [
+        {
+          "size": 7.795,
+          "horizontal_scale": 100.0,
+          "resource": "/C0_0"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 1,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 2.52,
+        "style_layout": 0.09,
+        "save_and_stage": 11.87,
+        "total": 14.47
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "T-form": {
+      "document": "tracemonkey",
+      "kind": "form",
+      "purpose": "figure label in Form XObject /Im1 under reflected Tm and CTM",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 28.09,
+      "after": null,
+      "drawn_in": "Form XObject (copy-on-write)",
+      "form_clones": [
+        {
+          "form": "/Im1",
+          "clone": "/Im1PF",
+          "source_object": 41
+        }
+      ],
+      "insertion_ctm": [
+        0.4308199882507324,
+        0.0,
+        0.0,
+        -0.4308199882507324,
+        415.88690185546875,
+        574.6027221679688
+      ],
+      "lines": [
+        "Bytecode"
+      ],
+      "source_styles": [
+        {
+          "size": 5.17,
+          "horizontal_scale": 100.0,
+          "resource": "/F2.0"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 2,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 4.33,
+        "style_layout": 0.08,
+        "save_and_stage": 13.17,
+        "total": 17.59
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "T-form-reedit": {
+      "document": "tracemonkey",
+      "kind": "form",
+      "purpose": "PDF-alone re-edit of the Form text",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 27.46,
+      "after": "T-form",
+      "drawn_in": "Form XObject (copy-on-write)",
+      "form_clones": [
+        {
+          "form": "/Im1PF",
+          "clone": "/Im1PFPF",
+          "source_object": 649
+        }
+      ],
+      "insertion_ctm": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "lines": [
+        "Bytecodes"
+      ],
+      "source_styles": [
+        {
+          "size": 5.17,
+          "horizontal_scale": 100.0,
+          "resource": "/F2.0"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 1,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 4.32,
+        "style_layout": 0.08,
+        "save_and_stage": 13.17,
+        "total": 17.57
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "A-same": {
+      "document": "issue17730",
+      "kind": "paragraph",
+      "purpose": "Antenna House CTM+Tm: same-length replacement",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 6.73,
+      "after": null,
+      "drawn_in": "page",
+      "form_clones": [],
+      "insertion_ctm": [
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        56.69292068481445,
+        813.5433349609375
+      ],
+      "lines": [
+        "There are two kinds of links in PDF: a link to a specific position in the same PDF document, and a link to an external ",
+        "document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its ",
+        "destination may be either an ID or a page number. The external-destination property indicates to link to an external ",
+        "document. Its destination may be either an external file or a website."
+      ],
+      "source_styles": [
+        {
+          "size": 10.0,
+          "horizontal_scale": 100.0,
+          "resource": "/F0"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 1,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 0.38,
+        "style_layout": 0.05,
+        "save_and_stage": 4.73,
+        "total": 5.16
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "A-short": {
+      "document": "issue17730",
+      "kind": "paragraph",
+      "purpose": "Antenna House: shorten",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 6.97,
+      "after": null,
+      "drawn_in": "page",
+      "form_clones": [],
+      "insertion_ctm": [
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        56.69292068481445,
+        813.5433349609375
+      ],
+      "lines": [
+        "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external ",
+        "document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its ",
+        "destination may be either an ID or a page number. The external-destination property indicates to link to an external ",
+        "document. Its destination may be a file or a website."
+      ],
+      "source_styles": [
+        {
+          "size": 10.0,
+          "horizontal_scale": 100.0,
+          "resource": "/F0"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 1,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 0.46,
+        "style_layout": 0.05,
+        "save_and_stage": 4.7,
+        "total": 5.22
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "A-grow-line": {
+      "document": "issue17730",
+      "kind": "paragraph",
+      "purpose": "Antenna House: growth adds a line above the next heading",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "refused",
+      "as_expected": false,
+      "seconds": 6.21,
+      "after": null,
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+      "reason_class": "layout",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      }
+    },
+    "A-reedit": {
+      "document": "issue17730",
+      "kind": "paragraph",
+      "purpose": "PDF-alone re-edit after A-same",
+      "expected": "saved",
+      "expected_reason": null,
+      "outcome": "saved",
+      "as_expected": true,
+      "seconds": 7.12,
+      "after": "A-same",
+      "drawn_in": "page",
+      "form_clones": [],
+      "insertion_ctm": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "lines": [
+        "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external ",
+        "document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its ",
+        "destination may be either an ID or a page number. The external-destination property indicates to link to an external ",
+        "document. Its destination may be either an external file or a website."
+      ],
+      "source_styles": [
+        {
+          "size": 10.0,
+          "horizontal_scale": 100.0,
+          "resource": "/F0"
+        }
+      ],
+      "failed": [],
+      "outside_pixels": {
+        "mupdf": 0,
+        "poppler": 0
+      },
+      "search_hits": 1,
+      "continued_editing": {
+        "ok": true,
+        "status": "applied"
+      },
+      "timing": {
+        "observation": 0.42,
+        "style_layout": 0.05,
+        "save_and_stage": 4.96,
+        "total": 5.43
+      },
+      "tiers": {
+        "saved": true,
+        "safety": true,
+        "quality": true,
+        "continued_editing": true
+      }
+    },
+    "Q-ligature": {
+      "document": "issue7014",
+      "kind": "paragraph",
+      "purpose": "Quartz scaled Tm, but the paragraph contains TeX ligatures (fi) whose provenance is one glyph for two characters",
+      "expected": "refused",
+      "expected_reason": "ligature",
+      "outcome": "refused",
+      "as_expected": true,
+      "seconds": 3.27,
+      "after": null,
+      "reason": "prototypes.paragraph_frame.engine.Refused: selected string occurrence not found in one inferred paragraph",
+      "reason_class": "encoding",
+      "published": false,
+      "tiers": {
+        "saved": false,
+        "safety": null,
+        "quality": null,
+        "continued_editing": null
+      }
+    }
+  },
+  "survey": {
+    "main_commit": "f17055d",
+    "documents": {
+      "160F-2019": {
+        "paragraphs": 47,
+        "main_proposed": 0,
+        "new_proposed": 0,
+        "newly": 0,
+        "lost": 0,
+        "main_refusals": {
+          "transform": 46,
+          "encoding": 1
+        },
+        "new_refusals": {
+          "marked-content": 46,
+          "encoding": 1
+        }
+      },
+      "canvas": {
+        "paragraphs": 36,
+        "main_proposed": 0,
+        "new_proposed": 36,
+        "newly": 24,
+        "lost": 0,
+        "main_refusals": {
+          "transform": 24
+        },
+        "new_refusals": {}
+      },
+      "issue14117": {
+        "paragraphs": 36,
+        "main_proposed": 0,
+        "new_proposed": 27,
+        "newly": 27,
+        "lost": 0,
+        "main_refusals": {
+          "transform": 35,
+          "layout": 1
+        },
+        "new_refusals": {
+          "paint": 8,
+          "layout": 1
+        }
+      },
+      "issue14297": {
+        "paragraphs": 44,
+        "main_proposed": 0,
+        "new_proposed": 0,
+        "newly": 0,
+        "lost": 0,
+        "main_refusals": {
+          "transform": 44
+        },
+        "new_refusals": {
+          "marked-content": 44
+        }
+      },
+      "issue17730": {
+        "paragraphs": 13,
+        "main_proposed": 0,
+        "new_proposed": 13,
+        "newly": 13,
+        "lost": 0,
+        "main_refusals": {
+          "transform": 13
+        },
+        "new_refusals": {}
+      },
+      "issue7014": {
+        "paragraphs": 28,
+        "main_proposed": 0,
+        "new_proposed": 20,
+        "newly": 19,
+        "lost": 0,
+        "main_refusals": {
+          "transform": 26,
+          "encoding": 1
+        },
+        "new_refusals": {
+          "encoding": 8
+        }
+      },
+      "lo_enterprise_en": {
+        "paragraphs": 17,
+        "main_proposed": 12,
+        "new_proposed": 12,
+        "newly": 0,
+        "lost": 0,
+        "main_refusals": {
+          "encoding": 5
+        },
+        "new_refusals": {
+          "encoding": 5
+        }
+      },
+      "lo_migration_ja": {
+        "paragraphs": 14,
+        "main_proposed": 10,
+        "new_proposed": 10,
+        "newly": 0,
+        "lost": 0,
+        "main_refusals": {
+          "layout": 4
+        },
+        "new_refusals": {
+          "layout": 4
+        }
+      },
+      "lo_newfeatures_ja": {
+        "paragraphs": 17,
+        "main_proposed": 14,
+        "new_proposed": 14,
+        "newly": 0,
+        "lost": 0,
+        "main_refusals": {
+          "layout": 3
+        },
+        "new_refusals": {
+          "layout": 3
+        }
+      },
+      "osaka_fusei_477": {
+        "paragraphs": 683,
+        "main_proposed": 0,
+        "new_proposed": 536,
+        "newly": 482,
+        "lost": 0,
+        "main_refusals": {
+          "transform": 523,
+          "paint": 46,
+          "layout": 11,
+          "encoding": 45
+        },
+        "new_refusals": {
+          "marked-content": 42,
+          "paint": 35,
+          "transform": 12,
+          "layout": 12,
+          "encoding": 46
+        }
+      },
+      "tracemonkey": {
+        "paragraphs": 68,
+        "main_proposed": 21,
+        "new_proposed": 42,
+        "newly": 19,
+        "lost": 0,
+        "main_refusals": {
+          "layout": 4,
+          "encoding": 23,
+          "paint": 18
+        },
+        "new_refusals": {
+          "encoding": 23,
+          "layout": 3
+        }
+      },
+      "word_osaka_fire_notice": {
+        "paragraphs": 9,
+        "main_proposed": 8,
+        "new_proposed": 8,
+        "newly": 0,
+        "lost": 0,
+        "main_refusals": {
+          "layout": 1
+        },
+        "new_refusals": {
+          "layout": 1
+        }
+      },
+      "word_osaka_guideline": {
+        "paragraphs": 19,
+        "main_proposed": 15,
+        "new_proposed": 16,
+        "newly": 1,
+        "lost": 0,
+        "main_refusals": {
+          "marked-content": 2
+        },
+        "new_refusals": {
+          "marked-content": 3
+        }
+      },
+      "word_osaka_symposium": {
+        "paragraphs": 1,
+        "main_proposed": 0,
+        "new_proposed": 0,
+        "newly": 0,
+        "lost": 0,
+        "main_refusals": {
+          "encoding": 1
+        },
+        "new_refusals": {
+          "encoding": 1
+        }
+      }
+    },
+    "totals": {
+      "paragraphs": 1032,
+      "main_proposed": 80,
+      "new_proposed": 734,
+      "newly_proposable": 585,
+      "lost": 0
+    },
+    "lost": []
+  },
+  "samples": {
+    "newly": 585,
+    "sampled": 74,
+    "saved": 62,
+    "safety": 62,
+    "quality": 53,
+    "refused": [
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "4/1（火）",
+        "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected image",
+        "reason_class": "layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "3/24（月",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "偽造変造対策",
+        "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected image",
+        "reason_class": "layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "06（6944）6",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "3/10（月",
+        "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected image",
+        "reason_class": "layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "児童扶養手当・特別児童扶養手当の認",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "千万円）を発",
+        "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected image",
+        "reason_class": "layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "0570（0",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "06（6944）7",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout"
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "06（6944）8",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout"
+      },
+      {
+        "document": "issue14117",
+        "page": 1,
+        "selection": "Adm: 1",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout"
+      },
+      {
+        "document": "tracemonkey",
+        "page": 2,
+        "selection": "Symbol",
+        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame",
+        "reason_class": "layout"
+      }
+    ],
+    "failed": [
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "学歴・職務経",
+        "failed": [
+          "unchanged_text_same_glyph_positions"
+        ]
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "令和5年の大",
+        "failed": [
+          "unchanged_text_same_glyph_positions"
+        ]
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "賃貸住宅の退",
+        "failed": [
+          "unchanged_text_same_glyph_positions"
+        ]
+      },
+      {
+        "document": "osaka_fusei_477",
+        "page": 7,
+        "selection": "一般世帯向け",
+        "failed": [
+          "unchanged_text_same_glyph_positions"
+        ]
+      },
+      {
+        "document": "canvas",
+        "page": 1,
+        "selection": "HTML5 ",
+        "failed": [
+          "unchanged_text_same_glyph_positions"
+        ]
+      },
+      {
+        "document": "canvas",
+        "page": 1,
+        "selection": "globalC",
+        "failed": [
+          "unchanged_text_same_glyph_positions"
+        ]
+      },
+      {
+        "document": "issue17730",
+        "page": 1,
+        "selection": "There ",
+        "failed": [
+          "unchanged_text_same_glyph_positions"
+        ]
+      },
+      {
+        "document": "issue7014",
+        "page": 1,
+        "selection": ",Brend",
+        "failed": [
+          "extraction_mupdf"
+        ]
+      },
+      {
+        "document": "issue7014",
+        "page": 1,
+        "selection": "Mohamm",
+        "failed": [
+          "extraction_mupdf"
+        ]
+      }
+    ],
+    "seconds": [
+      21.3,
+      23.81,
+      21.75,
+      22.96,
+      22.17,
+      21.79,
+      24.55,
+      26.91,
+      20.88,
+      21.62,
+      21.46,
+      21.29,
+      22.5,
+      17.46,
+      21.95,
+      22.05,
+      21.11,
+      21.64,
+      15.16,
+      21.35,
+      18.05,
+      22.54,
+      15.04,
+      21.48,
+      20.62,
+      21.01,
+      20.9,
+      20.86,
+      20.54,
+      22.04,
+      20.44,
+      21.2,
+      21.05,
+      14.86,
+      26.33,
+      21.24,
+      15.2,
+      15.19,
+      21.75,
+      15.28,
+      22.77,
+      22.45,
+      28.62,
+      23.1,
+      27.21,
+      22.24,
+      15.45,
+      15.64,
+      6.66,
+      6.5,
+      6.29,
+      6.43,
+      6.9,
+      3.01,
+      5.36,
+      4.7,
+      4.83,
+      4.65,
+      3.67,
+      6.95,
+      3.83,
+      4.4,
+      4.07,
+      20.29,
+      16.39,
+      16.97,
+      19.87,
+      21.09,
+      18.55,
+      18.38,
+      24.63,
+      27.13,
+      25.05,
+      4.32
+    ]
+  }
+}

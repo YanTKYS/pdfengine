@@ -35,6 +35,10 @@ class Paragraph:
     # source glyph IDs of line-final hyphens between Latin letters.
     joins: tuple = ()
     hyphens: tuple = ()
+    # Marked-content sequences without MCID (e.g. /PlacedPDF metadata, /OC
+    # layers) that enclose the whole paragraph, outermost first. They are kept;
+    # new drawing is inserted inside them.
+    containers: tuple = ()
 
 
 GEOMETRY_KEYS=('page','frame','left','right','first_x','baseline','line_height','paragraph_gap')

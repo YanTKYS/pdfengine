@@ -11,6 +11,7 @@ from pdfeditor.page_proposal import _Analysis
 from . import auto_conditions as conditions
 from . import auto_flow as flowing
 from .engine import Paragraph, Refused, _check_inbound
+from . import text_space
 
 LATIN_END = ',.;:!?)]\'"%'
 LATIN_START = '(["\''
@@ -94,6 +95,8 @@ def clean_rows(c, rows):
             continue
         first = min(inked)
         r['glyph_ids'] = [i for i in ids if c.actual[i]['unicode'].strip() or c.actual[i]['origin'][0] > first + .001]
+        # The row starts at its first kept glyph, not at a removed leading blank.
+        r['x'] = min(c.actual[i]['origin'][0] for i in r['glyph_ids'])
         result.append(r)
     return result
 
@@ -116,6 +119,14 @@ def _first_word_fits(c, prev, row, right):
     if not word or not all(c.actual[i]['unicode'].isascii() and c.actual[i]['unicode'].isalnum() for i in word):return False
     width=c.actual[word[-1]]['bbox'][2]-row['x']
     return prev['pen_end']+.25*prev['size']+width<right-.5*prev['size']
+
+
+def _numeric(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
 
 
 def role(reader, element):
@@ -147,24 +158,43 @@ def qualify(c, marks, ids, rows):
     events=[e for e in c.events if any(chosen.intersection(ch.source_orders) for ch in e.chars)]
     if [i for e in events for ch in e.chars for i in ch.source_orders if i in chosen]!=ids:
         raise Refused('source paint order differs from paragraph reading order')
-    sizes={i:e.state.size for e in events for ch in e.chars for i in ch.source_orders}
     for e in events:
-        if e.invocation or e.state.tr!=0 or e.state.opacity!=1:
-            raise Refused('Form, non-fill or transparent selected text unsupported')
-        if e.state.ctm!=(1,0,0,1,0,0) or e.text_matrix[:4]!=(1,0,0,1):
-            raise Refused('non-axis-aligned source text matrix unsupported')
+        # Text in a Form XObject is rewritten in a per-invocation clone (form_write).
+        if e.state.tr!=0 or e.state.opacity!=1:
+            raise Refused('non-fill or transparent selected text unsupported')
+        # Scaled text matrices and CTMs are page-space sizes (text_space);
+        # rotation, shear and uncancelled reflection stay refused.
+        text_space.scales(e)
+    sizes={i:text_space.effective(e)['size'] for e in events for ch in e.chars for i in ch.source_orders}
+    for e in events:
         if e.state.ts!=0:raise Refused('nonzero text rise requires a baseline-shift adapter')
-        if e.state.fill[0] not in ('g','rg','k') or e.state.tz<=0:
+        # A named fill colour space (cs + sc/scn) is re-selected when drawing;
+        # patterns (non-numeric scn operands) stay unsupported.
+        named=e.state.fill[0] in ('sc','scn') and e.state.fill_space and all(_numeric(v) for v in e.state.fill[1])
+        if (e.state.fill[0] not in ('g','rg','k') and not named) or e.state.tz<=0:
             raise Refused('unsupported source color or horizontal scale')
         if any(len(ch.source_orders)!=1 or len(ch.text)!=1 for ch in e.chars if chosen.intersection(ch.source_orders)):
             raise Refused('one-code/one-Unicode/one-occurrence witness required')
-    scopes=[]
+    def inside(s,e):
+        return (e.stream_xref==s['stream_xref'] and e.invocation==tuple(tuple(i) for i in s['invocation'])
+                and s['content_byte_range'][0]<=e.operator.start<s['content_byte_range'][1])
+    scopes=[];containers=[]
     for s in marks['scopes']:
-        hits={i for e in c.events if s['content_byte_range'][0]<=e.operator.start<s['content_byte_range'][1] for ch in e.chars for i in ch.source_orders}
-        if hits & chosen:
-            if not hits<=chosen or s['invocation'] or s['enclosing_scope_ids']:
-                raise Refused('mixed or nested marked-content scope')
-            scopes.append(s)
+        hits={i for e in c.events if inside(s,e) for ch in e.chars for i in ch.source_orders}
+        if not hits & chosen:continue
+        if s['association']['status']=='unmarked':
+            # No MCID: not part of the structure tree. A sequence that only
+            # labels or layers content (/PlacedPDF, /OC) must enclose the whole
+            # paragraph; replacement text (ActualText) cannot be kept true.
+            props=s['properties'] if isinstance(s['properties'],dict) else {}
+            if '/ActualText' in props or '/Alt' in props or s['tag']=='/Span':raise Refused('replacement-text marked content requires a span adapter')
+            if not chosen<=hits:raise Refused('paragraph crosses a marked-content container')
+            containers.append(s);continue
+        if not hits<=chosen or s['invocation'] or set(s['enclosing_scope_ids'])-{x['id'] for x in containers}:
+            raise Refused('mixed or nested marked-content scope')
+        scopes.append(s)
+    if any(set(s['enclosing_scope_ids'])!={x['id'] for x in containers} for s in scopes) and scopes and containers:
+        raise Refused('mixed or nested marked-content scope')
     # A previous edit may leave an ordered empty scope. Its semantic child
     # remains part of the paragraph even though no glyph can select it.
     parent_candidates=set()
@@ -225,7 +255,8 @@ def qualify(c, marks, ids, rows):
             if len(mcids)>1 and '/ActualText' in leaf:raise Refused('ActualText on a multi-sequence span requires a span-level adapter')
     elif root:raise Refused('tagged selected glyphs lack semantic association')
     text,joins,hyphens=group_text(c,rows)
-    return Paragraph(text,ids,[sizes[i] for i in ids],[r['baseline'] for r in rows],scopes,parent,tuple(joins),tuple(hyphens))
+    containers.sort(key=lambda s:len(s['enclosing_scope_ids']))
+    return Paragraph(text,ids,[sizes[i] for i in ids],[r['baseline'] for r in rows],scopes,parent,tuple(joins),tuple(hyphens),tuple(containers))
 
 
 def _column_bottom(selected, others, blocks, infos, report):
@@ -268,7 +299,7 @@ def _flow_detect(c, marks, page, flow, selected, start, paint, report, records, 
     obstacles = [dict(o) for o in paint]
     containers = []
     for o in obstacles:
-        if o['kind'] in ('filled-vector', 'image') and all(pymupdf.Rect(o['bounds']).contains(pymupdf.Rect(r['bbox'])) for r in rows):
+        if o['kind'] in ('filled-vector', 'image', 'vector') and all(pymupdf.Rect(o['bounds']).contains(pymupdf.Rect(r['bbox'])) for r in rows):
             o['kind'] = 'container'
             containers.append(o['bounds'])
     obstacles.extend(dict(kind='foreign-text', bounds=list(g['bbox'])) for i, g in enumerate(c.actual) if i not in ids and g['unicode'].strip())
@@ -353,6 +384,10 @@ def observe(c,marks,analysis):
                     if s['content_byte_range'][0]<=e.operator.start<s['content_byte_range'][1]:
                         for ch in e.chars:
                             for i in ch.source_orders:parent_by_id[i]=pr.idnum
+    # Paint style of each inked glyph: a row that shares no font and fill with
+    # the previous row (a white label on a coloured box) does not continue it.
+    paint={i:(e.state.font.name if e.state.font else None,e.state.fill) for e in c.events for ch in e.chars for i in ch.source_orders if ch.text.strip()}
+    def style(row):return {paint[i] for i in row['glyph_ids'] if i in paint}
     groups=[]
     for r in rows:
         ids=r['glyph_ids']; parents={parent_by_id.get(i) for i in ids}; parent=next(iter(parents)) if len(parents)==1 else None
@@ -375,6 +410,7 @@ def observe(c,marks,analysis):
                 # ends the paragraph.
                 if not new and gaps and gap>1.3*median(gaps):new=True
                 if not new and _first_word_fits(c,prev,r,max(x['pen_end'] for x in candidate+[r])):new=True
+                if not new and style(prev) and style(r) and not style(prev)&style(r):new=True
         if new:groups.append([r])
         else:candidate.append(r)
     return rows,parent_by_id,groups
@@ -523,7 +559,9 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         # paragraphs' container: new ink may overlap it but must stay inside it.
         containers=[]
         for o in obstacles:
-            if o['kind'] in ('filled-vector','image') and all(pymupdf.Rect(o['bounds']).contains(pymupdf.Rect(r['bbox'])) for r in allrows):
+            # A stroked outline around every line (a box border) is a frame of
+            # the paragraph too: its interior is not painted.
+            if o['kind'] in ('filled-vector','image','vector') and all(pymupdf.Rect(o['bounds']).contains(pymupdf.Rect(r['bbox'])) for r in allrows):
                 o['kind']='container';containers.append(o['bounds'])
         obstacles.extend(dict(kind='foreign-text',bounds=list(g['bbox'])) for i,g in enumerate(c.actual) if i not in ids and g['unicode'].strip())
         basis='median within-paragraph observed gaps' if deltas else 'peer paragraph gap' if len(allrows)>1 else 'unobserved: 1.5 em default'
@@ -551,6 +589,10 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         # Existing paints intersecting a proposed frame remain protected; the
         # writer checks actual new ink, not just this envelope.
         frame=[left-.5,top,right+.5,bottom]
+        # The paragraph's own ink is always replaceable: the frame contains every
+        # original glyph box of the edited paragraphs (overhangs, tall marks).
+        inked=[c.actual[i]['bbox'] for i in ids if c.actual[i]['unicode'].strip()]
+        if inked:frame=[min(frame[0],min(b[0] for b in inked)),min(frame[1],min(b[1] for b in inked)),max(frame[2],max(b[2] for b in inked)),max(frame[3],max(b[3] for b in inked))]
         for box in containers:frame=[max(frame[0],box[0]),max(frame[1],box[1]),min(frame[2],box[2]),min(frame[3],box[3])]
         paragraphs=[target_paragraph]+follower_paragraphs
         values=dict(left=left,right=right,first_x=first,line_height=leading,bottom=bottom)
