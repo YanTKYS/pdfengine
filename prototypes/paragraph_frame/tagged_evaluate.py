@@ -1,7 +1,7 @@
 """Tagged-PDF editing evaluation against the frozen manifest.
 
   .venv/bin/python -m prototypes.paragraph_frame.tagged_evaluate --root tmp/<new> --fusei <477.pdf> --pdfjs <dir> \
-      --phase requests|samples|collect [--survey tmp/tg-survey] [--tests-json f] [--regression-json f]
+      --phase requests|samples|collect [--survey tmp/tg-survey] [--pr90-survey tmp/id-survey-final] [--tests-json f] [--regression-json f]
 
 ``requests`` runs every manifest request in its own process from the PDF of
 the previous step only, as frozen (no substitute font). A request refused
@@ -311,6 +311,45 @@ def phase_samples(root, manifest, args):
     dump(root / 'samples.json', dict(newly=len(newly), sampled=len(sample), results=results))
 
 
+def track_pr90(previous, current):
+    """Where the marked-content refusals of the PR #90 survey went.
+
+    A refused paragraph is found again by its selection; when the new
+    inference divides the area differently (table cells, list items), by the
+    paragraphs drawn over its box on the same page.
+    """
+    key = lambda r: (r['document'], r['page'], r['selection'])
+    refused = [r for r in previous if r['new'] == 'refused' and structural_refusal(r['new_reason'])]
+    index = {key(r): r for r in current}
+    meets = lambda a, b: not (a[2] <= b[0] or b[2] <= a[0] or a[3] <= b[1] or b[3] <= a[1])
+    out = dict(total=len(refused), same_paragraph_proposed=0, redivided_proposed=0, refused={}, not_surveyed=0, rows=[])
+    for r in refused:
+        hit = index.get(key(r))
+        if hit is not None:
+            outcome = 'proposed' if hit['new'] == 'proposed' else 'refused'
+            reason = None if outcome == 'proposed' else re.sub(r'^Refused: ', '', hit['new_reason'] or '')[:80]
+            out['same_paragraph_proposed'] += outcome == 'proposed'
+            match = 'selection'
+        else:
+            over = [c for c in current if c['document'] == r['document'] and c['page'] == r['page'] and meets(c['bbox'], r['bbox'])]
+            surveyed = [c for c in over if c['new'] != 'skipped']
+            if any(c['new'] == 'proposed' for c in surveyed):
+                outcome, reason = 'proposed', None
+                out['redivided_proposed'] += 1
+            elif surveyed:
+                outcome = 'refused'
+                reason = re.sub(r'^Refused: ', '', surveyed[0]['new_reason'] or '')[:80]
+            else:
+                outcome, reason = 'not surveyed (shorter than the survey minimum)', None
+                out['not_surveyed'] += 1
+            match = 'position'
+        if outcome == 'refused':
+            out['refused'][reason] = out['refused'].get(reason, 0) + 1
+        out['rows'].append(dict(document=r['document'], page=r['page'], selection=r['selection'], pr90_reason=r['new_reason'],
+                                match=match, outcome=outcome, reason=reason))
+    return out
+
+
 def phase_collect(root, manifest, args):
     requests = load(root / 'requests.json')
     samples = load(root / 'samples.json')
@@ -367,7 +406,8 @@ def phase_collect(root, manifest, args):
         schema='paragraph-frame-tagged-results-1', manifest_sha256=sha(MANIFEST), tests=load(args.tests_json) if args.tests_json else None,
         regression=load(args.regression_json) if args.regression_json else None, requests=compact_requests,
         survey=dict(main_commit='2aefe3e', pr90_population=tally(pr90), extended_tagged=tally(extended),
-                    pr90_structural_refusals=dict(total=len(structural), newly_proposable=sum(r['new'] == 'proposed' for r in structural), went=went),
+                    main_structural_refusals=dict(total=len(structural), newly_proposable=sum(r['new'] == 'proposed' for r in structural), went=went),
+                    pr90_survey_refusals=track_pr90(survey_table(args.pr90_survey), rows),
                     documents=by_doc,
                     lost=[dict(document=r['document'], page=r['page'], selection=r['selection'], reason=r['new_reason'])
                           for r in surveyed if r['main'] == 'proposed' and r['new'] != 'proposed']),
@@ -385,7 +425,8 @@ def phase_collect(root, manifest, args):
                              for s in saved if s['audit']['failed'] or s['structure']['failed']],
                      seconds=[s['seconds'] for s in samples['results']]))
     dump(RESULTS, result)
-    print(json.dumps(result['survey']['pr90_structural_refusals'], ensure_ascii=False)[:600])
+    print(json.dumps(result['survey']['main_structural_refusals'], ensure_ascii=False)[:600])
+    print(json.dumps({k: v for k, v in result['survey']['pr90_survey_refusals'].items() if k != 'rows'}, ensure_ascii=False))
     print(json.dumps({k: v for k, v in result['samples'].items() if k not in ('seconds', 'refused', 'failed')}))
 
 
@@ -396,6 +437,7 @@ def main():
     parser.add_argument('--pdfjs', type=Path, required=True)
     parser.add_argument('--phase', required=True, choices=['requests', 'samples', 'collect'])
     parser.add_argument('--survey', type=Path, default=Path('tmp/tg-survey'))
+    parser.add_argument('--pr90-survey', type=Path, default=Path('tmp/id-survey-final'))
     parser.add_argument('--tests-json', type=Path)
     parser.add_argument('--regression-json', type=Path)
     args = parser.parse_args()
