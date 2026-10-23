@@ -56,6 +56,11 @@ def source_tokens(c):
                 t['tracking']=delta-t['advance'];t['advance']=delta
                 if same:tracking[(t['font_name'],t['size'],t['tz'])].append(t['tracking'])
                 continue
+            elif not t['text'].strip() and 0<delta<2*t['size']:
+                # A space keeps its observed width (a writer may set it wider
+                # than the glyph); justified layouts reset and stretch spaces
+                # again per line (build).
+                t['tracking']=delta-t['advance'];t['advance']=delta
             elif (t['text'] in PUNCTUATION or n['text'] in OPENING) and (0 if pair else .2)*t['advance']<=delta<t['advance']:
                 # Japanese writers compress punctuation (約物詰め): the space after
                 # closing marks and before opening brackets is removed (half width

@@ -306,3 +306,26 @@ def test_forms_inheriting_page_resources_are_walked_once(tmp_path):
     _, result = edit(source, '申請書は窓口で', '申請書は各窓口で', tmp_path / 'out.pdf')
     assert result['drawn_in'] == 'Form XObject (copy-on-write)'
     assert time.perf_counter() - began < 60
+
+
+def test_space_keeps_its_observed_width(tmp_path):
+    """A space set wider than its glyph (as Word may) keeps its width on relayout."""
+    lines = [(40, 60, '本年度の補助事業について、募集を'), (40, 76, '行います。国立 感染症の資料。'), (40, 130, '後続段落です。')]
+    plain, _ = page_with(tmp_path, lines, height=H)
+    streams = []
+
+    def wide(data):
+        # After the space (the eighth glyph of the last line), move on by 0.4 em more.
+        streams.append(data)
+        if len(streams) != 2:
+            return data
+        return re.sub(rb'\[<([0-9a-f]{32})([0-9a-f]+)>\]TJ', rb'[<\1> -400 <\2>]TJ', data, count=1)
+    source = rewrite(plain, tmp_path / 'wide.pdf', wide)
+    out = tmp_path / 'out.pdf'
+    edit(source, '感染症の資料', '感染症の資料', out)
+
+    def glyphs(path):
+        with pymupdf.open(path) as d:
+            return [(c['c'], round(c['origin'][0], 2), round(c['origin'][1], 2)) for b in d[0].get_text('rawdict')['blocks']
+                    for l in b.get('lines', []) for s in l['spans'] for c in s['chars']]
+    assert glyphs(out) == glyphs(source)
