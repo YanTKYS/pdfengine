@@ -27,7 +27,9 @@ import pymupdf
 from pypdf import PdfReader
 from . import semantics
 from .audit import semantic
-from .indesign_evaluate import audit, bare, classify, dump, load, reopen, sha, survey_table
+from .auto import propose
+from .engine import Refused
+from .indesign_evaluate import audit, bare, chars, classify, dump, inside, load, reopen, sha, survey_table
 
 MANIFEST = Path('evaluations/paragraph_frame_tagged/manifest.json')
 RESULTS = MANIFEST.parent / 'results.json'
@@ -114,6 +116,62 @@ def structure_audit(source, output, page, expected_text, mcids):
     return dict(checks=checks, details=details, passed=all(checks.values()), failed=[k for k, v in checks.items() if not v])
 
 
+def reopen_unique(output, page, new, paragraph):
+    """Continued editing from the saved PDF alone, selecting the new text with
+    enough of its paragraph around it to be unique on the page (a short
+    replacement such as 'If' otherwise selects another paragraph)."""
+    at = paragraph.find(new)
+    if at < 0:
+        return reopen(output, page, new)
+    for grow in range(0, len(paragraph) + 1, 4):
+        selection = paragraph[max(0, at - grow):at + len(new) + grow].strip()
+        try:
+            p = propose(str(output), page, selection, selection)
+        except Refused as exc:
+            if 'not found' in str(exc):
+                continue
+            return dict(ok=False, reason=str(exc), selection=selection)
+        if p['evidence']['selection_match_count'] == 1:
+            status = p['evidence']['conditions']['status']
+            return dict(ok=status == 'applied', status=status, selection=selection)
+    return reopen(output, page, new)
+
+
+def region_text(path, page, region):
+    """Text of a region by both renderers (MuPDF clip, Poppler crop)."""
+    with pymupdf.open(path) as d:
+        mupdf = d[page - 1].get_text(clip=pymupdf.Rect(region))
+    x0, y0, x1, y1 = region
+    run = subprocess.run(['pdftotext', '-f', str(page), '-l', str(page), '-x', str(int(x0)), '-y', str(int(y0)), '-W', str(int(x1 - x0 + 1)),
+                          '-H', str(int(y1 - y0 + 1)), '-enc', 'UTF-8', str(path), '-'], capture_output=True, check=True)
+    return dict(mupdf=mupdf, poppler=run.stdout.decode('utf-8'))
+
+
+def supplementary(source, output, page, region, old, new, lines=None):
+    """Checks reported beside the audit, never in place of it.
+
+    ``region_extraction_*``: the text inside the allowed region changes by the
+    replacement only (the whole-page checks also see reading-order changes
+    elsewhere on the page). ``source_control_*``: the audit's line-grid checks
+    applied to the source itself; a check the source already fails is not
+    evidence about the edit.
+    """
+    checks = {}
+    before, after = region_text(source, page, region), region_text(output, page, region)
+    for renderer in ('mupdf', 'poppler'):
+        tb, ta = bare(before[renderer]), bare(after[renderer])
+        checks[f'region_extraction_{renderer}'] = bare(old) in tb and ta == tb.replace(bare(old), bare(new), 1)
+    if lines:
+        glyphs = [g for g in chars(source, page) if inside(g['bbox'], region) and g['c'].strip()]
+        baselines = sorted({round(l['baseline'], 1) for l in lines})
+        ys = sorted({g['origin'][1] for g in glyphs})
+        checks['source_control_baselines_on_the_paragraph_grid'] = all(any(abs(y - b) <= .2 for b in baselines) for y in ys)
+        lefts = {round(min(g['origin'][0] for g in glyphs if abs(g['origin'][1] - y) < .2), 1) for y in ys}
+        firsts = {round(l['bbox'][0], 1) for l in lines}
+        checks['source_control_left_edges_are_line_starts'] = all(any(abs(x - s) <= .3 for s in firsts) for x in lefts)
+    return checks
+
+
 def substitute(root):
     path = root / 'substitute.ttf'
     if not path.exists():
@@ -140,7 +198,8 @@ def run_request(r, source, folder, sub=None):
     record['audit'] = audit(source, output, r['page'], r['allowed_region'], r['old'], r['new'], folder, lines=r['lines'])
     mcids = [s['mcid'] for s in r['structure'] if s.get('status') == 'tree_backed']
     record['structure'] = structure_audit(source, output, r['page'], r['expected_text'], mcids)
-    record['continued_editing'] = reopen(output, r['page'], r['new'])
+    record['supplementary'] = supplementary(source, output, r['page'], r['allowed_region'], r['old'], r['new'], r['lines'])
+    record['continued_editing'] = reopen_unique(output, r['page'], r['new'], r['expected_text'])
     return record, output
 
 
@@ -210,7 +269,8 @@ def phase_samples(root, manifest, args):
                 record['audit'] = audit(source, output, r['page'], region, sel, new, folder)
                 expected = result['proposal']['expected']
                 record['structure'] = structure_audit(source, output, r['page'], expected, [])
-                record['continued_editing'] = reopen(output, r['page'], new)
+                record['supplementary'] = supplementary(source, output, r['page'], region, sel, new)
+                record['continued_editing'] = reopen_unique(output, r['page'], new, expected)
             results.append(record)
             print(n, kind, r['document'], r['page'], record['outcome'], record.get('reason') or (record.get('audit') or {}).get('failed'),
                   (record.get('structure') or {}).get('failed'), flush=True)

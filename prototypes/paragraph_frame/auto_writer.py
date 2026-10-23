@@ -191,10 +191,19 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         if not k:
             at,pre,wrapped=insertion,prefix,(choice,restore)
         else:
+            # The first boundary after its sequence whose clip holds the frame
+            # (an object's clip may be set before its BDC and restored after
+            # its EMC), no later than the text that followed it in the source,
+            # with no other text in between: paint and content order are kept.
             end=head.scopes[n]['end_byte_range'][1]
-            spot=next((b for b in boundaries if b.operator.end==end and b.marked_content_depth==len(containers) and not b.text_object),None)
-            if spot is None:raise Refused('no safe insertion point after an inline placed object')
-            pre=form_write.insertion(spot,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=bool(neutral))
+            limit=min([e.operator.start for e in removed if e.operator.start>=end]+[containers[-1]['end_byte_range'][0] if containers else len(data)])
+            spot=pre=problem=None
+            for b in boundaries:
+                if not end<=b.operator.end<=limit or b.marked_content_depth!=len(containers) or b.text_object:continue
+                if form_write.foreign_text_between(data,end,b.operator.end,starts):break
+                try:pre=form_write.insertion(b,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=bool(neutral));spot=b;break
+                except Refused as exc:problem=exc
+            if spot is None:raise Refused('no safe insertion point after an inline placed object'+(f' ({problem})' if problem else ''))
             if neutral:pre+=neutral.encode()+b' gs\n'
             at,wrapped=spot.operator.end,(spot,b'')
             if any(a<at<b for a,b,_ in edits):raise Refused('insertion intersects removal')
@@ -351,7 +360,8 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
     record is stored and the next edit falls back to inference.
     """
     from pdfeditor.page_proposal import _Analysis
-    from .auto_detect import clean_rows
+    from .auto_detect import page_rows
+    from pdfeditor.marked_content import observe_marked_content
     state=spec['stored'];records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale']]
     if delta:
         moved=[n for n,p in zip(state['followers'],active[1:]) if n is not None]
@@ -359,21 +369,27 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
         records+=[conditions.shifted(state['records'][n],delta) for n in moved]
     check=ContentPage(draft,spec['page'])
     try:
-        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected);added=[]
+        # Glyphs of an inline placed object stay where they were drawn; they
+        # are lines of the edited paragraph too.
+        fixed=set(active[0].fixed);kept=Counter(glyph_key(c.actual[i]) for i in fixed)
+        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected and i not in fixed);added=[];placed=[]
         for n,g in enumerate(check.actual):
             key=glyph_key(g)
-            if foreign[key]:foreign[key]-=1
+            if kept[key]:kept[key]-=1;placed.append(n)
+            elif foreign[key]:foreign[key]-=1
             else:added.append(n)
-        target=set(added[:target_count])
-        rows=clean_rows(check,[dict(l) for l in _Analysis(draft,spec['page']).lines if l['text'].strip()])
+        target=set(added[:target_count-len(fixed)])|set(placed)
+        analysis=_Analysis(draft,spec['page'])
+        rows=page_rows(check,observe_marked_content(str(draft),spec['page']),analysis)[0]
         mine=[r for r in rows if set(r['glyph_ids'])<=target]
         covered={i for r in mine for i in r['glyph_ids']}
         inked={i for i in target if check.actual[i]['unicode'].strip()}
         record=None
         if mine and inked<=covered and all(not set(r['glyph_ids'])&target for r in rows if r not in mine):
             values=spec['values'];previous=state['records'][state['target']] if state['applied'] else None
+            known=conditions.present(values,mine,[dict(o) for o in analysis.obstacles])
             record=conditions.make(check,mine,conditions=dict(values,frame=spec['frame']),provenance=spec['provenance'],origin=spec['origin'],
-                                   approval=dict(count=(previous['approval']['count'] if previous else 0)+1,**(approval or {})))
+                                   approval=dict(count=(previous['approval']['count'] if previous else 0)+1,**(approval or {})),present=known)
             records.append(record)
         if records or state['records']:conditions.attach(writer,page,records,spec['page'])
         summary=dict(written=record is not None,records_on_page=len(records),applied_before_edit=state['applied'],status_before_edit=state['status'],
@@ -385,11 +401,12 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
 def verify_conditions(path,page,record=None):
     """The stored record must be readable and match the staged paragraph again."""
     from pdfeditor.page_proposal import _Analysis
-    from .auto_detect import clean_rows
+    from .auto_detect import page_rows
+    from pdfeditor.marked_content import observe_marked_content
     check=ContentPage(path,page)
     try:
         records,status=conditions.read(check,page)
-        rows=clean_rows(check,[dict(l) for l in _Analysis(path,page).lines if l['text'].strip()])
+        rows=page_rows(check,observe_marked_content(str(path),page),_Analysis(path,page))[0]
         mine=[r for r in records if r==record] if record is not None else records[-1:]
         if status!='present' or len(mine)!=1 or conditions.match(check,mine[0],rows) is None:
             raise Refused('stored approved conditions do not round-trip in the staged PDF')
@@ -404,7 +421,8 @@ def store_flow(c,draft,writer,page,spec,selected,counts,approval):
     flow are replaced by the flow record.
     """
     from pdfeditor.page_proposal import _Analysis
-    from .auto_detect import clean_rows
+    from .auto_detect import page_rows
+    from pdfeditor.marked_content import observe_marked_content
     state=spec['stored'];flow=spec['flow']
     flow_ids={i for g in flow['paragraphs'] for r in g for i in r['glyph_ids']}
     check=ContentPage(draft,spec['page'])
@@ -426,7 +444,7 @@ def store_flow(c,draft,writer,page,spec,selected,counts,approval):
         for k,count in enumerate(counts):
             for n in added[position:position+count]:owner[n]=flow['target']+k
             position+=count
-        rows=clean_rows(check,[dict(l) for l in _Analysis(draft,spec['page']).lines if l['text'].strip()])
+        rows=page_rows(check,observe_marked_content(str(draft),spec['page']),_Analysis(draft,spec['page']))[0]
         mine=[];separable=True
         for r in rows:
             owners={owner.get(i) for i in r['glyph_ids']}

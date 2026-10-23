@@ -11,7 +11,8 @@ B2 stores what the user approved, not a claim about the author's frame:
   saved (text, x, baseline, end, font resource/size/fill), and the approved
   left/right/first-line x/leading/bottom with their provenance;
 * a record is applied only when every recorded line is drawn again exactly
-  and no protected paint has entered the approved width. Otherwise the record
+  and no protected paint has entered the approved width (paint already there
+  when the record was written is listed in it). Otherwise the record
   is reported stale and fresh inference is used, so an external edit never
   revives an old condition silently.
 
@@ -94,6 +95,10 @@ def valid(record, width, height):
                 or cond.get('align', 'start') not in ('start', 'justify', 'justify-cjk')):
             return False
         if not isinstance(origin['provenance']['line_height'], str) or not isinstance(origin['values'], dict):
+            return False
+        known = record.get('present', [])
+        if not isinstance(known, list) or not all(isinstance(k, list) and len(k) == 5 and isinstance(k[0], str)
+                                                  and all(_number(v, -1, max(width, height) + 1) for v in k[1:]) for k in known):
             return False
         return type(approval['count']) is int and approval['count'] >= 1
     except (KeyError, TypeError, AttributeError):
@@ -179,24 +184,49 @@ def overlaps(record, rows):
                for line in record['lines'] for r in rows)
 
 
+def _band(conditions, rows):
+    return pymupdf.Rect(conditions['left'], min(r['top'] for r in rows), conditions['right'], max(r['bottom'] for r in rows))
+
+
+def _inside(band, o):
+    overlap = band & pymupdf.Rect(o['bounds'])
+    return not overlap.is_empty and overlap.width > .05 and overlap.height > .05
+
+
+def present(conditions, rows, obstacles):
+    """Protected paint already inside the approved width when the record is
+    written (a form field beside the last line, an inline icon's paths); it is
+    there by approval, not an intrusion. Foreign text is never recorded."""
+    band = _band(conditions, rows)
+    return [[o['kind']] + [round(v, 3) for v in o['bounds']] for o in obstacles
+            if o['kind'] not in ('container', 'foreign-text') and _inside(band, o)]
+
+
 def intrusions(record, rows, obstacles):
-    """Protected paint now inside the approved width of the paragraph's current lines."""
-    top = min(r['top'] for r in rows)
-    bottom = max(r['bottom'] for r in rows)
-    band = pymupdf.Rect(record['conditions']['left'], top, record['conditions']['right'], bottom)
+    """Protected paint now inside the approved width of the paragraph's current lines.
+
+    Paint the record lists as present at approval, at the same place, is not
+    an intrusion.
+    """
+    band = _band(record['conditions'], rows)
+    known = record.get('present', [])
     hits = []
     for o in obstacles:
         if o['kind'] == 'container':
             continue
-        overlap = band & pymupdf.Rect(o['bounds'])
-        if not overlap.is_empty and overlap.width > .05 and overlap.height > .05:
+        if any(k[0] == o['kind'] and all(abs(a - b) <= .05 for a, b in zip(k[1:], o['bounds'])) for k in known):
+            continue
+        if _inside(band, o):
             hits.append(o['kind'])
     return hits
 
 
-def make(c, rows, conditions, provenance, origin, approval):
-    return dict(lines=[line_record(c, r) for r in rows], conditions=conditions, provenance=provenance,
-                origin=origin, approval=approval)
+def make(c, rows, conditions, provenance, origin, approval, present=()):
+    record = dict(lines=[line_record(c, r) for r in rows], conditions=conditions, provenance=provenance,
+                  origin=origin, approval=approval)
+    if present:
+        record['present'] = list(present)
+    return record
 
 
 def make_flow(c, lines, regions, conditions, links, provenance, origin, approval):

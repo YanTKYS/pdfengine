@@ -1,10 +1,11 @@
-"""B2 on tagged PDFs: block elements, shared MCIDs, cross-span edits, atoms, placed objects, structure proof."""
+"""B2 on tagged PDFs: block elements, shared MCIDs, cross-span edits, atoms, placed objects, markers, structure proof."""
 import re
 import pymupdf
 import pytest
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import (ArrayObject, BooleanObject, DecodedStreamObject, DictionaryObject, FloatObject, NameObject,
                            NumberObject, TextStringObject)
+from provider_font import cjk_provider_bytes
 from test_paragraph_frame_continuity import page_with
 from prototypes.paragraph_frame import semantics
 from prototypes.paragraph_frame.auto import approve, propose, save
@@ -350,3 +351,74 @@ def test_text_drawn_with_a_blend_mode_is_refused(tmp_path):
     w.write(tmp_path / 'multiply.pdf')
     with pytest.raises(Refused, match='non-fill or transparent'):
         propose(str(tmp_path / 'multiply.pdf'), 1, '申請書は窓口で', '申請書は各窓口で')
+
+
+def _clip_outside(data):
+    """Line 2's first glyph as a placed object whose clip is set before its BMC and
+    released after its EMC (InDesign), with a painted background of its own."""
+    m = re.search(rb'q\nBT\n1 0 0 1 ([\d.]+) ([\d.]+) Tm\n/Fixture 11 Tf \[<([0-9a-f]{4})([0-9a-f]+)>\]TJ\nET\nQ', data[1])
+    x, y, first, rest = float(m.group(1)), float(m.group(2)), m.group(3), m.group(4)
+    placed = (f'q {x - 1} {y - 3} 13 14 re W n /PlacedPDF BMC q .9 g {x - 1} {y - 3} 13 14 re f Q BT 1 0 0 1 {x:g} {y:g} Tm /Fixture 11 Tf [<'.encode()
+              + first + b'>]TJ ET EMC Q\n' + f'q BT 1 0 0 1 {x + 11:g} {y:g} Tm /Fixture 11 Tf [<'.encode() + rest + b'>]TJ ET Q')
+    data[1] = data[1][:m.start()] + placed + data[1][m.end():]
+    return data
+
+
+def test_text_after_a_placed_object_is_inserted_outside_its_clip(tmp_path):
+    source, _ = tagged(tmp_path, [], tree=False, edit_streams=_clip_outside)
+    out = tmp_path / 'out.pdf'
+    edit(source, '申請書は窓口で', '申請書は窓口と郵送で', out)
+    before = PdfReader(source).pages[0].get_contents().get_data()
+    after = PdfReader(out).pages[0].get_contents().get_data()
+    block = re.search(rb'q [\d.]+ [\d.]+ 13 14 re W n /PlacedPDF BMC.*?EMC Q', before, re.S).group(0)
+    assert after.count(block) == 1
+    assert drawn_text(out) == drawn_text(source).replace('申請書は窓口で', '申請書は窓口と郵送で')
+    # The object's own paint lies inside the approved width; it was there when
+    # the conditions were approved, so the saved PDF alone continues with them.
+    proposal = propose(str(out), 1, '窓口と郵送で', '窓口と郵送でも')
+    assert proposal['evidence']['conditions']['status'] == 'applied'
+
+
+def _glyph_page(tmp_path, items, name='glyphs.pdf'):
+    """One text paint per (x, y, text, size), in this order."""
+    data = cjk_provider_bytes()
+    path = tmp_path / name
+    d = pymupdf.open()
+    p = d.new_page(width=300, height=300)
+    p.insert_font(fontname='Fixture', fontbuffer=data)
+    for x, y, text, size in items:
+        p.insert_text((x, y), text, fontsize=size, fontname='Fixture')
+    d.save(path)
+    d.close()
+    return path
+
+
+def test_marker_on_an_offset_baseline_moves_with_its_line(tmp_path):
+    # A small ▶ drawn 1.5 pt above the last line (beyond the 0.15 em line
+    # grouping of the page analysis) and painted after the rest of the page.
+    source = _glyph_page(tmp_path, [(40, 60, '本年度の補助事業について、募集を', 11), (40, 76, '行います。申請書は窓口で配布し', 11),
+                                    (40, 92, 'ます。', 11), (40, 130, '後続段落です。', 11), (73.5, 90.5, '▶', 6)])
+    proposal = propose(str(source), 1, '本年度の補助事業について、', '本年度の')
+    assert proposal['paragraphs'][0].endswith('ます。▶')
+    out = tmp_path / 'out.pdf'
+    save(str(source), approve(str(source), proposal, acknowledge_inference=True), str(out))
+    with pymupdf.open(out) as d:
+        glyphs = [(c['c'], c['origin']) for b in d[0].get_text('rawdict')['blocks'] for l in b.get('lines', [])
+                  for s in l['spans'] for c in s['chars']]
+    marker = next(o for ch, o in glyphs if ch == '▶')
+    stop = next(o for ch, o in glyphs if ch == '。' and abs(o[1] - marker[1] - 1.5) < .05 and o[0] < marker[0])
+    assert 0 < marker[0] - stop[0] < 12
+    # Drawn in reading order: extraction follows its line.
+    assert drawn_text(out) == '本年度の募集を行います。申請書は窓口で配布します。▶後続段落です。'
+
+
+def test_list_items_opening_with_one_marker_are_separate_paragraphs(tmp_path):
+    items = [(40, 60, '●申請書は窓口で配布します。', 11), (40, 76, '●提出は郵送でも受け付けます。', 11), (40, 92, '●締切は五月末日です。', 11)]
+    source = _glyph_page(tmp_path, items)
+    proposal = propose(str(source), 1, '窓口で', '各窓口で')
+    assert proposal['paragraphs'][0] == '●申請書は窓口で配布します。'
+    out = tmp_path / 'out.pdf'
+    save(str(source), approve(str(source), proposal, acknowledge_inference=True), str(out))
+    with pymupdf.open(out) as d:
+        lines = [''.join(s['text'] for s in l['spans']) for b in d[0].get_text('dict')['blocks'] for l in b.get('lines', [])]
+    assert lines == ['●申請書は各窓口で配布します。', '●提出は郵送でも受け付けます。', '●締切は五月末日です。']

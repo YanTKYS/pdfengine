@@ -3,6 +3,7 @@
 No evaluation geometry enters this module. Occupied right edges are evidence,
 not an assertion that a PDF stores an author's text frame.
 """
+import unicodedata
 from statistics import median
 import pymupdf
 from pdfeditor.content_stream import ContentPage
@@ -119,6 +120,43 @@ def split_blocks(c, row, block):
     return result
 
 
+def merge_offset_rows(c, rows, block):
+    """Rows of one visual line drawn on slightly different baselines (a marker or a smaller
+    glyph 1 pt lower) joined into one row; each glyph keeps its own baseline offset.
+
+    Two rows join when their baselines differ (by more than 0.05 pt, at most 0.35 em of the
+    smaller size), they touch without overlapping (gap from -0.05 em of rounding to 0.5 em),
+    and they belong to the same structure element (or none). Rows on one baseline were
+    separated by an earlier stage (column gutters, structure elements) and stay apart.
+    """
+    out = []
+    owners = lambda row: {block.get(i) for i in row['glyph_ids']}
+
+    def beside(m, r):
+        em = min(m['size'], r['size'])
+        gap = max(r['bbox'][0] - m['bbox'][2], m['bbox'][0] - r['bbox'][2])
+        return -.05 * em <= gap <= .5 * max(m['size'], r['size'])
+
+    for r in rows:
+        mate = next((m for m in out if .05 < abs(m['baseline'] - r['baseline']) <= .35 * min(m['size'], r['size'])
+                     and beside(m, r) and owners(m) == owners(r)), None)
+        if mate is None:
+            out.append(r)
+            continue
+        main = mate if len(mate['glyph_ids']) >= len(r['glyph_ids']) else r
+        ids = sorted(mate['glyph_ids'] + r['glyph_ids'], key=lambda i: c.actual[i]['origin'][0])
+        merged = dict(main, glyph_ids=ids, text=''.join(c.actual[i]['unicode'] for i in ids),
+                      x=min(mate['x'], r['x']), pen_end=max(mate['pen_end'], r['pen_end']),
+                      starts=[c.actual[i]['origin'][0] for i in ids],
+                      bbox=[min(mate['bbox'][0], r['bbox'][0]), min(mate['bbox'][1], r['bbox'][1]),
+                            max(mate['bbox'][2], r['bbox'][2]), max(mate['bbox'][3], r['bbox'][3])])
+        for key in ('top', 'bottom', 'right'):
+            if key in mate and key in r:
+                merged[key] = (min if key == 'top' else max)(mate[key], r[key])
+        out[out.index(mate)] = merged
+    return out
+
+
 def clean_rows(c, rows):
     """Analysis rows split at column gutters, with independent blank-only paints at a row start removed."""
     result = []
@@ -154,6 +192,12 @@ def _first_word_fits(c, prev, row, right):
     if not word or not all(c.actual[i]['unicode'].isascii() and c.actual[i]['unicode'].isalnum() for i in word):return False
     width=c.actual[word[-1]]['bbox'][2]-row['x']
     return prev['pen_end']+.25*prev['size']+width<right-.5*prev['size']
+
+
+def _marker(c, row):
+    """The row's first glyph when it is a list marker (a symbol such as ● • ■ ▶ ・ ※)."""
+    first = next((c.actual[i]['unicode'] for i in row['glyph_ids'] if c.actual[i]['unicode'].strip()), '')
+    return first if first and (unicodedata.category(first) == 'So' or first in '•・‣⁃◦※') else None
 
 
 def _numeric(value):
@@ -318,8 +362,12 @@ def _flow_detect(c, marks, page, flow, selected, start, paint, report, records, 
     return c, [target] + followers, spec, start, evidence
 
 
-def observe(c,marks,analysis):
-    """Analysis rows, their semantic /P parents and paragraph groups of one page."""
+def page_rows(c, marks, analysis):
+    """Drawn rows of a page and the block structure element of each glyph.
+
+    Detection and the stored approved records (auto_writer) use these same
+    rows, so a record written after an edit is found again on reopen.
+    """
     # Preserve meaningful spaces while dropping independent blank-only paints.
     rows=clean_rows(c,[dict(l) for l in analysis.lines if l['text'].strip()])
     # The structure element that a glyph's text belongs to: a block element
@@ -335,7 +383,13 @@ def observe(c,marks,analysis):
                     if e.stream_xref==s['stream_xref'] and not e.invocation and s['content_byte_range'][0]<=e.operator.start<s['content_byte_range'][1]:
                         for ch in e.chars:
                             for i in ch.source_orders:parent_by_id[i]=pr.indirect_reference.idnum
-    rows=[piece for r in rows for piece in split_blocks(c,r,parent_by_id)]
+    rows=merge_offset_rows(c,[piece for r in rows for piece in split_blocks(c,r,parent_by_id)],parent_by_id)
+    return rows,parent_by_id
+
+
+def observe(c,marks,analysis):
+    """Analysis rows, their semantic /P parents and paragraph groups of one page."""
+    rows,parent_by_id=page_rows(c,marks,analysis)
     # Paint style of each inked glyph: a row that shares no font and fill with
     # the previous row (a white label on a coloured box) does not continue it.
     paint={i:(e.state.font.name if e.state.font else None,e.state.fill) for e in c.events for ch in e.chars for i in ch.source_orders if ch.text.strip()}
@@ -363,6 +417,9 @@ def observe(c,marks,analysis):
                 if not new and gaps and gap>1.3*median(gaps):new=True
                 if not new and _first_word_fits(c,prev,r,max(x['pen_end'] for x in candidate+[r])):new=True
                 if not new and style(prev) and style(r) and not style(prev)&style(r):new=True
+            # A row opening with the marker of the paragraph's first row, at its
+            # x, is the next list item.
+            if not new and _marker(c,r) and _marker(c,r)==_marker(c,candidate[0]) and abs(r['x']-candidate[0]['x'])<.2*r['size']:new=True
         if new:groups.append([r])
         else:candidate.append(r)
     return rows,parent_by_id,groups
