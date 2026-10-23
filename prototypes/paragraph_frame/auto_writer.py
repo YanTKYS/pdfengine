@@ -79,20 +79,22 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     # the first candidate whose inherited state (opacity, ExtGState, clip) is
     # proven harmless for the approved frames.
     problem=None;neutral=None;own_overprint=form_write.overprint([e.state for e in removed])
+    # The edited text itself was drawn opaque and with harmless ExtGStates:
+    # where the inherited state is not proven harmless, the new drawing sets
+    # that state again (a neutral ExtGState with the text's own overprint).
+    own=all(form_write.drawn_neutral(e.state) for e in removed)
+    taken_gs=set(form_write.program_fonts(c,invocation,'/ExtGState'));neutral_resource='/PFNeutral'
+    while neutral_resource in taken_gs:neutral_resource+='x'
     for choice,restore in candidates:
         try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,text_overprint=own_overprint);break
         except Refused as exc:problem=problem or exc
     else:
-        # The edited text itself was drawn opaque and with harmless ExtGStates:
-        # the new drawing sets that state again over the inherited one.
-        own=all(form_write.drawn_neutral(e.state) for e in removed)
         if not own:raise problem
         for choice,restore in candidates:
             try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=True);break
             except Refused:continue
         else:raise problem
-        taken_gs=set(form_write.program_fonts(c,invocation,'/ExtGState'));neutral='/PFNeutral'
-        while neutral in taken_gs:neutral+='x'
+        neutral=neutral_resource
         prefix+=neutral.encode()+b' gs\n'
     insertion=choice.operator.end
     # Page (top-left) coordinates to default user space, whatever the MediaBox origin.
@@ -197,14 +199,19 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
             # with no other text in between: paint and content order are kept.
             end=head.scopes[n]['end_byte_range'][1]
             limit=min([e.operator.start for e in removed if e.operator.start>=end]+[containers[-1]['end_byte_range'][0] if containers else len(data)])
-            spot=pre=problem=None
+            spot=pre=problem=None;places=[]
             for b in boundaries:
                 if not end<=b.operator.end<=limit or b.marked_content_depth!=len(containers) or b.text_object:continue
                 if form_write.foreign_text_between(data,end,b.operator.end,starts):break
-                try:pre=form_write.insertion(b,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=bool(neutral),text_overprint=own_overprint);spot=b;break
-                except Refused as exc:problem=exc
+                places.append(b)
+            for use in (True,) if neutral else (False,True) if own else (False,):
+                for b in places:
+                    try:pre=form_write.insertion(b,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=use,text_overprint=own_overprint);spot=b;break
+                    except Refused as exc:problem=problem or exc
+                if spot is not None:
+                    if use:neutral=neutral_resource;pre+=neutral.encode()+b' gs\n'
+                    break
             if spot is None:raise Refused('no safe insertion point after an inline placed object'+(f' ({problem})' if problem else ''))
-            if neutral:pre+=neutral.encode()+b' gs\n'
             at,wrapped=spot.operator.end,(spot,b'')
             if any(a<at<b for a,b,_ in edits):raise Refused('insertion intersects removal')
         ops=emit(head,ts,True,pre) if ts else []

@@ -535,3 +535,25 @@ def test_opaque_text_with_alpha_is_shape_and_overprint_is_edited(tmp_path):
     gs = PdfReader(out).pages[0]['/Resources']['/ExtGState']
     neutral = next(v.get_object() for k, v in gs.items() if k.startswith('/PFNeutral'))
     assert (neutral['/OP'], neutral['/op'], neutral['/OPM'], neutral['/ca']) == (True, True, 1, 1)
+
+
+def test_text_after_a_placed_object_sets_its_own_state_when_the_inherited_one_differs(tmp_path):
+    # The text is drawn with overprint on; after the placed object only an
+    # overprint-off state is inherited, so the drawing after it sets the
+    # text's own state (neutral ExtGState with its overprint).
+    def overprinted(data):
+        data = _clip_outside(data)
+        data[1] = data[1].replace(b'q ', b'/OPoff gs q ', 1).replace(b'q BT ', b'q BT /OPon gs ', 1)
+        return [b'/OPon gs\n' + d for d in data]
+    source, _ = tagged(tmp_path, [], tree=False, edit_streams=overprinted)
+    w = PdfWriter(clone_from=PdfReader(source))
+    on = {'/OP': BooleanObject(True), '/op': BooleanObject(True), '/OPM': NumberObject(1)}
+    _gstates(w, w.pages[0], OPon={'/Type': NameObject('/ExtGState'), **on},
+             OPoff={'/Type': NameObject('/ExtGState'), '/OP': BooleanObject(False), '/op': BooleanObject(False)})
+    w.write(tmp_path / 'op.pdf')
+    out = tmp_path / 'out.pdf'
+    edit(tmp_path / 'op.pdf', '申請書は窓口で', '申請書は窓口と郵送で', out)
+    assert drawn_text(out) == drawn_text(tmp_path / 'op.pdf').replace('申請書は窓口で', '申請書は窓口と郵送で')
+    gs = PdfReader(out).pages[0]['/Resources']['/ExtGState']
+    neutral = next(v.get_object() for k, v in gs.items() if k.startswith('/PFNeutral'))
+    assert (neutral['/OP'], neutral['/op']) == (True, True)
