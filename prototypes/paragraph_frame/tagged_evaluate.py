@@ -168,6 +168,19 @@ def reopen_unique(output, page, new, paragraph):
         if p['evidence']['selection_match_count'] == 1:
             status = p['evidence']['conditions']['status']
             return dict(ok=status == 'applied', status=status, selection=selection)
+    # The whole paragraph is also part of another one: the occurrence whose
+    # paragraph is the edited paragraph.
+    bare_paragraph = bare(paragraph)
+    for k in range(64):
+        try:
+            p = propose(str(output), page, new, new, occurrence=k)
+        except Refused as exc:
+            if 'not found' in str(exc):
+                break
+            continue
+        if bare(p['paragraphs'][0]) == bare_paragraph:
+            status = p['evidence']['conditions']['status']
+            return dict(ok=status == 'applied', status=status, selection=new, occurrence=k)
     return reopen(output, page, new)
 
 
