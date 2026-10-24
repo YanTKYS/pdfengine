@@ -63,7 +63,8 @@ def pixels(a,b,root,spec=None):
                 delta=ImageChops.difference(ia.convert('RGB'),ib.convert('RGB'))
                 changed=delta.getbbox()
                 if spec and page==spec['page']:
-                    x0,y0,x1,y1=spec['frame'];ImageDraw.Draw(delta).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
+                    for x0,y0,x1,y1 in spec.get('frames') or [spec['frame']]:
+                        ImageDraw.Draw(delta).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
                 r,g,b=delta.split();mono=ImageChops.lighter(ImageChops.lighter(r,g),b)
                 outside=ia.width*ia.height-mono.histogram()[0]
                 vals.append(dict(page=page,outside_pixels=outside,changed_bbox=changed))
@@ -101,6 +102,16 @@ def painting(path,page):
         return dict(drawings=drawings,images=images,links=links,annots=annots,fonts=fonts)
 
 
+def _entry(value,depth=0,seen=()):
+    """A structure entry as plain data (attribute dictionaries may nest deeply; cycles are cut)."""
+    if isinstance(value,IndirectObject):
+        if value.idnum in seen or depth>64:return 'ref'
+        seen=seen+(value.idnum,);value=value.get_object()
+    if isinstance(value,dict):return {str(k):_entry(v,depth+1,seen) for k,v in value.items() if k not in ('/Length','/Filter','/DecodeParms','/P','/Pg','/K')}
+    if isinstance(value,(list,tuple)):return [_entry(v,depth+1,seen) for v in value]
+    return state_object(value)
+
+
 def semantic(path,page):
     reader=PdfReader(path);root=reader.trailer['/Root'].get('/StructTreeRoot')
     if root is None:return dict(tagged=False,checks=dict(no_struct_tree=True),tree=None)
@@ -128,7 +139,7 @@ def semantic(path,page):
         if '/S' in obj:
             parents_ok.append(isinstance(obj.raw_get('/P'),IndirectObject) and obj.raw_get('/P').idnum==parent)
         ref=getattr(obj,'indirect_reference',None)
-        result={k:state_object(v) for k,v in obj.items() if k not in ('/K','/P','/Pg','/ParentTree')}
+        result={k:_entry(v) for k,v in obj.items() if k not in ('/K','/P','/Pg','/ParentTree')}
         if obj.get('/S')=='/P':result['_xref']=ref.idnum if ref else None
         if '/K' in obj:result['/K']=tree(obj['/K'],ref.idnum if ref else None)
         return result

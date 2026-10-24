@@ -39,6 +39,9 @@ class Paragraph:
     # layers) that enclose the whole paragraph, outermost first. They are kept;
     # new drawing is inserted inside them.
     containers: tuple = ()
+    # Glyph IDs of inline placed objects inside the paragraph (an icon with its
+    # own clip and paths): never removed or redrawn, kept in place.
+    fixed: tuple = ()
 
 
 GEOMETRY_KEYS=('page','frame','left','right','first_x','baseline','line_height','paragraph_gap')

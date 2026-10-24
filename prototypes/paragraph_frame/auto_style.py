@@ -110,6 +110,9 @@ def resource_witnesses(c,font):
             table=None if str(mapping)=='/Identity' else mapping.get_object().get_data()
             def gid_of(value):return value if table is None else int.from_bytes(table[2*value:2*value+2] or b'\0\0','big')
         else:
+            # A simple-font subset may omit the cmap (the PDF encoding names
+            # the glyphs): then the program offers no witness.
+            if 'cmap' not in program:return {}
             cmaps=[t.cmap for t in program['cmap'].tables if (t.platformID,t.platEncID) in ((1,0),(3,0))]
             def gid_of(value):
                 name=next((m.get(value) or m.get(0xF000|value) for m in cmaps if m.get(value) or m.get(0xF000|value)),None)
@@ -196,6 +199,22 @@ def sibling_fonts(c,font):
     return result
 
 
+def changed_runs(old,new,aligned):
+    """``(i1,i2,j1,j2)`` runs where ``old[i1:i2]`` becomes ``new[j1:j2]``.
+
+    Without alignment, one run between the common prefix and suffix; with it,
+    every non-equal run of a character alignment.
+    """
+    if aligned:
+        from difflib import SequenceMatcher
+        return [(i1,i2,j1,j2) for op,i1,i2,j1,j2 in SequenceMatcher(None,old,new,autojunk=False).get_opcodes() if op!='equal']
+    prefix=0
+    while prefix<min(len(old),len(new)) and old[prefix]==new[prefix]:prefix+=1
+    suffix=0
+    while suffix<min(len(old)-prefix,len(new)-prefix) and old[-suffix-1]==new[-suffix-1]:suffix+=1
+    return [(prefix,len(old)-suffix,prefix,len(new)-suffix)] if (prefix,suffix)!=(len(old),0) or len(old)!=len(new) else []
+
+
 def build(c,paragraph,start,old,new,substitute=None,justify=False):
     source,tracking=source_tokens(c)
     try:base=[copy(source[i]) for i in paragraph.ids]
@@ -214,7 +233,9 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
             t['advance']-=t.pop('positional_gap')
     for t in base:
         for n,s in enumerate(paragraph.scopes):
-            if s['content_byte_range'][0]<=t['event'].operator.start<s['content_byte_range'][1]:t['scope']=n;break
+            if (s['stream_xref']==t['event'].stream_xref and tuple(tuple(i) for i in s['invocation'])==t['event'].invocation
+                    and s['content_byte_range'][0]<=t['event'].operator.start<s['content_byte_range'][1]):
+                t['scope']=n;t['fixed']=s['kind']=='fixed';break
     fonts={};cache={}
     candidates=[]
     # One approved substitute, or several approved candidates of which B2 picks,
@@ -239,7 +260,9 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
 
     def resolve(char,anchor,mode=None):
         """A new token in the anchor's style: source witness, same program, then approved substitute."""
-        t=copy(anchor);t.update(text=char,source_id=None,origin=None,bbox=None);t.pop('positional_gap',None)
+        t=copy(anchor);t.update(text=char,source_id=None,origin=None,bbox=None,fixed=False);t.pop('positional_gap',None)
+        # New text never joins replacement-text marked content or a placed object.
+        if t.get('scope') is not None and paragraph.scopes[t['scope']]['kind'] in ('atom','fixed'):t['scope']=None
         # Never silently borrow another font resource merely because Unicode
         # happens to match. A source witness must be in the anchor resource.
         witnesses=[v for v in source.values() if v['text']==char and v['font'].xref==anchor['font'].xref]
@@ -290,48 +313,63 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
     tokens=[];rest=iter(base)
     for n,char in enumerate(paragraph.text):
         tokens.append(resolve(' ',tokens[-1],'implicit-line-join') if n in paragraph.joins else next(rest))
-    # Only the changed middle needs new characters. Unchanged prefix/suffix
-    # keep source code, resource, style and source occurrence evidence.
-    prefix=0
-    while prefix<min(len(old),len(new)) and old[prefix]==new[prefix]:prefix+=1
-    suffix=0
-    while suffix<min(len(old)-prefix,len(new)-prefix) and old[-suffix-1]==new[-suffix-1]:suffix+=1
-    at=start+prefix; stop=start+len(old)-suffix; inserted=new[prefix:len(new)-suffix if suffix else len(new)]
-    anchor_index=min(at,len(tokens)-1)
-    if at>0 and not tokens[anchor_index]['text'].strip() and inserted.strip():anchor_index=at-1
-    # A glyph drawn by an earlier B2 save with a generated resource (a new
-    # code or an approved substitute) is not the paragraph's source font. The
-    # style anchor is the nearest original-resource glyph of the same size.
+    # Only changed characters need new glyphs; unchanged ones keep source
+    # code, resource, style and occurrence evidence. With several marked-content
+    # sequences, old and new text are aligned per character, so unchanged
+    # characters stay in their sequence (span) and a changed run belongs to
+    # the sequence of the text it replaces.
+    kinds=[s['kind'] for s in paragraph.scopes]
+    aligned=sum(k in ('mcid','plain') for k in kinds)>1 or 'atom' in kinds or 'fixed' in kinds
     def generated(t):return t['font_name'].startswith('/PFAuto')
-    if generated(tokens[anchor_index]):
-        order=sorted(range(len(tokens)),key=lambda j:(abs(j-anchor_index),j>anchor_index))
-        anchor_index=next((j for j in order if tokens[j]['text'].strip() and not generated(tokens[j])
-                           and tokens[j]['size']==tokens[anchor_index]['size']),anchor_index)
-    anchor=copy(tokens[anchor_index])
-    newtokens=[resolve(char,anchor) for char in inserted]
-    # New CJK glyphs may be squeezed by the per-glyph compression the source
-    # writer used for ordinary CJK glyphs of the same font and size (median of
-    # observed reductions; capped at 0.05 em). Layout applies it only to a line
-    # that would otherwise overflow, so restored text breaks as it did before.
     reductions=defaultdict(list)
     for t in base:
         gap=t['nominal_advance']-t['advance']
         if ord(t['text'])>=0x2E80 and t['text'] not in PUNCTUATION and gap>.001:reductions[(t['font_name'],t['size'])].append(gap)
-    for t in newtokens:
-        seen=reductions.get((anchor['font_name'],anchor['size']),[])
-        if len(seen)>=3 and ord(t['text'])>=0x2E80 and t['text'] not in PUNCTUATION:t['squeezable']=min(median(seen),.05*t['size'])
-    # New punctuation takes the compression its character had in the source
-    # paragraph (median of observed advances), never more.
     observed=defaultdict(list)
     for t in base:
         if t.get('compressed_punctuation'):observed[(t['text'],t['font_name'],t['size'])].append(t['advance'])
-    for t in newtokens:
-        seen=observed.get((t['text'],t['font_name'],t['size']))
-        if seen and median(seen)<t['advance']:t['advance']=median(seen)
-    # A positional gap after the replaced text stays after its replacement.
-    if newtokens and stop>at and tokens[stop-1].get('positional_gap'):
-        gap=tokens[stop-1]['positional_gap'];newtokens[-1]['advance']+=gap;newtokens[-1]['positional_gap']=gap
-    result=tokens[:at]+newtokens+tokens[stop:]
+    result=list(tokens);shift=0
+    for i1,i2,j1,j2 in changed_runs(old,new,aligned):
+        at=start+i1;stop=start+i2;inserted=new[j1:j2]
+        for t in tokens[at:stop]:
+            if t.get('fixed'):raise Refused('the edit removes an inline placed object')
+        for n,kind in enumerate(kinds):
+            if kind=='atom':
+                inside=[k for k,t in enumerate(tokens) if t.get('scope')==n]
+                hit=[k for k in inside if at<=k<stop]
+                if hit and len(hit)!=len(inside):raise Refused('the edit splits replacement-text marked content')
+        anchor_index=min(at,len(tokens)-1)
+        if at>0 and not tokens[anchor_index]['text'].strip() and inserted.strip():anchor_index=at-1
+        # A glyph drawn by an earlier B2 save with a generated resource (a new
+        # code or an approved substitute) is not the paragraph's source font. The
+        # style anchor is the nearest original-resource glyph of the same size.
+        if generated(tokens[anchor_index]):
+            order=sorted(range(len(tokens)),key=lambda j:(abs(j-anchor_index),j>anchor_index))
+            anchor_index=next((j for j in order if tokens[j]['text'].strip() and not generated(tokens[j])
+                               and tokens[j]['size']==tokens[anchor_index]['size']),anchor_index)
+        anchor=copy(tokens[anchor_index])
+        newtokens=[resolve(char,anchor) for char in inserted]
+        # The sequence of the replaced text (or of the text before an
+        # insertion); never a replacement-text atom or a placed object.
+        owners=[tokens[k] for k in list(range(at,stop))+list(range(at-1,-1,-1))+list(range(stop,len(tokens)))]
+        home=next((t.get('scope') for t in owners if t.get('scope') is None or kinds[t['scope']] not in ('atom','fixed')),None)
+        for t in newtokens:
+            t['scope']=home;t['fixed']=False
+            # New CJK glyphs may be squeezed by the per-glyph compression the
+            # source writer used for ordinary CJK glyphs of the same font and
+            # size (median of observed reductions; capped at 0.05 em). Layout
+            # applies it only to a line that would otherwise overflow, so
+            # restored text breaks as it did before.
+            seen=reductions.get((anchor['font_name'],anchor['size']),[])
+            if len(seen)>=3 and ord(t['text'])>=0x2E80 and t['text'] not in PUNCTUATION:t['squeezable']=min(median(seen),.05*t['size'])
+            # New punctuation takes the compression its character had in the
+            # source paragraph (median of observed advances), never more.
+            seen=observed.get((t['text'],t['font_name'],t['size']))
+            if seen and median(seen)<t['advance']:t['advance']=median(seen)
+        # A positional gap after the replaced text stays after its replacement.
+        if newtokens and stop>at and tokens[stop-1].get('positional_gap'):
+            gap=tokens[stop-1]['positional_gap'];newtokens[-1]['advance']+=gap;newtokens[-1]['positional_gap']=gap
+        result[at+shift:stop+shift]=newtokens;shift+=len(newtokens)-(stop-at)
     choice={str(xref):dict(chosen_sha256=pick[0],scores=scores) for xref,(pick,scores) in chosen.items() if scores is not None}
     return result,fonts,dict(Counter(t['mode'] for t in result)),choice
 

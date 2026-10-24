@@ -168,7 +168,10 @@ class _Structure:
             return dict(result, reason="ParentTree namespace array does not contain the MCID")
         owner = entries[mcid]
         node = _object(owner)
-        if not isinstance(owner, IndirectObject) or not isinstance(node, dict) or node.get("/Type") != "/StructElem":
+        # /Type is optional for a structure element (ISO 32000-1, 14.7.2);
+        # a dictionary with /S and no other /Type is one (Distiller 5).
+        if (not isinstance(owner, IndirectObject) or not isinstance(node, dict) or node.get("/Type", "/StructElem") != "/StructElem"
+                or "/S" not in node):
             return dict(result, reason="ParentTree item is not an indirect StructElem")
         result["owner_reference"] = _reference(owner)
         try:

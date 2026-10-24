@@ -185,6 +185,9 @@ class State:
     other: dict=field(default_factory=dict)
     # Fill colour space selected by cs (None: a device space set by g/rg/k).
     fill_space: str | None=None
+    # Effective blend, soft mask, alpha-source and overprint entries of the
+    # ExtGStates applied so far (a later gs overrides an earlier one).
+    blend: dict=field(default_factory=dict)
 
     def report(self):
         return {"ctm":list(self.ctm),"font_resource":self.font.name if self.font else None,
@@ -353,6 +356,8 @@ class ContentPage:
             elif n=="gs":
                 gs=resources["/ExtGState"][a[0]].get_object()
                 state.opacity=float(gs.get("/ca",state.opacity));state.stroke_opacity=float(gs.get("/CA",state.stroke_opacity))
+                state.blend=dict(state.blend,**{k:("/None" if k=="/SMask" and str(gs[k])=="/None" else "mask" if k=="/SMask" else str(gs[k]))
+                                               for k in ("/BM","/SMask","/AIS","/OP","/op","/OPM","/TK") if k in gs})
                 state.other["ExtGState:"+str(a[0])]=state_object(gs)
                 if "/Font" in gs:raise PdfError("ExtGState Font is not supported")
             elif n in {"w","J","j","M","d","ri","i"}:state.other[n]=str(a)

@@ -27,6 +27,14 @@ def _hyphens_stay_at_line_ends(paragraph,lines):
             raise Refused('reflow would move a line-final hyphen inside a line (soft or hard hyphen is ambiguous)')
 
 
+def _placed_objects_stay(lines):
+    """An inline placed object (kept as drawn, with its own clip and paths) must keep its place in the new layout."""
+    for line in lines:
+        for t in line['tokens']:
+            if t.get('fixed') and (abs(t['x']-t['origin'][0])>.01 or abs(t['y']-t['origin'][1])>.01):
+                raise Refused('an inline placed object would move in the new layout')
+
+
 def _flow_moves(paragraphs,spec,moves):
     """Following paragraphs that must be repainted, as {glyph id: (dx, dy)} maps."""
     active=[]
@@ -62,6 +70,7 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
                 if spec['rejected_links']:hint+=' (rejected '+'; '.join(spec['rejected_links'])+')'
                 raise Refused('capacity: the paragraph would grow below the shared bottom of the side-by-side columns'+hint)
         _hyphens_stay_at_line_ends(paragraphs[0],lines)
+        _placed_objects_stay(lines)
         public=dict(schema='auto-paragraph-frame-1',source_sha256=sha(source),page=page,selection=selection,replacement=replacement,occurrence=occurrence,
           substitute=substitute,stored_conditions=stored,evidence=evidence,source_styles=describe(c,paragraphs),paragraphs=[p.text for p in paragraphs],expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):],
           lines=[dict(text=l['text'],baseline=l['baseline'],**({'region':l['region']} if 'region' in l else {})) for l in lines],source_lines=len(paragraphs[0].baselines),font_counts=counts,substitute_choice=choice,

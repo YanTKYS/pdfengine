@@ -101,8 +101,9 @@ def programs(path, skip_page):
     return {(n, k): v for n in range(len(r.pages)) if n != skip_page - 1 for k, v in _programs(r, n).items()}
 
 
-def audit(source, output, page, region, old, new, folder, *, lines=None):
-    """Safety and quality of one saved edit; oracle: allowed region and the replacement."""
+def audit(source, output, page, region, old, new, folder, *, lines=None, occurrence=0):
+    """Safety and quality of one saved edit; oracle: allowed region and the replacement
+    (of the ``occurrence``-th match in the page text)."""
     checks, details = {}, {}
     raster = pixels(str(source), str(output), folder / 'pixels', dict(page=page, frame=region))
     details['outside_pixels'] = {k: sum(v['outside_pixels'] for v in rows) for k, rows in raster.items()}
@@ -122,7 +123,12 @@ def audit(source, output, page, region, old, new, folder, *, lines=None):
     texts_a = extract(str(output), page, folder / 'text-after')
     for renderer in ('mupdf', 'poppler'):
         tb, ta = bare(texts_b[renderer]), bare(texts_a[renderer])
-        checks[f'extraction_{renderer}'] = bare(old) in tb and ta == tb.replace(bare(old), bare(new), 1)
+        at = -1
+        for _ in range(occurrence + 1):
+            at = tb.find(bare(old), at + 1)
+            if at < 0:
+                break
+        checks[f'extraction_{renderer}'] = at >= 0 and ta == tb[:at] + bare(new) + tb[at + len(bare(old)):]
     with pymupdf.open(output) as d:
         hits = d[page - 1].search_for(new)
         details['search_hits'] = len(hits)
