@@ -390,6 +390,8 @@ def main():
     parser.add_argument('--label')
     parser.add_argument('--only', nargs='*')
     parser.add_argument('--roots', nargs='*')
+    parser.add_argument('--tests-json')
+    parser.add_argument('--regression-json')
     args = parser.parse_args()
     if args.phase == 'freeze':
         phase_freeze(args)
@@ -399,8 +401,67 @@ def main():
         phase_collect(args)
 
 
+def summary(results):
+    """Totals of one label per edit kind (kinds without the reedit target)."""
+    kinds = {}
+    for case, rows in results.items():
+        for name, r in rows.items():
+            kind = name.split(':')[0]
+            d = kinds.setdefault(kind, dict(edits=0, saved=0, refused=0, not_run=0, safety=0, quality=0, structure=0, search_copy=0,
+                                            region_extraction=0, continued_editing=0, unchanged=0, kept=0, before_edit=0, before_edit_kept=0,
+                                            all_kept=0, same_line_count=0, breaks=0, breaks_kept=0, round_trip_unchanged=0, round_trip_kept=0))
+            d['edits'] += 1
+            if r['outcome'] != 'saved':
+                d['refused' if r['outcome'] == 'refused' else 'not_run'] += 1
+                continue
+            a, f = r['audit'], r['fidelity']
+            d['saved'] += 1
+            d['safety'] += bool(a['safety'])
+            d['quality'] += bool(a['quality'])
+            d['structure'] += bool(r['structure']['passed'])
+            checks = a['checks']
+            d['search_copy'] += bool(checks.get('extraction_mupdf') and checks.get('extraction_poppler') and checks.get('search_mupdf'))
+            sup = r.get('supplementary') or {}
+            d['region_extraction'] += bool(sup.get('region_extraction_mupdf') and sup.get('region_extraction_poppler'))
+            d['continued_editing'] += bool((r.get('continued_editing') or {}).get('ok'))
+            d['unchanged'] += f['unchanged']
+            d['kept'] += f['kept']
+            d['before_edit'] += f['before_edit']['total']
+            d['before_edit_kept'] += f['before_edit']['kept']
+            d['all_kept'] += f['kept'] == f['unchanged']
+            d['same_line_count'] += f['output_lines'] == f['source_lines']
+            d['breaks'] += f['source_breaks_outside_edit']
+            d['breaks_kept'] += f['breaks_kept']
+            if r.get('round_trip'):
+                d['round_trip_unchanged'] += r['round_trip']['unchanged']
+                d['round_trip_kept'] += r['round_trip']['kept']
+    return kinds
+
+
+def compact(r):
+    if r['outcome'] != 'saved':
+        return {k: r.get(k) for k in ('outcome', 'reason', 'seconds')}
+    f = r['fidelity']
+    return dict(outcome='saved', seconds=r['seconds'], lines=r['lines'], failed=r['audit']['failed'], safety=r['audit']['safety'],
+                quality=r['audit']['quality'], structure_failed=r['structure']['failed'], supplementary=r.get('supplementary'),
+                continued_editing=r.get('continued_editing'), save=r.get('save'),
+                fidelity={k: f[k] for k in ('unchanged', 'kept', 'before_edit', 'max_delta', 'source_lines', 'output_lines',
+                                            'source_breaks_outside_edit', 'breaks_kept', 'restyled')},
+                round_trip={k: r['round_trip'][k] for k in ('unchanged', 'kept', 'max_delta')} if r.get('round_trip') else None)
+
+
 def phase_collect(args):
-    raise SystemExit('collect: written after the runs')
+    labels = dict(x.split('=', 1) for x in args.roots)
+    results = {label: json.loads((Path(root) / 'results.json').read_text()) for label, root in labels.items()}
+    out = dict(schema='paragraph-frame-fidelity-results-1', manifest_sha256=sha(MANIFEST),
+               tests=json.loads(Path(args.tests_json).read_text()) if args.tests_json else None,
+               regression=json.loads(Path(args.regression_json).read_text()) if args.regression_json else None,
+               summary={label: summary(r) for label, r in results.items()},
+               edits={case: {name: {label: compact(results[label][case][name]) for label in results if case in results[label]}
+                             for name in next(iter(results.values()))[case]} for case in next(iter(results.values()))})
+    RESULTS.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
+    for label, kinds in out['summary'].items():
+        print(label, json.dumps(kinds, ensure_ascii=False))
 
 
 if __name__ == '__main__':
