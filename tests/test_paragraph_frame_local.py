@@ -134,3 +134,23 @@ def test_undoing_an_edit_across_a_line_break_restores_the_lines(tmp_path):
     proposal = edit(first, 'specific page or position', 'specific position', again)
     assert [l['text'].strip() for l in proposal['lines']] == [t for _, _, t in lines[:4]]
     assert origins(again) == origins(source)
+
+
+def test_an_edited_line_still_continues_the_kept_lines_on_reopen(tmp_path):
+    # The source sets its black as '0 0 0 rg'; the redrawn last line writes
+    # '0.0 0.0 0.0 rg'. The same colour: the reopened page, read from its
+    # drawing alone (no stored record), still has one paragraph of three lines.
+    lines = [(40, 60, 'Cumulative effects of'), (40, 76, 'changes in accounting'), (40, 92, 'policies'),
+             (40, 200, 'Following paragraph.')]
+    plain, _ = page_with(tmp_path, lines, height=300)
+    source = tmp_path / 'black.pdf'
+    with pymupdf.open(plain) as d:
+        for xref in d[0].get_contents():
+            d.update_stream(xref, b'0 0 0 rg\n' + d.xref_stream(xref))
+        d.save(source)
+    out = tmp_path / 'out.pdf'
+    proposal = edit(source, 'policies', 'policies in effect', out)
+    assert [l['kept'] for l in proposal['lines']] == [True, True, False]
+    again = propose(str(out), 1, 'effects of changes in accounting policies in effect', 'effects of changes in accounting policies',
+                    stored_conditions=False)
+    assert len(again['evidence']['observed']['lines']) == 3

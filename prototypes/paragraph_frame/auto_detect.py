@@ -478,7 +478,9 @@ def observe(c,marks,analysis):
     rows,parent_by_id=page_rows(c,marks,analysis)
     # Paint style of each inked glyph: a row that shares no font and fill with
     # the previous row (a white label on a coloured box) does not continue it.
-    paint={i:(e.state.font.name if e.state.font else None,e.state.fill) for e in c.events for ch in e.chars for i in ch.source_orders if ch.text.strip()}
+    # Colours compare by value ('0 g' and '0.0 g' are one black).
+    fill=lambda f:(f[0],tuple(round(float(v),4) if _numeric(v) else v for v in f[1])) if f else f
+    paint={i:(e.state.font.name if e.state.font else None,fill(e.state.fill)) for e in c.events for ch in e.chars for i in ch.source_orders if ch.text.strip()}
     def style(row):return {paint[i] for i in row['glyph_ids'] if i in paint}
     groups=[]
     for r in rows:
