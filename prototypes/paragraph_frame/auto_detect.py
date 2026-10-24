@@ -200,6 +200,33 @@ def _marker(c, row):
     return first if first and (unicodedata.category(first) == 'So' or first in '•・‣⁃◦※') else None
 
 
+def source_rows(c, rows):
+    """The drawn lines of a paragraph for local layout (auto_local).
+
+    Each line: its glyph IDs, baseline, start x (first glyph origin), pen end,
+    and whether its break is the author's: the next line's first unit (a Latin
+    word, or one CJK character) would have fit after it within the
+    paragraph's own widest line, so a writer that wraps did not break there.
+    """
+    own_right = max(r['pen_end'] for r in rows)
+    out = []
+    for k, r in enumerate(rows):
+        hard = False
+        if k + 1 < len(rows):
+            nxt = rows[k + 1]['glyph_ids']
+            text = [c.actual[i]['unicode'] for i in nxt]
+            first = 0
+            if text and text[0].isascii() and text[0].isalnum():
+                while first + 1 < len(text) and text[first + 1].strip() and text[first + 1].isascii():
+                    first += 1
+            unit = c.actual[nxt[first]]['bbox'][2] - c.actual[nxt[0]]['origin'][0] if nxt else 0
+            space = .25 * r['size'] if text and text[0].isascii() else 0
+            hard = own_right - r['pen_end'] > unit + space + .05
+        out.append(dict(ids=list(r['glyph_ids']), baseline=r['baseline'], x=c.actual[r['glyph_ids'][0]]['origin'][0],
+                        pen_end=r['pen_end'], size=r['size'], hard=hard))
+    return out
+
+
 def right_to_left(text):
     """Whether text has right-to-left letters (Hebrew, Arabic …).
 
@@ -667,6 +694,9 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         evidence['column_flow']=dict(mode='single-column',column_bottom=column_bottom,**neighbours)
         if column_bottom is not None:evidence['warnings'].append('Side-by-side columns share a bottom; this paragraph is not in a linked flow and may not grow below it.')
         spec=dict(page=page,frame=frame,column_bottom=column_bottom,candidates=[l['id'] for l in neighbours['links'] if l['status']=='candidate'],rejected_links=[f"{l['id']}: {l['reason']}" for l in neighbours['links'] if l['status']=='rejected'],left=left,right=right,first_x=first,align=align,baseline=selected[0]['baseline'],line_height=leading,line_offsets=[r['baseline']-selected[0]['baseline'] for r in selected],
-                  stored=state,values=values,provenance=provenance,origin=origin)
+                  stored=state,values=values,provenance=provenance,origin=origin,
+                  # The drawn lines of the edited paragraph: local layout keeps
+                  # what the edit does not change where it is (auto_local).
+                  source_rows=source_rows(c,selected))
         return c,paragraphs,spec,start,evidence
     except Exception:c.close();raise

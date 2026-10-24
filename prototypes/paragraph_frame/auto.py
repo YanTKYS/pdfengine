@@ -10,6 +10,7 @@ import time
 from .auto_detect import detect
 from .auto_style import build,describe
 from .auto_layout import layout
+from .auto_local import LocalUnavailable,local_layout
 from .auto_flow import place,region_of
 from .auto_writer import write
 from .engine import Refused,sha
@@ -50,7 +51,11 @@ def _flow_moves(paragraphs,spec,moves):
 def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=()):
     start=time.perf_counter();c,paragraphs,spec,at,evidence=detect(source,page,selection,occurrence,stored,continuation);observed=time.perf_counter()
     try:
-        tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=spec['align']=='justify')
+        # A single-column paragraph keeps what the edit does not change where
+        # it was drawn (auto_local, observed advances); the paragraph is wrapped
+        # again only where local layout does not apply.
+        local=spec.get('mode')!='flow'
+        tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=spec['align']=='justify' and not local)
         # Alignment is an approved condition: a stored record supplies it after
         # the multi-line evidence has been edited away.
         spec['values'].update(align=spec['align'])
@@ -62,7 +67,13 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
             moved=[dict(paragraph=spec['flow']['target']+1+k,lines=[dict(text=row['text'],baseline=round(row['baseline'],3),region=region_of(spec['flow']['regions'],row),
                         to_baseline=round(row['baseline']+dy,3),to_region=region) for row,dx,dy,region in rows]) for k,rows in enumerate(active)]
         else:
-            lines=layout(tokens,spec)
+            try:
+                lines=local_layout(tokens,spec);spec['layout']='local'
+            except LocalUnavailable as exc:
+                spec['layout']='paragraph ('+str(exc)+')'
+                if spec['align']=='justify':
+                    tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=True)
+                lines=layout(tokens,spec)
             bottom=spec.get('column_bottom');delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
             deepest=max([lines[-1]['baseline']]+[p.baselines[-1]+delta for p in paragraphs[1:] if delta>0])
             if bottom is not None and deepest>bottom+.01:
@@ -73,7 +84,8 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
         _placed_objects_stay(lines)
         public=dict(schema='auto-paragraph-frame-1',source_sha256=sha(source),page=page,selection=selection,replacement=replacement,occurrence=occurrence,
           substitute=substitute,stored_conditions=stored,evidence=evidence,source_styles=describe(c,paragraphs),paragraphs=[p.text for p in paragraphs],expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):],
-          lines=[dict(text=l['text'],baseline=l['baseline'],**({'region':l['region']} if 'region' in l else {})) for l in lines],source_lines=len(paragraphs[0].baselines),font_counts=counts,substitute_choice=choice,
+          lines=[dict(text=l['text'],baseline=l['baseline'],**({'region':l['region']} if 'region' in l else {}),**({'kept':l['kept']} if 'kept' in l else {})) for l in lines],
+          layout=spec.get('layout','column flow'),source_lines=len(paragraphs[0].baselines),font_counts=counts,substitute_choice=choice,
           required_approval=['inferred paragraph and capacity','possible follower translation','source style and any explicit substitute'])
         public['continuation']=list(continuation)
         if spec.get('mode')=='flow':
