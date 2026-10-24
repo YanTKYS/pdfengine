@@ -740,7 +740,8 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         # The edge is the frame's right edge (approved, or the widest line of
         # the paragraph and its followers): a paragraph whose lines stop short
         # of a wider follower is not justified to it.
-        flush=len(selected)>1 and all(abs(r['pen_end']-right)<.75 for r in selected[:-1])
+        # Writers end justified lines a little apart (LibreOffice: 0.85 pt at 10 pt).
+        flush=len(selected)>1 and all(abs(r['pen_end']-right)<max(.75,.1*size) for r in selected[:-1])
         justified=flush and ' ' in paragraphs[0].text and all(ord(ch)<0x2E80 for ch in paragraphs[0].text)
         cjk=flush and not justified and any(ord(ch)>=0x2E80 for ch in paragraphs[0].text)
         align='justify' if justified else 'justify-cjk' if cjk else 'start'

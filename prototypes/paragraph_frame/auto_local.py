@@ -49,7 +49,7 @@ def local_layout(tokens, spec):
     # A line-final hyphen may be soft or hard: its break cannot move, so it
     # is kept like an author's break.
     hyphens = set(spec.get('hyphens', ()))
-    rows = [dict(r, hard=r['hard'] or (k + 1 < len(rows) and r['ids'][-1] in hyphens)) for k, r in enumerate(rows)]
+    rows = [dict(r, author=r['hard'], hard=r['hard'] or (k + 1 < len(rows) and r['ids'][-1] in hyphens)) for k, r in enumerate(rows)]
     line_of = {i: k for k, r in enumerate(rows) for i in r['ids']}
     ordered = [i for r in rows for i in r['ids']]
     order = {i: m for m, i in enumerate(ordered)}
@@ -80,6 +80,9 @@ def local_layout(tokens, spec):
     if previous != len(ordered) - 1:
         affected.extend(line_of[i] for i in ordered[previous + 1:])
     tokens = _set_width(tokens, home, changed)
+    # The widest word-space stretch of the paragraph's source lines bounds any
+    # re-justified space (a wider gap reads as a column break to extractors).
+    spec = dict(spec, stretch=max([t.get('squeezable', 0.) for t in tokens if t['text'] == ' '] or [0.]))
     if spec.get('align') == 'justify-cjk':
         # A justified CJK line may tighten its glyph gaps a little (0.05 em
         # each) to keep its source break; fit() counts that allowance.
@@ -171,16 +174,20 @@ def local_layout(tokens, spec):
         source_end = after(k) if k < n else None
         choice = None
         if source_end is not None and source_end in allowed and source_end != greedy:
+            # Before a line whose break is fixed (an author's break or a kept
+            # hyphen), taking text from it would leave it short: a justified
+            # line keeps its source break, made flush as a whole if need be.
             candidate = _line(tokens, text, cursor, source_end, x0, baseline(k), changed, home, k, rows, spec, last=False,
-                              target=row_end(k))
+                              target=row_end(k), full=k + 1 < n and rows[k + 1]['hard'])
             if _keeps_shape(candidate, spec, rows[k], ragged):
                 choice = candidate
         if choice is None:
             # The longest legal line whose placed glyphs stay within the frame
-            # (a justified line may not give back enough stretch).
+            # (a justified line may not give back enough stretch). A justified
+            # line that takes all that fits is made flush whatever its stretch.
             for e in sorted(allowed, reverse=True):
                 choice = _line(tokens, text, cursor, e, x0, baseline(k), changed, home, k, rows, spec, last=e >= len(tokens),
-                               target=row_end(k) if e == source_end else None)
+                               target=row_end(k) if e == source_end else None, full=e == max(ends) or e in hyphen_ends)
                 if _end(choice) <= spec['right'] + .05:
                     break
         end = choice['end']
@@ -208,15 +215,18 @@ def local_layout(tokens, spec):
     return lines
 
 
-def _line(tokens, text, a, b, x0, y, changed, home, k, rows, spec, last, target=None):
+def _line(tokens, text, a, b, x0, y, changed, home, k, rows, spec, last, target=None, full=False):
     """One placed line (tokens a..b): positions, then the alignment of the
     paragraph applied to the glyphs after the first re-placed one. A justified
-    line is made flush with ``target`` (its source line's end) when given."""
+    line is made flush with ``target`` (its source line's end) when given;
+    ``full``: no more text fits, the line is justified as a whole."""
     placed = _place(tokens, a, b, x0, y, changed, home, k, rows)
     justified = False
     moved = any(p.get('moved_from_prefix') for p in placed)
-    if moved and not last and spec.get('align') in ('justify', 'justify-cjk') and not (k < len(rows) and rows[k]['hard']):
-        justified = _justify(placed, spec['right'] if target is None else target, cjk=spec['align'] == 'justify-cjk')
+    # An author's break is not justified; a kept hyphen break is the writer's.
+    if moved and not last and spec.get('align') in ('justify', 'justify-cjk') and not (k < len(rows) and rows[k].get('author', rows[k]['hard'])):
+        justified = _justify(placed, spec['right'] if target is None else target, cjk=spec['align'] == 'justify-cjk', full=full,
+                             widest=spec.get('stretch', 0.))
     elif moved:
         squeeze = _squeezed(placed, spec['right'] - x0)
         if squeeze:
@@ -305,14 +315,25 @@ def _shift(placed, extra):
         run += extra.get(n, 0.)
 
 
-def _justify(placed, right, cjk=False):
+def _justify(placed, right, cjk=False, full=False, widest=0.):
     """Make the line flush with ``right`` by spreading the slack over the
     glyphs after the first re-placed one: word spaces (Latin) or every glyph
     gap (CJK, at most 0.05 em each). Glyphs before it keep their origins.
     Latin spaces after the edit go back to their natural width and share the
     slack evenly, as the writer justified them (an edit and its undo give the
     same spaces); each may stretch as far as the source stretched its spaces
-    plus a quarter em."""
+    plus a quarter em. A Latin line that ends where it must (``full``: no
+    more text fits, a kept hyphen, or a source break before a fixed one) is
+    made flush as a writer makes it when that fails: the slack goes to every
+    space of the line, glyphs before the edit included, none wider than the
+    paragraph's widest source stretch (``widest``) plus a quarter em."""
+    if full and not cjk and not _justify([dict(p) for p in placed], right, cjk):
+        whole = [dict(p, moved_from_prefix=True) for p in placed]
+        if _justify(whole, right, cjk, full=None, widest=widest):
+            for p, q in zip(placed, whole):
+                p['x'] = q['x']
+            return True
+        return False
     first = next((n for n, p in enumerate(placed) if p.get('moved_from_prefix')), None)
     last = max((n for n, p in enumerate(placed) if p['text'].strip()), default=None)
     if first is None or last is None or last <= first and not cjk:
@@ -338,7 +359,8 @@ def _justify(placed, right, cjk=False):
         return True
     stretch = {n: placed[n].get('squeezable', 0.) for n in gaps}
     natural = slack + sum(stretch.values())
-    if natural < -.01 or natural / len(gaps) > max(stretch.values()) + STRETCH * size:
+    allowance = max(stretch.values()) if full is not None else max(max(stretch.values()), widest)
+    if natural < -.01 or natural / len(gaps) > allowance + STRETCH * size:
         return False
     _shift(placed, {n: natural / len(gaps) - stretch[n] for n in gaps})
     return True
