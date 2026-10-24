@@ -99,7 +99,8 @@ def local_layout(tokens, spec):
             starts[k] = j
             breaks.add(j)
     extra_x = sorted(r['x'] for r in rows[1:])[(n - 1) // 2] if n > 1 else spec['left']
-    soft = [spec['right'] - r['pen_end'] for r in rows[:-1] if not r['hard']]
+    # Measured to the last visible glyph, as _end measures a placed line.
+    soft = [spec['right'] - r.get('ink_end', r['pen_end']) for r in rows[:-1] if not r['hard']]
     ragged = max(soft) if soft else 0.
 
     def baseline(k):

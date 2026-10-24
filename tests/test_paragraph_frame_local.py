@@ -101,3 +101,21 @@ def test_a_line_ending_with_a_hyphen_keeps_its_break(tmp_path):
     assert [l['text'].strip() for l in proposal['lines']] == ['Calc is a spreadsheet program for', 'the user easy for profes-',
                                                               'sional users and number crunchers.']
     assert [l['kept'] for l in proposal['lines']] == [True, False, True]
+
+
+def test_a_cell_width_stops_at_the_clip_of_its_text(tmp_path):
+    # The cell's rules allow 256 pt, but the text is drawn under a clip that
+    # ends at 200 (a form cell): ink beyond it would not show. The line wraps
+    # inside the clip instead of being refused there.
+    import pytest
+    def cell(p):
+        p.draw_rect(pymupdf.Rect(40, 48, 260, 100), color=(0, 0, 0), width=.5)
+    source, _ = page_with(tmp_path, [(44, 60, '申請書は窓口で配布します。')], height=300, before=cell)
+    clipped = tmp_path / 'clipped.pdf'
+    with pymupdf.open(source) as d:
+        text = d[0].get_contents()[-1]
+        d.update_stream(text, b'q 40 200 160 52 re W n\n' + d.xref_stream(text) + b'\nQ')
+        d.save(clipped)
+    proposal = edit(clipped, '配布します。', '配布しています。', tmp_path / 'out.pdf')
+    assert proposal['evidence']['inferred']['right'] == pytest.approx(199.5, abs=.3)
+    assert [l['text'] for l in proposal['lines']] == ['申請書は窓口で配布していま', 'す。']

@@ -251,7 +251,7 @@ def source_rows(c, rows):
     """The drawn lines of a paragraph for local layout (auto_local).
 
     Each line: its glyph IDs, baseline, start x (first glyph origin), pen end,
-    and whether its break is the author's: the next line's first unit (a Latin
+    ink end (of its last visible glyph, as a placed line is measured), and whether its break is the author's: the next line's first unit (a Latin
     word, or one CJK character) would have fit after it within the
     paragraph's own widest line, so a writer that wraps did not break there.
     """
@@ -269,8 +269,9 @@ def source_rows(c, rows):
             unit = c.actual[nxt[first]]['bbox'][2] - c.actual[nxt[0]]['origin'][0] if nxt else 0
             space = .25 * r['size'] if text and text[0].isascii() else 0
             hard = own_right - r['pen_end'] > unit + space + .05
+        ink = [c.actual[i]['bbox'][2] for i in r['glyph_ids'] if c.actual[i]['unicode'].strip()]
         out.append(dict(ids=list(r['glyph_ids']), baseline=r['baseline'], x=c.actual[r['glyph_ids'][0]]['origin'][0],
-                        pen_end=r['pen_end'], size=r['size'], hard=hard))
+                        pen_end=r['pen_end'], ink_end=ink[-1] if ink else r['pen_end'], size=r['size'], hard=hard))
     return out
 
 
@@ -706,6 +707,8 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
             for clip in e.state.clip:
                 box=form_write.clip_rect(clip,c.page.transformation_matrix)
                 if box is not None:frame=[max(frame[0],box.x0),max(frame[1],box.y0),min(frame[2],box.x1),min(frame[3],box.y1)]
+        # A cell's width never runs past what the frame shows (its clip or container).
+        if cell is not None and not state['applied']:right=max(max(r['pen_end'] for r in allrows),min(right,frame[2]-.5))
         paragraphs=[target_paragraph]+follower_paragraphs
         values=dict(left=left,right=right,first_x=first,line_height=leading,bottom=bottom)
         origin=records[state['target']]['origin'] if state['applied'] else dict(values=values,provenance=provenance)
