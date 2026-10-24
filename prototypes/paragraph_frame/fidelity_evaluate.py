@@ -260,7 +260,11 @@ def phase_freeze(args):
 
 
 def locate(source, page, old, box, code):
-    """The occurrence of ``old`` whose paragraph's first line lies in ``box`` (as the engine counts)."""
+    """The occurrence of ``old`` whose paragraph's first line lies in ``box`` (as the engine counts).
+
+    Never a default: a failed or unmatched search stops the run (the code
+    tree is the working directory, so the source path is absolute)."""
+    source = Path(source).resolve()
     script = f'''
 import json,sys
 sys.path.insert(0,{str(code)!r})
@@ -280,10 +284,13 @@ for g in groups:
             found=1;break
         k+=1;at=pos+1
     if found:break
-print(json.dumps(k if found else 0))
+print(json.dumps(k if found else None))
 '''
     run = subprocess.run([sys.executable, '-c', script], capture_output=True, text=True, cwd=code)
-    return json.loads(run.stdout.strip().splitlines()[-1]) if run.returncode == 0 and run.stdout.strip() else 0
+    found = json.loads(run.stdout.strip().splitlines()[-1]) if run.returncode == 0 and run.stdout.strip() else None
+    if found is None:
+        raise SystemExit(f'cannot locate {old!r} in the frozen paragraph of {source} with {code}: {run.stderr.strip()[-300:]}')
+    return found
 
 
 def edit(code, source, page, old, new, output, occurrence):
