@@ -1,12 +1,15 @@
-"""Compare the PR #87-#90 regression runs with their committed results and with the regression PR #90 recorded.
+"""Compare the PR #87-#90 regression runs with their committed results and with the regressions PR #90 and PR #91 recorded.
 
-  .venv/bin/python -m prototypes.paragraph_frame.tagged_regression <regression.json>
+  .venv/bin/python -m prototypes.paragraph_frame.tagged_regression <regression.json> [<tagged root> <477.pdf> <pdf.js dir>]
 
 Reads the runs of generalization_evaluate (tmp/reg87), continuity_evaluate
 (tmp/reg88), column_flow_evaluate (tmp/reg89) and indesign_evaluate
 (tmp/reg90, samples with --survey tmp/id-survey-final), each run with the same
 arguments as in its PR. The output is passed to tagged_evaluate collect
-(--regression-json).
+(--regression-json). With a tagged root (tagged_evaluate requests and samples,
+--survey tmp/tg-survey), the PR #91 requests and sampled edits are compared
+with PR #91's committed results too; a sample that fails the safety audit
+gets PR #91's auxiliary ``outside_changes`` beside it.
 """
 import json
 import sys
@@ -129,6 +132,84 @@ out['differences_from_pr90_recorded_regression'] = [list(map(str, d)) for d in v
 print('vs PR #90 recorded regression:', len(vs90))
 for d in vs90:
     print(json.dumps(d, ensure_ascii=False, default=str)[:600])
+# Against the regression recorded by PR #91 (main 8c60fe3's own state).
+rec91 = load('evaluations/paragraph_frame_tagged/results.json')['regression']
+vs91 = []
+strip = lambda v: {x: v[x] for x in v if x != 'same_as_committed'}
+for part in ('generalization', 'continuity_sequences', 'continuity_new'):
+    for k, v in rec91[part].items():
+        if strip(v) != strip(out[part][k]):
+            vs91.append((part, k, strip(out[part][k]), strip(v)))
+for part in ('sequences', 'singles'):
+    for k, v in rec91['column_flow'][part].items():
+        if strip(v) != strip(out['column_flow'][part][k]):
+            vs91.append(('column ' + part, k, strip(out['column_flow'][part][k]), strip(v)))
+for k, v in rec91['indesign']['requests'].items():
+    if strip(v) != strip(ir[k]):
+        vs91.append(('indesign request', k, strip(ir[k]), strip(v)))
+mine = out['indesign']['samples']
+for x in ('sampled', 'saved', 'safety', 'quality', 'newly_failed', 'newly_passed', 'newly_refused'):
+    if mine[x] != rec91['indesign']['samples'][x]:
+        vs91.append(('indesign samples', x, mine[x], rec91['indesign']['samples'][x]))
+out['differences_from_pr91_recorded_regression'] = [list(map(str, d)) for d in vs91]
+print('vs PR #91 recorded regression:', len(vs91))
+for d in vs91:
+    print(json.dumps(d, ensure_ascii=False, default=str)[:900])
+# PR #91 (tagged PDFs): frozen requests and the same 52 sampled edits, when
+# their run is given (tagged_evaluate --phase requests and samples).
+if len(sys.argv) > 2:
+    from types import SimpleNamespace as sources
+    from .indesign_evaluate import source_of
+    from .tagged_evaluate import outside_changes, survey_table
+    tg = Path(sys.argv[2])
+    tref = load('evaluations/paragraph_frame_tagged/results.json')
+    treq, tsam = load(tg / 'requests.json'), load(tg / 'samples.json')
+    tr = {}
+    for k, v in tref['requests'].items():
+        for phase in ('frozen', 'substitute'):
+            if phase not in v:
+                continue
+            g, w = treq[k].get(phase) or {}, v[phase]
+            got = (g.get('outcome'), (g.get('audit') or {}).get('failed', []), (g.get('structure') or {}).get('failed', []), (g.get('continued_editing') or {}).get('ok'))
+            want = (w.get('outcome'), w.get('failed', []), w.get('structure_failed', []), (w.get('continued_editing') or {}).get('ok'))
+            tr[f'{k}:{phase}'] = dict(outcome=got[0], failed=got[1], structure_failed=got[2], continued_editing=got[3], same_as_committed=got == want,
+                                      committed=None if got == want else dict(outcome=want[0], failed=want[1], structure_failed=want[2], continued_editing=want[3]))
+    key = lambda s: (s['document'], s['page'], s['selection'], s['kind'])
+    want_refused = {key(s): s['reason'] for s in tref['samples']['refused']}
+    want_failed = {key(s): s['failed'] for s in tref['samples']['failed']}
+    rows = survey_table('tmp/tg-survey')
+    boxes = {(r['document'], r['page'], r['selection']): r['bbox'] for r in rows}
+    samples = []
+    for n, s in enumerate(tsam['results']):
+        row = dict(document=s['document'], page=s['page'], selection=s['selection'], kind=s['kind'], outcome=s['outcome'], reason=s.get('reason'))
+        if s['outcome'] == 'saved':
+            row.update(failed=s['audit']['failed'], safety=s['audit']['safety'], quality=s['audit']['quality'], structure=s['structure']['passed'],
+                       continued_editing=s['continued_editing'], supplementary=s['supplementary'])
+            if not s['audit']['safety']:
+                # The auxiliary evaluation PR #91 reports beside a failed safety audit.
+                folder = tg / 'samples' / f'{n // 2:03d}-{s["kind"]}'
+                out_pdf = folder / 'out.pdf'
+                proposal, save = load(out_pdf.with_suffix('.proposal.json')), load(out_pdf.with_suffix('.save.json'))
+                x0, y0, x1, y1 = boxes[(s['document'], s['page'], s['selection'])]
+                pitch = max(4.0, (y1 - y0) / max(1, len(proposal['lines'])))
+                region = [x0 - 3, y0 - 3, x1 + 3, y1 + 3 + (pitch if s['kind'] == 'lengthen' else 0)]
+                source = sources(fusei=Path(sys.argv[3]), pdfjs=Path(sys.argv[4]))
+                row['outside_changes'] = outside_changes(str(source_of(s['document'], source)), str(out_pdf), s['page'], region, proposal, save, folder)
+        k = key(s)
+        was = ('refused', want_refused[k]) if k in want_refused else ('saved', want_failed.get(k, []))
+        now = ('refused', row['reason']) if row['outcome'] == 'refused' else ('saved', row['failed'])
+        row['same_as_committed'] = (was[0], was[1] if was[0] == 'saved' else None) == (now[0], now[1] if now[0] == 'saved' else None)
+        row['committed'] = None if row['same_as_committed'] else dict(outcome=was[0], detail=was[1])
+        samples.append(row)
+    saved = [r for r in samples if r['outcome'] == 'saved']
+    totals = dict(edits=len(samples), saved=len(saved), safety=sum(r['safety'] for r in saved), quality=sum(r['quality'] for r in saved),
+                  structure=sum(r['structure'] for r in saved), continued_editing=sum(bool(r['continued_editing'].get('ok')) for r in saved))
+    out['tagged'] = dict(requests=tr, samples=dict(totals=totals, committed={x: tref['samples'][x] for x in totals}, edits=samples))
+    print('PR #91 requests differing:', [k for k, v in tr.items() if not v['same_as_committed']])
+    print('PR #91 samples:', totals, 'committed', out['tagged']['samples']['committed'])
+    for r in samples:
+        if not r['same_as_committed']:
+            print(' ', json.dumps({x: r.get(x) for x in ('document', 'selection', 'kind', 'outcome', 'reason', 'failed', 'committed', 'outside_changes')}, ensure_ascii=False)[:700])
 out['differences'] = len(diffs)
 Path(sys.argv[1]).write_text(json.dumps(out, ensure_ascii=False, indent=1) + '\n')
 for d in diffs:
