@@ -154,3 +154,24 @@ def test_an_edited_line_still_continues_the_kept_lines_on_reopen(tmp_path):
     again = propose(str(out), 1, 'effects of changes in accounting policies in effect', 'effects of changes in accounting policies',
                     stored_conditions=False)
     assert len(again['evidence']['observed']['lines']) == 3
+
+
+def test_the_same_text_on_the_edge_of_its_clip_is_not_refused(tmp_path):
+    # The clip the text is drawn under ends inside the glyph boxes (a table
+    # cell cutting the descender space): the frame stops at the clip, but the
+    # glyphs drawn again where they were add no ink beyond it.
+    lines = [(44, 60, '申請書は窓口で配布します。')]
+    plain, _ = page_with(tmp_path, lines, height=300)
+    clipped = tmp_path / 'clipped.pdf'
+    from pdfeditor.content_stream import ContentPage
+    page = ContentPage(str(plain), 1)
+    bottom = max(g['bbox'][3] for g in page.actual)
+    with pymupdf.open(plain) as d:
+        text = d[0].get_contents()[-1]
+        clip = f'q 40 {300 - bottom + .2:.2f} 200 40 re W n\n'.encode()
+        d.update_stream(text, clip + d.xref_stream(text) + b'\nQ')
+        d.save(clipped)
+    out = tmp_path / 'out.pdf'
+    proposal = edit(clipped, '窓口で', '窓口で', out)
+    assert proposal['evidence']['inferred']['frame'][3] < bottom
+    assert origins(out) == origins(clipped)

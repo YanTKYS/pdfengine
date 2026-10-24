@@ -360,7 +360,10 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None):
         for g in added:
             if not g['unicode'].strip():continue
             box=pymupdf.Rect(g['bbox'])
-            if not any(frame.contains(box) for frame in frames):
+            # A glyph where a replaced glyph of the paragraph was (an original
+            # box on the edge of the clip that bounds the frame) adds no ink
+            # beyond it; the outside-pixel checks below still apply.
+            if not any(frame.contains(box) for frame in frames) and not any(o.contains(box) for o in old_boxes):
                 raise Refused(f"capacity: staged glyph bounds outside approved inferred frame ({g['unicode']!r} at {[round(v,1) for v in box]})")
             for o in evidence['observed']['obstacles']:
                 # Target/follower glyphs were excluded at detection. A container
