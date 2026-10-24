@@ -282,6 +282,7 @@ TODO
 - **LibreOffice のサブセットフォント**：`OS/2` や `post` テーブルのないサブセットで、保存時のフォント記述子の作成が KeyError で失敗していた（従来B2で C09 の長文化が失敗した原因）。ItalicAngle と CapHeight を既定値に戻す（`pdfeditor/shaped_font.py`）。
 - **元に戻す編集で語が行の途中で割れた。** 「specific position」→「specific page or position」で「position」が次の行に送られた後、元に戻すと、difflib が削除する「page」の p と「position」の p を対応づけ、元の行頭（「osition」の前）で改行して「specific p / osition」になっていた（従来B2の局所配置でも同じ）。元の行頭を改行位置とするのは、境目が残っている場合だけにした。
 - **両端揃えの往復。** 短文化で伸ばした空白に、元に戻す編集で残りを足していたため、元の幅に戻らなかった（C05 の往復）。空白を自然な幅に戻してから均等に配る。行末も、段落の最も長い行ではなく、その行の元の行末に揃える。
+- **部分的な描き直しの後、再openで段落が分かれた。** 残した行は元の `0 0 0 rg`、描き直した行はエンジンが書く `0.0 0.0 0.0 rg` で黒を指定する。段落の判定は塗りの色を演算子の文字列のまま比べていたため、同じ黒を別の色として扱い、描き直した行を別の段落にしていた（issue14297 の長文化の後、評価の再編集で出現位置の探索が止まって見つかった）。色は値で比べる。保存した編集条件がある場合は条件から段落を復元するため現れず、条件を使わない再openで現れる。
 - **抽出の検査の出現位置**：同じ文字列がページに複数あるとき、抽出の検査が最初の出現を見ていた。編集した出現位置を渡す。
 - **部分的な描き直しと MCID**：描き直す行の文字が、残す行のマーク付きコンテンツに入ると、MCID が2回描かれた。描き直す文字が入るシーケンスは残さない。
 
@@ -309,7 +310,7 @@ PR #91 の報告書（`docs/paragraph-frame-tagged-pdf.md`）は、新たに調�
 
 ### テスト
 
-`tests/test_paragraph_frame_local.py`（新規、8件）：
+`tests/test_paragraph_frame_local.py`（新規、9件）：
 
 - 同一文字列：全グリフが元の位置
 - 短文化：変えていない行は描画命令ごと残る
@@ -319,14 +320,15 @@ PR #91 の報告書（`docs/paragraph-frame-tagged-pdf.md`）は、新たに調�
 - 表のセル：文字のクリップを越えない
 - 行末のハイフン：改行を保つ
 - 行の境目をまたぐ編集を元に戻すと、元の行と位置に戻る（語を割らない）
+- 最後の行だけ描き直した段落を、保存した条件を使わずに再openしても、1つの段落として読める（色の値の比較）
 
-同一文字列・短文化・長文化・再編集・クリップ・元に戻す編集の各テストは、修正前のコードで失敗することを確かめた。両端揃えの空白の配り方は、合成のPDFでは作れない（固定のフィクスチャのフォントは2バイトの CID フォントで、`Tw` が効かない）ため、実PDF（C05、Antenna House の両端揃え）で確かめた。`tests/test_paragraph_frame_continuity.py` のハイフンのテストは、新しい規則に合わせた（短文化で 'The inter-' の行は残り、断片を孤立させる長文化は拒否）。
+同一文字列・短文化・長文化・再編集・クリップ・元に戻す編集・再openの各テストは、修正前のコードで失敗することを確かめた。両端揃えの空白の配り方は、合成のPDFでは作れない（固定のフィクスチャのフォントは2バイトの CID フォントで、`Tw` が効かない）ため、実PDF（C05、Antenna House の両端揃え）で確かめた。`tests/test_paragraph_frame_continuity.py` のハイフンのテストは、新しい規則に合わせた（短文化で 'The inter-' の行は残り、断片を孤立させる長文化は拒否）。
 
 実行したテスト（CLAUDE.md の方針どおり、full suite は実行していない）：
 
 | 範囲 | コミット | 結果 | 時間 |
 |---|---|---|---|
-| focused：`prototypes.paragraph_frame` の auto・auto_detect・auto_conditions・auto_style・semantics を import するテスト（auto_local・auto_writer は auto を通じて実行される）と、`pdfeditor.marked_content` を import するテスト（11ファイル） | `57d9dae` | 262 passed | 223秒 |
+| focused：`prototypes.paragraph_frame` の auto・auto_detect・auto_conditions・auto_style・semantics を import するテスト（auto_local・auto_writer は auto を通じて実行される）と、`pdfeditor.marked_content` を import するテスト（11ファイル） | `4480bee` | 263 passed | 230秒 |
 | `pdfeditor.shaped_font`（変更）を import するテストファイル（上の focused にあるものを除く9ファイル） | `4482fe4`（shaped_font.py はその後変更なし） | 160 passed、11 skipped | 139秒 |
 | full suite | — | 未実行 | — |
 
