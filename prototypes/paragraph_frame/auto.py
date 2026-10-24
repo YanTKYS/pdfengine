@@ -68,6 +68,8 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
                         to_baseline=round(row['baseline']+dy,3),to_region=region) for row,dx,dy,region in rows]) for k,rows in enumerate(active)]
         else:
             try:
+                # A line ending with a soft-or-hard hyphen keeps its break.
+                spec['hyphens']=list(paragraphs[0].hyphens)
                 lines=local_layout(tokens,spec);spec['layout']='local'
             except LocalUnavailable as exc:
                 spec['layout']='paragraph ('+str(exc)+')'

@@ -46,6 +46,10 @@ def local_layout(tokens, spec):
                 if t['advance'] > natural + .01:
                     t['squeezable'] = t['advance'] - natural
     n = len(rows)
+    # A line-final hyphen may be soft or hard: its break cannot move, so it
+    # is kept like an author's break.
+    hyphens = set(spec.get('hyphens', ()))
+    rows = [dict(r, hard=r['hard'] or (k + 1 < len(rows) and r['ids'][-1] in hyphens)) for k, r in enumerate(rows)]
     line_of = {i: k for k, r in enumerate(rows) for i in r['ids']}
     ordered = [i for r in rows for i in r['ids']]
     order = {i: m for m, i in enumerate(ordered)}
@@ -131,6 +135,7 @@ def local_layout(tokens, spec):
         cursor = end
     k = len(lines)
     hard_ends = [starts[j + 1] for j in range(n - 1) if rows[j]['hard'] and j + 1 in starts]
+    hyphen_ends = {starts[j + 1] for j in range(n - 1) if rows[j]['ids'][-1] in hyphens and j + 1 in starts}
     while cursor < len(tokens):
         x0 = rows[k]['x'] if k < n else extra_x
         ends = fit(tokens, text, breaks, cursor, spec['right'] - x0)
@@ -153,6 +158,10 @@ def local_layout(tokens, spec):
                 if _end(choice) <= spec['right'] + .05:
                     break
         end = choice['end']
+        # A hyphenated word fragment pushed onto a line of its own: its hyphen
+        # may be soft (the word would rejoin) or hard; neither is provable.
+        if end in hyphen_ends and not any(t['text'] == ' ' for t in tokens[cursor:end - 1]) and not source_line(k, cursor, end):
+            raise Refused('reflow would leave a hyphenated word fragment alone on a line (soft or hard hyphen is ambiguous)')
         choice['kept'] = source_line(k, cursor, end) and all(p.get('origin') is None or abs(p['x'] - p['origin'][0]) < 1e-9
                                                              and abs(p['y'] - p['origin'][1]) < 1e-9 for p in choice['tokens'])
         lines.append(choice)

@@ -88,3 +88,16 @@ def test_a_table_cell_gives_its_text_the_width_inside_its_rules(tmp_path):
     proposal = edit(source, '配布します。', '配布しています。', tmp_path / 'out.pdf')
     assert proposal['evidence']['inferred']['right'] == pytest.approx(256, abs=.3)
     assert [l['text'] for l in proposal['lines']] == ['申請書は窓口で配布しています。']
+
+
+def test_a_line_ending_with_a_hyphen_keeps_its_break(tmp_path):
+    # The hyphen may be soft or hard: the shortened line keeps its break
+    # (its gap is not filled from the next line) and the next lines stay.
+    lines = [(40, 60, 'Calc is a spreadsheet program for'), (40, 76, 'the user in mind and easy for profes-'),
+             (40, 92, 'sional users and number crunchers.'), (40, 130, 'Following paragraph.')]
+    source, _ = page_with(tmp_path, lines, height=300)
+    out = tmp_path / 'out.pdf'
+    proposal = edit(source, 'in mind and ', '', out)
+    assert [l['text'].strip() for l in proposal['lines']] == ['Calc is a spreadsheet program for', 'the user easy for profes-',
+                                                              'sional users and number crunchers.']
+    assert [l['kept'] for l in proposal['lines']] == [True, False, True]
