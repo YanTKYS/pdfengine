@@ -251,6 +251,10 @@ def phase_new(root, manifest, subst):
                                folder / 'B2-reedit-audit')
                 dump(folder / 'B2-reedit.audit.json', result)
                 b2_record['reedit']['audit'] = summary_of_audit(result)
+                if result['failed']:
+                    joined = audit(str(output), str(again), oracle, dict(old=case['new'], new=case['old'], expected=target['logical_text']),
+                                   folder / 'B2-reedit-audit-joins', implicit_joins=True)
+                    b2_record['reedit']['audit_implicit_joins'] = summary_of_audit(joined)
                 noop = folder / 'B2-noop.pdf'
                 subprocess.run([sys.executable, '-m', 'prototypes.paragraph_frame.generalization_cli', 'noop', '--source', str(again),
                                 '--output', str(noop)], check=True, capture_output=True)
