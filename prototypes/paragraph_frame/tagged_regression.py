@@ -51,6 +51,8 @@ for k, v in cref['new'].items():
     a, b = v['B2'], new[k]['B2']
     key = lambda s: (s['edit'], s.get('lines'), (s.get('audit') or {}).get('outcome'), (s.get('audit') or {}).get('failed'), (s.get('reedit') or {}).get('outcome') if isinstance(s.get('reedit'), dict) else s.get('reedit'))
     cn[k] = dict(edit=b['edit'], audit=(b.get('audit') or {}).get('outcome'), same_as_committed=key(a) == key(b))
+    if b.get('audit_implicit_joins'):
+        cn[k]['audit_implicit_joins'] = b['audit_implicit_joins']['outcome']
     if key(a) != key(b):
         diffs.append(('continuity new', k, key(b), key(a)))
 out['continuity_new'] = cn
@@ -118,7 +120,7 @@ for k, v in rec['continuity_sequences'].items():
 for k, v in rec['continuity_new'].items():
     mine = out['continuity_new'][k]
     if (v['edit'], v['audit']) != (mine['edit'], mine['audit']):
-        vs90.append(('continuity new', k, (mine['edit'], mine['audit']), (v['edit'], v['audit'])))
+        vs90.append(('continuity new', k, (mine['edit'], mine['audit'], mine.get('audit_implicit_joins')), (v['edit'], v['audit'])))
 for k, v in rec['generalization'].items():
     mine = out['generalization'][k]
     if (v['initial'], v['initial_failed'], v['reedit'], v['reedit_failed']) != (mine['initial'], mine['initial_failed'], mine['reedit'], mine['reedit_failed']):
@@ -138,8 +140,9 @@ vs91 = []
 strip = lambda v: {x: v[x] for x in v if x != 'same_as_committed'}
 for part in ('generalization', 'continuity_sequences', 'continuity_new'):
     for k, v in rec91[part].items():
-        if strip(v) != strip(out[part][k]):
-            vs91.append((part, k, strip(out[part][k]), strip(v)))
+        mine = {x: out[part][k].get(x) for x in strip(v)}
+        if strip(v) != mine:
+            vs91.append((part, k, dict(out[part][k]), strip(v)))
 for part in ('sequences', 'singles'):
     for k, v in rec91['column_flow'][part].items():
         if strip(v) != strip(out['column_flow'][part][k]):

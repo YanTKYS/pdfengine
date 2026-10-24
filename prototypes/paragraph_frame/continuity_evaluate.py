@@ -234,6 +234,12 @@ def phase_new(root, manifest, subst):
             result = audit(doc['path'], str(output), spec, dict(case, expected=case['expected']), folder / 'B2-audit')
             dump(folder / 'B2.audit.json', result)
             b2_record['audit'] = summary_of_audit(result)
+            if result['failed']:
+                # Auxiliary, beside the recorded audit: line-end spaces the
+                # source never drew may stay undrawn on lines kept as drawn.
+                joined = audit(doc['path'], str(output), spec, dict(case, expected=case['expected']), folder / 'B2-audit-joins',
+                               implicit_joins=True)
+                b2_record['audit_implicit_joins'] = summary_of_audit(joined)
             # PDF-alone re-edit reverting the change, then an unedited save.
             again = folder / 'B2-reedit.pdf'
             back = b2(output, doc['page'], case['new'], case['old'], again, subst)

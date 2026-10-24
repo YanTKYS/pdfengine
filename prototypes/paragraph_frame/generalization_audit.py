@@ -39,7 +39,11 @@ def structural(tree):
 
 def ids(p):return p.get('glyph_ids',[g['id'] for g in p.get('glyphs',[])])
 
-def audit(source,output,spec,case,root,*,expected=None,arm='B2'):
+def audit(source,output,spec,case,root,*,expected=None,arm='B2',implicit_joins=False):
+    """``implicit_joins`` (auxiliary evaluation, off for the recorded audit):
+    a space of the edited paragraph with no drawn glyph between two drawn
+    glyphs on different lines is an implicit line join, as in the source PDF
+    (lines kept as drawn by the source writer draw none)."""
     start=time.perf_counter();root=Path(root);root.mkdir(parents=True,exist_ok=True);checks={}
     want=expected or case['expected'];oldrows=records(source,spec['page']);newrows=records(output,spec['page'])
     selected={i for p in spec['paragraphs'] for i in ids(p)};foreign=Counter(key(r) for r in oldrows if r['id'] not in selected);remain=Counter(foreign);changed=[]
@@ -47,6 +51,13 @@ def audit(source,output,spec,case,root,*,expected=None,arm='B2'):
         k=key(r)
         if remain[k]:remain[k]-=1
         else:changed.append(r)
+    if implicit_joins:
+        joined=[]
+        for r in changed:
+            if len(joined)<len(want) and joined and want[len(joined)]==' ' and r['text']!=' ' and joined[-1]['text']!=' ' and abs(r['origin'][1]-joined[-1]['origin'][1])>.1:
+                joined.append(dict(joined[-1],text=' ',implicit=True))
+            joined.append(r)
+        changed=joined
     checks['foreign_exact_code_gid_resource_size_scale_color_position']=not +remain
     checks['exact_drawn_paragraphs']=''.join(r['text'] for r in changed)==want+''.join(p['text'] for p in spec['paragraphs'][1:])
     checks['inside_fixed_oracle']=all(pymupdf.Rect(spec['frame']).contains(pymupdf.Rect(r['bbox'])) for r in changed if r['text'].strip())
