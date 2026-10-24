@@ -55,9 +55,14 @@ def continuation_oracle(spec,case,first):
     if +foreign:raise ValueError('first save failed protected-glyph qualification')
     result=deepcopy(spec);offset=0
     for i,p in enumerate(result['paragraphs']):
-        p['text']=case['expected'] if i==0 else p['text'];rows=editable[offset:offset+len(p['text'])];offset+=len(rows)
-        if ''.join(r['text'] for r in rows)!=p['text']:raise ValueError('continuation oracle text mismatch')
-        p['glyph_ids']=[r['id'] for r in rows];p['source_line_baselines']=sorted({r['origin'][1] for r in rows})
+        p['text']=case['expected'] if i==0 else p['text'];rows=[];joins=[]
+        # A space with no drawn glyph where the line changes is an implicit
+        # line join (a line kept as drawn by the source writer has none).
+        for n,ch in enumerate(p['text']):
+            if offset<len(editable) and editable[offset]['text']==ch:rows.append(editable[offset]);offset+=1
+            elif ch==' ' and rows and offset<len(editable) and abs(editable[offset]['origin'][1]-rows[-1]['origin'][1])>.1:joins.append(n)
+            else:raise ValueError('continuation oracle text mismatch')
+        p['glyph_ids']=[r['id'] for r in rows];p['joins']=joins;p['source_line_baselines']=sorted({r['origin'][1] for r in rows})
     return result
 
 

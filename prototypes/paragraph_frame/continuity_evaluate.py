@@ -241,7 +241,6 @@ def phase_new(root, manifest, subst):
             if back['outcome'] == 'saved':
                 b2_record['reedit']['conditions'] = back['proposal']['evidence']['conditions']['status']
                 oracle = oracle_after(spec, case['expected'], output)
-                oracle['paragraphs'][0]['joins'] = []
                 result = audit(str(output), str(again), oracle, dict(old=case['new'], new=case['old'], expected=target['logical_text']),
                                folder / 'B2-reedit-audit')
                 dump(folder / 'B2-reedit.audit.json', result)
