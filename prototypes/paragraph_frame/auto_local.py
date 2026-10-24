@@ -75,6 +75,12 @@ def local_layout(tokens, spec):
         home.append(current)
     if previous != len(ordered) - 1:
         affected.extend(line_of[i] for i in ordered[previous + 1:])
+    tokens = _set_width(tokens, home, changed)
+    if spec.get('align') == 'justify-cjk':
+        # A justified CJK line may tighten its glyph gaps a little (0.05 em
+        # each) to keep its source break; fit() counts that allowance.
+        tokens = [dict(t, squeezable=max(t.get('squeezable', 0.), CJK_GAP * t['size'])) if ord(t['text'][0]) >= 0x2E80 else t
+                  for t in tokens]
     edits = [k for k, c in enumerate(changed) if c]
     last_edit = max(edits) if edits else (len(tokens) - 1 if affected else -1)
     first_line = min(affected) if affected else n
@@ -182,6 +188,42 @@ def _line(tokens, text, a, b, x0, y, changed, home, k, rows, spec, last):
     return dict(text=text[a:b], baseline=y, tokens=placed, justified=justified, end=b)
 
 
+def _set_width(tokens, home, changed):
+    """New glyphs set like their neighbours: a CJK ideograph takes the median
+    observed tracking of the retained ideographs of its font and size on its
+    source line (at least three; else of the paragraph), a punctuation mark the
+    median observed advance of the same mark, font and size in the paragraph.
+    A writer compresses or spaces a justified CJK line as a whole; a new glyph
+    at its nominal width would make an edited line longer than the same text."""
+    from statistics import median
+    from .auto_style import PUNCTUATION
+    def cjk(t):
+        return ord(t['text'][0]) >= 0x2E80 and t['text'] not in PUNCTUATION
+    retained = [(h, t) for h, t, c in zip(home, tokens, changed) if t.get('source_id') is not None and t.get('origin') is not None]
+    line_tracking, paragraph_tracking, marks = {}, {}, {}
+    for h, t in retained:
+        key = (t['font_name'], t['size'])
+        if cjk(t):
+            line_tracking.setdefault((h,) + key, []).append(t['advance'] - t['nominal_advance'])
+            paragraph_tracking.setdefault(key, []).append(t['advance'] - t['nominal_advance'])
+        elif t['text'] in PUNCTUATION:
+            marks.setdefault((t['text'],) + key, []).append(t['advance'])
+    out = []
+    for h, t in zip(home, tokens):
+        if t.get('source_id') is None and t.get('mode') != 'implicit-line-join' and not t.get('font_key'):
+            key = (t['font_name'], t['size'])
+            if cjk(t):
+                seen = line_tracking.get((h,) + key, [])
+                seen = seen if len(seen) >= 3 else paragraph_tracking.get(key, [])
+                # A positional gap carried over from the replaced text stays after it.
+                if len(seen) >= 3:
+                    t = dict(t, advance=t['nominal_advance'] + median(seen) + t.get('positional_gap', 0.))
+            elif t['text'] in PUNCTUATION and marks.get((t['text'],) + key):
+                t = dict(t, advance=median(marks[(t['text'],) + key]) + t.get('positional_gap', 0.))
+        out.append(t)
+    return out
+
+
 def _keeps_shape(line, spec, row, ragged):
     """Whether a line may keep its source break although more text would fit:
     a justified line that was made flush again within the stretch allowance,
@@ -242,6 +284,12 @@ def _justify(placed, right, cjk=False):
     if abs(slack) < .01:
         return True
     gaps = list(range(max(first - 1, 0), last)) if cjk else [n for n in range(first, last) if placed[n]['text'] == ' ']
+    if slack < 0 and cjk:
+        # Overflow: tighten the glyph gaps after the edit, 0.05 em each at most.
+        if not gaps or -slack / len(gaps) > CJK_GAP * size:
+            return False
+        _shift(placed, {n: slack / len(gaps) for n in gaps})
+        return True
     if slack < 0:
         # Overflow: give back stretch the source put into the spaces after the edit.
         room = {n: placed[n].get('squeezable', 0.) for n in gaps if placed[n].get('squeezable')}
