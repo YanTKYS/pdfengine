@@ -71,3 +71,6 @@ tmp/
 !/evaluations/paragraph_frame_indesign/results.json
 !/evaluations/paragraph_frame_tagged/manifest.json
 !/evaluations/paragraph_frame_tagged/results.json
+!/evaluations/paragraph_frame_fidelity/
+!/evaluations/paragraph_frame_fidelity/manifest.json
+!/evaluations/paragraph_frame_fidelity/results.json

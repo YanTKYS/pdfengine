@@ -234,6 +234,12 @@ def phase_new(root, manifest, subst):
             result = audit(doc['path'], str(output), spec, dict(case, expected=case['expected']), folder / 'B2-audit')
             dump(folder / 'B2.audit.json', result)
             b2_record['audit'] = summary_of_audit(result)
+            if result['failed']:
+                # Auxiliary, beside the recorded audit: line-end spaces the
+                # source never drew may stay undrawn on lines kept as drawn.
+                joined = audit(doc['path'], str(output), spec, dict(case, expected=case['expected']), folder / 'B2-audit-joins',
+                               implicit_joins=True)
+                b2_record['audit_implicit_joins'] = summary_of_audit(joined)
             # PDF-alone re-edit reverting the change, then an unedited save.
             again = folder / 'B2-reedit.pdf'
             back = b2(output, doc['page'], case['new'], case['old'], again, subst)
@@ -241,11 +247,14 @@ def phase_new(root, manifest, subst):
             if back['outcome'] == 'saved':
                 b2_record['reedit']['conditions'] = back['proposal']['evidence']['conditions']['status']
                 oracle = oracle_after(spec, case['expected'], output)
-                oracle['paragraphs'][0]['joins'] = []
                 result = audit(str(output), str(again), oracle, dict(old=case['new'], new=case['old'], expected=target['logical_text']),
                                folder / 'B2-reedit-audit')
                 dump(folder / 'B2-reedit.audit.json', result)
                 b2_record['reedit']['audit'] = summary_of_audit(result)
+                if result['failed']:
+                    joined = audit(str(output), str(again), oracle, dict(old=case['new'], new=case['old'], expected=target['logical_text']),
+                                   folder / 'B2-reedit-audit-joins', implicit_joins=True)
+                    b2_record['reedit']['audit_implicit_joins'] = summary_of_audit(joined)
                 noop = folder / 'B2-noop.pdf'
                 subprocess.run([sys.executable, '-m', 'prototypes.paragraph_frame.generalization_cli', 'noop', '--source', str(again),
                                 '--output', str(noop)], check=True, capture_output=True)

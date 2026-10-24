@@ -200,6 +200,81 @@ def _marker(c, row):
     return first if first and (unicodedata.category(first) == 'So' or first in '•・‣⁃◦※') else None
 
 
+def cell_right(c, rows, right, own):
+    """The right edge a table cell gives its text, or None.
+
+    The cell is bounded by drawn vertical rules (lines, thin rectangles or the
+    sides of a rectangle) that span every line of the paragraph: the nearest
+    one left of the text within 3 em, and the nearest one right of it. The
+    text's padding from the left rule is kept from the right rule. None when
+    no such pair exists, when it gives no more width, or when other text lies
+    in the space it adds.
+    """
+    top = min(r['bbox'][1] for r in rows)
+    bottom = max(r['bbox'][3] for r in rows)
+    left = min(r['x'] for r in rows)
+    size = max(r['size'] for r in rows)
+    segments = []
+    try:
+        drawings = c.page.get_drawings()
+    except Exception:
+        return None
+    for d in drawings:
+        for item in d['items']:
+            if item[0] == 'l':
+                a, b = item[1], item[2]
+                if abs(a.x - b.x) < .5:
+                    segments.append((a.x, min(a.y, b.y), max(a.y, b.y)))
+            elif item[0] == 're':
+                r = item[1]
+                if r.width < 1.5:
+                    segments.append(((r.x0 + r.x1) / 2, r.y0, r.y1))
+                else:
+                    segments.extend([(r.x0, r.y0, r.y1), (r.x1, r.y0, r.y1)])
+    spanning = [x for x, y0, y1 in segments if y0 <= top + 1 and y1 >= bottom - 1]
+    lefts = [x for x in spanning if left - 3 * size <= x <= left]
+    rights = [x for x in spanning if x >= right]
+    if not lefts or not rights:
+        return None
+    rule_left, rule_right = max(lefts), min(rights)
+    edge = rule_right - max(.5, left - rule_left)
+    if edge <= right + .05:
+        return None
+    band = pymupdf.Rect(right, top, edge, bottom)
+    for i, g in enumerate(c.actual):
+        if i not in own and g['unicode'].strip() and band.intersects(pymupdf.Rect(g['bbox'])):
+            return None
+    return edge
+
+
+def source_rows(c, rows):
+    """The drawn lines of a paragraph for local layout (auto_local).
+
+    Each line: its glyph IDs, baseline, start x (first glyph origin), pen end,
+    ink end (of its last visible glyph, as a placed line is measured), and whether its break is the author's: the next line's first unit (a Latin
+    word, or one CJK character) would have fit after it within the
+    paragraph's own widest line, so a writer that wraps did not break there.
+    """
+    own_right = max(r['pen_end'] for r in rows)
+    out = []
+    for k, r in enumerate(rows):
+        hard = False
+        if k + 1 < len(rows):
+            nxt = rows[k + 1]['glyph_ids']
+            text = [c.actual[i]['unicode'] for i in nxt]
+            first = 0
+            if text and text[0].isascii() and text[0].isalnum():
+                while first + 1 < len(text) and text[first + 1].strip() and text[first + 1].isascii():
+                    first += 1
+            unit = c.actual[nxt[first]]['bbox'][2] - c.actual[nxt[0]]['origin'][0] if nxt else 0
+            space = .25 * r['size'] if text and text[0].isascii() else 0
+            hard = own_right - r['pen_end'] > unit + space + .05
+        ink = [c.actual[i]['bbox'][2] for i in r['glyph_ids'] if c.actual[i]['unicode'].strip()]
+        out.append(dict(ids=list(r['glyph_ids']), baseline=r['baseline'], x=c.actual[r['glyph_ids'][0]]['origin'][0],
+                        pen_end=r['pen_end'], ink_end=ink[-1] if ink else r['pen_end'], size=r['size'], hard=hard))
+    return out
+
+
 def right_to_left(text):
     """Whether text has right-to-left letters (Hebrew, Arabic …).
 
@@ -403,7 +478,9 @@ def observe(c,marks,analysis):
     rows,parent_by_id=page_rows(c,marks,analysis)
     # Paint style of each inked glyph: a row that shares no font and fill with
     # the previous row (a white label on a coloured box) does not continue it.
-    paint={i:(e.state.font.name if e.state.font else None,e.state.fill) for e in c.events for ch in e.chars for i in ch.source_orders if ch.text.strip()}
+    # Colours compare by value ('0 g' and '0.0 g' are one black).
+    fill=lambda f:(f[0],tuple(round(float(v),4) if _numeric(v) else v for v in f[1])) if f else f
+    paint={i:(e.state.font.name if e.state.font else None,fill(e.state.fill)) for e in c.events for ch in e.chars for i in ch.source_orders if ch.text.strip()}
     def style(row):return {paint[i] for i in row['glyph_ids'] if i in paint}
     groups=[]
     for r in rows:
@@ -577,6 +654,10 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         deltas=[b['baseline']-a['baseline'] for g in allgroups for a,b in zip(g,g[1:])]
         leading=median(deltas) if deltas else min([b['baseline']-a['baseline'] for a,b in zip(allrows,allrows[1:])] or [size*1.5])
         right=max(r['pen_end'] for r in allrows)
+        # A table cell bounds its text by drawn rules: the cell's right rule,
+        # less the text's padding from the left rule, is the line width.
+        cell=cell_right(c,allrows,right,{i for r in allrows for i in r['glyph_ids']})
+        if cell is not None:right=cell
         top=min(min(r['top'] for r in selected)-.5,selected[0]['baseline']-max(r['size'] for r in selected)-.5)
         ids={i for r in allrows for i in r['glyph_ids']}; last=max(r['bottom'] for r in allrows)
         obstacles=[dict(o) for o in paint]
@@ -592,7 +673,7 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         obstacles.extend(dict(kind='foreign-text',bounds=list(g['bbox'])) for i,g in enumerate(c.actual) if i not in ids and g['unicode'].strip())
         basis='median within-paragraph observed gaps' if deltas else 'peer paragraph gap' if len(allrows)>1 else 'unobserved: 1.5 em default'
         provenance=dict(left='observed: minimum continuation x' if len(selected)>1 else 'inferred: nearby same-size continuation edge' if nearby else 'observed: first-line x',
-                        right='inferred: maximum occupied pen extent',first_x='observed: first line x',line_height=basis,
+                        right='observed: table-cell rules (right rule less the left padding)' if cell is not None else 'inferred: maximum occupied pen extent',first_x='observed: first line x',line_height=basis,
                         bottom='inferred: next protected paint, annotation or page edge')
         state=dict(status=record_status if not records else 'no record for this paragraph',records=records,target=None,followers=follower_records,applied=False,stale=[])
         n=record_of(selected)
@@ -628,6 +709,8 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
             for clip in e.state.clip:
                 box=form_write.clip_rect(clip,c.page.transformation_matrix)
                 if box is not None:frame=[max(frame[0],box.x0),max(frame[1],box.y0),min(frame[2],box.x1),min(frame[3],box.y1)]
+        # A cell's width never runs past what the frame shows (its clip or container).
+        if cell is not None and not state['applied']:right=max(max(r['pen_end'] for r in allrows),min(right,frame[2]-.5))
         paragraphs=[target_paragraph]+follower_paragraphs
         values=dict(left=left,right=right,first_x=first,line_height=leading,bottom=bottom)
         origin=records[state['target']]['origin'] if state['applied'] else dict(values=values,provenance=provenance)
@@ -657,7 +740,8 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         # The edge is the frame's right edge (approved, or the widest line of
         # the paragraph and its followers): a paragraph whose lines stop short
         # of a wider follower is not justified to it.
-        flush=len(selected)>1 and all(abs(r['pen_end']-right)<.75 for r in selected[:-1])
+        # Writers end justified lines a little apart (LibreOffice: 0.85 pt at 10 pt).
+        flush=len(selected)>1 and all(abs(r['pen_end']-right)<max(.75,.1*size) for r in selected[:-1])
         justified=flush and ' ' in paragraphs[0].text and all(ord(ch)<0x2E80 for ch in paragraphs[0].text)
         cjk=flush and not justified and any(ord(ch)>=0x2E80 for ch in paragraphs[0].text)
         align='justify' if justified else 'justify-cjk' if cjk else 'start'
@@ -667,6 +751,9 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         evidence['column_flow']=dict(mode='single-column',column_bottom=column_bottom,**neighbours)
         if column_bottom is not None:evidence['warnings'].append('Side-by-side columns share a bottom; this paragraph is not in a linked flow and may not grow below it.')
         spec=dict(page=page,frame=frame,column_bottom=column_bottom,candidates=[l['id'] for l in neighbours['links'] if l['status']=='candidate'],rejected_links=[f"{l['id']}: {l['reason']}" for l in neighbours['links'] if l['status']=='rejected'],left=left,right=right,first_x=first,align=align,baseline=selected[0]['baseline'],line_height=leading,line_offsets=[r['baseline']-selected[0]['baseline'] for r in selected],
-                  stored=state,values=values,provenance=provenance,origin=origin)
+                  stored=state,values=values,provenance=provenance,origin=origin,
+                  # The drawn lines of the edited paragraph: local layout keeps
+                  # what the edit does not change where it is (auto_local).
+                  source_rows=source_rows(c,selected))
         return c,paragraphs,spec,start,evidence
     except Exception:c.close();raise

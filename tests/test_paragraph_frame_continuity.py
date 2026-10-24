@@ -242,8 +242,12 @@ def test_line_final_hyphen_is_never_moved_inside_a_line(tmp_path):
     p = propose(path, 1, 'tomorrow.', 'today.', substitute=binding(font))
     assert any('hyphen' in w for w in p['evidence']['warnings'])
     assert p['paragraphs'][0] == 'The very long inter-national meeting is tomorrow.'
+    # Shortening the hyphenated line keeps its break: the hyphen stays line-final.
+    short = propose(path, 1, 'very long ', '', substitute=binding(font))
+    assert [l['text'] for l in short['lines']][:2] == ['The inter-', 'national meeting is ']
+    # Text that would push the fragment off its line is refused.
     with pytest.raises(Refused, match='hyphen'):
-        propose(path, 1, 'very long ', '', substitute=binding(font))
+        propose(path, 1, 'very long ', 'very very long ', substitute=binding(font))
 
 
 def test_background_container_is_not_an_obstacle(tmp_path):
