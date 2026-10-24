@@ -1,0 +1,1129 @@
+{
+ "schema": "paragraph-frame-fidelity-manifest-1",
+ "baseline_commit": "8c60fe3 (main after PR #91)",
+ "frozen_at": "8c60fe3",
+ "policy": "Frozen before the implementation. Old B2 is main 8c60fe3; new B2 is this branch. Every edit is a real text change except \"identity\" (same string), which measures what an edit that changes nothing changes. Outcomes are reported per edit; refusals never count as success.",
+ "measures": "saved; safety and quality (indesign_evaluate.audit, unchanged); structure (tagged_evaluate.structure_audit); continued editing from the saved PDF; fidelity: unchanged glyphs at their source origin (0.01 pt), font and size, drawn lines, and source line breaks outside the edited text kept",
+ "documents": {
+  "osaka_fusei_477": {
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "path": "(scratch download, not committed)"
+  },
+  "issue17730": {
+   "sha256": "d1d3be1674f4756d82630d68f08a8088f5b912c58f3379f45eb63b025ad99b14",
+   "path": "(scratch download, not committed)"
+  },
+  "word_osaka_fire_notice": {
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+   "path": "evaluations/realpdf/corpus/word_osaka_fire_notice.pdf"
+  },
+  "word_osaka_guideline": {
+   "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+   "path": "evaluations/realpdf/corpus/word_osaka_guideline.pdf"
+  },
+  "lo_enterprise_en": {
+   "sha256": "f96228ca032b60584e5f2e5fd5689290ba7b93b4f39bb8f86c5af5221eec85d4",
+   "path": "evaluations/realpdf/corpus/lo_enterprise_en.pdf"
+  },
+  "lo_migration_ja": {
+   "sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+   "path": "evaluations/realpdf/corpus/lo_migration_ja.pdf"
+  },
+  "prefilled_f1040": {
+   "sha256": "899edb271684d2451337e225268003324a583a7d3429e23efd69f1654adf9bf9",
+   "path": "(scratch download, not committed)"
+  },
+  "issue14297": {
+   "sha256": "4041c1e3e2446bd236d536ce88fe5e97b30605f04813e600a00c58bf19e8c89b",
+   "path": "(scratch download, not committed)"
+  },
+  "160F-2019": {
+   "sha256": "f41f0818365ffd14ca4e55c0556355193bd76632b970d60cc2dec554cac6f379",
+   "path": "(scratch download, not committed)"
+  },
+  "tracemonkey": {
+   "sha256": "3662ff519e485810520552bf301d8c3b2b917fd2f83303f4965d7abed367e113",
+   "path": "(scratch download, not committed)"
+  },
+  "canvas": {
+   "sha256": "3548b2605bef8ff9656efe8ef8fd94814dfbcf94f547c7d1ff8603e8a46cef6b",
+   "path": "(scratch download, not committed)"
+  }
+ },
+ "cases": [
+  {
+   "id": "C01",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "anchor": "令和5年の大",
+   "purpose": "InDesign, ragged CJK, 5 lines",
+   "paragraph": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "box": [
+    20.94,
+    680.89,
+    244.61,
+    742.89
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4",
+     "baseline": 688.383,
+     "x": 21.168,
+     "pen_end": 239.634
+    },
+    {
+     "text": "人の方が自殺で亡くなられるという深刻な状況です。",
+     "baseline": 701.49,
+     "x": 21.158,
+     "pen_end": 244.612
+    },
+    {
+     "text": "悩みを抱えている人は、ひとりで悩まず専門機関にご",
+     "baseline": 714.597,
+     "x": 21.187,
+     "pen_end": 239.499
+    },
+    {
+     "text": "相談ください。また、身近な人の悩みに気づいたら話",
+     "baseline": 727.703,
+     "x": 21.177,
+     "pen_end": 239.612
+    },
+    {
+     "text": "を聴いて寄り添いましょう。",
+     "baseline": 740.81,
+     "x": 20.938,
+     "pen_end": 138.817
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "悩みを抱えている人は",
+     "new": "悩みを抱えている人は",
+     "after": null,
+     "expected_text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。"
+    },
+    {
+     "kind": "same",
+     "old": "悩みを抱えている人は",
+     "new": "悩みを持っている人は",
+     "after": null,
+     "expected_text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを持っている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。"
+    },
+    {
+     "kind": "shorten",
+     "old": "悩まず専門機関に",
+     "new": "悩まず機関に",
+     "after": null,
+     "expected_text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。"
+    },
+    {
+     "kind": "lengthen",
+     "old": "ひとりで悩まず",
+     "new": "ひとりで悩まず、ひとりで抱えず",
+     "after": null,
+     "expected_text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず、ひとりで抱えず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。"
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "ひとりで悩まず、ひとりで抱えず",
+     "new": "ひとりで悩まず",
+     "after": "lengthen",
+     "expected_text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。"
+    }
+   ]
+  },
+  {
+   "id": "C02",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "anchor": "賃貸住宅の退",
+   "purpose": "InDesign, justified CJK, 5 lines",
+   "paragraph": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+   "box": [
+    20.38,
+    821.56,
+    239.92,
+    883.56
+   ],
+   "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+   "lines": [
+    {
+     "text": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用",
+     "baseline": 829.053,
+     "x": 21.183,
+     "pen_end": 239.803
+    },
+    {
+     "text": "を貸主、借主のどちらが負担するのかといった原状回",
+     "baseline": 842.159,
+     "x": 20.934,
+     "pen_end": 239.765
+    },
+    {
+     "text": "復をめぐるトラブルが発生しています。大阪府版ガイ",
+     "baseline": 855.266,
+     "x": 21.173,
+     "pen_end": 239.923
+    },
+    {
+     "text": "ドラインでは、トラブルの未然防止・解決に役立つ情報",
+     "baseline": 868.373,
+     "x": 20.379,
+     "pen_end": 239.635
+    },
+    {
+     "text": "や相談窓口を掲載しています。ぜひご活用ください。",
+     "baseline": 881.479,
+     "x": 21.077,
+     "pen_end": 236.011
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "トラブルが発生しています",
+     "new": "トラブルが発生しています",
+     "after": null,
+     "expected_text": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。"
+    },
+    {
+     "kind": "same",
+     "old": "損耗などの補修や修繕",
+     "new": "損耗などの修繕や補修",
+     "after": null,
+     "expected_text": "賃貸住宅の退去の際に、損耗などの修繕や補修の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。"
+    },
+    {
+     "kind": "shorten",
+     "old": "損耗などの補修や修繕の費用を",
+     "new": "修繕の費用を",
+     "after": null,
+     "expected_text": "賃貸住宅の退去の際に、修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。"
+    },
+    {
+     "kind": "lengthen",
+     "old": "ぜひご活用ください。",
+     "new": "ぜひご活用ください。ぜひご相談ください。",
+     "after": null,
+     "expected_text": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。ぜひご相談ください。"
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "ぜひご活用ください。ぜひご相談ください。",
+     "new": "ぜひご活用ください。",
+     "after": "lengthen",
+     "expected_text": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。"
+    }
+   ]
+  },
+  {
+   "id": "C03",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "anchor": "学歴・職務経",
+   "purpose": "InDesign, justified CJK, 2 lines",
+   "paragraph": "学歴・職務経験不問。警察行政職を除き、日本国籍の有無は問いません。詳細は府職員採用案内HPまで。",
+   "box": [
+    503.05,
+    185.18,
+    721.51,
+    208.56
+   ],
+   "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+   "lines": [
+    {
+     "text": "学歴・職務経験不問。警察行政職を除き、日本国籍の有",
+     "baseline": 192.675,
+     "x": 503.055,
+     "pen_end": 721.514
+    },
+    {
+     "text": "無は問いません。詳細は府職員採用案内HPまで。",
+     "baseline": 206.489,
+     "x": 503.074,
+     "pen_end": 704.141
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "警察行政職を除き",
+     "new": "警察行政職を除き",
+     "after": null,
+     "expected_text": "学歴・職務経験不問。警察行政職を除き、日本国籍の有無は問いません。詳細は府職員採用案内HPまで。"
+    },
+    {
+     "kind": "same",
+     "old": "学歴・職務経験不問",
+     "new": "職務経験・学歴不問",
+     "after": null,
+     "expected_text": "職務経験・学歴不問。警察行政職を除き、日本国籍の有無は問いません。詳細は府職員採用案内HPまで。"
+    },
+    {
+     "kind": "shorten",
+     "old": "不問。警察行政職を除き、日本国籍",
+     "new": "不問。日本国籍",
+     "after": null,
+     "expected_text": "学歴・職務経験不問。日本国籍の有無は問いません。詳細は府職員採用案内HPまで。"
+    },
+    {
+     "kind": "lengthen",
+     "old": "HPまで。",
+     "new": "HPまで。学歴不問。",
+     "after": null,
+     "expected_text": "学歴・職務経験不問。警察行政職を除き、日本国籍の有無は問いません。詳細は府職員採用案内HPまで。学歴不問。"
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "HPまで。学歴不問。",
+     "new": "HPまで。",
+     "after": "lengthen",
+     "expected_text": "学歴・職務経験不問。警察行政職を除き、日本国籍の有無は問いません。詳細は府職員採用案内HPまで。"
+    }
+   ]
+  },
+  {
+   "id": "C04",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "anchor": "令和7年（2025年）3月1日",
+   "purpose": "InDesign, header text in a page-local Form XObject",
+   "paragraph": "令和7年（2025年）3月1日",
+   "box": [
+    620.42,
+    27.95,
+    708.66,
+    37.16
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "令和7年（2025年）3月1日",
+     "baseline": 34.431,
+     "x": 620.42,
+     "pen_end": 708.662
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "3月1日",
+     "new": "3月1日",
+     "after": null,
+     "expected_text": "令和7年（2025年）3月1日"
+    },
+    {
+     "kind": "same",
+     "old": "3月1日",
+     "new": "3月7日",
+     "after": null,
+     "expected_text": "令和7年（2025年）3月7日"
+    },
+    {
+     "kind": "shorten",
+     "old": "（2025年）3月",
+     "new": "3月",
+     "after": null,
+     "expected_text": "令和7年3月1日"
+    },
+    {
+     "kind": "lengthen",
+     "old": "3月1日",
+     "new": "3月21日",
+     "after": null,
+     "expected_text": "令和7年（2025年）3月21日"
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "3月21日",
+     "new": "3月1日",
+     "after": "lengthen",
+     "expected_text": "令和7年（2025年）3月1日"
+    }
+   ]
+  },
+  {
+   "id": "C05",
+   "document": "issue17730",
+   "page": 1,
+   "anchor": "There ",
+   "purpose": "Antenna House, justified Latin, 4 lines",
+   "paragraph": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its destination may be either an ID or a page number. The external-destination property indicates to link to an external document. Its destination may be either an external file or a website.",
+   "box": [
+    61.69,
+    116.13,
+    533.71,
+    168.13
+   ],
+   "alignment": "justify: non-final lines end at the right edge",
+   "lines": [
+    {
+     "text": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external",
+     "baseline": 124.183,
+     "x": 61.693,
+     "pen_end": 533.623
+    },
+    {
+     "text": "document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its",
+     "baseline": 138.183,
+     "x": 61.697,
+     "pen_end": 533.707
+    },
+    {
+     "text": "destination may be either an ID or a page number. The external-destination property indicates to link to an external",
+     "baseline": 152.183,
+     "x": 61.698,
+     "pen_end": 533.567
+    },
+    {
+     "text": "document. Its destination may be either an external file or a website.",
+     "baseline": 166.183,
+     "x": 61.692,
+     "pen_end": 335.252
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "two types of links",
+     "new": "two types of links",
+     "after": null,
+     "expected_text": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its destination may be either an ID or a page number. The external-destination property indicates to link to an external document. Its destination may be either an external file or a website."
+    },
+    {
+     "kind": "same",
+     "old": "two types of links",
+     "new": "two kinds of links",
+     "after": null,
+     "expected_text": "There are two kinds of links in PDF: a link to a specific position in the same PDF document, and a link to an external document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its destination may be either an ID or a page number. The external-destination property indicates to link to an external document. Its destination may be either an external file or a website."
+    },
+    {
+     "kind": "shorten",
+     "old": "may be either an ID",
+     "new": "may be an ID",
+     "after": null,
+     "expected_text": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its destination may be an ID or a page number. The external-destination property indicates to link to an external document. Its destination may be either an external file or a website."
+    },
+    {
+     "kind": "lengthen",
+     "old": "or a website.",
+     "new": "or a website or a file.",
+     "after": null,
+     "expected_text": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its destination may be either an ID or a page number. The external-destination property indicates to link to an external document. Its destination may be either an external file or a website or a file."
+    },
+    {
+     "kind": "lengthen-wrap",
+     "old": "a specific position in",
+     "new": "a specific position or page in",
+     "after": null,
+     "expected_text": "There are two types of links in PDF: a link to a specific position or page in the same PDF document, and a link to an external document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its destination may be either an ID or a page number. The external-destination property indicates to link to an external document. Its destination may be either an external file or a website."
+    },
+    {
+     "kind": "reedit:lengthen-wrap",
+     "old": "a specific position or page in",
+     "new": "a specific position in",
+     "after": "lengthen-wrap",
+     "expected_text": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its destination may be either an ID or a page number. The external-destination property indicates to link to an external document. Its destination may be either an external file or a website."
+    }
+   ]
+  },
+  {
+   "id": "C06",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "anchor": "なお、標記災",
+   "purpose": "Word (tagged P/Span), first-line indent, 2 lines",
+   "paragraph": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+   "box": [
+    53.88,
+    315.1,
+    541.78,
+    345.46
+   ],
+   "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+   "lines": [
+    {
+     "text": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑",
+     "baseline": 324.17,
+     "x": 64.464,
+     "pen_end": 541.78
+    },
+    {
+     "text": "かつ適切に実施いただくようお願いします。 ",
+     "baseline": 343.97,
+     "x": 53.88,
+     "pen_end": 269.33
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "地方公共団体",
+     "new": "地方公共団体",
+     "after": null,
+     "expected_text": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 "
+    },
+    {
+     "kind": "same",
+     "old": "円滑かつ適切に",
+     "new": "適切かつ円滑に",
+     "after": null,
+     "expected_text": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、適切かつ円滑に実施いただくようお願いします。 "
+    },
+    {
+     "kind": "shorten",
+     "old": "被災されていない",
+     "new": "被災していない",
+     "after": null,
+     "expected_text": "なお、標記災害により被災していない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 "
+    },
+    {
+     "kind": "lengthen",
+     "old": "実施いただく",
+     "new": "実施していただく",
+     "after": null,
+     "expected_text": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施していただくようお願いします。 "
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "実施していただく",
+     "new": "実施いただく",
+     "after": "lengthen",
+     "expected_text": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 "
+    }
+   ]
+  },
+  {
+   "id": "C07",
+   "document": "word_osaka_guideline",
+   "page": 1,
+   "anchor": "標記につきま",
+   "purpose": "Word (tagged), first-line indent, 2 lines",
+   "paragraph": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+   "box": [
+    70.94,
+    337.06,
+    522.91,
+    365.62
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送",
+     "baseline": 346.13,
+     "x": 81.504,
+     "pen_end": 522.914
+    },
+    {
+     "text": "付いたします。 ",
+     "baseline": 364.13,
+     "x": 70.944,
+     "pen_end": 149.78
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "国立感染症研究所",
+     "new": "国立感染症研究所",
+     "after": null,
+     "expected_text": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 "
+    },
+    {
+     "kind": "same",
+     "old": "作成されました",
+     "new": "送付されました",
+     "after": null,
+     "expected_text": "標記につきまして、国立感染症研究所においてガイドラインが送付されましたので、参考に送付いたします。 "
+    },
+    {
+     "kind": "shorten",
+     "old": "研究所において",
+     "new": "研究所で",
+     "after": null,
+     "expected_text": "標記につきまして、国立感染症研究所でガイドラインが作成されましたので、参考に送付いたします。 "
+    },
+    {
+     "kind": "lengthen",
+     "old": "参考に送付",
+     "new": "参考までに送付",
+     "after": null,
+     "expected_text": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考までに送付いたします。 "
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "参考までに送付",
+     "new": "参考に送付",
+     "after": "lengthen",
+     "expected_text": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 "
+    }
+   ]
+  },
+  {
+   "id": "C08",
+   "document": "lo_enterprise_en",
+   "page": 2,
+   "anchor": "Calc is a",
+   "purpose": "LibreOffice, ragged Latin with a line-final hyphen, 6 lines",
+   "paragraph": "Calc is a spreadsheet program designed with the user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions.",
+   "box": [
+    29.8,
+    328.01,
+    253.73,
+    414.91
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "Calc is a spreadsheet program designed with",
+     "baseline": 337.4,
+     "x": 29.8,
+     "pen_end": 252.88
+    },
+    {
+     "text": "the user in mind. First-time users find it",
+     "baseline": 352.3,
+     "x": 29.8,
+     "pen_end": 253.336
+    },
+    {
+     "text": "intuitive and easy to learn, while profes-",
+     "baseline": 367.3,
+     "x": 29.8,
+     "pen_end": 253.732
+    },
+    {
+     "text": "sional data miners and number crunchers",
+     "baseline": 382.3,
+     "x": 29.8,
+     "pen_end": 253.384
+    },
+    {
+     "text": "appreciate the comprehensive range of",
+     "baseline": 397.3,
+     "x": 29.8,
+     "pen_end": 252.916
+    },
+    {
+     "text": "advanced functions.",
+     "baseline": 412.3,
+     "x": 29.8,
+     "pen_end": 130.636
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "number crunchers",
+     "new": "number crunchers",
+     "after": null,
+     "expected_text": "Calc is a spreadsheet program designed with the user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions."
+    },
+    {
+     "kind": "same",
+     "old": "range of",
+     "new": "array of",
+     "after": null,
+     "expected_text": "Calc is a spreadsheet program designed with the user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive array of advanced functions."
+    },
+    {
+     "kind": "shorten",
+     "old": "intuitive and easy to learn",
+     "new": "easy to learn",
+     "after": null,
+     "expected_text": "Calc is a spreadsheet program designed with the user in mind. First-time users find it easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions."
+    },
+    {
+     "kind": "lengthen",
+     "old": "advanced functions.",
+     "new": "advanced and intuitive functions.",
+     "after": null,
+     "expected_text": "Calc is a spreadsheet program designed with the user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced and intuitive functions."
+    },
+    {
+     "kind": "lengthen-wrap",
+     "old": "designed with the user",
+     "new": "designed with the end user",
+     "after": null,
+     "expected_text": "Calc is a spreadsheet program designed with the end user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions."
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "advanced and intuitive functions.",
+     "new": "advanced functions.",
+     "after": "lengthen",
+     "expected_text": "Calc is a spreadsheet program designed with the user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions."
+    }
+   ]
+  },
+  {
+   "id": "C09",
+   "document": "lo_migration_ja",
+   "page": 1,
+   "anchor": "LibreOfficeは自由ソ",
+   "purpose": "LibreOffice, Japanese with Latin, first-line indent, 4 lines",
+   "paragraph": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。",
+   "box": [
+    56.8,
+    189.24,
+    538.68,
+    267.84
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS",
+     "baseline": 198.9,
+     "x": 67.3,
+     "pen_end": 538.676
+    },
+    {
+     "text": "X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富な",
+     "baseline": 221.1,
+     "x": 56.8,
+     "pen_end": 537.751
+    },
+    {
+     "text": "機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソ",
+     "baseline": 243.3,
+     "x": 56.8,
+     "pen_end": 538.401
+    },
+    {
+     "text": "フトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。",
+     "baseline": 265.5,
+     "x": 56.8,
+     "pen_end": 459.758
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "個人向け生産性",
+     "new": "個人向け生産性",
+     "after": null,
+     "expected_text": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。"
+    },
+    {
+     "kind": "same",
+     "old": "文書作成およびデータ処理",
+     "new": "データ処理および文書作成",
+     "after": null,
+     "expected_text": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆるデータ処理および文書作成の必要性をみたす六つの豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。"
+    },
+    {
+     "kind": "shorten",
+     "old": "六つの豊富な機能の",
+     "new": "豊富な機能の",
+     "after": null,
+     "expected_text": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。"
+    },
+    {
+     "kind": "lengthen",
+     "old": "描画ソフトDraw、",
+     "new": "描画ソフトDraw、表計算ソフトCalc、",
+     "after": null,
+     "expected_text": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、表計算ソフトCalc、データベースソフトBase、そして数式入力用のMathです。"
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "描画ソフトDraw、表計算ソフトCalc、",
+     "new": "描画ソフトDraw、",
+     "after": "lengthen",
+     "expected_text": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。"
+    }
+   ]
+  },
+  {
+   "id": "C10",
+   "document": "prefilled_f1040",
+   "page": 1,
+   "anchor": "Head of household",
+   "purpose": "LiveCycle (tagged, IDTree), marker on an offset baseline, 3 lines",
+   "paragraph": "Head of household (with qualifying person). (See instructions.) If the qualifying person is a child but not your dependent, enter this child’s name here.  ▶",
+   "box": [
+    374.4,
+    184.5,
+    573.93,
+    213.31
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "Head of household (with qualifying person). (See instructions.) If ",
+     "baseline": 190.055,
+     "x": 374.4,
+     "pen_end": 569.601
+    },
+    {
+     "text": "the qualifying person is a child but not your dependent, enter this ",
+     "baseline": 201.057,
+     "x": 374.4,
+     "pen_end": 573.926
+    },
+    {
+     "text": "child’s name here.  ▶",
+     "baseline": 212.06,
+     "x": 374.4,
+     "pen_end": 439.858
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "Head of household",
+     "new": "Head of household",
+     "after": null,
+     "expected_text": "Head of household (with qualifying person). (See instructions.) If the qualifying person is a child but not your dependent, enter this child’s name here.  ▶"
+    },
+    {
+     "kind": "same",
+     "old": "enter this",
+     "new": "write this",
+     "after": null,
+     "expected_text": "Head of household (with qualifying person). (See instructions.) If the qualifying person is a child but not your dependent, write this child’s name here.  ▶"
+    },
+    {
+     "kind": "shorten",
+     "old": "(See instructions.) If",
+     "new": "If",
+     "after": null,
+     "expected_text": "Head of household (with qualifying person). If the qualifying person is a child but not your dependent, enter this child’s name here.  ▶"
+    },
+    {
+     "kind": "lengthen",
+     "old": "child’s name here.",
+     "new": "child’s full name here.",
+     "after": null,
+     "expected_text": "Head of household (with qualifying person). (See instructions.) If the qualifying person is a child but not your dependent, enter this child’s full name here.  ▶"
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "child’s full name here.",
+     "new": "child’s name here.",
+     "after": "lengthen",
+     "expected_text": "Head of household (with qualifying person). (See instructions.) If the qualifying person is a child but not your dependent, enter this child’s name here.  ▶"
+    }
+   ]
+  },
+  {
+   "id": "C11",
+   "document": "issue14297",
+   "page": 1,
+   "anchor": "Cumulative effects",
+   "purpose": "InDesign placed PDF (MCIDs without a tree), 3 lines",
+   "paragraph": "Cumulative effects of changes in accounting policies",
+   "box": [
+    657.54,
+    212.66,
+    724.06,
+    237.16
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "Cumulative effects of ",
+     "baseline": 217.574,
+     "x": 657.542,
+     "pen_end": 720.069
+    },
+    {
+     "text": "changes in accounting ",
+     "baseline": 226.574,
+     "x": 657.542,
+     "pen_end": 724.061
+    },
+    {
+     "text": "policies",
+     "baseline": 235.574,
+     "x": 657.542,
+     "pen_end": 679.223
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "Cumulative effects",
+     "new": "Cumulative effects",
+     "after": null,
+     "expected_text": "Cumulative effects of changes in accounting policies"
+    },
+    {
+     "kind": "same",
+     "old": "changes in accounting",
+     "new": "changes of accounting",
+     "after": null,
+     "expected_text": "Cumulative effects of changes of accounting policies"
+    },
+    {
+     "kind": "shorten",
+     "old": "changes in accounting policies",
+     "new": "policy changes",
+     "after": null,
+     "expected_text": "Cumulative effects of policy changes"
+    },
+    {
+     "kind": "lengthen",
+     "old": "accounting policies",
+     "new": "accounting policies in effect",
+     "after": null,
+     "expected_text": "Cumulative effects of changes in accounting policies in effect"
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "accounting policies in effect",
+     "new": "accounting policies",
+     "after": "lengthen",
+     "expected_text": "Cumulative effects of changes in accounting policies"
+    }
+   ]
+  },
+  {
+   "id": "C12",
+   "document": "160F-2019",
+   "page": 1,
+   "anchor": "cette transmission ne peut",
+   "purpose": "Distiller (tagged TD without /Type), 1 line",
+   "paragraph": "cette transmission ne peut se faire que par voie électronique",
+   "box": [
+    66.32,
+    713.65,
+    251.45,
+    720.61
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "cette transmission ne peut se faire que par voie électronique",
+     "baseline": 718.911,
+     "x": 66.322,
+     "pen_end": 251.452
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "ne peut se faire",
+     "new": "ne peut se faire",
+     "after": null,
+     "expected_text": "cette transmission ne peut se faire que par voie électronique"
+    },
+    {
+     "kind": "same",
+     "old": "par voie",
+     "new": "sur voie",
+     "after": null,
+     "expected_text": "cette transmission ne peut se faire que sur voie électronique"
+    },
+    {
+     "kind": "shorten",
+     "old": "ne peut se faire que",
+     "new": "se fait uniquement",
+     "after": null,
+     "expected_text": "cette transmission se fait uniquement par voie électronique"
+    },
+    {
+     "kind": "lengthen",
+     "old": "voie électronique",
+     "new": "voie électronique uniquement",
+     "after": null,
+     "expected_text": "cette transmission ne peut se faire que par voie électronique uniquement"
+    },
+    {
+     "kind": "reedit:shorten",
+     "old": "se fait uniquement",
+     "new": "ne peut se faire que",
+     "after": "shorten",
+     "expected_text": "cette transmission ne peut se faire que par voie électronique"
+    }
+   ]
+  },
+  {
+   "id": "C13",
+   "document": "tracemonkey",
+   "page": 2,
+   "anchor": "Bytecodes",
+   "purpose": "TeX figure label in a Form XObject under reflected Tm and CTM",
+   "paragraph": "Bytecodes",
+   "box": [
+    403.82,
+    218.16,
+    427.95,
+    223.33
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "Bytecodes",
+     "baseline": 222.136,
+     "x": 403.817,
+     "pen_end": 427.955
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "Bytecodes",
+     "new": "Bytecodes",
+     "after": null,
+     "expected_text": "Bytecodes"
+    },
+    {
+     "kind": "shorten",
+     "old": "Bytecodes",
+     "new": "Bytecode",
+     "after": null,
+     "expected_text": "Bytecode"
+    },
+    {
+     "kind": "reedit:shorten",
+     "old": "Bytecode",
+     "new": "Bytecodes",
+     "after": "shorten",
+     "expected_text": "Bytecodes"
+    }
+   ]
+  },
+  {
+   "id": "C14",
+   "document": "canvas",
+   "page": 1,
+   "anchor": "HTML5 Canvas",
+   "purpose": "single-line Latin title",
+   "paragraph": "HTML5 Canvas Cheat Sheet v1.1",
+   "box": [
+    42.0,
+    56.93,
+    277.27,
+    73.37
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "HTML5 Canvas Cheat Sheet v1.1",
+     "baseline": 69.6,
+     "x": 42.0,
+     "pen_end": 277.272
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "Canvas Cheat Sheet",
+     "new": "Canvas Cheat Sheet",
+     "after": null,
+     "expected_text": "HTML5 Canvas Cheat Sheet v1.1"
+    },
+    {
+     "kind": "same",
+     "old": "v1.1",
+     "new": "v1.5",
+     "after": null,
+     "expected_text": "HTML5 Canvas Cheat Sheet v1.5"
+    },
+    {
+     "kind": "shorten",
+     "old": "HTML5 Canvas Cheat",
+     "new": "Canvas Cheat",
+     "after": null,
+     "expected_text": "Canvas Cheat Sheet v1.1"
+    },
+    {
+     "kind": "lengthen",
+     "old": "v1.1",
+     "new": "v1.1.5",
+     "after": null,
+     "expected_text": "HTML5 Canvas Cheat Sheet v1.1.5"
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "v1.1.5",
+     "new": "v1.1",
+     "after": "lengthen",
+     "expected_text": "HTML5 Canvas Cheat Sheet v1.1"
+    }
+   ]
+  },
+  {
+   "id": "C15",
+   "document": "lo_migration_ja",
+   "page": 1,
+   "anchor": "LibreOfficeは、",
+   "purpose": "LibreOffice, Japanese with Latin, 4 lines (second paragraph)",
+   "paragraph": "LibreOfficeは、ユーザーが個人であっても、組織であったとしても あらゆる種類の個人的文書作業のニーズをみたすようにデザインされています。このソフトウェアは数百万のPCにすでにインストールされており、中にはフランス政府、ヨーロッパ中のいくつかの地域、郡または市 -  例えばドイツのミュンヘン市など – またその他多数の団体、例えばデンマーク、コペンハーゲンの病院システムなどで利用されています。",
+   "box": [
+    56.8,
+    284.04,
+    538.33,
+    361.17
+   ],
+   "alignment": "start",
+   "lines": [
+    {
+     "text": "LibreOfficeは、ユーザーが個人であっても、組織であったとしても あらゆる種類の個人的文書作業のニー",
+     "baseline": 293.7,
+     "x": 67.3,
+     "pen_end": 536.504
+    },
+    {
+     "text": "ズをみたすようにデザインされています。このソフトウェアは数百万のPCにすでにインストールされており、中に",
+     "baseline": 315.9,
+     "x": 56.8,
+     "pen_end": 538.326
+    },
+    {
+     "text": "はフランス政府、ヨーロッパ中のいくつかの地域、郡または市 -  例えばドイツのミュンヘン市など – またその他",
+     "baseline": 338.1,
+     "x": 56.8,
+     "pen_end": 537.782
+    },
+    {
+     "text": "多数の団体、例えばデンマーク、コペンハーゲンの病院システムなどで利用されています。",
+     "baseline": 359.7,
+     "x": 56.8,
+     "pen_end": 448.817
+    }
+   ],
+   "edits": [
+    {
+     "kind": "identity",
+     "old": "あらゆる種類の",
+     "new": "あらゆる種類の",
+     "after": null,
+     "expected_text": "LibreOfficeは、ユーザーが個人であっても、組織であったとしても あらゆる種類の個人的文書作業のニーズをみたすようにデザインされています。このソフトウェアは数百万のPCにすでにインストールされており、中にはフランス政府、ヨーロッパ中のいくつかの地域、郡または市 -  例えばドイツのミュンヘン市など – またその他多数の団体、例えばデンマーク、コペンハーゲンの病院システムなどで利用されています。"
+    },
+    {
+     "kind": "same",
+     "old": "デンマーク、コペンハーゲン",
+     "new": "コペンハーゲン、デンマーク",
+     "after": null,
+     "expected_text": "LibreOfficeは、ユーザーが個人であっても、組織であったとしても あらゆる種類の個人的文書作業のニーズをみたすようにデザインされています。このソフトウェアは数百万のPCにすでにインストールされており、中にはフランス政府、ヨーロッパ中のいくつかの地域、郡または市 -  例えばドイツのミュンヘン市など – またその他多数の団体、例えばコペンハーゲン、デンマークの病院システムなどで利用されています。"
+    },
+    {
+     "kind": "shorten",
+     "old": "個人であっても、組織であったとしても",
+     "new": "個人であっても",
+     "after": null,
+     "expected_text": "LibreOfficeは、ユーザーが個人であっても あらゆる種類の個人的文書作業のニーズをみたすようにデザインされています。このソフトウェアは数百万のPCにすでにインストールされており、中にはフランス政府、ヨーロッパ中のいくつかの地域、郡または市 -  例えばドイツのミュンヘン市など – またその他多数の団体、例えばデンマーク、コペンハーゲンの病院システムなどで利用されています。"
+    },
+    {
+     "kind": "lengthen",
+     "old": "病院システムなど",
+     "new": "病院システムや政府など",
+     "after": null,
+     "expected_text": "LibreOfficeは、ユーザーが個人であっても、組織であったとしても あらゆる種類の個人的文書作業のニーズをみたすようにデザインされています。このソフトウェアは数百万のPCにすでにインストールされており、中にはフランス政府、ヨーロッパ中のいくつかの地域、郡または市 -  例えばドイツのミュンヘン市など – またその他多数の団体、例えばデンマーク、コペンハーゲンの病院システムや政府などで利用されています。"
+    },
+    {
+     "kind": "reedit:lengthen",
+     "old": "病院システムや政府など",
+     "new": "病院システムなど",
+     "after": "lengthen",
+     "expected_text": "LibreOfficeは、ユーザーが個人であっても、組織であったとしても あらゆる種類の個人的文書作業のニーズをみたすようにデザインされています。このソフトウェアは数百万のPCにすでにインストールされており、中にはフランス政府、ヨーロッパ中のいくつかの地域、郡または市 -  例えばドイツのミュンヘン市など – またその他多数の団体、例えばデンマーク、コペンハーゲンの病院システムなどで利用されています。"
+    }
+   ]
+  }
+ ]
+}
