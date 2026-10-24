@@ -200,8 +200,10 @@ class FontResource:
         descriptor = writer._add_object(dictionary(
             Type=NameObject("/FontDescriptor"), FontName=NameObject("/" + self.basefont),
             Flags=NumberObject(4), FontBBox=ArrayObject([n(x * scale) for x in (head.xMin, head.yMin, head.xMax, head.yMax)]),
-            ItalicAngle=n(self.font.font["post"].italicAngle), Ascent=n(self.font.ascender * 1000),
-            Descent=n(self.font.descender * 1000), CapHeight=n(getattr(self.font.font["OS/2"], "sCapHeight", head.yMax) * scale),
+            # A subset may omit OS/2 and post (LibreOffice): upright, cap height at the top.
+            ItalicAngle=n(self.font.font["post"].italicAngle if "post" in self.font.font else 0), Ascent=n(self.font.ascender * 1000),
+            Descent=n(self.font.descender * 1000),
+            CapHeight=n((getattr(self.font.font["OS/2"], "sCapHeight", head.yMax) if "OS/2" in self.font.font else head.yMax) * scale),
             StemV=NumberObject(80), FontFile2=writer._add_object(program.flate_encode())))
         mapping = b"\0\0" + b"".join(gid.to_bytes(2, "big") for gid, _ in self.cids)
         widths = ArrayObject([NumberObject(1), ArrayObject([n(self.font.nominal_width(gid) * scale) for gid, _ in self.cids])])

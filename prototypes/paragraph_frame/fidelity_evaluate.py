@@ -299,9 +299,22 @@ def edit(code, source, page, old, new, output, occurrence):
     return dict(outcome='saved', seconds=seconds, proposal=load(Path(output).with_suffix('.proposal.json')), save=load(Path(output).with_suffix('.save.json')))
 
 
+def reopen(code, output, page, new, paragraph):
+    """Continued editing from the saved PDF alone, by the B2 of ``code`` (tagged_evaluate.reopen_unique)."""
+    script = f'''
+import json,sys
+sys.path.insert(0,{str(code)!r})
+from prototypes.paragraph_frame.tagged_evaluate import reopen_unique
+print(json.dumps(reopen_unique({str(Path(output).resolve())!r},{page},{new!r},{paragraph!r})))
+'''
+    run = subprocess.run([sys.executable, '-c', script], capture_output=True, text=True, cwd=code)
+    lines = run.stdout.strip().splitlines()
+    return json.loads(lines[-1]) if run.returncode == 0 and lines else dict(ok=False, reason='reopen failed: ' + run.stderr.strip()[-200:])
+
+
 def phase_run(args):
     from prototypes.paragraph_frame.indesign_evaluate import audit
-    from prototypes.paragraph_frame.tagged_evaluate import reopen_unique, structure_audit, supplementary
+    from prototypes.paragraph_frame.tagged_evaluate import structure_audit, supplementary
     manifest = json.loads(MANIFEST.read_text())
     root = Path(args.root)
     root.mkdir(parents=True, exist_ok=True)
@@ -345,14 +358,14 @@ def phase_run(args):
                     grow = max(grow, rows[e['after']]['grow'])
                 region = [x0 - 3, y0 - 3, x1 + 3, y1 + 3 + max(0, grow) * pitch]
                 record.update(lines=[l['text'] for l in proposal['lines']], alignment=inferred.get('alignment'), frame=frame,
-                              audit=audit(start, output, case['page'], region, e['old'], e['new'], folder),
+                              audit=audit(start, output, case['page'], region, e['old'], e['new'], folder, occurrence=occurrence),
                               structure=structure_audit(start, output, case['page'], e['expected_text'], []),
                               supplementary=supplementary(start, output, case['page'], region, e['old'], e['new']),
                               grow=grow,
                               fidelity=fidelity(start, output, case['page'], [x0, y0, x1, y1], e['old'], e['new'],
                                                 case['paragraph'] if not e['after'] else rows[e['after']]['expected'], frame, max(0, grow) * pitch),
                               expected=e['expected_text'],
-                              continued_editing=reopen_unique(output, case['page'], e['new'], e['expected_text']),
+                              continued_editing=reopen(code, output, case['page'], e['new'], e['expected_text']),
                               save={k: save.get(k) for k in ('drawn_in', 'stored_conditions', 'followers_repainted', 'source_glyphs_removed',
                                                              'layout', 'kept_glyphs')})
                 if e['after']:

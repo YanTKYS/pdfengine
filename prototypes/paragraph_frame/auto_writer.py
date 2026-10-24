@@ -34,8 +34,14 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         moves=[{i:(0.,delta) for i in p.ids} for p in active[1:]]
     else:
         active=paragraphs[:1+len(moves)]
+    # Lines that local layout kept as drawn keep their operators too, so
+    # their glyphs, drawing order and extraction order stay the source's.
+    kept_ids,kept_scopes=kept_lines(c,active[0],lines)
+    # An edit that leaves every line as drawn (the same text) is redrawn at
+    # the source origins: there is no drawing site without removed text.
+    if not set(active[0].ids)-kept_ids-set(active[0].fixed):kept_ids,kept_scopes=set(),set()
     # Inline placed objects stay drawn as they are (semantics: fixed).
-    selected={i for p in active for i in p.ids if i not in set(p.fixed)}
+    selected={i for p in active for i in p.ids if i not in set(p.fixed) and i not in kept_ids}
     removed=[e for e in c.events if any(selected.intersection(ch.source_orders) for ch in e.chars)]
     # The edited text is rewritten in the program that draws it: the page or
     # one Form XObject invocation (copy-on-write, see form_write).
@@ -46,7 +52,8 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     # Re-emitted sequences lose their old BDC/EMC; they are written again
     # around their new glyphs (fixed objects and containers stay as drawn).
     for p in active:
-        for s in p.scopes:
+        for n,s in enumerate(p.scopes):
+            if p is active[0] and n in kept_scopes:continue
             if s['kind']!='fixed':edits.extend([(s['begin_byte_range'][0],s['begin_byte_range'][1],b''),(s['end_byte_range'][0],s['end_byte_range'][1],b'')])
     first=min(e.operator.start for e in removed)
     containers=active[0].containers
@@ -58,7 +65,8 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     # the text object right before the edited text. When the first edited
     # operator keeps glyphs drawn before the edit (and the last none after
     # it), the place after its text object comes first.
-    reemitted=[x for p in active for x in p.scopes if x['kind']!='fixed' and x['stream_xref']==stream and tuple(tuple(i) for i in x['invocation'])==invocation]
+    reemitted=[x for p in active for n,x in enumerate(p.scopes) if x['kind']!='fixed' and not (p is active[0] and n in kept_scopes)
+               and x['stream_xref']==stream and tuple(tuple(i) for i in x['invocation'])==invocation]
     safe=form_write.safe_boundaries(boundaries,first,containers,reemitted)
     kept=lambda e:[bool(selected.intersection(ch.source_orders)) for ch in e.chars]
     head,tail=kept(min(removed,key=lambda e:e.operator.start)),kept(max(removed,key=lambda e:e.operator.start))
@@ -120,7 +128,8 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         taken.add(name)
         runs=[font.shape(t['text']) for l in lines for t in l['tokens'] if t.get('font_key')==key]
         resource=font.resource(runs);new_fonts[name]=resource.build(writer);built[key]=(name,resource)
-    source,_=source_tokens(c);batches=[(paragraphs[0],[t for l in lines for t in l['tokens']])]
+    source,_=source_tokens(c);batches=[(paragraphs[0],[t for l in lines if not l.get('kept') or not kept_ids for t in l['tokens']])]
+    full_text=''.join(t['text'] for l in lines for t in l['tokens'] if not t.get('fixed'))
     for p,move in zip(active[1:],moves):
         placed=[]
         for i in p.ids:
@@ -150,7 +159,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         # Following paragraphs are repainted as a rigid translation of their
         # rendered glyph origins, one positioned glyph each; runs and exact
         # source coordinates apply to the edited paragraph.
-        runs=scope_runs(c,p,[t for t in tokens if not t.get('fixed')])
+        runs=scope_runs(c,p,[t for t in tokens if not t.get('fixed')],skip=kept_scopes if p is paragraphs[0] else ())
         for n,ts in runs:
             if n is not None:
                 s=p.scopes[n];a,b=s['begin_byte_range'];ops.append(data[a:b]+b'\n')
@@ -237,7 +246,8 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     # Replacement text of a paragraph element itself follows its new text.
     for p,tokens in batches:
         if p.parent is not None and '/ActualText' in c.reader.get_object(p.parent):
-            writer.get_object(lookup[p.parent])[NameObject('/ActualText')]=TextStringObject(''.join(t['text'] for t in tokens if not t.get('fixed')))
+            text=full_text if p is paragraphs[0] else ''.join(t['text'] for t in tokens if not t.get('fixed'))
+            writer.get_object(lookup[p.parent])[NameObject('/ActualText')]=TextStringObject(text)
             rewritten.add(p.parent)
 
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
@@ -248,7 +258,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     try:
         writer.write(draft)
         if spec.get('mode')=='flow':stored=store_flow(c,draft,writer,page,spec,selected,[len(ts) for _,ts in batches],approval)
-        else:stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval)
+        else:stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval,kept=kept_ids)
         writer.write(tmp)
         validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=rewritten)
         form_write.unchanged_elsewhere(c.source,tmp,spec['page'])
@@ -257,10 +267,31 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     finally:
         for path in (tmp,draft):
             if os.path.exists(path):os.unlink(path)
-    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,source_glyphs_removed=len(selected),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
+    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,source_glyphs_removed=len(selected),layout=spec.get('layout','column flow'),kept_glyphs=len(kept_ids),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
 
 
-def scope_runs(c,p,tokens):
+def kept_lines(c,paragraph,lines):
+    """Source glyph IDs of the lines local layout kept as drawn, and the
+    paragraph's marked-content sequences all of whose glyphs are on them.
+
+    Their operators stay. Nothing is kept when a re-emitted sequence would
+    hold kept and redrawn glyphs (it is written once), nor around an inline
+    placed object: the paragraph is then redrawn, kept lines at their
+    origins.
+    """
+    ids={t['source_id'] for l in lines if l.get('kept') for t in l['tokens'] if t.get('source_id') is not None}
+    if not ids or paragraph.fixed:return set(),set()
+    # Sequences that redrawn text (new glyphs included) is written into.
+    drawn={t.get('scope') for l in lines if not l.get('kept') for t in l['tokens']}
+    mine=set(paragraph.ids);scopes=set()
+    for n,s in enumerate(paragraph.scopes):
+        hits=semantics._hits(c,s)&mine
+        if hits and hits<=ids and n not in drawn:scopes.add(n)
+        elif hits&ids:return set(),set()
+    return ids,scopes
+
+
+def scope_runs(c,p,tokens,skip=()):
     """``(scope index or None, tokens)`` runs in reading order, with emptied MCIDs kept.
 
     Each re-emitted sequence must be one contiguous run (an MCID is written
@@ -283,7 +314,7 @@ def scope_runs(c,p,tokens):
             if [t.get('source_id') for t in ts]!=old:raise Refused('replacement-text marked content would change')
     present=set(seen)
     for n,s in enumerate(p.scopes):
-        if s['kind']!='mcid' or n in present:continue
+        if s['kind']!='mcid' or n in present or n in skip:continue
         # After the run of the preceding sequence in source order, else first.
         before=[k for k,(m,_) in enumerate(runs) if m is not None and m<n]
         runs.insert(before[-1]+1 if before else 0,(n,[]))
@@ -329,7 +360,8 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None):
         for g in added:
             if not g['unicode'].strip():continue
             box=pymupdf.Rect(g['bbox'])
-            if not any(frame.contains(box) for frame in frames):raise Refused('capacity: staged glyph bounds outside approved inferred frame')
+            if not any(frame.contains(box) for frame in frames):
+                raise Refused(f"capacity: staged glyph bounds outside approved inferred frame ({g['unicode']!r} at {[round(v,1) for v in box]})")
             for o in evidence['observed']['obstacles']:
                 # Target/follower glyphs were excluded at detection. A container
                 # (background behind every original line) bounds the frame instead.
@@ -373,7 +405,7 @@ def _poppler(path,page):
         with Image.open(folder+'/page.png') as image:return image.convert('RGB')
 
 
-def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active,approval):
+def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active,approval,kept=()):
     """Record the approved conditions of the edited paragraph by its drawn lines.
 
     The lines are observed in the staged PDF itself, with the same analysis the
@@ -390,13 +422,13 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
         records+=[conditions.shifted(state['records'][n],delta) for n in moved]
     check=ContentPage(draft,spec['page'])
     try:
-        # Glyphs of an inline placed object stay where they were drawn; they
-        # are lines of the edited paragraph too.
-        fixed=set(active[0].fixed);kept=Counter(glyph_key(c.actual[i]) for i in fixed)
-        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected and i not in fixed);added=[];placed=[]
+        # Glyphs of an inline placed object and of lines kept as drawn stay
+        # where they were; they are lines of the edited paragraph too.
+        fixed=set(active[0].fixed);stay=fixed|set(kept);remaining=Counter(glyph_key(c.actual[i]) for i in stay)
+        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected and i not in stay);added=[];placed=[]
         for n,g in enumerate(check.actual):
             key=glyph_key(g)
-            if kept[key]:kept[key]-=1;placed.append(n)
+            if remaining[key]:remaining[key]-=1;placed.append(n)
             elif foreign[key]:foreign[key]-=1
             else:added.append(n)
         target=set(added[:target_count-len(fixed)])|set(placed)

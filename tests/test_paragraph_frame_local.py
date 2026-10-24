@@ -1,0 +1,72 @@
+"""Local layout: an edit keeps what it does not change where it was drawn (auto_local)."""
+import pymupdf
+from pypdf import PdfReader
+from test_paragraph_frame_continuity import page_with
+from prototypes.paragraph_frame.auto import approve, propose, save
+
+LINES = [(40, 60, '本年度の補助事業について、募集を'), (40, 76, '行います。申請書は窓口で配布し'), (40, 92, 'ます。'), (40, 130, '後続段落です。')]
+
+
+def edit(source, old, new, out):
+    proposal = propose(str(source), 1, old, new)
+    save(str(source), approve(str(source), proposal, acknowledge_inference=True), str(out))
+    return proposal
+
+
+def origins(path):
+    with pymupdf.open(path) as d:
+        return [(c['c'], round(c['origin'][0], 3), round(c['origin'][1], 3)) for b in d[0].get_text('rawdict')['blocks']
+                for l in b.get('lines', []) for s in l['spans'] for c in s['chars'] if c['c'].strip()]
+
+
+def streams(path):
+    page = PdfReader(str(path)).pages[0]
+    contents = page['/Contents']
+    refs = contents if isinstance(contents, list) else [contents]
+    return [ref.get_object().get_data() for ref in refs]
+
+
+def test_same_text_keeps_every_glyph_where_it_was(tmp_path):
+    source, _ = page_with(tmp_path, LINES, height=300)
+    out = tmp_path / 'out.pdf'
+    proposal = edit(source, '窓口で', '窓口で', out)
+    assert proposal['layout'] == 'local' and all(l['kept'] for l in proposal['lines'])
+    assert origins(out) == origins(source)
+
+
+def test_shortening_keeps_the_lines_it_does_not_change_as_drawn(tmp_path):
+    source, _ = page_with(tmp_path, LINES, height=300)
+    out = tmp_path / 'out.pdf'
+    proposal = edit(source, '申請書は', '', out)
+    # Line 1 is untouched: same glyphs, origins and operators.
+    assert proposal['lines'][0]['kept'] and not proposal['lines'][1]['kept']
+    assert streams(source)[0].strip() in b''.join(streams(out))
+    first = [g for g in origins(source) if g[2] == 60.0]
+    assert [g for g in origins(out) if g[2] == 60.0] == first
+    # The shortened line takes up the rest of the paragraph (a gap wider than
+    # the paragraph's own ragged lines); the edited text reads in order.
+    assert [l['text'] for l in proposal['lines']] == ['本年度の補助事業について、募集を', '行います。窓口で配布します。']
+
+
+def test_lengthening_stops_at_the_author_break(tmp_path):
+    # Line 2 ends short although the next line's first character would fit:
+    # the author broke the line there; reflow never crosses it.
+    lines = [(40, 60, '本年度の補助事業について、募集を'), (40, 76, '行います。'), (40, 92, '申請書は窓口で配布します。'), (40, 130, '後続段落です。')]
+    source, _ = page_with(tmp_path, lines, height=300)
+    out = tmp_path / 'out.pdf'
+    proposal = edit(source, '募集を', '募集を必ず', out)
+    assert [l['text'] for l in proposal['lines']] == ['本年度の補助事業について、募集を', '必ず行います。', '申請書は窓口で配布します。']
+    assert [l['kept'] for l in proposal['lines']] == [True, False, True]
+    kept = lambda path: [g for g in origins(path) if g[2] in (60.0, 92.0)]
+    assert kept(out) == kept(source)
+    # The third line keeps its operators too.
+    assert streams(source)[2].strip() in b''.join(streams(out))
+
+
+def test_a_saved_edit_is_stable_when_edited_again(tmp_path):
+    source, _ = page_with(tmp_path, LINES, height=300)
+    first, again = tmp_path / 'first.pdf', tmp_path / 'again.pdf'
+    edit(source, '申請書は', '', first)
+    proposal = edit(first, '窓口で', '窓口で', again)
+    assert proposal['evidence']['conditions']['status'] == 'applied'
+    assert origins(again) == origins(first)
