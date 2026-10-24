@@ -200,6 +200,53 @@ def _marker(c, row):
     return first if first and (unicodedata.category(first) == 'So' or first in '•・‣⁃◦※') else None
 
 
+def cell_right(c, rows, right, own):
+    """The right edge a table cell gives its text, or None.
+
+    The cell is bounded by drawn vertical rules (lines, thin rectangles or the
+    sides of a rectangle) that span every line of the paragraph: the nearest
+    one left of the text within 3 em, and the nearest one right of it. The
+    text's padding from the left rule is kept from the right rule. None when
+    no such pair exists, when it gives no more width, or when other text lies
+    in the space it adds.
+    """
+    top = min(r['bbox'][1] for r in rows)
+    bottom = max(r['bbox'][3] for r in rows)
+    left = min(r['x'] for r in rows)
+    size = max(r['size'] for r in rows)
+    segments = []
+    try:
+        drawings = c.page.get_drawings()
+    except Exception:
+        return None
+    for d in drawings:
+        for item in d['items']:
+            if item[0] == 'l':
+                a, b = item[1], item[2]
+                if abs(a.x - b.x) < .5:
+                    segments.append((a.x, min(a.y, b.y), max(a.y, b.y)))
+            elif item[0] == 're':
+                r = item[1]
+                if r.width < 1.5:
+                    segments.append(((r.x0 + r.x1) / 2, r.y0, r.y1))
+                else:
+                    segments.extend([(r.x0, r.y0, r.y1), (r.x1, r.y0, r.y1)])
+    spanning = [x for x, y0, y1 in segments if y0 <= top + 1 and y1 >= bottom - 1]
+    lefts = [x for x in spanning if left - 3 * size <= x <= left]
+    rights = [x for x in spanning if x >= right]
+    if not lefts or not rights:
+        return None
+    rule_left, rule_right = max(lefts), min(rights)
+    edge = rule_right - max(.5, left - rule_left)
+    if edge <= right + .05:
+        return None
+    band = pymupdf.Rect(right, top, edge, bottom)
+    for i, g in enumerate(c.actual):
+        if i not in own and g['unicode'].strip() and band.intersects(pymupdf.Rect(g['bbox'])):
+            return None
+    return edge
+
+
 def source_rows(c, rows):
     """The drawn lines of a paragraph for local layout (auto_local).
 
@@ -604,6 +651,10 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         deltas=[b['baseline']-a['baseline'] for g in allgroups for a,b in zip(g,g[1:])]
         leading=median(deltas) if deltas else min([b['baseline']-a['baseline'] for a,b in zip(allrows,allrows[1:])] or [size*1.5])
         right=max(r['pen_end'] for r in allrows)
+        # A table cell bounds its text by drawn rules: the cell's right rule,
+        # less the text's padding from the left rule, is the line width.
+        cell=cell_right(c,allrows,right,{i for r in allrows for i in r['glyph_ids']})
+        if cell is not None:right=cell
         top=min(min(r['top'] for r in selected)-.5,selected[0]['baseline']-max(r['size'] for r in selected)-.5)
         ids={i for r in allrows for i in r['glyph_ids']}; last=max(r['bottom'] for r in allrows)
         obstacles=[dict(o) for o in paint]
@@ -619,7 +670,7 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         obstacles.extend(dict(kind='foreign-text',bounds=list(g['bbox'])) for i,g in enumerate(c.actual) if i not in ids and g['unicode'].strip())
         basis='median within-paragraph observed gaps' if deltas else 'peer paragraph gap' if len(allrows)>1 else 'unobserved: 1.5 em default'
         provenance=dict(left='observed: minimum continuation x' if len(selected)>1 else 'inferred: nearby same-size continuation edge' if nearby else 'observed: first-line x',
-                        right='inferred: maximum occupied pen extent',first_x='observed: first line x',line_height=basis,
+                        right='observed: table-cell rules (right rule less the left padding)' if cell is not None else 'inferred: maximum occupied pen extent',first_x='observed: first line x',line_height=basis,
                         bottom='inferred: next protected paint, annotation or page edge')
         state=dict(status=record_status if not records else 'no record for this paragraph',records=records,target=None,followers=follower_records,applied=False,stale=[])
         n=record_of(selected)

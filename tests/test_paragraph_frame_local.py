@@ -70,3 +70,21 @@ def test_a_saved_edit_is_stable_when_edited_again(tmp_path):
     proposal = edit(first, '窓口で', '窓口で', again)
     assert proposal['evidence']['conditions']['status'] == 'applied'
     assert origins(again) == origins(first)
+
+
+def test_a_table_cell_gives_its_text_the_width_inside_its_rules(tmp_path):
+    # One line of text in a cell drawn by rules, 4 pt from the left rule: it
+    # may grow to 4 pt before the right rule, not only to its own end (where
+    # it would wrap).
+    import pytest
+    lines = [(44, 60, '申請書は窓口で配布します。'), (44, 130, '後続段落です。')]
+
+    def cell(p):
+        p.draw_rect(pymupdf.Rect(40, 48, 260, 66), color=(0, 0, 0), width=.5)
+    source, _ = page_with(tmp_path, lines, height=300, before=cell)
+    plain, _ = page_with(tmp_path, lines, height=300, name='plain.pdf')
+    wrapped = edit(plain, '配布します。', '配布しています。', tmp_path / 'plain-out.pdf')
+    assert len(wrapped['lines']) == 2
+    proposal = edit(source, '配布します。', '配布しています。', tmp_path / 'out.pdf')
+    assert proposal['evidence']['inferred']['right'] == pytest.approx(256, abs=.3)
+    assert [l['text'] for l in proposal['lines']] == ['申請書は窓口で配布しています。']
