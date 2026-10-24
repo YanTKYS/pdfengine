@@ -119,3 +119,18 @@ def test_a_cell_width_stops_at_the_clip_of_its_text(tmp_path):
     proposal = edit(clipped, '配布します。', '配布しています。', tmp_path / 'out.pdf')
     assert proposal['evidence']['inferred']['right'] == pytest.approx(199.5, abs=.3)
     assert [l['text'] for l in proposal['lines']] == ['申請書は窓口で配布していま', 'す。']
+
+
+def test_undoing_an_edit_across_a_line_break_restores_the_lines(tmp_path):
+    # 'specific page or position' wraps 'position' to the next line; undoing it
+    # aligns the 'p' of 'page' with the 'p' of 'position'. The old line start
+    # before 'osition' is no longer a break: the word is not split there.
+    lines = [(40, 60, 'There are two types of links in a'), (40, 76, 'document: a link to a specific position'),
+             (40, 92, 'in the same document, and a link to an'), (40, 108, 'external document or a website.'),
+             (40, 200, 'Following paragraph.')]
+    source, _ = page_with(tmp_path, lines, height=300)
+    first, again = tmp_path / 'first.pdf', tmp_path / 'again.pdf'
+    edit(source, 'specific position', 'specific page or position', first)
+    proposal = edit(first, 'specific page or position', 'specific position', again)
+    assert [l['text'].strip() for l in proposal['lines']] == [t for _, _, t in lines[:4]]
+    assert origins(again) == origins(source)

@@ -91,11 +91,18 @@ def local_layout(tokens, spec):
     text = ''.join(t['text'] for t in tokens)
     breaks = set(line_break_boundaries(text))
     breaks.add(len(tokens))
-    # A source line end is a legal break where it was one.
+    # A source line end is a legal break where it was one, while it is intact:
+    # the line's first glyph still follows the previous line's last glyph (an
+    # edit across it may have joined a word: 'p|osition').
     starts = {}
     for k in range(1, n):
         j = next((m for m, t in enumerate(tokens) if home[m] >= k), None)
-        if j is not None and home[j] == k:
+        if j is None or home[j] != k or tokens[j].get('source_id') != rows[k]['ids'][0]:
+            continue
+        before = tokens[j - 1] if j else None
+        if before is not None and before.get('mode') == 'implicit-line-join':
+            before = tokens[j - 2] if j > 1 else None
+        if before is not None and before.get('source_id') == rows[k - 1]['ids'][-1]:
             starts[k] = j
             breaks.add(j)
     extra_x = sorted(r['x'] for r in rows[1:])[(n - 1) // 2] if n > 1 else spec['left']
@@ -109,6 +116,22 @@ def local_layout(tokens, spec):
     def after(k):
         """The first token of a source line after ``k`` (where source line ``k`` ended)."""
         return next((m for m, h in enumerate(home) if h > k), len(tokens))
+
+    # A justified line that keeps its source break ends where the source line
+    # ended (its last visible glyph, if retained): a writer's justified lines
+    # end a little apart, not all at the widest one.
+    retained = {t['source_id']: t for t, c in zip(tokens, changed) if t.get('source_id') is not None and t.get('origin') is not None}
+
+    def row_end(k):
+        if k >= n or spec.get('align') not in ('justify', 'justify-cjk'):
+            return None
+        ids = rows[k]['ids']
+        ink = [m for m, i in enumerate(ids) if i in retained and retained[i]['text'].strip()]
+        # Its last visible glyph and the spaces after it are all still there.
+        if not ink or any(i not in retained or retained[i]['text'].strip() for i in ids[ink[-1] + 1:]):
+            return None
+        t = retained[ids[ink[-1]]]
+        return t['origin'][0] + t.get('nominal_advance', t['advance'])
 
     def source_line(k, a, b):
         """Tokens a..b are exactly source line k."""
@@ -148,14 +171,16 @@ def local_layout(tokens, spec):
         source_end = after(k) if k < n else None
         choice = None
         if source_end is not None and source_end in allowed and source_end != greedy:
-            candidate = _line(tokens, text, cursor, source_end, x0, baseline(k), changed, home, k, rows, spec, last=False)
+            candidate = _line(tokens, text, cursor, source_end, x0, baseline(k), changed, home, k, rows, spec, last=False,
+                              target=row_end(k))
             if _keeps_shape(candidate, spec, rows[k], ragged):
                 choice = candidate
         if choice is None:
             # The longest legal line whose placed glyphs stay within the frame
             # (a justified line may not give back enough stretch).
             for e in sorted(allowed, reverse=True):
-                choice = _line(tokens, text, cursor, e, x0, baseline(k), changed, home, k, rows, spec, last=e >= len(tokens))
+                choice = _line(tokens, text, cursor, e, x0, baseline(k), changed, home, k, rows, spec, last=e >= len(tokens),
+                               target=row_end(k) if e == source_end else None)
                 if _end(choice) <= spec['right'] + .05:
                     break
         end = choice['end']
@@ -183,14 +208,15 @@ def local_layout(tokens, spec):
     return lines
 
 
-def _line(tokens, text, a, b, x0, y, changed, home, k, rows, spec, last):
+def _line(tokens, text, a, b, x0, y, changed, home, k, rows, spec, last, target=None):
     """One placed line (tokens a..b): positions, then the alignment of the
-    paragraph applied to the glyphs after the first re-placed one."""
+    paragraph applied to the glyphs after the first re-placed one. A justified
+    line is made flush with ``target`` (its source line's end) when given."""
     placed = _place(tokens, a, b, x0, y, changed, home, k, rows)
     justified = False
     moved = any(p.get('moved_from_prefix') for p in placed)
     if moved and not last and spec.get('align') in ('justify', 'justify-cjk') and not (k < len(rows) and rows[k]['hard']):
-        justified = _justify(placed, spec['right'], cjk=spec['align'] == 'justify-cjk')
+        justified = _justify(placed, spec['right'] if target is None else target, cjk=spec['align'] == 'justify-cjk')
     elif moved:
         squeeze = _squeezed(placed, spec['right'] - x0)
         if squeeze:
@@ -281,9 +307,12 @@ def _shift(placed, extra):
 
 def _justify(placed, right, cjk=False):
     """Make the line flush with ``right`` by spreading the slack over the
-    glyphs after the first re-placed one: word spaces (Latin, at most a
-    quarter em extra each) or every glyph gap (CJK, at most 0.05 em each).
-    Glyphs before it keep their origins."""
+    glyphs after the first re-placed one: word spaces (Latin) or every glyph
+    gap (CJK, at most 0.05 em each). Glyphs before it keep their origins.
+    Latin spaces after the edit go back to their natural width and share the
+    slack evenly, as the writer justified them (an edit and its undo give the
+    same spaces); each may stretch as far as the source stretched its spaces
+    plus a quarter em."""
     first = next((n for n, p in enumerate(placed) if p.get('moved_from_prefix')), None)
     last = max((n for n, p in enumerate(placed) if p['text'].strip()), default=None)
     if first is None or last is None or last <= first and not cjk:
@@ -300,17 +329,16 @@ def _justify(placed, right, cjk=False):
             return False
         _shift(placed, {n: slack / len(gaps) for n in gaps})
         return True
-    if slack < 0:
-        # Overflow: give back stretch the source put into the spaces after the edit.
-        room = {n: placed[n].get('squeezable', 0.) for n in gaps if placed[n].get('squeezable')}
-        if sum(room.values()) + slack < -.01:
-            return False
-        ratio = -slack / sum(room.values())
-        _shift(placed, {n: -v * ratio for n, v in room.items()})
-        return True
     if not gaps:
         return False
-    if slack / len(gaps) > (CJK_GAP if cjk else STRETCH) * size:
+    if cjk:
+        if slack / len(gaps) > CJK_GAP * size:
+            return False
+        _shift(placed, {n: slack / len(gaps) for n in gaps})
+        return True
+    stretch = {n: placed[n].get('squeezable', 0.) for n in gaps}
+    natural = slack + sum(stretch.values())
+    if natural < -.01 or natural / len(gaps) > max(stretch.values()) + STRETCH * size:
         return False
-    _shift(placed, {n: slack / len(gaps) for n in gaps})
+    _shift(placed, {n: natural / len(gaps) - stretch[n] for n in gaps})
     return True
