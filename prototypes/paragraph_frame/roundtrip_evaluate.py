@@ -327,13 +327,24 @@ def summary(results):
     return dict(s)
 
 
+def compact(seq):
+    """A cycle or path as committed: per step its outcome, audits and comparisons
+    (the drawn lines, frame and timings stay in the run's own results.json)."""
+    step = lambda r: {k: (v[-300:] if k == 'reason' else v.get('ok') if k == 'continued_editing' else v) for k, v in r.items()
+                      if k not in ('lines', 'frame', 'seconds', 'save', 'occurrence')}
+    if isinstance(seq, list):
+        return [step(r) for r in seq]
+    return {k: [step(r) for r in v] if k == 'steps' else v for k, v in seq.items()}
+
+
 def phase_collect(args):
     labels = dict(x.split('=', 1) for x in args.roots)
     results = {label: json.loads((Path(root) / 'results.json').read_text()) for label, root in labels.items()}
     out = dict(schema='paragraph-frame-roundtrip-results-1', manifest_sha256=sha(MANIFEST),
                tests=json.loads(Path(args.tests_json).read_text()) if args.tests_json else None,
                regression=json.loads(Path(args.regression_json).read_text()) if args.regression_json else None,
-               summary={label: summary(r) for label, r in results.items()}, results=results)
+               summary={label: summary(r) for label, r in results.items()},
+               results={label: {case: {name: compact(seq) for name, seq in rows.items()} for case, rows in r.items()} for label, r in results.items()})
     RESULTS.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
     for label, s in out['summary'].items():
         print(label, json.dumps(s, ensure_ascii=False))
