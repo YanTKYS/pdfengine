@@ -56,7 +56,12 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
         # it was drawn (auto_local, observed advances); the paragraph is wrapped
         # again only where local layout does not apply.
         local=spec.get('mode')!='flow'
-        tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=spec['align']=='justify' and not local)
+        # The paragraph's recorded layout (auto_restore), when its stored record applies.
+        recorded=spec.get('recorded_layout')
+        recorded=recorded if recorded and restore.valid(recorded,c.page.rect.width,c.page.rect.height) else None
+        expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):]
+        prefs=restore.preferences(expected,recorded) if recorded and local else None
+        tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=spec['align']=='justify' and not local,recorded=prefs)
         # Alignment is an approved condition: a stored record supplies it after
         # the multi-line evidence has been edited away.
         spec['values'].update(align=spec['align'])
@@ -73,13 +78,12 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
                 spec['hyphens']=list(paragraphs[0].hyphens)
                 # The layout the paragraph had when first approved, carried by its
                 # stored record; else the paragraph as drawn now (auto_restore).
-                recorded=spec.get('recorded_layout')
-                spec['original']=recorded if recorded and restore.valid(recorded,c.page.rect.width,c.page.rect.height) else restore.snapshot(c,paragraphs[0],spec['source_rows'],spec.get('below'))
+                spec['original']=recorded or restore.snapshot(c,paragraphs[0],spec['source_rows'],spec.get('below'))
                 lines=local_layout(tokens,spec);spec['layout']='local'
             except LocalUnavailable as exc:
                 spec['layout']='paragraph ('+str(exc)+')'
                 if spec['align']=='justify':
-                    tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=True)
+                    tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=True,recorded=prefs)
                 lines=layout(tokens,spec)
             bottom=spec.get('column_bottom');delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
             deepest=max([lines[-1]['baseline']]+[p.baselines[-1]+delta for p in paragraphs[1:] if delta>0])

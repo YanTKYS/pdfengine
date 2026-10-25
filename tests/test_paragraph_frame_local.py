@@ -177,9 +177,10 @@ def test_the_same_text_on_the_edge_of_its_clip_is_not_refused(tmp_path):
     assert origins(out) == origins(clipped)
 
 
-def kerned(tmp_path, lines, name='kerned.pdf', every=3, adjust=-40):
+def kerned(tmp_path, lines, name='kerned.pdf', every=3, adjust=-40, spacing=0):
     """``page_with`` lines drawn with TJ kerning: every ``every``-th glyph is set
-    ``adjust`` thousandths of an em closer, so advances differ from nominal widths."""
+    ``adjust`` thousandths of an em closer, so advances differ from nominal widths;
+    ``spacing``: character spacing (Tc) of every line."""
     import re
     plain, _ = page_with(tmp_path, lines, height=300)
     out = tmp_path / name
@@ -189,7 +190,8 @@ def kerned(tmp_path, lines, name='kerned.pdf', every=3, adjust=-40):
             parts = [b'<' + c + b'>' + (b' %d ' % adjust if (n + 1) % every == 0 and n + 1 < len(codes) else b'') for n, c in enumerate(codes)]
             return b'[' + b''.join(parts) + b']TJ'
         for xref in d[0].get_contents():
-            d.update_stream(xref, re.sub(rb'\[<([0-9a-f]+)>\]TJ', kern, d.xref_stream(xref)))
+            data = re.sub(rb'\[<([0-9a-f]+)>\]TJ', kern, d.xref_stream(xref))
+            d.update_stream(xref, data.replace(b'BT\n', b'BT\n%g Tc\n' % spacing) if spacing else data)
         d.save(out)
     return out
 
@@ -247,11 +249,12 @@ def test_undoing_a_wrap_does_not_pull_up_a_paragraph_that_did_not_follow(tmp_pat
 
 def test_a_recorded_layout_is_used_only_when_well_formed():
     from prototypes.paragraph_frame.auto_restore import follower_shift, valid
-    layout = dict(text='ab c', glyphs=[['a', 10., 50., 5., 3, '/F1'], ['b', 15., 50., None, 4, '/F1'], None, ['c', 10., 66., None, 5, '/F1']],
+    layout = dict(text='ab c', glyphs=[['a', 10., 50., 5., 3, '/F1', '61'], ['b', 15., 50., None, 4, '/F1', '62'], None, ['c', 10., 66., None, 5, '/F1', '63']],
                   rows=[[0, 2, 50., 10.], [3, 4, 66., 10.]], below=dict(baseline=100., follower=False))
     assert valid(layout, 300, 300)
     for broken in (dict(layout, text='abc'), dict(layout, rows=[[0, 3, 50., 10.]]), dict(layout, rows=[[0, 2, 400., 10.]]),
-                   dict(layout, glyphs=[['x', 10., 50., 5., 3, '/F1']] + layout['glyphs'][1:]), dict(layout, below=dict(baseline='x', follower=False))):
+                   dict(layout, glyphs=[['x', 10., 50., 5., 3, '/F1', '78']] + layout['glyphs'][1:]),
+                   dict(layout, glyphs=[['a', 10., 50., 5., 3, '/F1', 'zz']] + layout['glyphs'][1:]), dict(layout, below=dict(baseline='x', follower=False))):
         assert not valid(broken, 300, 300)
     # A block that was no follower is not pulled above where it was; a
     # follower keeps its gap; growing moves both.
@@ -259,3 +262,19 @@ def test_a_recorded_layout_is_used_only_when_well_formed():
     assert follower_shift(layout, -16., 110.) == -10.
     assert follower_shift(dict(layout, below=dict(baseline=100., follower=True)), -16., 100.) == -16.
     assert follower_shift(layout, 16., 100.) == 16.
+
+
+def test_text_with_character_spacing_reads_the_same_after_it_is_redrawn(tmp_path):
+    # The source sets its lines with character spacing (Tc). A redrawn line
+    # keeps it (the pen positions are the same either way): an edit applied
+    # again after its undo draws exactly what it drew the first time.
+    lines = [(40, 60, 'There are two types of links in a'), (40, 76, 'document: a link to a specific position'),
+             (40, 92, 'in the same document, and a link to an'), (40, 108, 'external document or a website.'),
+             (40, 200, 'Following paragraph.')]
+    source = kerned(tmp_path, lines, every=1000, spacing=-.4)
+    a, b, c = tmp_path / 'a.pdf', tmp_path / 'b.pdf', tmp_path / 'c.pdf'
+    edit(source, 'specific position', 'specific page or position', a)
+    edit(a, 'specific page or position', 'specific position', b)
+    edit(b, 'specific position', 'specific page or position', c)
+    assert origins(b) == origins(source)
+    assert origins(c) == origins(a)

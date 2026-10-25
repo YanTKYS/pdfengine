@@ -10,8 +10,9 @@ paragraph as it was drawn then, with its approved conditions in the page
 
 * ``text``: the paragraph's logical text (implicit line-join spaces included);
 * ``glyphs``: per character of ``text``, ``[unicode, x, y, advance, gid,
-  font resource]`` of its drawn glyph (advance: pen step to the next glyph
-  of the line, or null at a line end), or null for an implicit join;
+  font resource, code]`` of its drawn glyph (advance: pen step to the next
+  glyph of the line, or null at a line end; code: the character code, hex),
+  or null for an implicit join;
 * ``rows``: per drawn line, ``[start, end, baseline, x]``, the character
   range of its glyphs;
 * ``below``: the first baseline of the text block below the paragraph in its
@@ -26,16 +27,17 @@ to it as to any other position.
 import difflib
 import math
 
-FIELDS = 6
+FIELDS = 7
 
 
 def snapshot(c, paragraph, rows, below=None):
     """The drawn layout of ``paragraph`` (rows: auto_detect.source_rows), or None."""
-    fonts = {}
+    fonts, codes = {}, {}
     for e in c.events:
         for ch in e.chars:
             for i in ch.source_orders:
                 fonts[i] = e.state.font.name if e.state.font else None
+                codes[i] = ch.code.hex()
     ids = iter(paragraph.ids)
     glyphs, index = [], {}
     try:
@@ -48,7 +50,7 @@ def snapshot(c, paragraph, rows, below=None):
             if g['unicode'] != char:
                 return None
             index[i] = n
-            glyphs.append([char, round(g['origin'][0], 5), round(g['origin'][1], 5), None, g['gid'], fonts.get(i)])
+            glyphs.append([char, round(g['origin'][0], 5), round(g['origin'][1], 5), None, g['gid'], fonts.get(i), codes.get(i)])
     except StopIteration:
         return None
     out_rows = []
@@ -73,7 +75,8 @@ def valid(layout, width, height):
             if g is None:
                 continue
             if (len(g) != FIELDS or g[0] != char or not finite(g[1], -1, width + 1) or not finite(g[2], -1, height + 1)
-                    or not (g[3] is None or finite(g[3], -width, width)) or type(g[4]) is not int or not (g[5] is None or isinstance(g[5], str))):
+                    or not (g[3] is None or finite(g[3], -width, width)) or type(g[4]) is not int or not (g[5] is None or isinstance(g[5], str))
+                    or not (g[6] is None or isinstance(g[6], str) and len(g[6]) % 2 == 0 and all(ch in '0123456789abcdef' for ch in g[6]))):
                 return False
         end = 0
         for r in rows:
@@ -116,6 +119,16 @@ def same_glyph(t, g):
     font_key = t.get('font_key') or ''
     return (g is not None and t['text'] == g[0] and t.get('gid') == g[4] and (not font_key or font_key.startswith('source:'))
             and t.get('font_name') == g[5] and t.get('mode') != 'implicit-line-join')
+
+
+def preferences(text, layout):
+    """New-text index -> recorded glyph, for characters of ``text`` in an
+    unchanged run of the recorded text: a re-inserted character is drawn
+    with the code it had there (auto_style.build) when its resource still
+    decodes that code to the same character."""
+    matcher = difflib.SequenceMatcher(None, text, layout['text'], autojunk=False)
+    return {i + k: layout['glyphs'][j + k] for i, j, n in matcher.get_matching_blocks() for k in range(n)
+            if layout['glyphs'][j + k] is not None}
 
 
 def align(tokens, layout):
