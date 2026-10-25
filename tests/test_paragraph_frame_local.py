@@ -175,3 +175,87 @@ def test_the_same_text_on_the_edge_of_its_clip_is_not_refused(tmp_path):
     proposal = edit(clipped, '窓口で', '窓口で', out)
     assert proposal['evidence']['inferred']['frame'][3] < bottom
     assert origins(out) == origins(clipped)
+
+
+def kerned(tmp_path, lines, name='kerned.pdf', every=3, adjust=-40):
+    """``page_with`` lines drawn with TJ kerning: every ``every``-th glyph is set
+    ``adjust`` thousandths of an em closer, so advances differ from nominal widths."""
+    import re
+    plain, _ = page_with(tmp_path, lines, height=300)
+    out = tmp_path / name
+    with pymupdf.open(plain) as d:
+        def kern(m):
+            codes = [m.group(1)[i:i + 4] for i in range(0, len(m.group(1)), 4)]
+            parts = [b'<' + c + b'>' + (b' %d ' % adjust if (n + 1) % every == 0 and n + 1 < len(codes) else b'') for n, c in enumerate(codes)]
+            return b'[' + b''.join(parts) + b']TJ'
+        for xref in d[0].get_contents():
+            d.update_stream(xref, re.sub(rb'\[<([0-9a-f]+)>\]TJ', kern, d.xref_stream(xref)))
+        d.save(out)
+    return out
+
+
+def page_text(path):
+    with pymupdf.open(path) as d:
+        return d[0].get_text()
+
+
+def test_undoing_an_edit_restores_the_recorded_layout(tmp_path):
+    # Kerned source lines: re-inserted glyphs at their nominal widths would not
+    # land where they were. The paragraph's layout recorded at the first save
+    # brings every glyph, line break and the page text back (issue #93).
+    lines = [(40, 60, 'There are two types of links in a'), (40, 76, 'document: a link to a specific position'),
+             (40, 92, 'in the same document, and a link to an'), (40, 108, 'external document or a website.'),
+             (40, 200, 'Following paragraph.')]
+    source = kerned(tmp_path, lines)
+    first, again = tmp_path / 'first.pdf', tmp_path / 'again.pdf'
+    edit(source, 'specific position', 'specific page or position', first)
+    proposal = edit(first, 'specific page or position', 'specific position', again)
+    assert origins(again) == origins(source)
+    assert page_text(again) == page_text(source)
+    assert proposal['evidence']['conditions']['status'] == 'applied'
+    assert any(l.get('restored') for l in proposal['lines'])
+
+
+def test_an_edit_applied_again_after_its_undo_draws_the_same(tmp_path):
+    lines = [(40, 60, 'There are two types of links in a'), (40, 76, 'document: a link to a specific position'),
+             (40, 92, 'in the same document, and a link to an'), (40, 108, 'external document or a website.'),
+             (40, 200, 'Following paragraph.')]
+    source = kerned(tmp_path, lines)
+    a, b, c = tmp_path / 'a.pdf', tmp_path / 'b.pdf', tmp_path / 'c.pdf'
+    edit(source, 'two types', 'several types', a)
+    edit(a, 'several types', 'two types', b)
+    edit(b, 'two types', 'several types', c)
+    assert origins(b) == origins(source)
+    assert origins(c) == origins(a)
+
+
+def test_undoing_a_wrap_does_not_pull_up_a_paragraph_that_did_not_follow(tmp_path):
+    # The edit wraps a fifth line; the next paragraph, 42 pt below at first,
+    # is now near enough to count as a follower. The undo shrinks the
+    # paragraph back: that paragraph stays where it always was (it was no
+    # follower when the layout was recorded), and the page is as before.
+    lines = [(40, 60, 'There are two types of links in a'), (40, 76, 'document: a link to a specific position'),
+             (40, 92, 'in the same document, and a link to an'), (40, 108, 'external document or a website.'),
+             (40, 150, 'Following paragraph.')]
+    source, _ = page_with(tmp_path, lines, height=300)
+    first, again = tmp_path / 'first.pdf', tmp_path / 'again.pdf'
+    edit(source, 'specific position', 'specific page or position', first)
+    edit(first, 'specific page or position', 'specific position', again)
+    assert origins(again) == origins(source)
+    assert page_text(again) == page_text(source)
+
+
+def test_a_recorded_layout_is_used_only_when_well_formed():
+    from prototypes.paragraph_frame.auto_restore import follower_shift, valid
+    layout = dict(text='ab c', glyphs=[['a', 10., 50., 5., 3, '/F1'], ['b', 15., 50., None, 4, '/F1'], None, ['c', 10., 66., None, 5, '/F1']],
+                  rows=[[0, 2, 50., 10.], [3, 4, 66., 10.]], below=dict(baseline=100., follower=False))
+    assert valid(layout, 300, 300)
+    for broken in (dict(layout, text='abc'), dict(layout, rows=[[0, 3, 50., 10.]]), dict(layout, rows=[[0, 2, 400., 10.]]),
+                   dict(layout, glyphs=[['x', 10., 50., 5., 3, '/F1']] + layout['glyphs'][1:]), dict(layout, below=dict(baseline='x', follower=False))):
+        assert not valid(broken, 300, 300)
+    # A block that was no follower is not pulled above where it was; a
+    # follower keeps its gap; growing moves both.
+    assert follower_shift(layout, -16., 100.) == 0.
+    assert follower_shift(layout, -16., 110.) == -10.
+    assert follower_shift(dict(layout, below=dict(baseline=100., follower=True)), -16., 100.) == -16.
+    assert follower_shift(layout, 16., 100.) == 16.
