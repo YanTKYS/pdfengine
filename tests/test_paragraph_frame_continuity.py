@@ -115,9 +115,10 @@ def test_shorten_reopen_restore_grow_replace_keeps_approved_conditions(world, tm
     assert conds['status'] == 'applied' and conds['approval_count'] == 1
     assert {k: second['evidence']['inferred'][k] for k in approved} == approved
     # Restoring the original text restores the original lines, x and baselines,
-    # with the original font: deleted glyphs come back from the resource itself.
+    # with the original font: deleted glyphs come back from the resource itself
+    # (the code the paragraph's recorded layout drew them with, issue #93).
     assert drawn_lines(tmp_path / 'step2.pdf') == original
-    assert second['font_counts'].get('source-resource-witness') and not {'approved-substitute', 'same-program-new-code'} & set(second['font_counts'])
+    assert second['font_counts'].get('recorded-source-code') and not {'approved-substitute', 'same-program-new-code'} & set(second['font_counts'])
     third, _ = edit(tmp_path / 'step2.pdf', '行います。', '行います。応募をお待ちしています。', tmp_path / 'step3.pdf', font)
     assert [l['baseline'] for l in third['lines']] == [60, 76] and third['evidence']['conditions']['approval_count'] == 2
     fourth, _ = edit(tmp_path / 'step3.pdf', '応募', '申請', tmp_path / 'step4.pdf', font)

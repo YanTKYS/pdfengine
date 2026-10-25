@@ -222,11 +222,14 @@ def intrusions(record, rows, obstacles):
     return hits
 
 
-def make(c, rows, conditions, provenance, origin, approval, present=()):
+def make(c, rows, conditions, provenance, origin, approval, present=(), layout=None):
+    """``layout``: the paragraph as first approved (auto_restore), carried over."""
     record = dict(lines=[line_record(c, r) for r in rows], conditions=conditions, provenance=provenance,
                   origin=origin, approval=approval)
     if present:
         record['present'] = list(present)
+    if layout:
+        record['layout'] = layout
     return record
 
 
@@ -238,9 +241,12 @@ def make_flow(c, lines, regions, conditions, links, provenance, origin, approval
 
 def shifted(record, dy):
     """A follower record after a rigid vertical translation of its lines."""
+    from .auto_restore import shifted as shifted_layout
     result = json.loads(json.dumps(record))
     for line in result['lines']:
         line['baseline'] = round(line['baseline'] + dy, 3)
+    if result.get('layout'):
+        result['layout'] = shifted_layout(result['layout'], dy)
     return result
 
 

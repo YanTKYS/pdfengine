@@ -16,6 +16,7 @@ import math
 from .engine import Refused
 from . import form_write
 from . import semantics
+from . import auto_restore
 from . import auto_conditions as conditions
 
 
@@ -28,6 +29,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     paragraph's last baseline changes."""
     if Path(output).exists():raise Refused('output already exists')
     delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
+    if moves is None and len(paragraphs)>1:delta=auto_restore.follower_shift(spec.get('original'),delta,paragraphs[1].baselines[0])
     if abs(delta)<.001:delta=0.
     if moves is None:
         active=paragraphs if delta else paragraphs[:1]
@@ -128,7 +130,10 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         taken.add(name)
         runs=[font.shape(t['text']) for l in lines for t in l['tokens'] if t.get('font_key')==key]
         resource=font.resource(runs);new_fonts[name]=resource.build(writer);built[key]=(name,resource)
-    source,_=source_tokens(c);batches=[(paragraphs[0],[t for l in lines if not l.get('kept') or not kept_ids for t in l['tokens']])]
+    # An implicit line join the paragraph's recorded layout drew without a
+    # glyph stays undrawn when its line is restored (auto_restore); it remains
+    # in the paragraph's text.
+    source,_=source_tokens(c);batches=[(paragraphs[0],[t for l in lines if not l.get('kept') or not kept_ids for t in l['tokens'] if not t.get('undrawn')])]
     full_text=''.join(t['text'] for l in lines for t in l['tokens'] if not t.get('fixed'))
     for p,move in zip(active[1:],moves):
         placed=[]
@@ -172,7 +177,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
                 if n is not None:ops.append(b'EMC\n')
                 continue
             ops.append(b'q\n'+prefix+b'BT\n0 Tc 0 Tw 0 Ts 0 Tr\n')
-            run=None;current=variants[0]
+            run=None;current=variants[0];spacing_state=(0.,0.)
             for t in ts:
                 name=t['font_name'];code=t['code'];x=t['x'];y=t['y']
                 if len(variants)>1 and variant(t['event'].state)!=current:
@@ -186,17 +191,22 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
                 # baseline form one TJ, kerned to the laid-out pen positions,
                 # like the source: text extraction joins them as the source.
                 # Kerns are rounded to 1/100 000 em (float noise would be read
-                # as word breaks); the pen follows the written kerns.
-                key=None if t.get('font_key') or not edited else (name,t['size'],t['tz'],color,y)
+                # as word breaks); the pen follows the written kerns. The
+                # glyphs keep their source character and word spacing (Tc, Tw):
+                # a later edit reads the text drawn as the source drew it.
+                tc,tw=t.get('tc',0.),t.get('tw',0.)
+                pen=lambda t:t['nominal_advance']+(tc+(tw if code==b' ' else 0.))*t['tz']/100
+                key=None if t.get('font_key') or not edited else (name,t['size'],t['tz'],tc,tw,color,y)
                 if key is not None and run is not None and run[0]==key:
                     unit=t['size']*t['tz']/100000;kern=round((run[1]-x)/unit,2)
                     ops[-1]=ops[-1][:-4]+(b' '+number(kern)+b' ' if kern else b'')+f'<{code.hex()}>]TJ\n'.encode()
-                    run=(key,run[1]-kern*unit+t['nominal_advance'])
+                    run=(key,run[1]-kern*unit+pen(t))
                     continue
                 point=pymupdf.Point(x,y)*to_user
                 px,py=(exact(point.x,0),exact(point.y,1)) if edited else (point.x,point.y)
-                ops.append(f'{color}\n{name} {t["size"]:.9f} Tf {t["tz"]:.9f} Tz 1 0 0 1 {px:.9f} {py:.9f} Tm [<{code.hex()}>]TJ\n'.encode())
-                run=None if key is None else (key,x+t['nominal_advance'])
+                spacing=f' {tc:.9f} Tc {tw:.9f} Tw' if (tc,tw)!=spacing_state else '';spacing_state=(tc,tw)
+                ops.append(f'{color}\n{name} {t["size"]:.9f} Tf {t["tz"]:.9f} Tz{spacing} 1 0 0 1 {px:.9f} {py:.9f} Tm [<{code.hex()}>]TJ\n'.encode())
+                run=None if key is None else (key,x+pen(t))
             ops.append(b'ET\nQ\n')
             if n is not None:ops.append(b'EMC\n')
         return ops
@@ -445,7 +455,8 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
             values=spec['values'];previous=state['records'][state['target']] if state['applied'] else None
             known=conditions.present(values,mine,[dict(o) for o in analysis.obstacles])
             record=conditions.make(check,mine,conditions=dict(values,frame=spec['frame']),provenance=spec['provenance'],origin=spec['origin'],
-                                   approval=dict(count=(previous['approval']['count'] if previous else 0)+1,**(approval or {})),present=known)
+                                   approval=dict(count=(previous['approval']['count'] if previous else 0)+1,**(approval or {})),present=known,
+                                   layout=spec.get('original'))
             records.append(record)
         if records or state['records']:conditions.attach(writer,page,records,spec['page'])
         summary=dict(written=record is not None,records_on_page=len(records),applied_before_edit=state['applied'],status_before_edit=state['status'],

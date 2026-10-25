@@ -636,6 +636,8 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         nearby=[r for r in rows if len(selected)==1 and abs(r['size']-size)<.1 and abs(r['baseline']-selected[0]['baseline'])<8*size and first-1.6*size<=r['x']<=first+.1 and _overlap(r,selected[0])]
         left=min([left]+[r['x'] for r in nearby]); followers=[];follower_records=[]
         previous=selected;column=dict(x=min(r['x'] for r in selected),pen_end=max(r['pen_end'] for r in selected))
+        # The text block below the paragraph in its column, follower or not.
+        block_below=next((g[0]['baseline'] for g in groups[target+1:] if _overlap(g[0],column)),None)
         for group in groups[target+1:]:
             r=group[0]
             if not _overlap(r,column):continue
@@ -752,6 +754,9 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         if column_bottom is not None:evidence['warnings'].append('Side-by-side columns share a bottom; this paragraph is not in a linked flow and may not grow below it.')
         spec=dict(page=page,frame=frame,column_bottom=column_bottom,candidates=[l['id'] for l in neighbours['links'] if l['status']=='candidate'],rejected_links=[f"{l['id']}: {l['reason']}" for l in neighbours['links'] if l['status']=='rejected'],left=left,right=right,first_x=first,align=align,baseline=selected[0]['baseline'],line_height=leading,line_offsets=[r['baseline']-selected[0]['baseline'] for r in selected],
                   stored=state,values=values,provenance=provenance,origin=origin,
+                  # The paragraph as first approved (auto_restore), kept with its record.
+                  recorded_layout=records[state['target']].get('layout') if state['applied'] else None,
+                  below=None if block_below is None else dict(baseline=round(block_below,5),follower=bool(followers) and abs(followers[0][0]['baseline']-block_below)<1e-6),
                   # The drawn lines of the edited paragraph: local layout keeps
                   # what the edit does not change where it is (auto_local).
                   source_rows=source_rows(c,selected))

@@ -22,6 +22,7 @@ case this layout does not cover; the caller uses the paragraph layout.
 from uniseg.linebreak import line_break_boundaries
 from .auto_layout import fit, _squeezed
 from .engine import Refused
+from .auto_restore import align as align_recorded
 
 STRETCH = .25   # em of extra advance per space a justified line may take
 CJK_GAP = .05   # em of extra advance per glyph gap of a justified CJK line
@@ -83,6 +84,28 @@ def local_layout(tokens, spec):
     # The widest word-space stretch of the paragraph's source lines bounds any
     # re-justified space (a wider gap reads as a column break to extractors).
     spec = dict(spec, stretch=max([t.get('squeezable', 0.) for t in tokens if t['text'] == ' '] or [0.]))
+    # The paragraph as first approved (auto_restore): a re-inserted glyph takes
+    # the advance it had where the recorded text continues as recorded.
+    original = spec.get('recorded')
+    recorded = align_recorded(tokens, original) if original else {}
+    if recorded:
+        # Only a run of the recorded text that reaches a glyph still drawn
+        # (not a chance match inside a new word: 'ra' of 'array' in 'range').
+        runs, run = [], []
+        for m in range(len(tokens)):
+            if run and m in recorded and recorded.get(m - 1) == recorded[m] - 1:
+                run.append(m)
+            else:
+                runs.append(run)
+                run = [m] if m in recorded else []
+        anchored = {m for r in runs + [run] if any(tokens[q].get('source_id') is not None for q in r) for m in r}
+        tokens = [dict(t) for t in tokens]
+        for m, t in enumerate(tokens):
+            j = recorded.get(m)
+            # A word space's drawn advance is its line's justification, not its own.
+            if (j is not None and m in anchored and t.get('source_id') is None and t['text'] != ' '
+                    and recorded.get(m + 1) == j + 1 and original['glyphs'][j] is not None and original['glyphs'][j][3] is not None):
+                t['advance'] = original['glyphs'][j][3]
     if spec.get('align') == 'justify-cjk':
         # A justified CJK line may tighten its glyph gaps a little (0.05 em
         # each) to keep its source break; fit() counts that allowance.
@@ -153,6 +176,50 @@ def local_layout(tokens, spec):
                 out.append(dict(t, x=t['origin'][0], y=t['origin'][1] + dy))
         return out
 
+    # A recorded line whose text comes back as recorded is drawn where it was.
+    row_at = {r[0]: m for m, r in enumerate(original['rows'])} if recorded else {}
+    shift = rows[0]['baseline'] - original['rows'][0][2] if recorded else 0.
+
+    def recorded_line(a, k, limit):
+        j = recorded.get(a)
+        if j not in row_at:
+            return None
+        m = row_at[j]
+        start, stop, base = original['rows'][m][:3]
+        b = a + stop - start
+        if b > len(tokens) or any(recorded.get(a + q) != start + q for q in range(stop - start)):
+            return None
+        # The implicit join after a recorded line belongs to it.
+        if b < len(tokens) and stop < len(original['text']) and original['glyphs'][stop] is None and recorded.get(b) == stop:
+            b += 1
+        # The line ends where it ended: what follows it is what followed it.
+        follows = b == len(tokens) or recorded.get(b) == start + b - a
+        if not follows or (m == 0) != (k == 0) or (limit is not None and b > limit):
+            return None
+        y = base + shift if m == k else baseline(k)
+        placed = []
+        for q in range(a, b):
+            g = original['glyphs'][recorded[q]]
+            if g is None:
+                # The recorded line drew no glyph for its line-end join.
+                prev = placed[-1]
+                placed.append(dict(tokens[q], x=prev['x'] + prev['advance'], y=y, undrawn=tokens[q]['text'] == ' '))
+            else:
+                x, gy = g[1], g[2] - base + y
+                o = tokens[q].get('origin') if tokens[q].get('source_id') is not None and not changed[q] else None
+                # A glyph still drawn where it was recorded (to the record's
+                # rounding) keeps its exact origin: its line stays as drawn.
+                if o is not None and abs(o[0] - x) < 1e-4 and abs(o[1] - gy) < 1e-4:
+                    x, gy = o
+                placed.append(dict(tokens[q], x=x, y=gy))
+        if all(p.get('origin') is not None and p['x'] == p['origin'][0] for p in placed if p['text'].strip()):
+            y = placed[0]['y']
+        line = dict(text=text[a:b], baseline=y, tokens=placed, justified=False, end=b)
+        line['restored'] = _differs(line)
+        if _end(line) > spec['right'] + .05 or placed[0]['x'] < spec['left'] - .05:
+            return None
+        return line
+
     lines = []
     cursor = 0
     for k in range(min(first_line, n)):
@@ -165,15 +232,15 @@ def local_layout(tokens, spec):
     hyphen_ends = {starts[j + 1] for j in range(n - 1) if rows[j]['ids'][-1] in hyphens and j + 1 in starts}
     while cursor < len(tokens):
         x0 = rows[k]['x'] if k < n else extra_x
-        ends = fit(tokens, text, breaks, cursor, spec['right'] - x0)
+        limit = min((e for e in hard_ends if e > cursor), default=None)
+        choice = recorded_line(cursor, k, limit) if recorded else None
+        ends = fit(tokens, text, breaks, cursor, spec['right'] - x0) if choice is None else [choice['end']]
         if not ends:
             raise Refused('capacity: no legal line break at original font size')
-        limit = min((e for e in hard_ends if e > cursor), default=None)
         allowed = [e for e in ends if limit is None or e <= limit] or [min(ends)]
         greedy = max(allowed)
         source_end = after(k) if k < n else None
-        choice = None
-        if source_end is not None and source_end in allowed and source_end != greedy:
+        if choice is None and source_end is not None and source_end in allowed and source_end != greedy:
             # Before a line whose break is fixed (an author's break or a kept
             # hyphen), taking text from it would leave it short: a justified
             # line keeps its source break, made flush as a whole if need be.
@@ -200,8 +267,10 @@ def local_layout(tokens, spec):
         lines.append(choice)
         cursor = end
         k += 1
-        # Back on a source line start after the last edit: the rest is as drawn.
-        if cursor < len(tokens) and cursor > last_edit and not any(changed[cursor:]):
+        # Back on a source line start after the last edit: the rest is as drawn
+        # (unless the recorded line there differs from it: it is drawn as recorded).
+        if (cursor < len(tokens) and cursor > last_edit and not any(changed[cursor:])
+                and not (recorded and _differs(recorded_line(cursor, k, None)))):
             j = next((j for j, s in starts.items() if s == cursor), None)
             if j is not None:
                 dy = baseline(k) - rows[j]['baseline'] if k < n else (k - j) * spec['line_height']
@@ -213,6 +282,12 @@ def local_layout(tokens, spec):
                     cursor = end
                 break
     return lines
+
+
+def _differs(line):
+    """A placed line some glyph of which is not at its drawn origin."""
+    return line is not None and any(p.get('origin') is None and p['text'].strip() or p.get('origin') is not None
+                                    and (abs(p['x'] - p['origin'][0]) > 1e-9 or abs(p['y'] - p['origin'][1]) > 1e-9) for p in line['tokens'])
 
 
 def _line(tokens, text, a, b, x0, y, changed, home, k, rows, spec, last, target=None, full=False):

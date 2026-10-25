@@ -11,6 +11,7 @@ from .auto_detect import detect
 from .auto_style import build,describe
 from .auto_layout import layout
 from .auto_local import LocalUnavailable,local_layout
+from . import auto_restore as restore
 from .auto_flow import place,region_of
 from .auto_writer import write
 from .engine import Refused,sha
@@ -55,7 +56,12 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
         # it was drawn (auto_local, observed advances); the paragraph is wrapped
         # again only where local layout does not apply.
         local=spec.get('mode')!='flow'
-        tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=spec['align']=='justify' and not local)
+        # The paragraph's recorded layout (auto_restore), when its stored record applies.
+        recorded=spec.get('recorded_layout')
+        recorded=recorded if recorded and restore.valid(recorded,c.page.rect.width,c.page.rect.height) else None
+        expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):]
+        prefs=restore.preferences(expected,recorded) if recorded and local else None
+        tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=spec['align']=='justify' and not local,recorded=prefs)
         # Alignment is an approved condition: a stored record supplies it after
         # the multi-line evidence has been edited away.
         spec['values'].update(align=spec['align'])
@@ -70,11 +76,16 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
             try:
                 # A line ending with a soft-or-hard hyphen keeps its break.
                 spec['hyphens']=list(paragraphs[0].hyphens)
+                # The layout the paragraph had when first approved, carried by its
+                # stored record; else the paragraph as drawn now (auto_restore).
+                spec['original']=recorded or restore.snapshot(c,paragraphs[0],spec['source_rows'],spec.get('below'))
+                # Layout follows a stored record only; a first edit is laid out as before.
+                spec['recorded']=recorded
                 lines=local_layout(tokens,spec);spec['layout']='local'
             except LocalUnavailable as exc:
                 spec['layout']='paragraph ('+str(exc)+')'
                 if spec['align']=='justify':
-                    tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=True)
+                    tokens,fonts,counts,choice=build(c,paragraphs[0],at,selection,replacement,substitute,justify=True,recorded=prefs)
                 lines=layout(tokens,spec)
             bottom=spec.get('column_bottom');delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
             deepest=max([lines[-1]['baseline']]+[p.baselines[-1]+delta for p in paragraphs[1:] if delta>0])
@@ -86,7 +97,8 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
         _placed_objects_stay(lines)
         public=dict(schema='auto-paragraph-frame-1',source_sha256=sha(source),page=page,selection=selection,replacement=replacement,occurrence=occurrence,
           substitute=substitute,stored_conditions=stored,evidence=evidence,source_styles=describe(c,paragraphs),paragraphs=[p.text for p in paragraphs],expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):],
-          lines=[dict(text=l['text'],baseline=l['baseline'],**({'region':l['region']} if 'region' in l else {}),**({'kept':l['kept']} if 'kept' in l else {})) for l in lines],
+          lines=[dict(text=l['text'],baseline=l['baseline'],**({'region':l['region']} if 'region' in l else {}),**({'kept':l['kept']} if 'kept' in l else {}),
+                      **({'restored':True} if l.get('restored') else {})) for l in lines],
           layout=spec.get('layout','column flow'),source_lines=len(paragraphs[0].baselines),font_counts=counts,substitute_choice=choice,
           required_approval=['inferred paragraph and capacity','possible follower translation','source style and any explicit substitute'])
         public['continuation']=list(continuation)

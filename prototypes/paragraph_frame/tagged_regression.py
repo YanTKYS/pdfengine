@@ -1,4 +1,4 @@
-"""Compare the PR #87-#90 regression runs with their committed results and with the regressions PR #90 and PR #91 recorded.
+"""Compare the PR #87-#90 regression runs with their committed results and with the regressions PR #90, PR #91 and PR #92 recorded.
 
   .venv/bin/python -m prototypes.paragraph_frame.tagged_regression <regression.json> [<tagged root> <477.pdf> <pdf.js dir>]
 
@@ -213,6 +213,41 @@ if len(sys.argv) > 2:
     for r in samples:
         if not r['same_as_committed']:
             print(' ', json.dumps({x: r.get(x) for x in ('document', 'selection', 'kind', 'outcome', 'reason', 'failed', 'committed', 'outside_changes')}, ensure_ascii=False)[:700])
+# Against the regression recorded by PR #92 (main 870709f's own state), when present.
+fid = Path('evaluations/paragraph_frame_fidelity/results.json')
+rec92 = load(fid).get('regression') if fid.exists() else None
+if rec92:
+    vs92 = []
+    for part in ('generalization', 'continuity_sequences', 'continuity_new'):
+        for k, v in rec92[part].items():
+            mine = {x: out[part][k].get(x) for x in v if x != 'same_as_committed'}
+            if {x: v[x] for x in v if x != 'same_as_committed'} != mine:
+                vs92.append((part, k, mine, {x: v[x] for x in v if x != 'same_as_committed'}))
+    for part in ('sequences', 'singles'):
+        for k, v in rec92['column_flow'][part].items():
+            if strip(v) != strip(out['column_flow'][part][k]):
+                vs92.append(('column ' + part, k, strip(out['column_flow'][part][k]), strip(v)))
+    for k, v in rec92['indesign']['requests'].items():
+        if strip(v) != strip(out['indesign']['requests'][k]):
+            vs92.append(('indesign request', k, strip(out['indesign']['requests'][k]), strip(v)))
+    for x in ('sampled', 'saved', 'safety', 'quality', 'newly_failed', 'newly_passed', 'newly_refused'):
+        if out['indesign']['samples'][x] != rec92['indesign']['samples'][x]:
+            vs92.append(('indesign samples', x, out['indesign']['samples'][x], rec92['indesign']['samples'][x]))
+    if 'tagged' in out and 'tagged' in rec92:
+        for k, v in rec92['tagged']['requests'].items():
+            if strip(v) != strip(out['tagged']['requests'][k]):
+                vs92.append(('tagged request', k, strip(out['tagged']['requests'][k]), strip(v)))
+        if out['tagged']['samples']['totals'] != rec92['tagged']['samples']['totals']:
+            vs92.append(('tagged samples', out['tagged']['samples']['totals'], rec92['tagged']['samples']['totals']))
+        before = {(r['document'], r['page'], r['selection'], r['kind']): (r['outcome'], r.get('failed')) for r in rec92['tagged']['samples']['edits']}
+        for r in out['tagged']['samples']['edits']:
+            k = (r['document'], r['page'], r['selection'], r['kind'])
+            if before.get(k) != (r['outcome'], r.get('failed')):
+                vs92.append(('tagged sample', k, (r['outcome'], r.get('failed')), before.get(k)))
+    out['differences_from_pr92_recorded_regression'] = [list(map(str, d)) for d in vs92]
+    print('vs PR #92 recorded regression:', len(vs92))
+    for d in vs92:
+        print(json.dumps(d, ensure_ascii=False, default=str)[:900])
 out['differences'] = len(diffs)
 Path(sys.argv[1]).write_text(json.dumps(out, ensure_ascii=False, indent=1) + '\n')
 for d in diffs:

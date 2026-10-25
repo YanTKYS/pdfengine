@@ -215,7 +215,8 @@ def changed_runs(old,new,aligned):
     return [(prefix,len(old)-suffix,prefix,len(new)-suffix)] if (prefix,suffix)!=(len(old),0) or len(old)!=len(new) else []
 
 
-def build(c,paragraph,start,old,new,substitute=None,justify=False):
+def build(c,paragraph,start,old,new,substitute=None,justify=False,recorded=None):
+    """``recorded``: new-text index -> the glyph the paragraph's recorded layout drew there (auto_restore.preferences)."""
     source,tracking=source_tokens(c)
     try:base=[copy(source[i]) for i in paragraph.ids]
     except KeyError:raise Refused('selected source glyph lacks a concrete code/GID witness')
@@ -258,11 +259,23 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
                 chosen[xref]=(candidates[best],scores)
         return chosen[xref][0]
 
-    def resolve(char,anchor,mode=None):
-        """A new token in the anchor's style: source witness, same program, then approved substitute."""
+    def resolve(char,anchor,mode=None,preferred=None):
+        """A new token in the anchor's style: the recorded glyph it had there, source witness, same program, then approved substitute."""
         t=copy(anchor);t.update(text=char,source_id=None,origin=None,bbox=None,fixed=False);t.pop('positional_gap',None)
         # New text never joins replacement-text marked content or a placed object.
         if t.get('scope') is not None and paragraph.scopes[t['scope']]['kind'] in ('atom','fixed'):t['scope']=None
+        # Text coming back where the paragraph's recorded layout had it: the
+        # code it was drawn with, in the same resource, if it still decodes to
+        # the same character (a font may hold several glyphs for one character).
+        if preferred is not None and mode is None and preferred[6] and preferred[5]==anchor['font_name']:
+            try:decoded=anchor['font'].decode(bytes.fromhex(preferred[6]))
+            except Exception:decoded=None
+            if decoded and len(decoded)==1 and decoded[0][1]==char:
+                code=decoded[0][0];t.update(code=code,gid=preferred[4],mode='recorded-source-code')
+                nominal=decoded[0][2]/1000*anchor['size']
+                t['nominal_advance']=nominal*anchor['tz']/100
+                t['advance']=(nominal+anchor['tc']+(anchor['tw'] if code==b' ' else 0))*anchor['tz']/100+tracking.get((anchor['font_name'],anchor['size'],anchor['tz']),0)
+                return t
         # Never silently borrow another font resource merely because Unicode
         # happens to match. A source witness must be in the anchor resource.
         witnesses=[v for v in source.values() if v['text']==char and v['font'].xref==anchor['font'].xref]
@@ -348,7 +361,7 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False):
             anchor_index=next((j for j in order if tokens[j]['text'].strip() and not generated(tokens[j])
                                and tokens[j]['size']==tokens[anchor_index]['size']),anchor_index)
         anchor=copy(tokens[anchor_index])
-        newtokens=[resolve(char,anchor) for char in inserted]
+        newtokens=[resolve(char,anchor,preferred=(recorded or {}).get(start+j1+k)) for k,char in enumerate(inserted)]
         # The sequence of the replaced text (or of the text before an
         # insertion); never a replacement-text atom or a placed object.
         owners=[tokens[k] for k in list(range(at,stop))+list(range(at-1,-1,-1))+list(range(stop,len(tokens)))]
