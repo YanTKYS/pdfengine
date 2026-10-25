@@ -692,7 +692,8 @@
    ],
    "path": null,
    "followers": 0,
-   "origin": "continuity manifest (PR #88) Q1"
+   "origin": "continuity manifest (PR #88) Q1",
+   "substitute": "PR #88 approved font (continuity manifest \"font\"), as in its sequences"
   },
   {
    "id": "Q2",
@@ -716,7 +717,8 @@
    ],
    "path": null,
    "followers": 1,
-   "origin": "continuity manifest (PR #88) Q2"
+   "origin": "continuity manifest (PR #88) Q2",
+   "substitute": "PR #88 approved font (continuity manifest \"font\"), as in its sequences"
   },
   {
    "id": "Q3",
@@ -740,7 +742,11 @@
    ],
    "path": null,
    "followers": 2,
-   "origin": "continuity manifest (PR #88) Q3"
+   "origin": "continuity manifest (PR #88) Q3",
+   "substitute": "PR #88 approved font (continuity manifest \"font\"), as in its sequences"
   }
+ ],
+ "amendments": [
+  "Q1-Q3 use the explicit substitute approval of the PR #88 sequences (one approved font, hash in the continuity manifest); the manifest frozen at dee0b04 omitted it, so their first step was refused for a missing source glyph. Amended before any evaluation run of the new code; the baseline Q cases are run again with it."
  ]
 }

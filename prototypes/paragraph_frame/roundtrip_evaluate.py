@@ -34,7 +34,9 @@ from pathlib import Path
 import time
 import pymupdf
 
-from .fidelity_evaluate import edit, fidelity, locate, reopen, sha, source_of
+import subprocess
+import sys
+from .fidelity_evaluate import fidelity, locate, reopen, sha, source_of
 
 MANIFEST = Path('evaluations/paragraph_frame_roundtrip/manifest.json')
 RESULTS = MANIFEST.parent / 'results.json'
@@ -146,12 +148,28 @@ def phase_freeze(args):
     print(len(cases), 'cases;', sum(len(c['cycles']) for c in cases), 'cycles;', sum(1 for c in cases if c['path']), 'paths')
 
 
-def step(code, start, case, old, new, expected_before, expected_after, output, folder, prior_grow, pitch):
+def edit(code, source, page, old, new, output, occurrence, substitute=None):
+    """fidelity_evaluate.edit, with the explicit substitute approval of the PR #88 sequences."""
+    command = [sys.executable, '-m', 'prototypes.paragraph_frame.generalization_cli', 'reedit', '--source', str(Path(source).resolve()), '--page', str(page),
+               '--old', old, '--new', new, '--output', str(Path(output).resolve()), '--acknowledge-inference', '--occurrence', str(occurrence)]
+    if substitute:
+        command += ['--substitute-json', str(Path(substitute).resolve())]
+    started = time.perf_counter()
+    run = subprocess.run(command, capture_output=True, cwd=code)
+    seconds = round(time.perf_counter() - started, 2)
+    if run.returncode:
+        last = [l for l in run.stderr.decode().splitlines() if l.strip()]
+        return dict(outcome='refused', reason=last[-1] if last else 'unknown', seconds=seconds)
+    load = lambda p: json.loads(Path(p).read_text())
+    return dict(outcome='saved', seconds=seconds, proposal=load(Path(output).with_suffix('.proposal.json')), save=load(Path(output).with_suffix('.save.json')))
+
+
+def step(code, start, case, old, new, expected_before, expected_after, output, folder, prior_grow, pitch, substitute=None):
     """One saved step and its audits against the PDF it was made from."""
     from .indesign_evaluate import audit
     from .tagged_evaluate import structure_audit
     occurrence = locate(start, case['page'], old, case['box'], code)
-    result = edit(code, start, case['page'], old, new, output, occurrence)
+    result = edit(code, start, case['page'], old, new, output, occurrence, substitute)
     record = dict(old=old, new=new, outcome=result['outcome'], seconds=result['seconds'], occurrence=occurrence)
     if result['outcome'] != 'saved':
         record['reason'] = result['reason']
@@ -177,6 +195,8 @@ def phase_run(args):
     code = Path(args.code).resolve()
     only = set(args.only or [])
     results = json.loads((root / 'results.json').read_text()) if (root / 'results.json').exists() and only else {}
+    from .continuity_evaluate import substitute as approved_substitute
+    subst = approved_substitute(root, json.loads(CONTINUITY.read_text()))
     for case in manifest['cases']:
         if only and case['id'] not in only:
             continue
@@ -195,7 +215,7 @@ def phase_run(args):
                 for p in (output, output.with_suffix('.proposal.json'), output.with_suffix('.save.json')):
                     if p.exists():
                         p.unlink()
-                r = step(code, prev, case, old, new, before, after, output, folder, grow, pitch)
+                r = step(code, prev, case, old, new, before, after, output, folder, grow, pitch, subst if case.get('substitute') else None)
                 if r['outcome'] != 'saved':
                     seq.append(r)
                     print(case['id'], cyc['name'], n + 1, r['outcome'], r.get('reason', '')[-90:], flush=True)
