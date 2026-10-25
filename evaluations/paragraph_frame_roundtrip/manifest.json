@@ -1,0 +1,746 @@
+{
+ "schema": "paragraph-frame-roundtrip-manifest-1",
+ "baseline_commit": "870709f (main after PR #92)",
+ "frozen_at": "870709f",
+ "policy": "Frozen before the implementation. Old B2 is main 870709f; new B2 is this branch. Each step is proposed from the PDF the previous step saved, alone. A refused step ends its sequence; refusals never count as success.",
+ "measures": "per step: saved, safety and quality (indesign_evaluate.audit against the previous PDF, unchanged), structure (tagged_evaluate.structure_audit), continued editing; after each undo against the source: paragraph glyphs at their source origin (0.01 pt), font and size, lines and breaks, glyphs outside the paragraph identical, page glyphs identical, page text of MuPDF and Poppler identical, search hits; second edit against the first; path result against the single edit",
+ "documents": {
+  "osaka_fusei_477": {
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0"
+  },
+  "issue17730": {
+   "sha256": "d1d3be1674f4756d82630d68f08a8088f5b912c58f3379f45eb63b025ad99b14"
+  },
+  "word_osaka_fire_notice": {
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa"
+  },
+  "word_osaka_guideline": {
+   "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe"
+  },
+  "lo_enterprise_en": {
+   "sha256": "f96228ca032b60584e5f2e5fd5689290ba7b93b4f39bb8f86c5af5221eec85d4"
+  },
+  "lo_migration_ja": {
+   "sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3"
+  },
+  "prefilled_f1040": {
+   "sha256": "899edb271684d2451337e225268003324a583a7d3429e23efd69f1654adf9bf9"
+  },
+  "issue14297": {
+   "sha256": "4041c1e3e2446bd236d536ce88fe5e97b30605f04813e600a00c58bf19e8c89b"
+  },
+  "160F-2019": {
+   "sha256": "f41f0818365ffd14ca4e55c0556355193bd76632b970d60cc2dec554cac6f379"
+  },
+  "tracemonkey": {
+   "sha256": "3662ff519e485810520552bf301d8c3b2b917fd2f83303f4965d7abed367e113"
+  },
+  "canvas": {
+   "sha256": "3548b2605bef8ff9656efe8ef8fd94814dfbcf94f547c7d1ff8603e8a46cef6b"
+  },
+  "lo_newfeatures_ja": {
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47"
+  }
+ },
+ "cases": [
+  {
+   "id": "C01",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "purpose": "InDesign, ragged CJK, 5 lines",
+   "paragraph": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "box": [
+    20.94,
+    680.89,
+    244.61,
+    742.89
+   ],
+   "lines": 5,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "悩みを抱えている人は",
+     "new": "悩みを持っている人は"
+    },
+    {
+     "name": "shorten",
+     "old": "悩まず専門機関に",
+     "new": "悩まず機関に"
+    },
+    {
+     "name": "lengthen",
+     "old": "ひとりで悩まず",
+     "new": "ひとりで悩まず、ひとりで抱えず"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "悩みを抱えている人は",
+     "new": "悩みを持っている人は"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "悩まず専門機関に",
+     "new": "悩まず機関に"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C02",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "purpose": "InDesign, justified CJK, 5 lines",
+   "paragraph": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+   "box": [
+    20.38,
+    821.56,
+    239.92,
+    883.56
+   ],
+   "lines": 5,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "損耗などの補修や修繕",
+     "new": "損耗などの修繕や補修"
+    },
+    {
+     "name": "shorten",
+     "old": "損耗などの補修や修繕の費用を",
+     "new": "修繕の費用を"
+    },
+    {
+     "name": "lengthen",
+     "old": "ぜひご活用ください。",
+     "new": "ぜひご活用ください。ぜひご相談ください。"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "損耗などの補修や修繕",
+     "new": "損耗などの修繕や補修"
+    },
+    "b": {
+     "name": "lengthen",
+     "old": "ぜひご活用ください。",
+     "new": "ぜひご活用ください。ぜひご相談ください。"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C03",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "purpose": "InDesign, justified CJK, 2 lines",
+   "paragraph": "学歴・職務経験不問。警察行政職を除き、日本国籍の有無は問いません。詳細は府職員採用案内HPまで。",
+   "box": [
+    503.05,
+    185.18,
+    721.51,
+    208.56
+   ],
+   "lines": 2,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "学歴・職務経験不問",
+     "new": "職務経験・学歴不問"
+    },
+    {
+     "name": "shorten",
+     "old": "不問。警察行政職を除き、日本国籍",
+     "new": "不問。日本国籍"
+    },
+    {
+     "name": "lengthen",
+     "old": "HPまで。",
+     "new": "HPまで。学歴不問。"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "学歴・職務経験不問",
+     "new": "職務経験・学歴不問"
+    },
+    "b": {
+     "name": "lengthen",
+     "old": "HPまで。",
+     "new": "HPまで。学歴不問。"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C04",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "purpose": "InDesign, header text in a page-local Form XObject",
+   "paragraph": "令和7年（2025年）3月1日",
+   "box": [
+    620.42,
+    27.95,
+    708.66,
+    37.16
+   ],
+   "lines": 1,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "3月1日",
+     "new": "3月7日"
+    },
+    {
+     "name": "shorten",
+     "old": "（2025年）3月",
+     "new": "3月"
+    },
+    {
+     "name": "lengthen",
+     "old": "3月1日",
+     "new": "3月21日"
+    }
+   ],
+   "path": null,
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C05",
+   "document": "issue17730",
+   "page": 1,
+   "purpose": "Antenna House, justified Latin, 4 lines",
+   "paragraph": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its destination may be either an ID or a page number. The external-destination property indicates to link to an external document. Its destination may be either an external file or a website.",
+   "box": [
+    61.69,
+    116.13,
+    533.71,
+    168.13
+   ],
+   "lines": 4,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "two types of links",
+     "new": "two kinds of links"
+    },
+    {
+     "name": "shorten",
+     "old": "may be either an ID",
+     "new": "may be an ID"
+    },
+    {
+     "name": "lengthen",
+     "old": "or a website.",
+     "new": "or a website or a file."
+    },
+    {
+     "name": "lengthen-wrap",
+     "old": "a specific position in",
+     "new": "a specific position or page in"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "two types of links",
+     "new": "two kinds of links"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "may be either an ID",
+     "new": "may be an ID"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C06",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "purpose": "Word (tagged P/Span), first-line indent, 2 lines",
+   "paragraph": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+   "box": [
+    53.88,
+    315.1,
+    541.78,
+    345.46
+   ],
+   "lines": 2,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "円滑かつ適切に",
+     "new": "適切かつ円滑に"
+    },
+    {
+     "name": "shorten",
+     "old": "被災されていない",
+     "new": "被災していない"
+    },
+    {
+     "name": "lengthen",
+     "old": "実施いただく",
+     "new": "実施していただく"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "円滑かつ適切に",
+     "new": "適切かつ円滑に"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "被災されていない",
+     "new": "被災していない"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C07",
+   "document": "word_osaka_guideline",
+   "page": 1,
+   "purpose": "Word (tagged), first-line indent, 2 lines",
+   "paragraph": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+   "box": [
+    70.94,
+    337.06,
+    522.91,
+    365.62
+   ],
+   "lines": 2,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "作成されました",
+     "new": "送付されました"
+    },
+    {
+     "name": "shorten",
+     "old": "研究所において",
+     "new": "研究所で"
+    },
+    {
+     "name": "lengthen",
+     "old": "参考に送付",
+     "new": "参考までに送付"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "作成されました",
+     "new": "送付されました"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "研究所において",
+     "new": "研究所で"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C08",
+   "document": "lo_enterprise_en",
+   "page": 2,
+   "purpose": "LibreOffice, ragged Latin with a line-final hyphen, 6 lines",
+   "paragraph": "Calc is a spreadsheet program designed with the user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions.",
+   "box": [
+    29.8,
+    328.01,
+    253.73,
+    414.91
+   ],
+   "lines": 6,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "range of",
+     "new": "array of"
+    },
+    {
+     "name": "shorten",
+     "old": "intuitive and easy to learn",
+     "new": "easy to learn"
+    },
+    {
+     "name": "lengthen",
+     "old": "advanced functions.",
+     "new": "advanced and intuitive functions."
+    },
+    {
+     "name": "lengthen-wrap",
+     "old": "designed with the user",
+     "new": "designed with the end user"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "range of",
+     "new": "array of"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "intuitive and easy to learn",
+     "new": "easy to learn"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C09",
+   "document": "lo_migration_ja",
+   "page": 1,
+   "purpose": "LibreOffice, Japanese with Latin, first-line indent, 4 lines",
+   "paragraph": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。",
+   "box": [
+    56.8,
+    189.24,
+    538.68,
+    267.84
+   ],
+   "lines": 4,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "文書作成およびデータ処理",
+     "new": "データ処理および文書作成"
+    },
+    {
+     "name": "shorten",
+     "old": "六つの豊富な機能の",
+     "new": "豊富な機能の"
+    },
+    {
+     "name": "lengthen",
+     "old": "描画ソフトDraw、",
+     "new": "描画ソフトDraw、表計算ソフトCalc、"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "文書作成およびデータ処理",
+     "new": "データ処理および文書作成"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "六つの豊富な機能の",
+     "new": "豊富な機能の"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C10",
+   "document": "prefilled_f1040",
+   "page": 1,
+   "purpose": "LiveCycle (tagged, IDTree), marker on an offset baseline, 3 lines",
+   "paragraph": "Head of household (with qualifying person). (See instructions.) If the qualifying person is a child but not your dependent, enter this child’s name here.  ▶",
+   "box": [
+    374.4,
+    184.5,
+    573.93,
+    213.31
+   ],
+   "lines": 3,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "enter this",
+     "new": "write this"
+    },
+    {
+     "name": "shorten",
+     "old": "(See instructions.) If",
+     "new": "If"
+    },
+    {
+     "name": "lengthen",
+     "old": "child’s name here.",
+     "new": "child’s full name here."
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "enter this",
+     "new": "write this"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "(See instructions.) If",
+     "new": "If"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C11",
+   "document": "issue14297",
+   "page": 1,
+   "purpose": "InDesign placed PDF (MCIDs without a tree), 3 lines",
+   "paragraph": "Cumulative effects of changes in accounting policies",
+   "box": [
+    657.54,
+    212.66,
+    724.06,
+    237.16
+   ],
+   "lines": 3,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "changes in accounting",
+     "new": "changes of accounting"
+    },
+    {
+     "name": "shorten",
+     "old": "changes in accounting policies",
+     "new": "policy changes"
+    },
+    {
+     "name": "lengthen",
+     "old": "accounting policies",
+     "new": "accounting policies in effect"
+    }
+   ],
+   "path": null,
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C12",
+   "document": "160F-2019",
+   "page": 1,
+   "purpose": "Distiller (tagged TD without /Type), 1 line",
+   "paragraph": "cette transmission ne peut se faire que par voie électronique",
+   "box": [
+    66.32,
+    713.65,
+    251.45,
+    720.61
+   ],
+   "lines": 1,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "par voie",
+     "new": "sur voie"
+    },
+    {
+     "name": "shorten",
+     "old": "ne peut se faire que",
+     "new": "se fait uniquement"
+    },
+    {
+     "name": "lengthen",
+     "old": "voie électronique",
+     "new": "voie électronique uniquement"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "par voie",
+     "new": "sur voie"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "ne peut se faire que",
+     "new": "se fait uniquement"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C13",
+   "document": "tracemonkey",
+   "page": 2,
+   "purpose": "TeX figure label in a Form XObject under reflected Tm and CTM",
+   "paragraph": "Bytecodes",
+   "box": [
+    403.82,
+    218.16,
+    427.95,
+    223.33
+   ],
+   "lines": 1,
+   "cycles": [
+    {
+     "name": "shorten",
+     "old": "Bytecodes",
+     "new": "Bytecode"
+    }
+   ],
+   "path": null,
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C14",
+   "document": "canvas",
+   "page": 1,
+   "purpose": "single-line Latin title",
+   "paragraph": "HTML5 Canvas Cheat Sheet v1.1",
+   "box": [
+    42.0,
+    56.93,
+    277.27,
+    73.37
+   ],
+   "lines": 1,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "v1.1",
+     "new": "v1.5"
+    },
+    {
+     "name": "shorten",
+     "old": "HTML5 Canvas Cheat",
+     "new": "Canvas Cheat"
+    },
+    {
+     "name": "lengthen",
+     "old": "v1.1",
+     "new": "v1.1.5"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "v1.1",
+     "new": "v1.5"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "HTML5 Canvas Cheat",
+     "new": "Canvas Cheat"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C15",
+   "document": "lo_migration_ja",
+   "page": 1,
+   "purpose": "LibreOffice, Japanese with Latin, 4 lines (second paragraph)",
+   "paragraph": "LibreOfficeは、ユーザーが個人であっても、組織であったとしても あらゆる種類の個人的文書作業のニーズをみたすようにデザインされています。このソフトウェアは数百万のPCにすでにインストールされており、中にはフランス政府、ヨーロッパ中のいくつかの地域、郡または市 -  例えばドイツのミュンヘン市など – またその他多数の団体、例えばデンマーク、コペンハーゲンの病院システムなどで利用されています。",
+   "box": [
+    56.8,
+    284.04,
+    538.33,
+    361.17
+   ],
+   "lines": 4,
+   "cycles": [
+    {
+     "name": "same",
+     "old": "デンマーク、コペンハーゲン",
+     "new": "コペンハーゲン、デンマーク"
+    },
+    {
+     "name": "shorten",
+     "old": "個人であっても、組織であったとしても",
+     "new": "個人であっても"
+    },
+    {
+     "name": "lengthen",
+     "old": "病院システムなど",
+     "new": "病院システムや政府など"
+    }
+   ],
+   "path": {
+    "a": {
+     "name": "same",
+     "old": "デンマーク、コペンハーゲン",
+     "new": "コペンハーゲン、デンマーク"
+    },
+    "b": {
+     "name": "shorten",
+     "old": "個人であっても、組織であったとしても",
+     "new": "個人であっても"
+    }
+   },
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "Q1",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "purpose": "PR #87 N2: shorten to one line, then grow again",
+   "paragraph": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。",
+   "box": [
+    28.5,
+    120.02,
+    566.9,
+    146.72
+   ],
+   "lines": 2,
+   "cycles": [
+    {
+     "name": "shorten-to-one-line",
+     "old": "追加・更新された幾つかの注目の新機能",
+     "new": "主な新機能"
+    }
+   ],
+   "path": null,
+   "followers": 0,
+   "origin": "continuity manifest (PR #88) Q1"
+  },
+  {
+   "id": "Q2",
+   "document": "word_osaka_guideline",
+   "page": 1,
+   "purpose": "Word P/Span: shorten to one line, follower moves up and back",
+   "paragraph": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+   "box": [
+    70.94,
+    337.06,
+    522.91,
+    365.62
+   ],
+   "lines": 2,
+   "cycles": [
+    {
+     "name": "shorten-to-one-line",
+     "old": "国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。",
+     "new": "ガイドラインを送付します。"
+    }
+   ],
+   "path": null,
+   "followers": 1,
+   "origin": "continuity manifest (PR #88) Q2"
+  },
+  {
+   "id": "Q3",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "purpose": "Word direct-P MCIDs: shorten to one line, two followers move",
+   "paragraph": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+   "box": [
+    53.88,
+    275.5,
+    547.07,
+    305.86
+   ],
+   "lines": 2,
+   "cycles": [
+    {
+     "name": "shorten-to-one-line",
+     "old": "地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。",
+     "new": "感染症対策をお願いします。"
+    }
+   ],
+   "path": null,
+   "followers": 2,
+   "origin": "continuity manifest (PR #88) Q3"
+  }
+ ]
+}

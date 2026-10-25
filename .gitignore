@@ -74,3 +74,6 @@ tmp/
 !/evaluations/paragraph_frame_fidelity/
 !/evaluations/paragraph_frame_fidelity/manifest.json
 !/evaluations/paragraph_frame_fidelity/results.json
+!/evaluations/paragraph_frame_roundtrip/
+!/evaluations/paragraph_frame_roundtrip/manifest.json
+!/evaluations/paragraph_frame_roundtrip/results.json
