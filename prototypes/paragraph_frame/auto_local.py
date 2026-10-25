@@ -89,10 +89,21 @@ def local_layout(tokens, spec):
     original = spec.get('recorded')
     recorded = align_recorded(tokens, original) if original else {}
     if recorded:
+        # Only a run of the recorded text that reaches a glyph still drawn
+        # (not a chance match inside a new word: 'ra' of 'array' in 'range').
+        runs, run = [], []
+        for m in range(len(tokens)):
+            if run and m in recorded and recorded.get(m - 1) == recorded[m] - 1:
+                run.append(m)
+            else:
+                runs.append(run)
+                run = [m] if m in recorded else []
+        anchored = {m for r in runs + [run] if any(tokens[q].get('source_id') is not None for q in r) for m in r}
         tokens = [dict(t) for t in tokens]
         for m, t in enumerate(tokens):
             j = recorded.get(m)
-            if (j is not None and t.get('source_id') is None and t.get('mode') != 'implicit-line-join'
+            # A word space's drawn advance is its line's justification, not its own.
+            if (j is not None and m in anchored and t.get('source_id') is None and t['text'] != ' '
                     and recorded.get(m + 1) == j + 1 and original['glyphs'][j] is not None and original['glyphs'][j][3] is not None):
                 t['advance'] = original['glyphs'][j][3]
     if spec.get('align') == 'justify-cjk':

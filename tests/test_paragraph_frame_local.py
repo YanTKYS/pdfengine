@@ -1,5 +1,6 @@
 """Local layout: an edit keeps what it does not change where it was drawn (auto_local)."""
 import pymupdf
+import pytest
 from pypdf import PdfReader
 from test_paragraph_frame_continuity import page_with
 from prototypes.paragraph_frame.auto import approve, propose, save
@@ -227,6 +228,25 @@ def test_an_edit_applied_again_after_its_undo_draws_the_same(tmp_path):
     edit(source, 'two types', 'several types', a)
     edit(a, 'several types', 'two types', b)
     edit(b, 'two types', 'several types', c)
+    assert origins(b) == origins(source)
+    assert origins(c) == origins(a)
+
+
+@pytest.mark.parametrize('old, new', [('specific', 'precise'), ('a specific', 'a very specific')])
+def test_a_new_word_does_not_take_recorded_advances_by_chance(tmp_path, old, new):
+    # Unevenly kerned lines. 'eci' of the new word 'precise' also occurs in the
+    # recorded 'specific', and the space after the new 'very' continues the
+    # recorded ' specific': neither is the recorded text coming back (a chance
+    # match; a word space's advance is its line's), so applying the edit again
+    # after its undo draws it as the first time.
+    lines = [(40, 60, 'There are two types of links in a'), (40, 76, 'document: a link to a specific position'),
+             (40, 92, 'in the same document, and a link to an'), (40, 108, 'external document or a website.'),
+             (40, 200, 'Following paragraph.')]
+    source = kerned(tmp_path, lines, every=2, adjust=-150)
+    a, b, c = tmp_path / 'a.pdf', tmp_path / 'b.pdf', tmp_path / 'c.pdf'
+    edit(source, old, new, a)
+    edit(a, new, old, b)
+    edit(b, old, new, c)
     assert origins(b) == origins(source)
     assert origins(c) == origins(a)
 
