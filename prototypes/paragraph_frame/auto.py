@@ -79,6 +79,8 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
                 # The layout the paragraph had when first approved, carried by its
                 # stored record; else the paragraph as drawn now (auto_restore).
                 spec['original']=recorded or restore.snapshot(c,paragraphs[0],spec['source_rows'],spec.get('below'))
+                # Layout follows a stored record only; a first edit is laid out as before.
+                spec['recorded']=recorded
                 lines=local_layout(tokens,spec);spec['layout']='local'
             except LocalUnavailable as exc:
                 spec['layout']='paragraph ('+str(exc)+')'

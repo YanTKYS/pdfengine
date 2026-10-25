@@ -86,7 +86,7 @@ def local_layout(tokens, spec):
     spec = dict(spec, stretch=max([t.get('squeezable', 0.) for t in tokens if t['text'] == ' '] or [0.]))
     # The paragraph as first approved (auto_restore): a re-inserted glyph takes
     # the advance it had where the recorded text continues as recorded.
-    original = spec.get('original')
+    original = spec.get('recorded')
     recorded = align_recorded(tokens, original) if original else {}
     if recorded:
         tokens = [dict(t) for t in tokens]
