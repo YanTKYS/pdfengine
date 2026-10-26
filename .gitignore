@@ -77,3 +77,6 @@ tmp/
 !/evaluations/paragraph_frame_roundtrip/
 !/evaluations/paragraph_frame_roundtrip/manifest.json
 !/evaluations/paragraph_frame_roundtrip/results.json
+!/evaluations/paragraph_frame_multiedit/
+!/evaluations/paragraph_frame_multiedit/manifest.json
+!/evaluations/paragraph_frame_multiedit/results.json
