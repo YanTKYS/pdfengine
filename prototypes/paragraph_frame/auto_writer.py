@@ -17,10 +17,17 @@ from .engine import Refused
 from . import form_write
 from . import semantics
 from . import auto_restore
+from . import placed_move
 from . import auto_conditions as conditions
 
 
 def glyph_key(g):return (g['unicode'],g['gid'],*g['origin'],*g['bbox'])
+
+
+def moved_key(g,shift=(0.,0.)):
+    """A glyph translated by ``shift`` (page), to 0.001 pt: a translated drawing is read back through another matrix."""
+    dx,dy=shift;x0,y0,x1,y1=g['bbox']
+    return (g['unicode'],g['gid'],round(g['origin'][0]+dx,3),round(g['origin'][1]+dy,3),round(x0+dx,3),round(y0+dy,3),round(x1+dx,3),round(y1+dy,3))
 
 
 def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None):
@@ -49,8 +56,28 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     # one Form XObject invocation (copy-on-write, see form_write).
     stream,invocation=form_write.drawing_site(c,removed)
     if invocation and any(s['kind']=='mcid' for p in active for s in p.scopes):raise Refused('marked content inside a Form XObject requires a semantic adapter')
-    if any(p.fixed for p in active[1:]):raise Refused('a following paragraph with an inline placed object cannot move')
+    # An inline placed object of a following paragraph moves with its text
+    # when the operators that draw it are proven its own (placed_move); it is
+    # translated where it is drawn, by the same page translation.
+    units=[]
+    for p,move in zip(active[1:],moves):
+        if not p.fixed:continue
+        shifts={move[i] for i in p.ids}
+        if len(shifts)!=1 or next(iter(shifts))[0]:raise Refused('a following paragraph with an inline placed object cannot move')
+        dy=next(iter(shifts))[1]
+        units+=[dict(u,paragraph=p,shift=(0.,dy)) for u in placed_move.plan(c,p,(stream,invocation),dy,spec.get('frames',[spec['frame']]),
+                                                                            evidence['observed']['obstacles'],c.page.transformation_matrix)]
+    moved={i:u['shift'] for u in units for i in u['glyphs']}
+    if {i for p in active[1:] for i in p.fixed}-set(moved):raise Refused('a following paragraph with an inline placed object cannot move')
     edits=[(e.operator.start,e.operator.end,serialized_event(e,selected,remove=True)) for e in removed]
+    program=c.streams[stream]
+    for u in units:
+        # q and the translation before its first operator, Q after its last
+        # (each extends that operator, so insertions at the same place keep their order).
+        tx,ty=u['translation'];first_end=placed_move.operator_end(c,(stream,invocation),u['start'])
+        edits.append((u['start'],first_end,b'q 1 0 0 1 '+number(tx)+b' '+number(ty)+b' cm\n'+program[u['start']:first_end]))
+        last=placed_move.operator_start(c,(stream,invocation),u['end'])
+        edits.append((last,u['end'],program[last:u['end']]+b'\nQ'))
     # Re-emitted sequences lose their old BDC/EMC; they are written again
     # around their new glyphs (fixed objects and containers stay as drawn).
     for p in active:
@@ -140,6 +167,8 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         for i in p.ids:
             dx,dy=move[i]
             t=dict(source[i],x=source[i]['origin'][0]+dx,y=source[i]['origin'][1]+dy)
+            # A glyph of a moved placed object stays in its operators (placed_move).
+            if i in moved:t.update(fixed=True,unit=next(k for k,u in enumerate(units) if i in u['glyphs']))
             for n,s in enumerate(p.scopes):
                 if s['stream_xref']==t['event'].stream_xref and s['content_byte_range'][0]<=t['event'].operator.start<s['content_byte_range'][1]:t['scope']=n;break
             placed.append(t)
@@ -222,35 +251,52 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     parts=[(None,pieces[0])]+[(n,ts) for n,ts in pieces[1:]]
     if len(parts)>1 and any(x['kind']=='mcid' for x in head.scopes):raise Refused('structured marked content around an inline placed object')
     drawn=[]
+    def after(end):
+        """The first boundary after ``end`` (an inline placed object) whose clip
+        holds the frame (an object's clip may be set before its BDC and
+        restored after its EMC), no later than the text that followed it in
+        the source, with no other text in between: paint and content order
+        are kept."""
+        nonlocal neutral
+        limit=min([e.operator.start for e in removed if e.operator.start>=end]+[containers[-1]['end_byte_range'][0] if containers else len(data)])
+        spot=pre=problem=None;places=[]
+        for b in boundaries:
+            if not end<=b.operator.end<=limit or b.marked_content_depth!=len(containers) or b.text_object:continue
+            if form_write.foreign_text_between(data,end,b.operator.end,starts):break
+            places.append(b)
+        for use in (True,) if neutral else (False,True) if own else (False,):
+            for b in places:
+                try:pre=form_write.insertion(b,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=use,text_overprint=own_overprint);spot=b;break
+                except Refused as exc:problem=problem or exc
+            if spot is not None:
+                if use:neutral=neutral_resource;pre+=neutral.encode()+b' gs\n'
+                break
+        if spot is None:raise Refused('no safe insertion point after an inline placed object'+(f' ({problem})' if problem else ''))
+        at=spot.operator.end
+        if any(a<at<b for a,b,_ in edits):raise Refused('insertion intersects removal')
+        return at,(spot,b''),pre
+    # A following paragraph's text before its first moved placed object goes
+    # with the edited paragraph; the text after one goes right after it.
+    leading,trailing=[],[]
+    for p,tokens in batches[1:]:
+        lead,runs=[],{}
+        for t in tokens:
+            if t.get('unit') is not None:runs.setdefault(t['unit'],[]);current=runs[t['unit']];continue
+            (current if runs else lead).append(t)
+        if any(runs.values()) and any(s['kind']=='mcid' for s in p.scopes):raise Refused('structured marked content around an inline placed object of a following paragraph')
+        leading.append((p,lead));trailing+=[(p,units[k],ts) for k,ts in runs.items() if ts]
     for k,(n,ts) in enumerate(parts):
         if not k:
             at,pre,wrapped=insertion,prefix,(choice,restore)
         else:
-            # The first boundary after its sequence whose clip holds the frame
-            # (an object's clip may be set before its BDC and restored after
-            # its EMC), no later than the text that followed it in the source,
-            # with no other text in between: paint and content order are kept.
-            end=head.scopes[n]['end_byte_range'][1]
-            limit=min([e.operator.start for e in removed if e.operator.start>=end]+[containers[-1]['end_byte_range'][0] if containers else len(data)])
-            spot=pre=problem=None;places=[]
-            for b in boundaries:
-                if not end<=b.operator.end<=limit or b.marked_content_depth!=len(containers) or b.text_object:continue
-                if form_write.foreign_text_between(data,end,b.operator.end,starts):break
-                places.append(b)
-            for use in (True,) if neutral else (False,True) if own else (False,):
-                for b in places:
-                    try:pre=form_write.insertion(b,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=use,text_overprint=own_overprint);spot=b;break
-                    except Refused as exc:problem=problem or exc
-                if spot is not None:
-                    if use:neutral=neutral_resource;pre+=neutral.encode()+b' gs\n'
-                    break
-            if spot is None:raise Refused('no safe insertion point after an inline placed object'+(f' ({problem})' if problem else ''))
-            at,wrapped=spot.operator.end,(spot,b'')
-            if any(a<at<b for a,b,_ in edits):raise Refused('insertion intersects removal')
+            at,wrapped,pre=after(head.scopes[n]['end_byte_range'][1])
         ops=emit(head,ts,True,pre) if ts else []
         if k==len(parts)-1:
-            for p,tokens in batches[1:]:ops+=emit(p,tokens,False,pre)
+            for p,tokens in leading:ops+=emit(p,tokens,False,pre)
         drawn.append((at,wrapped,ops))
+    for p,u,ts in trailing:
+        at,wrapped,pre=after(u['end'])
+        drawn.append((at,wrapped,emit(p,ts,False,pre)))
     for at,(spot,restore_),ops in drawn:
         if ops:edits.append((at,at,form_write.wrap(spot,b''.join(ops),restore_)))
     # Replacement text of a paragraph element itself follows its new text.
@@ -268,16 +314,16 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     try:
         writer.write(draft)
         if spec.get('mode')=='flow':stored=store_flow(c,draft,writer,page,spec,selected,[len(ts) for _,ts in batches],approval)
-        else:stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval,kept=kept_ids)
+        else:stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval,kept=kept_ids,moved=moved)
         writer.write(tmp)
-        validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=rewritten)
+        validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=rewritten,moved=moved,units=units)
         form_write.unchanged_elsewhere(c.source,tmp,spec['page'])
         if stored['record'] is not None:verify_conditions(tmp,spec['page'],stored['record'])
         os.replace(tmp,output)
     finally:
         for path in (tmp,draft):
             if os.path.exists(path):os.unlink(path)
-    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,source_glyphs_removed=len(selected),layout=spec.get('layout','column flow'),kept_glyphs=len(kept_ids),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
+    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,placed_objects_moved=[dict(old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs'])) for u in units],source_glyphs_removed=len(selected),layout=spec.get('layout','column flow'),kept_glyphs=len(kept_ids),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
 
 
 def kept_lines(c,paragraph,lines):
@@ -339,31 +385,41 @@ def _covered(rect,boxes):
     return all(any(b.contains(p) for b in boxes) for p in points)
 
 
-def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None):
+def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=None,units=()):
     """Read-only publication checks, also callable on existing saved candidates.
 
     ``actual_text``: structure elements whose /ActualText the edit rewrote;
     every other entry and relation of the structure tree must be unchanged.
+    ``moved``/``units``: glyphs and drawings of inline placed objects approved
+    to move with their paragraph (placed_move): each must be found exactly
+    translated, and nothing else may change.
     """
     check=ContentPage(tmp,spec['page'])
     try:
         if check.errors:raise Refused('staged source interpretation failed')
-        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected);remain=Counter(foreign);added=[]
+        moved=moved or {}
+        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected and i not in moved);remain=Counter(foreign);added=[]
+        shifted=Counter(moved_key(c.actual[i],moved[i]) for i in moved)
         for g in check.actual:
             key=glyph_key(g)
             if remain[key]:remain[key]-=1
+            elif shifted[moved_key(g)]:shifted[moved_key(g)]-=1
             else:added.append(g)
         if +remain:raise Refused('staged protected text changed')
-        def styled(content,exclude=None):
+        if +shifted:raise Refused('staged moved placed object text differs from its approved translation')
+        def styled(content,exclude=None,only=None,key=lambda content,i:glyph_key(content.actual[i])):
             result=Counter()
             for event in content.events:
                 for ch in event.chars:
                     for i in ch.source_orders:
-                        if exclude and i in exclude:continue
+                        if exclude and i in exclude or only is not None and i not in only:continue
                         state=event.state
-                        result[(glyph_key(content.actual[i]),ch.code,state.font.name,state.size,state.tz,state.fill,state.tr,state.opacity)]+=1
+                        result[(key(content,i),ch.code,state.font.name,state.size,state.tz,state.fill,state.tr,state.opacity)]+=1
             return result
-        if styled(c,selected)-styled(check):raise Refused('staged protected source code/style changed')
+        if styled(c,set(selected)|set(moved))-styled(check):raise Refused('staged protected source code/style changed')
+        # A moved placed object's glyphs keep their code and style where they moved.
+        if moved and styled(c,only=moved,key=lambda content,i:moved_key(content.actual[i],moved[i]))-styled(check,key=lambda content,i:moved_key(content.actual[i])):
+            raise Refused('staged moved placed object code/style changed')
         if ''.join(g['unicode'] for g in added)!=expected:raise Refused('staged drawing text differs from requested paragraphs')
         old_boxes=[pymupdf.Rect(c.actual[i]['bbox'])+(-.3,-.3,.3,.3) for i in selected if c.actual[i]['unicode'].strip()]
         frames=[pymupdf.Rect(f) for f in spec.get('frames',[spec['frame']])]
@@ -375,17 +431,30 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None):
             # beyond it; the outside-pixel checks below still apply.
             if not any(frame.contains(box) for frame in frames) and not any(o.contains(box) for o in old_boxes):
                 raise Refused(f"capacity: staged glyph bounds outside approved inferred frame ({g['unicode']!r} at {[round(v,1) for v in box]})")
-            for o in evidence['observed']['obstacles']:
+            for o in evidence['observed']['obstacles']+[dict(kind='moved placed object',bounds=u['new'],old=u['old'],shift=u['shift']) for u in units]:
                 # Target/follower glyphs were excluded at detection. A container
                 # (background behind every original line) bounds the frame instead.
                 if o['kind']=='container':continue
+                # A moved placed object's paint is checked where it moved to.
+                if o['kind']!='moved placed object' and any((pymupdf.Rect(u['old'])+(-.5,-.5,.5,.5)).contains(pymupdf.Rect(o['bounds'])) for u in units):continue
                 overlap=box&pymupdf.Rect(o['bounds'])
+                if o['kind']=='moved placed object' and not overlap.is_empty:
+                    # Its own paragraph's text overlapped it before as it does now.
+                    back=overlap+(-o['shift'][0],-o['shift'][1],-o['shift'][0],-o['shift'][1])
+                    if _covered(back,old_boxes):continue
                 # New ink may overlap protected paint only where the replaced
                 # glyphs already did (text on part of a band or label).
                 if not overlap.is_empty and overlap.width>.05 and overlap.height>.05 and not _covered(overlap,old_boxes):
                     raise Refused('staged glyph collides with protected '+o['kind'])
         original_paint=painting(c.source,spec['page']);staged_paint=painting(tmp,spec['page'])
-        if any(original_paint[k]!=staged_paint[k] for k in ('drawings','images','links','annots')):raise Refused('staged protected non-text paint changed')
+        if units:
+            # Paint inside a moved placed object is expected where it moved to.
+            if Counter(placed_move.paint_key(x,units) for x in original_paint['drawings'])!=Counter(placed_move.paint_key(x) for x in staged_paint['drawings']):
+                raise Refused('staged protected non-text paint changed')
+            if Counter(placed_move.image_key(x,units) for x in original_paint['images'])!=Counter(placed_move.image_key(x) for x in staged_paint['images']):
+                raise Refused('staged protected non-text paint changed')
+            if any(original_paint[k]!=staged_paint[k] for k in ('links','annots')):raise Refused('staged protected non-text paint changed')
+        elif any(original_paint[k]!=staged_paint[k] for k in ('drawings','images','links','annots')):raise Refused('staged protected non-text paint changed')
         if any(staged_paint['fonts'].get(k)!=v for k,v in original_paint['fonts'].items()):raise Refused('staged original font program changed')
         # Structure checks that hold in the source must hold after the edit;
         # the structure tree is unchanged except the rewritten replacement text.
@@ -403,7 +472,9 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None):
         # Poppler too: its text positioning arithmetic differs from MuPDF's.
         for renderer,(ia,ib) in (('MuPDF',(ia,ib)),('Poppler',(_poppler(c.source,spec['page']),_poppler(tmp,spec['page'])))):
             diff=ImageChops.difference(ia,ib)
-            for x0,y0,x1,y1 in spec.get('frames',[spec['frame']]):
+            # A moved placed object may reach past the frame where it already
+            # did; its paint was matched exactly translated above.
+            for x0,y0,x1,y1 in spec.get('frames',[spec['frame']])+[pymupdf.Rect(u[k])+(-1,-1,1,1) for u in units for k in ('old','new')]:
                 ImageDraw.Draw(diff).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
             if diff.getbbox():raise Refused(f'staged raster changes outside approved inferred frame ({renderer})')
         # Native retained font resources/programs are cloned, never replaced.
@@ -418,7 +489,7 @@ def _poppler(path,page):
         with Image.open(folder+'/page.png') as image:return image.convert('RGB')
 
 
-def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active,approval,kept=()):
+def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active,approval,kept=(),moved=None):
     """Record the approved conditions of the edited paragraph by its drawn lines.
 
     The lines are observed in the staged PDF itself, with the same analysis the
@@ -430,19 +501,23 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
     from pdfeditor.marked_content import observe_marked_content
     state=spec['stored'];records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale']]
     if delta:
-        moved=[n for n,p in zip(state['followers'],active[1:]) if n is not None]
-        records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale'] and n not in moved]
-        records+=[conditions.shifted(state['records'][n],delta) for n in moved]
+        followers=[n for n,p in zip(state['followers'],active[1:]) if n is not None]
+        records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale'] and n not in followers]
+        records+=[conditions.shifted(state['records'][n],delta) for n in followers]
     check=ContentPage(draft,spec['page'])
     try:
         # Glyphs of an inline placed object and of lines kept as drawn stay
         # where they were; they are lines of the edited paragraph too.
         fixed=set(active[0].fixed);stay=fixed|set(kept);remaining=Counter(glyph_key(c.actual[i]) for i in stay)
-        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected and i not in stay);added=[];placed=[]
+        moved=moved or {}
+        foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected and i not in stay and i not in moved);added=[];placed=[]
+        # Glyphs of a moved placed object are foreign to the edited paragraph, where they moved.
+        shifted=Counter(moved_key(c.actual[i],moved[i]) for i in moved)
         for n,g in enumerate(check.actual):
             key=glyph_key(g)
             if remaining[key]:remaining[key]-=1;placed.append(n)
             elif foreign[key]:foreign[key]-=1
+            elif shifted[moved_key(g)]:shifted[moved_key(g)]-=1
             else:added.append(n)
         target=set(added[:target_count-len(fixed)])|set(placed)
         analysis=_Analysis(draft,spec['page'])
