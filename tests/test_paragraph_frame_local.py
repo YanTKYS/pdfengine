@@ -341,6 +341,9 @@ def test_a_record_holds_its_lines_in_full_or_as_pr94_did():
     whole = dict(short, rows=[[0, 2, 50., 10., 20., 19.5, 10., False, False], [3, 4, 66., 10., 15., 14.5, 10., False, False]])
     assert valid(short, 300, 300) and not full(short)
     assert valid(whole, 300, 300) and full(whole)
+    sized = dict(whole, sizes=[10., 10., None, 10.])
+    assert valid(sized, 300, 300)
     for broken in (dict(whole, rows=[whole['rows'][0], short['rows'][1]]), dict(whole, rows=[whole['rows'][0][:8] + [1], whole['rows'][1]]),
-                   dict(whole, rows=[whole['rows'][0][:6] + [0.] + whole['rows'][0][7:], whole['rows'][1]])):
+                   dict(whole, rows=[whole['rows'][0][:6] + [0.] + whole['rows'][0][7:], whole['rows'][1]]),
+                   dict(sized, sizes=[10., 10., 10., 10.]), dict(sized, sizes=[10., 10., None]), dict(sized, sizes=[10., 'x', None, 10.])):
         assert not valid(broken, 300, 300)

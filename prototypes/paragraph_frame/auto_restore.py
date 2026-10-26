@@ -18,6 +18,10 @@ paragraph as it was drawn then, with its approved conditions in the page
   baseline and start, where its pen and its last visible glyph end, its font
   size, whether its break is the author's and whether it ends with a hyphen
   (auto_detect.source_rows; records of PR #94 hold the first four);
+* ``sizes``: per character of ``text``, the font size its glyph was drawn at
+  (null for an implicit join): a glyph a later save redraws reads back at
+  the size the writer wrote, a few 1e-10 apart, which local layout would
+  take for another size;
 * ``below``: the first baseline of the text block below the paragraph in its
   column and whether it followed the paragraph then (null if none): a block
   that was no follower is not pulled above its place by a shrinking edit.
@@ -74,7 +78,13 @@ def snapshot(c, paragraph, rows, below=None, stats=None):
                          round(r['ink_end'], 5), round(r['size'], 5), bool(r['hard']), r['ids'][-1] in paragraph.hyphens])
     out = dict(text=paragraph.text, glyphs=glyphs, rows=out_rows, below=below)
     if stats is not None:
-        out['stats'] = stats
+        from .auto_style import source_tokens
+        drawn, _ = source_tokens(c)
+        sizes = [None if g is None else None for g in glyphs]
+        for i, n in index.items():
+            sizes[n] = drawn[i]['size'] if i in drawn else None
+        if all(s is not None for s, g in zip(sizes, glyphs) if g is not None):
+            out.update(stats=stats, sizes=sizes)
     return out
 
 
@@ -107,6 +117,10 @@ def valid(layout, width, height):
         below = layout.get('below')
         if below is not None and not (finite(below['baseline'], 0, height + 1) and type(below['follower']) is bool):
             return False
+        sizes = layout.get('sizes')
+        if sizes is not None and (not isinstance(sizes, list) or len(sizes) != len(text)
+                                  or any((g is None) != (s is None) or s is not None and not finite(s, .1, height) for s, g in zip(sizes, glyphs))):
+            return False
         stats = layout.get('stats')
         if stats is not None:
             shapes = dict(tracking=(str, float, float, float), reduction=(str, float, float), marks=(str, str, float, float))
@@ -128,7 +142,7 @@ def shifted(layout, dy):
     return dict(text=layout['text'], glyphs=[None if g is None else [g[0], g[1], round(g[2] + dy, 5)] + g[3:] for g in layout['glyphs']],
                 rows=[[r[0], r[1], round(r[2] + dy, 5)] + r[3:] for r in layout['rows']],
                 below=None if below is None else dict(below, baseline=round(below['baseline'] + dy, 5)),
-                **({'stats': layout['stats']} if 'stats' in layout else {}))
+                **{k: layout[k] for k in ('stats', 'sizes') if k in layout})
 
 
 def follower_shift(layout, delta, follower_baseline):
@@ -261,13 +275,21 @@ def against(tokens, layout, first_baseline, aligned=False):
     (a follower moved since its record was written moves its record with it)."""
     shift = first_baseline - layout['rows'][0][2]
     stats = layout.get('stats') or tokens[0]['page_stats']
+    sizes = layout.get('sizes')
     keep = retained(tokens, layout, aligned)
-    out = []
+    out, size = [], {}
     for m, t in enumerate(tokens):
         v = dict(t, token=m)
         v.pop('positional_gap', None)
         j = keep.get(m)
         g = layout['glyphs'][j] if j is not None else None
+        # The size the recorded paragraph drew a glyph at; new text takes that
+        # of the recorded glyph of its font before it, as it takes its style.
+        drawn = sizes[j] if sizes and g is not None else size.get(t['font_name'])
+        if drawn is not None and abs(drawn - t['size']) < 1e-4:
+            v.update(size=drawn, nominal_advance=t['nominal_advance'] * drawn / t['size'])
+        if sizes and g is not None:
+            size[t['font_name']] = sizes[j]
         if g is not None:
             v.pop('squeezable', None)
             v.update(source_id=('recorded', j), origin=[g[1], g[2] + shift], advance=g[3] if g[3] is not None else plain(t))
