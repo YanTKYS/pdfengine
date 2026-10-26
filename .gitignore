@@ -80,3 +80,6 @@ tmp/
 !/evaluations/paragraph_frame_multiedit/
 !/evaluations/paragraph_frame_multiedit/manifest.json
 !/evaluations/paragraph_frame_multiedit/results.json
+!/evaluations/paragraph_frame_placed/
+!/evaluations/paragraph_frame_placed/manifest.json
+!/evaluations/paragraph_frame_placed/results.json
