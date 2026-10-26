@@ -61,13 +61,22 @@ def local_layout(tokens, spec, record=True):
             placed.append(dict(p, source_id=t.get('source_id'), origin=t.get('origin'), mode=t.get('mode')))
         line['tokens'] = placed
         ids = tuple(p['source_id'] for p in placed if p.get('mode') != 'implicit-line-join')
-        line['kept'] = bool(as_recorded and ids in drawn and all(
+        line['kept'] = bool(ids in drawn and all(
             p.get('origin') is not None and abs(p['x'] - p['origin'][0]) < 1e-9 and abs(p['y'] - p['origin'][1]) < 1e-9
             for p in placed if p.get('mode') != 'implicit-line-join'))
+        line['set'] = (as_recorded, joined)
+    # The redrawn lines are one block, as after one edit of the drawing: a
+    # kept line between redrawn ones would be read out of order (some
+    # extractors read text in content order).
+    redrawn = [k for k, line in enumerate(lines) if not line['kept']]
+    for k, line in enumerate(lines):
+        as_recorded, joined = line.pop('set')
+        if redrawn and redrawn[0] <= k <= redrawn[-1]:
+            line['kept'] = False
         if as_recorded and not line['kept']:
             # Set where the recorded paragraph had it: its line-end join had no glyph.
             if joined and line['end'] < len(tokens):
-                placed[-1]['undrawn'] = True
+                line['tokens'][-1]['undrawn'] = True
             line['restored'] = True
     return lines
 

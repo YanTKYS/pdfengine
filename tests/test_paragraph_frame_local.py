@@ -358,3 +358,17 @@ def test_lines_drawn_where_the_record_has_them_are_kept_as_drawn(tmp_path):
     proposal = edit(s1, 'a public website.', 'a website.', s2)
     assert [l.get('kept', False) for l in proposal['lines']] == [True, True, True, False]
     assert origins(s2) == origins(source)
+
+
+def test_two_edits_on_lines_apart_read_in_order(tmp_path):
+    # A on the first line, then B on the last: the paragraph is laid out
+    # against its record; lines between them stay as drawn only if every
+    # redrawn line is on one side of them (text is read in content order).
+    source = kerned(tmp_path, TWO, every=2, adjust=-37)
+    s1, s2 = tmp_path / 's1.pdf', tmp_path / 's2.pdf'
+    edit(source, 'two types', 'three types', s1)
+    edit(s1, 'external document', 'outside document', s2)
+    with pymupdf.open(s2) as d:
+        text = ' '.join(d[0].get_text().split())
+    assert text.startswith('There are three types of links in a document: a link to a specific position in the same document, '
+                           'and a link to an outside document or a website.')
