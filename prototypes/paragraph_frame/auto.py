@@ -37,6 +37,13 @@ def _placed_objects_stay(lines):
                 raise Refused('an inline placed object would move in the new layout')
 
 
+def _leaves_frame(lines,paragraphs,spec):
+    """Whether the last baseline of the paragraph, or of a follower moved by its growth, is below the frame."""
+    delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
+    deepest=max([lines[-1]['baseline']]+[p.baselines[-1]+delta for p in paragraphs[1:] if delta>0])
+    return bool(spec.get('frame')) and deepest>spec['frame'][3]+.01
+
+
 def _flow_moves(paragraphs,spec,moves):
     """Following paragraphs that must be repainted, as {glyph id: (dx, dy)} maps."""
     active=[]
@@ -85,6 +92,10 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
                 kinds=[s['kind'] for s in paragraphs[0].scopes]
                 spec['aligned']=sum(k in ('mcid','plain') for k in kinds)>1 or 'atom' in kinds or 'fixed' in kinds
                 lines=local_layout(tokens,spec);spec['layout']='local'
+                # Set as the recorded paragraph would set the text, the paragraph
+                # or its followers would leave the frame, which an earlier edit
+                # may have made room for: the text is set against the drawing.
+                if _leaves_frame(lines,paragraphs,spec):lines=local_layout(tokens,spec,record=False)
             except LocalUnavailable as exc:
                 spec['layout']='paragraph ('+str(exc)+')'
                 if spec['align']=='justify':

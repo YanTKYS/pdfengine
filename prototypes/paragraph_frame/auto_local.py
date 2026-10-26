@@ -33,16 +33,17 @@ class LocalUnavailable(Exception):
     pass
 
 
-def local_layout(tokens, spec):
+def local_layout(tokens, spec, record=True):
     """Local layout of ``tokens`` against the paragraph as drawn, or, when a
     stored record holds the paragraph's first approved layout in full, against
     that layout (auto_restore.against): what differs from the recorded text
     is laid out as one edit of the recorded paragraph, so the lines do not
     depend on the edits, undos and their order that led to the text. A line
     is kept as drawn only where it is drawn so now; a line set where the
-    record had it is redrawn there, its line-end join undrawn as recorded."""
+    record had it is redrawn there, its line-end join undrawn as recorded.
+    ``record=False`` lays out against the drawing (the caller's fallback)."""
     original = spec.get('recorded')
-    if not original or not full(original) or any(t.get('fixed') for t in tokens):
+    if not record or not original or not full(original) or any(t.get('fixed') for t in tokens):
         return _layout(tokens, spec)
     rows = spec.get('source_rows')
     if not rows or not tokens:
