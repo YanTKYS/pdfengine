@@ -292,7 +292,12 @@ def against(tokens, layout, first_baseline, aligned=False):
             size[t['font_name']] = sizes[j]
         if g is not None:
             v.pop('squeezable', None)
-            v.update(source_id=('recorded', j), origin=[g[1], g[2] + shift], advance=g[3] if g[3] is not None else plain(t))
+            origin = [g[1], g[2] + shift]
+            # A glyph still drawn where it was recorded (to the record's rounding)
+            # keeps its exact origin: its line stays as drawn.
+            if t.get('source_id') is not None and t.get('origin') and all(abs(p - q) < 1e-4 for p, q in zip(t['origin'], origin)):
+                origin = list(t['origin'])
+            v.update(source_id=('recorded', j), origin=origin, advance=g[3] if g[3] is not None else plain(t))
             if v.get('mode') == 'implicit-line-join':
                 v['mode'] = 'recorded-space'
         elif j is not None or t.get('mode') == 'implicit-line-join':
