@@ -183,7 +183,26 @@ BT … ET                                     ← 行の続きの文字
 
 ## 5. 既存機能への影響
 
-<!-- regression -->
+評価したコード（`d1207db`）で、PR #87〜#96 の評価を各PRと同じスクリプト・入力で実行し直し、PR #96 が記録した状態（main `bb9fd08`）と比べた。結果は results.json の `regression`。
+
+| 評価 | PR #96 が記録した状態との違い |
+|---|---|
+| PR #87〜#91（`tagged_regression.py`：一般化・連続性・段組・InDesign・タグ付き） | **0** |
+| PR #92 の固定評価 | 1件：C02 の長文化の拒否理由（下記）。保存・監査・配置の数値は同じ |
+| PR #94 の往復 | 0（PR #94 の結果との違いは、PR #96 が記録した経路の改善3項目だけ） |
+| PR #96 の複数の編集 | 0（集計・各手とも同じ） |
+
+PR #92 の C02 の長文化（「ぜひご活用ください。」の後に「ぜひご相談ください。」を足して1行増える）：
+
+- 従来：`a following paragraph with an inline placed object cannot move`
+- 今回：`the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it`
+
+どちらも拒否で、後に続く再編集も同じく実行されない。
+
+まとめ（保存・拒否・安全性・品質・構造・再編集）：
+
+- 実PDFの既存の評価では、保存された手・拒否された手・各監査の結果は、すべて PR #96 の記録と同じ。
+- 理由が変わったのは、上の1件だけ。
 
 ## 6. 実装の途中で見つけて直したこと
 
