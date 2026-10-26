@@ -23,6 +23,10 @@ safety/quality, structure, continued editing) and the placed audit:
 * ``protected``: every other drawing, image, link and annotation of the page is
   unchanged.
 
+The region the existing audits allow to change is the edited paragraph and
+its following paragraphs as detected in the source (an approved edit moves
+them), with the added lines below.
+
 The undo is compared with the source (roundtrip_evaluate.compare). A refused
 step ends its case; refusals never count as success.
 """
@@ -193,14 +197,32 @@ def classify(reason):
     return 'other: ' + r.split('Refused: ')[-1][:120]
 
 
+def block(source, page, selection):
+    """Page bounds of the edited paragraph and its following paragraphs (they
+    move with an approved edit), as detected in the source."""
+    from .auto_detect import detect
+    c, ps, spec, at, ev = detect(str(source), page, selection)
+    try:
+        boxes = [pymupdf.Rect(c.actual[i]['bbox']) for p in ps for i in p.ids if c.actual[i]['unicode'].strip()]
+        out = boxes[0]
+        for r in boxes[1:]:
+            out |= r
+        return [round(v, 2) for v in out]
+    finally:
+        c.close()
+
+
 def run_case(code, case, source, root):
     rows = {}
     pitch = (case['box'][3] - case['box'][1]) / max(1, case['lines'])
+    # The audits' allowed region: the edited paragraph and the following
+    # paragraphs its edit moves (plus the added lines, roundtrip_evaluate.step).
+    case = dict(case, box=block(source, case['page'], case.get('selection') or case['paragraph'][:6]))
     for kind, (old, new) in case['edits'].items():
         text = case['paragraph']
         changed = text.replace(old, new, 1)
         folder = root / case['id'] / kind
-        seq, prev = [], source
+        seq, prev, grow = [], source, 0
         for n, (a, b, before, after) in enumerate([(old, new, text, changed), (new, old, changed, text)]):
             sub = folder / f'{n + 1}'
             sub.mkdir(parents=True, exist_ok=True)
@@ -208,7 +230,7 @@ def run_case(code, case, source, root):
             for p in (output, output.with_suffix('.proposal.json'), output.with_suffix('.save.json')):
                 if p.exists():
                     p.unlink()
-            r = step(code, prev, case, a, b, before, after, output, sub, 0, pitch)
+            r = step(code, prev, case, a, b, before, after, output, sub, grow, pitch)
             if r['outcome'] == 'saved':
                 saved = json.loads(output.with_suffix('.save.json').read_text())
                 r['save']['placed_objects_moved'] = saved.get('placed_objects_moved')
@@ -222,6 +244,7 @@ def run_case(code, case, source, root):
             if r['outcome'] != 'saved':
                 break
             prev = output
+            grow = max(grow, r['grow'])
         rows[kind] = seq
     return rows
 
@@ -268,6 +291,9 @@ def summary(results, ids):
                 ce = r.get('continued_editing')
                 s['continued_editing'] += bool(ce.get('ok') if isinstance(ce, dict) else ce)
                 s['placed_audit'] += r['placed']['ok']
+                # The generic audit requires all non-text paint unchanged; the
+                # placed audit splits it into approved moves and protected paint.
+                s['passed_with_placed_audit'] += set(r['failed']) <= {'non_text_paint_identical'} and r['placed']['ok']
                 if n == 1:
                     s['undo_page_identical'] += r['vs_source']['page_changed'] == 0
     return dict(s)
