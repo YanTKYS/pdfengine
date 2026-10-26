@@ -78,9 +78,12 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
                 spec['hyphens']=list(paragraphs[0].hyphens)
                 # The layout the paragraph had when first approved, carried by its
                 # stored record; else the paragraph as drawn now (auto_restore).
-                spec['original']=recorded or restore.snapshot(c,paragraphs[0],spec['source_rows'],spec.get('below'))
+                spec['original']=recorded or restore.snapshot(c,paragraphs[0],spec['source_rows'],spec.get('below'),tokens[0]['page_stats'])
                 # Layout follows a stored record only; a first edit is laid out as before.
                 spec['recorded']=recorded
+                # Whether an edit aligns old and new text per character (auto_style.changed_runs).
+                kinds=[s['kind'] for s in paragraphs[0].scopes]
+                spec['aligned']=sum(k in ('mcid','plain') for k in kinds)>1 or 'atom' in kinds or 'fixed' in kinds
                 lines=local_layout(tokens,spec);spec['layout']='local'
             except LocalUnavailable as exc:
                 spec['layout']='paragraph ('+str(exc)+')'

@@ -22,7 +22,7 @@ case this layout does not cover; the caller uses the paragraph layout.
 from uniseg.linebreak import line_break_boundaries
 from .auto_layout import fit, _squeezed
 from .engine import Refused
-from .auto_restore import align as align_recorded
+from .auto_restore import against, full, align as align_recorded
 
 STRETCH = .25   # em of extra advance per space a justified line may take
 CJK_GAP = .05   # em of extra advance per glyph gap of a justified CJK line
@@ -34,6 +34,44 @@ class LocalUnavailable(Exception):
 
 
 def local_layout(tokens, spec):
+    """Local layout of ``tokens`` against the paragraph as drawn, or, when a
+    stored record holds the paragraph's first approved layout in full, against
+    that layout (auto_restore.against): what differs from the recorded text
+    is laid out as one edit of the recorded paragraph, so the lines do not
+    depend on the edits, undos and their order that led to the text. A line
+    is kept as drawn only where it is drawn so now; a line set where the
+    record had it is redrawn there, its line-end join undrawn as recorded."""
+    original = spec.get('recorded')
+    if not original or not full(original) or any(t.get('fixed') for t in tokens):
+        return _layout(tokens, spec)
+    rows = spec.get('source_rows')
+    if not rows or not tokens:
+        raise LocalUnavailable('no source lines')
+    virtual, recorded_rows, hyphens = against(tokens, original, rows[0]['baseline'], spec.get('aligned', False))
+    lines = _layout(virtual, dict(spec, source_rows=recorded_rows, hyphens=hyphens, recorded=None))
+    drawn = {tuple(r['ids']) for r in rows}
+    for line in lines:
+        as_recorded = line.get('kept')
+        # The recorded paragraph changed lines here without a glyph.
+        joined = bool(line['tokens']) and line['tokens'][-1].get('source_id') is None and line['tokens'][-1].get('mode') == 'implicit-line-join'
+        placed = []
+        for p in line['tokens']:
+            t = tokens[p.pop('token')]
+            placed.append(dict(p, source_id=t.get('source_id'), origin=t.get('origin'), mode=t.get('mode')))
+        line['tokens'] = placed
+        ids = tuple(p['source_id'] for p in placed if p.get('mode') != 'implicit-line-join')
+        line['kept'] = bool(as_recorded and ids in drawn and all(
+            p.get('origin') is not None and abs(p['x'] - p['origin'][0]) < 1e-9 and abs(p['y'] - p['origin'][1]) < 1e-9
+            for p in placed if p.get('mode') != 'implicit-line-join'))
+        if as_recorded and not line['kept']:
+            # Set where the recorded paragraph had it: its line-end join had no glyph.
+            if joined and line['end'] < len(tokens):
+                placed[-1]['undrawn'] = True
+            line['restored'] = True
+    return lines
+
+
+def _layout(tokens, spec):
     rows = spec.get('source_rows')
     if not rows or not tokens:
         raise LocalUnavailable('no source lines')
