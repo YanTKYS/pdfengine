@@ -347,3 +347,14 @@ def test_a_record_holds_its_lines_in_full_or_as_pr94_did():
                    dict(whole, rows=[whole['rows'][0][:6] + [0.] + whole['rows'][0][7:], whole['rows'][1]]),
                    dict(sized, sizes=[10., 10., 10., 10.]), dict(sized, sizes=[10., 10., None]), dict(sized, sizes=[10., 'x', None, 10.])):
         assert not valid(broken, 300, 300)
+
+
+def test_lines_drawn_where_the_record_has_them_are_kept_as_drawn(tmp_path):
+    # Recorded positions are rounded; a line still drawn where the record
+    # has it keeps its operators when an undo is laid out against the record.
+    source = kerned(tmp_path, TWO, every=2, adjust=-37)
+    s1, s2 = tmp_path / 's1.pdf', tmp_path / 's2.pdf'
+    edit(source, 'a website.', 'a public website.', s1)
+    proposal = edit(s1, 'a public website.', 'a website.', s2)
+    assert [l.get('kept', False) for l in proposal['lines']] == [True, True, True, False]
+    assert origins(s2) == origins(source)
