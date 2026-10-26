@@ -230,17 +230,20 @@ def run_case(code, case, source, root):
             for p in (output, output.with_suffix('.proposal.json'), output.with_suffix('.save.json')):
                 if p.exists():
                     p.unlink()
-            r = step(code, prev, case, a, b, before, after, output, sub, grow, pitch)
+            try:
+                r = step(code, prev, case, a, b, before, after, output, sub, grow, pitch)
+            except SystemExit as exc:  # the selection is not found in the PDF it starts from
+                r = dict(old=a, new=b, outcome='not run', reason=str(exc)[:300])
             if r['outcome'] == 'saved':
                 saved = json.loads(output.with_suffix('.save.json').read_text())
                 r['save']['placed_objects_moved'] = saved.get('placed_objects_moved')
                 r['placed'] = placed_audit(prev, output, case['page'], saved)
                 if n == 1:
                     r['vs_source'] = compare(source, output, case['page'], case['box'], text, r['frame'], 2 * pitch, sub / 'vs-source', search=old)
-            else:
+            elif r['outcome'] == 'refused':
                 r['class'] = classify(r.get('reason'))
             seq.append(r)
-            print(case['id'], kind, n + 1, r['outcome'], r.get('class') or (r['failed'], r['placed']['ok']), flush=True)
+            print(case['id'], kind, n + 1, r['outcome'], r.get('class') or r.get('reason') if r['outcome'] != 'saved' else (r['failed'], r['placed']['ok']), flush=True)
             if r['outcome'] != 'saved':
                 break
             prev = output
@@ -279,6 +282,9 @@ def summary(results, ids):
                 continue
             for n, r in enumerate(seq):
                 s['steps'] += 1
+                if r['outcome'] == 'not run':
+                    s['not_run'] += 1
+                    continue
                 if r['outcome'] != 'saved':
                     s['refused'] += 1
                     s['refused: ' + r['class'].split(':')[0]] += 1
