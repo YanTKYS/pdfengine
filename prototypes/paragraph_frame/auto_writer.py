@@ -407,16 +407,19 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
             else:added.append(g)
         if +remain:raise Refused('staged protected text changed')
         if +shifted:raise Refused('staged moved placed object text differs from its approved translation')
-        def styled(content,exclude=None):
+        def styled(content,exclude=None,only=None,key=lambda content,i:glyph_key(content.actual[i])):
             result=Counter()
             for event in content.events:
                 for ch in event.chars:
                     for i in ch.source_orders:
-                        if exclude and i in exclude:continue
+                        if exclude and i in exclude or only is not None and i not in only:continue
                         state=event.state
-                        result[(glyph_key(content.actual[i]),ch.code,state.font.name,state.size,state.tz,state.fill,state.tr,state.opacity)]+=1
+                        result[(key(content,i),ch.code,state.font.name,state.size,state.tz,state.fill,state.tr,state.opacity)]+=1
             return result
         if styled(c,set(selected)|set(moved))-styled(check):raise Refused('staged protected source code/style changed')
+        # A moved placed object's glyphs keep their code and style where they moved.
+        if moved and styled(c,only=moved,key=lambda content,i:moved_key(content.actual[i],moved[i]))-styled(check,key=lambda content,i:moved_key(content.actual[i])):
+            raise Refused('staged moved placed object code/style changed')
         if ''.join(g['unicode'] for g in added)!=expected:raise Refused('staged drawing text differs from requested paragraphs')
         old_boxes=[pymupdf.Rect(c.actual[i]['bbox'])+(-.3,-.3,.3,.3) for i in selected if c.actual[i]['unicode'].strip()]
         frames=[pymupdf.Rect(f) for f in spec.get('frames',[spec['frame']])]
@@ -498,9 +501,9 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
     from pdfeditor.marked_content import observe_marked_content
     state=spec['stored'];records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale']]
     if delta:
-        moved=[n for n,p in zip(state['followers'],active[1:]) if n is not None]
-        records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale'] and n not in moved]
-        records+=[conditions.shifted(state['records'][n],delta) for n in moved]
+        followers=[n for n,p in zip(state['followers'],active[1:]) if n is not None]
+        records=[r for n,r in enumerate(state['records']) if n!=state['target'] and n not in state['stale'] and n not in followers]
+        records+=[conditions.shifted(state['records'][n],delta) for n in followers]
     check=ContentPage(draft,spec['page'])
     try:
         # Glyphs of an inline placed object and of lines kept as drawn stay
