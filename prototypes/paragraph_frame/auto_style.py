@@ -384,6 +384,13 @@ def build(c,paragraph,start,old,new,substitute=None,justify=False,recorded=None)
             gap=tokens[stop-1]['positional_gap'];newtokens[-1]['advance']+=gap;newtokens[-1]['positional_gap']=gap
         result[at+shift:stop+shift]=newtokens;shift+=len(newtokens)-(stop-at)
     choice={str(xref):dict(chosen_sha256=pick[0],scores=scores) for xref,(pick,scores) in chosen.items() if scores is not None}
+    # How this page sets a new glyph (resolve and the rules above): its font's
+    # tracking, CJK compression and punctuation advances. A paragraph's
+    # recorded layout keeps them from its first approval (auto_restore).
+    stats=dict(tracking=[[k[0],k[1],k[2],v] for k,v in tracking.items()],
+               reduction=[[k[0],k[1],min(median(v),.05*k[1])] for k,v in reductions.items() if len(v)>=3],
+               marks=[[k[0],k[1],k[2],median(v)] for k,v in observed.items() if v])
+    for t in result:t['page_stats']=stats
     return result,fonts,dict(Counter(t['mode'] for t in result)),choice
 
 

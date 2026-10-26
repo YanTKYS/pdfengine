@@ -298,3 +298,77 @@ def test_text_with_character_spacing_reads_the_same_after_it_is_redrawn(tmp_path
     edit(b, 'specific position', 'specific page or position', c)
     assert origins(b) == origins(source)
     assert origins(c) == origins(a)
+
+
+TWO = [(40, 60, 'There are two types of links in a'), (40, 76, 'document: a link to a specific position'),
+       (40, 92, 'in the same document, and a link to an'), (40, 108, 'external document or a website.'),
+       (40, 200, 'Following paragraph.')]
+
+
+@pytest.mark.parametrize('a, b', [(('two types', 'three types'), ('links in a', 'links in this')),           # one line
+                                  (('two types', 'three types'), ('specific position', 'specific place'))])  # two lines
+def test_undoing_one_of_two_edits_draws_the_other_as_if_made_alone(tmp_path, a, b):
+    # Edit A, then B, then undo A: the paragraph is drawn as B alone draws
+    # it, whichever line each edit is on, and A then B draws as B then A
+    # (issue #95: the paragraph is laid out against its recorded layout).
+    source = kerned(tmp_path, TWO)
+    s1, s2, s3, alone, r2 = (tmp_path / f'{n}.pdf' for n in ('s1', 's2', 's3', 'alone', 'r2'))
+    edit(source, a[0], a[1], s1)
+    edit(s1, b[0], b[1], s2)
+    edit(s2, a[1], a[0], s3)
+    edit(source, b[0], b[1], alone)
+    edit(alone, a[0], a[1], r2)
+    assert origins(s3) == origins(alone)
+    assert page_text(s3) == page_text(alone)
+    assert origins(r2) == origins(s2)
+
+
+def test_undoing_both_edits_in_either_order_restores_the_page(tmp_path):
+    source = kerned(tmp_path, TWO)
+    s1, s2, s3, s4 = (tmp_path / f'{n}.pdf' for n in ('s1', 's2', 's3', 's4'))
+    edit(source, 'two types', 'three types', s1)
+    edit(s1, 'specific position', 'specific place', s2)
+    edit(s2, 'three types', 'two types', s3)
+    edit(s3, 'specific place', 'specific position', s4)
+    assert origins(s4) == origins(source)
+    assert page_text(s4) == page_text(source)
+
+
+def test_a_record_holds_its_lines_in_full_or_as_pr94_did():
+    from prototypes.paragraph_frame.auto_restore import full, valid
+    glyphs = [['a', 10., 50., 5., 3, '/F1', '61'], ['b', 15., 50., None, 4, '/F1', '62'], None, ['c', 10., 66., None, 5, '/F1', '63']]
+    short = dict(text='ab c', glyphs=glyphs, rows=[[0, 2, 50., 10.], [3, 4, 66., 10.]], below=None)
+    whole = dict(short, rows=[[0, 2, 50., 10., 20., 19.5, 10., False, False], [3, 4, 66., 10., 15., 14.5, 10., False, False]])
+    assert valid(short, 300, 300) and not full(short)
+    assert valid(whole, 300, 300) and full(whole)
+    sized = dict(whole, sizes=[10., 10., None, 10.])
+    assert valid(sized, 300, 300)
+    for broken in (dict(whole, rows=[whole['rows'][0], short['rows'][1]]), dict(whole, rows=[whole['rows'][0][:8] + [1], whole['rows'][1]]),
+                   dict(whole, rows=[whole['rows'][0][:6] + [0.] + whole['rows'][0][7:], whole['rows'][1]]),
+                   dict(sized, sizes=[10., 10., 10., 10.]), dict(sized, sizes=[10., 10., None]), dict(sized, sizes=[10., 'x', None, 10.])):
+        assert not valid(broken, 300, 300)
+
+
+def test_lines_drawn_where_the_record_has_them_are_kept_as_drawn(tmp_path):
+    # Recorded positions are rounded; a line still drawn where the record
+    # has it keeps its operators when an undo is laid out against the record.
+    source = kerned(tmp_path, TWO, every=2, adjust=-37)
+    s1, s2 = tmp_path / 's1.pdf', tmp_path / 's2.pdf'
+    edit(source, 'a website.', 'a public website.', s1)
+    proposal = edit(s1, 'a public website.', 'a website.', s2)
+    assert [l.get('kept', False) for l in proposal['lines']] == [True, True, True, False]
+    assert origins(s2) == origins(source)
+
+
+def test_two_edits_on_lines_apart_read_in_order(tmp_path):
+    # A on the first line, then B on the last: the paragraph is laid out
+    # against its record; lines between them stay as drawn only if every
+    # redrawn line is on one side of them (text is read in content order).
+    source = kerned(tmp_path, TWO, every=2, adjust=-37)
+    s1, s2 = tmp_path / 's1.pdf', tmp_path / 's2.pdf'
+    edit(source, 'two types', 'three types', s1)
+    edit(s1, 'external document', 'outside document', s2)
+    with pymupdf.open(s2) as d:
+        text = ' '.join(d[0].get_text().split())
+    assert text.startswith('There are three types of links in a document: a link to a specific position in the same document, '
+                           'and a link to an outside document or a website.')

@@ -1,0 +1,1104 @@
+{
+ "schema": "paragraph-frame-multiedit-manifest-1",
+ "baseline_commit": "2e2ec8b (main after PR #94)",
+ "frozen_at": "2e2ec8b",
+ "policy": "Frozen before the implementation. Old B2 is main 2e2ec8b; new B2 is this branch. Every pair of the fixed edits at disjoint places, valid in both orders. Each step is proposed from the PDF the previous step saved, alone. A refused step ends its sequence; refusals never count as success.",
+ "sequences": "forward: A, B, undo A, undo B; reverse: B, A, undo B",
+ "measures": "per step: saved, safety and quality (indesign_evaluate.audit against the previous PDF), structure, continued editing; path_b: A,B,undo A against B alone; path_a: B,A,undo B against A alone; order: A,B against B,A; full_return: A,B,undo A,undo B against the source; each: paragraph glyphs at the reference origin (0.01 pt), font and size, lines and breaks, glyphs outside the paragraph, page glyphs, page text of MuPDF and Poppler",
+ "documents": {
+  "osaka_fusei_477": {
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0"
+  },
+  "issue17730": {
+   "sha256": "d1d3be1674f4756d82630d68f08a8088f5b912c58f3379f45eb63b025ad99b14"
+  },
+  "word_osaka_fire_notice": {
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa"
+  },
+  "word_osaka_guideline": {
+   "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe"
+  },
+  "lo_enterprise_en": {
+   "sha256": "f96228ca032b60584e5f2e5fd5689290ba7b93b4f39bb8f86c5af5221eec85d4"
+  },
+  "lo_migration_ja": {
+   "sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3"
+  },
+  "prefilled_f1040": {
+   "sha256": "899edb271684d2451337e225268003324a583a7d3429e23efd69f1654adf9bf9"
+  },
+  "160F-2019": {
+   "sha256": "f41f0818365ffd14ca4e55c0556355193bd76632b970d60cc2dec554cac6f379"
+  },
+  "canvas": {
+   "sha256": "3548b2605bef8ff9656efe8ef8fd94814dfbcf94f547c7d1ff8603e8a46cef6b"
+  }
+ },
+ "cases": [
+  {
+   "id": "C01",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "purpose": "InDesign, ragged CJK, 5 lines",
+   "paragraph": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "box": [
+    20.94,
+    680.89,
+    244.61,
+    742.89
+   ],
+   "lines": 5,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "悩みを抱えている人は",
+      "new": "悩みを持っている人は"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "悩まず専門機関に",
+      "new": "悩まず機関に"
+     },
+     "lines": {
+      "a": [
+       2
+      ],
+      "b": [
+       2
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": true
+    },
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "悩みを抱えている人は",
+      "new": "悩みを持っている人は"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "ひとりで悩まず",
+      "new": "ひとりで悩まず、ひとりで抱えず"
+     },
+     "lines": {
+      "a": [
+       2
+      ],
+      "b": [
+       2
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C02",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "purpose": "InDesign, justified CJK, 5 lines",
+   "paragraph": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+   "box": [
+    20.38,
+    821.56,
+    239.92,
+    883.56
+   ],
+   "lines": 5,
+   "pairs": [
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "損耗などの補修や修繕",
+      "new": "損耗などの修繕や補修"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "ぜひご活用ください。",
+      "new": "ぜひご活用ください。ぜひご相談ください。"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       4
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": true
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "損耗などの補修や修繕の費用を",
+      "new": "修繕の費用を"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "ぜひご活用ください。",
+      "new": "ぜひご活用ください。ぜひご相談ください。"
+     },
+     "lines": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       4
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C03",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "purpose": "InDesign, justified CJK, 2 lines",
+   "paragraph": "学歴・職務経験不問。警察行政職を除き、日本国籍の有無は問いません。詳細は府職員採用案内HPまで。",
+   "box": [
+    503.05,
+    185.18,
+    721.51,
+    208.56
+   ],
+   "lines": 2,
+   "pairs": [
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "学歴・職務経験不問",
+      "new": "職務経験・学歴不問"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "HPまで。",
+      "new": "HPまで。学歴不問。"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       1
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": true
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "不問。警察行政職を除き、日本国籍",
+      "new": "不問。日本国籍"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "HPまで。",
+      "new": "HPまで。学歴不問。"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       1
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C05",
+   "document": "issue17730",
+   "page": 1,
+   "purpose": "Antenna House, justified Latin, 4 lines",
+   "paragraph": "There are two types of links in PDF: a link to a specific position in the same PDF document, and a link to an external document. The internal-destination property of fo:basic-link indicates to link to a position in the same document. Its destination may be either an ID or a page number. The external-destination property indicates to link to an external document. Its destination may be either an external file or a website.",
+   "box": [
+    61.69,
+    116.13,
+    533.71,
+    168.13
+   ],
+   "lines": 4,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "two types of links",
+      "new": "two kinds of links"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "may be either an ID",
+      "new": "may be an ID"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       2
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": true
+    },
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "two types of links",
+      "new": "two kinds of links"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "or a website.",
+      "new": "or a website or a file."
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       3
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    },
+    {
+     "id": "same+lengthen-wrap",
+     "a": {
+      "name": "same",
+      "old": "two types of links",
+      "new": "two kinds of links"
+     },
+     "b": {
+      "name": "lengthen-wrap",
+      "old": "a specific position in",
+      "new": "a specific position or page in"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": false
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "may be either an ID",
+      "new": "may be an ID"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "or a website.",
+      "new": "or a website or a file."
+     },
+     "lines": {
+      "a": [
+       2
+      ],
+      "b": [
+       3
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    },
+    {
+     "id": "shorten+lengthen-wrap",
+     "a": {
+      "name": "shorten",
+      "old": "may be either an ID",
+      "new": "may be an ID"
+     },
+     "b": {
+      "name": "lengthen-wrap",
+      "old": "a specific position in",
+      "new": "a specific position or page in"
+     },
+     "lines": {
+      "a": [
+       2
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    },
+    {
+     "id": "lengthen+lengthen-wrap",
+     "a": {
+      "name": "lengthen",
+      "old": "or a website.",
+      "new": "or a website or a file."
+     },
+     "b": {
+      "name": "lengthen-wrap",
+      "old": "a specific position in",
+      "new": "a specific position or page in"
+     },
+     "lines": {
+      "a": [
+       3
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C06",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "purpose": "Word (tagged P/Span), first-line indent, 2 lines",
+   "paragraph": "なお、標記災害により被災されていない地方公共団体におかれましても、今後、別添に留意の上、円滑かつ適切に実施いただくようお願いします。 ",
+   "box": [
+    53.88,
+    315.1,
+    541.78,
+    345.46
+   ],
+   "lines": 2,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "円滑かつ適切に",
+      "new": "適切かつ円滑に"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "被災されていない",
+      "new": "被災していない"
+     },
+     "lines": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": true
+    },
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "円滑かつ適切に",
+      "new": "適切かつ円滑に"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "実施いただく",
+      "new": "実施していただく"
+     },
+     "lines": {
+      "a": [
+       0,
+       1
+      ],
+      "b": [
+       1
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": false
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "被災されていない",
+      "new": "被災していない"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "実施いただく",
+      "new": "実施していただく"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       1
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C07",
+   "document": "word_osaka_guideline",
+   "page": 1,
+   "purpose": "Word (tagged), first-line indent, 2 lines",
+   "paragraph": "標記につきまして、国立感染症研究所においてガイドラインが作成されましたので、参考に送付いたします。 ",
+   "box": [
+    70.94,
+    337.06,
+    522.91,
+    365.62
+   ],
+   "lines": 2,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "作成されました",
+      "new": "送付されました"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "研究所において",
+      "new": "研究所で"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": true
+    },
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "作成されました",
+      "new": "送付されました"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "参考に送付",
+      "new": "参考までに送付"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       0,
+       1
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": false
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "研究所において",
+      "new": "研究所で"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "参考に送付",
+      "new": "参考までに送付"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       0,
+       1
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C08",
+   "document": "lo_enterprise_en",
+   "page": 2,
+   "purpose": "LibreOffice, ragged Latin with a line-final hyphen, 6 lines",
+   "paragraph": "Calc is a spreadsheet program designed with the user in mind. First-time users find it intuitive and easy to learn, while profes-sional data miners and number crunchers appreciate the comprehensive range of advanced functions.",
+   "box": [
+    29.8,
+    328.01,
+    253.73,
+    414.91
+   ],
+   "lines": 6,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "range of",
+      "new": "array of"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "intuitive and easy to learn",
+      "new": "easy to learn"
+     },
+     "lines": {
+      "a": [
+       4
+      ],
+      "b": [
+       2
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": true
+    },
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "range of",
+      "new": "array of"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "advanced functions.",
+      "new": "advanced and intuitive functions."
+     },
+     "lines": {
+      "a": [
+       4
+      ],
+      "b": [
+       5
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    },
+    {
+     "id": "same+lengthen-wrap",
+     "a": {
+      "name": "same",
+      "old": "range of",
+      "new": "array of"
+     },
+     "b": {
+      "name": "lengthen-wrap",
+      "old": "designed with the user",
+      "new": "designed with the end user"
+     },
+     "lines": {
+      "a": [
+       4
+      ],
+      "b": [
+       0,
+       1
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "intuitive and easy to learn",
+      "new": "easy to learn"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "advanced functions.",
+      "new": "advanced and intuitive functions."
+     },
+     "lines": {
+      "a": [
+       2
+      ],
+      "b": [
+       5
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    },
+    {
+     "id": "shorten+lengthen-wrap",
+     "a": {
+      "name": "shorten",
+      "old": "intuitive and easy to learn",
+      "new": "easy to learn"
+     },
+     "b": {
+      "name": "lengthen-wrap",
+      "old": "designed with the user",
+      "new": "designed with the end user"
+     },
+     "lines": {
+      "a": [
+       2
+      ],
+      "b": [
+       0,
+       1
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    },
+    {
+     "id": "lengthen+lengthen-wrap",
+     "a": {
+      "name": "lengthen",
+      "old": "advanced functions.",
+      "new": "advanced and intuitive functions."
+     },
+     "b": {
+      "name": "lengthen-wrap",
+      "old": "designed with the user",
+      "new": "designed with the end user"
+     },
+     "lines": {
+      "a": [
+       5
+      ],
+      "b": [
+       0,
+       1
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C09",
+   "document": "lo_migration_ja",
+   "page": 1,
+   "purpose": "LibreOffice, Japanese with Latin, first-line indent, 4 lines",
+   "paragraph": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。",
+   "box": [
+    56.8,
+    189.24,
+    538.68,
+    267.84
+   ],
+   "lines": 4,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "文書作成およびデータ処理",
+      "new": "データ処理および文書作成"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "六つの豊富な機能の",
+      "new": "豊富な機能の"
+     },
+     "lines": {
+      "a": [
+       1
+      ],
+      "b": [
+       1,
+       2
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": true
+    },
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "文書作成およびデータ処理",
+      "new": "データ処理および文書作成"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "描画ソフトDraw、",
+      "new": "描画ソフトDraw、表計算ソフトCalc、"
+     },
+     "lines": {
+      "a": [
+       1
+      ],
+      "b": [
+       3
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "六つの豊富な機能の",
+      "new": "豊富な機能の"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "描画ソフトDraw、",
+      "new": "描画ソフトDraw、表計算ソフトCalc、"
+     },
+     "lines": {
+      "a": [
+       1,
+       2
+      ],
+      "b": [
+       3
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C10",
+   "document": "prefilled_f1040",
+   "page": 1,
+   "purpose": "LiveCycle (tagged, IDTree), marker on an offset baseline, 3 lines",
+   "paragraph": "Head of household (with qualifying person). (See instructions.) If the qualifying person is a child but not your dependent, enter this child’s name here.  ▶",
+   "box": [
+    374.4,
+    184.5,
+    573.93,
+    213.31
+   ],
+   "lines": 3,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "enter this",
+      "new": "write this"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "(See instructions.) If",
+      "new": "If"
+     },
+     "lines": {
+      "a": [
+       1
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": true
+    },
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "enter this",
+      "new": "write this"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "child’s name here.",
+      "new": "child’s full name here."
+     },
+     "lines": {
+      "a": [
+       1
+      ],
+      "b": [
+       2
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "(See instructions.) If",
+      "new": "If"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "child’s name here.",
+      "new": "child’s full name here."
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       2
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C12",
+   "document": "160F-2019",
+   "page": 1,
+   "purpose": "Distiller (tagged TD without /Type), 1 line",
+   "paragraph": "cette transmission ne peut se faire que par voie électronique",
+   "box": [
+    66.32,
+    713.65,
+    251.45,
+    720.61
+   ],
+   "lines": 1,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "par voie",
+      "new": "sur voie"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "ne peut se faire que",
+      "new": "se fait uniquement"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": true
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "ne peut se faire que",
+      "new": "se fait uniquement"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "voie électronique",
+      "new": "voie électronique uniquement"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C14",
+   "document": "canvas",
+   "page": 1,
+   "purpose": "single-line Latin title",
+   "paragraph": "HTML5 Canvas Cheat Sheet v1.1",
+   "box": [
+    42.0,
+    56.93,
+    277.27,
+    73.37
+   ],
+   "lines": 1,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "v1.1",
+      "new": "v1.5"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "HTML5 Canvas Cheat",
+      "new": "Canvas Cheat"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": true
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "HTML5 Canvas Cheat",
+      "new": "Canvas Cheat"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "v1.1",
+      "new": "v1.1.5"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  },
+  {
+   "id": "C15",
+   "document": "lo_migration_ja",
+   "page": 1,
+   "purpose": "LibreOffice, Japanese with Latin, 4 lines (second paragraph)",
+   "paragraph": "LibreOfficeは、ユーザーが個人であっても、組織であったとしても あらゆる種類の個人的文書作業のニーズをみたすようにデザインされています。このソフトウェアは数百万のPCにすでにインストールされており、中にはフランス政府、ヨーロッパ中のいくつかの地域、郡または市 -  例えばドイツのミュンヘン市など – またその他多数の団体、例えばデンマーク、コペンハーゲンの病院システムなどで利用されています。",
+   "box": [
+    56.8,
+    284.04,
+    538.33,
+    361.17
+   ],
+   "lines": 4,
+   "pairs": [
+    {
+     "id": "same+shorten",
+     "a": {
+      "name": "same",
+      "old": "デンマーク、コペンハーゲン",
+      "new": "コペンハーゲン、デンマーク"
+     },
+     "b": {
+      "name": "shorten",
+      "old": "個人であっても、組織であったとしても",
+      "new": "個人であっても"
+     },
+     "lines": {
+      "a": [
+       3
+      ],
+      "b": [
+       0
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": true
+    },
+    {
+     "id": "same+lengthen",
+     "a": {
+      "name": "same",
+      "old": "デンマーク、コペンハーゲン",
+      "new": "コペンハーゲン、デンマーク"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "病院システムなど",
+      "new": "病院システムや政府など"
+     },
+     "lines": {
+      "a": [
+       3
+      ],
+      "b": [
+       3
+      ]
+     },
+     "relation": "same-line",
+     "pr94_path": false
+    },
+    {
+     "id": "shorten+lengthen",
+     "a": {
+      "name": "shorten",
+      "old": "個人であっても、組織であったとしても",
+      "new": "個人であっても"
+     },
+     "b": {
+      "name": "lengthen",
+      "old": "病院システムなど",
+      "new": "病院システムや政府など"
+     },
+     "lines": {
+      "a": [
+       0
+      ],
+      "b": [
+       3
+      ]
+     },
+     "relation": "other-lines",
+     "pr94_path": false
+    }
+   ],
+   "origin": "layout-fidelity manifest (PR #92)"
+  }
+ ]
+}

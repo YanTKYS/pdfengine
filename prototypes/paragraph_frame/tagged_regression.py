@@ -1,4 +1,4 @@
-"""Compare the PR #87-#90 regression runs with their committed results and with the regressions PR #90, PR #91 and PR #92 recorded.
+"""Compare the PR #87-#90 regression runs with their committed results and with the regressions PR #90, PR #91, PR #92 and PR #94 recorded.
 
   .venv/bin/python -m prototypes.paragraph_frame.tagged_regression <regression.json> [<tagged root> <477.pdf> <pdf.js dir>]
 
@@ -213,10 +213,12 @@ if len(sys.argv) > 2:
     for r in samples:
         if not r['same_as_committed']:
             print(' ', json.dumps({x: r.get(x) for x in ('document', 'selection', 'kind', 'outcome', 'reason', 'failed', 'committed', 'outside_changes')}, ensure_ascii=False)[:700])
-# Against the regression recorded by PR #92 (main 870709f's own state), when present.
-fid = Path('evaluations/paragraph_frame_fidelity/results.json')
-rec92 = load(fid).get('regression') if fid.exists() else None
-if rec92:
+# Against the regressions recorded by PR #92 (main 870709f's own state) and
+# PR #94 (main 2e2ec8b's), when present.
+for pr, recorded in (('92', Path('evaluations/paragraph_frame_fidelity/results.json')), ('94', Path('evaluations/paragraph_frame_roundtrip/results.json'))):
+    rec92 = load(recorded).get('regression') if recorded.exists() else None
+    if not rec92:
+        continue
     vs92 = []
     for part in ('generalization', 'continuity_sequences', 'continuity_new'):
         for k, v in rec92[part].items():
@@ -244,8 +246,8 @@ if rec92:
             k = (r['document'], r['page'], r['selection'], r['kind'])
             if before.get(k) != (r['outcome'], r.get('failed')):
                 vs92.append(('tagged sample', k, (r['outcome'], r.get('failed')), before.get(k)))
-    out['differences_from_pr92_recorded_regression'] = [list(map(str, d)) for d in vs92]
-    print('vs PR #92 recorded regression:', len(vs92))
+    out[f'differences_from_pr{pr}_recorded_regression'] = [list(map(str, d)) for d in vs92]
+    print(f'vs PR #{pr} recorded regression:', len(vs92))
     for d in vs92:
         print(json.dumps(d, ensure_ascii=False, default=str)[:900])
 out['differences'] = len(diffs)
