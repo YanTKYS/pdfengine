@@ -181,12 +181,21 @@ def plan(c, paragraph, program, delta, frames, obstacles, page, moving=()):
             overlap = new & box
             if not overlap.is_empty and overlap.width > .05 and overlap.height > .05 and (overlap & old).get_area() < overlap.get_area() - 1e-6:
                 raise Refused('an inline placed object of a following paragraph would collide with protected ' + o['kind'])
-        m = pymupdf.Matrix(*u['state'].ctm) * pymupdf.Matrix(page)
-        inv = ~m
-        t = pymupdf.Point(0, delta) * inv - pymupdf.Point(0, 0) * inv
-        u.update(old=list(old), new=list(new), translation=(t.x, t.y))
+        u.update(old=list(old), new=list(new), translation=local_shift(u['state'].ctm, page, delta))
         out.append(u)
     return out
+
+
+def local_shift(ctm, page, delta):
+    """The translation, in the space of ``ctm``, that moves its content by ``delta`` (page y).
+
+    In double precision: PyMuPDF's matrices are single precision, off by about
+    1e-4 pt at the size of a page, which shows when the moved drawing is rendered."""
+    a1, b1, c1, d1 = (float(v) for v in tuple(ctm)[:4])
+    a2, b2, c2, d2 = (float(page[k]) for k in range(4))
+    a, b, c, d = a1 * a2 + b1 * c2, a1 * b2 + b1 * d2, c1 * a2 + d1 * c2, c1 * b2 + d1 * d2
+    det = a * d - b * c
+    return (-c * delta / det + 0., a * delta / det + 0.)
 
 
 def operator_end(c, program, start):

@@ -166,3 +166,12 @@ def test_unprovable_decorations_are_not_offered(tmp_path, name, reason):
     assert not found['candidates'] and re.search(reason, found['unavailable'][0]['reason'])
     with pytest.raises(Refused, match='holds other content'):
         edit(source, *GROW, tmp_path / 'out.pdf')
+
+
+def test_the_translation_is_computed_in_double_precision():
+    # PyMuPDF's matrices are single precision: at the bottom of a tall page the
+    # translation came out 6e-5 pt short, which a rendering of the moved line shows.
+    from prototypes.paragraph_frame.placed_move import local_shift
+    page = pymupdf.Matrix(1, 0, 0, -1, 0, 1150.866)
+    assert local_shift((1, 0, 0, 1, 0, 0), page, -13.10662841796875) == (0.0, 13.10662841796875)
+    assert local_shift((0.5, 0, 0, 0.5, 10, 20), page, 4.0) == (0.0, -8.0)

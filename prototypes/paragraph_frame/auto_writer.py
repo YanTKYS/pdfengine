@@ -65,7 +65,7 @@ def decoration_candidates(c,paragraphs,lines,spec,evidence):
         except Refused as exc:
             if 'holds other content' not in str(exc):unavailable[k]=str(exc);continue
         taken={i for j,q in enumerate(paragraphs) if j!=k for i in q.ids}
-        try:found[k]=decoration.group(c,paragraphs[k],spec['page'],delta,frames,obstacles,page,units=us,taken=taken)
+        try:found[k]=decoration.group(c,paragraphs[k],spec['page'],delta,frames,obstacles,page,units=us,taken=taken,moving=moving)
         except Refused as exc:unavailable[k]=str(exc)
     return found,unavailable
 
@@ -528,7 +528,6 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
             # device pixel (96 dpi) follow the translation, not its bytes.
             shaded=[u for u in units if (u.get('evidence') or {}).get('shadings')]
             inside=lambda image,rects:any((pymupdf.Rect(r)+(-.5,-.5,.5,.5)).contains(pymupdf.Rect(image['bbox'])) for r in rects)
-            loose=lambda image,shift=(0.,0.):placed_move.image_key({k:v for k,v in image.items() if k!='digest'},[dict(old=list(pymupdf.Rect(image['bbox'])),shift=shift)])
             o_rest=[x for x in original_paint['images'] if not inside(x,[u['old'] for u in shaded])]
             s_rest=[x for x in staged_paint['images'] if not inside(x,[u['new'] for u in shaded])]
             if Counter(placed_move.image_key(x) for x in o_rest if not within(x,'bbox','old'))!=Counter(placed_move.image_key(x) for x in s_rest if not within(x,'bbox','new')):
@@ -536,8 +535,15 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
             if not placed_move.same_paint([placed_move.image_key(x,units) for x in o_rest if within(x,'bbox','old')],
                                           [placed_move.image_key(x) for x in s_rest if within(x,'bbox','new')]):
                 raise Refused('staged moved paint differs from its approved translation')
-            if not placed_move.same_paint([loose(x,next(u['shift'] for u in shaded if inside(x,[u['old']]))) for x in original_paint['images'] if x not in o_rest],
-                                          [loose(x) for x in staged_paint['images'] if x not in s_rest],tol=.75):
+            # An image of the decoration is where it moved, with the same samples;
+            # a shading's raster (at most one per shading) only lies inside its new area, in its colour space.
+            o_shaded=[x for x in original_paint['images'] if x not in o_rest];s_shaded=[x for x in staged_paint['images'] if x not in s_rest]
+            for x in list(o_shaded):
+                dy=next(u['shift'][1] for u in shaded if inside(x,[u['old']]))
+                hit=next((y for y in s_shaded if y.get('digest')==x.get('digest') and all(abs(p+q-r)<=.02 for p,q,r in zip(x['bbox'],(0,dy,0,dy),y['bbox']))),None)
+                if hit is not None:o_shaded.remove(x);s_shaded.remove(hit)
+            space=lambda images:sorted((x.get('cs-name'),x.get('bpc')) for x in images)
+            if len(o_shaded)>sum(u['evidence']['shadings'] for u in shaded) or space(o_shaded)!=space(s_shaded):
                 raise Refused('staged moved line decoration paint differs from its approved translation')
             if original_paint['annots']!=staged_paint['annots']:raise Refused('staged protected non-text paint changed')
             # A link of an approved line decoration is where it moved, with the same target; the others are unchanged.

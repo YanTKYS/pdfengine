@@ -225,12 +225,14 @@ def _annotations(c, page_number, region, bounds, page):
     return out
 
 
-def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), taken=()):
+def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), taken=(), moving=()):
     """The candidate line decoration of following ``paragraph`` moved by ``delta`` (page y), or a refusal.
 
     ``taken``: glyphs of the other paragraphs the edit draws (the edited one,
     the other followers); a group never carries them. Other glyphs drawn on
-    the line (a search box's label) are carried with it and listed."""
+    the line (a search box's label) are carried with it and listed.
+    ``moving``: page areas of other content moved by the same translation (the
+    other followers' placed objects); it is no obstacle to the group."""
     program = next(((s['stream_xref'], tuple(tuple(i) for i in s['invocation'])) for s in paragraph.scopes if s['kind'] == 'fixed'), None)
     if program is None or program[1]:
         raise Refused('a line decoration is moved only in the page\'s own content')
@@ -255,6 +257,12 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     texts = [pymupdf.Rect(c.actual[i]['bbox']) for i in ids if c.actual[i]['unicode'].strip()]
     band = placed_move._union(texts + [pymupdf.Rect(u['bounds']) for u in units])
     column = next((f for f in map(pymupdf.Rect, frames) if f.x0 < band.x1 and band.x0 < f.x1), band)
+    # The line spans its column's panel (the background holding it) when there
+    # is one about the column's width: a search button may reach past the text.
+    panels = [pymupdf.Rect(o['bounds']) for o in obstacles if o['kind'] == 'container' and pymupdf.Rect(o['bounds']).contains(band)]
+    panel = min(panels, key=lambda r: r.get_area(), default=None)
+    if panel is not None and panel.width < 2 * column.width:
+        column = pymupdf.Rect(min(column.x0, panel.x0), column.y0, max(column.x1, panel.x1), column.y1)
     region = pymupdf.Rect(column.x0 - TOL, band.y0 - TOL, column.x1 + TOL, band.y1 + TOL)
     if seq[lo - 1].text_object or seq[lo - 1].pending_path or seq[lo - 1].pending_clip:
         raise Refused('a line decoration starts inside a text object or a path')
@@ -314,8 +322,11 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     own = lambda box: any((r + (-.5, -.5, .5, .5)).contains(box) for r in rects)
     # Nothing else stays on the line in its column; nothing else is where it is or goes.
     across = pymupdf.Rect(column.x0, band.y0 + .5, column.x1, band.y1 - .5)
+    together = [pymupdf.Rect(r) + (-.5, -.5, .5, .5) for r in moving]
     for o in obstacles:
         box = pymupdf.Rect(o['bounds'])
+        if any(r.contains(box) for r in together):
+            continue
         if o['kind'] == 'container':
             if (box.intersects(whole) or box.intersects(new)) and not (box.contains(whole) and box.contains(new)):
                 raise Refused('a line decoration would leave or enter a background')
@@ -331,10 +342,8 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
         area = clip_rect(clip, page)
         if area is None or not area.contains(new) or not area.contains(whole):
             raise Refused('the clip of a line decoration does not hold it moved')
-    inv = ~(pymupdf.Matrix(*seq[lo - 1].state.ctm) * pymupdf.Matrix(page))
-    t = pymupdf.Point(0, delta) * inv - pymupdf.Point(0, 0) * inv
-    inv_page = ~pymupdf.Matrix(page)
-    pdf = pymupdf.Point(0, delta) * inv_page - pymupdf.Point(0, 0) * inv_page
+    t = placed_move.local_shift(seq[lo - 1].state.ctm, page, delta)
+    pdf = placed_move.local_shift((1, 0, 0, 1, 0, 0), page, delta)
     start, stop = seq[lo].operator.start, end.operator.end
     evidence = dict(page=page_number, paragraph=paragraph.text[:40], operators=[start, stop], operator_count=hi - lo + 1,
                     bytes_sha256=hashlib.sha256(data[start:stop]).hexdigest(), bounds=[round(v, 2) for v in whole],
@@ -349,7 +358,7 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
                                      and pymupdf.Rect(o['bounds']).intersects(new + (-3, -3, 3, 3)) and not own(pymupdf.Rect(o['bounds']))}))
     evidence['id'] = 'line-decoration-' + hashlib.sha256(json.dumps(evidence, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
     return dict(evidence=evidence, program=program, start=start, end=stop, bounds=whole, old=list(whole), new=list(new), state=seq[lo - 1].state,
-                glyphs=sorted(glyphs), translation=(t.x, t.y), pdf_translation=(pdf.x, pdf.y), replay=replay, annotations=annotations)
+                glyphs=sorted(glyphs), translation=t, pdf_translation=pdf, replay=replay, annotations=annotations)
 
 
 def move_annotations(writer, lookup, groups):
