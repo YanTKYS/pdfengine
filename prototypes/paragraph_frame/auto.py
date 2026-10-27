@@ -13,7 +13,7 @@ from .auto_layout import layout
 from .auto_local import LocalUnavailable,local_layout
 from . import auto_restore as restore
 from .auto_flow import place,region_of
-from .auto_writer import write
+from .auto_writer import decoration_candidates,write
 from .engine import Refused,sha
 
 
@@ -56,7 +56,7 @@ def _flow_moves(paragraphs,spec,moves):
     return [{i:(dx,dy) for row,dx,dy,_ in rows for i in row['glyph_ids']} for rows in active],active
 
 
-def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=()):
+def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=(),decorations=()):
     start=time.perf_counter();c,paragraphs,spec,at,evidence=detect(source,page,selection,occurrence,stored,continuation);observed=time.perf_counter()
     try:
         # A single-column paragraph keeps what the edit does not change where
@@ -109,6 +109,16 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
                 raise Refused('capacity: the paragraph would grow below the shared bottom of the side-by-side columns'+hint)
         _hyphens_stay_at_line_ends(paragraphs[0],lines)
         _placed_objects_stay(lines)
+        # Line decorations a following paragraph needs to move with it are
+        # listed with their evidence; only those approved by id move.
+        found,unavailable=({},{}) if spec.get('mode')=='flow' else decoration_candidates(c,paragraphs,lines,spec,evidence)
+        listed={g['evidence']['id']:k for k,g in found.items()}
+        if set(decorations)-set(listed):raise Refused('an approved line decoration is not a candidate of this edit: '+', '.join(sorted(set(decorations)-set(listed))))
+        spec['decoration_candidates']=found
+        spec['decorations']={listed[i]:found[listed[i]] for i in decorations}
+        if found or unavailable:
+            evidence['decorations']=dict(candidates=[g['evidence'] for g in found.values()],
+                                         unavailable=[dict(paragraph=paragraphs[k].text[:40],reason=r) for k,r in sorted(unavailable.items())])
         public=dict(schema='auto-paragraph-frame-1',source_sha256=sha(source),page=page,selection=selection,replacement=replacement,occurrence=occurrence,
           substitute=substitute,stored_conditions=stored,evidence=evidence,source_styles=describe(c,paragraphs),paragraphs=[p.text for p in paragraphs],expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):],
           lines=[dict(text=l['text'],baseline=l['baseline'],**({'region':l['region']} if 'region' in l else {}),**({'kept':l['kept']} if 'kept' in l else {}),
@@ -116,6 +126,9 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
           layout=spec.get('layout','column flow'),source_lines=len(paragraphs[0].baselines),font_counts=counts,substitute_choice=choice,
           required_approval=['inferred paragraph and capacity','possible follower translation','source style and any explicit substitute'])
         public['continuation']=list(continuation)
+        if decorations:
+            public['decorations']=sorted(decorations)
+            public['required_approval'].append('line decorations moved with their following paragraph: '+', '.join(sorted(decorations)))
         if spec.get('mode')=='flow':
             public['moved_paragraphs']=moved
             public['required_approval'].append('column flow continuation and the lines moved between columns')
@@ -124,27 +137,30 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
     except Exception:c.close();raise
 
 
-def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True,continuation=()):
+def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True,continuation=(),decorations=()):
     """``stored_conditions=False`` ignores conditions stored by earlier saves (inference only).
 
     ``continuation`` lists candidate column links (``column a->b`` ids from a
     previous proposal's evidence) that the user explicitly approves.
+    ``decorations`` lists line decorations (``line-decoration-…`` ids from a
+    previous proposal's ``evidence.decorations``) that the user explicitly
+    approves to move with their following paragraph.
     """
-    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions,tuple(continuation))
+    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions,tuple(continuation),tuple(sorted(set(decorations))))
     planned[0].close();return planned[-2]
 
 
 def approve(source,proposal,*,acknowledge_inference=False):
     if acknowledge_inference is not True:raise Refused('explicit inference/format approval required')
     again=propose(source,proposal['page'],proposal['selection'],proposal['replacement'],occurrence=proposal['occurrence'],substitute=proposal['substitute'],
-                  stored_conditions=proposal.get('stored_conditions',True),continuation=proposal.get('continuation',()))
+                  stored_conditions=proposal.get('stored_conditions',True),continuation=proposal.get('continuation',()),decorations=proposal.get('decorations',()))
     if again!=proposal:raise Refused('stale or altered proposal')
     return dict(proposal=again,approved=True,approval_count=1)
 
 
 def save(source,acceptance,output):
     if acceptance.get('approved') is not True:raise Refused('explicit approval missing')
-    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True),tuple(p.get('continuation',())))
+    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True),tuple(p.get('continuation',())),tuple(p.get('decorations',())))
     c,paragraphs,spec,evidence,fonts,lines,again,timing=planned
     try:
         if p!=again:raise Refused('stale or altered accepted proposal')

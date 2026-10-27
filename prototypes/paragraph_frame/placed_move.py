@@ -137,14 +137,19 @@ def unit(c, paragraph, scope, program, page):
     return dict(start=seq[start].operator.start, end=seq[end].operator.end, bounds=bounds, state=state_before(start), glyphs=sorted(drawn))
 
 
-def plan(c, paragraph, program, delta, frames, obstacles, page):
+def plan(c, paragraph, program, delta, frames, obstacles, page, moving=()):
     """The units of a following ``paragraph`` translated by ``delta`` (page y),
-    each with ``prefix``/``suffix`` bytes and old/new page bounds, or a refusal."""
+    each with ``prefix``/``suffix`` bytes and old/new page bounds, or a refusal.
+
+    ``moving``: page areas of other content moved by the same translation (an
+    approved line decoration); it is no obstacle to these units."""
     out = []
     # What is drawn on the paragraph's lines moves with it: other text or paint
     # there (a search box beside an icon) would stay behind, apart from it.
     units = [unit(c, paragraph, scope, program, page) for scope in paragraph.scopes if scope['kind'] == 'fixed']
     owned = [u['bounds'] + (-.5, -.5, .5, .5) for u in units]
+    # Units of the paragraph and other moved content move together: none is in another's way.
+    together = owned + [pymupdf.Rect(r) + (-.5, -.5, .5, .5) for r in moving]
     texts = [pymupdf.Rect(c.actual[i]['bbox']) for i in paragraph.ids if c.actual[i]['unicode'].strip()]
     band = _union(texts + [u['bounds'] for u in units])
     for o in obstacles:
@@ -167,13 +172,12 @@ def plan(c, paragraph, program, delta, frames, obstacles, page):
         # It moves vertically in its column: the frame it overlaps must hold it in height.
         if not any(f.x0 < new.x1 and new.x0 < f.x1 and f.y0 - .5 <= new.y0 and new.y1 <= f.y1 + .5 for f in map(pymupdf.Rect, frames)):
             raise Refused('capacity: an inline placed object of a following paragraph would leave the approved frame')
-        grown = old + (-.5, -.5, .5, .5)
         for o in obstacles:
             if o['kind'] == 'container':
                 continue
             box = pymupdf.Rect(o['bounds'])
-            if grown.contains(box):
-                continue  # the unit's own paint
+            if any(r.contains(box) for r in together):
+                continue  # paint that moves with it
             overlap = new & box
             if not overlap.is_empty and overlap.width > .05 and overlap.height > .05 and (overlap & old).get_area() < overlap.get_area() - 1e-6:
                 raise Refused('an inline placed object of a following paragraph would collide with protected ' + o['kind'])
@@ -243,3 +247,34 @@ def image_key(image, units=()):
             v = (a, b, c, d, e + dx, f + dy)
         out[k] = v
     return _norm(out)
+
+
+def _split(value):
+    """A normalized drawing or image as its structure (numbers left out) and its numbers."""
+    numbers = []
+
+    def walk(x):
+        if isinstance(x, (int, float)) and not isinstance(x, bool):
+            numbers.append(float(x))
+            return '#'
+        if isinstance(x, tuple):
+            return tuple(walk(y) for y in x)
+        return x
+    return walk(value), numbers
+
+
+def same_paint(expected, found, tol=.02):
+    """Two lists of normalized drawings or images are the same up to ``tol`` in every number
+    (a translation by a non-representable amount rounds either way at 0.01 pt)."""
+    pools = {}
+    for k in found:
+        s, n = _split(k)
+        pools.setdefault(s, []).append(n)
+    for k in expected:
+        s, n = _split(k)
+        pool = pools.get(s, [])
+        hit = next((j for j, m in enumerate(pool) if len(m) == len(n) and all(abs(a - b) <= tol for a, b in zip(n, m))), None)
+        if hit is None:
+            return False
+        pool.pop(hit)
+    return all(not v for v in pools.values())
