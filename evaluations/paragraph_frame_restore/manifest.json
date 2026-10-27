@@ -1,0 +1,137 @@
+{
+ "schema": "paragraph-frame-restore-manifest-1",
+ "baseline_commit": "cc758cb (main after PR #100)",
+ "frozen_at": "cc758cb",
+ "policy": "Frozen before the implementation. Old B2 is main cc758cb; new B2 is this branch. Targets: the 4 real-PDF edits PR #100 saved with an approved line decoration; PR #100 restored 1 of them (P7-07) from the saved PDF alone. Every step approves exactly the decoration candidates its own proposal lists; an approval is never carried from one step to another. A refusal ends its case and never counts as success; fixture successes are reported apart from real-PDF successes.",
+ "procedure": [
+  "edit, approving the listed candidates; save",
+  "reopen the saved PDF alone; propose the restoring edit; record its candidates",
+  "save the restoring edit without approving them (a step needing one must be refused)",
+  "save it approving exactly the listed candidates"
+ ],
+ "measures": "per step: saved or refused (reason), the existing audits, structure, continued editing, the move audits of PR #100; restored PDF against the source: glyph origins (0.01 pt and 0.001 pt, largest offset), unchanged paragraph glyphs and source line breaks, page text (MuPDF, Poppler), search hits, drawings (0.01 pt), images (shading rasters by count, colour space and area), link targets with /Rect and /QuadPoints (0.001 pt), structure; pixels at 72 and 150 dpi reported apart",
+ "target": "at least 2 more real restorations than PR #100 (3 of 4 or more)",
+ "documents": {
+  "osaka_fusei_477": {
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0"
+  }
+ },
+ "fixtures": {
+  "D1": {
+   "edits": {
+    "lengthen": [
+     "申請書は窓口で",
+     "申請書は窓口と郵送と電子申請とファクスと持参で"
+    ],
+    "shorten": [
+     "申請書は窓口で配布し",
+     "申請書は配布し"
+    ]
+   },
+   "expected": "a search box with a link on the line of a placed object: refused unapproved, moved approved"
+  },
+  "D2": {
+   "edits": {
+    "lengthen": [
+     "申請書は窓口で",
+     "申請書は窓口と郵送と電子申請とファクスと持参で"
+    ]
+   },
+   "expected": "the box drawn with a colour set at its own level: moved, the colour replayed after it"
+  }
+ },
+ "cases": [
+  {
+   "id": "P7-03",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+   "selection": "所得税（復興",
+   "box": [
+    21.07,
+    500.18,
+    244.9,
+    549.07
+   ],
+   "lines": 4,
+   "edit": {
+    "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+    "new": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。"
+   },
+   "pr100": {
+    "edit": "saved",
+    "restore": "refused",
+    "restore_reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers"
+   }
+  },
+  {
+   "id": "P7-05",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+   "selection": "3月下旬は自",
+   "box": [
+    21.05,
+    568.55,
+    239.89,
+    617.44
+   ],
+   "lines": 4,
+   "edit": {
+    "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+    "new": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。"
+   },
+   "pr100": {
+    "edit": "saved",
+    "restore": "refused",
+    "restore_reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers"
+   }
+  },
+  {
+   "id": "P7-06",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "selection": "令和5年の大",
+   "box": [
+    20.94,
+    680.89,
+    244.61,
+    742.89
+   ],
+   "lines": 5,
+   "edit": {
+    "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+    "new": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。"
+   },
+   "pr100": {
+    "edit": "saved",
+    "restore": "refused",
+    "restore_reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('を' at [20.9, 733.3, 30.5, 742.9])"
+   }
+  },
+  {
+   "id": "P7-07",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+   "selection": "賃貸住宅の退",
+   "box": [
+    20.38,
+    821.56,
+    239.92,
+    883.56
+   ],
+   "lines": 5,
+   "edit": {
+    "old": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+    "new": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。"
+   },
+   "pr100": {
+    "edit": "saved",
+    "restore": "saved",
+    "restore_reason": ""
+   }
+  }
+ ]
+}
