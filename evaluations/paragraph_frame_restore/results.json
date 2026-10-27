@@ -1,0 +1,5125 @@
+{
+ "schema": "paragraph-frame-restore-results-1",
+ "manifest_sha256": "44bb3a43a8b4aaa29f6217f61957db8af0d65b852098bc055e76fee89e5ccc96",
+ "tests": null,
+ "regression": null,
+ "summary": {
+  "old": {
+   "fixtures": {
+    "cases": 3,
+    "edit_saved": 3,
+    "restore_with_candidates": 3,
+    "restore_unapproved_refused": 3,
+    "restored": 3,
+    "restore_safety": 0,
+    "restore_quality": 3,
+    "restore_structure": 3,
+    "restore_continued_editing": 3,
+    "restore_move_audit": 3,
+    "restore_links_audit": 3,
+    "glyphs_at_source_001": 3,
+    "glyphs_at_source_0001": 3,
+    "breaks_kept": 3,
+    "text_identical_both": 3,
+    "search_same": 3,
+    "drawings_identical": 3,
+    "images_identical": 3,
+    "images_identical_or_shading_raster": 3,
+    "links_identical": 3,
+    "structure_vs_source": 3,
+    "pixels_identical": 3
+   },
+   "real": {
+    "cases": 4,
+    "edit_saved": 4,
+    "restore_with_candidates": 1,
+    "restore_refused": 3,
+    "restore_unapproved_refused": 1,
+    "restored": 1,
+    "restore_safety": 0,
+    "restore_quality": 1,
+    "restore_structure": 1,
+    "restore_continued_editing": 1,
+    "restore_move_audit": 1,
+    "restore_links_audit": 1,
+    "glyphs_at_source_001": 1,
+    "glyphs_at_source_0001": 1,
+    "breaks_kept": 1,
+    "text_identical_both": 1,
+    "search_same": 1,
+    "drawings_identical": 1,
+    "images_identical": 1,
+    "images_identical_or_shading_raster": 1,
+    "links_identical": 1,
+    "structure_vs_source": 1,
+    "pixels_identical": 1
+   }
+  },
+  "new": {
+   "fixtures": {
+    "cases": 3,
+    "edit_saved": 3,
+    "restore_with_candidates": 3,
+    "restore_unapproved_refused": 3,
+    "restored": 3,
+    "restore_safety": 0,
+    "restore_quality": 3,
+    "restore_structure": 3,
+    "restore_continued_editing": 3,
+    "restore_move_audit": 3,
+    "restore_links_audit": 3,
+    "glyphs_at_source_001": 3,
+    "glyphs_at_source_0001": 3,
+    "breaks_kept": 3,
+    "text_identical_both": 3,
+    "search_same": 3,
+    "drawings_identical": 3,
+    "images_identical": 3,
+    "images_identical_or_shading_raster": 3,
+    "links_identical": 3,
+    "structure_vs_source": 3,
+    "pixels_identical": 3
+   },
+   "real": {
+    "cases": 4,
+    "edit_saved": 4,
+    "restore_with_candidates": 4,
+    "restore_unapproved_refused": 4,
+    "restored": 4,
+    "restore_safety": 0,
+    "restore_quality": 4,
+    "restore_structure": 4,
+    "restore_continued_editing": 4,
+    "restore_move_audit": 4,
+    "restore_links_audit": 4,
+    "glyphs_at_source_001": 4,
+    "glyphs_at_source_0001": 4,
+    "breaks_kept": 4,
+    "text_identical_both": 3,
+    "search_same": 4,
+    "drawings_identical": 4,
+    "images_identical": 4,
+    "images_identical_or_shading_raster": 4,
+    "links_identical": 4,
+    "structure_vs_source": 4,
+    "pixels_identical": 4
+   }
+  }
+ },
+ "results": {
+  "old": {
+   "D1-lengthen": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        548
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        121.0,
+        190.5,
+        135.0
+       ],
+       "translation": 16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-67db9899e4d40c16"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-67db9899e4d40c16 moves with it only when approved explicitly)",
+      "seconds": 0.74
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-67db9899e4d40c16"
+     ],
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-67db9899e4d40c16",
+        "old": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "new": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.5,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "new": "申請書は窓口で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        857,
+        1107
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        121.0,
+        190.5,
+        135.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "translation": -16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-b00b2ce69744dda9"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-b00b2ce69744dda9 moves with it only when approved explicitly)",
+      "seconds": 0.62
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-b00b2ce69744dda9"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-b00b2ce69744dda9",
+        "old": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         120.0,
+         191.5,
+         136.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "D1-shorten": [
+    {
+     "old": "申請書は窓口で配布し",
+     "new": "申請書は配布し",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        548
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        89.0,
+        190.5,
+        103.0
+       ],
+       "translation": -16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-a73d9f07c66b7dd1"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-a73d9f07c66b7dd1 moves with it only when approved explicitly)",
+      "seconds": 0.54
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-a73d9f07c66b7dd1"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-a73d9f07c66b7dd1",
+        "old": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "new": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           89.0,
+           190.0,
+           103.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.5,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は配布し",
+     "new": "申請書は窓口で配布し",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        560,
+        810
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        89.0,
+        190.5,
+        103.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "translation": 16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          89.0,
+          190.0,
+          103.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-7ea931fe9f445618"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-7ea931fe9f445618 moves with it only when approved explicitly)",
+      "seconds": 0.48
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-7ea931fe9f445618"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-7ea931fe9f445618",
+        "old": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           89.0,
+           190.0,
+           103.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         88.0,
+         191.5,
+         104.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "D2-lengthen": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        514
+       ],
+       "operator_count": 24,
+       "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+       "bounds": [
+        39.0,
+        105.0,
+        190.0,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        121.0,
+        190.0,
+        135.0
+       ],
+       "translation": 16.0,
+       "drawings": 2,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "rg"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-f0674a576fbbec25"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f0674a576fbbec25 moves with it only when approved explicitly)",
+      "seconds": 0.79
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-f0674a576fbbec25"
+     ],
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-f0674a576fbbec25",
+        "old": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "new": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 2,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.0,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66096
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "new": "申請書は窓口で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        857,
+        1073
+       ],
+       "operator_count": 24,
+       "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+       "bounds": [
+        39.0,
+        121.0,
+        190.0,
+        135.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.0,
+        119.0
+       ],
+       "translation": -16.0,
+       "drawings": 2,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "rg"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-04e9062ef4a280d1"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-04e9062ef4a280d1 moves with it only when approved explicitly)",
+      "seconds": 0.55
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-04e9062ef4a280d1"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-04e9062ef4a280d1",
+        "old": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 2,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         120.0,
+         191.0,
+         136.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66096
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-03": [
+    {
+     "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        25710,
+        36906
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "moved_to": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1909,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          619.86,
+          199.64,
+          633.6
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-2fcb883709ff7510"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+      "seconds": 7.94
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-2fcb883709ff7510"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.10662841796875,
+      "followers_repainted": 3,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-2fcb883709ff7510",
+        "old": [
+         21.260000228881836,
+         619.8569946289062,
+         203.32740783691406,
+         634.70361328125
+        ],
+        "new": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5969848632812
+        ],
+        "translation": [
+         0.0,
+         13.10662841796875
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1909,
+          "old": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "new": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         618.86,
+         204.33,
+         635.7
+        ],
+        "size_matches": true,
+        "differing_samples": 9,
+        "largest_difference": 3,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "candidates": [],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+      "seconds": 7.16
+     },
+     "outcome": "refused",
+     "approved": [],
+     "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+     "class": "other: edited paragraphs lie in different marked-content containers"
+    }
+   ],
+   "P7-05": [
+    {
+     "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        25710,
+        36906
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "moved_to": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1909,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          619.86,
+          199.64,
+          633.6
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-2fcb883709ff7510"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+      "seconds": 8.62
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-2fcb883709ff7510"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.10662841796875,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-2fcb883709ff7510",
+        "old": [
+         21.260000228881836,
+         619.8569946289062,
+         203.32740783691406,
+         634.70361328125
+        ],
+        "new": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5969848632812
+        ],
+        "translation": [
+         0.0,
+         13.10662841796875
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1909,
+          "old": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "new": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         618.86,
+         204.33,
+         635.7
+        ],
+        "size_matches": true,
+        "differing_samples": 9,
+        "largest_difference": 3,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "candidates": [],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+      "seconds": 6.53
+     },
+     "outcome": "refused",
+     "approved": [],
+     "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+     "class": "other: edited paragraphs lie in different marked-content containers"
+    }
+   ],
+   "P7-06": [
+    {
+     "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        39225,
+        50424
+       ],
+       "operator_count": 528,
+       "bytes_sha256": "259718a7805e05de2ad8c59ed5c1f41fd40f9a64a01100b65a75ad9624f4bd36",
+       "bounds": [
+        21.26,
+        745.18,
+        161.42,
+        760.14
+       ],
+       "moved_to": [
+        21.26,
+        732.08,
+        161.42,
+        747.03
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm3"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■こころのオアシス　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "Tf",
+        "Tc",
+        "Tw",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1910,
+         "subtype": "/Link",
+         "rect": [
+          36.65,
+          745.18,
+          160.36,
+          759.58
+         ],
+         "uri": "http://kokoro-osaka.jp/"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-5d857bfbdd83a562"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-5d857bfbdd83a562 moves with it only when approved explicitly)",
+      "seconds": 7.81
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-5d857bfbdd83a562"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.106689453125,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-5d857bfbdd83a562",
+        "old": [
+         21.260000228881836,
+         745.1849975585938,
+         161.41586303710938,
+         760.1366577148438
+        ],
+        "new": [
+         21.260000228881836,
+         732.0783081054688,
+         161.41586303710938,
+         747.0299682617188
+        ],
+        "translation": [
+         0.0,
+         13.106689453125
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1910,
+          "old": [
+           36.655,
+           745.185,
+           160.364,
+           759.585
+          ],
+          "new": [
+           36.655,
+           732.078,
+           160.364,
+           746.478
+          ],
+          "uri": "http://kokoro-osaka.jp/"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 13,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         744.18,
+         162.42,
+         761.14
+        ],
+        "size_matches": true,
+        "differing_samples": 2,
+        "largest_difference": 1,
+        "samples": 64872
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "candidates": [],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('を' at [20.9, 733.3, 30.5, 742.9])",
+      "seconds": 19.45
+     },
+     "outcome": "refused",
+     "approved": [],
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('を' at [20.9, 733.3, 30.5, 742.9])",
+     "class": "capacity"
+    }
+   ],
+   "P7-07": [
+    {
+     "old": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "new": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        54237,
+        65408
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+       "bounds": [
+        21.26,
+        886.18,
+        165.15,
+        900.81
+       ],
+       "moved_to": [
+        21.26,
+        873.08,
+        165.15,
+        887.7
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm4"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　原状回復　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1911,
+         "subtype": "/Link",
+         "rect": [
+          37.31,
+          886.26,
+          164.29,
+          900.66
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-f98fba0d9ad28291"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f98fba0d9ad28291 moves with it only when approved explicitly)",
+      "seconds": 8.26
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-f98fba0d9ad28291"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.106689453125,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-f98fba0d9ad28291",
+        "old": [
+         21.260000228881836,
+         886.1846313476562,
+         165.14810180664062,
+         900.8059692382812
+        ],
+        "new": [
+         21.260000228881836,
+         873.0779418945312,
+         165.14810180664062,
+         887.6992797851562
+        ],
+        "translation": [
+         0.0,
+         13.106689453125
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1911,
+          "old": [
+           37.309,
+           886.258,
+           164.292,
+           900.659
+          ],
+          "new": [
+           37.309,
+           873.151,
+           164.292,
+           887.552
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         885.18,
+         166.15,
+         901.81
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66555
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "new": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        56317,
+        67488
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+       "bounds": [
+        21.26,
+        873.0,
+        165.15,
+        887.7
+       ],
+       "moved_to": [
+        21.26,
+        886.11,
+        165.15,
+        900.81
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm4"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　原状回復　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1060,
+         "subtype": "/Link",
+         "rect": [
+          37.31,
+          873.15,
+          164.29,
+          887.55
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+        }
+       ],
+       "adjacent": [
+        "filled-vector"
+       ],
+       "id": "line-decoration-c73a4a2e1fbaabcd"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-c73a4a2e1fbaabcd moves with it only when approved explicitly)",
+      "seconds": 7.48
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-c73a4a2e1fbaabcd"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.10669371093752,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-c73a4a2e1fbaabcd",
+        "old": [
+         21.260000228881836,
+         873.0,
+         165.14810180664062,
+         887.6992797851562
+        ],
+        "new": [
+         21.260000228881836,
+         886.1066937109375,
+         165.14810180664062,
+         900.8059734960938
+        ],
+        "translation": [
+         0.0,
+         -13.10669371093752
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1060,
+          "old": [
+           37.309,
+           873.151,
+           164.292,
+           887.552
+          ],
+          "new": [
+           37.309,
+           886.258,
+           164.292,
+           900.659
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         872.0,
+         166.15,
+         888.7
+        ],
+        "size_matches": true,
+        "differing_samples": 8,
+        "largest_difference": 2,
+        "samples": 66555
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 131,
+        "kept": 131,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 7,
+        "output_lines": 8,
+        "source_breaks_outside_edit": 6,
+        "breaks_kept": 6
+       },
+       "outside_changed": 0,
+       "page_changed": 2,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 9e-05,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ]
+  },
+  "new": {
+   "D1-lengthen": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        548
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        121.0,
+        190.5,
+        135.0
+       ],
+       "translation": 16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-67db9899e4d40c16"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-67db9899e4d40c16 moves with it only when approved explicitly)",
+      "seconds": 0.65
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-67db9899e4d40c16"
+     ],
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-67db9899e4d40c16",
+        "old": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "new": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.5,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "new": "申請書は窓口で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        857,
+        1107
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        121.0,
+        190.5,
+        135.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "translation": -16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-b00b2ce69744dda9"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-b00b2ce69744dda9 moves with it only when approved explicitly)",
+      "seconds": 0.61
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-b00b2ce69744dda9"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-b00b2ce69744dda9",
+        "old": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         120.0,
+         191.5,
+         136.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "D1-shorten": [
+    {
+     "old": "申請書は窓口で配布し",
+     "new": "申請書は配布し",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        548
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        89.0,
+        190.5,
+        103.0
+       ],
+       "translation": -16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-a73d9f07c66b7dd1"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-a73d9f07c66b7dd1 moves with it only when approved explicitly)",
+      "seconds": 0.51
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-a73d9f07c66b7dd1"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-a73d9f07c66b7dd1",
+        "old": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "new": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           89.0,
+           190.0,
+           103.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.5,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は配布し",
+     "new": "申請書は窓口で配布し",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        560,
+        810
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        89.0,
+        190.5,
+        103.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "translation": 16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          89.0,
+          190.0,
+          103.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-7ea931fe9f445618"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-7ea931fe9f445618 moves with it only when approved explicitly)",
+      "seconds": 0.61
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-7ea931fe9f445618"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-7ea931fe9f445618",
+        "old": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           89.0,
+           190.0,
+           103.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         88.0,
+         191.5,
+         104.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "D2-lengthen": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        514
+       ],
+       "operator_count": 24,
+       "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+       "bounds": [
+        39.0,
+        105.0,
+        190.0,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        121.0,
+        190.0,
+        135.0
+       ],
+       "translation": 16.0,
+       "drawings": 2,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "rg"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-f0674a576fbbec25"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f0674a576fbbec25 moves with it only when approved explicitly)",
+      "seconds": 0.85
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-f0674a576fbbec25"
+     ],
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-f0674a576fbbec25",
+        "old": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "new": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 2,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.0,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66096
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "new": "申請書は窓口で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        857,
+        1073
+       ],
+       "operator_count": 24,
+       "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+       "bounds": [
+        39.0,
+        121.0,
+        190.0,
+        135.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.0,
+        119.0
+       ],
+       "translation": -16.0,
+       "drawings": 2,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "rg"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-04e9062ef4a280d1"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-04e9062ef4a280d1 moves with it only when approved explicitly)",
+      "seconds": 0.86
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-04e9062ef4a280d1"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-04e9062ef4a280d1",
+        "old": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 2,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         120.0,
+         191.0,
+         136.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66096
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-03": [
+    {
+     "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        25710,
+        36906
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "moved_to": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1909,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          619.86,
+          199.64,
+          633.6
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-2fcb883709ff7510"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+      "seconds": 8.19
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-2fcb883709ff7510"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.10662841796875,
+      "followers_repainted": 3,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-2fcb883709ff7510",
+        "old": [
+         21.260000228881836,
+         619.8569946289062,
+         203.32740783691406,
+         634.70361328125
+        ],
+        "new": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5969848632812
+        ],
+        "translation": [
+         0.0,
+         13.10662841796875
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1909,
+          "old": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "new": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         618.86,
+         204.33,
+         635.7
+        ],
+        "size_matches": true,
+        "differing_samples": 9,
+        "largest_difference": 3,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        38560,
+        49756
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "moved_to": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1056,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          606.75,
+          199.64,
+          620.5
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-9931a3ee78adcab0"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-9931a3ee78adcab0 moves with it only when approved explicitly)",
+      "seconds": 8.23
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-9931a3ee78adcab0"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.106572128906237,
+      "followers_repainted": 3,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-9931a3ee78adcab0",
+        "old": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5970458984375
+        ],
+        "new": [
+         21.260000228881836,
+         619.8569383398437,
+         203.32740783691406,
+         634.7036180273437
+        ],
+        "translation": [
+         0.0,
+         -13.106572128906237
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1056,
+          "old": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "new": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         605.75,
+         204.33,
+         622.6
+        ],
+        "size_matches": true,
+        "differing_samples": 1,
+        "largest_difference": 1,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 214,
+        "kept": 214,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 11,
+        "output_lines": 12,
+        "source_breaks_outside_edit": 10,
+        "breaks_kept": 10
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": false
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 9e-05,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-05": [
+    {
+     "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        25710,
+        36906
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "moved_to": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1909,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          619.86,
+          199.64,
+          633.6
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-2fcb883709ff7510"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+      "seconds": 9.7
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-2fcb883709ff7510"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.10662841796875,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-2fcb883709ff7510",
+        "old": [
+         21.260000228881836,
+         619.8569946289062,
+         203.32740783691406,
+         634.70361328125
+        ],
+        "new": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5969848632812
+        ],
+        "translation": [
+         0.0,
+         13.10662841796875
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1909,
+          "old": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "new": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         618.86,
+         204.33,
+         635.7
+        ],
+        "size_matches": true,
+        "differing_samples": 9,
+        "largest_difference": 3,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        27286,
+        38482
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "moved_to": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1056,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          606.75,
+          199.64,
+          620.5
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-9c17a37dcccd4b26"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-9c17a37dcccd4b26 moves with it only when approved explicitly)",
+      "seconds": 8.22
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-9c17a37dcccd4b26"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.106572128906237,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-9c17a37dcccd4b26",
+        "old": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5970458984375
+        ],
+        "new": [
+         21.260000228881836,
+         619.8569383398437,
+         203.32740783691406,
+         634.7036180273437
+        ],
+        "translation": [
+         0.0,
+         -13.106572128906237
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1056,
+          "old": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "new": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         605.75,
+         204.33,
+         622.6
+        ],
+        "size_matches": true,
+        "differing_samples": 1,
+        "largest_difference": 1,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 110,
+        "kept": 110,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 6,
+        "output_lines": 7,
+        "source_breaks_outside_edit": 5,
+        "breaks_kept": 5
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.00018,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-06": [
+    {
+     "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        39225,
+        50424
+       ],
+       "operator_count": 528,
+       "bytes_sha256": "259718a7805e05de2ad8c59ed5c1f41fd40f9a64a01100b65a75ad9624f4bd36",
+       "bounds": [
+        21.26,
+        745.18,
+        161.42,
+        760.14
+       ],
+       "moved_to": [
+        21.26,
+        732.08,
+        161.42,
+        747.03
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm3"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■こころのオアシス　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "Tf",
+        "Tc",
+        "Tw",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1910,
+         "subtype": "/Link",
+         "rect": [
+          36.65,
+          745.18,
+          160.36,
+          759.58
+         ],
+         "uri": "http://kokoro-osaka.jp/"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-5d857bfbdd83a562"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-5d857bfbdd83a562 moves with it only when approved explicitly)",
+      "seconds": 7.88
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-5d857bfbdd83a562"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.106689453125,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-5d857bfbdd83a562",
+        "old": [
+         21.260000228881836,
+         745.1849975585938,
+         161.41586303710938,
+         760.1366577148438
+        ],
+        "new": [
+         21.260000228881836,
+         732.0783081054688,
+         161.41586303710938,
+         747.0299682617188
+        ],
+        "translation": [
+         0.0,
+         13.106689453125
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1910,
+          "old": [
+           36.655,
+           745.185,
+           160.364,
+           759.585
+          ],
+          "new": [
+           36.655,
+           732.078,
+           160.364,
+           746.478
+          ],
+          "uri": "http://kokoro-osaka.jp/"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 13,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         744.18,
+         162.42,
+         761.14
+        ],
+        "size_matches": true,
+        "differing_samples": 2,
+        "largest_difference": 1,
+        "samples": 64872
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        41120,
+        52319
+       ],
+       "operator_count": 528,
+       "bytes_sha256": "259718a7805e05de2ad8c59ed5c1f41fd40f9a64a01100b65a75ad9624f4bd36",
+       "bounds": [
+        21.26,
+        732.08,
+        161.42,
+        747.03
+       ],
+       "moved_to": [
+        21.26,
+        745.19,
+        161.42,
+        760.14
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm3"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■こころのオアシス　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "Tf",
+        "Tc",
+        "Tw",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1058,
+         "subtype": "/Link",
+         "rect": [
+          36.65,
+          732.08,
+          160.36,
+          746.48
+         ],
+         "uri": "http://kokoro-osaka.jp/"
+        }
+       ],
+       "adjacent": [
+        "filled-vector"
+       ],
+       "id": "line-decoration-ddcda8abfe5e8ad4"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-ddcda8abfe5e8ad4 moves with it only when approved explicitly)",
+      "seconds": 7.43
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-ddcda8abfe5e8ad4"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.10669371093752,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-ddcda8abfe5e8ad4",
+        "old": [
+         21.260000228881836,
+         732.0783081054688,
+         161.41586303710938,
+         747.0299682617188
+        ],
+        "new": [
+         21.260000228881836,
+         745.1850018164063,
+         161.41586303710938,
+         760.1366619726563
+        ],
+        "translation": [
+         0.0,
+         -13.10669371093752
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1058,
+          "old": [
+           36.655,
+           732.078,
+           160.364,
+           746.478
+          ],
+          "new": [
+           36.655,
+           745.185,
+           160.364,
+           759.585
+          ],
+          "uri": "http://kokoro-osaka.jp/"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 13,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         731.08,
+         162.42,
+         748.03
+        ],
+        "size_matches": true,
+        "differing_samples": 2,
+        "largest_difference": 1,
+        "samples": 64872
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 123,
+        "kept": 123,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 7,
+        "output_lines": 8,
+        "source_breaks_outside_edit": 6,
+        "breaks_kept": 6
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 2e-05,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-07": [
+    {
+     "old": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "new": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        54237,
+        65408
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+       "bounds": [
+        21.26,
+        886.18,
+        165.15,
+        900.81
+       ],
+       "moved_to": [
+        21.26,
+        873.08,
+        165.15,
+        887.7
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm4"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　原状回復　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1911,
+         "subtype": "/Link",
+         "rect": [
+          37.31,
+          886.26,
+          164.29,
+          900.66
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-f98fba0d9ad28291"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f98fba0d9ad28291 moves with it only when approved explicitly)",
+      "seconds": 7.62
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-f98fba0d9ad28291"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.106689453125,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-f98fba0d9ad28291",
+        "old": [
+         21.260000228881836,
+         886.1846313476562,
+         165.14810180664062,
+         900.8059692382812
+        ],
+        "new": [
+         21.260000228881836,
+         873.0779418945312,
+         165.14810180664062,
+         887.6992797851562
+        ],
+        "translation": [
+         0.0,
+         13.106689453125
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1911,
+          "old": [
+           37.309,
+           886.258,
+           164.292,
+           900.659
+          ],
+          "new": [
+           37.309,
+           873.151,
+           164.292,
+           887.552
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         885.18,
+         166.15,
+         901.81
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66555
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "new": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        56317,
+        67488
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+       "bounds": [
+        21.26,
+        873.0,
+        165.15,
+        887.7
+       ],
+       "moved_to": [
+        21.26,
+        886.11,
+        165.15,
+        900.81
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm4"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　原状回復　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1060,
+         "subtype": "/Link",
+         "rect": [
+          37.31,
+          873.15,
+          164.29,
+          887.55
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+        }
+       ],
+       "adjacent": [
+        "filled-vector"
+       ],
+       "id": "line-decoration-c73a4a2e1fbaabcd"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-c73a4a2e1fbaabcd moves with it only when approved explicitly)",
+      "seconds": 7.67
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-c73a4a2e1fbaabcd"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.10669371093752,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-c73a4a2e1fbaabcd",
+        "old": [
+         21.260000228881836,
+         873.0,
+         165.14810180664062,
+         887.6992797851562
+        ],
+        "new": [
+         21.260000228881836,
+         886.1066937109375,
+         165.14810180664062,
+         900.8059734960938
+        ],
+        "translation": [
+         0.0,
+         -13.10669371093752
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1060,
+          "old": [
+           37.309,
+           873.151,
+           164.292,
+           887.552
+          ],
+          "new": [
+           37.309,
+           886.258,
+           164.292,
+           900.659
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         872.0,
+         166.15,
+         888.7
+        ],
+        "size_matches": true,
+        "differing_samples": 8,
+        "largest_difference": 2,
+        "samples": 66555
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 131,
+        "kept": 131,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 7,
+        "output_lines": 8,
+        "source_breaks_outside_edit": 6,
+        "breaks_kept": 6
+       },
+       "outside_changed": 0,
+       "page_changed": 2,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 9e-05,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ]
+  }
+ }
+}
