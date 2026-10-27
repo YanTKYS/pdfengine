@@ -148,9 +148,10 @@ def moved_audit(source, output, page, save):
     """Approved moves (placed objects and line decorations) and protected paint, checked separately.
 
     Inside a moved object's old area every drawing, image and glyph is expected
-    translated by the follower translation (0.02 pt; an image to 0.75 pt, the
-    device pixel MuPDF snaps a rasterized shading to); everything else is
-    expected unchanged (0.01 pt)."""
+    translated by the follower translation (0.02 pt); an image without the same
+    samples there is a shading's raster, whose pixel size follows the device
+    grid: it is matched by count and colour space (the raster audit compares the
+    rendering). Everything else is expected unchanged (0.01 pt)."""
     areas = [pymupdf.Rect(m['old']) + (-.5, -.5, .5, .5) for m in (save.get('placed_objects_moved') or []) + (save.get('decorations_moved') or [])]
     delta = save.get('follower_translation') if isinstance(save.get('follower_translation'), (int, float)) else 0.
     inside = lambda r, shift=0.: any((a + (0, shift, 0, shift)).contains(pymupdf.Rect(r)) for a in areas)
@@ -165,13 +166,21 @@ def moved_audit(source, output, page, save):
         ga = [c for bl in pa.get_text('rawdict')['blocks'] for l in bl.get('lines', []) for s in l['spans'] for c in s['chars']]
         gb = [c for bl in pb.get_text('rawdict')['blocks'] for l in bl.get('lines', []) for s in l['spans'] for c in s['chars']]
     moved_d = [drawing(x, delta) for x in da if inside(x['rect'])]
-    moved_i = [image(x, delta) for x in ia if inside(x['bbox'])]
     moved_g = [glyph(c, delta) for c in ga if inside(c['bbox'])]
-    digest = Counter(x.get('digest') for x in ia if inside(x['bbox']))
-    same_samples = sum((digest & Counter(x.get('digest') for x in ib if inside(x['bbox'], delta))).values())
-    approved = dict(objects=len(areas), drawings=len(moved_d), images=len(moved_i), glyphs=len(moved_g), images_same_samples=same_samples,
+    # An image with the same samples is where it moved (0.02 pt); what remains is
+    # a shading's raster, whose pixel size follows the device grid: same count and colour space.
+    oi, si = [x for x in ia if inside(x['bbox'])], [x for x in ib if inside(x['bbox'], delta)]
+    paired = 0
+    for x in list(oi):
+        hit = next((y for y in si if y.get('digest') == x.get('digest') and _match([image(x, delta)], [image(y)], .02)), None)
+        if hit is not None:
+            oi.remove(x)
+            si.remove(hit)
+            paired += 1
+    space = lambda images: sorted((x.get('cs-name'), x.get('bpc')) for x in images)
+    approved = dict(objects=len(areas), drawings=len(moved_d), images=paired + len(oi), images_same_samples=paired, shading_rasters=len(oi), glyphs=len(moved_g),
                     exact=_match(moved_d, [drawing(x) for x in db if inside(x['rect'], delta)], .02)
-                    and _match(moved_i, [image(x) for x in ib if inside(x['bbox'], delta)], .75)
+                    and space(oi) == space(si)
                     and Counter(map(str, moved_g)) == Counter(str(glyph(c)) for c in gb if inside(c['bbox'], delta)))
     approved['nothing_left'] = not any(inside(x['rect']) and not inside(x['rect'], delta) for x in db) or not areas
     keep = lambda items, f, key, shift=0.: Counter(str(f(x)) for x in items if not inside(x[key], shift))
@@ -202,7 +211,7 @@ def raster(source, output, page, moved, delta):
 
 def links_audit(source, output, page, save):
     """Every link keeps its target; a moved link's area is its old one translated exactly."""
-    moved = {round(a['old'][0], 2): a for a in (save.get('decorations_moved') or []) for a in a.get('annotations', [])}
+    moved = [pymupdf.Rect(a['old']) for m in (save.get('decorations_moved') or []) for a in m.get('annotations', [])]
     delta = save.get('follower_translation') if isinstance(save.get('follower_translation'), (int, float)) else 0.
     key = lambda l: (l.get('kind'), l.get('uri'), l.get('page'), str(l.get('to')), l.get('file'))
     with pymupdf.open(source) as a, pymupdf.open(output) as b:
@@ -210,7 +219,7 @@ def links_audit(source, output, page, save):
     expected = Counter()
     for l in la:
         r = l['from']
-        shift = delta if round(r.x0, 2) in moved else 0.
+        shift = delta if any(max(abs(x - y) for x, y in zip(r, m)) < .01 for m in moved) else 0.
         expected[key(l) + (round(r.x0, 2), round(r.y0 + shift, 2), round(r.x1, 2), round(r.y1 + shift, 2))] += 1
     found = Counter(key(l) + (round(l['from'].x0, 2), round(l['from'].y0, 2), round(l['from'].x1, 2), round(l['from'].y1, 2)) for l in lb)
     return dict(links=len(la), moved=len(moved), ok=expected == found and len(la) == len(lb))
