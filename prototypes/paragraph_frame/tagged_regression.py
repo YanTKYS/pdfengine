@@ -1,4 +1,4 @@
-"""Compare the PR #87-#90 regression runs with their committed results and with the regressions PR #90, PR #91, PR #92, PR #94, PR #96 and PR #98 recorded.
+"""Compare the PR #87-#90 regression runs with their committed results and with the regressions PR #90, PR #91, PR #92, PR #94, PR #96, PR #98 and PR #100 recorded.
 
   .venv/bin/python -m prototypes.paragraph_frame.tagged_regression <regression.json> [<tagged root> <477.pdf> <pdf.js dir>]
 
@@ -214,9 +214,10 @@ if len(sys.argv) > 2:
         if not r['same_as_committed']:
             print(' ', json.dumps({x: r.get(x) for x in ('document', 'selection', 'kind', 'outcome', 'reason', 'failed', 'committed', 'outside_changes')}, ensure_ascii=False)[:700])
 # Against the regressions recorded by PR #92 (main 870709f's own state),
-# PR #94 (main 2e2ec8b's), PR #96 (main bb9fd08's) and PR #98 (main d1207db's), when present.
+# PR #94 (main 2e2ec8b's), PR #96 (main bb9fd08's), PR #98 (main d1207db's) and PR #100 (main 6b68494's), when present.
 for pr, recorded in (('92', Path('evaluations/paragraph_frame_fidelity/results.json')), ('94', Path('evaluations/paragraph_frame_roundtrip/results.json')),
-                     ('96', Path('evaluations/paragraph_frame_multiedit/results.json')), ('98', Path('evaluations/paragraph_frame_placed/results.json'))):
+                     ('96', Path('evaluations/paragraph_frame_multiedit/results.json')), ('98', Path('evaluations/paragraph_frame_placed/results.json')),
+                     ('100', Path('evaluations/paragraph_frame_decoration/results.json'))):
     rec92 = load(recorded).get('regression') if recorded.exists() else None
     if not rec92:
         continue
