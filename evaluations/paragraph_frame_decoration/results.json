@@ -1,0 +1,2789 @@
+{
+ "schema": "paragraph-frame-decoration-results-1",
+ "manifest_sha256": "641a00f53e273a30df80e0333effd090271217a3b9a85acb63dacbb33afe9f3c",
+ "tests": null,
+ "regression": null,
+ "summary": {
+  "old": {
+   "fixtures": {
+    "steps": 6,
+    "with_candidates": 0,
+    "refused": 6,
+    "refused: placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds oth": 6
+   },
+   "real": {
+    "steps": 14,
+    "with_candidates": 0,
+    "refused": 14,
+    "refused: placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds oth": 13,
+    "refused: placed object of a follower (new rule): an inline placed object of a following paragraph would collide with pr": 1
+   }
+  },
+  "new": {
+   "fixtures": {
+    "steps": 9,
+    "with_candidates": 6,
+    "unapproved_refused": 6,
+    "saved": 6,
+    "saved_moving_decorations": 6,
+    "safety": 0,
+    "quality": 6,
+    "structure": 6,
+    "continued_editing": 6,
+    "placed_audit": 6,
+    "links_audit": 6,
+    "raster_audit": 6,
+    "passed_with_move_audits": 6,
+    "undo_page_identical": 3,
+    "refused": 3,
+    "refused: placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds oth": 3
+   },
+   "real": {
+    "steps": 18,
+    "with_candidates": 6,
+    "refused": 13,
+    "refused: placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds oth": 8,
+    "unapproved_refused": 6,
+    "saved": 5,
+    "saved_moving_decorations": 5,
+    "safety": 0,
+    "quality": 5,
+    "structure": 5,
+    "continued_editing": 5,
+    "placed_audit": 5,
+    "links_audit": 5,
+    "raster_audit": 1,
+    "passed_with_move_audits": 5,
+    "refused: other": 3,
+    "refused: capacity": 1,
+    "undo_page_identical": 0,
+    "refused: placed object of a follower (new rule): an inline placed object of a following paragraph would collide with pr": 1
+   }
+  }
+ },
+ "results": {
+  "old": {
+   "D1": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 0.82
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ],
+    "shorten": [
+     {
+      "old": "申請書は窓口で配布し",
+      "new": "申請書は配布し",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 0.66
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "D2": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 0.78
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "D3": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 0.85
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "D4": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 0.76
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "D5": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 0.84
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P7-01": {
+    "shorten": [
+     {
+      "old": "偽造変造対策を強化した「2025年旅券」の発給が始まります。国立印刷局で作成した旅券が配送されるため、府パスポートセンターでは申請から交付まで10営業日（従来6営業日）、市町村では14営業日（従来10営業日）かかります。 また、同日から申請手数料も改定されます。詳しくはこちら",
+      "new": "偽まります。国立印刷局で作成した旅券が配送されるため、府パスポートセンターでは申請から交付まで10営業日（従来6営業日）、市町村では14営業日（従来10営業日）かかります。 また、同日から申請手数料も改定されます。詳しくはこちら",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.66
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P7-03": {
+    "lengthen": [
+     {
+      "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+      "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。所得税（復興特別所得税）の申告期限は3/17（月）",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.62
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ],
+    "shorten": [
+     {
+      "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+      "new": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.56
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P7-05": {
+    "lengthen": [
+     {
+      "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+      "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。3月下旬は自動車の名義変更や廃車などの登録手続きが",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.79
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ],
+    "shorten": [
+     {
+      "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+      "new": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.57
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P7-06": {
+    "lengthen": [
+     {
+      "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+      "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。令和5年の大阪府の自殺者数は1,383人と、1日",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.54
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ],
+    "shorten": [
+     {
+      "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+      "new": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.8
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P7-07": {
+    "shorten": [
+     {
+      "old": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+      "new": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.78
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P8-08": {
+    "lengthen": [
+     {
+      "old": " 府民の森なるかわ園地（近鉄「瓢箪山」）",
+      "new": " 府民の森なるかわ園地（近鉄「瓢箪山」） 府民の森なるかわ園地（近鉄「瓢箪山」",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 10.6
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P8-09": {
+    "lengthen": [
+     {
+      "old": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+      "new": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。発達障がいの特性は暮らしや人づき",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected filled-vector",
+       "seconds": 10.55
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected filled-vector",
+      "class": "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected filled-vector"
+     }
+    ],
+    "shorten": [
+     {
+      "old": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+      "new": "発いの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 10.68
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P8-11": {
+    "lengthen": [
+     {
+      "old": " 4/11（金）まで／インターネット",
+      "new": " 4/11（金）まで／インターネット 4/11（金）まで／インターネット 4/11（金",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 10.06
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P8-13": {
+    "shorten": [
+     {
+      "old": "2025年大阪・関西万博の開幕に合わせて4月から大阪・光の饗宴が点灯。全長約4キロメートルの御堂筋イルミネーション、大阪市役所正面イルミネーションファサード、中之島のみお",
+      "new": "2に合わせて4月から大阪・光の饗宴が点灯。全長約4キロメートルの御堂筋イルミネーション、大阪市役所正面イルミネーションファサード、中之島のみお",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (image) that does not move with it",
+       "seconds": 10.47
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (image) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (image) that does not move with it"
+     }
+    ]
+   },
+   "C02-92": {
+    "lengthen": [
+     {
+      "old": "ぜひご活用ください。",
+      "new": "ぜひご活用ください。ぜひご相談ください。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.88
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   }
+  },
+  "new": {
+   "D1": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "後続段落です。",
+        "operators": [
+         298,
+         548
+        ],
+        "operator_count": 31,
+        "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+        "bounds": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "moved_to": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "translation": 16.0,
+        "drawings": 3,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 7,
+        "carried_text": "",
+        "placed_objects": 1,
+        "replayed_state": [
+         "g",
+         "Tf",
+         "g"
+        ],
+        "annotations": [
+         {
+          "xref": 15,
+          "subtype": "/Link",
+          "rect": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-67db9899e4d40c16"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-67db9899e4d40c16 moves with it only when approved explicitly)",
+       "seconds": 0.83
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-67db9899e4d40c16"
+      ],
+      "grow": 1,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": 16.0,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-67db9899e4d40c16",
+         "old": [
+          39.0,
+          105.0,
+          190.5,
+          119.0
+         ],
+         "new": [
+          39.0,
+          121.0,
+          190.5,
+          135.0
+         ],
+         "translation": [
+          0.0,
+          -16.0
+         ],
+         "glyphs": 7,
+         "annotations": [
+          {
+           "xref": 15,
+           "old": [
+            130.0,
+            105.0,
+            190.0,
+            119.0
+           ],
+           "new": [
+            130.0,
+            121.0,
+            190.0,
+            135.0
+           ],
+           "uri": "https://example.org/search"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 3,
+        "images": 0,
+        "images_same_samples": 0,
+        "shading_rasters": 0,
+        "glyphs": 7,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          38.0,
+          104.0,
+          191.5,
+          120.0
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 66384
+        }
+       ],
+       "ok": true
+      }
+     },
+     {
+      "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "new": "申請書は窓口で",
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "後続段落です。",
+        "operators": [
+         857,
+         1107
+        ],
+        "operator_count": 31,
+        "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+        "bounds": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "moved_to": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": -16.0,
+        "drawings": 3,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 7,
+        "carried_text": "",
+        "placed_objects": 1,
+        "replayed_state": [
+         "g",
+         "Tf",
+         "g"
+        ],
+        "annotations": [
+         {
+          "xref": 15,
+          "subtype": "/Link",
+          "rect": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-b00b2ce69744dda9"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-b00b2ce69744dda9 moves with it only when approved explicitly)",
+       "seconds": 0.66
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-b00b2ce69744dda9"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": -16.0,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-b00b2ce69744dda9",
+         "old": [
+          39.0,
+          121.0,
+          190.5,
+          135.0
+         ],
+         "new": [
+          39.0,
+          105.0,
+          190.5,
+          119.0
+         ],
+         "translation": [
+          0.0,
+          16.0
+         ],
+         "glyphs": 7,
+         "annotations": [
+          {
+           "xref": 15,
+           "old": [
+            130.0,
+            121.0,
+            190.0,
+            135.0
+           ],
+           "new": [
+            130.0,
+            105.0,
+            190.0,
+            119.0
+           ],
+           "uri": "https://example.org/search"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 3,
+        "images": 0,
+        "images_same_samples": 0,
+        "shading_rasters": 0,
+        "glyphs": 7,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          38.0,
+          120.0,
+          191.5,
+          136.0
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 66384
+        }
+       ],
+       "ok": true
+      },
+      "vs_source": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      }
+     }
+    ],
+    "shorten": [
+     {
+      "old": "申請書は窓口で配布し",
+      "new": "申請書は配布し",
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "後続段落です。",
+        "operators": [
+         298,
+         548
+        ],
+        "operator_count": 31,
+        "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+        "bounds": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "moved_to": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "translation": -16.0,
+        "drawings": 3,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 7,
+        "carried_text": "",
+        "placed_objects": 1,
+        "replayed_state": [
+         "g",
+         "Tf",
+         "g"
+        ],
+        "annotations": [
+         {
+          "xref": 15,
+          "subtype": "/Link",
+          "rect": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-a73d9f07c66b7dd1"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-a73d9f07c66b7dd1 moves with it only when approved explicitly)",
+       "seconds": 0.54
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-a73d9f07c66b7dd1"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": -16.0,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-a73d9f07c66b7dd1",
+         "old": [
+          39.0,
+          105.0,
+          190.5,
+          119.0
+         ],
+         "new": [
+          39.0,
+          89.0,
+          190.5,
+          103.0
+         ],
+         "translation": [
+          0.0,
+          16.0
+         ],
+         "glyphs": 7,
+         "annotations": [
+          {
+           "xref": 15,
+           "old": [
+            130.0,
+            105.0,
+            190.0,
+            119.0
+           ],
+           "new": [
+            130.0,
+            89.0,
+            190.0,
+            103.0
+           ],
+           "uri": "https://example.org/search"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 3,
+        "images": 0,
+        "images_same_samples": 0,
+        "shading_rasters": 0,
+        "glyphs": 7,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          38.0,
+          104.0,
+          191.5,
+          120.0
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 66384
+        }
+       ],
+       "ok": true
+      }
+     },
+     {
+      "old": "申請書は配布し",
+      "new": "申請書は窓口で配布し",
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "後続段落です。",
+        "operators": [
+         560,
+         810
+        ],
+        "operator_count": 31,
+        "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+        "bounds": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "moved_to": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": 16.0,
+        "drawings": 3,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 7,
+        "carried_text": "",
+        "placed_objects": 1,
+        "replayed_state": [
+         "g",
+         "Tf",
+         "g"
+        ],
+        "annotations": [
+         {
+          "xref": 15,
+          "subtype": "/Link",
+          "rect": [
+           130.0,
+           89.0,
+           190.0,
+           103.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-7ea931fe9f445618"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-7ea931fe9f445618 moves with it only when approved explicitly)",
+       "seconds": 0.59
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-7ea931fe9f445618"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": 16.0,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-7ea931fe9f445618",
+         "old": [
+          39.0,
+          89.0,
+          190.5,
+          103.0
+         ],
+         "new": [
+          39.0,
+          105.0,
+          190.5,
+          119.0
+         ],
+         "translation": [
+          0.0,
+          -16.0
+         ],
+         "glyphs": 7,
+         "annotations": [
+          {
+           "xref": 15,
+           "old": [
+            130.0,
+            89.0,
+            190.0,
+            103.0
+           ],
+           "new": [
+            130.0,
+            105.0,
+            190.0,
+            119.0
+           ],
+           "uri": "https://example.org/search"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 3,
+        "images": 0,
+        "images_same_samples": 0,
+        "shading_rasters": 0,
+        "glyphs": 7,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          38.0,
+          88.0,
+          191.5,
+          104.0
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 66384
+        }
+       ],
+       "ok": true
+      },
+      "vs_source": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      }
+     }
+    ]
+   },
+   "D2": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "後続段落です。",
+        "operators": [
+         298,
+         514
+        ],
+        "operator_count": 24,
+        "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+        "bounds": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "moved_to": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "translation": 16.0,
+        "drawings": 2,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 7,
+        "carried_text": "",
+        "placed_objects": 1,
+        "replayed_state": [
+         "g",
+         "Tf",
+         "rg"
+        ],
+        "annotations": [
+         {
+          "xref": 15,
+          "subtype": "/Link",
+          "rect": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-f0674a576fbbec25"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f0674a576fbbec25 moves with it only when approved explicitly)",
+       "seconds": 0.88
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-f0674a576fbbec25"
+      ],
+      "grow": 1,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": 16.0,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-f0674a576fbbec25",
+         "old": [
+          39.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "new": [
+          39.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "translation": [
+          0.0,
+          -16.0
+         ],
+         "glyphs": 7,
+         "annotations": [
+          {
+           "xref": 15,
+           "old": [
+            130.0,
+            105.0,
+            190.0,
+            119.0
+           ],
+           "new": [
+            130.0,
+            121.0,
+            190.0,
+            135.0
+           ],
+           "uri": "https://example.org/search"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 2,
+        "images": 0,
+        "images_same_samples": 0,
+        "shading_rasters": 0,
+        "glyphs": 7,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          38.0,
+          104.0,
+          191.0,
+          120.0
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 66096
+        }
+       ],
+       "ok": true
+      }
+     },
+     {
+      "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "new": "申請書は窓口で",
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "後続段落です。",
+        "operators": [
+         857,
+         1073
+        ],
+        "operator_count": 24,
+        "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+        "bounds": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "moved_to": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "translation": -16.0,
+        "drawings": 2,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 7,
+        "carried_text": "",
+        "placed_objects": 1,
+        "replayed_state": [
+         "g",
+         "Tf",
+         "rg"
+        ],
+        "annotations": [
+         {
+          "xref": 15,
+          "subtype": "/Link",
+          "rect": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-04e9062ef4a280d1"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-04e9062ef4a280d1 moves with it only when approved explicitly)",
+       "seconds": 0.61
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-04e9062ef4a280d1"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": -16.0,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-04e9062ef4a280d1",
+         "old": [
+          39.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "new": [
+          39.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "translation": [
+          0.0,
+          16.0
+         ],
+         "glyphs": 7,
+         "annotations": [
+          {
+           "xref": 15,
+           "old": [
+            130.0,
+            121.0,
+            190.0,
+            135.0
+           ],
+           "new": [
+            130.0,
+            105.0,
+            190.0,
+            119.0
+           ],
+           "uri": "https://example.org/search"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 2,
+        "images": 0,
+        "images_same_samples": 0,
+        "shading_rasters": 0,
+        "glyphs": 7,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          38.0,
+          120.0,
+          191.0,
+          136.0
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 66096
+        }
+       ],
+       "ok": true
+      },
+      "vs_source": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      }
+     }
+    ]
+   },
+   "D3": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 0.83
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "D4": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 0.86
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "D5": {
+    "lengthen": [
+     {
+      "old": "申請書は窓口で",
+      "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 0.77
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P7-01": {
+    "shorten": [
+     {
+      "old": "偽造変造対策を強化した「2025年旅券」の発給が始まります。国立印刷局で作成した旅券が配送されるため、府パスポートセンターでは申請から交付まで10営業日（従来6営業日）、市町村では14営業日（従来10営業日）かかります。 また、同日から申請手数料も改定されます。詳しくはこちら",
+      "new": "偽まります。国立印刷局で作成した旅券が配送されるため、府パスポートセンターでは申請から交付まで10営業日（従来6営業日）、市町村では14営業日（従来10営業日）かかります。 また、同日から申請手数料も改定されます。詳しくはこちら",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.77
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P7-03": {
+    "lengthen": [
+     {
+      "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+      "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。所得税（復興特別所得税）の申告期限は3/17（月）",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.5
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ],
+    "shorten": [
+     {
+      "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+      "new": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+      "candidates": [
+       {
+        "page": 7,
+        "paragraph": "HP ",
+        "operators": [
+         25710,
+         36906
+        ],
+        "operator_count": 524,
+        "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+        "bounds": [
+         21.26,
+         619.86,
+         203.33,
+         634.7
+        ],
+        "moved_to": [
+         21.26,
+         606.75,
+         203.33,
+         621.6
+        ],
+        "translation": -13.107,
+        "drawings": 13,
+        "shadings": 1,
+        "xobjects": [
+         "/Fm2"
+        ],
+        "glyphs": 3,
+        "carried_text": " ■大阪府　自動車登録手続き　 ",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tc",
+         "Tw",
+         "k",
+         "gs",
+         "K",
+         "w",
+         "K",
+         "w",
+         "k",
+         "Tf",
+         "k",
+         "gs",
+         "Tf",
+         "w",
+         "M",
+         "j",
+         "J",
+         "gs",
+         "gs",
+         "M",
+         "j",
+         "J",
+         "gs"
+        ],
+        "annotations": [
+         {
+          "xref": 1909,
+          "subtype": "/Link",
+          "rect": [
+           37.96,
+           619.86,
+           199.64,
+           633.6
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-2fcb883709ff7510"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+       "seconds": 8.8
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-2fcb883709ff7510"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": -13.10662841796875,
+       "followers_repainted": 3,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-2fcb883709ff7510",
+         "old": [
+          21.260000228881836,
+          619.8569946289062,
+          203.32740783691406,
+          634.70361328125
+         ],
+         "new": [
+          21.260000228881836,
+          606.7503662109375,
+          203.32740783691406,
+          621.5969848632812
+         ],
+         "translation": [
+          0.0,
+          13.10662841796875
+         ],
+         "glyphs": 19,
+         "annotations": [
+          {
+           "xref": 1909,
+           "old": [
+            37.964,
+            619.857,
+            199.637,
+            633.603
+           ],
+           "new": [
+            37.964,
+            606.75,
+            199.637,
+            620.496
+           ],
+           "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 13,
+        "images": 2,
+        "images_same_samples": 1,
+        "shading_rasters": 1,
+        "glyphs": 5,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 8,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          20.26,
+          618.86,
+          204.33,
+          635.7
+         ],
+         "size_matches": true,
+         "differing_samples": 9,
+         "largest_difference": 3,
+         "samples": 83844
+        }
+       ],
+       "ok": false
+      }
+     },
+     {
+      "old": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+      "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+       "seconds": 7.75
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+      "class": "other: edited paragraphs lie in different marked-content containers"
+     }
+    ]
+   },
+   "P7-05": {
+    "lengthen": [
+     {
+      "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+      "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。3月下旬は自動車の名義変更や廃車などの登録手続きが",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.76
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ],
+    "shorten": [
+     {
+      "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+      "new": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+      "candidates": [
+       {
+        "page": 7,
+        "paragraph": "HP ",
+        "operators": [
+         25710,
+         36906
+        ],
+        "operator_count": 524,
+        "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+        "bounds": [
+         21.26,
+         619.86,
+         203.33,
+         634.7
+        ],
+        "moved_to": [
+         21.26,
+         606.75,
+         203.33,
+         621.6
+        ],
+        "translation": -13.107,
+        "drawings": 13,
+        "shadings": 1,
+        "xobjects": [
+         "/Fm2"
+        ],
+        "glyphs": 3,
+        "carried_text": " ■大阪府　自動車登録手続き　 ",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tc",
+         "Tw",
+         "k",
+         "gs",
+         "K",
+         "w",
+         "K",
+         "w",
+         "k",
+         "Tf",
+         "k",
+         "gs",
+         "Tf",
+         "w",
+         "M",
+         "j",
+         "J",
+         "gs",
+         "gs",
+         "M",
+         "j",
+         "J",
+         "gs"
+        ],
+        "annotations": [
+         {
+          "xref": 1909,
+          "subtype": "/Link",
+          "rect": [
+           37.96,
+           619.86,
+           199.64,
+           633.6
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-2fcb883709ff7510"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+       "seconds": 9.23
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-2fcb883709ff7510"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": -13.10662841796875,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-2fcb883709ff7510",
+         "old": [
+          21.260000228881836,
+          619.8569946289062,
+          203.32740783691406,
+          634.70361328125
+         ],
+         "new": [
+          21.260000228881836,
+          606.7503662109375,
+          203.32740783691406,
+          621.5969848632812
+         ],
+         "translation": [
+          0.0,
+          13.10662841796875
+         ],
+         "glyphs": 19,
+         "annotations": [
+          {
+           "xref": 1909,
+           "old": [
+            37.964,
+            619.857,
+            199.637,
+            633.603
+           ],
+           "new": [
+            37.964,
+            606.75,
+            199.637,
+            620.496
+           ],
+           "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 13,
+        "images": 2,
+        "images_same_samples": 1,
+        "shading_rasters": 1,
+        "glyphs": 5,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 8,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          20.26,
+          618.86,
+          204.33,
+          635.7
+         ],
+         "size_matches": true,
+         "differing_samples": 9,
+         "largest_difference": 3,
+         "samples": 83844
+        }
+       ],
+       "ok": false
+      }
+     },
+     {
+      "old": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+      "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+       "seconds": 7.67
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+      "class": "other: edited paragraphs lie in different marked-content containers"
+     }
+    ]
+   },
+   "P7-06": {
+    "lengthen": [
+     {
+      "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+      "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。令和5年の大阪府の自殺者数は1,383人と、1日",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.75
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ],
+    "shorten": [
+     {
+      "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+      "new": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+      "candidates": [
+       {
+        "page": 7,
+        "paragraph": "HP ",
+        "operators": [
+         39225,
+         50424
+        ],
+        "operator_count": 528,
+        "bytes_sha256": "259718a7805e05de2ad8c59ed5c1f41fd40f9a64a01100b65a75ad9624f4bd36",
+        "bounds": [
+         21.26,
+         745.18,
+         161.42,
+         760.14
+        ],
+        "moved_to": [
+         21.26,
+         732.08,
+         161.42,
+         747.03
+        ],
+        "translation": -13.107,
+        "drawings": 13,
+        "shadings": 1,
+        "xobjects": [
+         "/Fm3"
+        ],
+        "glyphs": 3,
+        "carried_text": " ■こころのオアシス　 ",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tc",
+         "Tw",
+         "k",
+         "gs",
+         "K",
+         "w",
+         "K",
+         "w",
+         "k",
+         "Tf",
+         "k",
+         "gs",
+         "Tc",
+         "Tw",
+         "Tf",
+         "Tc",
+         "Tw",
+         "w",
+         "M",
+         "j",
+         "J",
+         "gs",
+         "gs",
+         "M",
+         "j",
+         "J",
+         "gs"
+        ],
+        "annotations": [
+         {
+          "xref": 1910,
+          "subtype": "/Link",
+          "rect": [
+           36.65,
+           745.18,
+           160.36,
+           759.58
+          ],
+          "uri": "http://kokoro-osaka.jp/"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-5d857bfbdd83a562"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-5d857bfbdd83a562 moves with it only when approved explicitly)",
+       "seconds": 8.93
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-5d857bfbdd83a562"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": -13.106689453125,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-5d857bfbdd83a562",
+         "old": [
+          21.260000228881836,
+          745.1849975585938,
+          161.41586303710938,
+          760.1366577148438
+         ],
+         "new": [
+          21.260000228881836,
+          732.0783081054688,
+          161.41586303710938,
+          747.0299682617188
+         ],
+         "translation": [
+          0.0,
+          13.106689453125
+         ],
+         "glyphs": 15,
+         "annotations": [
+          {
+           "xref": 1910,
+           "old": [
+            36.655,
+            745.185,
+            160.364,
+            759.585
+           ],
+           "new": [
+            36.655,
+            732.078,
+            160.364,
+            746.478
+           ],
+           "uri": "http://kokoro-osaka.jp/"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 13,
+        "images": 2,
+        "images_same_samples": 1,
+        "shading_rasters": 1,
+        "glyphs": 13,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 8,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          20.26,
+          744.18,
+          162.42,
+          761.14
+         ],
+         "size_matches": true,
+         "differing_samples": 2,
+         "largest_difference": 1,
+         "samples": 64872
+        }
+       ],
+       "ok": false
+      }
+     },
+     {
+      "old": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+      "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('を' at [20.9, 733.3, 30.5, 742.9])",
+       "seconds": 22.21
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('を' at [20.9, 733.3, 30.5, 742.9])",
+      "class": "capacity"
+     }
+    ]
+   },
+   "P7-07": {
+    "shorten": [
+     {
+      "old": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+      "new": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+      "candidates": [
+       {
+        "page": 7,
+        "paragraph": "HP ",
+        "operators": [
+         54237,
+         65408
+        ],
+        "operator_count": 524,
+        "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+        "bounds": [
+         21.26,
+         886.18,
+         165.15,
+         900.81
+        ],
+        "moved_to": [
+         21.26,
+         873.08,
+         165.15,
+         887.7
+        ],
+        "translation": -13.107,
+        "drawings": 13,
+        "shadings": 1,
+        "xobjects": [
+         "/Fm4"
+        ],
+        "glyphs": 3,
+        "carried_text": " ■大阪府　原状回復　 ",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tc",
+         "Tw",
+         "k",
+         "gs",
+         "K",
+         "w",
+         "K",
+         "w",
+         "k",
+         "Tf",
+         "k",
+         "gs",
+         "Tf",
+         "w",
+         "M",
+         "j",
+         "J",
+         "gs",
+         "gs",
+         "M",
+         "j",
+         "J",
+         "gs"
+        ],
+        "annotations": [
+         {
+          "xref": 1911,
+          "subtype": "/Link",
+          "rect": [
+           37.31,
+           886.26,
+           164.29,
+           900.66
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ],
+        "adjacent": [],
+        "id": "line-decoration-f98fba0d9ad28291"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f98fba0d9ad28291 moves with it only when approved explicitly)",
+       "seconds": 8.98
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-f98fba0d9ad28291"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": -13.106689453125,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-f98fba0d9ad28291",
+         "old": [
+          21.260000228881836,
+          886.1846313476562,
+          165.14810180664062,
+          900.8059692382812
+         ],
+         "new": [
+          21.260000228881836,
+          873.0779418945312,
+          165.14810180664062,
+          887.6992797851562
+         ],
+         "translation": [
+          0.0,
+          13.106689453125
+         ],
+         "glyphs": 15,
+         "annotations": [
+          {
+           "xref": 1911,
+           "old": [
+            37.309,
+            886.258,
+            164.292,
+            900.659
+           ],
+           "new": [
+            37.309,
+            873.151,
+            164.292,
+            887.552
+           ],
+           "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 13,
+        "images": 2,
+        "images_same_samples": 1,
+        "shading_rasters": 1,
+        "glyphs": 5,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 8,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          20.26,
+          885.18,
+          166.15,
+          901.81
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 66555
+        }
+       ],
+       "ok": true
+      }
+     },
+     {
+      "old": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+      "new": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+      "candidates": [
+       {
+        "page": 7,
+        "paragraph": "HP ",
+        "operators": [
+         56317,
+         67488
+        ],
+        "operator_count": 524,
+        "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+        "bounds": [
+         21.26,
+         873.0,
+         165.15,
+         887.7
+        ],
+        "moved_to": [
+         21.26,
+         886.11,
+         165.15,
+         900.81
+        ],
+        "translation": 13.107,
+        "drawings": 13,
+        "shadings": 1,
+        "xobjects": [
+         "/Fm4"
+        ],
+        "glyphs": 3,
+        "carried_text": " ■大阪府　原状回復　 ",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tc",
+         "Tw",
+         "k",
+         "gs",
+         "K",
+         "w",
+         "K",
+         "w",
+         "k",
+         "Tf",
+         "k",
+         "gs",
+         "Tf",
+         "w",
+         "M",
+         "j",
+         "J",
+         "gs",
+         "gs",
+         "M",
+         "j",
+         "J",
+         "gs"
+        ],
+        "annotations": [
+         {
+          "xref": 1060,
+          "subtype": "/Link",
+          "rect": [
+           37.31,
+           873.15,
+           164.29,
+           887.55
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ],
+        "adjacent": [
+         "filled-vector"
+        ],
+        "id": "line-decoration-c73a4a2e1fbaabcd"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-c73a4a2e1fbaabcd moves with it only when approved explicitly)",
+       "seconds": 8.96
+      },
+      "outcome": "saved",
+      "approved": [
+       "line-decoration-c73a4a2e1fbaabcd"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": true,
+      "save": {
+       "follower_translation": 13.10669371093752,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [
+        {
+         "id": "line-decoration-c73a4a2e1fbaabcd",
+         "old": [
+          21.260000228881836,
+          873.0,
+          165.14810180664062,
+          887.6992797851562
+         ],
+         "new": [
+          21.260000228881836,
+          886.1066937109375,
+          165.14810180664062,
+          900.8059734960938
+         ],
+         "translation": [
+          0.0,
+          -13.10669371093752
+         ],
+         "glyphs": 15,
+         "annotations": [
+          {
+           "xref": 1060,
+           "old": [
+            37.309,
+            873.151,
+            164.292,
+            887.552
+           ],
+           "new": [
+            37.309,
+            886.258,
+            164.292,
+            900.659
+           ],
+           "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+          }
+         ]
+        }
+       ]
+      },
+      "placed": {
+       "approved_moves": {
+        "objects": 1,
+        "drawings": 13,
+        "images": 2,
+        "images_same_samples": 1,
+        "shading_rasters": 1,
+        "glyphs": 5,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 8,
+       "moved": 1,
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          20.26,
+          872.0,
+          166.15,
+          888.7
+         ],
+         "size_matches": true,
+         "differing_samples": 8,
+         "largest_difference": 2,
+         "samples": 66555
+        }
+       ],
+       "ok": false
+      },
+      "vs_source": {
+       "paragraph": {
+        "unchanged": 131,
+        "kept": 131,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 7,
+        "output_lines": 8,
+        "source_breaks_outside_edit": 6,
+        "breaks_kept": 6
+       },
+       "outside_changed": 0,
+       "page_changed": 2,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      }
+     }
+    ]
+   },
+   "P8-08": {
+    "lengthen": [
+     {
+      "old": " 府民の森なるかわ園地（近鉄「瓢箪山」）",
+      "new": " 府民の森なるかわ園地（近鉄「瓢箪山」） 府民の森なるかわ園地（近鉄「瓢箪山」",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 10.24
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P8-09": {
+    "lengthen": [
+     {
+      "old": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+      "new": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。発達障がいの特性は暮らしや人づき",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected vector",
+       "seconds": 12.05
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected vector",
+      "class": "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected vector"
+     }
+    ],
+    "shorten": [
+     {
+      "old": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+      "new": "発いの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+      "candidates": [
+       {
+        "page": 8,
+        "paragraph": "HP ",
+        "operators": [
+         24569,
+         35795
+        ],
+        "operator_count": 524,
+        "bytes_sha256": "f6c37ef53f3cf0c853110a7fcba9e5af2c60f880aed91b4710802e46270415d6",
+        "bounds": [
+         291.97,
+         446.4,
+         482.52,
+         461.08
+        ],
+        "moved_to": [
+         291.97,
+         420.19,
+         482.52,
+         434.87
+        ],
+        "translation": -26.213,
+        "drawings": 13,
+        "shadings": 1,
+        "xobjects": [
+         "/Fm1"
+        ],
+        "glyphs": 3,
+        "carried_text": " ■大阪府　発達障がい啓発週間　 ",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tc",
+         "Tw",
+         "k",
+         "gs",
+         "K",
+         "w",
+         "K",
+         "w",
+         "k",
+         "Tf",
+         "k",
+         "gs",
+         "Tf",
+         "w",
+         "M",
+         "j",
+         "J",
+         "gs",
+         "gs",
+         "M",
+         "j",
+         "J",
+         "gs"
+        ],
+        "annotations": [
+         {
+          "xref": 1895,
+          "subtype": "/Link",
+          "rect": [
+           308.29,
+           446.4,
+           481.09,
+           460.8
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o090070/chiikiseikatsu/hattatsusyogai_osaka/25_autismawareness.html"
+         }
+        ],
+        "adjacent": [
+         "filled-vector"
+        ],
+        "id": "line-decoration-bb2bd0511aae211e"
+       }
+      ],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-bb2bd0511aae211e moves with it only when approved explicitly)",
+       "seconds": 14.71
+      },
+      "outcome": "refused",
+      "approved": [
+       "line-decoration-bb2bd0511aae211e"
+      ],
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected image",
+      "class": "other: staged glyph collides with protected image"
+     }
+    ]
+   },
+   "P8-11": {
+    "lengthen": [
+     {
+      "old": " 4/11（金）まで／インターネット",
+      "new": " 4/11（金）まで／インターネット 4/11（金）まで／インターネット 4/11（金",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 10.61
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   },
+   "P8-13": {
+    "shorten": [
+     {
+      "old": "2025年大阪・関西万博の開幕に合わせて4月から大阪・光の饗宴が点灯。全長約4キロメートルの御堂筋イルミネーション、大阪市役所正面イルミネーションファサード、中之島のみお",
+      "new": "2に合わせて4月から大阪・光の饗宴が点灯。全長約4キロメートルの御堂筋イルミネーション、大阪市役所正面イルミネーションファサード、中之島のみお",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (image) that does not move with it",
+       "seconds": 10.66
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (image) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (image) that does not move with it"
+     }
+    ]
+   },
+   "C02-92": {
+    "lengthen": [
+     {
+      "old": "ぜひご活用ください。",
+      "new": "ぜひご活用ください。ぜひご相談ください。",
+      "candidates": [],
+      "proposal_refused": null,
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+       "seconds": 7.58
+      },
+      "outcome": "refused",
+      "approved": [],
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+     }
+    ]
+   }
+  }
+ }
+}
