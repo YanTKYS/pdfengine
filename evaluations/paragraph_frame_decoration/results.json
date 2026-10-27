@@ -1,8 +1,2110 @@
 {
  "schema": "paragraph-frame-decoration-results-1",
  "manifest_sha256": "641a00f53e273a30df80e0333effd090271217a3b9a85acb63dacbb33afe9f3c",
- "tests": null,
- "regression": null,
+ "tests": {
+  "focused": {
+   "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_column_flow.py tests/test_paragraph_frame_continuity.py tests/test_paragraph_frame_decoration.py tests/test_paragraph_frame_local.py tests/test_paragraph_frame_tagged.py tests/test_paragraph_frame_text_space.py tests/test_paragraph_frame_placed_follower.py",
+   "commit": "6b68494",
+   "passed": 159,
+   "failed": 0,
+   "seconds": 137,
+   "new_tests": 10,
+   "selection": "every test importing prototypes.paragraph_frame.auto (auto_writer, placed_move and decoration are reached through auto; no test imports them directly) and test_paragraph_frame_placed_follower.py, whose helpers the new tests import; pdfeditor is unchanged"
+  },
+  "full_suite": "not run"
+ },
+ "regression": {
+  "generalization": {
+   "A": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "B": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "C": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "D": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F1": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F2": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F3": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "native_replacement_search"
+    ],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F4": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "native_replacement_search"
+    ],
+    "reedit": "quality-audit-failed",
+    "reedit_failed": [
+     "native_replacement_search"
+    ],
+    "same_as_committed": true
+   },
+   "N1": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "N2": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "N3": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "native_replacement_search"
+    ],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "N4": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "mupdf_copy_extract",
+     "poppler_copy_extract",
+     "native_replacement_search"
+    ],
+    "reedit": "quality-audit-failed",
+    "reedit_failed": [
+     "mupdf_copy_extract",
+     "poppler_copy_extract",
+     "native_replacement_search"
+    ],
+    "same_as_committed": false
+   }
+  },
+  "continuity_sequences": {
+   "Q1-stored": {
+    "steps": [
+     "success",
+     "success",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": true
+   },
+   "Q1-inference": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "success",
+     "success"
+    ],
+    "same_as_committed": false
+   },
+   "Q2-stored": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": true
+   },
+   "Q2-inference": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": true
+   },
+   "Q3-stored": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "success",
+     "success"
+    ],
+    "same_as_committed": false
+   },
+   "Q3-inference": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": false
+   }
+  },
+  "continuity_new": {
+   "E1": {
+    "edit": "saved",
+    "audit": "safety-audit-failed",
+    "same_as_committed": false,
+    "audit_implicit_joins": "success"
+   },
+   "E2": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   },
+   "E3": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   },
+   "E4": {
+    "edit": "saved",
+    "audit": "safety-audit-failed",
+    "same_as_committed": false,
+    "audit_implicit_joins": "success"
+   },
+   "E5": {
+    "edit": "saved",
+    "audit": "success",
+    "same_as_committed": true
+   },
+   "E6": {
+    "edit": "saved",
+    "audit": "safety-audit-failed",
+    "same_as_committed": false,
+    "audit_implicit_joins": "success"
+   },
+   "S1": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   },
+   "S2": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   }
+  },
+  "column_flow": {
+   "sequences": {
+    "S1": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S2": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S3": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S4": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S5": {
+     "steps": [
+      "refused",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S6": {
+     "steps": [
+      "refused",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    }
+   },
+   "singles": {
+    "J-fit": {
+     "outcome": "saved",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "E-fit": {
+     "outcome": "saved",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-capacity": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-heading": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-image": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-articles": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-articles-tagged": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "R-enterprise-fit": {
+     "outcome": "saved",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "R-enterprise-grow": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "R-fusei-grow": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    }
+   },
+   "recognition_same_as_committed": true,
+   "recognition_correct": 14,
+   "recognition_total": 14
+  },
+  "indesign": {
+   "requests": {
+    "F-same": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-same-reedit": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-short": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-wrap": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-grow-line": {
+     "outcome": "refused",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-form": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "T-form": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "T-form-reedit": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-same": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-short": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-grow-line": {
+     "outcome": "refused",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-reedit": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "Q-ligature": {
+     "outcome": "refused",
+     "failed": [],
+     "same_as_committed": true
+    }
+   },
+   "samples": {
+    "sampled": 74,
+    "saved": 74,
+    "safety": 74,
+    "quality": 68,
+    "committed": {
+     "sampled": 74,
+     "saved": 62,
+     "safety": 62,
+     "quality": 53
+    },
+    "same_as_committed": false,
+    "newly_failed": [
+     [
+      "osaka_fusei_477",
+      7,
+      "【行政・警察",
+      [
+       "unchanged_text_same_glyph_positions"
+      ]
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "偽造変造対策",
+      [
+       "extraction_mupdf"
+      ]
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "千万円）を発",
+      [
+       "unchanged_text_same_glyph_positions"
+      ]
+     ]
+    ],
+    "newly_passed": [
+     [
+      "osaka_fusei_477",
+      7,
+      "学歴・職務経"
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "令和5年の大"
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "賃貸住宅の退"
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "一般世帯向け"
+     ],
+     [
+      "canvas",
+      1,
+      "globalC"
+     ],
+     [
+      "issue17730",
+      1,
+      "There "
+     ]
+    ],
+    "newly_refused": []
+   }
+  },
+  "differences_from_pr90_recorded_regression": [
+   [
+    "continuity sequence",
+    "Q1-inference",
+    "['success', 'quality-audit-failed', 'success', 'success']",
+    "['success', 'quality-audit-failed', 'quality-audit-failed', 'success']"
+   ],
+   [
+    "continuity new",
+    "E1",
+    "('saved', 'safety-audit-failed', 'success')",
+    "('saved', 'success')"
+   ],
+   [
+    "continuity new",
+    "E4",
+    "('saved', 'safety-audit-failed', 'success')",
+    "('saved', 'success')"
+   ],
+   [
+    "continuity new",
+    "E6",
+    "('saved', 'safety-audit-failed', 'success')",
+    "('saved', 'success')"
+   ],
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'same_as_committed': False}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': [], 'same_as_committed': True}"
+   ]
+  ],
+  "differences_from_pr91_recorded_regression": [
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'same_as_committed': False}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': []}"
+   ],
+   [
+    "continuity_sequences",
+    "Q1-inference",
+    "{'steps': ['success', 'quality-audit-failed', 'success', 'success'], 'same_as_committed': False}",
+    "{'steps': ['success', 'quality-audit-failed', 'quality-audit-failed', 'success']}"
+   ],
+   [
+    "continuity_new",
+    "E1",
+    "{'edit': 'saved', 'audit': 'safety-audit-failed', 'same_as_committed': False, 'audit_implicit_joins': 'success'}",
+    "{'edit': 'saved', 'audit': 'success'}"
+   ],
+   [
+    "continuity_new",
+    "E4",
+    "{'edit': 'saved', 'audit': 'safety-audit-failed', 'same_as_committed': False, 'audit_implicit_joins': 'success'}",
+    "{'edit': 'saved', 'audit': 'success'}"
+   ],
+   [
+    "continuity_new",
+    "E6",
+    "{'edit': 'saved', 'audit': 'safety-audit-failed', 'same_as_committed': False, 'audit_implicit_joins': 'success'}",
+    "{'edit': 'saved', 'audit': 'success'}"
+   ],
+   [
+    "indesign samples",
+    "saved",
+    "74",
+    "63"
+   ],
+   [
+    "indesign samples",
+    "safety",
+    "74",
+    "62"
+   ],
+   [
+    "indesign samples",
+    "quality",
+    "68",
+    "53"
+   ],
+   [
+    "indesign samples",
+    "newly_failed",
+    "[['osaka_fusei_477', 7, '【行政・警察', ['unchanged_text_same_glyph_positions']], ['osaka_fusei_477', 7, '偽造変造対策', ['extraction_mupdf']], ['osaka_fusei_477', 7, '千万円）を発', ['unchanged_text_same_glyph_positions']]]",
+    "[['osaka_fusei_477', 7, '児童扶養手当・特別児童扶養手当の認', ['raster_outside_region_mupdf', 'raster_outside_region_poppler', 'glyphs_outside_region_identical', 'unchanged_text_same_glyph_positions']]]"
+   ],
+   [
+    "indesign samples",
+    "newly_passed",
+    "[['osaka_fusei_477', 7, '学歴・職務経'], ['osaka_fusei_477', 7, '令和5年の大'], ['osaka_fusei_477', 7, '賃貸住宅の退'], ['osaka_fusei_477', 7, '一般世帯向け'], ['canvas', 1, 'globalC'], ['issue17730', 1, 'There ']]",
+    "[]"
+   ]
+  ],
+  "tagged": {
+   "requests": {
+    "L-same:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "extraction_poppler"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-reedit:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "extraction_poppler"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-short:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "extraction_poppler",
+      "baselines_on_the_paragraph_grid",
+      "left_edges_observed"
+     ],
+     "structure_failed": [
+      "paragraph_mcids_draw_the_new_text"
+     ],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-wrap:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-cross:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "D-same:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": false,
+     "committed": {
+      "outcome": "refused",
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": null
+     }
+    },
+    "D-reedit:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": false,
+     "committed": {
+      "outcome": "not run",
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": null
+     }
+    },
+    "D-short:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "D-shared:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-span:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-span:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-cross:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-cross:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-reedit:frozen": {
+     "outcome": "not run",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-reedit:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-grow:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-grow:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "I-same:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "I-short:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "F-marker:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "F-marker:substitute": {
+     "outcome": "saved",
+     "failed": [
+      "baselines_on_the_paragraph_grid"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "F-icon:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "baselines_on_the_paragraph_grid"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    }
+   },
+   "samples": {
+    "totals": {
+     "edits": 52,
+     "saved": 33,
+     "safety": 27,
+     "quality": 23,
+     "structure": 33,
+     "continued_editing": 29
+    },
+    "committed": {
+     "edits": 52,
+     "saved": 31,
+     "safety": 24,
+     "quality": 20,
+     "structure": 31,
+     "continued_editing": 29
+    },
+    "edits": [
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "n° d'i",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "n° d'"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "n° d'i",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "n° d'ii"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "refused",
+       "detail": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "salarié(",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "salariée):"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "salarié(",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "code p",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "code"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "code p",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('p' at [255.9, 162.4, 259.8, 169.3])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "I) fid",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "I) fi"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "I) fid",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "glyphs_outside_region_identical"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "I) fidd"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 1,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": []
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "nombre de jours i",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "nombre de jours mpos"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": [
+        "raster_outside_region_mupdf",
+        "raster_outside_region_poppler",
+        "glyphs_outside_region_identical"
+       ]
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "nombre de jours i",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "nombre de jours ii"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": [
+        "raster_outside_region_mupdf",
+        "raster_outside_region_poppler",
+        "glyphs_outside_region_identical"
+       ]
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "signatu",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "signatre d"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "signatu",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; no continuation column is linked",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "¥233,5",
+      "kind": "shorten",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "¥233,5",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "64,457",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "64,45"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "64,457",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "111,202",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "111,20",
+       "occurrence": 1
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "111,202",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Items that m",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Items that ay b"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Items that m",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('p' at [128.4, 334.9, 133.1, 343.4])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Net ch",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Net c"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Net ch",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Net chh"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 0,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Comprehensive income a",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Comprehensive income ttri"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Comprehensive income a",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('t' at [119.9, 484.9, 122.3, 493.4])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue15262",
+      "page": 1,
+      "selection": "file:/",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "file:"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue15262",
+      "page": 1,
+      "selection": "file:/",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('1' at [5.0, 844.1, 9.9, 853.1])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue6782",
+      "page": 1,
+      "selection": "Our so",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Our s"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue6782",
+      "page": 1,
+      "selection": "Our so",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Our soo"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": false
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 4,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 1,
+      "selection": "06（6910）8005",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "06（6910）800",
+       "occurrence": 1
+      },
+      "supplementary": {
+       "region_extraction_mupdf": false,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 1,
+      "selection": "06（6910）8005",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('8' at [553.4, 40.6, 558.3, 48.0])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 2,
+      "selection": "もの・ 保険",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "もの・ 保"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": false,
+       "region_extraction_poppler": false
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 2,
+      "selection": "もの・ 保険",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected vector",
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ]
+      }
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 3,
+      "selection": "万博特集記事",
+      "kind": "shorten",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 3,
+      "selection": "万博特集記事",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 7,
+      "selection": "日日時 所場",
+      "kind": "shorten",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 7,
+      "selection": "日日時 所場",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 府統計課",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "問 府統計"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 府統計課",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "glyphs_outside_region_identical",
+       "extraction_poppler"
+      ],
+      "safety": false,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "absent",
+       "selection": "問 府統計課課"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 1,
+       "new_outside_in_frame": false,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": false
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 堺市長寿",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "問 堺市長"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 堺市長寿",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "glyphs_outside_region_identical"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "absent",
+       "selection": "問 堺市長寿寿"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 1,
+       "new_outside_in_frame": false,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": false
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Depart",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Depar"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Depart",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('S' at [108.8, 48.0, 112.7, 54.0])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Presid",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "stale: protected paint entered the approved width (foreign-text)",
+       "selection": "Presi"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "refused",
+       "detail": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+      }
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Presid",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "stale: protected paint entered the approved width (foreign-text)",
+       "selection": "Presidd"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "refused",
+       "detail": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+      }
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Add nu",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Add n"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Add nu",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('▶' at [489.6, 334.9, 495.6, 340.9])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Form  ",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "For  1040"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Form  ",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": false,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Formm"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": false
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 0,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Additional t",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Additional ax o"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Additional t",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('r' at [115.2, 327.1, 117.8, 334.8])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Amount  ",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Amoun  You"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Amount  ",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Amountt"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     }
+    ]
+   }
+  },
+  "differences_from_pr92_recorded_regression": [
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search']}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': []}"
+   ],
+   [
+    "indesign samples",
+    "quality",
+    "68",
+    "69"
+   ],
+   [
+    "indesign samples",
+    "newly_failed",
+    "[['osaka_fusei_477', 7, '【行政・警察', ['unchanged_text_same_glyph_positions']], ['osaka_fusei_477', 7, '偽造変造対策', ['extraction_mupdf']], ['osaka_fusei_477', 7, '千万円）を発', ['unchanged_text_same_glyph_positions']]]",
+    "[['osaka_fusei_477', 7, '偽造変造対策', ['extraction_mupdf']], ['osaka_fusei_477', 7, '千万円）を発', ['unchanged_text_same_glyph_positions']]]"
+   ]
+  ],
+  "differences_from_pr94_recorded_regression": [
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search']}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': []}"
+   ]
+  ],
+  "differences_from_pr96_recorded_regression": [],
+  "differences_from_pr98_recorded_regression": [],
+  "differences": 8,
+  "fidelity_pr92": {
+   "what": "PR #92 layout-fidelity evaluation rerun on this code, against PR #92 committed new results",
+   "summary_differences": [
+    [
+     "reedit",
+     "round_trip_kept",
+     915,
+     1076
+    ]
+   ],
+   "edit_differences": [
+    [
+     "C01",
+     "reedit:lengthen",
+     [
+      "round_trip"
+     ]
+    ],
+    [
+     "C02",
+     "lengthen",
+     [
+      "reason"
+     ]
+    ],
+    [
+     "C05",
+     "reedit:lengthen-wrap",
+     [
+      "fidelity",
+      "round_trip"
+     ]
+    ],
+    [
+     "C12",
+     "reedit:shorten",
+     [
+      "fidelity",
+      "round_trip"
+     ]
+    ]
+   ],
+   "same_as_pr96_recorded": false,
+   "only_here": [
+    [
+     "C02",
+     "lengthen",
+     "frozenset({'reason'})"
+    ]
+   ],
+   "only_recorded": [],
+   "same_as_pr98_recorded": true,
+   "c02_lengthen": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+  },
+  "roundtrip_pr94": {
+   "what": "PR #94 round-trip evaluation rerun on this code, against PR #94 committed new results",
+   "summary_differences": [
+    [
+     "path_kept",
+     1301,
+     1327
+    ],
+    [
+     "path_page_identical",
+     7,
+     10
+    ],
+    [
+     "repeat_page_identical",
+     38,
+     40
+    ]
+   ],
+   "pr96_recorded": [
+    [
+     "path_kept",
+     1301,
+     1327
+    ],
+    [
+     "path_page_identical",
+     7,
+     10
+    ],
+    [
+     "repeat_page_identical",
+     38,
+     40
+    ]
+   ],
+   "same_as_pr96_recorded": true,
+   "new": {
+    "cycles": 48,
+    "steps": 174,
+    "saved": 168,
+    "safety": 156,
+    "quality": 162,
+    "structure": 168,
+    "continued_editing": 168,
+    "undos": 84,
+    "undo_unchanged": 10098,
+    "undo_kept": 10098,
+    "undo_breaks": 176,
+    "undo_breaks_kept": 176,
+    "undo_same_lines": 84,
+    "undo_restyled": 0,
+    "undo_outside_identical": 84,
+    "undo_page_identical": 72,
+    "undo_text_identical_both": 84,
+    "undo_text_identical_ignoring_whitespace_both": 84,
+    "undo_search_same": 84,
+    "repeats": 42,
+    "repeat_unchanged": 5016,
+    "repeat_kept": 5016,
+    "repeat_page_identical": 40,
+    "second_undos": 42,
+    "second_undo_page_identical": 36,
+    "paths": 12,
+    "paths_completed": 10,
+    "path_unchanged": 1327,
+    "path_kept": 1327,
+    "path_page_identical": 10,
+    "refused": 6
+   }
+  },
+  "multiedit_pr96": {
+   "what": "PR #96 multi-edit evaluation rerun on this code, against PR #96 committed new results",
+   "summary_differences": [],
+   "step_differences": [],
+   "all": {
+    "pairs": 37,
+    "steps": 227,
+    "saved": 209,
+    "refused": 18,
+    "safety": 203,
+    "quality": 203,
+    "structure": 209,
+    "continued_editing": 209,
+    "path_b_made": 28,
+    "path_b_unchanged": 4930,
+    "path_b_kept": 4930,
+    "path_b_breaks": 76,
+    "path_b_breaks_kept": 76,
+    "path_b_restyled": 0,
+    "path_b_outside_identical": 28,
+    "path_b_page_identical": 27,
+    "path_b_text_identical_both": 28,
+    "path_a_made": 27,
+    "path_a_unchanged": 4847,
+    "path_a_kept": 4847,
+    "path_a_breaks": 76,
+    "path_a_breaks_kept": 76,
+    "path_a_restyled": 0,
+    "path_a_outside_identical": 27,
+    "path_a_page_identical": 26,
+    "path_a_text_identical_both": 27,
+    "order_made": 27,
+    "order_unchanged": 4880,
+    "order_kept": 4880,
+    "order_breaks": 76,
+    "order_breaks_kept": 76,
+    "order_restyled": 0,
+    "order_outside_identical": 27,
+    "order_page_identical": 27,
+    "order_text_identical_both": 27,
+    "full_return_made": 29,
+    "full_return_unchanged": 5115,
+    "full_return_kept": 5115,
+    "full_return_breaks": 79,
+    "full_return_breaks_kept": 79,
+    "full_return_restyled": 0,
+    "full_return_outside_identical": 29,
+    "full_return_page_identical": 25,
+    "full_return_text_identical_both": 29
+   }
+  },
+  "placed_pr98": {
+   "what": "PR #98 placed-object evaluation rerun on this code, against PR #98 committed new results",
+   "summary_differences": [],
+   "step_differences": [
+    [
+     "P8-09",
+     "lengthen",
+     1,
+     [
+      "refused",
+      "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected filled-vector",
+      "None",
+      "None"
+     ],
+     [
+      "refused",
+      "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected vector",
+      "None",
+      "None"
+     ]
+    ]
+   ]
+  },
+  "commit": "6b68494"
+ },
  "summary": {
   "old": {
    "fixtures": {
