@@ -448,7 +448,7 @@ def _flow_detect(c, marks, page, flow, selected, start, paint, report, records, 
     return c, [target] + followers, spec, start, evidence
 
 
-def page_rows(c, marks, analysis):
+def page_rows(c, marks, analysis, moved=True):
     """Drawn rows of a page and the block structure element of each glyph.
 
     Detection and the stored approved records (auto_writer) use these same
@@ -470,12 +470,15 @@ def page_rows(c, marks, analysis):
                         for ch in e.chars:
                             for i in ch.source_orders:parent_by_id[i]=pr.indirect_reference.idnum
     rows=merge_offset_rows(c,[piece for r in rows for piece in split_blocks(c,r,parent_by_id)],parent_by_id)
+    # Rows of a following paragraph an earlier edit moved, as observed before the move.
+    if moved:rows=conditions.apply_moved(c,c.page.number+1,rows)
     return rows,parent_by_id
 
 
-def observe(c,marks,analysis):
-    """Analysis rows, their semantic /P parents and paragraph groups of one page."""
-    rows,parent_by_id=page_rows(c,marks,analysis)
+def observe(c,marks,analysis,moved=True):
+    """Analysis rows, their semantic /P parents and paragraph groups of one page
+    (``moved``: with the stored rows of moved paragraphs, see page_rows)."""
+    rows,parent_by_id=page_rows(c,marks,analysis,moved)
     # Paint style of each inked glyph: a row that shares no font and fill with
     # the previous row (a white label on a coloured box) does not continue it.
     # Colours compare by value ('0 g' and '0.0 g' are one black).
@@ -550,7 +553,7 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         marks=observe_marked_content(source,page)
         if not marks['complete']:raise Refused('incomplete marked-content observation')
         analysis=_Analysis(source,page)
-        rows,parent_by_id,groups=observe(c,marks,analysis)
+        rows,parent_by_id,groups=observe(c,marks,analysis,moved=stored)
         # Approved conditions stored by an earlier save name their paragraph by
         # its exact drawn lines. A verified record defines the paragraph rows.
         records,record_status=conditions.read(c,page) if stored else ([],'not consulted')

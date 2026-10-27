@@ -250,10 +250,15 @@ def shifted(record, dy):
     return result
 
 
-def attach(writer, page, records, page_number):
-    """Write the records into the page PieceInfo, keeping other products' entries."""
+def attach(writer, page, records, page_number, moved=()):
+    """Write the records into the page PieceInfo, keeping other products' entries.
+
+    ``moved``: the glyphs of following paragraphs an edit moved (moved_entry)."""
     stamp = 'D:' + datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S') + 'Z'
-    payload = json.dumps(dict(schema=SCHEMA, page=page_number, records=records), ensure_ascii=False, sort_keys=True)
+    data = dict(schema=SCHEMA, page=page_number, records=records)
+    if moved:
+        data['moved'] = list(moved)
+    payload = json.dumps(data, ensure_ascii=False, sort_keys=True)
     stream = DecodedStreamObject()
     stream.set_data(payload.encode('utf-8'))
     existing = page.get('/PieceInfo')
@@ -263,3 +268,83 @@ def attach(writer, page, records, page_number):
     page[NameObject('/PieceInfo')] = pieces
     page[NameObject('/LastModified')] = TextStringObject(stamp)
     return stamp
+
+
+# The rows of following paragraphs moved by an edit (with their inline placed
+# objects or an approved line decoration) are recorded as they were observed
+# before the move, translated. The page's row observation clusters baselines
+# across all columns, so after a move another column's row can take a blank of
+# the moved line, or join its rows: on reopen the recorded rows are used again,
+# but only when every recorded glyph is drawn exactly where recorded and the
+# rows now holding them hold nothing else.
+ROW_KEYS = ('text', 'baseline', 'x', 'right', 'pen_end', 'top', 'bottom', 'size')
+
+
+def moved_entry(c, rows, dy, approval):
+    """The record of observed ``rows`` (page_rows) translated by ``dy`` (page y)."""
+    out = []
+    for r in rows:
+        row = {k: r[k] for k in ROW_KEYS}
+        for k in ('baseline', 'top', 'bottom'):
+            row[k] = r[k] + dy
+        x0, y0, x1, y1 = r['bbox']
+        row['bbox'] = [x0, y0 + dy, x1, y1 + dy]
+        row['starts'] = list(r.get('starts', []))
+        row['glyphs'] = [[c.actual[i]['unicode'], c.actual[i]['gid'], round(c.actual[i]['origin'][0], 3), round(c.actual[i]['origin'][1] + dy, 3)]
+                         for i in r['glyph_ids']]
+        out.append(row)
+    return dict(rows=out, approval=approval)
+
+
+def read_moved(c, page):
+    """The moved-row records of the page (malformed ones dropped)."""
+    try:
+        piece = c.reader.pages[page - 1].get('/PieceInfo')
+        entry = piece.get_object().get(KEY) if piece is not None else None
+        if entry is None:
+            return []
+        data = json.loads(entry.get_object()['/Private'].get_object().get_data().decode('utf-8'))
+        if data.get('schema') != SCHEMA or data.get('page') != page or not isinstance(data.get('moved', []), list):
+            return []
+        w, h = c.page.rect.width, c.page.rect.height
+        good = lambda r: (isinstance(r, dict) and isinstance(r.get('text'), str) and all(_number(r.get(k), -1, max(w, h) + 1) for k in ROW_KEYS[1:])
+                          and isinstance(r.get('glyphs'), list) and r['glyphs']
+                          and all(isinstance(g, list) and len(g) == 4 and isinstance(g[0], str) and type(g[1]) is int
+                                  and _number(g[2], -1, w + 1) and _number(g[3], -1, h + 1) for g in r['glyphs']))
+        return [m for m in data.get('moved', []) if isinstance(m, dict) and isinstance(m.get('rows'), list) and m['rows'] and all(map(good, m['rows']))]
+    except Exception:  # malformed private data is never trusted
+        return []
+
+
+def resolve_moved(c, entry):
+    """The recorded rows with the page's glyph ids drawn exactly as recorded (0.01 pt), or None."""
+    taken, rows = set(), []
+    for r in entry['rows']:
+        ids = []
+        for u, gid, x, y in r['glyphs']:
+            hits = [i for i, g in enumerate(c.actual) if g['unicode'] == u and g['gid'] == gid and i not in taken
+                    and abs(g['origin'][0] - x) <= TOLERANCE and abs(g['origin'][1] - y) <= TOLERANCE]
+            if len(hits) != 1:
+                return None
+            taken.add(hits[0])
+            ids.append(hits[0])
+        rows.append(dict({k: r[k] for k in ROW_KEYS}, bbox=list(r['bbox']), starts=list(r.get('starts', [])), glyph_ids=ids))
+    return rows
+
+
+def apply_moved(c, page, rows):
+    """``rows`` with the moved-row records of the page applied where they hold (see above)."""
+    for n, entry in enumerate(read_moved(c, page)):
+        recorded = resolve_moved(c, entry)
+        if recorded is None:
+            continue
+        ids = {i for r in recorded for i in r['glyph_ids']}
+        holding = [r for r in rows if ids & set(r['glyph_ids'])]
+        if not holding or any(set(r['glyph_ids']) - ids for r in holding):
+            continue
+        at = min(rows.index(r) for r in holding)
+        rest = [r for r in rows if r not in holding]
+        for k, r in enumerate(recorded):
+            r['id'] = f'p{page}-moved{n}-{k}'
+        rows = rest[:at] + recorded + rest[at:]
+    return rows
