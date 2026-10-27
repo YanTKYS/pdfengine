@@ -83,3 +83,6 @@ tmp/
 !/evaluations/paragraph_frame_placed/
 !/evaluations/paragraph_frame_placed/manifest.json
 !/evaluations/paragraph_frame_placed/results.json
+!/evaluations/paragraph_frame_decoration/
+!/evaluations/paragraph_frame_decoration/manifest.json
+!/evaluations/paragraph_frame_decoration/results.json
