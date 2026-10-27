@@ -50,7 +50,7 @@ import time
 import pymupdf
 
 from .fidelity_evaluate import locate, reopen, sha, source_of
-from .placed_evaluate import block, classify, placed_audit
+from .placed_evaluate import block, classify
 from .roundtrip_evaluate import compare
 
 MANIFEST = Path('evaluations/paragraph_frame_decoration/manifest.json')
@@ -133,6 +133,53 @@ def candidates_of(code, source, page, old, new, occurrence, folder):
     return (proposal['evidence'].get('decorations') or {}).get('candidates', []), None
 
 
+def _match(expected, found, tol):
+    """Lists of (structure, numbers) equal as multisets, numbers to ``tol``."""
+    pool = list(found)
+    for s, n in expected:
+        hit = next((j for j, (s2, m) in enumerate(pool) if s2 == s and len(m) == len(n) and all(abs(a - b) <= tol for a, b in zip(n, m))), None)
+        if hit is None:
+            return False
+        pool.pop(hit)
+    return not pool
+
+
+def moved_audit(source, output, page, save):
+    """Approved moves (placed objects and line decorations) and protected paint, checked separately.
+
+    Inside a moved object's old area every drawing, image and glyph is expected
+    translated by the follower translation (0.02 pt; an image to 0.75 pt, the
+    device pixel MuPDF snaps a rasterized shading to); everything else is
+    expected unchanged (0.01 pt)."""
+    areas = [pymupdf.Rect(m['old']) + (-.5, -.5, .5, .5) for m in (save.get('placed_objects_moved') or []) + (save.get('decorations_moved') or [])]
+    delta = save.get('follower_translation') if isinstance(save.get('follower_translation'), (int, float)) else 0.
+    inside = lambda r, shift=0.: any((a + (0, shift, 0, shift)).contains(pymupdf.Rect(r)) for a in areas)
+    r2 = lambda r, dy=0.: [round(r[0], 2), round(r[1] + dy, 2), round(r[2], 2), round(r[3] + dy, 2)]
+    drawing = lambda x, dy=0.: ((x.get('type'), str(x.get('fill')), str(x.get('color')), str(x.get('width'))), r2(x['rect'], dy))
+    image = lambda x, dy=0.: ((x.get('width'), x.get('height'), x.get('cs-name')), r2(x['bbox'], dy))
+    with pymupdf.open(source) as a, pymupdf.open(output) as b:
+        pa, pb = a[page - 1], b[page - 1]
+        da, db = pa.get_drawings(), pb.get_drawings()
+        ia, ib = pa.get_image_info(xrefs=True), pb.get_image_info(xrefs=True)
+        glyph = lambda c, dy=0.: (c['c'], [round(c['origin'][0], 2), round(c['origin'][1] + dy, 2)])
+        ga = [c for bl in pa.get_text('rawdict')['blocks'] for l in bl.get('lines', []) for s in l['spans'] for c in s['chars']]
+        gb = [c for bl in pb.get_text('rawdict')['blocks'] for l in bl.get('lines', []) for s in l['spans'] for c in s['chars']]
+    moved_d = [drawing(x, delta) for x in da if inside(x['rect'])]
+    moved_i = [image(x, delta) for x in ia if inside(x['bbox'])]
+    moved_g = [glyph(c, delta) for c in ga if inside(c['bbox'])]
+    digest = Counter(x.get('digest') for x in ia if inside(x['bbox']))
+    same_samples = sum((digest & Counter(x.get('digest') for x in ib if inside(x['bbox'], delta))).values())
+    approved = dict(objects=len(areas), drawings=len(moved_d), images=len(moved_i), glyphs=len(moved_g), images_same_samples=same_samples,
+                    exact=_match(moved_d, [drawing(x) for x in db if inside(x['rect'], delta)], .02)
+                    and _match(moved_i, [image(x) for x in ib if inside(x['bbox'], delta)], .75)
+                    and Counter(map(str, moved_g)) == Counter(str(glyph(c)) for c in gb if inside(c['bbox'], delta)))
+    approved['nothing_left'] = not any(inside(x['rect']) and not inside(x['rect'], delta) for x in db) or not areas
+    keep = lambda items, f, key, shift=0.: Counter(str(f(x)) for x in items if not inside(x[key], shift))
+    protected = dict(drawings=keep(da, drawing, 'rect') == keep(db, drawing, 'rect', delta) if areas else keep(da, drawing, 'rect') == keep(db, drawing, 'rect'),
+                     images=keep(ia, image, 'bbox') == keep(ib, image, 'bbox', delta) if areas else keep(ia, image, 'bbox') == keep(ib, image, 'bbox'))
+    return dict(approved_moves=approved, protected=protected, ok=approved['exact'] and approved['nothing_left'] and all(protected.values()))
+
+
 def raster(source, output, page, moved, delta):
     """The moved groups' old area (source) against their new area (output), at a whole-pixel translation (MuPDF)."""
     if not moved or not delta:
@@ -147,7 +194,9 @@ def raster(source, output, page, moved, delta):
             pb = b[page - 1].get_pixmap(matrix=pymupdf.Matrix(zoom, zoom), clip=new, alpha=False)
             same = (pa.width, pa.height) == (pb.width, pb.height)
             differing = sum(x != y for x, y in zip(pa.samples, pb.samples)) if same else None
-            out.append(dict(region=[round(v, 2) for v in old], size_matches=same, differing_samples=differing, samples=len(pa.samples)))
+            worst = max((abs(x - y) for x, y in zip(pa.samples, pb.samples)), default=0) if same else None
+            out.append(dict(region=[round(v, 2) for v in old], size_matches=same, differing_samples=differing, largest_difference=worst,
+                            samples=len(pa.samples)))
     return dict(groups=out, ok=all(g['size_matches'] and g['differing_samples'] == 0 for g in out))
 
 
@@ -207,7 +256,7 @@ def approved_step(code, start, case, old, new, before, after, output, sub, grow,
                   structure_failed=structure_audit(start, output, case['page'], after, [])['failed'],
                   continued_editing=reopen(code, output, case['page'], new, after),
                   save={k: save.get(k) for k in ('follower_translation', 'followers_repainted', 'placed_objects_moved', 'decorations_moved')},
-                  placed=placed_audit(start, output, case['page'], save), links=links_audit(start, output, case['page'], save),
+                  placed=moved_audit(start, output, case['page'], save), links=links_audit(start, output, case['page'], save),
                   raster=raster(start, output, case['page'], save.get('decorations_moved') or [], save.get('follower_translation') or 0))
     return record
 
