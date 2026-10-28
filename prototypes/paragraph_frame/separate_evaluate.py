@@ -200,7 +200,8 @@ def kept_audit(source, output, page, edited_source, edited_output, moved):
     pad = lambda r, v=.5: pymupdf.Rect(r) + (-v, -v, v, v)
     old, new = [pad(m['old']) for m in moved], [pad(m['new']) for m in moved]
     away_a, away_b = [pad(edited_source, 3)] + old, [pad(edited_output, 3)] + new
-    off = lambda r, areas: not any(pymupdf.Rect(r).intersects(a) for a in areas)
+    # (A stroke without height, a link's underline, intersects nothing: widened a little.)
+    off = lambda r, areas: not any((pymupdf.Rect(r) + (-.01, -.01, .01, .01)).intersects(a) for a in areas)
     r2 = lambda r: tuple(round(v, 2) for v in r)
     out = {}
     with pymupdf.open(source) as a, pymupdf.open(output) as b:
@@ -252,8 +253,9 @@ def chain_step(code, start, case, old, new, after, output, sub, grow, pitch):
         return r
     save = json.loads(output.with_suffix('.save.json').read_text())
     x0, y0, x1, y1 = case['box']
+    # The paragraph as long as it is on either side (the edit back starts from the grown one).
     edited = [x0, y0, x1, y1 + max(r['grow'], grow) * pitch]
-    r['kept'] = kept_audit(start, output, case['page'], case['box'], edited, ce._moved(save))
+    r['kept'] = kept_audit(start, output, case['page'], edited, edited, ce._moved(save))
     return r
 
 
@@ -307,6 +309,33 @@ def summary(results, ids):
     return dict(s)
 
 
+def phase_kept(args):
+    """The kept audit again over the saved steps of a run (results updated in place)."""
+    manifest = json.loads(MANIFEST.read_text())
+    root = Path(args.root)
+    path = root / 'results.json'
+    results = json.loads(path.read_text())
+    cases = {c['id']: c for c in manifest['cases'] + manifest['reevaluated']}
+    made = fixtures(root / 'fixtures-kept')
+    for k, seq in results.items():
+        case = cases.get(k) or dict(FIXTURE_CASE, id=k, document=k)
+        source = made[k] if k in made else source_of(case['document'], args)
+        pitch = (case['box'][3] - case['box'][1]) / max(1, case['lines'])
+        box = block(source, case['page'], case.get('selection') or case['paragraph'][:6])
+        prev, grow = source, 0
+        for n, r in enumerate(seq):
+            if r['outcome'] != 'saved':
+                break
+            output = root / k / f'{n + 1}' / 'out.pdf'
+            save = json.loads(output.with_suffix('.save.json').read_text())
+            x0, y0, x1, y1 = box
+            edited = [x0, y0, x1, y1 + max(r['grow'], grow) * pitch]
+            r['kept'] = kept_audit(prev, output, case['page'], edited, edited, ce._moved(save))
+            print(k, n + 1, json.dumps(r['kept']), flush=True)
+            prev, grow = output, max(grow, r['grow'])
+    path.write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
+
+
 def phase_collect(args):
     manifest = json.loads(MANIFEST.read_text())
     labels = dict(x.split('=', 1) for x in args.roots)
@@ -328,7 +357,7 @@ def phase_collect(args):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--phase', choices=('edits', 'freeze', 'run', 'collect'), required=True)
+    p.add_argument('--phase', choices=('edits', 'freeze', 'run', 'kept', 'collect'), required=True)
     p.add_argument('--label')
     p.add_argument('--code', default='.')
     p.add_argument('--root')
@@ -342,7 +371,7 @@ def main():
     p.add_argument('--tests-json')
     p.add_argument('--regression-json')
     args = p.parse_args()
-    dict(edits=phase_edits, freeze=phase_freeze, run=phase_run, collect=phase_collect)[args.phase](args)
+    dict(edits=phase_edits, freeze=phase_freeze, kept=phase_kept, run=phase_run, collect=phase_collect)[args.phase](args)
 
 
 if __name__ == '__main__':

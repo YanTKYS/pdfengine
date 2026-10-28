@@ -11,7 +11,7 @@ GROW = ('申請書は窓口で', '申請書は窓口と郵送と電子申請と�
 
 
 def shared(tmp_path, name='shared.pdf', order='heading-first', inside=b'', after=b'', icon=False, clip=None, mixed=False, parts=1, move='Td',
-           start=b''):
+           start=b'', lines=SHARED):
     """SHARED with the line (stream 3) and the heading (stream 4) in one text object.
 
     ``order``: 'heading-first' (Tm, heading, Tm, line) or 'line-first' (Tm,
@@ -53,7 +53,7 @@ def shared(tmp_path, name='shared.pdf', order='heading-first', inside=b'', after
         data[3] = data[3][:line.start()] + b'q\n' + box + text + b'Q' + data[3][line.end():]
         data[4] = data[4][:head.start()] + data[4][head.end():]
         return data
-    source, _ = tagged(tmp_path, [], lines=SHARED, tree=False, edit_streams=change, name=name)
+    source, _ = tagged(tmp_path, [], lines=lines, tree=False, edit_streams=change, name=name)
     return source
 
 
@@ -361,3 +361,17 @@ def test_saved_pdf_alone_moves_the_separated_line_back(tmp_path):
         edit(grown, GROW[1], GROW[0], back, chain=[d['id']])
         assert glyphs(back, LINE) == glyphs(source, LINE) and glyphs(back, HEAD) == glyphs(source, HEAD)
         assert pixels(back, None, 72) == pixels(source, None, 72) and drawn_text(back) == drawn_text(source)
+
+
+def test_the_edit_back_lists_only_the_lines_that_moved(tmp_path):
+    # A line below the separated one that the growth does not reach: it stays,
+    # and the edit back (which would reach it) does not list it.
+    source = shared(tmp_path, lines=SHARED + [(52, 154, '受付は平日です。')])
+    (c,) = chain_of(source)['candidates']
+    grown, back = tmp_path / 'grown.pdf', tmp_path / 'back.pdf'
+    edit(source, *GROW, grown, chain=[c['id']])
+    assert glyphs(grown, '受付は平日です。') == glyphs(source, '受付は平日です。')
+    (d,) = chain_of(grown, GROW[1], GROW[0])['candidates']
+    assert d['line'] == LINE
+    edit(grown, GROW[1], GROW[0], back, chain=[d['id']])
+    assert pixels(back, None, 72) == pixels(source, None, 72) and drawn_text(back) == drawn_text(source)
