@@ -216,13 +216,17 @@ def links_audit(source, output, page, save):
     key = lambda l: (l.get('kind'), l.get('uri'), l.get('page'), str(l.get('to')), l.get('file'))
     with pymupdf.open(source) as a, pymupdf.open(output) as b:
         la, lb = a[page - 1].get_links(), b[page - 1].get_links()
-    expected = Counter()
+    # Each link of the source is found once with its target, its area translated (moved) or unchanged, to 0.01 pt.
+    pool = list(lb)
     for l in la:
         r = l['from']
         shift = delta if any(max(abs(x - y) for x, y in zip(r, m)) < .01 for m in moved) else 0.
-        expected[key(l) + (round(r.x0, 2), round(r.y0 + shift, 2), round(r.x1, 2), round(r.y1 + shift, 2))] += 1
-    found = Counter(key(l) + (round(l['from'].x0, 2), round(l['from'].y0, 2), round(l['from'].x1, 2), round(l['from'].y1, 2)) for l in lb)
-    return dict(links=len(la), moved=len(moved), ok=expected == found and len(la) == len(lb))
+        want = (r.x0, r.y0 + shift, r.x1, r.y1 + shift)
+        hit = next((j for j, x in enumerate(pool) if key(x) == key(l) and max(abs(p - q) for p, q in zip(x['from'], want)) <= .01), None)
+        if hit is None:
+            return dict(links=len(la), moved=len(moved), ok=False)
+        pool.pop(hit)
+    return dict(links=len(la), moved=len(moved), ok=not pool)
 
 
 def approved_step(code, start, case, old, new, before, after, output, sub, grow, pitch, approve_listed):

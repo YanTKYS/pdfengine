@@ -1,0 +1,7559 @@
+{
+ "schema": "paragraph-frame-restore-results-1",
+ "manifest_sha256": "44bb3a43a8b4aaa29f6217f61957db8af0d65b852098bc055e76fee89e5ccc96",
+ "tests": {
+  "focused": {
+   "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_column_flow.py tests/test_paragraph_frame_continuity.py tests/test_paragraph_frame_decoration.py tests/test_paragraph_frame_local.py tests/test_paragraph_frame_restore.py tests/test_paragraph_frame_tagged.py tests/test_paragraph_frame_text_space.py tests/test_paragraph_frame_placed_follower.py",
+   "commit": "8d22172",
+   "passed": 164,
+   "failed": 0,
+   "seconds": 127,
+   "new_tests": 5,
+   "selection": "every test importing prototypes.paragraph_frame.auto, auto_detect or auto_conditions (auto_writer is reached through auto) and the helper modules the new tests import (test_paragraph_frame_decoration, test_paragraph_frame_placed_follower); pdfeditor is unchanged"
+  },
+  "full_suite": "not run"
+ },
+ "regression": {
+  "generalization": {
+   "A": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "B": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "C": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "D": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F1": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F2": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F3": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "native_replacement_search"
+    ],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F4": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "native_replacement_search"
+    ],
+    "reedit": "quality-audit-failed",
+    "reedit_failed": [
+     "native_replacement_search"
+    ],
+    "same_as_committed": true
+   },
+   "N1": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "N2": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "N3": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "native_replacement_search"
+    ],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "N4": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "mupdf_copy_extract",
+     "poppler_copy_extract",
+     "native_replacement_search"
+    ],
+    "reedit": "quality-audit-failed",
+    "reedit_failed": [
+     "mupdf_copy_extract",
+     "poppler_copy_extract",
+     "native_replacement_search"
+    ],
+    "same_as_committed": false
+   }
+  },
+  "continuity_sequences": {
+   "Q1-stored": {
+    "steps": [
+     "success",
+     "success",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": true
+   },
+   "Q1-inference": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "success",
+     "success"
+    ],
+    "same_as_committed": false
+   },
+   "Q2-stored": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": true
+   },
+   "Q2-inference": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": true
+   },
+   "Q3-stored": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "success",
+     "success"
+    ],
+    "same_as_committed": false
+   },
+   "Q3-inference": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": false
+   }
+  },
+  "continuity_new": {
+   "E1": {
+    "edit": "saved",
+    "audit": "safety-audit-failed",
+    "same_as_committed": false,
+    "audit_implicit_joins": "success"
+   },
+   "E2": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   },
+   "E3": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   },
+   "E4": {
+    "edit": "saved",
+    "audit": "safety-audit-failed",
+    "same_as_committed": false,
+    "audit_implicit_joins": "success"
+   },
+   "E5": {
+    "edit": "saved",
+    "audit": "success",
+    "same_as_committed": true
+   },
+   "E6": {
+    "edit": "saved",
+    "audit": "safety-audit-failed",
+    "same_as_committed": false,
+    "audit_implicit_joins": "success"
+   },
+   "S1": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   },
+   "S2": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   }
+  },
+  "column_flow": {
+   "sequences": {
+    "S1": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S2": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S3": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S4": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S5": {
+     "steps": [
+      "refused",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S6": {
+     "steps": [
+      "refused",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    }
+   },
+   "singles": {
+    "J-fit": {
+     "outcome": "saved",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "E-fit": {
+     "outcome": "saved",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-capacity": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-heading": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-image": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-articles": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-articles-tagged": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "R-enterprise-fit": {
+     "outcome": "saved",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "R-enterprise-grow": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "R-fusei-grow": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    }
+   },
+   "recognition_same_as_committed": true,
+   "recognition_correct": 14,
+   "recognition_total": 14
+  },
+  "indesign": {
+   "requests": {
+    "F-same": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-same-reedit": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-short": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-wrap": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-grow-line": {
+     "outcome": "refused",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-form": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "T-form": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "T-form-reedit": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-same": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-short": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-grow-line": {
+     "outcome": "refused",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-reedit": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "Q-ligature": {
+     "outcome": "refused",
+     "failed": [],
+     "same_as_committed": true
+    }
+   },
+   "samples": {
+    "sampled": 74,
+    "saved": 74,
+    "safety": 74,
+    "quality": 68,
+    "committed": {
+     "sampled": 74,
+     "saved": 62,
+     "safety": 62,
+     "quality": 53
+    },
+    "same_as_committed": false,
+    "newly_failed": [
+     [
+      "osaka_fusei_477",
+      7,
+      "【行政・警察",
+      [
+       "unchanged_text_same_glyph_positions"
+      ]
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "偽造変造対策",
+      [
+       "extraction_mupdf"
+      ]
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "千万円）を発",
+      [
+       "unchanged_text_same_glyph_positions"
+      ]
+     ]
+    ],
+    "newly_passed": [
+     [
+      "osaka_fusei_477",
+      7,
+      "学歴・職務経"
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "令和5年の大"
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "賃貸住宅の退"
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "一般世帯向け"
+     ],
+     [
+      "canvas",
+      1,
+      "globalC"
+     ],
+     [
+      "issue17730",
+      1,
+      "There "
+     ]
+    ],
+    "newly_refused": []
+   }
+  },
+  "differences_from_pr90_recorded_regression": [
+   [
+    "continuity sequence",
+    "Q1-inference",
+    "['success', 'quality-audit-failed', 'success', 'success']",
+    "['success', 'quality-audit-failed', 'quality-audit-failed', 'success']"
+   ],
+   [
+    "continuity new",
+    "E1",
+    "('saved', 'safety-audit-failed', 'success')",
+    "('saved', 'success')"
+   ],
+   [
+    "continuity new",
+    "E4",
+    "('saved', 'safety-audit-failed', 'success')",
+    "('saved', 'success')"
+   ],
+   [
+    "continuity new",
+    "E6",
+    "('saved', 'safety-audit-failed', 'success')",
+    "('saved', 'success')"
+   ],
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'same_as_committed': False}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': [], 'same_as_committed': True}"
+   ]
+  ],
+  "differences_from_pr91_recorded_regression": [
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'same_as_committed': False}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': []}"
+   ],
+   [
+    "continuity_sequences",
+    "Q1-inference",
+    "{'steps': ['success', 'quality-audit-failed', 'success', 'success'], 'same_as_committed': False}",
+    "{'steps': ['success', 'quality-audit-failed', 'quality-audit-failed', 'success']}"
+   ],
+   [
+    "continuity_new",
+    "E1",
+    "{'edit': 'saved', 'audit': 'safety-audit-failed', 'same_as_committed': False, 'audit_implicit_joins': 'success'}",
+    "{'edit': 'saved', 'audit': 'success'}"
+   ],
+   [
+    "continuity_new",
+    "E4",
+    "{'edit': 'saved', 'audit': 'safety-audit-failed', 'same_as_committed': False, 'audit_implicit_joins': 'success'}",
+    "{'edit': 'saved', 'audit': 'success'}"
+   ],
+   [
+    "continuity_new",
+    "E6",
+    "{'edit': 'saved', 'audit': 'safety-audit-failed', 'same_as_committed': False, 'audit_implicit_joins': 'success'}",
+    "{'edit': 'saved', 'audit': 'success'}"
+   ],
+   [
+    "indesign samples",
+    "saved",
+    "74",
+    "63"
+   ],
+   [
+    "indesign samples",
+    "safety",
+    "74",
+    "62"
+   ],
+   [
+    "indesign samples",
+    "quality",
+    "68",
+    "53"
+   ],
+   [
+    "indesign samples",
+    "newly_failed",
+    "[['osaka_fusei_477', 7, '【行政・警察', ['unchanged_text_same_glyph_positions']], ['osaka_fusei_477', 7, '偽造変造対策', ['extraction_mupdf']], ['osaka_fusei_477', 7, '千万円）を発', ['unchanged_text_same_glyph_positions']]]",
+    "[['osaka_fusei_477', 7, '児童扶養手当・特別児童扶養手当の認', ['raster_outside_region_mupdf', 'raster_outside_region_poppler', 'glyphs_outside_region_identical', 'unchanged_text_same_glyph_positions']]]"
+   ],
+   [
+    "indesign samples",
+    "newly_passed",
+    "[['osaka_fusei_477', 7, '学歴・職務経'], ['osaka_fusei_477', 7, '令和5年の大'], ['osaka_fusei_477', 7, '賃貸住宅の退'], ['osaka_fusei_477', 7, '一般世帯向け'], ['canvas', 1, 'globalC'], ['issue17730', 1, 'There ']]",
+    "[]"
+   ]
+  ],
+  "tagged": {
+   "requests": {
+    "L-same:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "extraction_poppler"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-reedit:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "extraction_poppler"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-short:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "extraction_poppler",
+      "baselines_on_the_paragraph_grid",
+      "left_edges_observed"
+     ],
+     "structure_failed": [
+      "paragraph_mcids_draw_the_new_text"
+     ],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-wrap:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-cross:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "D-same:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": false,
+     "committed": {
+      "outcome": "refused",
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": null
+     }
+    },
+    "D-reedit:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": false,
+     "committed": {
+      "outcome": "not run",
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": null
+     }
+    },
+    "D-short:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "D-shared:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-span:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-span:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-cross:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-cross:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-reedit:frozen": {
+     "outcome": "not run",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-reedit:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-grow:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-grow:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "I-same:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "I-short:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "F-marker:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "F-marker:substitute": {
+     "outcome": "saved",
+     "failed": [
+      "baselines_on_the_paragraph_grid"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "F-icon:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "baselines_on_the_paragraph_grid"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    }
+   },
+   "samples": {
+    "totals": {
+     "edits": 52,
+     "saved": 33,
+     "safety": 27,
+     "quality": 23,
+     "structure": 33,
+     "continued_editing": 29
+    },
+    "committed": {
+     "edits": 52,
+     "saved": 31,
+     "safety": 24,
+     "quality": 20,
+     "structure": 31,
+     "continued_editing": 29
+    },
+    "edits": [
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "n° d'i",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "n° d'"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "n° d'i",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "n° d'ii"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "refused",
+       "detail": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "salarié(",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "salariée):"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "salarié(",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "code p",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "code"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "code p",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('p' at [255.9, 162.4, 259.8, 169.3])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "I) fid",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "I) fi"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "I) fid",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "glyphs_outside_region_identical"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "I) fidd"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 1,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": []
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "nombre de jours i",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "nombre de jours mpos"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": [
+        "raster_outside_region_mupdf",
+        "raster_outside_region_poppler",
+        "glyphs_outside_region_identical"
+       ]
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "nombre de jours i",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "nombre de jours ii"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": [
+        "raster_outside_region_mupdf",
+        "raster_outside_region_poppler",
+        "glyphs_outside_region_identical"
+       ]
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "signatu",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "signatre d"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "signatu",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; no continuation column is linked",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "¥233,5",
+      "kind": "shorten",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "¥233,5",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "64,457",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "64,45"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "64,457",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "111,202",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "111,20",
+       "occurrence": 1
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "111,202",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Items that m",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Items that ay b"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Items that m",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('p' at [128.4, 334.9, 133.1, 343.4])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Net ch",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Net c"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Net ch",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Net chh"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 0,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Comprehensive income a",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Comprehensive income ttri"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Comprehensive income a",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('t' at [119.9, 484.9, 122.3, 493.4])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue15262",
+      "page": 1,
+      "selection": "file:/",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "file:"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue15262",
+      "page": 1,
+      "selection": "file:/",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('1' at [5.0, 844.1, 9.9, 853.1])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue6782",
+      "page": 1,
+      "selection": "Our so",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Our s"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue6782",
+      "page": 1,
+      "selection": "Our so",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Our soo"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": false
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 4,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 1,
+      "selection": "06（6910）8005",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "06（6910）800",
+       "occurrence": 1
+      },
+      "supplementary": {
+       "region_extraction_mupdf": false,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 1,
+      "selection": "06（6910）8005",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('8' at [553.4, 40.6, 558.3, 48.0])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 2,
+      "selection": "もの・ 保険",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "もの・ 保"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": false,
+       "region_extraction_poppler": false
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 2,
+      "selection": "もの・ 保険",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected vector",
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ]
+      }
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 3,
+      "selection": "万博特集記事",
+      "kind": "shorten",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 3,
+      "selection": "万博特集記事",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 7,
+      "selection": "日日時 所場",
+      "kind": "shorten",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 7,
+      "selection": "日日時 所場",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 府統計課",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "問 府統計"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 府統計課",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "glyphs_outside_region_identical",
+       "extraction_poppler"
+      ],
+      "safety": false,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "absent",
+       "selection": "問 府統計課課"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 1,
+       "new_outside_in_frame": false,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": false
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 堺市長寿",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "問 堺市長"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 堺市長寿",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "glyphs_outside_region_identical"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "absent",
+       "selection": "問 堺市長寿寿"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 1,
+       "new_outside_in_frame": false,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": false
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Depart",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Depar"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Depart",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('S' at [108.8, 48.0, 112.7, 54.0])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Presid",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "stale: protected paint entered the approved width (foreign-text)",
+       "selection": "Presi"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "refused",
+       "detail": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+      }
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Presid",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "stale: protected paint entered the approved width (foreign-text)",
+       "selection": "Presidd"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "refused",
+       "detail": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+      }
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Add nu",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Add n"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Add nu",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('▶' at [489.6, 334.9, 495.6, 340.9])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Form  ",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "For  1040"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Form  ",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": false,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Formm"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": false
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 0,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Additional t",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Additional ax o"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Additional t",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('r' at [115.2, 327.1, 117.8, 334.8])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Amount  ",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Amoun  You"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Amount  ",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Amountt"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     }
+    ]
+   }
+  },
+  "differences_from_pr92_recorded_regression": [
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search']}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': []}"
+   ],
+   [
+    "indesign samples",
+    "quality",
+    "68",
+    "69"
+   ],
+   [
+    "indesign samples",
+    "newly_failed",
+    "[['osaka_fusei_477', 7, '【行政・警察', ['unchanged_text_same_glyph_positions']], ['osaka_fusei_477', 7, '偽造変造対策', ['extraction_mupdf']], ['osaka_fusei_477', 7, '千万円）を発', ['unchanged_text_same_glyph_positions']]]",
+    "[['osaka_fusei_477', 7, '偽造変造対策', ['extraction_mupdf']], ['osaka_fusei_477', 7, '千万円）を発', ['unchanged_text_same_glyph_positions']]]"
+   ]
+  ],
+  "differences_from_pr94_recorded_regression": [
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search']}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': []}"
+   ]
+  ],
+  "differences_from_pr96_recorded_regression": [],
+  "differences_from_pr98_recorded_regression": [],
+  "differences_from_pr100_recorded_regression": [],
+  "differences": 8,
+  "fidelity_pr92": {
+   "what": "PR #92 layout-fidelity evaluation rerun on this code, against PR #92 committed new results",
+   "summary_differences": [
+    [
+     "reedit",
+     "round_trip_kept",
+     915,
+     1076
+    ]
+   ],
+   "edit_differences": [
+    [
+     "C01",
+     "reedit:lengthen",
+     [
+      "round_trip"
+     ]
+    ],
+    [
+     "C02",
+     "lengthen",
+     [
+      "reason"
+     ]
+    ],
+    [
+     "C05",
+     "reedit:lengthen-wrap",
+     [
+      "fidelity",
+      "round_trip"
+     ]
+    ],
+    [
+     "C12",
+     "reedit:shorten",
+     [
+      "fidelity",
+      "round_trip"
+     ]
+    ]
+   ],
+   "same_as_pr96_recorded": false,
+   "only_here": [
+    [
+     "C06",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C01",
+     "reedit:lengthen",
+     "frozenset({'save', 'round_trip'})"
+    ],
+    [
+     "C01",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C06",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C09",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C03",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C04",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C10",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C14",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C12",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C01",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C13",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C02",
+     "lengthen",
+     "frozenset({'reason'})"
+    ],
+    [
+     "C01",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "lengthen-wrap",
+     "frozenset({'save'})"
+    ],
+    [
+     "C12",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C02",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C03",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C15",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C09",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C10",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C04",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C14",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C13",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C01",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C04",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C14",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C02",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C15",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C15",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "reedit:lengthen-wrap",
+     "frozenset({'save', 'fidelity', 'round_trip'})"
+    ],
+    [
+     "C03",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C10",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "lengthen-wrap",
+     "frozenset({'save'})"
+    ],
+    [
+     "C06",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C13",
+     "reedit:shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C02",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C06",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C15",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C15",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C12",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C12",
+     "reedit:shorten",
+     "frozenset({'save', 'fidelity', 'round_trip'})"
+    ],
+    [
+     "C12",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C09",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C06",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "shorten",
+     "frozenset({'save'})"
+    ]
+   ],
+   "only_recorded": [
+    [
+     "C12",
+     "reedit:shorten",
+     "frozenset({'fidelity', 'round_trip'})"
+    ],
+    [
+     "C05",
+     "reedit:lengthen-wrap",
+     "frozenset({'fidelity', 'round_trip'})"
+    ],
+    [
+     "C01",
+     "reedit:lengthen",
+     "frozenset({'round_trip'})"
+    ]
+   ],
+   "ignoring": "save.stored_conditions.moved_paragraphs_recorded (a summary key added by this change)",
+   "same_as_pr100_recorded": true
+  },
+  "roundtrip_pr94": {
+   "what": "PR #94 round-trip evaluation rerun on this code, against PR #94 committed new results",
+   "summary_differences": [
+    [
+     "path_kept",
+     1301,
+     1327
+    ],
+    [
+     "path_page_identical",
+     7,
+     10
+    ],
+    [
+     "repeat_page_identical",
+     38,
+     40
+    ]
+   ],
+   "pr96_recorded": [
+    [
+     "path_kept",
+     1301,
+     1327
+    ],
+    [
+     "path_page_identical",
+     7,
+     10
+    ],
+    [
+     "repeat_page_identical",
+     38,
+     40
+    ]
+   ],
+   "same_as_pr96_recorded": true,
+   "new": {
+    "cycles": 48,
+    "steps": 174,
+    "saved": 168,
+    "safety": 156,
+    "quality": 162,
+    "structure": 168,
+    "continued_editing": 168,
+    "undos": 84,
+    "undo_unchanged": 10098,
+    "undo_kept": 10098,
+    "undo_breaks": 176,
+    "undo_breaks_kept": 176,
+    "undo_same_lines": 84,
+    "undo_restyled": 0,
+    "undo_outside_identical": 84,
+    "undo_page_identical": 72,
+    "undo_text_identical_both": 84,
+    "undo_text_identical_ignoring_whitespace_both": 84,
+    "undo_search_same": 84,
+    "repeats": 42,
+    "repeat_unchanged": 5016,
+    "repeat_kept": 5016,
+    "repeat_page_identical": 40,
+    "second_undos": 42,
+    "second_undo_page_identical": 36,
+    "paths": 12,
+    "paths_completed": 10,
+    "path_unchanged": 1327,
+    "path_kept": 1327,
+    "path_page_identical": 10,
+    "refused": 6
+   }
+  },
+  "multiedit_pr96": {
+   "what": "PR #96 multi-edit evaluation rerun on this code, against PR #96 committed new results",
+   "summary_differences": [],
+   "step_differences": [],
+   "all": {
+    "pairs": 37,
+    "steps": 227,
+    "saved": 209,
+    "refused": 18,
+    "safety": 203,
+    "quality": 203,
+    "structure": 209,
+    "continued_editing": 209,
+    "path_b_made": 28,
+    "path_b_unchanged": 4930,
+    "path_b_kept": 4930,
+    "path_b_breaks": 76,
+    "path_b_breaks_kept": 76,
+    "path_b_restyled": 0,
+    "path_b_outside_identical": 28,
+    "path_b_page_identical": 27,
+    "path_b_text_identical_both": 28,
+    "path_a_made": 27,
+    "path_a_unchanged": 4847,
+    "path_a_kept": 4847,
+    "path_a_breaks": 76,
+    "path_a_breaks_kept": 76,
+    "path_a_restyled": 0,
+    "path_a_outside_identical": 27,
+    "path_a_page_identical": 26,
+    "path_a_text_identical_both": 27,
+    "order_made": 27,
+    "order_unchanged": 4880,
+    "order_kept": 4880,
+    "order_breaks": 76,
+    "order_breaks_kept": 76,
+    "order_restyled": 0,
+    "order_outside_identical": 27,
+    "order_page_identical": 27,
+    "order_text_identical_both": 27,
+    "full_return_made": 29,
+    "full_return_unchanged": 5115,
+    "full_return_kept": 5115,
+    "full_return_breaks": 79,
+    "full_return_breaks_kept": 79,
+    "full_return_restyled": 0,
+    "full_return_outside_identical": 29,
+    "full_return_page_identical": 25,
+    "full_return_text_identical_both": 29
+   }
+  },
+  "placed_pr98": {
+   "what": "PR #98 placed-object evaluation rerun on this code, against PR #98 committed new results",
+   "summary_differences": [],
+   "step_differences": [
+    [
+     "P8-09",
+     "lengthen",
+     1,
+     [
+      "refused",
+      "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected filled-vector",
+      "None",
+      "None"
+     ],
+     [
+      "refused",
+      "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected vector",
+      "None",
+      "None"
+     ]
+    ]
+   ]
+  },
+  "commit": "8d22172"
+ },
+ "summary": {
+  "old": {
+   "fixtures": {
+    "cases": 3,
+    "edit_saved": 3,
+    "restore_with_candidates": 3,
+    "restore_unapproved_refused": 3,
+    "restored": 3,
+    "restore_safety": 0,
+    "restore_quality": 3,
+    "restore_structure": 3,
+    "restore_continued_editing": 3,
+    "restore_move_audit": 3,
+    "restore_links_audit": 3,
+    "glyphs_at_source_001": 3,
+    "glyphs_at_source_0001": 3,
+    "breaks_kept": 3,
+    "text_identical_both": 3,
+    "search_same": 3,
+    "drawings_identical": 3,
+    "images_identical": 3,
+    "images_identical_or_shading_raster": 3,
+    "links_identical": 3,
+    "structure_vs_source": 3,
+    "pixels_identical": 3
+   },
+   "real": {
+    "cases": 4,
+    "edit_saved": 4,
+    "restore_with_candidates": 1,
+    "restore_refused": 3,
+    "restore_unapproved_refused": 1,
+    "restored": 1,
+    "restore_safety": 0,
+    "restore_quality": 1,
+    "restore_structure": 1,
+    "restore_continued_editing": 1,
+    "restore_move_audit": 1,
+    "restore_links_audit": 1,
+    "glyphs_at_source_001": 1,
+    "glyphs_at_source_0001": 1,
+    "breaks_kept": 1,
+    "text_identical_both": 1,
+    "search_same": 1,
+    "drawings_identical": 1,
+    "images_identical": 1,
+    "images_identical_or_shading_raster": 1,
+    "links_identical": 1,
+    "structure_vs_source": 1,
+    "pixels_identical": 1
+   }
+  },
+  "new": {
+   "fixtures": {
+    "cases": 3,
+    "edit_saved": 3,
+    "restore_with_candidates": 3,
+    "restore_unapproved_refused": 3,
+    "restored": 3,
+    "restore_safety": 0,
+    "restore_quality": 3,
+    "restore_structure": 3,
+    "restore_continued_editing": 3,
+    "restore_move_audit": 3,
+    "restore_links_audit": 3,
+    "glyphs_at_source_001": 3,
+    "glyphs_at_source_0001": 3,
+    "breaks_kept": 3,
+    "text_identical_both": 3,
+    "search_same": 3,
+    "drawings_identical": 3,
+    "images_identical": 3,
+    "images_identical_or_shading_raster": 3,
+    "links_identical": 3,
+    "structure_vs_source": 3,
+    "pixels_identical": 3
+   },
+   "real": {
+    "cases": 4,
+    "edit_saved": 4,
+    "restore_with_candidates": 4,
+    "restore_unapproved_refused": 4,
+    "restored": 4,
+    "restore_safety": 0,
+    "restore_quality": 4,
+    "restore_structure": 4,
+    "restore_continued_editing": 4,
+    "restore_move_audit": 4,
+    "restore_links_audit": 4,
+    "glyphs_at_source_001": 4,
+    "glyphs_at_source_0001": 4,
+    "breaks_kept": 4,
+    "text_identical_both": 3,
+    "search_same": 4,
+    "drawings_identical": 4,
+    "images_identical": 4,
+    "images_identical_or_shading_raster": 4,
+    "links_identical": 4,
+    "structure_vs_source": 4,
+    "pixels_identical": 4
+   }
+  }
+ },
+ "results": {
+  "old": {
+   "D1-lengthen": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        548
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        121.0,
+        190.5,
+        135.0
+       ],
+       "translation": 16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-67db9899e4d40c16"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-67db9899e4d40c16 moves with it only when approved explicitly)",
+      "seconds": 0.74
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-67db9899e4d40c16"
+     ],
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-67db9899e4d40c16",
+        "old": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "new": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.5,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "new": "申請書は窓口で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        857,
+        1107
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        121.0,
+        190.5,
+        135.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "translation": -16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-b00b2ce69744dda9"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-b00b2ce69744dda9 moves with it only when approved explicitly)",
+      "seconds": 0.62
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-b00b2ce69744dda9"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-b00b2ce69744dda9",
+        "old": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         120.0,
+         191.5,
+         136.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "D1-shorten": [
+    {
+     "old": "申請書は窓口で配布し",
+     "new": "申請書は配布し",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        548
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        89.0,
+        190.5,
+        103.0
+       ],
+       "translation": -16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-a73d9f07c66b7dd1"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-a73d9f07c66b7dd1 moves with it only when approved explicitly)",
+      "seconds": 0.54
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-a73d9f07c66b7dd1"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-a73d9f07c66b7dd1",
+        "old": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "new": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           89.0,
+           190.0,
+           103.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.5,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は配布し",
+     "new": "申請書は窓口で配布し",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        560,
+        810
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        89.0,
+        190.5,
+        103.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "translation": 16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          89.0,
+          190.0,
+          103.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-7ea931fe9f445618"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-7ea931fe9f445618 moves with it only when approved explicitly)",
+      "seconds": 0.48
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-7ea931fe9f445618"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-7ea931fe9f445618",
+        "old": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           89.0,
+           190.0,
+           103.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         88.0,
+         191.5,
+         104.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "D2-lengthen": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        514
+       ],
+       "operator_count": 24,
+       "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+       "bounds": [
+        39.0,
+        105.0,
+        190.0,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        121.0,
+        190.0,
+        135.0
+       ],
+       "translation": 16.0,
+       "drawings": 2,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "rg"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-f0674a576fbbec25"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f0674a576fbbec25 moves with it only when approved explicitly)",
+      "seconds": 0.79
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-f0674a576fbbec25"
+     ],
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-f0674a576fbbec25",
+        "old": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "new": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 2,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.0,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66096
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "new": "申請書は窓口で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        857,
+        1073
+       ],
+       "operator_count": 24,
+       "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+       "bounds": [
+        39.0,
+        121.0,
+        190.0,
+        135.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.0,
+        119.0
+       ],
+       "translation": -16.0,
+       "drawings": 2,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "rg"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-04e9062ef4a280d1"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-04e9062ef4a280d1 moves with it only when approved explicitly)",
+      "seconds": 0.55
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-04e9062ef4a280d1"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-04e9062ef4a280d1",
+        "old": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 2,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         120.0,
+         191.0,
+         136.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66096
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-03": [
+    {
+     "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        25710,
+        36906
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "moved_to": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1909,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          619.86,
+          199.64,
+          633.6
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-2fcb883709ff7510"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+      "seconds": 7.94
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-2fcb883709ff7510"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.10662841796875,
+      "followers_repainted": 3,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-2fcb883709ff7510",
+        "old": [
+         21.260000228881836,
+         619.8569946289062,
+         203.32740783691406,
+         634.70361328125
+        ],
+        "new": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5969848632812
+        ],
+        "translation": [
+         0.0,
+         13.10662841796875
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1909,
+          "old": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "new": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         618.86,
+         204.33,
+         635.7
+        ],
+        "size_matches": true,
+        "differing_samples": 9,
+        "largest_difference": 3,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "candidates": [],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+      "seconds": 7.16
+     },
+     "outcome": "refused",
+     "approved": [],
+     "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+     "class": "other: edited paragraphs lie in different marked-content containers"
+    }
+   ],
+   "P7-05": [
+    {
+     "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        25710,
+        36906
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "moved_to": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1909,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          619.86,
+          199.64,
+          633.6
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-2fcb883709ff7510"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+      "seconds": 8.62
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-2fcb883709ff7510"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.10662841796875,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-2fcb883709ff7510",
+        "old": [
+         21.260000228881836,
+         619.8569946289062,
+         203.32740783691406,
+         634.70361328125
+        ],
+        "new": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5969848632812
+        ],
+        "translation": [
+         0.0,
+         13.10662841796875
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1909,
+          "old": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "new": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         618.86,
+         204.33,
+         635.7
+        ],
+        "size_matches": true,
+        "differing_samples": 9,
+        "largest_difference": 3,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "candidates": [],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+      "seconds": 6.53
+     },
+     "outcome": "refused",
+     "approved": [],
+     "reason": "prototypes.paragraph_frame.engine.Refused: edited paragraphs lie in different marked-content containers",
+     "class": "other: edited paragraphs lie in different marked-content containers"
+    }
+   ],
+   "P7-06": [
+    {
+     "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        39225,
+        50424
+       ],
+       "operator_count": 528,
+       "bytes_sha256": "259718a7805e05de2ad8c59ed5c1f41fd40f9a64a01100b65a75ad9624f4bd36",
+       "bounds": [
+        21.26,
+        745.18,
+        161.42,
+        760.14
+       ],
+       "moved_to": [
+        21.26,
+        732.08,
+        161.42,
+        747.03
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm3"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■こころのオアシス　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "Tf",
+        "Tc",
+        "Tw",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1910,
+         "subtype": "/Link",
+         "rect": [
+          36.65,
+          745.18,
+          160.36,
+          759.58
+         ],
+         "uri": "http://kokoro-osaka.jp/"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-5d857bfbdd83a562"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-5d857bfbdd83a562 moves with it only when approved explicitly)",
+      "seconds": 7.81
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-5d857bfbdd83a562"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.106689453125,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-5d857bfbdd83a562",
+        "old": [
+         21.260000228881836,
+         745.1849975585938,
+         161.41586303710938,
+         760.1366577148438
+        ],
+        "new": [
+         21.260000228881836,
+         732.0783081054688,
+         161.41586303710938,
+         747.0299682617188
+        ],
+        "translation": [
+         0.0,
+         13.106689453125
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1910,
+          "old": [
+           36.655,
+           745.185,
+           160.364,
+           759.585
+          ],
+          "new": [
+           36.655,
+           732.078,
+           160.364,
+           746.478
+          ],
+          "uri": "http://kokoro-osaka.jp/"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 13,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         744.18,
+         162.42,
+         761.14
+        ],
+        "size_matches": true,
+        "differing_samples": 2,
+        "largest_difference": 1,
+        "samples": 64872
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "candidates": [],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('を' at [20.9, 733.3, 30.5, 742.9])",
+      "seconds": 19.45
+     },
+     "outcome": "refused",
+     "approved": [],
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('を' at [20.9, 733.3, 30.5, 742.9])",
+     "class": "capacity"
+    }
+   ],
+   "P7-07": [
+    {
+     "old": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "new": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        54237,
+        65408
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+       "bounds": [
+        21.26,
+        886.18,
+        165.15,
+        900.81
+       ],
+       "moved_to": [
+        21.26,
+        873.08,
+        165.15,
+        887.7
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm4"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　原状回復　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1911,
+         "subtype": "/Link",
+         "rect": [
+          37.31,
+          886.26,
+          164.29,
+          900.66
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-f98fba0d9ad28291"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f98fba0d9ad28291 moves with it only when approved explicitly)",
+      "seconds": 8.26
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-f98fba0d9ad28291"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.106689453125,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-f98fba0d9ad28291",
+        "old": [
+         21.260000228881836,
+         886.1846313476562,
+         165.14810180664062,
+         900.8059692382812
+        ],
+        "new": [
+         21.260000228881836,
+         873.0779418945312,
+         165.14810180664062,
+         887.6992797851562
+        ],
+        "translation": [
+         0.0,
+         13.106689453125
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1911,
+          "old": [
+           37.309,
+           886.258,
+           164.292,
+           900.659
+          ],
+          "new": [
+           37.309,
+           873.151,
+           164.292,
+           887.552
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         885.18,
+         166.15,
+         901.81
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66555
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "new": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        56317,
+        67488
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+       "bounds": [
+        21.26,
+        873.0,
+        165.15,
+        887.7
+       ],
+       "moved_to": [
+        21.26,
+        886.11,
+        165.15,
+        900.81
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm4"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　原状回復　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1060,
+         "subtype": "/Link",
+         "rect": [
+          37.31,
+          873.15,
+          164.29,
+          887.55
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+        }
+       ],
+       "adjacent": [
+        "filled-vector"
+       ],
+       "id": "line-decoration-c73a4a2e1fbaabcd"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-c73a4a2e1fbaabcd moves with it only when approved explicitly)",
+      "seconds": 7.48
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-c73a4a2e1fbaabcd"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.10669371093752,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-c73a4a2e1fbaabcd",
+        "old": [
+         21.260000228881836,
+         873.0,
+         165.14810180664062,
+         887.6992797851562
+        ],
+        "new": [
+         21.260000228881836,
+         886.1066937109375,
+         165.14810180664062,
+         900.8059734960938
+        ],
+        "translation": [
+         0.0,
+         -13.10669371093752
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1060,
+          "old": [
+           37.309,
+           873.151,
+           164.292,
+           887.552
+          ],
+          "new": [
+           37.309,
+           886.258,
+           164.292,
+           900.659
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         872.0,
+         166.15,
+         888.7
+        ],
+        "size_matches": true,
+        "differing_samples": 8,
+        "largest_difference": 2,
+        "samples": 66555
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 131,
+        "kept": 131,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 7,
+        "output_lines": 8,
+        "source_breaks_outside_edit": 6,
+        "breaks_kept": 6
+       },
+       "outside_changed": 0,
+       "page_changed": 2,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 9e-05,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ]
+  },
+  "new": {
+   "D1-lengthen": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        548
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        121.0,
+        190.5,
+        135.0
+       ],
+       "translation": 16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-67db9899e4d40c16"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-67db9899e4d40c16 moves with it only when approved explicitly)",
+      "seconds": 0.65
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-67db9899e4d40c16"
+     ],
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-67db9899e4d40c16",
+        "old": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "new": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.5,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "new": "申請書は窓口で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        857,
+        1107
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        121.0,
+        190.5,
+        135.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "translation": -16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-b00b2ce69744dda9"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-b00b2ce69744dda9 moves with it only when approved explicitly)",
+      "seconds": 0.61
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-b00b2ce69744dda9"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-b00b2ce69744dda9",
+        "old": [
+         39.0,
+         121.0,
+         190.5,
+         135.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         120.0,
+         191.5,
+         136.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "D1-shorten": [
+    {
+     "old": "申請書は窓口で配布し",
+     "new": "申請書は配布し",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        548
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        89.0,
+        190.5,
+        103.0
+       ],
+       "translation": -16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-a73d9f07c66b7dd1"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-a73d9f07c66b7dd1 moves with it only when approved explicitly)",
+      "seconds": 0.51
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-a73d9f07c66b7dd1"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-a73d9f07c66b7dd1",
+        "old": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "new": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           89.0,
+           190.0,
+           103.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.5,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は配布し",
+     "new": "申請書は窓口で配布し",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        560,
+        810
+       ],
+       "operator_count": 31,
+       "bytes_sha256": "5168e52cc1a3522c6966cfd3f7fa92d60bd3c8b91bc5a8bdb04b84c56ad97e05",
+       "bounds": [
+        39.0,
+        89.0,
+        190.5,
+        103.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.5,
+        119.0
+       ],
+       "translation": 16.0,
+       "drawings": 3,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "g"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          89.0,
+          190.0,
+          103.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-7ea931fe9f445618"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-7ea931fe9f445618 moves with it only when approved explicitly)",
+      "seconds": 0.61
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-7ea931fe9f445618"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-7ea931fe9f445618",
+        "old": [
+         39.0,
+         89.0,
+         190.5,
+         103.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.5,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           89.0,
+           190.0,
+           103.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 3,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         88.0,
+         191.5,
+         104.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66384
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "D2-lengthen": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        298,
+        514
+       ],
+       "operator_count": 24,
+       "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+       "bounds": [
+        39.0,
+        105.0,
+        190.0,
+        119.0
+       ],
+       "moved_to": [
+        39.0,
+        121.0,
+        190.0,
+        135.0
+       ],
+       "translation": 16.0,
+       "drawings": 2,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "rg"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          105.0,
+          190.0,
+          119.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-f0674a576fbbec25"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f0674a576fbbec25 moves with it only when approved explicitly)",
+      "seconds": 0.85
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-f0674a576fbbec25"
+     ],
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-f0674a576fbbec25",
+        "old": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "new": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "new": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 2,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         104.0,
+         191.0,
+         120.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66096
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "new": "申請書は窓口で",
+     "candidates": [
+      {
+       "page": 1,
+       "paragraph": "後続段落です。",
+       "operators": [
+        857,
+        1073
+       ],
+       "operator_count": 24,
+       "bytes_sha256": "e75754d6befe2a2c9def287f756aea3d9355d00546c915236a08ff26031197e1",
+       "bounds": [
+        39.0,
+        121.0,
+        190.0,
+        135.0
+       ],
+       "moved_to": [
+        39.0,
+        105.0,
+        190.0,
+        119.0
+       ],
+       "translation": -16.0,
+       "drawings": 2,
+       "shadings": 0,
+       "xobjects": [],
+       "glyphs": 7,
+       "carried_text": "",
+       "placed_objects": 1,
+       "replayed_state": [
+        "g",
+        "Tf",
+        "rg"
+       ],
+       "annotations": [
+        {
+         "xref": 15,
+         "subtype": "/Link",
+         "rect": [
+          130.0,
+          121.0,
+          190.0,
+          135.0
+         ],
+         "uri": "https://example.org/search"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-04e9062ef4a280d1"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-04e9062ef4a280d1 moves with it only when approved explicitly)",
+      "seconds": 0.86
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-04e9062ef4a280d1"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-04e9062ef4a280d1",
+        "old": [
+         39.0,
+         121.0,
+         190.0,
+         135.0
+        ],
+        "new": [
+         39.0,
+         105.0,
+         190.0,
+         119.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 7,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           130.0,
+           121.0,
+           190.0,
+           135.0
+          ],
+          "new": [
+           130.0,
+           105.0,
+           190.0,
+           119.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 2,
+       "images": 0,
+       "images_same_samples": 0,
+       "shading_rasters": 0,
+       "glyphs": 7,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         38.0,
+         120.0,
+         191.0,
+         136.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66096
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 41,
+        "kept": 41,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 4,
+        "output_lines": 4,
+        "source_breaks_outside_edit": 3,
+        "breaks_kept": 3
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 42,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-03": [
+    {
+     "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        25710,
+        36906
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "moved_to": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1909,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          619.86,
+          199.64,
+          633.6
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-2fcb883709ff7510"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+      "seconds": 8.19
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-2fcb883709ff7510"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.10662841796875,
+      "followers_repainted": 3,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-2fcb883709ff7510",
+        "old": [
+         21.260000228881836,
+         619.8569946289062,
+         203.32740783691406,
+         634.70361328125
+        ],
+        "new": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5969848632812
+        ],
+        "translation": [
+         0.0,
+         13.10662841796875
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1909,
+          "old": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "new": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         618.86,
+         204.33,
+         635.7
+        ],
+        "size_matches": true,
+        "differing_samples": 9,
+        "largest_difference": 3,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "所個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        38560,
+        49756
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "moved_to": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1056,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          606.75,
+          199.64,
+          620.5
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-9931a3ee78adcab0"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-9931a3ee78adcab0 moves with it only when approved explicitly)",
+      "seconds": 8.23
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-9931a3ee78adcab0"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.106572128906237,
+      "followers_repainted": 3,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-9931a3ee78adcab0",
+        "old": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5970458984375
+        ],
+        "new": [
+         21.260000228881836,
+         619.8569383398437,
+         203.32740783691406,
+         634.7036180273437
+        ],
+        "translation": [
+         0.0,
+         -13.106572128906237
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1056,
+          "old": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "new": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         605.75,
+         204.33,
+         622.6
+        ],
+        "size_matches": true,
+        "differing_samples": 1,
+        "largest_difference": 1,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 214,
+        "kept": 214,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 11,
+        "output_lines": 12,
+        "source_breaks_outside_edit": 10,
+        "breaks_kept": 10
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": false
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 9e-05,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-05": [
+    {
+     "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        25710,
+        36906
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "moved_to": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1909,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          619.86,
+          199.64,
+          633.6
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-2fcb883709ff7510"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-2fcb883709ff7510 moves with it only when approved explicitly)",
+      "seconds": 9.7
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-2fcb883709ff7510"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.10662841796875,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-2fcb883709ff7510",
+        "old": [
+         21.260000228881836,
+         619.8569946289062,
+         203.32740783691406,
+         634.70361328125
+        ],
+        "new": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5969848632812
+        ],
+        "translation": [
+         0.0,
+         13.10662841796875
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1909,
+          "old": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "new": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         618.86,
+         204.33,
+         635.7
+        ],
+        "size_matches": true,
+        "differing_samples": 9,
+        "largest_difference": 3,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "3年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        27286,
+        38482
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "dfb9ccdf7c37d9d7206ed8ec93ea3cf2075bb442aa655ee2211adbfbce5f8ae8",
+       "bounds": [
+        21.26,
+        606.75,
+        203.33,
+        621.6
+       ],
+       "moved_to": [
+        21.26,
+        619.86,
+        203.33,
+        634.7
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm2"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　自動車登録手続き　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1056,
+         "subtype": "/Link",
+         "rect": [
+          37.96,
+          606.75,
+          199.64,
+          620.5
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-9c17a37dcccd4b26"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-9c17a37dcccd4b26 moves with it only when approved explicitly)",
+      "seconds": 8.22
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-9c17a37dcccd4b26"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.106572128906237,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-9c17a37dcccd4b26",
+        "old": [
+         21.260000228881836,
+         606.7503662109375,
+         203.32740783691406,
+         621.5970458984375
+        ],
+        "new": [
+         21.260000228881836,
+         619.8569383398437,
+         203.32740783691406,
+         634.7036180273437
+        ],
+        "translation": [
+         0.0,
+         -13.106572128906237
+        ],
+        "glyphs": 19,
+        "annotations": [
+         {
+          "xref": 1056,
+          "old": [
+           37.964,
+           606.75,
+           199.637,
+           620.496
+          ],
+          "new": [
+           37.964,
+           619.857,
+           199.637,
+           633.603
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/menkyo/o050040/000002.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         605.75,
+         204.33,
+         622.6
+        ],
+        "size_matches": true,
+        "differing_samples": 1,
+        "largest_difference": 1,
+        "samples": 83844
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 110,
+        "kept": 110,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 6,
+        "output_lines": 7,
+        "source_breaks_outside_edit": 5,
+        "breaks_kept": 5
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.00018,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-06": [
+    {
+     "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        39225,
+        50424
+       ],
+       "operator_count": 528,
+       "bytes_sha256": "259718a7805e05de2ad8c59ed5c1f41fd40f9a64a01100b65a75ad9624f4bd36",
+       "bounds": [
+        21.26,
+        745.18,
+        161.42,
+        760.14
+       ],
+       "moved_to": [
+        21.26,
+        732.08,
+        161.42,
+        747.03
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm3"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■こころのオアシス　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "Tf",
+        "Tc",
+        "Tw",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1910,
+         "subtype": "/Link",
+         "rect": [
+          36.65,
+          745.18,
+          160.36,
+          759.58
+         ],
+         "uri": "http://kokoro-osaka.jp/"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-5d857bfbdd83a562"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-5d857bfbdd83a562 moves with it only when approved explicitly)",
+      "seconds": 7.88
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-5d857bfbdd83a562"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.106689453125,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-5d857bfbdd83a562",
+        "old": [
+         21.260000228881836,
+         745.1849975585938,
+         161.41586303710938,
+         760.1366577148438
+        ],
+        "new": [
+         21.260000228881836,
+         732.0783081054688,
+         161.41586303710938,
+         747.0299682617188
+        ],
+        "translation": [
+         0.0,
+         13.106689453125
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1910,
+          "old": [
+           36.655,
+           745.185,
+           160.364,
+           759.585
+          ],
+          "new": [
+           36.655,
+           732.078,
+           160.364,
+           746.478
+          ],
+          "uri": "http://kokoro-osaka.jp/"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 13,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         744.18,
+         162.42,
+         761.14
+        ],
+        "size_matches": true,
+        "differing_samples": 2,
+        "largest_difference": 1,
+        "samples": 64872
+       }
+      ],
+      "ok": false
+     }
+    },
+    {
+     "old": "令約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        41120,
+        52319
+       ],
+       "operator_count": 528,
+       "bytes_sha256": "259718a7805e05de2ad8c59ed5c1f41fd40f9a64a01100b65a75ad9624f4bd36",
+       "bounds": [
+        21.26,
+        732.08,
+        161.42,
+        747.03
+       ],
+       "moved_to": [
+        21.26,
+        745.19,
+        161.42,
+        760.14
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm3"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■こころのオアシス　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "Tf",
+        "Tc",
+        "Tw",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1058,
+         "subtype": "/Link",
+         "rect": [
+          36.65,
+          732.08,
+          160.36,
+          746.48
+         ],
+         "uri": "http://kokoro-osaka.jp/"
+        }
+       ],
+       "adjacent": [
+        "filled-vector"
+       ],
+       "id": "line-decoration-ddcda8abfe5e8ad4"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-ddcda8abfe5e8ad4 moves with it only when approved explicitly)",
+      "seconds": 7.43
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-ddcda8abfe5e8ad4"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.10669371093752,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-ddcda8abfe5e8ad4",
+        "old": [
+         21.260000228881836,
+         732.0783081054688,
+         161.41586303710938,
+         747.0299682617188
+        ],
+        "new": [
+         21.260000228881836,
+         745.1850018164063,
+         161.41586303710938,
+         760.1366619726563
+        ],
+        "translation": [
+         0.0,
+         -13.10669371093752
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1058,
+          "old": [
+           36.655,
+           732.078,
+           160.364,
+           746.478
+          ],
+          "new": [
+           36.655,
+           745.185,
+           160.364,
+           759.585
+          ],
+          "uri": "http://kokoro-osaka.jp/"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 13,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         731.08,
+         162.42,
+         748.03
+        ],
+        "size_matches": true,
+        "differing_samples": 2,
+        "largest_difference": 1,
+        "samples": 64872
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 123,
+        "kept": 123,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 7,
+        "output_lines": 8,
+        "source_breaks_outside_edit": 6,
+        "breaks_kept": 6
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 2e-05,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "P7-07": [
+    {
+     "old": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "new": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        54237,
+        65408
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+       "bounds": [
+        21.26,
+        886.18,
+        165.15,
+        900.81
+       ],
+       "moved_to": [
+        21.26,
+        873.08,
+        165.15,
+        887.7
+       ],
+       "translation": -13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm4"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　原状回復　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1911,
+         "subtype": "/Link",
+         "rect": [
+          37.31,
+          886.26,
+          164.29,
+          900.66
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+        }
+       ],
+       "adjacent": [],
+       "id": "line-decoration-f98fba0d9ad28291"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-f98fba0d9ad28291 moves with it only when approved explicitly)",
+      "seconds": 7.62
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-f98fba0d9ad28291"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -13.106689453125,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-f98fba0d9ad28291",
+        "old": [
+         21.260000228881836,
+         886.1846313476562,
+         165.14810180664062,
+         900.8059692382812
+        ],
+        "new": [
+         21.260000228881836,
+         873.0779418945312,
+         165.14810180664062,
+         887.6992797851562
+        ],
+        "translation": [
+         0.0,
+         13.106689453125
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1911,
+          "old": [
+           37.309,
+           886.258,
+           164.292,
+           900.659
+          ],
+          "new": [
+           37.309,
+           873.151,
+           164.292,
+           887.552
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         885.18,
+         166.15,
+         901.81
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 66555
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "賃、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "new": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+     "candidates": [
+      {
+       "page": 7,
+       "paragraph": "HP ",
+       "operators": [
+        56317,
+        67488
+       ],
+       "operator_count": 524,
+       "bytes_sha256": "2441a9d605da6ae0dcf15ac28866ac8f8175eddd5672d0d74b60f6a6e370fa17",
+       "bounds": [
+        21.26,
+        873.0,
+        165.15,
+        887.7
+       ],
+       "moved_to": [
+        21.26,
+        886.11,
+        165.15,
+        900.81
+       ],
+       "translation": 13.107,
+       "drawings": 13,
+       "shadings": 1,
+       "xobjects": [
+        "/Fm4"
+       ],
+       "glyphs": 3,
+       "carried_text": " ■大阪府　原状回復　 ",
+       "placed_objects": 1,
+       "replayed_state": [
+        "k",
+        "gs",
+        "Tc",
+        "Tw",
+        "k",
+        "gs",
+        "K",
+        "w",
+        "K",
+        "w",
+        "k",
+        "Tf",
+        "k",
+        "gs",
+        "Tf",
+        "w",
+        "M",
+        "j",
+        "J",
+        "gs",
+        "gs",
+        "M",
+        "j",
+        "J",
+        "gs"
+       ],
+       "annotations": [
+        {
+         "xref": 1060,
+         "subtype": "/Link",
+         "rect": [
+          37.31,
+          873.15,
+          164.29,
+          887.55
+         ],
+         "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+        }
+       ],
+       "adjacent": [
+        "filled-vector"
+       ],
+       "id": "line-decoration-c73a4a2e1fbaabcd"
+      }
+     ],
+     "proposal_refused": null,
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-c73a4a2e1fbaabcd moves with it only when approved explicitly)",
+      "seconds": 7.67
+     },
+     "outcome": "saved",
+     "approved": [
+      "line-decoration-c73a4a2e1fbaabcd"
+     ],
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 13.10669371093752,
+      "followers_repainted": 1,
+      "placed_objects_moved": [],
+      "decorations_moved": [
+       {
+        "id": "line-decoration-c73a4a2e1fbaabcd",
+        "old": [
+         21.260000228881836,
+         873.0,
+         165.14810180664062,
+         887.6992797851562
+        ],
+        "new": [
+         21.260000228881836,
+         886.1066937109375,
+         165.14810180664062,
+         900.8059734960938
+        ],
+        "translation": [
+         0.0,
+         -13.10669371093752
+        ],
+        "glyphs": 15,
+        "annotations": [
+         {
+          "xref": 1060,
+          "old": [
+           37.309,
+           873.151,
+           164.292,
+           887.552
+          ],
+          "new": [
+           37.309,
+           886.258,
+           164.292,
+           900.659
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/o130160/jumachi/genzyo/index.html"
+         }
+        ]
+       }
+      ]
+     },
+     "placed": {
+      "approved_moves": {
+       "objects": 1,
+       "drawings": 13,
+       "images": 2,
+       "images_same_samples": 1,
+       "shading_rasters": 1,
+       "glyphs": 5,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 8,
+      "moved": 1,
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         20.26,
+         872.0,
+         166.15,
+         888.7
+        ],
+        "size_matches": true,
+        "differing_samples": 8,
+        "largest_difference": 2,
+        "samples": 66555
+       }
+      ],
+      "ok": false
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 131,
+        "kept": 131,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 7,
+        "output_lines": 8,
+        "source_breaks_outside_edit": 6,
+        "breaks_kept": 6
+       },
+       "outside_changed": 0,
+       "page_changed": 2,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 0,
+        "output": 0
+       }
+      },
+      "glyphs": {
+       "glyphs": 3430,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 9e-05,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 8,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 2665716
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 11560758
+       },
+       "identical": true
+      }
+     }
+    }
+   ]
+  }
+ }
+}

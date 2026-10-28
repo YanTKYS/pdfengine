@@ -381,7 +381,9 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     try:
         writer.write(draft)
         if spec.get('mode')=='flow':stored=store_flow(c,draft,writer,page,spec,selected,[len(ts) for _,ts in batches],approval)
-        else:stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval,kept=kept_ids,moved=moved)
+        else:stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval,kept=kept_ids,moved=moved,
+                                     carried=[(set(p.ids)|{i for u in units if u['paragraph'] is p for i in u['glyphs']},dy) for p,dy in
+                                              {id(u['paragraph']):(u['paragraph'],u['shift'][1]) for u in units}.values()])
         writer.write(tmp)
         validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=rewritten,moved=moved,units=units)
         form_write.unchanged_elsewhere(c.source,tmp,spec['page'])
@@ -548,14 +550,15 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
             if original_paint['annots']!=staged_paint['annots']:raise Refused('staged protected non-text paint changed')
             # A link of an approved line decoration is where it moved, with the same target; the others are unchanged.
             carried=[(pymupdf.Rect(a['rect']),u['shift']) for u in units for a in u.get('annotations',())]
+            # Same target and kind; the area exactly where it was or moved to (0.02 pt: a translation rounds either way).
             def link_key(link,shift=(0.,0.)):
                 r=pymupdf.Rect(link['from']);dx,dy=shift
                 return (tuple(sorted((k,str(v)) for k,v in link.items() if k!='from')),round(r.x0+dx,2),round(r.y0+dy,2),round(r.x1+dx,2),round(r.y1+dy,2))
-            expected=Counter();matched=0
+            expected=[];matched=0
             for link in original_paint['links']:
                 shift=next((s for r,s in carried if max(abs(x-y) for x,y in zip(r,pymupdf.Rect(link['from'])))<.05),None)
-                matched+=shift is not None;expected[link_key(link,shift or (0.,0.))]+=1
-            if matched!=len(carried) or expected!=Counter(link_key(link) for link in staged_paint['links']):
+                matched+=shift is not None;expected.append(link_key(link,shift or (0.,0.)))
+            if matched!=len(carried) or not placed_move.same_paint(expected,[link_key(link) for link in staged_paint['links']]):
                 raise Refused('staged links changed beyond the approved line decorations')
         elif any(original_paint[k]!=staged_paint[k] for k in ('drawings','images','links','annots')):raise Refused('staged protected non-text paint changed')
         if any(staged_paint['fonts'].get(k)!=v for k,v in original_paint['fonts'].items()):raise Refused('staged original font program changed')
@@ -592,7 +595,7 @@ def _poppler(path,page):
         with Image.open(folder+'/page.png') as image:return image.convert('RGB')
 
 
-def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active,approval,kept=(),moved=None):
+def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active,approval,kept=(),moved=None,carried=()):
     """Record the approved conditions of the edited paragraph by its drawn lines.
 
     The lines are observed in the staged PDF itself, with the same analysis the
@@ -636,8 +639,19 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
                                    approval=dict(count=(previous['approval']['count'] if previous else 0)+1,**(approval or {})),present=known,
                                    layout=spec.get('original'))
             records.append(record)
-        if records or state['records']:conditions.attach(writer,page,records,spec['page'])
-        summary=dict(written=record is not None,records_on_page=len(records),applied_before_edit=state['applied'],status_before_edit=state['status'],
+        # Following paragraphs this edit moved keep their rows as observed before
+        # the move (auto_conditions.apply_moved); earlier such records stay only
+        # while every glyph they name is drawn exactly where they name it.
+        before=conditions.read_moved(c,spec['page'])
+        kept_moved=[m for m in before if conditions.resolve_moved(check,m) is not None]
+        # The source rows made only of glyphs this edit moved, translated.
+        source_rows=page_rows(c,observe_marked_content(c.source,spec['page']),_Analysis(c.source,spec['page']))[0] if carried else []
+        new_moved=[conditions.moved_entry(c,[r for r in source_rows if r['glyph_ids'] and set(r['glyph_ids'])<=ids],dy,dict(approval or {})) for ids,dy in carried]
+        new_moved=[m for m in new_moved if m['rows']]
+        named=lambda m:{tuple(g) for r in m['rows'] for g in r['glyphs']}
+        kept_moved=[m for m in kept_moved if not any(named(m)&named(n) for n in new_moved)]
+        if records or state['records'] or kept_moved or new_moved or before:conditions.attach(writer,page,records,spec['page'],moved=kept_moved+new_moved)
+        summary=dict(written=record is not None,records_on_page=len(records),applied_before_edit=state['applied'],status_before_edit=state['status'],moved_paragraphs_recorded=len(kept_moved+new_moved),
                      reason=None if record is not None else 'edited paragraph rows are not separable from foreign glyphs')
         return dict(record=record,summary=summary)
     finally:check.close()
