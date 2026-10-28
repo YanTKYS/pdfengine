@@ -337,6 +337,19 @@ def qualify(c, marks, ids, rows):
     return Paragraph(text,ids,[sizes[i] for i in ids],[r['baseline'] for r in rows],scopes,parent,tuple(joins),tuple(hyphens),containers,fixed)
 
 
+def movable_line(c, marks, ids, rows):
+    """A line below the paragraphs (chain) as the paragraph whose drawing moves
+    as it is, or a refusal. It is not drawn again: what it needs is its glyphs'
+    operators and its marked content (semantics.analyse); a glyph no code is
+    linked to (a tab read as a space) is carried by its drawing (decoration.group)."""
+    linked={i for e in c.events for ch in e.chars for i in ch.source_orders}
+    own=[i for i in ids if i in linked]
+    if not own:raise Refused('a line below has no glyph drawn by a content-stream operator')
+    scopes,parent,containers,fixed=semantics.analyse(c,marks,own)
+    text,joins,hyphens=group_text(c,rows)
+    return Paragraph(text,own,[rows[0]['size']]*len(own),[r['baseline'] for r in rows],scopes,parent,(),(),containers,fixed)
+
+
 def _column_bottom(selected, others, blocks, infos, report):
     """Shared bottom of the columns beside the selected paragraph's block.
 
@@ -696,6 +709,14 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
                 state.update(status='applied',applied=True)
         below=[o['bounds'][1] for o in obstacles if o['kind']!='container' and o['bounds'][1]>last+.1 and o['bounds'][0]<right and o['bounds'][2]>left]
         bottom=min(below+[c.page.rect.height])-1
+        # The lines below the paragraphs in their column, nearest first: a
+        # growth that reaches them moves them only once approved (chain).
+        mine={id(g) for g in allgroups};deepest=max(r['baseline'] for r in allrows);chain_rows=[]
+        # A group drawn across a line of the paragraphs (a search box's label) is on that line.
+        across=lambda g:any(min(r['bottom'],a['bottom'])-max(r['top'],a['top'])>.5*max(min(r['bottom']-r['top'],a['bottom']-a['top']),.1) for r in g for a in allrows)
+        for g in sorted((g for g in groups if id(g) not in mine and g[0]['baseline']>deepest+.1 and not across(g)
+                         and min(r['x'] for r in g)<right and max(r['pen_end'] for r in g)>left),key=lambda g:min(r['top'] for r in g))[:12]:
+            chain_rows.append(dict(rows=g,ids=[i for r in g for i in r['glyph_ids']],text=group_text(c,g)[0],top=min(r['top'] for r in g),bottom=max(r['bottom'] for r in g)))
         if state['applied']:bottom=min(bottom,records[state['target']]['conditions']['bottom'])
         for box in containers:bottom=min(bottom,box[3])
         # Existing paints intersecting a proposed frame remain protected; the
@@ -706,6 +727,8 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         inked=[c.actual[i]['bbox'] for i in ids if c.actual[i]['unicode'].strip()]
         if inked:frame=[min(frame[0],min(b[0] for b in inked)),min(frame[1],min(b[1] for b in inked)),max(frame[2],max(b[2] for b in inked)),max(frame[3],max(b[3] for b in inked))]
         for box in containers:frame=[max(frame[0],box[0]),max(frame[1],box[1]),min(frame[2],box[2]),min(frame[3],box[3])]
+        # The lowest bottom a frame may reach: its container's, its text's clip's (chain).
+        limit=min([box[3] for box in containers]+[c.page.rect.height])
         # Ink outside the clip the text is drawn under (a table cell, a text
         # box) would not show: rectangular clips bound the frame too.
         own={i for r in selected for i in r['glyph_ids']}-set(target_paragraph.fixed)
@@ -713,7 +736,7 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
             if not any(i in own for ch in e.chars for i in ch.source_orders):continue
             for clip in e.state.clip:
                 box=form_write.clip_rect(clip,c.page.transformation_matrix)
-                if box is not None:frame=[max(frame[0],box.x0),max(frame[1],box.y0),min(frame[2],box.x1),min(frame[3],box.y1)]
+                if box is not None:frame=[max(frame[0],box.x0),max(frame[1],box.y0),min(frame[2],box.x1),min(frame[3],box.y1)];limit=min(limit,box.y1)
         # A cell's width never runs past what the frame shows (its clip or container).
         if cell is not None and not state['applied']:right=max(max(r['pen_end'] for r in allrows),min(right,frame[2]-.5))
         paragraphs=[target_paragraph]+follower_paragraphs
@@ -760,6 +783,9 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
                   # The paragraph as first approved (auto_restore), kept with its record.
                   recorded_layout=records[state['target']].get('layout') if state['applied'] else None,
                   below=None if block_below is None else dict(baseline=round(block_below,5),follower=bool(followers) and abs(followers[0][0]['baseline']-block_below)<1e-6),
+                  # What follows the paragraphs in their column (chain): its
+                  # lines, and the bottom of what they drew.
+                  chain_rows=chain_rows,last_bottom=last,frame_limit=limit,movable=lambda ids,rows:movable_line(c,marks,ids,rows),
                   # The drawn lines of the edited paragraph: local layout keeps
                   # what the edit does not change where it is (auto_local).
                   source_rows=source_rows(c,selected))
