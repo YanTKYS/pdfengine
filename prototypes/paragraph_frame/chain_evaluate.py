@@ -439,6 +439,7 @@ def phase_collect(args):
     out = dict(schema='paragraph-frame-chain-results-1', manifest_sha256=sha(MANIFEST),
                tests=json.loads(Path(args.tests_json).read_text()) if args.tests_json else None,
                regression=json.loads(Path(args.regression_json).read_text()) if args.regression_json else None,
+               survey=json.loads(Path(args.survey_json).read_text()) if args.survey_json else None,
                summary={label: {g: summary(r, ids) for g, ids in groups.items()} for label, r in results.items()},
                results={label: {k: [compact(x) for x in seq] for k, seq in r.items()} for label, r in results.items()})
     RESULTS.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
@@ -459,6 +460,7 @@ def main():
     p.add_argument('--roots', nargs='*')
     p.add_argument('--tests-json')
     p.add_argument('--regression-json')
+    p.add_argument('--survey-json')
     args = p.parse_args()
     dict(freeze=phase_freeze, supplement=phase_supplement, run=phase_run, collect=phase_collect)[args.phase](args)
 
