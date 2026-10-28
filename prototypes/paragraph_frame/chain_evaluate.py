@@ -316,7 +316,7 @@ def run_case(code, case, source, root):
               (r.get('unapproved') or {}).get('outcome'),
               (r.get('reason') or '')[-160:] if r['outcome'] != 'saved' else
               json.dumps(dict(failed=r['failed'], moves=r['moves']['ok'], links=r['links']['ok'], placement=(r['placement'] or {}).get('ok'),
-                              raster=(r['raster'] or {}).get('ok'), **{k: v.get('ok', v.get('identical')) if isinstance(v, dict) else v
+                              raster=(r['raster'] or {}).get('ok'), **{'vs_source_' + k: v.get('ok', v.get('identical')) if isinstance(v, dict) else v
                                                                       for k, v in (r.get('restored') or {}).items() if k != 'compare'})),
               flush=True)
         if r['outcome'] != 'saved':
