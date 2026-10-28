@@ -89,3 +89,6 @@ tmp/
 !/evaluations/paragraph_frame_restore/
 !/evaluations/paragraph_frame_restore/manifest.json
 !/evaluations/paragraph_frame_restore/results.json
+!/evaluations/paragraph_frame_chain/
+!/evaluations/paragraph_frame_chain/manifest.json
+!/evaluations/paragraph_frame_chain/results.json

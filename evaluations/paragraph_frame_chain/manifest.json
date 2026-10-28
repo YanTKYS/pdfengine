@@ -1,0 +1,245 @@
+{
+ "schema": "paragraph-frame-chain-manifest-1",
+ "baseline_commit": "a7bb571 (main after PR #102)",
+ "frozen_at": "a7bb571",
+ "policy": "Frozen before the implementation. Old B2 is main a7bb571; new B2 is this branch. Targets: every lengthening edit PR #100 refused (C02 and the line-decoration cases) and the two places of the survey with room below the following lines. A following element moves only when its own candidate id is approved; acknowledge_inference or a line decoration approval never approves another element. Every step approves exactly the candidates its own proposals list; an approval is never carried from one step to another. A refusal ends its case and never counts as success; the first save and the edit back are counted apart; fixture successes are reported apart from real-PDF successes. No frame is widened without a region shown by the page; nothing is pushed off the page, shrunk, painted over or overlapped to fit.",
+ "procedure": [
+  "propose; record the chain and line decoration candidates",
+  "save without approving them (a step needing one must be refused)",
+  "propose again approving exactly the listed candidates until no new one is listed (3 rounds at most); save approving them",
+  "reopen the saved PDF alone and edit back the same way"
+ ],
+ "measures": "saved or refused (reason); the existing audits (safety, quality: indesign_evaluate.audit over the edited and following paragraphs, unchanged); structure; continued editing; moves (moved elements translated exactly, nothing left, other paint unchanged); links; placement (inside the page, no new ink under the moved elements); raster of the moved elements; the edit back against the source: glyph origins (0.01 pt, 0.001 pt), line breaks, MuPDF and Poppler text, search, drawings, images, links (0.001 pt), structure; pixels at 72 and 150 dpi reported apart",
+ "target": "at least one real lengthening edit refused before is saved; else the evidence of what stops it",
+ "documents": {
+  "osaka_fusei_477": {
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0"
+  }
+ },
+ "fixtures": {
+  "F1": {
+   "expected": "free space below the two lines: moved on approval, then moved back",
+   "edit": {
+    "old": "申請書は窓口で",
+    "new": "申請書は窓口と郵送と電子申請とファクスと持参で"
+   }
+  },
+  "F2": {
+   "expected": "a rule right below the enquiry line: refused (the chain meets it)",
+   "edit": {
+    "old": "申請書は窓口で",
+    "new": "申請書は窓口と郵送と電子申請とファクスと持参で"
+   }
+  },
+  "F3": {
+   "expected": "a panel ending right below the lines: refused (the chain would leave it)",
+   "edit": {
+    "old": "申請書は窓口で",
+    "new": "申請書は窓口と郵送と電子申請とファクスと持参で"
+   }
+  }
+ },
+ "cases": [
+  {
+   "id": "P7-03",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+   "selection": "所得税（復興",
+   "box": [
+    21.07,
+    500.18,
+    244.9,
+    549.07
+   ],
+   "lines": 4,
+   "edit": {
+    "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+    "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。所得税（復興特別所得税）の申告期限は3/17（月）"
+   },
+   "origin": "PR #100 lengthen refused",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P7-05",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+   "selection": "3月下旬は自",
+   "box": [
+    21.05,
+    568.55,
+    239.89,
+    617.44
+   ],
+   "lines": 4,
+   "edit": {
+    "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+    "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。3月下旬は自動車の名義変更や廃車などの登録手続きが"
+   },
+   "origin": "PR #100 lengthen refused",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P7-06",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "selection": "令和5年の大",
+   "box": [
+    20.94,
+    680.89,
+    244.61,
+    742.89
+   ],
+   "lines": 5,
+   "edit": {
+    "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+    "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。令和5年の大阪府の自殺者数は1,383人と、1日"
+   },
+   "origin": "PR #100 lengthen refused",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P8-08",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "好評につき、ナイトガレージマーケット第2弾を開催します。 なるかわ園地らくらくセンターハウス駐車場に、東大阪市を中心とした地元事業者が、音楽ステージやワークショップ、飲食ブースを出店します。会場からの眺望、夕日が沈み夜景に変わりゆく美しい絶景をお楽しみください。日 3/22（土）12：00～21：00所 府民の森なるかわ園地（近鉄「瓢箪山」）",
+   "selection": "好評につき、",
+   "box": [
+    291.59,
+    88.17,
+    510.44,
+    215.91
+   ],
+   "lines": 10,
+   "edit": {
+    "old": " 府民の森なるかわ園地（近鉄「瓢箪山」）",
+    "new": " 府民の森なるかわ園地（近鉄「瓢箪山」） 府民の森なるかわ園地（近鉄「瓢箪山」"
+   },
+   "origin": "PR #100 lengthen refused",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P8-09",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+   "selection": "発達障がいの",
+   "box": [
+    291.57,
+    303.18,
+    431.29,
+    417.6
+   ],
+   "lines": 9,
+   "edit": {
+    "old": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+    "new": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。発達障がいの特性は暮らしや人づき"
+   },
+   "origin": "PR #100 lengthen refused",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected vector"
+   }
+  },
+  {
+   "id": "P8-11",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "日 4/20（日）13：00～15：00　定 1,000人申 4/11（金）まで／インターネット",
+   "selection": "日 4/20",
+   "box": [
+    292.65,
+    421.42,
+    468.46,
+    444.17
+   ],
+   "lines": 2,
+   "edit": {
+    "old": " 4/11（金）まで／インターネット",
+    "new": " 4/11（金）まで／インターネット 4/11（金）まで／インターネット 4/11（金"
+   },
+   "origin": "PR #100 lengthen refused",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "C02-92",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+   "selection": "賃貸住宅の退",
+   "box": [
+    20.38,
+    821.56,
+    239.92,
+    883.56
+   ],
+   "lines": 5,
+   "edit": {
+    "old": "ぜひご活用ください。",
+    "new": "ぜひご活用ください。ぜひご相談ください。"
+   },
+   "origin": "PR #100 lengthen refused",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P2-R",
+   "document": "osaka_fusei_477",
+   "page": 2,
+   "paragraph": "領収証は必ず受け取り保管してください。",
+   "selection": "領収証は必ず",
+   "edit": {
+    "old": "領収証は必ず受け取り保管してください。",
+    "new": "領収証は必ず受け取り保管してください。申請書は必ず保管してください。"
+   },
+   "below": "the HP line (icon, search box, button, link) and the enquiry line (icon, text, telephone icon, number); 17 pt above the advertisement frame",
+   "box": [
+    424.0,
+    872.74,
+    613.31,
+    883.02
+   ],
+   "lines": 1,
+   "origin": "survey: room for one more line below the following lines (this freeze)"
+  },
+  {
+   "id": "P2-L",
+   "document": "osaka_fusei_477",
+   "page": 2,
+   "paragraph": "マイナンバーに関するお問い合わせはこちら",
+   "selection": "マイナンバーに関",
+   "edit": {
+    "old": "マイナンバーに関するお問い合わせはこちら",
+    "new": "マイナンバーに関するお問い合わせはこちらマイナンバーに関するお問い合わせ"
+   },
+   "below": "the HP line, the enquiry line and the telephone line; 17 pt above the advertisement frame",
+   "box": [
+    35.43,
+    861.99,
+    245.43,
+    872.49
+   ],
+   "lines": 1,
+   "origin": "survey: room for one more line below the following lines (this freeze)"
+  }
+ ]
+}
