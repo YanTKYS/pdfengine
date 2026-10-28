@@ -57,7 +57,7 @@ FIXTURES = {'G1': 'the heading first, then the line, in one text object: separat
             'G4': 'marked content in the text object: refused',
             'G5': 'text after the line continues from where it ends: refused',
             'G6': 'a clip around the text object ending right below the line: refused'}
-FIXTURE_CASE = dict(page=1, paragraph='本年度の補助事業について、募集を行います。申請書は窓口で配布します。', selection='本年度の補助',
+FIXTURE_CASE = dict(page=1, paragraph='本年度の補助事業について、募集を行います。申請書は窓口で配布します。', selection='本年度の補助事業につ',
                     box=[39.5, 48.5, 216.5, 96.0], lines=3, edit=dict(old='申請書は窓口で', new='申請書は窓口と郵送と電子申請とファクスと持参で'))
 SHARED = 'a following paragraph is drawn together with content beyond its line'
 
@@ -228,8 +228,9 @@ def kept_audit(source, output, page, edited_source, edited_output, moved):
         wa, wb = words(source, page), words(output, page)
         kept_a = [(r2(r), t) for r, t in wa if off(r, away_a)]
         kept_b = [(r2(r), t) for r, t in wb if off(r, away_b)]
-        moved_a = [t for r, t in wa if any(o.contains(pymupdf.Rect(r)) for o in old)]
-        moved_b = [t for r, t in wb if any(n.contains(pymupdf.Rect(r)) for n in new)]
+        # (A word's box is the font's, taller than the engine's glyph boxes: its centre.)
+        moved_a = [t for r, t in wa if any(o.contains((pymupdf.Rect(r).tl + pymupdf.Rect(r).br) / 2) for o in old)]
+        moved_b = [t for r, t in wb if any(n.contains((pymupdf.Rect(r).tl + pymupdf.Rect(r).br) / 2) for n in new)]
         out['words_' + name] = dict(kept=len(kept_a), kept_identical=kept_a == kept_b, moved=len(moved_a), moved_in_order=moved_a == moved_b)
     out['ok'] = (out['glyphs']['identical'] and out['drawings'] and out['pixels']['identical']
                  and all(out['words_' + n]['kept_identical'] for n in ('mupdf', 'poppler')))
