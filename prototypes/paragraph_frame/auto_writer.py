@@ -576,7 +576,11 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
             for link in original_paint['links']:
                 shift=next((s for r,s in carried if max(abs(x-y) for x,y in zip(r,pymupdf.Rect(link['from'])))<.05),None)
                 matched+=shift is not None;expected.append(link_key(link,shift or (0.,0.)))
-            if matched!=len(carried) or not placed_move.same_paint(expected,[link_key(link) for link in staged_paint['links']]):
+            if not placed_move.same_paint(expected,[link_key(link) for link in staged_paint['links']]):
+                raise Refused('staged links changed beyond the approved line decorations')
+            # Every annotation as the PDF stores it (also the links a renderer
+            # does not list): a moved one translated exactly, the others unchanged.
+            if not annotations_moved(c.reader,PdfReader(tmp),spec['page'],{a['xref']:u['pdf_translation'] for u in units for a in u.get('annotations',())}):
                 raise Refused('staged links changed beyond the approved line decorations')
         elif any(original_paint[k]!=staged_paint[k] for k in ('drawings','images','links','annots')):raise Refused('staged protected non-text paint changed')
         if any(staged_paint['fonts'].get(k)!=v for k,v in original_paint['fonts'].items()):raise Refused('staged original font program changed')
@@ -604,6 +608,42 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
         # Native retained font resources/programs are cloned, never replaced.
         if len(check.document)!=len(c.document):raise Refused('page count changed')
     finally:check.close()
+
+
+def _plain(obj,pages,depth=0):
+    """A PDF object as plain data: a page by its index, other references resolved (to depth 8)."""
+    from pypdf.generic import IndirectObject,DictionaryObject,ArrayObject,StreamObject
+    import hashlib
+    if isinstance(obj,IndirectObject):
+        if obj.idnum in pages:return ('page',pages[obj.idnum])
+        return ('ref',) if depth>8 else _plain(obj.get_object(),pages,depth+1)
+    if isinstance(obj,DictionaryObject):
+        out={str(k):_plain(v,pages,depth+1) for k,v in obj.items() if k not in ('/P','/Parent','/Rect','/QuadPoints')}
+        if isinstance(obj,StreamObject):out['stream']=hashlib.sha256(obj.get_data()).hexdigest()
+        return out
+    if isinstance(obj,ArrayObject):return [_plain(v,pages,depth+1) for v in obj]
+    if isinstance(obj,float):return round(obj,6)
+    return str(obj)
+
+
+def annotations_moved(source,staged,page,moved):
+    """The page's annotations in ``staged`` are those of ``source``, each listed in
+    ``moved`` (source object number: PDF translation) with /Rect and /QuadPoints
+    translated (0.02 pt), every other one with them unchanged."""
+    def listed(reader):
+        pages={p.indirect_reference.idnum:i for i,p in enumerate(reader.pages)}
+        return [(getattr(ref,'idnum',None),ref.get_object(),pages) for ref in (reader.pages[page-1].get('/Annots') or [])]
+    a,b=listed(source),listed(staged)
+    if len(a)!=len(b):return False
+    for (num,x,pa),(_,y,pb) in zip(a,b):
+        if _plain(x,pa)!=_plain(y,pb):return False
+        dx,dy=moved.get(num,(0.,0.))
+        tol=.02 if num in moved else 1e-6
+        for key,shift in (('/Rect',(dx,dy,dx,dy)),('/QuadPoints',None)):
+            u=[float(v) for v in x.get(key,[])];w=[float(v) for v in y.get(key,[])]
+            shift=shift or [dx if i%2==0 else dy for i in range(len(u))]
+            if len(u)!=len(w) or any(abs(p+q-r)>tol for p,q,r in zip(u,shift,w)):return False
+    return True
 
 
 def _poppler(path,page):

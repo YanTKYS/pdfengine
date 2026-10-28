@@ -84,6 +84,39 @@ def _item_end(seq, k):
     return k
 
 
+def _item_start(seq, k):
+    """Index of the first operator of the item ending at ``k``, or None."""
+    n = seq[k].operator.name
+    j = k
+    if n == 'Q':
+        j -= 1
+        while j > 0 and not (seq[j].operator.name == 'q' and seq[j - 1].q_depth == seq[k].q_depth):
+            j -= 1
+    elif n == 'ET':
+        while j > 0 and seq[j].operator.name != 'BT':
+            j -= 1
+    elif n == 'EMC':
+        j -= 1
+        while j > 0 and not (seq[j].operator.name in ('BDC', 'BMC') and seq[j - 1].marked_content_depth == seq[k].marked_content_depth):
+            j -= 1
+    elif n in PAINT:
+        while j > 1 and seq[j - 1].operator.name in PATH:
+            j -= 1
+    elif n != 'Do':
+        return None
+    return j if j > 0 and _item_end(seq, j) == k else None
+
+
+def _solid(r):
+    """A rule's area (a stroke reported without height or width) as a thin band."""
+    r = pymupdf.Rect(r)
+    if r.height < .1:
+        r.y0, r.y1 = r.y0 - .1, r.y1 + .1
+    if r.width < .1:
+        r.x0, r.x1 = r.x0 - .1, r.x1 + .1
+    return r
+
+
 def _points_rect(points, page):
     xs, ys = [p.x for p in points], [p.y for p in points]
     return pymupdf.Rect(min(xs), min(ys), max(xs), max(ys))
@@ -280,6 +313,23 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     region = pymupdf.Rect(column.x0 - TOL, band.y0 - TOL, column.x1 + TOL, band.y1 + TOL)
     if slot is not None:
         region = pymupdf.Rect(region.x0, min(region.y0, slot[0]), region.x1, max(region.y1, slot[1]))
+    if slot is not None:
+        # A line's own items drawn right before its text (an underline under its clip).
+        k = lo - 1
+        while k > 0:
+            if seq[k].operator.name in REPLAY:
+                k -= 1
+                continue
+            start = _item_start(seq, k)
+            if start is None:
+                break
+            try:
+                rect, g = _paint(c, seq, start, k, page, resources, program)
+            except Refused:
+                break
+            if rect is None or not region.contains(rect) or g & set(taken):
+                break
+            lo, k = start, start - 1
     if seq[lo - 1].text_object or seq[lo - 1].pending_path or seq[lo - 1].pending_clip:
         raise Refused('a line decoration starts inside a text object or a path')
     depth = seq[lo - 1].q_depth
@@ -328,9 +378,11 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     # group's too (an image inside its XObject, reported unclipped). The stage
     # verifies that each of them moved exactly.
     rects = [pymupdf.Rect(r) for r in painted if r is not None]
+    area = _solid if slot is not None else pymupdf.Rect
     for o in obstacles:
-        box = pymupdf.Rect(o['bounds'])
-        if o['kind'] not in ('container', 'foreign-text') and region.contains(box) and any(box.intersects(r) for r in rects):
+        box = area(o['bounds'])
+        # (A line of a chain takes images only: other paint over it is drawn apart.)
+        if (o['kind'] == 'image' if slot is not None else o['kind'] not in ('container', 'foreign-text')) and region.contains(box) and any(box.intersects(r) for r in rects):
             rects.append(box)
     bounds = placed_move._union(rects)
     # Annotations over the line: its text's band, as for a following paragraph's line.
@@ -344,7 +396,7 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     across = pymupdf.Rect(column.x0, band.y0 + .5, column.x1, band.y1 - .5)
     together = [pymupdf.Rect(r) + (-.5, -.5, .5, .5) for r in moving]
     for o in obstacles:
-        box = pymupdf.Rect(o['bounds'])
+        box = area(o['bounds'])
         if any(r.contains(box) for r in together):
             continue
         if o['kind'] == 'container':

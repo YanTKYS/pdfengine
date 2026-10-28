@@ -241,5 +241,47 @@
    "lines": 1,
    "origin": "survey: room for one more line below the following lines (this freeze)"
   }
+ ],
+ "supplement": [
+  {
+   "id": "S1-issue17730",
+   "document": "issue17730",
+   "page": 1,
+   "paragraph": "Linking to an internal destination",
+   "selection": "Linking to an internal d",
+   "edit": {
+    "old": "Linking to an internal destination",
+    "new": "Linking to an internal destination or an external destination"
+   },
+   "below": "five link lines (underlined, link annotations; the second heading drawn in the third line's text object), free space below",
+   "box": [
+    56.7,
+    192.07,
+    245.39,
+    204.07
+   ],
+   "lines": 1,
+   "origin": "added after the freeze (8e33529): survey of the real PDFs with the implementation"
+  },
+  {
+   "id": "S2-lo_migration_ja",
+   "document": "lo_migration_ja",
+   "page": 1,
+   "paragraph": "1日本語フォントについては残念ながら同梱されていません。IPA フォントなど、すべてのプラットフォームで利用可",
+   "selection": "日本語フォントについては",
+   "edit": {
+    "old": "日本語フォントについては",
+    "new": "日本語フォントについては日本語フォントについては"
+   },
+   "below": "the footnote's second line (not detected as its paragraph), free space below",
+   "box": [
+    56.8,
+    761.4,
+    534.73,
+    771.95
+   ],
+   "lines": 1,
+   "origin": "added after the freeze (8e33529): survey of the real PDFs with the implementation"
+  }
  ]
 }

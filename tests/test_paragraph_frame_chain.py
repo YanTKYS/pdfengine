@@ -33,13 +33,14 @@ def _icon(data, line, items=b'', between=b''):
 BOX = b'1 g 140 185 60 14 re f\nq .5 G 1 w 140 185.5 m 200 185.5 l S Q\n'
 
 
-def chained(tmp_path, name='chained.pdf', before=b'', link=SEARCH, lines=CHAINED, clip=None, between=b'', box=BOX):
+def chained(tmp_path, name='chained.pdf', before=b'', link=SEARCH, lines=CHAINED, clip=None, between=b'', box=BOX, under=b''):
     """``lines`` with the HP line's search ``box`` (and its link over ``link``, PDF
     space, if any) and the enquiry line's icon; ``before`` is drawn first on the page,
     ``clip`` (a clip path) encloses the HP line, ``between`` is drawn inside it
-    between its icon and its text."""
+    between its icon and its text, ``under`` right before it."""
     def change(data):
         _icon(data, 3, box, between)
+        data[3] = under + data[3]
         _icon(data, 4)
         if clip:
             data[3] = b'q ' + clip + b' W n\n' + data[3] + b'\nQ\n'
@@ -143,6 +144,8 @@ LOW = [(x, y + 170, t) for x, y, t in LINES[:3]] + [(52, 278, '検索窓口で�
     ('clip', dict(clip=b'30 180 240 30 re', lines=SEPARATE), 'does not hold it moved'),
     ('between', dict(between=b'0 g 30 20 4 4 re f\n'), 'drawn together with content beyond its line'),
     ('low', dict(lines=LOW, link=None, box=b''), 'would leave the page'),
+    # A rule across the line drawn apart from it (a stroke without height).
+    ('rule', dict(lines=SEPARATE, before=b'q 0 G .5 w 30 192 m 220 192 l S Q\n'), 'holds content (vector) outside'),
 ])
 def test_a_chain_that_cannot_move_is_refused(tmp_path, name, options, reason):
     source = fixture(name, tmp_path) if options is None else chained(tmp_path, **options)
@@ -184,3 +187,14 @@ def test_the_moved_lines_are_recorded(tmp_path):
     finally:
         page.close()
     assert '検索窓口です。' in ''.join(texts) and '問合せ先は窓口です。' in ''.join(texts)
+
+
+def test_what_a_line_draws_right_before_it_moves_with_it(tmp_path):
+    # An underline under its own clip, drawn right before the line (a link's underline).
+    source = chained(tmp_path, under=b'q 52 184 68 2 re W n 0 0 1 RG .5 w 52 185 m 120 185 l S Q\n')
+    (c,) = chain_of(source)['candidates']
+    assert c['drawings'] == 5
+    out = tmp_path / 'out.pdf'
+    _, result = edit(source, *GROW, out, chain=[c['id']])
+    delta = result['follower_translation']
+    assert below(out, 98 + delta) == shifted(below(source), delta)

@@ -75,6 +75,30 @@ SURVEYED = [
 ]
 
 
+# Found after the freeze by a survey of every paragraph of the real PDFs with the
+# implementation (chain.plan over one more line): the places where the chain
+# holds. Reported apart from the frozen cases.
+SUPPLEMENT = [
+    dict(id='S1-issue17730', document='issue17730', page=1, paragraph='Linking to an internal destination', selection='Linking to an internal d',
+         edit=dict(old='Linking to an internal destination', new='Linking to an internal destination or an external destination'),
+         below='five link lines (underlined, link annotations; the second heading drawn in the third line\'s text object), free space below'),
+    dict(id='S2-lo_migration_ja', document='lo_migration_ja', page=1, paragraph='1日本語フォントについては残念ながら同梱されていません。IPA フォントなど、すべてのプラットフォームで利用可',
+         selection='日本語フォントについては',
+         edit=dict(old='日本語フォントについては', new='日本語フォントについては日本語フォントについては'),
+         below='the footnote\'s second line (not detected as its paragraph), free space below'),
+]
+
+
+def phase_supplement(args):
+    """Add the cases found after the freeze (marked so) to the manifest."""
+    manifest = json.loads(MANIFEST.read_text())
+    commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True).stdout.strip()
+    manifest['supplement'] = [dict(c, box=block(source_of(c['document'], args), c['page'], c['selection']), lines=1,
+                                   origin=f'added after the freeze ({commit}): survey of the real PDFs with the implementation') for c in SUPPLEMENT]
+    MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + '\n')
+    print(len(manifest['supplement']), 'supplementary cases')
+
+
 def phase_freeze(args):
     deco = json.loads((DECORATION / 'manifest.json').read_text())
     old = json.loads((DECORATION / 'results.json').read_text())['results']['new']
@@ -346,7 +370,7 @@ def phase_run(args):
         if only and name not in only:
             continue
         results[name] = run_case(code, dict(FIXTURE_CASE, id=name, document=name), made[name].resolve(), root)
-    for case in manifest['cases']:
+    for case in manifest['cases'] + manifest.get('supplement', []):
         if only and case['id'] not in only:
             continue
         results[case['id']] = run_case(code, case, source_of(case['document'], args).resolve(), root)
@@ -410,7 +434,8 @@ def phase_collect(args):
     results = {label: json.loads((Path(root) / 'results.json').read_text()) for label, root in labels.items()}
     compact = lambda r: {k: (v[-300:] if k == 'reason' and v else v.get('ok') if k == 'continued_editing' and isinstance(v, dict) else v)
                          for k, v in r.items() if k not in ('lines', 'frame', 'seconds', 'occurrence')}
-    groups = dict(fixtures=list(manifest['fixtures']), real=[c['id'] for c in manifest['cases']])
+    groups = dict(fixtures=list(manifest['fixtures']), real=[c['id'] for c in manifest['cases']],
+                  supplement=[c['id'] for c in manifest.get('supplement', [])])
     out = dict(schema='paragraph-frame-chain-results-1', manifest_sha256=sha(MANIFEST),
                tests=json.loads(Path(args.tests_json).read_text()) if args.tests_json else None,
                regression=json.loads(Path(args.regression_json).read_text()) if args.regression_json else None,
@@ -424,7 +449,7 @@ def phase_collect(args):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--phase', choices=('freeze', 'run', 'collect'), required=True)
+    p.add_argument('--phase', choices=('freeze', 'supplement', 'run', 'collect'), required=True)
     p.add_argument('--label')
     p.add_argument('--code', default='.')
     p.add_argument('--root')
@@ -435,7 +460,7 @@ def main():
     p.add_argument('--tests-json')
     p.add_argument('--regression-json')
     args = p.parse_args()
-    dict(freeze=phase_freeze, run=phase_run, collect=phase_collect)[args.phase](args)
+    dict(freeze=phase_freeze, supplement=phase_supplement, run=phase_run, collect=phase_collect)[args.phase](args)
 
 
 if __name__ == '__main__':

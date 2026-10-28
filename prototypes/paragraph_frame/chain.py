@@ -120,7 +120,7 @@ def plan(c, paragraphs, spec, evidence, delta, followers=()):
             units = units[:units.index(u)]
             break
         for o in obstacles:
-            box = _rect(o['bounds'])
+            box = decoration._solid(o['bounds'])
             if o['kind'] == 'container' or any(a.contains(box) for a in own):
                 continue
             hit = new & box
