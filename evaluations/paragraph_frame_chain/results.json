@@ -1,0 +1,6664 @@
+{
+ "schema": "paragraph-frame-chain-results-1",
+ "manifest_sha256": "ca5651514d118cc1eb221909dc5a00e25a74d9f0e8327eb0433e98fe2e48b7c4",
+ "tests": {
+  "focused": {
+   "command": ".venv/bin/python -m pytest -q tests/test_paragraph_frame_auto.py tests/test_paragraph_frame_chain.py tests/test_paragraph_frame_column_flow.py tests/test_paragraph_frame_continuity.py tests/test_paragraph_frame_decoration.py tests/test_paragraph_frame_local.py tests/test_paragraph_frame_restore.py tests/test_paragraph_frame_tagged.py tests/test_paragraph_frame_text_space.py tests/test_paragraph_frame_placed_follower.py",
+   "code": "e4487b6",
+   "result": "176 passed",
+   "seconds": 211.51
+  },
+  "full_suite": "not run"
+ },
+ "regression": {
+  "generalization": {
+   "A": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "B": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "C": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "D": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F1": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F2": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F3": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "native_replacement_search"
+    ],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "F4": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "native_replacement_search"
+    ],
+    "reedit": "quality-audit-failed",
+    "reedit_failed": [
+     "native_replacement_search"
+    ],
+    "same_as_committed": true
+   },
+   "N1": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "N2": {
+    "initial": "success",
+    "initial_failed": [],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "N3": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "native_replacement_search"
+    ],
+    "reedit": "success",
+    "reedit_failed": [],
+    "same_as_committed": true
+   },
+   "N4": {
+    "initial": "quality-audit-failed",
+    "initial_failed": [
+     "mupdf_copy_extract",
+     "poppler_copy_extract",
+     "native_replacement_search"
+    ],
+    "reedit": "quality-audit-failed",
+    "reedit_failed": [
+     "mupdf_copy_extract",
+     "poppler_copy_extract",
+     "native_replacement_search"
+    ],
+    "same_as_committed": false
+   }
+  },
+  "continuity_sequences": {
+   "Q1-stored": {
+    "steps": [
+     "success",
+     "success",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": true
+   },
+   "Q1-inference": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "success",
+     "success"
+    ],
+    "same_as_committed": false
+   },
+   "Q2-stored": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": true
+   },
+   "Q2-inference": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": true
+   },
+   "Q3-stored": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "success",
+     "success"
+    ],
+    "same_as_committed": false
+   },
+   "Q3-inference": {
+    "steps": [
+     "success",
+     "quality-audit-failed",
+     "quality-audit-failed",
+     "success"
+    ],
+    "same_as_committed": false
+   }
+  },
+  "continuity_new": {
+   "E1": {
+    "edit": "saved",
+    "audit": "safety-audit-failed",
+    "same_as_committed": false,
+    "audit_implicit_joins": "success"
+   },
+   "E2": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   },
+   "E3": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   },
+   "E4": {
+    "edit": "saved",
+    "audit": "safety-audit-failed",
+    "same_as_committed": false,
+    "audit_implicit_joins": "success"
+   },
+   "E5": {
+    "edit": "saved",
+    "audit": "success",
+    "same_as_committed": true
+   },
+   "E6": {
+    "edit": "saved",
+    "audit": "safety-audit-failed",
+    "same_as_committed": false,
+    "audit_implicit_joins": "success"
+   },
+   "S1": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   },
+   "S2": {
+    "edit": "refused",
+    "audit": null,
+    "same_as_committed": true
+   }
+  },
+  "column_flow": {
+   "sequences": {
+    "S1": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S2": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S3": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S4": {
+     "steps": [
+      "saved",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S5": {
+     "steps": [
+      "refused",
+      "saved",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "S6": {
+     "steps": [
+      "refused",
+      "saved"
+     ],
+     "as_expected": true,
+     "same_as_committed": true
+    }
+   },
+   "singles": {
+    "J-fit": {
+     "outcome": "saved",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "E-fit": {
+     "outcome": "saved",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-capacity": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-heading": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-image": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-articles": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "J-articles-tagged": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "R-enterprise-fit": {
+     "outcome": "saved",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "R-enterprise-grow": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    },
+    "R-fusei-grow": {
+     "outcome": "refused",
+     "as_expected": true,
+     "same_as_committed": true
+    }
+   },
+   "recognition_same_as_committed": true,
+   "recognition_correct": 14,
+   "recognition_total": 14
+  },
+  "indesign": {
+   "requests": {
+    "F-same": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-same-reedit": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-short": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-wrap": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-grow-line": {
+     "outcome": "refused",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "F-form": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "T-form": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "T-form-reedit": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-same": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-short": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-grow-line": {
+     "outcome": "refused",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "A-reedit": {
+     "outcome": "saved",
+     "failed": [],
+     "same_as_committed": true
+    },
+    "Q-ligature": {
+     "outcome": "refused",
+     "failed": [],
+     "same_as_committed": true
+    }
+   },
+   "samples": {
+    "sampled": 74,
+    "saved": 74,
+    "safety": 74,
+    "quality": 68,
+    "committed": {
+     "sampled": 74,
+     "saved": 62,
+     "safety": 62,
+     "quality": 53
+    },
+    "same_as_committed": false,
+    "newly_failed": [
+     [
+      "osaka_fusei_477",
+      7,
+      "【行政・警察",
+      [
+       "unchanged_text_same_glyph_positions"
+      ]
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "偽造変造対策",
+      [
+       "extraction_mupdf"
+      ]
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "千万円）を発",
+      [
+       "unchanged_text_same_glyph_positions"
+      ]
+     ]
+    ],
+    "newly_passed": [
+     [
+      "osaka_fusei_477",
+      7,
+      "学歴・職務経"
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "令和5年の大"
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "賃貸住宅の退"
+     ],
+     [
+      "osaka_fusei_477",
+      7,
+      "一般世帯向け"
+     ],
+     [
+      "canvas",
+      1,
+      "globalC"
+     ],
+     [
+      "issue17730",
+      1,
+      "There "
+     ]
+    ],
+    "newly_refused": []
+   }
+  },
+  "differences_from_pr90_recorded_regression": [
+   [
+    "continuity sequence",
+    "Q1-inference",
+    "['success', 'quality-audit-failed', 'success', 'success']",
+    "['success', 'quality-audit-failed', 'quality-audit-failed', 'success']"
+   ],
+   [
+    "continuity new",
+    "E1",
+    "('saved', 'safety-audit-failed', 'success')",
+    "('saved', 'success')"
+   ],
+   [
+    "continuity new",
+    "E4",
+    "('saved', 'safety-audit-failed', 'success')",
+    "('saved', 'success')"
+   ],
+   [
+    "continuity new",
+    "E6",
+    "('saved', 'safety-audit-failed', 'success')",
+    "('saved', 'success')"
+   ],
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'same_as_committed': False}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': [], 'same_as_committed': True}"
+   ]
+  ],
+  "differences_from_pr91_recorded_regression": [
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'same_as_committed': False}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': []}"
+   ],
+   [
+    "continuity_sequences",
+    "Q1-inference",
+    "{'steps': ['success', 'quality-audit-failed', 'success', 'success'], 'same_as_committed': False}",
+    "{'steps': ['success', 'quality-audit-failed', 'quality-audit-failed', 'success']}"
+   ],
+   [
+    "continuity_new",
+    "E1",
+    "{'edit': 'saved', 'audit': 'safety-audit-failed', 'same_as_committed': False, 'audit_implicit_joins': 'success'}",
+    "{'edit': 'saved', 'audit': 'success'}"
+   ],
+   [
+    "continuity_new",
+    "E4",
+    "{'edit': 'saved', 'audit': 'safety-audit-failed', 'same_as_committed': False, 'audit_implicit_joins': 'success'}",
+    "{'edit': 'saved', 'audit': 'success'}"
+   ],
+   [
+    "continuity_new",
+    "E6",
+    "{'edit': 'saved', 'audit': 'safety-audit-failed', 'same_as_committed': False, 'audit_implicit_joins': 'success'}",
+    "{'edit': 'saved', 'audit': 'success'}"
+   ],
+   [
+    "indesign samples",
+    "saved",
+    "74",
+    "63"
+   ],
+   [
+    "indesign samples",
+    "safety",
+    "74",
+    "62"
+   ],
+   [
+    "indesign samples",
+    "quality",
+    "68",
+    "53"
+   ],
+   [
+    "indesign samples",
+    "newly_failed",
+    "[['osaka_fusei_477', 7, '【行政・警察', ['unchanged_text_same_glyph_positions']], ['osaka_fusei_477', 7, '偽造変造対策', ['extraction_mupdf']], ['osaka_fusei_477', 7, '千万円）を発', ['unchanged_text_same_glyph_positions']]]",
+    "[['osaka_fusei_477', 7, '児童扶養手当・特別児童扶養手当の認', ['raster_outside_region_mupdf', 'raster_outside_region_poppler', 'glyphs_outside_region_identical', 'unchanged_text_same_glyph_positions']]]"
+   ],
+   [
+    "indesign samples",
+    "newly_passed",
+    "[['osaka_fusei_477', 7, '学歴・職務経'], ['osaka_fusei_477', 7, '令和5年の大'], ['osaka_fusei_477', 7, '賃貸住宅の退'], ['osaka_fusei_477', 7, '一般世帯向け'], ['canvas', 1, 'globalC'], ['issue17730', 1, 'There ']]",
+    "[]"
+   ]
+  ],
+  "tagged": {
+   "requests": {
+    "L-same:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "extraction_poppler"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-reedit:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "extraction_poppler"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-short:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "extraction_poppler",
+      "baselines_on_the_paragraph_grid",
+      "left_edges_observed"
+     ],
+     "structure_failed": [
+      "paragraph_mcids_draw_the_new_text"
+     ],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-wrap:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "L-cross:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "D-same:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": false,
+     "committed": {
+      "outcome": "refused",
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": null
+     }
+    },
+    "D-reedit:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": false,
+     "committed": {
+      "outcome": "not run",
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": null
+     }
+    },
+    "D-short:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "D-shared:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-span:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-span:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-cross:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-cross:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-reedit:frozen": {
+     "outcome": "not run",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-reedit:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-grow:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "W-grow:substitute": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "I-same:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "I-short:frozen": {
+     "outcome": "saved",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "F-marker:frozen": {
+     "outcome": "refused",
+     "failed": [],
+     "structure_failed": [],
+     "continued_editing": null,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "F-marker:substitute": {
+     "outcome": "saved",
+     "failed": [
+      "baselines_on_the_paragraph_grid"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    },
+    "F-icon:frozen": {
+     "outcome": "saved",
+     "failed": [
+      "baselines_on_the_paragraph_grid"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "same_as_committed": true,
+     "committed": null
+    }
+   },
+   "samples": {
+    "totals": {
+     "edits": 52,
+     "saved": 33,
+     "safety": 27,
+     "quality": 23,
+     "structure": 33,
+     "continued_editing": 29
+    },
+    "committed": {
+     "edits": 52,
+     "saved": 31,
+     "safety": 24,
+     "quality": 20,
+     "structure": 31,
+     "continued_editing": 29
+    },
+    "edits": [
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "n° d'i",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "n° d'"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "n° d'i",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "n° d'ii"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "refused",
+       "detail": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame"
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "salarié(",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "salariée):"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "salarié(",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "code p",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "code"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "code p",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('p' at [255.9, 162.4, 259.8, 169.3])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "I) fid",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "I) fi"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "I) fid",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "glyphs_outside_region_identical"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "I) fidd"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 1,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": []
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "nombre de jours i",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "nombre de jours mpos"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": [
+        "raster_outside_region_mupdf",
+        "raster_outside_region_poppler",
+        "glyphs_outside_region_identical"
+       ]
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "nombre de jours i",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "nombre de jours ii"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": [
+        "raster_outside_region_mupdf",
+        "raster_outside_region_poppler",
+        "glyphs_outside_region_identical"
+       ]
+      }
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "signatu",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "signatre d"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "160F-2019",
+      "page": 1,
+      "selection": "signatu",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow below the shared bottom of the side-by-side columns; no continuation column is linked",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "¥233,5",
+      "kind": "shorten",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "¥233,5",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "64,457",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "64,45"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "64,457",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "111,202",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "111,20",
+       "occurrence": 1
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "111,202",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: no legal line break at original font size",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Items that m",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Items that ay b"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Items that m",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('p' at [128.4, 334.9, 133.1, 343.4])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Net ch",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Net c"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Net ch",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Net chh"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 0,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Comprehensive income a",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Comprehensive income ttri"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue14297",
+      "page": 1,
+      "selection": "Comprehensive income a",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('t' at [119.9, 484.9, 122.3, 493.4])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue15262",
+      "page": 1,
+      "selection": "file:/",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "file:"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue15262",
+      "page": 1,
+      "selection": "file:/",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('1' at [5.0, 844.1, 9.9, 853.1])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue6782",
+      "page": 1,
+      "selection": "Our so",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Our s"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "issue6782",
+      "page": 1,
+      "selection": "Our so",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Our soo"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": false
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 4,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 1,
+      "selection": "06（6910）8005",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "06（6910）800",
+       "occurrence": 1
+      },
+      "supplementary": {
+       "region_extraction_mupdf": false,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 1,
+      "selection": "06（6910）8005",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('8' at [553.4, 40.6, 558.3, 48.0])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 2,
+      "selection": "もの・ 保険",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "もの・ 保"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": false,
+       "region_extraction_poppler": false
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 2,
+      "selection": "もの・ 保険",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected vector",
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "saved",
+       "detail": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ]
+      }
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 3,
+      "selection": "万博特集記事",
+      "kind": "shorten",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 3,
+      "selection": "万博特集記事",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 7,
+      "selection": "日日時 所場",
+      "kind": "shorten",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 7,
+      "selection": "日日時 所場",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object would move in the new layout",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 府統計課",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "問 府統計"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 府統計課",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "glyphs_outside_region_identical",
+       "extraction_poppler"
+      ],
+      "safety": false,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "absent",
+       "selection": "問 府統計課課"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 1,
+       "new_outside_in_frame": false,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": false
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 堺市長寿",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "問 堺市長"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "osaka_fusei_477",
+      "page": 8,
+      "selection": "問 堺市長寿",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "glyphs_outside_region_identical"
+      ],
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "absent",
+       "selection": "問 堺市長寿寿"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 1,
+       "new_outside_in_frame": false,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": false
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Depart",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Depar"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Depart",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('S' at [108.8, 48.0, 112.7, 54.0])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Presid",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "stale: protected paint entered the approved width (foreign-text)",
+       "selection": "Presi"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "refused",
+       "detail": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+      }
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Presid",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": false,
+       "status": "stale: protected paint entered the approved width (foreign-text)",
+       "selection": "Presidd"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": false,
+      "committed": {
+       "outcome": "refused",
+       "detail": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+      }
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Add nu",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [],
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Add n"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Add nu",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('▶' at [489.6, 334.9, 495.6, 340.9])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Form  ",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "For  1040"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 1,
+      "selection": "Form  ",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": false,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Formm"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": false
+      },
+      "outside_changes": {
+       "removed_or_moved_outside": 0,
+       "new_outside": 0,
+       "new_outside_in_frame": true,
+       "pixels_outside_region_and_frame": {
+        "mupdf": 0,
+        "poppler": 0
+       },
+       "own_text_in_frame": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Additional t",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Additional ax o"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Additional t",
+      "kind": "lengthen",
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('r' at [115.2, 327.1, 117.8, 334.8])",
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Amount  ",
+      "kind": "shorten",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Amoun  You"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     },
+     {
+      "document": "prefilled_f1040",
+      "page": 2,
+      "selection": "Amount  ",
+      "kind": "lengthen",
+      "outcome": "saved",
+      "reason": null,
+      "failed": [
+       "extraction_mupdf",
+       "extraction_poppler"
+      ],
+      "safety": true,
+      "quality": false,
+      "structure": true,
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "Amountt"
+      },
+      "supplementary": {
+       "region_extraction_mupdf": true,
+       "region_extraction_poppler": true
+      },
+      "same_as_committed": true,
+      "committed": null
+     }
+    ]
+   }
+  },
+  "differences_from_pr92_recorded_regression": [
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search']}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': []}"
+   ],
+   [
+    "indesign samples",
+    "quality",
+    "68",
+    "69"
+   ],
+   [
+    "indesign samples",
+    "newly_failed",
+    "[['osaka_fusei_477', 7, '【行政・警察', ['unchanged_text_same_glyph_positions']], ['osaka_fusei_477', 7, '偽造変造対策', ['extraction_mupdf']], ['osaka_fusei_477', 7, '千万円）を発', ['unchanged_text_same_glyph_positions']]]",
+    "[['osaka_fusei_477', 7, '偽造変造対策', ['extraction_mupdf']], ['osaka_fusei_477', 7, '千万円）を発', ['unchanged_text_same_glyph_positions']]]"
+   ]
+  ],
+  "differences_from_pr94_recorded_regression": [
+   [
+    "generalization",
+    "N4",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'quality-audit-failed', 'reedit_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search']}",
+    "{'initial': 'quality-audit-failed', 'initial_failed': ['mupdf_copy_extract', 'poppler_copy_extract', 'native_replacement_search'], 'reedit': 'success', 'reedit_failed': []}"
+   ]
+  ],
+  "differences_from_pr96_recorded_regression": [],
+  "differences_from_pr98_recorded_regression": [],
+  "differences_from_pr100_recorded_regression": [],
+  "differences_from_pr102_recorded_regression": [],
+  "differences": 8,
+  "fidelity_pr92": {
+   "what": "PR #92 layout-fidelity evaluation rerun on this code, against PR #92 committed new results",
+   "summary_differences": [
+    [
+     "reedit",
+     "round_trip_kept",
+     915,
+     1076
+    ]
+   ],
+   "edit_differences": [
+    [
+     "C01",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C01",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C01",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C01",
+     "lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C01",
+     "reedit:lengthen",
+     [
+      "round_trip",
+      "save"
+     ]
+    ],
+    [
+     "C02",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C02",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C02",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C02",
+     "lengthen",
+     [
+      "reason"
+     ]
+    ],
+    [
+     "C03",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C03",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C03",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C04",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C04",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C04",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C05",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C05",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C05",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C05",
+     "lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C05",
+     "lengthen-wrap",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C05",
+     "reedit:lengthen-wrap",
+     [
+      "fidelity",
+      "round_trip",
+      "save"
+     ]
+    ],
+    [
+     "C06",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C06",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C06",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C06",
+     "lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C06",
+     "reedit:lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C07",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C07",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C07",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C07",
+     "lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C07",
+     "reedit:lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C08",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C08",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C08",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C08",
+     "lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C08",
+     "lengthen-wrap",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C08",
+     "reedit:lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C09",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C09",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C09",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C10",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C10",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C10",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C11",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C11",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C11",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C11",
+     "lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C11",
+     "reedit:lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C12",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C12",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C12",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C12",
+     "lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C12",
+     "reedit:shorten",
+     [
+      "fidelity",
+      "round_trip",
+      "save"
+     ]
+    ],
+    [
+     "C13",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C13",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C13",
+     "reedit:shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C14",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C14",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C14",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C15",
+     "identity",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C15",
+     "same",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C15",
+     "shorten",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C15",
+     "lengthen",
+     [
+      "save"
+     ]
+    ],
+    [
+     "C15",
+     "reedit:lengthen",
+     [
+      "save"
+     ]
+    ]
+   ],
+   "same_as_pr102_recorded": false,
+   "only_here": [
+    [
+     "C02",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C14",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C06",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C13",
+     "reedit:shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C06",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C10",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C10",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C01",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C02",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C12",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C02",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C09",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C10",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C03",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C03",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C03",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C04",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "lengthen-wrap",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C05",
+     "reedit:lengthen-wrap",
+     "frozenset({'fidelity', 'round_trip', 'save'})"
+    ],
+    [
+     "C13",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C14",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C01",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C13",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C06",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C01",
+     "reedit:lengthen",
+     "frozenset({'round_trip', 'save'})"
+    ],
+    [
+     "C15",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C15",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C12",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C12",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C09",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C07",
+     "lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C12",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C15",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C06",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C09",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C12",
+     "reedit:shorten",
+     "frozenset({'fidelity', 'round_trip', 'save'})"
+    ],
+    [
+     "C04",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "lengthen-wrap",
+     "frozenset({'save'})"
+    ],
+    [
+     "C08",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C04",
+     "shorten",
+     "frozenset({'save'})"
+    ],
+    [
+     "C14",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C11",
+     "reedit:lengthen",
+     "frozenset({'save'})"
+    ],
+    [
+     "C01",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C01",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C15",
+     "identity",
+     "frozenset({'save'})"
+    ],
+    [
+     "C06",
+     "same",
+     "frozenset({'save'})"
+    ],
+    [
+     "C15",
+     "lengthen",
+     "frozenset({'save'})"
+    ]
+   ],
+   "only_recorded": [
+    [
+     "C05",
+     "reedit:lengthen-wrap",
+     "frozenset({'fidelity', 'round_trip'})"
+    ],
+    [
+     "C12",
+     "reedit:shorten",
+     "frozenset({'fidelity', 'round_trip'})"
+    ],
+    [
+     "C01",
+     "reedit:lengthen",
+     "frozenset({'round_trip'})"
+    ]
+   ]
+  },
+  "roundtrip_pr94": {
+   "what": "PR #94 round-trip evaluation rerun on this code, against PR #94 committed new results",
+   "summary_differences": [
+    [
+     "path_kept",
+     1301,
+     1327
+    ],
+    [
+     "path_page_identical",
+     7,
+     10
+    ],
+    [
+     "repeat_page_identical",
+     38,
+     40
+    ]
+   ],
+   "pr102_recorded": [
+    [
+     "path_kept",
+     1301,
+     1327
+    ],
+    [
+     "path_page_identical",
+     7,
+     10
+    ],
+    [
+     "repeat_page_identical",
+     38,
+     40
+    ]
+   ],
+   "same_as_pr102_recorded": true,
+   "new": {
+    "cycles": 48,
+    "steps": 174,
+    "saved": 168,
+    "safety": 156,
+    "quality": 162,
+    "structure": 168,
+    "continued_editing": 168,
+    "undos": 84,
+    "undo_unchanged": 10098,
+    "undo_kept": 10098,
+    "undo_breaks": 176,
+    "undo_breaks_kept": 176,
+    "undo_same_lines": 84,
+    "undo_restyled": 0,
+    "undo_outside_identical": 84,
+    "undo_page_identical": 72,
+    "undo_text_identical_both": 84,
+    "undo_text_identical_ignoring_whitespace_both": 84,
+    "undo_search_same": 84,
+    "repeats": 42,
+    "repeat_unchanged": 5016,
+    "repeat_kept": 5016,
+    "repeat_page_identical": 40,
+    "second_undos": 42,
+    "second_undo_page_identical": 36,
+    "paths": 12,
+    "paths_completed": 10,
+    "path_unchanged": 1327,
+    "path_kept": 1327,
+    "path_page_identical": 10,
+    "refused": 6
+   }
+  },
+  "multiedit_pr96": {
+   "what": "PR #96 multi-edit evaluation rerun on this code, against PR #96 committed new results",
+   "summary_differences": [],
+   "step_differences": [],
+   "all": {
+    "pairs": 37,
+    "steps": 227,
+    "saved": 209,
+    "refused": 18,
+    "safety": 203,
+    "quality": 203,
+    "structure": 209,
+    "continued_editing": 209,
+    "path_b_made": 28,
+    "path_b_unchanged": 4930,
+    "path_b_kept": 4930,
+    "path_b_breaks": 76,
+    "path_b_breaks_kept": 76,
+    "path_b_restyled": 0,
+    "path_b_outside_identical": 28,
+    "path_b_page_identical": 27,
+    "path_b_text_identical_both": 28,
+    "path_a_made": 27,
+    "path_a_unchanged": 4847,
+    "path_a_kept": 4847,
+    "path_a_breaks": 76,
+    "path_a_breaks_kept": 76,
+    "path_a_restyled": 0,
+    "path_a_outside_identical": 27,
+    "path_a_page_identical": 26,
+    "path_a_text_identical_both": 27,
+    "order_made": 27,
+    "order_unchanged": 4880,
+    "order_kept": 4880,
+    "order_breaks": 76,
+    "order_breaks_kept": 76,
+    "order_restyled": 0,
+    "order_outside_identical": 27,
+    "order_page_identical": 27,
+    "order_text_identical_both": 27,
+    "full_return_made": 29,
+    "full_return_unchanged": 5115,
+    "full_return_kept": 5115,
+    "full_return_breaks": 79,
+    "full_return_breaks_kept": 79,
+    "full_return_restyled": 0,
+    "full_return_outside_identical": 29,
+    "full_return_page_identical": 25,
+    "full_return_text_identical_both": 29
+   }
+  },
+  "placed_pr98": {
+   "what": "PR #98 placed-object evaluation rerun on this code, against PR #98 committed new results",
+   "summary_differences": [],
+   "step_differences": [
+    [
+     "P8-09",
+     "lengthen",
+     1,
+     [
+      "refused",
+      "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected filled-vector",
+      "None",
+      "None"
+     ],
+     [
+      "refused",
+      "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected vector",
+      "None",
+      "None"
+     ]
+    ]
+   ],
+   "same_as_pr102_recorded": true
+  },
+  "decoration_pr100": {
+   "what": "PR #100 decoration evaluation rerun on this code, against PR #100 committed new results (PR #102 made 3 restoring steps saved)",
+   "step_differences": [
+    [
+     "P7-03",
+     "shorten",
+     2,
+     [
+      "refused",
+      "other: edited paragraphs lie in different marked-content containers",
+      "None",
+      "None",
+      "None",
+      "None"
+     ],
+     [
+      "saved",
+      "None",
+      "['non_text_paint_identical']",
+      "True",
+      "True",
+      "False"
+     ]
+    ],
+    [
+     "P7-05",
+     "shorten",
+     2,
+     [
+      "refused",
+      "other: edited paragraphs lie in different marked-content containers",
+      "None",
+      "None",
+      "None",
+      "None"
+     ],
+     [
+      "saved",
+      "None",
+      "['non_text_paint_identical']",
+      "True",
+      "True",
+      "False"
+     ]
+    ],
+    [
+     "P7-06",
+     "shorten",
+     2,
+     [
+      "refused",
+      "capacity",
+      "None",
+      "None",
+      "None",
+      "None"
+     ],
+     [
+      "saved",
+      "None",
+      "['non_text_paint_identical']",
+      "True",
+      "True",
+      "False"
+     ]
+    ]
+   ],
+   "note": "the 3 restoring steps PR #102 made saved; otherwise the same"
+  },
+  "restore_pr102": {
+   "what": "PR #102 restore evaluation rerun on this code, against PR #102 committed new results",
+   "summary_differences": [],
+   "step_differences": [],
+   "note": "fixture candidate ids and operator digests differ with main a7bb571 too (fixture bytes differ from the recorded run); every outcome and audit is the same"
+  },
+  "commit": "e4487b6"
+ },
+ "survey": {
+  "method": "every paragraph group of 35 pages (25 real PDFs: 477, LibreOffice, Word, pdf.js corpus) detected as an edit target; chain.plan for one more line (the inferred line height), with a working-tree snapshot between 47e47f2 and e4487b6; issue8702 p1 ended in an error",
+  "paragraphs": 1250,
+  "outcome": {
+   "chain": 658,
+   "no chain": 454,
+   "refused": 138
+  },
+  "chain_refusals": {
+   "a following paragraph is drawn together with content beyond its line": 340,
+   "multiple semantic paragraph parents": 108,
+   "the line of a following paragraph holds content (filled-vector) outside its line decoratio": 34,
+   "a line decoration would leave or enter a background": 29,
+   "paragraph crosses a marked-content sequence": 25,
+   "a line decoration is not a balanced drawing": 14,
+   "a line decoration holds structured marked content": 14,
+   "a line decoration is moved only in the page's own content": 13,
+   "the clip of a line decoration does not hold it moved": 12,
+   "a line decoration would meet protected filled-vector": 9,
+   "a line decoration would meet protected foreign-text": 6,
+   "a line decoration would meet protected vector": 6,
+   "a line decoration would meet protected image": 5,
+   "a link over the line reaches past its line decoration": 5,
+   "the line of a following paragraph carries a /Widget annotation": 4,
+   "capacity: moved with its following elements, the paragraph would still meet protected vect": 2,
+   "the line of a following paragraph holds content (image) outside its line decoration": 2,
+   "an inline placed object of a following paragraph sets state used after it (k)": 2,
+   "unsupported structure role /Span": 2,
+   "the line of a following paragraph holds content (foreign-text) outside its line decoration": 1,
+   "a following element (MozillaCorporation⇤) would pass the shared bottom of the side-by-side": 1,
+   "a following element ({gal,brendan,shaver,dand) would pass the shared bottom of the side-by": 1,
+   "a following element (Eachcompiledtracecoverso) would pass the shared bottom of the side-by": 1,
+   "the line of a following paragraph carries a /Highlight annotation": 1,
+   "the line is drawn in parts that do not move as one drawing": 1,
+   "the line of a following paragraph holds content (vector) outside its line decoration": 1,
+   "a line below has no glyph drawn by a content-stream operator": 1,
+   "a following element (HP  ■大阪府職員採用試験　公務員試験　 ) would meet protected filled-vector": 1,
+   "a following element (HP  ■大川さくらクルーズ　 ) would meet protected filled-vector": 1
+  },
+  "chain_held": [
+   {
+    "page": "canvas-1",
+    "paragraph": "Argument \"image\" can be of typ",
+    "elements": 1
+   },
+   {
+    "page": "issue14117-1",
+    "paragraph": "On arrival to MICU, hypotensiv",
+    "elements": 5
+   },
+   {
+    "page": "issue14117-1",
+    "paragraph": "No past medical history pertin",
+    "elements": 2
+   },
+   {
+    "page": "issue17730-1",
+    "paragraph": "Linking to an internal destina",
+    "elements": 5
+   },
+   {
+    "page": "issue17730-1",
+    "paragraph": "Linking to an external destina",
+    "elements": 2
+   },
+   {
+    "page": "issue7014-1",
+    "paragraph": "MozillaCorporation",
+    "elements": 7
+   },
+   {
+    "page": "issue7014-1",
+    "paragraph": "{gal,brendan,shaver,danderson,",
+    "elements": 6
+   },
+   {
+    "page": "issue7014-1",
+    "paragraph": "AdobeCorporation",
+    "elements": 5
+   },
+   {
+    "page": "issue7014-1",
+    "paragraph": "{edwsmith,rreitmai}@adobe.com",
+    "elements": 4
+   },
+   {
+    "page": "issue7014-1",
+    "paragraph": "IntelCorporation",
+    "elements": 3
+   },
+   {
+    "page": "issue7014-1",
+    "paragraph": "{mohammad.r.haghighat}@intel.c",
+    "elements": 2
+   },
+   {
+    "page": "issue7014-1",
+    "paragraph": "UniversityofCalifornia,Irvine",
+    "elements": 1
+   },
+   {
+    "page": "issue7014-1",
+    "paragraph": "KeywordsJavaScript,just-in-tim",
+    "elements": 2
+   },
+   {
+    "page": "issue7014-1",
+    "paragraph": "1.Introduction",
+    "elements": 1
+   },
+   {
+    "page": "lo_migration_ja-1",
+    "paragraph": "1日本語フォントについては残念ながら同梱されていません。IP",
+    "elements": 1
+   },
+   {
+    "page": "osaka_fusei_477-5",
+    "paragraph": "4/26（土）・27（日）H-03EXPO アリーナ「Mat",
+    "elements": 1
+   }
+  ],
+  "lengthened": [
+   {
+    "page": "canvas-1",
+    "selection": "Argume",
+    "result": "TTLibError: not enough 'hmtx' table data: expected 1348 bytes, got 372",
+    "unapproved": null
+   },
+   {
+    "page": "issue14117-1",
+    "selection": "On arr",
+    "result": "refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph (Allergies as of 01/23/20): the line of a following paragraph holds content (filled-vector)",
+    "unapproved": "refused: capacity: staged glyph bounds outside approved inferred frame ('m' at [18.0, 105.5, 26.8, 116.5])"
+   },
+   {
+    "page": "issue14117-1",
+    "selection": "No past medical history p",
+    "result": "refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph (Allergies as of 01/23/20): the line of a following paragraph holds content (filled-vector)",
+    "unapproved": "refused: capacity: staged glyph bounds outside approved inferred frame ('h' at [18.0, 159.1, 23.8, 170.1])"
+   },
+   {
+    "page": "issue17730-1",
+    "selection": "Linking to an i",
+    "result": "refused: staged protected non-text paint changed",
+    "unapproved": "refused: capacity: the paragraph would grow into the lines below it (following elements following-element-160edbbe807ec6d6, following-element-fc56bb63af355d86, following"
+   },
+   {
+    "page": "issue17730-1",
+    "selection": "Linking to an external d",
+    "result": "refused: staged protected non-text paint changed",
+    "unapproved": "refused: capacity: the paragraph would grow into the lines below it (following elements following-element-bcecbb6c76c11403, following-element-8bad78809ca613a3 move with "
+   },
+   {
+    "page": "issue7014-1",
+    "selection": "Mozill",
+    "result": "refused: capacity: no legal line break at original font size",
+    "unapproved": null
+   },
+   {
+    "page": "issue7014-1",
+    "selection": "{gal,b",
+    "result": "refused: missing source glyph requires explicit substitute approval: {",
+    "unapproved": null
+   },
+   {
+    "page": "issue7014-1",
+    "selection": "AdobeC",
+    "result": "refused: capacity: no legal line break at original font size",
+    "unapproved": null
+   },
+   {
+    "page": "issue7014-1",
+    "selection": "{edwsm",
+    "result": "refused: missing source glyph requires explicit substitute approval: {",
+    "unapproved": null
+   },
+   {
+    "page": "issue7014-1",
+    "selection": "IntelC",
+    "result": "refused: capacity: no legal line break at original font size",
+    "unapproved": null
+   },
+   {
+    "page": "issue7014-1",
+    "selection": "{moham",
+    "result": "refused: missing source glyph requires explicit substitute approval: {",
+    "unapproved": null
+   },
+   {
+    "page": "issue7014-1",
+    "selection": "Univer",
+    "result": "refused: capacity: no legal line break at original font size",
+    "unapproved": null
+   },
+   {
+    "page": "issue7014-1",
+    "selection": "Keywor",
+    "result": "refused: missing source glyph requires explicit substitute approval: J",
+    "unapproved": null
+   },
+   {
+    "page": "issue7014-1",
+    "selection": "1.Intr",
+    "result": "refused: capacity: no legal line break at original font size",
+    "unapproved": null
+   },
+   {
+    "page": "lo_migration_ja-1",
+    "selection": "1日本語フォ",
+    "result": "refused: missing source glyph requires explicit substitute approval: P",
+    "unapproved": null
+   },
+   {
+    "page": "osaka_fusei_477-5",
+    "selection": "4/26（土",
+    "result": "refused: capacity: no legal line break at original font size",
+    "unapproved": null
+   }
+  ],
+  "frozen_geometry": {
+   "method": "each reached line as its glyphs and the paint in its slot, no drawing proof (decoration.group not applied)",
+   "cases": {
+    "P7-03": "capacity: the growth meets protected filled-vector at [21.3, 640.3, 239.5, 674.3], which is no line below the paragraph",
+    "P7-05": "capacity: the growth meets protected filled-vector at [21.3, 640.3, 239.5, 674.3], which is no line below the paragraph",
+    "P7-06": "a following element (0570（064）556（こころの健康相談統一ダ) would meet protected filled-vector at [21.3, 780.9, 239.5, 815.0]",
+    "P8-08": "a following element (072（988）4184（9：00～17：00）) would pass the shared bottom of the side-by-side columns",
+    "P8-09": "a following element (問 府地域生活支援課　06（6944）9179) would meet protected filled-vector at [292.0, 479.8, 510.2, 513.8]",
+    "P8-11": "a following element (問 府地域生活支援課　06（6944）9179) would meet protected filled-vector at [292.0, 479.8, 510.2, 513.8]",
+    "C02-92": "a following element (問 府住宅相談室　06（6944）8269) would pass the shared bottom of the side-by-side columns",
+    "P2-R": "a following element (問 府国民健康保険課　06（6944）6660) would meet protected vector at [34.7, 928.4, 736.3, 929.8]",
+    "P2-L": "a following element ( （0120）950178 （受付時間：平日9:) would meet protected vector at [34.7, 928.4, 736.3, 929.8]"
+   }
+  }
+ },
+ "summary": {
+  "old": {
+   "fixtures": {
+    "cases": 3,
+    "with_chain_candidates": 0,
+    "edit_refused": 3
+   },
+   "real": {
+    "cases": 9,
+    "with_chain_candidates": 0,
+    "edit_refused": 9
+   },
+   "supplement": {
+    "cases": 2,
+    "with_chain_candidates": 0,
+    "edit_refused": 2
+   }
+  },
+  "new": {
+   "fixtures": {
+    "cases": 3,
+    "with_chain_candidates": 1,
+    "unapproved_refused": 1,
+    "edit_saved": 1,
+    "edit_chain_moved": 1,
+    "edit_safety": 0,
+    "edit_quality": 1,
+    "edit_structure": 1,
+    "edit_continued_editing": 1,
+    "edit_moves_audit": 1,
+    "edit_links_audit": 1,
+    "edit_placement": 1,
+    "edit_raster_identical": 1,
+    "back_saved": 1,
+    "back_safety": 0,
+    "back_quality": 1,
+    "back_moves_audit": 1,
+    "back_links_audit": 1,
+    "glyphs_at_source_001": 1,
+    "glyphs_at_source_0001": 1,
+    "breaks_kept": 1,
+    "text_identical_both": 1,
+    "search_same": 1,
+    "drawings_identical": 1,
+    "images_identical_or_shading_raster": 1,
+    "links_identical": 1,
+    "structure_vs_source": 1,
+    "pixels_identical": 1,
+    "edit_refused": 2
+   },
+   "real": {
+    "cases": 9,
+    "with_chain_candidates": 3,
+    "edit_refused": 9,
+    "unapproved_refused": 3
+   },
+   "supplement": {
+    "cases": 2,
+    "with_chain_candidates": 2,
+    "unapproved_refused": 2,
+    "edit_saved": 2,
+    "edit_chain_moved": 2,
+    "edit_safety": 0,
+    "edit_quality": 2,
+    "edit_structure": 2,
+    "edit_continued_editing": 2,
+    "edit_moves_audit": 2,
+    "edit_links_audit": 2,
+    "edit_placement": 2,
+    "edit_raster_identical": 2,
+    "back_saved": 2,
+    "back_safety": 0,
+    "back_quality": 2,
+    "back_moves_audit": 2,
+    "back_links_audit": 2,
+    "glyphs_at_source_001": 2,
+    "glyphs_at_source_0001": 2,
+    "breaks_kept": 2,
+    "text_identical_both": 2,
+    "search_same": 2,
+    "drawings_identical": 2,
+    "images_identical_or_shading_raster": 2,
+    "links_identical": 2,
+    "structure_vs_source": 2,
+    "pixels_identical": 2
+   }
+  }
+ },
+ "results": {
+  "old": {
+   "F1": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+      "seconds": 1.18
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+     "class": "capacity"
+    }
+   ],
+   "F2": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+      "seconds": 1.14
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+     "class": "capacity"
+    }
+   ],
+   "F3": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+      "seconds": 1.24
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+     "class": "capacity"
+    }
+   ],
+   "P7-03": [
+    {
+     "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。所得税（復興特別所得税）の申告期限は3/17（月）",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 10.46
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "P7-05": [
+    {
+     "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。3月下旬は自動車の名義変更や廃車などの登録手続きが",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 11.03
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "P7-06": [
+    {
+     "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。令和5年の大阪府の自殺者数は1,383人と、1日",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 10.72
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "P8-08": [
+    {
+     "old": " 府民の森なるかわ園地（近鉄「瓢箪山」）",
+     "new": " 府民の森なるかわ園地（近鉄「瓢箪山」） 府民の森なるかわ園地（近鉄「瓢箪山」",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 13.87
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "P8-09": [
+    {
+     "old": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+     "new": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。発達障がいの特性は暮らしや人づき",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "日 4/20（日）13：00～15：00　定 1,000人申 4/11（金）まで",
+        "reason": "an inline placed object of a following paragraph would collide with protected vector"
+       },
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected vector",
+      "seconds": 15.45
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected vector",
+     "class": "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected vector"
+    }
+   ],
+   "P8-11": [
+    {
+     "old": " 4/11（金）まで／インターネット",
+     "new": " 4/11（金）まで／インターネット 4/11（金）まで／インターネット 4/11（金",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 14.12
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "C02-92": [
+    {
+     "old": "ぜひご活用ください。",
+     "new": "ぜひご活用ください。ぜひご相談ください。",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 10.23
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "P2-R": [
+    {
+     "old": "領収証は必ず受け取り保管してください。",
+     "new": "領収証は必ず受け取り保管してください。申請書は必ず保管してください。",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('申' at [414.1, 888.2, 424.4, 898.4])",
+      "seconds": 14.24
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('申' at [414.1, 888.2, 424.4, 898.4])",
+     "class": "capacity"
+    }
+   ],
+   "P2-L": [
+    {
+     "old": "マイナンバーに関するお問い合わせはこちら",
+     "new": "マイナンバーに関するお問い合わせはこちらマイナンバーに関するお問い合わせ",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('マ' at [35.4, 877.7, 45.9, 888.2])",
+      "seconds": 11.38
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('マ' at [35.4, 877.7, 45.9, 888.2])",
+     "class": "capacity"
+    }
+   ],
+   "S1-issue17730": [
+    {
+     "old": "Linking to an internal destination",
+     "new": "Linking to an internal destination or an external destination",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('o' at [56.7, 210.1, 64.0, 222.1])",
+      "seconds": 3.38
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('o' at [56.7, 210.1, 64.0, 222.1])",
+     "class": "capacity"
+    }
+   ],
+   "S2-lo_migration_ja": [
+    {
+     "old": "日本語フォントについては",
+     "new": "日本語フォントについては日本語フォントについては",
+     "proposal_refused": null,
+     "chain": {},
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('の' at [56.8, 776.4, 66.3, 786.4])",
+      "seconds": 8.21
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('の' at [56.8, 776.4, 66.3, 786.4])",
+     "class": "capacity"
+    }
+   ]
+  },
+  "new": {
+   "F1": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "proposal_refused": null,
+     "chain": {
+      "translation": 16.0,
+      "needed": true,
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "検索窓口です。問合せ先は窓口です。",
+        "operators": [
+         298,
+         757
+        ],
+        "operator_count": 53,
+        "bytes_sha256": "40938a9abb522797a0d396803747a18ee573d8de7c148197fec92fa1408775ea",
+        "bounds": [
+         51.0,
+         101.0,
+         200.5,
+         131.0
+        ],
+        "moved_to": [
+         51.0,
+         117.0,
+         200.5,
+         147.0
+        ],
+        "translation": 16.0,
+        "drawings": 4,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 17,
+        "carried_text": "",
+        "placed_objects": 2,
+        "replayed_state": [
+         "g",
+         "Tf",
+         "g",
+         "g",
+         "g",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 16,
+          "subtype": "/Link",
+          "rect": [
+           140.0,
+           101.0,
+           200.0,
+           115.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "adjacent": [],
+        "order": 1,
+        "line": "検索窓口です。問合せ先は窓口です。",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         100.0,
+         116.0
+        ],
+        "id": "following-element-5289b43dc7e6a27c"
+       }
+      ],
+      "frame_bottom": 116.0
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-5289b43dc7e6a27c move with it only when approved explicitly)",
+      "seconds": 1.21
+     },
+     "rounds": [
+      {
+       "chain": [
+        "following-element-5289b43dc7e6a27c"
+       ],
+       "decorations": []
+      }
+     ],
+     "outcome": "saved",
+     "approved": {
+      "chain": [
+       "following-element-5289b43dc7e6a27c"
+      ],
+      "decorations": []
+     },
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 16.0,
+      "followers_repainted": 0,
+      "placed_objects_moved": [],
+      "decorations_moved": [],
+      "chain_moved": [
+       {
+        "id": "following-element-5289b43dc7e6a27c",
+        "old": [
+         51.0,
+         101.0,
+         200.5,
+         131.0
+        ],
+        "new": [
+         51.0,
+         117.0,
+         200.5,
+         147.0
+        ],
+        "translation": [
+         0.0,
+         -16.0
+        ],
+        "glyphs": 17,
+        "annotations": [
+         {
+          "xref": 16,
+          "old": [
+           140.0,
+           101.0,
+           200.0,
+           115.0
+          ],
+          "new": [
+           140.0,
+           117.0,
+           200.0,
+           131.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "line": "検索窓口です。問合せ先は窓口です。"
+       }
+      ]
+     },
+     "moves": {
+      "approved_moves": {
+       "elements": 1,
+       "drawings": 4,
+       "images": 0,
+       "shading_rasters": 0,
+       "glyphs": 17,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "placement": {
+      "inside_page": true,
+      "under_before": {
+       "glyph": 0
+      },
+      "under_after": {
+       "glyph": 0
+      },
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         50.0,
+         100.0,
+         201.5,
+         132.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 131040
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "new": "申請書は窓口で",
+     "proposal_refused": null,
+     "chain": {
+      "translation": -16.0,
+      "needed": false,
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "検索窓口です。問合せ先は窓口です。",
+        "operators": [
+         857,
+         1316
+        ],
+        "operator_count": 53,
+        "bytes_sha256": "40938a9abb522797a0d396803747a18ee573d8de7c148197fec92fa1408775ea",
+        "bounds": [
+         51.0,
+         117.0,
+         200.5,
+         147.0
+        ],
+        "moved_to": [
+         51.0,
+         101.0,
+         200.5,
+         131.0
+        ],
+        "translation": -16.0,
+        "drawings": 4,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 17,
+        "carried_text": "",
+        "placed_objects": 2,
+        "replayed_state": [
+         "g",
+         "Tf",
+         "g",
+         "g",
+         "g",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 16,
+          "subtype": "/Link",
+          "rect": [
+           140.0,
+           117.0,
+           200.0,
+           131.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "adjacent": [],
+        "order": 1,
+        "line": "検索窓口です。問合せ先は窓口です。",
+        "kind": "following element",
+        "reached": "attached below the shrinking paragraph",
+        "frame_bottom": [
+         110.23,
+         110.23
+        ],
+        "id": "following-element-2e87bcbc69974fc5"
+       }
+      ],
+      "frame_bottom": 110.23
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "saved",
+      "reason": null,
+      "seconds": 1.31
+     },
+     "rounds": [
+      {
+       "chain": [
+        "following-element-2e87bcbc69974fc5"
+       ],
+       "decorations": []
+      }
+     ],
+     "outcome": "saved",
+     "approved": {
+      "chain": [
+       "following-element-2e87bcbc69974fc5"
+      ],
+      "decorations": []
+     },
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -16.0,
+      "followers_repainted": 0,
+      "placed_objects_moved": [],
+      "decorations_moved": [],
+      "chain_moved": [
+       {
+        "id": "following-element-2e87bcbc69974fc5",
+        "old": [
+         51.0,
+         117.0,
+         200.5,
+         147.0
+        ],
+        "new": [
+         51.0,
+         101.0,
+         200.5,
+         131.0
+        ],
+        "translation": [
+         0.0,
+         16.0
+        ],
+        "glyphs": 17,
+        "annotations": [
+         {
+          "xref": 16,
+          "old": [
+           140.0,
+           117.0,
+           200.0,
+           131.0
+          ],
+          "new": [
+           140.0,
+           101.0,
+           200.0,
+           115.0
+          ],
+          "uri": "https://example.org/search"
+         }
+        ],
+        "line": "検索窓口です。問合せ先は窓口です。"
+       }
+      ]
+     },
+     "moves": {
+      "approved_moves": {
+       "elements": 1,
+       "drawings": 4,
+       "images": 0,
+       "shading_rasters": 0,
+       "glyphs": 17,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 1,
+      "ok": true
+     },
+     "placement": {
+      "inside_page": true,
+      "under_before": {
+       "glyph": 0
+      },
+      "under_after": {
+       "glyph": 0
+      },
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         50.0,
+         116.0,
+         201.5,
+         148.0
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 131040
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 34,
+        "kept": 34,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 3,
+        "output_lines": 5,
+        "source_breaks_outside_edit": 2,
+        "breaks_kept": 2
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 51,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 270000
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1171875
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "F2": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "proposal_refused": null,
+     "chain": {
+      "translation": null,
+      "needed": true,
+      "candidates": [],
+      "frame_bottom": null,
+      "unavailable": "a line below cannot move with the paragraph (検索窓口です。問合せ先は窓口です。): a line decoration would meet protected filled-vector"
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+      "seconds": 1.2
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+     "class": "capacity"
+    }
+   ],
+   "F3": [
+    {
+     "old": "申請書は窓口で",
+     "new": "申請書は窓口と郵送と電子申請とファクスと持参で",
+     "proposal_refused": null,
+     "chain": {
+      "translation": null,
+      "needed": true,
+      "candidates": [],
+      "frame_bottom": null,
+      "unavailable": "a line below cannot move with the paragraph (検索窓口です。問合せ先は窓口です。): a line decoration would leave or enter a background"
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+      "seconds": 1.41
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('す' at [40.0, 99.2, 51.0, 110.2])",
+     "class": "capacity"
+    }
+   ],
+   "P7-03": [
+    {
+     "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+     "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。所得税（復興特別所得税）の申告期限は3/17（月）",
+     "proposal_refused": null,
+     "chain": {
+      "translation": null,
+      "needed": true,
+      "candidates": [],
+      "frame_bottom": null,
+      "unavailable": "capacity: the growth meets protected filled-vector at [21.3, 640.3, 239.5, 674.3], which is no line below the paragraph"
+     },
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 10.51
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "P7-05": [
+    {
+     "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+     "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。3月下旬は自動車の名義変更や廃車などの登録手続きが",
+     "proposal_refused": null,
+     "chain": {
+      "translation": null,
+      "needed": true,
+      "candidates": [],
+      "frame_bottom": null,
+      "unavailable": "capacity: the growth meets protected filled-vector at [21.3, 640.3, 239.5, 674.3], which is no line below the paragraph"
+     },
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 10.52
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "P7-06": [
+    {
+     "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。令和5年の大阪府の自殺者数は1,383人と、1日",
+     "proposal_refused": null,
+     "chain": {
+      "translation": null,
+      "needed": true,
+      "candidates": [],
+      "frame_bottom": null,
+      "unavailable": "a line below cannot move with the paragraph (0570（064）556（こころの健康相談統一ダ): a following paragraph is drawn together with content beyond its line"
+     },
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 12.05
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "P8-08": [
+    {
+     "old": " 府民の森なるかわ園地（近鉄「瓢箪山」）",
+     "new": " 府民の森なるかわ園地（近鉄「瓢箪山」） 府民の森なるかわ園地（近鉄「瓢箪山」",
+     "proposal_refused": null,
+     "chain": {
+      "translation": 13.107,
+      "needed": true,
+      "candidates": [
+       {
+        "page": 8,
+        "paragraph": "問 府民の森なるかわ園地管理事務所",
+        "operators": [
+         18742,
+         19171
+        ],
+        "operator_count": 23,
+        "bytes_sha256": "f19ea782ecd3f4d73bc2247750e8c78f4dd4d43ad6dd6b85df67057a60cc6ce6",
+        "bounds": [
+         291.97,
+         234.22,
+         444.46,
+         244.97
+        ],
+        "moved_to": [
+         291.97,
+         247.32,
+         444.46,
+         258.07
+        ],
+        "translation": 13.107,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 17,
+        "carried_text": "",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tc",
+         "Tw"
+        ],
+        "annotations": [],
+        "adjacent": [
+         "filled-vector",
+         "foreign-text"
+        ],
+        "order": 1,
+        "line": "問 府民の森なるかわ園地管理事務所",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         233.22,
+         246.32
+        ],
+        "id": "following-element-28678d53e121b58f"
+       }
+      ],
+      "frame_bottom": 246.32,
+      "unavailable": "a line below cannot move with the paragraph (072（988）4184（9：00～17：00）): a following paragraph is drawn together with content beyond its line"
+     },
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 16.64
+     },
+     "rounds": [
+      {
+       "chain": [
+        "following-element-28678d53e121b58f"
+       ],
+       "decorations": []
+      },
+      {
+       "refused": "prototypes.paragraph_frame.engine.Refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph (072（988）4184（9：00～17：00）): a following paragraph is drawn together with content beyond its line"
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [
+       "following-element-28678d53e121b58f"
+      ],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph (072（988）4184（9：00～17：00）): a following paragraph is drawn together with content beyond its line",
+     "class": "capacity"
+    }
+   ],
+   "P8-09": [
+    {
+     "old": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+     "new": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。発達障がいの特性は暮らしや人づき",
+     "proposal_refused": null,
+     "chain": {
+      "translation": null,
+      "needed": true,
+      "candidates": [],
+      "frame_bottom": null,
+      "unavailable": "a line below cannot move with the paragraph (問 府地域生活支援課　06（6944）9179): a line decoration would meet protected filled-vector"
+     },
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "日 4/20（日）13：00～15：00　定 1,000人申 4/11（金）まで",
+        "reason": "an inline placed object of a following paragraph would collide with protected vector"
+       },
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected vector",
+      "seconds": 15.12
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected vector",
+     "class": "placed object of a follower (new rule): an inline placed object of a following paragraph would collide with protected vector"
+    }
+   ],
+   "P8-11": [
+    {
+     "old": " 4/11（金）まで／インターネット",
+     "new": " 4/11（金）まで／インターネット 4/11（金）まで／インターネット 4/11（金",
+     "proposal_refused": null,
+     "chain": {
+      "translation": null,
+      "needed": true,
+      "candidates": [],
+      "frame_bottom": null,
+      "unavailable": "a line below cannot move with the paragraph (問 府地域生活支援課　06（6944）9179): a line decoration would meet protected filled-vector"
+     },
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 14.56
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "C02-92": [
+    {
+     "old": "ぜひご活用ください。",
+     "new": "ぜひご活用ください。ぜひご相談ください。",
+     "proposal_refused": null,
+     "chain": {
+      "translation": null,
+      "needed": true,
+      "candidates": [],
+      "frame_bottom": null,
+      "unavailable": "a line below cannot move with the paragraph (問 府住宅相談室　06（6944）8269): a following paragraph is drawn together with content beyond its line"
+     },
+     "decorations": {
+      "candidates": [],
+      "unavailable": [
+       {
+        "paragraph": "HP ",
+        "reason": "a line decoration would meet protected filled-vector"
+       }
+      ]
+     },
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+      "seconds": 10.24
+     },
+     "rounds": [
+      {
+       "chain": [],
+       "decorations": []
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it",
+     "class": "placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with"
+    }
+   ],
+   "P2-R": [
+    {
+     "old": "領収証は必ず受け取り保管してください。",
+     "new": "領収証は必ず受け取り保管してください。申請書は必ず保管してください。",
+     "proposal_refused": null,
+     "chain": {
+      "translation": 15.413,
+      "needed": true,
+      "candidates": [
+       {
+        "page": 2,
+        "paragraph": "HP 大阪府施術療養費　  ■",
+        "operators": [
+         39192,
+         50373
+        ],
+        "operator_count": 525,
+        "bytes_sha256": "b43a75cf99de1e43ba03c7cdd1524dcd528a2755572daea19aa5ceaae7426444",
+        "bounds": [
+         414.57,
+         888.96,
+         566.49,
+         903.71
+        ],
+        "moved_to": [
+         414.57,
+         904.37,
+         566.49,
+         919.13
+        ],
+        "translation": 15.413,
+        "drawings": 13,
+        "shadings": 1,
+        "xobjects": [
+         "/Fm3"
+        ],
+        "glyphs": 14,
+        "carried_text": " ",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tf",
+         "Tc",
+         "Tw",
+         "k",
+         "gs",
+         "w",
+         "d",
+         "K",
+         "w",
+         "k",
+         "Tf",
+         "k",
+         "gs",
+         "Tf",
+         "w",
+         "M",
+         "j",
+         "J",
+         "gs",
+         "gs",
+         "M",
+         "j",
+         "J",
+         "gs"
+        ],
+        "annotations": [
+         {
+          "xref": 1925,
+          "subtype": "/Link",
+          "rect": [
+           431.13,
+           889.31,
+           563.78,
+           903.28
+          ],
+          "uri": "https://www.pref.osaka.lg.jp/kenkoufukushi/koukikoureisha/hokenrule/ryouyouhi/index.html"
+         }
+        ],
+        "adjacent": [
+         "filled-vector",
+         "foreign-text"
+        ],
+        "order": 1,
+        "line": "HP  ■大阪府施術療養費　 ",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         887.96,
+         903.37
+        ],
+        "id": "following-element-ce5cb2de1afa793e"
+       }
+      ],
+      "frame_bottom": 903.37,
+      "unavailable": "a line below cannot move with the paragraph (問 府国民健康保険課　06（6944）6660): a line decoration would meet protected vector"
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('申' at [414.1, 888.2, 424.4, 898.4])",
+      "seconds": 14.26
+     },
+     "rounds": [
+      {
+       "chain": [
+        "following-element-ce5cb2de1afa793e"
+       ],
+       "decorations": []
+      },
+      {
+       "refused": "prototypes.paragraph_frame.engine.Refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph (問 府国民健康保険課　06（6944）6660): a line decoration would meet protected vector"
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [
+       "following-element-ce5cb2de1afa793e"
+      ],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph (問 府国民健康保険課　06（6944）6660): a line decoration would meet protected vector",
+     "class": "capacity"
+    }
+   ],
+   "P2-L": [
+    {
+     "old": "マイナンバーに関するお問い合わせはこちら",
+     "new": "マイナンバーに関するお問い合わせはこちらマイナンバーに関するお問い合わせ",
+     "proposal_refused": null,
+     "chain": {
+      "translation": 15.75,
+      "needed": true,
+      "candidates": [
+       {
+        "page": 2,
+        "paragraph": "HP マイナンバーカード　保険証利用　  ■",
+        "operators": [
+         9224,
+         20511
+        ],
+        "operator_count": 525,
+        "bytes_sha256": "8f2db30a325460349d5e6ad406d55ea85a7c594e9a330f2e14e21345443919b5",
+        "bounds": [
+         35.43,
+         875.35,
+         250.59,
+         890.32
+        ],
+        "moved_to": [
+         35.43,
+         891.1,
+         250.59,
+         906.07
+        ],
+        "translation": 15.75,
+        "drawings": 13,
+        "shadings": 1,
+        "xobjects": [
+         "/Fm2"
+        ],
+        "glyphs": 21,
+        "carried_text": " ",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tf",
+         "k",
+         "gs",
+         "K",
+         "w",
+         "K",
+         "w",
+         "k",
+         "Tf",
+         "k",
+         "gs",
+         "Tc",
+         "Tw",
+         "Tf",
+         "Tc",
+         "Tw",
+         "w",
+         "M",
+         "j",
+         "J",
+         "gs",
+         "gs",
+         "M",
+         "j",
+         "J",
+         "gs"
+        ],
+        "annotations": [
+         {
+          "xref": 1924,
+          "subtype": "/Link",
+          "rect": [
+           51.49,
+           875.35,
+           246.98,
+           889.31
+          ],
+          "uri": "https://www.mhlw.go.jp/stf/newpage_08277.html"
+         }
+        ],
+        "adjacent": [
+         "filled-vector",
+         "foreign-text"
+        ],
+        "order": 1,
+        "line": "HP  ■マイナンバーカード　保険証利用　 ",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         874.35,
+         890.1
+        ],
+        "id": "following-element-e8fbc50408130e98"
+       },
+       {
+        "page": 2,
+        "paragraph": "問 マイナンバー総合フリーダイヤル　",
+        "operators": [
+         20525,
+         20937
+        ],
+        "operator_count": 26,
+        "bytes_sha256": "d48b965d8e2c9a42a25c8f1780f4bbfa822ab259417525d505b19d4f8e3ebc2a",
+        "bounds": [
+         35.43,
+         893.71,
+         200.06,
+         905.21
+        ],
+        "moved_to": [
+         35.43,
+         909.46,
+         200.06,
+         920.96
+        ],
+        "translation": 15.75,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 18,
+        "carried_text": "",
+        "placed_objects": 1,
+        "replayed_state": [
+         "k",
+         "gs",
+         "Tf",
+         "Tc",
+         "Tw"
+        ],
+        "annotations": [],
+        "adjacent": [
+         "filled-vector",
+         "foreign-text"
+        ],
+        "order": 2,
+        "line": "問 マイナンバー総合フリーダイヤル　",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         874.35,
+         890.1
+        ],
+        "id": "following-element-b03c9982097a84e3"
+       }
+      ],
+      "frame_bottom": 890.1,
+      "unavailable": "a line below cannot move with the paragraph ( （0120）950178 （受付時間：平日9:): a following paragraph is drawn together with content beyond its line"
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('マ' at [35.4, 877.7, 45.9, 888.2])",
+      "seconds": 12.08
+     },
+     "rounds": [
+      {
+       "chain": [
+        "following-element-e8fbc50408130e98",
+        "following-element-b03c9982097a84e3"
+       ],
+       "decorations": []
+      },
+      {
+       "refused": "prototypes.paragraph_frame.engine.Refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph ( （0120）950178 （受付時間：平日9:): a following paragraph is drawn together with content beyond its line"
+      }
+     ],
+     "outcome": "refused",
+     "approved": {
+      "chain": [
+       "following-element-e8fbc50408130e98",
+       "following-element-b03c9982097a84e3"
+      ],
+      "decorations": []
+     },
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph ( （0120）950178 （受付時間：平日9:): a following paragraph is drawn together with content beyond its line",
+     "class": "capacity"
+    }
+   ],
+   "S1-issue17730": [
+    {
+     "old": "Linking to an internal destination",
+     "new": "Linking to an internal destination or an external destination",
+     "proposal_refused": null,
+     "chain": {
+      "translation": 18.0,
+      "needed": true,
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "Linking to an ID：Specify internal-destin",
+        "operators": [
+         3426,
+         4177
+        ],
+        "operator_count": 29,
+        "bytes_sha256": "f5669258978f010fd58db5a1000b969370ef265a2343fc3b35c56a057b9f76d5",
+        "bounds": [
+         56.44,
+         214.58,
+         527.05,
+         225.35
+        ],
+        "moved_to": [
+         56.44,
+         232.58,
+         527.05,
+         243.35
+        ],
+        "translation": 18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 116,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 24,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           215.35,
+           123.63,
+           225.35
+          ],
+          "uri": null
+         }
+        ],
+        "adjacent": [
+         "annotation",
+         "foreign-text"
+        ],
+        "order": 1,
+        "line": "Linking to an ID：Specify internal-destin",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         213.58,
+         231.58
+        ],
+        "id": "following-element-04bb798ac247b7a1"
+       },
+       {
+        "page": 1,
+        "paragraph": "Linking to a page number (page 2)：intern",
+        "operators": [
+         4178,
+         4693
+        ],
+        "operator_count": 29,
+        "bytes_sha256": "aa4c5cf4401d74ff5fb2b7c7e11cb2f5903a535df50f36607e20ffaeafadfee3",
+        "bounds": [
+         56.44,
+         238.58,
+         302.11,
+         249.35
+        ],
+        "moved_to": [
+         56.44,
+         256.58,
+         302.11,
+         267.35
+        ],
+        "translation": 18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 58,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 25,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           239.35,
+           195.54,
+           249.35
+          ],
+          "uri": null
+         }
+        ],
+        "adjacent": [
+         "annotation",
+         "foreign-text"
+        ],
+        "order": 2,
+        "line": "Linking to a page number (page 2)：intern",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         213.58,
+         231.58
+        ],
+        "id": "following-element-004fb751386aaf93"
+       },
+       {
+        "page": 1,
+        "paragraph": "Linking to a page number (page 2) and se",
+        "operators": [
+         4694,
+         5571
+        ],
+        "operator_count": 32,
+        "bytes_sha256": "193051ea8594131b72ec16a4a67ee1a87f8901723af8834e82e8b0c20efb757a",
+        "bounds": [
+         56.44,
+         262.58,
+         495.49,
+         305.07
+        ],
+        "moved_to": [
+         56.44,
+         280.58,
+         495.49,
+         323.07
+        ],
+        "translation": 18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 138,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 26,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           263.35,
+           341.06,
+           273.35
+          ],
+          "uri": null
+         }
+        ],
+        "adjacent": [
+         "foreign-text",
+         "vector"
+        ],
+        "order": 3,
+        "line": "Linking to a page number (page 2) and se",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         213.58,
+         231.58
+        ],
+        "id": "following-element-eb8466cacc378800"
+       },
+       {
+        "page": 1,
+        "paragraph": "Linking to an external file (attachment-",
+        "operators": [
+         5572,
+         6277
+        ],
+        "operator_count": 29,
+        "bytes_sha256": "4284d4297c549e8e873a0a1246ac24412fcdafa978a867456b9c7f5fbd754239",
+        "bounds": [
+         56.44,
+         315.58,
+         480.65,
+         326.35
+        ],
+        "moved_to": [
+         56.44,
+         333.58,
+         480.65,
+         344.35
+        ],
+        "translation": 18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 103,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 8,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           316.35,
+           272.44,
+           326.35
+          ],
+          "uri": null
+         }
+        ],
+        "adjacent": [
+         "annotation",
+         "foreign-text"
+        ],
+        "order": 4,
+        "line": "Linking to an external file (attachment-",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         213.58,
+         231.58
+        ],
+        "id": "following-element-5109bcb733782d24"
+       },
+       {
+        "page": 1,
+        "paragraph": "Linking to a website (https://www.antenn",
+        "operators": [
+         6278,
+         7012
+        ],
+        "operator_count": 29,
+        "bytes_sha256": "9e5b1c724fa15dc9e35930f2cafdce413042a5f7ddb4b956417217fa1b0e9898",
+        "bounds": [
+         56.44,
+         339.58,
+         507.46,
+         350.35
+        ],
+        "moved_to": [
+         56.44,
+         357.58,
+         507.46,
+         368.35
+        ],
+        "translation": 18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 105,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 9,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           340.35,
+           276.0,
+           350.35
+          ],
+          "uri": "https://www.antennahouse.com/"
+         }
+        ],
+        "adjacent": [],
+        "order": 5,
+        "line": "Linking to a website (https://www.antenn",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         213.58,
+         231.58
+        ],
+        "id": "following-element-737f3e295d26f847"
+       }
+      ],
+      "frame_bottom": 231.58
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-04bb798ac247b7a1, following-element-004fb751386aaf93, following-element-eb8466cacc378800, following-element-5109bcb733782d24, following-element-737f3e295d26f847 move with it only when approved explicitly)",
+      "seconds": 3.06
+     },
+     "rounds": [
+      {
+       "chain": [
+        "following-element-04bb798ac247b7a1",
+        "following-element-004fb751386aaf93",
+        "following-element-eb8466cacc378800",
+        "following-element-5109bcb733782d24",
+        "following-element-737f3e295d26f847"
+       ],
+       "decorations": []
+      }
+     ],
+     "outcome": "saved",
+     "approved": {
+      "chain": [
+       "following-element-04bb798ac247b7a1",
+       "following-element-004fb751386aaf93",
+       "following-element-eb8466cacc378800",
+       "following-element-5109bcb733782d24",
+       "following-element-737f3e295d26f847"
+      ],
+      "decorations": []
+     },
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 18.0,
+      "followers_repainted": 0,
+      "placed_objects_moved": [],
+      "decorations_moved": [],
+      "chain_moved": [
+       {
+        "id": "following-element-04bb798ac247b7a1",
+        "old": [
+         56.44292068481445,
+         214.58474731445312,
+         527.0459594726562,
+         225.346435546875
+        ],
+        "new": [
+         56.44292068481445,
+         232.58474731445312,
+         527.0459594726562,
+         243.346435546875
+        ],
+        "translation": [
+         0.0,
+         18.0
+        ],
+        "glyphs": 116,
+        "annotations": [
+         {
+          "xref": 24,
+          "old": [
+           56.693,
+           215.346,
+           123.627,
+           225.346
+          ],
+          "new": [
+           56.693,
+           233.346,
+           123.627,
+           243.346
+          ],
+          "uri": null
+         }
+        ],
+        "line": "Linking to an ID：Specify internal-destin"
+       },
+       {
+        "id": "following-element-004fb751386aaf93",
+        "old": [
+         56.44292068481445,
+         238.58474731445312,
+         302.1080017089844,
+         249.346435546875
+        ],
+        "new": [
+         56.44292068481445,
+         256.5847473144531,
+         302.1080017089844,
+         267.346435546875
+        ],
+        "translation": [
+         0.0,
+         18.0
+        ],
+        "glyphs": 58,
+        "annotations": [
+         {
+          "xref": 25,
+          "old": [
+           56.693,
+           239.346,
+           195.536,
+           249.346
+          ],
+          "new": [
+           56.693,
+           257.346,
+           195.536,
+           267.346
+          ],
+          "uri": null
+         }
+        ],
+        "line": "Linking to a page number (page 2)：intern"
+       },
+       {
+        "id": "following-element-eb8466cacc378800",
+        "old": [
+         56.44292068481445,
+         262.5847473144531,
+         495.4880065917969,
+         305.0722961425781
+        ],
+        "new": [
+         56.44292068481445,
+         280.5847473144531,
+         495.4880065917969,
+         323.0722961425781
+        ],
+        "translation": [
+         0.0,
+         18.0
+        ],
+        "glyphs": 138,
+        "annotations": [
+         {
+          "xref": 26,
+          "old": [
+           56.693,
+           263.346,
+           341.058,
+           273.346
+          ],
+          "new": [
+           56.693,
+           281.346,
+           341.058,
+           291.346
+          ],
+          "uri": null
+         }
+        ],
+        "line": "Linking to a page number (page 2) and se"
+       },
+       {
+        "id": "following-element-5109bcb733782d24",
+        "old": [
+         56.44292068481445,
+         315.5847473144531,
+         480.65203857421875,
+         326.346435546875
+        ],
+        "new": [
+         56.44292068481445,
+         333.5847473144531,
+         480.65203857421875,
+         344.346435546875
+        ],
+        "translation": [
+         0.0,
+         18.0
+        ],
+        "glyphs": 103,
+        "annotations": [
+         {
+          "xref": 8,
+          "old": [
+           56.693,
+           316.346,
+           272.445,
+           326.346
+          ],
+          "new": [
+           56.693,
+           334.346,
+           272.445,
+           344.346
+          ],
+          "uri": null
+         }
+        ],
+        "line": "Linking to an external file (attachment-"
+       },
+       {
+        "id": "following-element-737f3e295d26f847",
+        "old": [
+         56.44292068481445,
+         339.5847473144531,
+         507.4621276855469,
+         350.346435546875
+        ],
+        "new": [
+         56.44292068481445,
+         357.5847473144531,
+         507.4621276855469,
+         368.346435546875
+        ],
+        "translation": [
+         0.0,
+         18.0
+        ],
+        "glyphs": 105,
+        "annotations": [
+         {
+          "xref": 9,
+          "old": [
+           56.693,
+           340.346,
+           276.0,
+           350.346
+          ],
+          "new": [
+           56.693,
+           358.346,
+           276.0,
+           368.346
+          ],
+          "uri": "https://www.antennahouse.com/"
+         }
+        ],
+        "line": "Linking to a website (https://www.antenn"
+       }
+      ]
+     },
+     "moves": {
+      "approved_moves": {
+       "elements": 5,
+       "drawings": 5,
+       "images": 0,
+       "shading_rasters": 0,
+       "glyphs": 520,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 4,
+      "moved": 5,
+      "ok": true
+     },
+     "placement": {
+      "inside_page": true,
+      "under_before": {
+       "drawing": 0,
+       "glyph": 0
+      },
+      "under_after": {
+       "drawing": 0,
+       "glyph": 0
+      },
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         55.44,
+         213.58,
+         528.05,
+         226.35
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 170280
+       },
+       {
+        "region": [
+         55.44,
+         237.58,
+         303.11,
+         250.35
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 89280
+       },
+       {
+        "region": [
+         55.44,
+         261.58,
+         496.49,
+         306.07
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 536220
+       },
+       {
+        "region": [
+         55.44,
+         314.58,
+         481.65,
+         327.35
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 153480
+       },
+       {
+        "region": [
+         55.44,
+         338.58,
+         508.46,
+         351.35
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 163200
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "Linking to an internal destination or an external destination",
+     "new": "Linking to an internal destination",
+     "proposal_refused": null,
+     "chain": {
+      "translation": -18.0,
+      "needed": false,
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "Linking to an ID：Specify internal-destin",
+        "operators": [
+         4105,
+         4856
+        ],
+        "operator_count": 29,
+        "bytes_sha256": "f5669258978f010fd58db5a1000b969370ef265a2343fc3b35c56a057b9f76d5",
+        "bounds": [
+         56.44,
+         232.58,
+         527.05,
+         243.35
+        ],
+        "moved_to": [
+         56.44,
+         214.58,
+         527.05,
+         225.35
+        ],
+        "translation": -18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 116,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 16,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           233.35,
+           123.63,
+           243.35
+          ],
+          "uri": null
+         }
+        ],
+        "adjacent": [],
+        "order": 1,
+        "line": "Linking to an ID：Specify internal-destin",
+        "kind": "following element",
+        "reached": "attached below the shrinking paragraph",
+        "frame_bottom": [
+         222.07,
+         222.07
+        ],
+        "id": "following-element-c24562222455d424"
+       },
+       {
+        "page": 1,
+        "paragraph": "Linking to a page number (page 2)：intern",
+        "operators": [
+         4925,
+         5440
+        ],
+        "operator_count": 29,
+        "bytes_sha256": "aa4c5cf4401d74ff5fb2b7c7e11cb2f5903a535df50f36607e20ffaeafadfee3",
+        "bounds": [
+         56.44,
+         256.58,
+         302.11,
+         267.35
+        ],
+        "moved_to": [
+         56.44,
+         238.58,
+         302.11,
+         249.35
+        ],
+        "translation": -18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 58,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 17,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           257.35,
+           195.54,
+           267.35
+          ],
+          "uri": null
+         }
+        ],
+        "adjacent": [
+         "foreign-text",
+         "vector"
+        ],
+        "order": 2,
+        "line": "Linking to a page number (page 2)：intern",
+        "kind": "following element",
+        "reached": "attached below the shrinking paragraph",
+        "frame_bottom": [
+         222.07,
+         222.07
+        ],
+        "id": "following-element-902cbcf00f815f49"
+       },
+       {
+        "page": 1,
+        "paragraph": "Linking to a page number (page 2) and se",
+        "operators": [
+         5509,
+         6386
+        ],
+        "operator_count": 32,
+        "bytes_sha256": "193051ea8594131b72ec16a4a67ee1a87f8901723af8834e82e8b0c20efb757a",
+        "bounds": [
+         56.44,
+         280.58,
+         495.49,
+         323.07
+        ],
+        "moved_to": [
+         56.44,
+         262.58,
+         495.49,
+         305.07
+        ],
+        "translation": -18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 138,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 18,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           281.35,
+           341.06,
+           291.35
+          ],
+          "uri": null
+         }
+        ],
+        "adjacent": [
+         "annotation",
+         "foreign-text",
+         "vector"
+        ],
+        "order": 3,
+        "line": "Linking to a page number (page 2) and se",
+        "kind": "following element",
+        "reached": "attached below the shrinking paragraph",
+        "frame_bottom": [
+         222.07,
+         222.07
+        ],
+        "id": "following-element-0d9aecfe63b938ac"
+       },
+       {
+        "page": 1,
+        "paragraph": "Linking to an external file (attachment-",
+        "operators": [
+         6465,
+         7170
+        ],
+        "operator_count": 29,
+        "bytes_sha256": "4284d4297c549e8e873a0a1246ac24412fcdafa978a867456b9c7f5fbd754239",
+        "bounds": [
+         56.44,
+         333.58,
+         480.65,
+         344.35
+        ],
+        "moved_to": [
+         56.44,
+         315.58,
+         480.65,
+         326.35
+        ],
+        "translation": -18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 103,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 14,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           334.35,
+           272.44,
+           344.35
+          ],
+          "uri": null
+         }
+        ],
+        "adjacent": [
+         "foreign-text"
+        ],
+        "order": 4,
+        "line": "Linking to an external file (attachment-",
+        "kind": "following element",
+        "reached": "attached below the shrinking paragraph",
+        "frame_bottom": [
+         222.07,
+         222.07
+        ],
+        "id": "following-element-539bc69b78acb9fb"
+       },
+       {
+        "page": 1,
+        "paragraph": "Linking to a website (https://www.antenn",
+        "operators": [
+         7239,
+         7973
+        ],
+        "operator_count": 29,
+        "bytes_sha256": "9e5b1c724fa15dc9e35930f2cafdce413042a5f7ddb4b956417217fa1b0e9898",
+        "bounds": [
+         56.44,
+         357.58,
+         507.46,
+         368.35
+        ],
+        "moved_to": [
+         56.44,
+         339.58,
+         507.46,
+         350.35
+        ],
+        "translation": -18.0,
+        "drawings": 1,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 105,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "rg",
+         "Tf",
+         "rg",
+         "Tf",
+         "Tf"
+        ],
+        "annotations": [
+         {
+          "xref": 15,
+          "subtype": "/Link",
+          "rect": [
+           56.69,
+           358.35,
+           276.0,
+           368.35
+          ],
+          "uri": "https://www.antennahouse.com/"
+         }
+        ],
+        "adjacent": [
+         "foreign-text",
+         "vector"
+        ],
+        "order": 5,
+        "line": "Linking to a website (https://www.antenn",
+        "kind": "following element",
+        "reached": "attached below the shrinking paragraph",
+        "frame_bottom": [
+         222.07,
+         222.07
+        ],
+        "id": "following-element-99f0f1dc9e53380e"
+       }
+      ],
+      "frame_bottom": 222.07
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "saved",
+      "reason": null,
+      "seconds": 5.81
+     },
+     "rounds": [
+      {
+       "chain": [
+        "following-element-c24562222455d424",
+        "following-element-902cbcf00f815f49",
+        "following-element-0d9aecfe63b938ac",
+        "following-element-539bc69b78acb9fb",
+        "following-element-99f0f1dc9e53380e"
+       ],
+       "decorations": []
+      }
+     ],
+     "outcome": "saved",
+     "approved": {
+      "chain": [
+       "following-element-c24562222455d424",
+       "following-element-902cbcf00f815f49",
+       "following-element-0d9aecfe63b938ac",
+       "following-element-539bc69b78acb9fb",
+       "following-element-99f0f1dc9e53380e"
+      ],
+      "decorations": []
+     },
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -18.0,
+      "followers_repainted": 0,
+      "placed_objects_moved": [],
+      "decorations_moved": [],
+      "chain_moved": [
+       {
+        "id": "following-element-c24562222455d424",
+        "old": [
+         56.44292068481445,
+         232.58474731445312,
+         527.0459594726562,
+         243.34649658203125
+        ],
+        "new": [
+         56.44292068481445,
+         214.58474731445312,
+         527.0459594726562,
+         225.34649658203125
+        ],
+        "translation": [
+         0.0,
+         -18.0
+        ],
+        "glyphs": 116,
+        "annotations": [
+         {
+          "xref": 16,
+          "old": [
+           56.693,
+           233.346,
+           123.627,
+           243.346
+          ],
+          "new": [
+           56.693,
+           215.346,
+           123.627,
+           225.346
+          ],
+          "uri": null
+         }
+        ],
+        "line": "Linking to an ID：Specify internal-destin"
+       },
+       {
+        "id": "following-element-902cbcf00f815f49",
+        "old": [
+         56.44292068481445,
+         256.5847473144531,
+         302.1080017089844,
+         267.34649658203125
+        ],
+        "new": [
+         56.44292068481445,
+         238.58474731445312,
+         302.1080017089844,
+         249.34649658203125
+        ],
+        "translation": [
+         0.0,
+         -18.0
+        ],
+        "glyphs": 58,
+        "annotations": [
+         {
+          "xref": 17,
+          "old": [
+           56.693,
+           257.346,
+           195.536,
+           267.346
+          ],
+          "new": [
+           56.693,
+           239.346,
+           195.536,
+           249.346
+          ],
+          "uri": null
+         }
+        ],
+        "line": "Linking to a page number (page 2)：intern"
+       },
+       {
+        "id": "following-element-0d9aecfe63b938ac",
+        "old": [
+         56.44292068481445,
+         280.5847473144531,
+         495.4880065917969,
+         323.0722961425781
+        ],
+        "new": [
+         56.44292068481445,
+         262.5847473144531,
+         495.4880065917969,
+         305.0722961425781
+        ],
+        "translation": [
+         0.0,
+         -18.0
+        ],
+        "glyphs": 138,
+        "annotations": [
+         {
+          "xref": 18,
+          "old": [
+           56.693,
+           281.346,
+           341.058,
+           291.346
+          ],
+          "new": [
+           56.693,
+           263.346,
+           341.058,
+           273.346
+          ],
+          "uri": null
+         }
+        ],
+        "line": "Linking to a page number (page 2) and se"
+       },
+       {
+        "id": "following-element-539bc69b78acb9fb",
+        "old": [
+         56.44292068481445,
+         333.5847473144531,
+         480.65203857421875,
+         344.3464660644531
+        ],
+        "new": [
+         56.44292068481445,
+         315.5847473144531,
+         480.65203857421875,
+         326.3464660644531
+        ],
+        "translation": [
+         0.0,
+         -18.0
+        ],
+        "glyphs": 103,
+        "annotations": [
+         {
+          "xref": 14,
+          "old": [
+           56.693,
+           334.346,
+           272.445,
+           344.346
+          ],
+          "new": [
+           56.693,
+           316.346,
+           272.445,
+           326.346
+          ],
+          "uri": null
+         }
+        ],
+        "line": "Linking to an external file (attachment-"
+       },
+       {
+        "id": "following-element-99f0f1dc9e53380e",
+        "old": [
+         56.44292068481445,
+         357.5847473144531,
+         507.4621276855469,
+         368.3464660644531
+        ],
+        "new": [
+         56.44292068481445,
+         339.5847473144531,
+         507.4621276855469,
+         350.3464660644531
+        ],
+        "translation": [
+         0.0,
+         -18.0
+        ],
+        "glyphs": 105,
+        "annotations": [
+         {
+          "xref": 15,
+          "old": [
+           56.693,
+           358.346,
+           276.0,
+           368.346
+          ],
+          "new": [
+           56.693,
+           340.346,
+           276.0,
+           350.346
+          ],
+          "uri": "https://www.antennahouse.com/"
+         }
+        ],
+        "line": "Linking to a website (https://www.antenn"
+       }
+      ]
+     },
+     "moves": {
+      "approved_moves": {
+       "elements": 5,
+       "drawings": 5,
+       "images": 0,
+       "shading_rasters": 0,
+       "glyphs": 520,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 4,
+      "moved": 5,
+      "ok": true
+     },
+     "placement": {
+      "inside_page": true,
+      "under_before": {
+       "drawing": 0,
+       "glyph": 0
+      },
+      "under_after": {
+       "drawing": 0,
+       "glyph": 0
+      },
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         55.44,
+         231.58,
+         528.05,
+         244.35
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 170280
+       },
+       {
+        "region": [
+         55.44,
+         255.58,
+         303.11,
+         268.35
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 89280
+       },
+       {
+        "region": [
+         55.44,
+         279.58,
+         496.49,
+         324.07
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 536220
+       },
+       {
+        "region": [
+         55.44,
+         332.58,
+         481.65,
+         345.35
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 153480
+       },
+       {
+        "region": [
+         55.44,
+         356.58,
+         508.46,
+         369.35
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 163200
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 30,
+        "kept": 30,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 1,
+        "output_lines": 2,
+        "source_breaks_outside_edit": 0,
+        "breaks_kept": 0
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 1007,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 2e-05,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 6,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1505496
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 6530142
+       },
+       "identical": true
+      }
+     }
+    }
+   ],
+   "S2-lo_migration_ja": [
+    {
+     "old": "日本語フォントについては",
+     "new": "日本語フォントについては日本語フォントについては",
+     "proposal_refused": null,
+     "chain": {
+      "translation": 15.0,
+      "needed": true,
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "能なフォントを用いることを推奨します。",
+        "operators": [
+         12832,
+         12945
+        ],
+        "operator_count": 5,
+        "bytes_sha256": "6472799bd9fd927de024af8f40e2d6069c082393a926454e5ce46b98eab83628",
+        "bounds": [
+         73.8,
+         775.2,
+         235.58,
+         785.2
+        ],
+        "moved_to": [
+         73.8,
+         790.2,
+         235.58,
+         800.2
+        ],
+        "translation": 15.0,
+        "drawings": 0,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 19,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "Tf"
+        ],
+        "annotations": [],
+        "adjacent": [],
+        "order": 1,
+        "line": "能なフォントを用いることを推奨します。",
+        "kind": "following element",
+        "reached": "the growth reaches it",
+        "frame_bottom": [
+         774.2,
+         789.2
+        ],
+        "id": "following-element-760d99b850fde31f"
+       }
+      ],
+      "frame_bottom": 789.2
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-760d99b850fde31f move with it only when approved explicitly)",
+      "seconds": 2.79
+     },
+     "rounds": [
+      {
+       "chain": [
+        "following-element-760d99b850fde31f"
+       ],
+       "decorations": []
+      }
+     ],
+     "outcome": "saved",
+     "approved": {
+      "chain": [
+       "following-element-760d99b850fde31f"
+      ],
+      "decorations": []
+     },
+     "grow": 1,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "glyphs_outside_region_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": 15.0,
+      "followers_repainted": 0,
+      "placed_objects_moved": [],
+      "decorations_moved": [],
+      "chain_moved": [
+       {
+        "id": "following-element-760d99b850fde31f",
+        "old": [
+         73.80000305175781,
+         775.201416015625,
+         235.58065795898438,
+         785.201416015625
+        ],
+        "new": [
+         73.80000305175781,
+         790.201416015625,
+         235.58065795898438,
+         800.201416015625
+        ],
+        "translation": [
+         0.0,
+         -15.0
+        ],
+        "glyphs": 19,
+        "annotations": [],
+        "line": "能なフォントを用いることを推奨します。"
+       }
+      ]
+     },
+     "moves": {
+      "approved_moves": {
+       "elements": 1,
+       "drawings": 0,
+       "images": 0,
+       "shading_rasters": 0,
+       "glyphs": 19,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 0,
+      "ok": true
+     },
+     "placement": {
+      "inside_page": true,
+      "under_before": {
+       "drawing": 0,
+       "image": 0,
+       "glyph": 0
+      },
+      "under_after": {
+       "drawing": 0,
+       "image": 0,
+       "glyph": 0
+      },
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         72.8,
+         774.2,
+         236.58,
+         786.2
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 54612
+       }
+      ],
+      "ok": true
+     }
+    },
+    {
+     "old": "日本語フォントについては日本語フォントについては",
+     "new": "日本語フォントについては",
+     "proposal_refused": null,
+     "chain": {
+      "translation": -15.0,
+      "needed": false,
+      "candidates": [
+       {
+        "page": 1,
+        "paragraph": "能なフォントを用いることを推奨します。",
+        "operators": [
+         13870,
+         13983
+        ],
+        "operator_count": 5,
+        "bytes_sha256": "6472799bd9fd927de024af8f40e2d6069c082393a926454e5ce46b98eab83628",
+        "bounds": [
+         73.8,
+         790.2,
+         235.58,
+         800.2
+        ],
+        "moved_to": [
+         73.8,
+         775.2,
+         235.58,
+         785.2
+        ],
+        "translation": -15.0,
+        "drawings": 0,
+        "shadings": 0,
+        "xobjects": [],
+        "glyphs": 19,
+        "carried_text": "",
+        "placed_objects": 0,
+        "replayed_state": [
+         "Tf"
+        ],
+        "annotations": [],
+        "adjacent": [],
+        "order": 1,
+        "line": "能なフォントを用いることを推奨します。",
+        "kind": "following element",
+        "reached": "attached below the shrinking paragraph",
+        "frame_bottom": [
+         786.4,
+         786.4
+        ],
+        "id": "following-element-6aaeb191d53313f2"
+       }
+      ],
+      "frame_bottom": 786.4
+     },
+     "decorations": {},
+     "unapproved": {
+      "outcome": "saved",
+      "reason": null,
+      "seconds": 10.51
+     },
+     "rounds": [
+      {
+       "chain": [
+        "following-element-6aaeb191d53313f2"
+       ],
+       "decorations": []
+      }
+     ],
+     "outcome": "saved",
+     "approved": {
+      "chain": [
+       "following-element-6aaeb191d53313f2"
+      ],
+      "decorations": []
+     },
+     "grow": 0,
+     "safety": false,
+     "quality": true,
+     "failed": [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "glyphs_outside_region_identical"
+     ],
+     "structure_failed": [],
+     "continued_editing": true,
+     "save": {
+      "follower_translation": -15.0,
+      "followers_repainted": 0,
+      "placed_objects_moved": [],
+      "decorations_moved": [],
+      "chain_moved": [
+       {
+        "id": "following-element-6aaeb191d53313f2",
+        "old": [
+         73.80000305175781,
+         790.201416015625,
+         235.58065795898438,
+         800.201416015625
+        ],
+        "new": [
+         73.80000305175781,
+         775.201416015625,
+         235.58065795898438,
+         785.201416015625
+        ],
+        "translation": [
+         0.0,
+         15.0
+        ],
+        "glyphs": 19,
+        "annotations": [],
+        "line": "能なフォントを用いることを推奨します。"
+       }
+      ]
+     },
+     "moves": {
+      "approved_moves": {
+       "elements": 1,
+       "drawings": 0,
+       "images": 0,
+       "shading_rasters": 0,
+       "glyphs": 19,
+       "exact": true,
+       "nothing_left": true
+      },
+      "protected": {
+       "drawings": true,
+       "images": true
+      },
+      "ok": true
+     },
+     "links": {
+      "links": 1,
+      "moved": 0,
+      "ok": true
+     },
+     "placement": {
+      "inside_page": true,
+      "under_before": {
+       "drawing": 0,
+       "image": 0,
+       "glyph": 0
+      },
+      "under_after": {
+       "drawing": 0,
+       "image": 0,
+       "glyph": 0
+      },
+      "ok": true
+     },
+     "raster": {
+      "groups": [
+       {
+        "region": [
+         72.8,
+         789.2,
+         236.58,
+         801.2
+        ],
+        "size_matches": true,
+        "differing_samples": 0,
+        "largest_difference": 0,
+        "samples": 54612
+       }
+      ],
+      "ok": true
+     },
+     "restored": {
+      "compare": {
+       "paragraph": {
+        "unchanged": 54,
+        "kept": 54,
+        "moved": 0,
+        "restyled": 0,
+        "max_delta": 0.0,
+        "source_lines": 1,
+        "output_lines": 2,
+        "source_breaks_outside_edit": 0,
+        "breaks_kept": 0
+       },
+       "outside_changed": 0,
+       "page_changed": 0,
+       "text_identical": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "text_identical_ignoring_whitespace": {
+        "mupdf": true,
+        "poppler": true
+       },
+       "search_hits": {
+        "reference": 1,
+        "output": 1
+       }
+      },
+      "glyphs": {
+       "glyphs": 1383,
+       "missing": 0,
+       "extra": 0,
+       "beyond_001": 0,
+       "beyond_0001": 0,
+       "largest": 0.0,
+       "ok": true
+      },
+      "paint": {
+       "drawings": true,
+       "images_same": true,
+       "shading_rasters": 0,
+       "images": true
+      },
+      "links": {
+       "annotations": 1,
+       "ok": true
+      },
+      "structure_failed": [],
+      "pixels": {
+       "72": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 1502970
+       },
+       "150": {
+        "differing_samples": 0,
+        "largest": 0,
+        "samples": 6528600
+       },
+       "identical": true
+      }
+     }
+    }
+   ]
+  }
+ }
+}
