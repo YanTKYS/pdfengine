@@ -13,7 +13,8 @@ from .auto_layout import layout
 from .auto_local import LocalUnavailable,local_layout
 from . import auto_restore as restore
 from .auto_flow import place,region_of
-from .auto_writer import decoration_candidates,write
+from .auto_writer import decoration_candidates,follower_delta,write
+from . import chain as following
 from .engine import Refused,sha
 
 
@@ -56,7 +57,7 @@ def _flow_moves(paragraphs,spec,moves):
     return [{i:(dx,dy) for row,dx,dy,_ in rows for i in row['glyph_ids']} for rows in active],active
 
 
-def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=(),decorations=()):
+def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=(),decorations=(),chain=()):
     start=time.perf_counter();c,paragraphs,spec,at,evidence=detect(source,page,selection,occurrence,stored,continuation);observed=time.perf_counter()
     try:
         # A single-column paragraph keeps what the edit does not change where
@@ -109,6 +110,23 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
                 raise Refused('capacity: the paragraph would grow below the shared bottom of the side-by-side columns'+hint)
         _hyphens_stay_at_line_ends(paragraphs[0],lines)
         _placed_objects_stay(lines)
+        # The lines below the paragraphs that the growth reaches (chain) are
+        # listed with their evidence; they move only when every one is approved by id.
+        spec['chain']=[]
+        reached=None if spec.get('mode')=='flow' else following.plan(c,paragraphs,spec,evidence,follower_delta(paragraphs,lines,spec),
+                                                                     followers=[_glyph_area(c,p) for p in paragraphs[1:]])
+        listed_chain=[u['evidence']['id'] for u in (reached or {}).get('units',[])]
+        if set(chain)-set(listed_chain):raise Refused('an approved following element is not a candidate of this edit: '+', '.join(sorted(set(chain)-set(listed_chain))))
+        if chain and set(chain)!=set(listed_chain):
+            raise Refused('the following elements of a chain move only together; approve every one: '+', '.join(sorted(set(listed_chain)-set(chain))))
+        if chain and reached['unavailable']:raise Refused('capacity: the following elements cannot move with the paragraph: '+reached['unavailable'])
+        spec['chain_candidates']=reached
+        if chain:
+            # The frame reaches down past the approved elements (chain.plan): to
+            # the next protected paint that does not move, never past its limit.
+            spec['chain']=reached['units'];spec['frame']=spec['frame'][:3]+[reached['frame_bottom']]
+            evidence['inferred']['frame']=spec['frame'];evidence['inferred']['frame_bottom']='approved following elements move: the next protected paint below that does not move, within the container or clip'
+        if reached:evidence['chain']=following.describe(reached)
         # Line decorations a following paragraph needs to move with it are
         # listed with their evidence; only those approved by id move.
         found,unavailable=({},{}) if spec.get('mode')=='flow' else decoration_candidates(c,paragraphs,lines,spec,evidence)
@@ -126,6 +144,9 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
           layout=spec.get('layout','column flow'),source_lines=len(paragraphs[0].baselines),font_counts=counts,substitute_choice=choice,
           required_approval=['inferred paragraph and capacity','possible follower translation','source style and any explicit substitute'])
         public['continuation']=list(continuation)
+        if chain:
+            public['chain']=sorted(chain)
+            public['required_approval'].append('following elements moved with the paragraph (chain): '+', '.join(sorted(chain)))
         if decorations:
             public['decorations']=sorted(decorations)
             public['required_approval'].append('line decorations moved with their following paragraph: '+', '.join(sorted(decorations)))
@@ -137,7 +158,16 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
     except Exception:c.close();raise
 
 
-def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True,continuation=(),decorations=()):
+def _glyph_area(c,paragraph):
+    """Page area of a paragraph's drawn glyphs."""
+    import pymupdf
+    boxes=[pymupdf.Rect(c.actual[i]['bbox']) for i in paragraph.ids if c.actual[i]['unicode'].strip()]
+    out=boxes[0]
+    for b in boxes[1:]:out|=b
+    return list(out)
+
+
+def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True,continuation=(),decorations=(),chain=()):
     """``stored_conditions=False`` ignores conditions stored by earlier saves (inference only).
 
     ``continuation`` lists candidate column links (``column a->b`` ids from a
@@ -145,22 +175,25 @@ def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,sto
     ``decorations`` lists line decorations (``line-decoration-…`` ids from a
     previous proposal's ``evidence.decorations``) that the user explicitly
     approves to move with their following paragraph.
+    ``chain`` lists the following elements (``following-element-…`` ids from a
+    previous proposal's ``evidence.chain``) that the user explicitly approves
+    to move with the paragraph; a chain moves only with every element approved.
     """
-    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions,tuple(continuation),tuple(sorted(set(decorations))))
+    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions,tuple(continuation),tuple(sorted(set(decorations))),tuple(sorted(set(chain))))
     planned[0].close();return planned[-2]
 
 
 def approve(source,proposal,*,acknowledge_inference=False):
     if acknowledge_inference is not True:raise Refused('explicit inference/format approval required')
     again=propose(source,proposal['page'],proposal['selection'],proposal['replacement'],occurrence=proposal['occurrence'],substitute=proposal['substitute'],
-                  stored_conditions=proposal.get('stored_conditions',True),continuation=proposal.get('continuation',()),decorations=proposal.get('decorations',()))
+                  stored_conditions=proposal.get('stored_conditions',True),continuation=proposal.get('continuation',()),decorations=proposal.get('decorations',()),chain=proposal.get('chain',()))
     if again!=proposal:raise Refused('stale or altered proposal')
     return dict(proposal=again,approved=True,approval_count=1)
 
 
 def save(source,acceptance,output):
     if acceptance.get('approved') is not True:raise Refused('explicit approval missing')
-    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True),tuple(p.get('continuation',())),tuple(p.get('decorations',())))
+    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True),tuple(p.get('continuation',())),tuple(p.get('decorations',())),tuple(p.get('chain',())))
     c,paragraphs,spec,evidence,fonts,lines,again,timing=planned
     try:
         if p!=again:raise Refused('stale or altered accepted proposal')

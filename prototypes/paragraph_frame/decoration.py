@@ -72,6 +72,9 @@ def _item_end(seq, k):
         m0, j = seq[k - 1].marked_content_depth, k
         while seq[j].marked_content_depth > m0:
             j += 1
+        # InDesign's placed object: BDC q … EMC Q (its Q closes it).
+        while seq[j].q_depth > seq[k - 1].q_depth and j + 1 < len(seq) and seq[j + 1].operator.name == 'Q':
+            j += 1
         return j
     if n in PATH:
         j = k
@@ -189,8 +192,11 @@ def _check_level(seq, lo, hi, depth, program_bytes):
     return b'\n'.join(replay)
 
 
-def _annotations(c, page_number, region, bounds, page):
-    """Annotations over the line: links inside the group, or a refusal."""
+def _annotations(c, page_number, region, bounds, page, others=()):
+    """Annotations over the line: links inside the group, or a refusal.
+
+    ``others``: areas of other elements moved with it (chain); an annotation
+    inside one of them, or mostly over another line, is not this line's."""
     reader = c.reader
     page_obj = reader.pages[page_number - 1]
     annots = page_obj.get('/Annots')
@@ -206,7 +212,9 @@ def _annotations(c, page_number, region, bounds, page):
         a = ref.get_object()
         x0, y0, x1, y1 = map(float, a['/Rect'])
         rect = _page_rect(min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1), (1, 0, 0, 1, 0, 0), page)
-        if not rect.intersects(region):
+        if not rect.intersects(region) or any((pymupdf.Rect(r) + (-TOL, -TOL, TOL, TOL)).contains(rect) for r in others):
+            continue
+        if others and (rect & region).height < .5 * rect.height:
             continue
         if a.get('/Subtype') != '/Link' or '/Popup' in a or '/IRT' in a:
             raise Refused(f"the line of a following paragraph carries a {a.get('/Subtype')} annotation")
@@ -225,15 +233,21 @@ def _annotations(c, page_number, region, bounds, page):
     return out
 
 
-def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), taken=(), moving=()):
+def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), taken=(), moving=(), slot=None):
     """The candidate line decoration of following ``paragraph`` moved by ``delta`` (page y), or a refusal.
 
     ``taken``: glyphs of the other paragraphs the edit draws (the edited one,
     the other followers); a group never carries them. Other glyphs drawn on
     the line (a search box's label) are carried with it and listed.
     ``moving``: page areas of other content moved by the same translation (the
-    other followers' placed objects); it is no obstacle to the group."""
+    other followers' placed objects); it is no obstacle to the group.
+    ``slot``: the line's height up to its neighbours (page y0, y1; chain): what
+    is drawn there is drawn on the line too."""
     program = next(((s['stream_xref'], tuple(tuple(i) for i in s['invocation'])) for s in paragraph.scopes if s['kind'] == 'fixed'), None)
+    if program is None:
+        # A line without a placed object (chain): the one program drawing its text.
+        drawn = {(ev.stream_xref, ev.invocation) for ev in c.events if any(i in set(paragraph.ids) for ch in ev.chars for i in ch.source_orders)}
+        program = next(iter(drawn)) if len(drawn) == 1 else None
     if program is None or program[1]:
         raise Refused('a line decoration is moved only in the page\'s own content')
     seq = c.stream_boundaries[program]
@@ -264,6 +278,8 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     if panel is not None and panel.width < 2 * column.width:
         column = pymupdf.Rect(min(column.x0, panel.x0), column.y0, max(column.x1, panel.x1), column.y1)
     region = pymupdf.Rect(column.x0 - TOL, band.y0 - TOL, column.x1 + TOL, band.y1 + TOL)
+    if slot is not None:
+        region = pymupdf.Rect(region.x0, min(region.y0, slot[0]), region.x1, max(region.y1, slot[1]))
     if seq[lo - 1].text_object or seq[lo - 1].pending_path or seq[lo - 1].pending_clip:
         raise Refused('a line decoration starts inside a text object or a path')
     depth = seq[lo - 1].q_depth
@@ -302,6 +318,8 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     # The line holds the text the group carries too.
     band = placed_move._union([band] + [pymupdf.Rect(c.actual[i]['bbox']) for i in carried if c.actual[i]['unicode'].strip()])
     region = pymupdf.Rect(column.x0 - TOL, band.y0 - TOL, column.x1 + TOL, band.y1 + TOL)
+    if slot is not None:
+        region = pymupdf.Rect(region.x0, min(region.y0, slot[0]), region.x1, max(region.y1, slot[1]))
     end = seq[hi]
     if end.q_depth != depth or end.text_object or end.pending_path or end.pending_clip or end.marked_content_depth != seq[lo - 1].marked_content_depth:
         raise Refused('a line decoration is not a balanced drawing')
@@ -315,7 +333,9 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
         if o['kind'] not in ('container', 'foreign-text') and region.contains(box) and any(box.intersects(r) for r in rects):
             rects.append(box)
     bounds = placed_move._union(rects)
-    annotations = _annotations(c, page_number, region, bounds, page)
+    # Annotations over the line: its text's band, as for a following paragraph's line.
+    line = pymupdf.Rect(column.x0 - TOL, band.y0 - TOL, column.x1 + TOL, band.y1 + TOL)
+    annotations = _annotations(c, page_number, line, bounds, page, others=moving if slot is not None else ())
     whole = placed_move._union([bounds] + [pymupdf.Rect(a['rect']) for a in annotations])
     new = whole + (0, delta, 0, delta)
     rects += [pymupdf.Rect(a['rect']) for a in annotations]

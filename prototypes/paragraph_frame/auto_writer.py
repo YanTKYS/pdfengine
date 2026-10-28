@@ -59,8 +59,10 @@ def decoration_candidates(c,paragraphs,lines,spec,evidence):
         if not p.fixed:continue
         try:units[k]=_fixed_units(c,p)
         except Refused as exc:unavailable[k]=str(exc)
+    # Approved following elements (chain) move by the same translation.
+    approved=[g['bounds'] for g in spec.get('chain') or ()]
     for k,(program,us) in units.items():
-        moving=[u['bounds'] for j,(_,vs) in units.items() if j!=k for u in vs]
+        moving=[u['bounds'] for j,(_,vs) in units.items() if j!=k for u in vs]+approved
         try:placed_move.plan(c,paragraphs[k],program,delta,frames,obstacles,page,moving=moving);continue
         except Refused as exc:
             if 'holds other content' not in str(exc):unavailable[k]=str(exc);continue
@@ -94,6 +96,12 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     if not set(active[0].ids)-kept_ids-set(active[0].fixed):kept_ids,kept_scopes=set(),set()
     # An approved line decoration keeps its operators, its paragraph's glyphs too.
     groups={k:g for k,g in (spec.get('decorations') or {}).items() if k<len(active)}
+    # Following elements the growth reaches move only once approved (chain).
+    chained=spec.get('chain') or []
+    reached=spec.get('chain_candidates') or {}
+    if reached.get('needed') and reached.get('units') and not reached.get('unavailable') and not chained:
+        raise Refused('capacity: the paragraph would grow into the lines below it (following elements '
+                      +', '.join(u['evidence']['id'] for u in reached['units'])+' move with it only when approved explicitly)')
     held={i for g in groups.values() for i in g['glyphs']}
     # Inline placed objects stay drawn as they are (semantics: fixed).
     selected={i for p in active for i in p.ids if i not in set(p.fixed) and i not in kept_ids and i not in held}
@@ -121,14 +129,18 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
             if g['program']!=(stream,invocation):raise Refused('an approved line decoration is not drawn where the edit is written')
             units.append(dict(g,paragraph=p,shift=(0.,dy)))
             continue
-        # Approved decorations and the other followers' placed objects move with it.
-        moving=[g['bounds'] for g in groups.values()]+[r for j,rs in others.items() if j!=k for r in rs]
+        # Approved decorations, following elements and the other followers' placed objects move with it.
+        moving=[g['bounds'] for g in groups.values()]+[g['bounds'] for g in chained]+[r for j,rs in others.items() if j!=k for r in rs]
         try:units+=[dict(u,paragraph=p,shift=(0.,dy)) for u in placed_move.plan(c,p,(stream,invocation),dy,spec.get('frames',[spec['frame']]),
                                                                                 evidence['observed']['obstacles'],c.page.transformation_matrix,moving=moving)]
         except Refused as exc:
             candidate=(spec.get('decoration_candidates') or {}).get(k)
             if candidate:raise Refused(f"{exc} (line decoration {candidate['evidence']['id']} moves with it only when approved explicitly)")
             raise
+    # Approved following elements: their operators, translated where they are drawn.
+    for g in chained:
+        if g['program']!=(stream,invocation):raise Refused('an approved following element is not drawn where the edit is written')
+        units.append(dict(g,paragraph=g['row']['paragraph'],shift=(0.,delta)))
     moved={i:u['shift'] for u in units for i in u['glyphs']}
     if {i for p in active[1:] for i in p.fixed}-set(moved):raise Refused('a following paragraph with an inline placed object cannot move')
     edits=[(e.operator.start,e.operator.end,serialized_event(e,selected,remove=True)) for e in removed]
@@ -373,7 +385,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
             rewritten.add(p.parent)
 
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
-    decoration.move_annotations(writer,lookup,groups.values())
+    decoration.move_annotations(writer,lookup,list(groups.values())+list(chained))
     clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts,{name:writer._add_object(form_write.neutral_gs(dict(v))) for v,name in gs_names.items()} if neutral else None)
     output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);fd,tmp=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
     fd,draft=tempfile.mkstemp(suffix='.pdf',dir=output.parent);os.close(fd)
@@ -392,7 +404,13 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     finally:
         for path in (tmp,draft):
             if os.path.exists(path):os.unlink(path)
-    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,placed_objects_moved=[dict(old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs'])) for u in units if 'evidence' not in u],decorations_moved=[dict(id=u['evidence']['id'],old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs']),annotations=[dict(xref=a['xref'],old=[round(v,3) for v in a['rect']],new=[round(v,3) for v in pymupdf.Rect(a['rect'])+(0,u['shift'][1],0,u['shift'][1])],uri=a['uri']) for a in u['annotations']]) for u in units if 'evidence' in u],source_glyphs_removed=len(selected),layout=spec.get('layout','column flow'),kept_glyphs=len(kept_ids),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
+    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,placed_objects_moved=[dict(old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs'])) for u in units if 'evidence' not in u],decorations_moved=[moved_record(u) for u in units if 'evidence' in u and 'row' not in u],**({'chain_moved':[dict(moved_record(u),line=u['row']['text'][:40]) for u in units if 'row' in u]} if chained else {}),source_glyphs_removed=len(selected),layout=spec.get('layout','column flow'),kept_glyphs=len(kept_ids),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
+
+
+def moved_record(u):
+    """A moved line decoration or following element in the save record."""
+    return dict(id=u['evidence']['id'],old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs']),
+                annotations=[dict(xref=a['xref'],old=[round(v,3) for v in a['rect']],new=[round(v,3) for v in pymupdf.Rect(a['rect'])+(0,u['shift'][1],0,u['shift'][1])],uri=a['uri']) for a in u['annotations']])
 
 
 def kept_lines(c,paragraph,lines):
