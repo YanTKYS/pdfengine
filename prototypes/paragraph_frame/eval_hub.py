@@ -303,7 +303,7 @@ def phase_compare(args):
     out = Path(args.root) / 'compare.json'
     out.write_text(json.dumps(result, ensure_ascii=False, indent=1, default=str) + '\n')
     print('compared', result['compared'], 'records of', ', '.join(result['evaluations']), '| changed', len(result['changed']),
-          '| only in baseline', len(result['only_baseline']), '| only now', len(result['only_current']))
+          '| only in baseline', len(result['only_baseline']), '| only now', len(result['only_current']), '| cases not run', len(result['cases_not_run']))
     for c in result['changed'][:40]:
         print(' ', json.dumps(c, ensure_ascii=False, default=str)[:400])
     if result['not_compared']:

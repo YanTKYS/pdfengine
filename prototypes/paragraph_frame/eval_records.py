@@ -208,8 +208,12 @@ def compare(baseline, current, evaluations=None):
                                 failed=[a['failed'], b['failed']],
                                 checks={c: [a['checks'].get(c), b['checks'].get(c)] for c in sorted(set(a['checks']) | set(b['checks']))
                                         if a['checks'].get(c) != b['checks'].get(c)}))
+    # A case not run now (a tier runs part of an evaluation, the smoke set) is not a missing step.
+    ran = {k[:2] for k in now}
+    gone = sorted(set(base) - set(now))
     return dict(evaluations=sorted(evaluations), compared=len(set(base) & set(now)), changed=changed,
-                only_baseline=[list(k) for k in sorted(set(base) - set(now))], only_current=[list(k) for k in sorted(set(now) - set(base))])
+                only_baseline=[list(k) for k in gone if k[:2] in ran], only_current=[list(k) for k in sorted(set(now) - set(base))],
+                cases_not_run=sorted({f'{k[0]}:{k[1]}' for k in gone if k[:2] not in ran}))
 
 
 def summary(records):

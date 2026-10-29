@@ -54,7 +54,10 @@ def test_comparison_reports_what_changed():
     diff = er.compare(base, now)
     assert diff['compared'] == 2 and [c['record'] for c in diff['changed']] == [['chain', 'C1', '2']]
     assert diff['changed'][0]['checks'] == {'quality': [True, False]}
-    assert diff['only_baseline'] == [['chain', 'C2', '1']] and diff['only_current'] == [['chain', 'C3', '1']]
+    # C2 was not run now (a tier running part of an evaluation): reported as such, not as a missing step.
+    assert diff['only_baseline'] == [] and diff['cases_not_run'] == ['chain:C2'] and diff['only_current'] == [['chain', 'C3', '1']]
+    gone = er.compare(base, er.case_records('chain', {'C1': [step()], 'C2': [step()]}))
+    assert gone['only_baseline'] == [['chain', 'C1', '2']]
 
 
 def test_the_baseline_and_the_map_are_well_formed():
@@ -62,7 +65,7 @@ def test_the_baseline_and_the_map_are_well_formed():
     keys = {'evaluation', 'case', 'step', 'group', 'mode', 'outcome', 'reason_class', 'failed', 'checks', 'tiers'}
     assert base['records'] and all(keys <= set(r) for r in base['records'])
     assert len({er.key(r) for r in base['records']}) == len(base['records'])
-    assert set(base['evaluations']) == {'chain', 'separate', 'decoration', 'restore', 'placed', 'multiedit', 'roundtrip', 'fidelity',
+    assert set(base['evaluations']) == {'smoke', 'chain', 'separate', 'decoration', 'restore', 'placed', 'multiedit', 'roundtrip', 'fidelity',
                                         'generalization', 'continuity', 'column_flow', 'indesign', 'tagged'}
     rules = json.loads(hub.IMPACT.read_text())['rules']
     assert all(set(r.get('direct', [])) | set(r.get('related', [])) <= set(hub.EVALUATIONS) for r in rules)
