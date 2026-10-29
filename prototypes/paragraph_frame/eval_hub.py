@@ -71,7 +71,7 @@ EVALUATIONS = {
                                                           '--survey', '{id_survey}']) for p in ('requests', 'samples')]
                        + [('tg-fid', 'tagged_evaluate', ['--root', '{dir}', '--fusei', '{fusei}', '--pdfjs', '{pdfjs}', '--phase', p,
                                                          '--survey', '{tg_survey}']) for p in ('requests', 'samples')],
-                       inputs=['fusei', 'pdfjs', 'id_survey', 'tg_survey'], sequential=True),
+                       inputs=['fusei', 'pdfjs', 'id_survey', 'tg_survey']),
 }
 EVALUATED = {'smoke': 'smoke', 'chain': 'chain', 'separate': 'separate', 'decoration': 'decoration', 'restore': 'restore',
              'placed': 'placed', 'multiedit': 'multiedit', 'roundtrip': 'roundtrip', 'fidelity': 'fidelity'}
@@ -193,7 +193,8 @@ def inputs_of(name, args):
 
 # --- running -----------------------------------------------------------------
 
-def run_one(name, root, args):
+def run_one(name, root, args, progress=lambda name, parts: None):
+    """Run an evaluation's parts: the phases of one folder in order, the folders at once."""
     spec = EVALUATIONS[name]
     folder = root / name
     problem, values = inputs_of(name, args)
@@ -212,13 +213,17 @@ def run_one(name, root, args):
         t = time.perf_counter()
         with open(target / f'{module}.log', 'a') as log:
             rc = subprocess.run(cmd, stdout=log, stderr=subprocess.STDOUT, env=env).returncode
-        return dict(part=sub or name, module=module, returncode=rc, seconds=round(time.perf_counter() - t, 1))
+        done = dict(part=sub or name, module=module, phase=next((a for a, b in zip(argv[1:], argv) if b == '--phase'), None), returncode=rc,
+                    seconds=round(time.perf_counter() - t, 1))
+        parts.append(done)
+        progress(name, parts)
+        return done
 
-    if spec.get('sequential'):
-        parts = [part(p) for p in spec['parts']]
-    else:
-        with ThreadPoolExecutor(max_workers=len(spec['parts'])) as pool:
-            parts = list(pool.map(part, spec['parts']))
+    folders = {}
+    for p in spec['parts']:
+        folders.setdefault(p[0], []).append(p)
+    with ThreadPoolExecutor(max_workers=len(folders)) as pool:
+        list(pool.map(lambda ps: [part(p) for p in ps], folders.values()))
     if name == 'regression':
         out = folder / 'regression.json'
         cmd = [PY, '-m', 'prototypes.paragraph_frame.tagged_regression', str(out), str(folder / 'tg-fid'), values['fusei'], values['pdfjs']]
@@ -247,11 +252,27 @@ def phase_run(args):
     commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(['git', 'status', '--porcelain', '--', 'prototypes', 'pdfeditor'], capture_output=True, text=True).stdout.strip())
     started = time.perf_counter()
+    timings = dict(tier=args.tier, changed=changed_files(args), code=commit, uncommitted_code_changes=dirty, evaluations=[], running=names)
+
+    def write():
+        # Written as parts finish: a run that is stopped leaves what it measured.
+        timings['seconds'] = round(time.perf_counter() - started, 1)
+        (root / 'timings.json').write_text(json.dumps(timings, ensure_ascii=False, indent=1, default=str) + '\n')
+
+    def partial(name, parts):
+        timings.setdefault('parts_done', {})[name] = list(parts)
+        write()
+
+    def one(n):
+        r = run_one(n, root, args, partial)
+        timings['evaluations'].append(r)
+        timings['running'] = [x for x in timings['running'] if x != n]
+        write()
+        return r
+
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        runs = list(pool.map(lambda n: run_one(n, root, args), names))
-    timings = dict(tier=args.tier, changed=changed_files(args), code=commit, uncommitted_code_changes=dirty, evaluations=runs,
-                   seconds=round(time.perf_counter() - started, 1))
-    (root / 'timings.json').write_text(json.dumps(timings, ensure_ascii=False, indent=1) + '\n')
+        runs = list(pool.map(one, names))
+    write()
     for r in runs:
         print(r['evaluation'], r['status'], r['seconds'], 's', flush=True)
     print('total', timings['seconds'], 's')
