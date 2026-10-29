@@ -1,0 +1,179 @@
+{
+ "schema": "paragraph-frame-tier-run-1",
+ "tier": "normal",
+ "code": "c6ae949",
+ "changed": [
+  ".github/ISSUE_TEMPLATE/development.md",
+  ".github/pull_request_template.md",
+  ".gitignore",
+  "CLAUDE.md",
+  "docs/development-rules.md",
+  "docs/evaluation-foundation.md",
+  "evaluations/baseline/README.md",
+  "evaluations/baseline/audit-comparison.json",
+  "evaluations/baseline/baseline.json",
+  "evaluations/baseline/changes.json",
+  "evaluations/baseline/impact.json",
+  "evaluations/smoke/manifest.json",
+  "evaluations/smoke/results.json",
+  "prototypes/paragraph_frame/approved_audit.py",
+  "prototypes/paragraph_frame/eval_hub.py",
+  "prototypes/paragraph_frame/eval_records.py",
+  "prototypes/paragraph_frame/indesign_evaluate.py",
+  "prototypes/paragraph_frame/smoke_evaluate.py",
+  "prototypes/paragraph_frame/tagged_regression.py",
+  "tests/test_approved_audit.py",
+  "tests/test_eval_hub.py"
+ ],
+ "seconds": 4284.5,
+ "evaluations": [
+  {
+   "evaluation": "smoke",
+   "status": "ran",
+   "seconds": 439.3,
+   "parts": [
+    {
+     "part": "smoke",
+     "module": "smoke_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 439.3
+    }
+   ]
+  },
+  {
+   "evaluation": "regression",
+   "status": "ran",
+   "seconds": 4283.7,
+   "parts": [
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "fixtures",
+     "returncode": 0,
+     "seconds": 45.9
+    },
+    {
+     "part": "reg87",
+     "module": "generalization_evaluate",
+     "phase": "initial",
+     "returncode": 0,
+     "seconds": 109.8
+    },
+    {
+     "part": "reg87",
+     "module": "generalization_evaluate",
+     "phase": "audit",
+     "returncode": 0,
+     "seconds": 105.9
+    },
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "sequences",
+     "returncode": 0,
+     "seconds": 191.9
+    },
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "singles",
+     "returncode": 0,
+     "seconds": 73.1
+    },
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "recognition",
+     "returncode": 0,
+     "seconds": 9.7
+    },
+    {
+     "part": "reg88",
+     "module": "continuity_evaluate",
+     "phase": "sequences",
+     "returncode": 0,
+     "seconds": 433.1
+    },
+    {
+     "part": "reg87",
+     "module": "generalization_evaluate",
+     "phase": "lifecycle",
+     "returncode": 0,
+     "seconds": 271.1
+    },
+    {
+     "part": "reg90",
+     "module": "indesign_evaluate",
+     "phase": "requests",
+     "returncode": 0,
+     "seconds": 553.4
+    },
+    {
+     "part": "tg-fid",
+     "module": "tagged_evaluate",
+     "phase": "requests",
+     "returncode": 0,
+     "seconds": 628.5
+    },
+    {
+     "part": "reg88",
+     "module": "continuity_evaluate",
+     "phase": "new",
+     "returncode": 0,
+     "seconds": 249.8
+    },
+    {
+     "part": "tg-fid",
+     "module": "tagged_evaluate",
+     "phase": "samples",
+     "returncode": 0,
+     "seconds": 1489.6
+    },
+    {
+     "part": "reg90",
+     "module": "indesign_evaluate",
+     "phase": "samples",
+     "returncode": 0,
+     "seconds": 3659.1
+    },
+    {
+     "part": "compare",
+     "module": "tagged_regression",
+     "seconds": 0,
+     "returncode": 0
+    }
+   ]
+  }
+ ],
+ "compare": {
+  "evaluations": [
+   "column_flow",
+   "continuity",
+   "generalization",
+   "indesign",
+   "smoke",
+   "tagged"
+  ],
+  "compared": 187,
+  "changed": [],
+  "only_baseline": [],
+  "only_current": [],
+  "cases_not_run": [
+   "smoke:A1",
+   "smoke:I2",
+   "smoke:I3",
+   "smoke:I4",
+   "smoke:I5",
+   "smoke:L4",
+   "smoke:T1"
+  ],
+  "baseline": {
+   "created": "2026-10-29",
+   "codes": [
+    "062305f",
+    "dd3ea7e"
+   ]
+  }
+ }
+}
