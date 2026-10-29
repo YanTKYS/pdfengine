@@ -32,6 +32,8 @@ approval, approved and protected pass.
 
   .venv/bin/python -m prototypes.paragraph_frame.approved_audit <source> <output.pdf> [<page>]
   (reads <output>.proposal.json and <output>.save.json)
+  .venv/bin/python -m prototypes.paragraph_frame.approved_audit --compare-root tmp/hub/<run> --documents <pdf> ... --out <json>
+  (the existing audit beside this one, for every saved step of the runs)
 """
 from collections import Counter
 import json
@@ -321,5 +323,86 @@ def _quality(source, output, page, text):
     return out
 
 
+def compare_runs(root, documents, evaluations=('chain', 'separate', 'decoration', 'restore', 'placed')):
+    """The existing audit (as each run recorded it) beside this audit, for every saved step of the runs in ``root`` (eval_hub layout).
+
+    A step's source is found by the digest its proposal names, among the
+    runs' fixtures, ``documents`` and the earlier steps' outputs."""
+    import hashlib
+    root = Path(root)
+    digest = lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+    pool = {digest(p): p for p in documents}
+    rows = []
+    for name in evaluations:
+        folder = root / name
+        if not (folder / 'results.json').exists():
+            continue
+        for f in sorted(folder.glob('fixtures/**/*.pdf')):
+            pool.setdefault(digest(f), f)
+        results = json.loads((folder / 'results.json').read_text())
+        outputs = sorted(folder.glob('*/**/out.pdf'))
+        for out in outputs:
+            pool.setdefault(digest(out), out)
+        for out in outputs:
+            proposal_path = out.with_suffix('.proposal.json')
+            if not proposal_path.exists() or not out.with_suffix('.save.json').exists():
+                continue
+            proposal = json.loads(proposal_path.read_text())
+            rel = out.relative_to(folder).parts[:-1]
+            case, step = rel[0], '/'.join(rel[1:])
+            old = _recorded(results, rel)
+            source = pool.get(proposal.get('source_sha256'))
+            row = dict(evaluation=name, case=case, step=step, old=old)
+            if source is None:
+                row['new'] = dict(verdict='not run', error='source not found by its digest')
+            else:
+                try:
+                    a = audit(source, out, proposal['page'], proposal)
+                    row['new'] = dict(verdict=a['verdict'], mode=a['mode'], approval=a['approval']['status'], quality=a['quality']['status'],
+                                      approved=[x['status'] for x in a['approved']], protected=a['protected']['status'],
+                                      reasons=a['approval']['reasons'] + [r for x in a['approved'] for r in x['reasons']] + a['protected']['reasons'])
+                except Exception as exc:
+                    row['new'] = dict(verdict='not run', error=f'{type(exc).__name__}: {exc}'[:200])
+            rows.append(row)
+            print(name, case, step, (old or {}).get('safety'), (old or {}).get('failed'), '->', row['new'].get('verdict'), row['new'].get('reasons', [])[:1], flush=True)
+    return rows
+
+
+def _recorded(results, rel):
+    """The existing audit of the step whose output is ``<case>/<kind...>/<n>/out.pdf``."""
+    x = results.get(rel[0])
+    for part in rel[1:]:
+        if isinstance(x, dict):
+            x = x.get(part)
+        elif isinstance(x, list) and part.isdigit() and int(part) <= len(x):
+            x = x[int(part) - 1]
+        else:
+            return None
+    if not isinstance(x, dict):
+        return None
+    return dict(outcome=x.get('outcome'), safety=x.get('safety'), quality=x.get('quality'), failed=x.get('failed'))
+
+
+def main():
+    import argparse
+    p = argparse.ArgumentParser()
+    p.add_argument('source', nargs='?')
+    p.add_argument('output', nargs='?')
+    p.add_argument('page', nargs='?', type=int)
+    p.add_argument('--compare-root', help='eval_hub layout: compare the existing audit with this one on every saved step')
+    p.add_argument('--documents', nargs='*', default=[])
+    p.add_argument('--out')
+    args = p.parse_args()
+    if args.compare_root:
+        rows = compare_runs(args.compare_root, args.documents)
+        table = Counter((r['evaluation'], 'old safety ' + str((r['old'] or {}).get('safety')), 'new ' + r['new'].get('verdict', '?')) for r in rows)
+        out = dict(rows=rows, table=[list(k) + [v] for k, v in sorted(table.items())])
+        Path(args.out).write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
+        for k, v in sorted(table.items()):
+            print(*k, v)
+    else:
+        print(json.dumps(audit(args.source, args.output, args.page), ensure_ascii=False, indent=1, default=str))
+
+
 if __name__ == '__main__':
-    print(json.dumps(audit(sys.argv[1], sys.argv[2], int(sys.argv[3]) if len(sys.argv) > 3 else None), ensure_ascii=False, indent=1, default=str))
+    main()
