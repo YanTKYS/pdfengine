@@ -300,7 +300,7 @@ def audit(source, output, page_number=None, proposal=None, save=None):
         reasons.append('another page or its forms changed')
     protected = dict(status='fail' if reasons else 'pass', reasons=reasons, pixels=pixels, annotations=len(aa))
     approval = approval_check(source, proposal, save)
-    quality = _quality(source, output, page_number, text)
+    quality = _quality(source, output, page_number, text, edited_old, edited_new, olds + news)
     parts = [approval['status'], protected['status']] + [x['status'] for x in approved]
     verdict = 'fail' if 'fail' in parts else 'unverified' if unchecked else 'pass'
     return dict(verdict=verdict, approval=approval, approved=approved, protected=protected, quality=quality,
@@ -308,8 +308,24 @@ def audit(source, output, page_number=None, proposal=None, save=None):
                 mode='layout' if any(c['what'] != 'following paragraphs' for c in moves) else 'faithful')
 
 
-def _quality(source, output, page, text):
-    """Extraction (MuPDF, Poppler) equal to the source's with the replacement; the new text found by search."""
+def _styles(path, page, area, away):
+    """(size, colour) of the inked glyphs whose centre lies in ``area`` and in none of ``away``."""
+    out = set()
+    with pymupdf.open(path) as d:
+        for b in d[page - 1].get_text('rawdict')['blocks']:
+            for l in b.get('lines', []):
+                for s in l['spans']:
+                    for c in s['chars']:
+                        r = pymupdf.Rect(c['bbox'])
+                        mid = (r.tl + r.br) / 2
+                        if c['c'].strip() and area.contains(mid) and not any(a.contains(mid) for a in away):
+                            out.add((round(s['size'], 2), s['color']))
+    return out
+
+
+def _quality(source, output, page, text, edited_old, edited_new, moved):
+    """Extraction (MuPDF, Poppler) equal to the source's with the replacement; the new text found by search; the
+    edited paragraph keeps its sizes and colours (its glyphs alone: approved moves into its area are not its text)."""
     old, new = text['replace']
     bare = lambda s: ''.join(s.split())
     out = {}
@@ -325,6 +341,7 @@ def _quality(source, output, page, text):
         # (Search finds text within a reader line: a replacement broken over lines is found by its lines' text.)
         lines = [''.join(s['text'] for s in l['spans']) for b in d[page - 1].get_text('dict')['blocks'] for l in b.get('lines', [])]
         out['search_mupdf'] = bool(d[page - 1].search_for(new)) or not any(new in l for l in lines) if new.strip() else True
+    out['size_and_colour_kept'] = _styles(output, page, edited_new, moved) <= _styles(source, page, edited_new, moved)
     out['status'] = 'pass' if all(out.values()) else 'fail'
     return out
 

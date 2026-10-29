@@ -2,6 +2,7 @@
 
   .venv/bin/python -m prototypes.paragraph_frame.smoke_evaluate --phase freeze --fusei <477.pdf> --pdfjs <pdf.js dir>
   .venv/bin/python -m prototypes.paragraph_frame.smoke_evaluate --phase run --root <dir> --fusei <477.pdf> --pdfjs <pdf.js dir> [--only <id> ...]
+  .venv/bin/python -m prototypes.paragraph_frame.smoke_evaluate --phase audit --root <dir> --fusei <477.pdf> --pdfjs <pdf.js dir>
   .venv/bin/python -m prototypes.paragraph_frame.smoke_evaluate --phase collect --root <dir>
 
 The cases are representative edits defined by the implementer (issue #108):
@@ -152,6 +153,28 @@ def phase_run(args):
     (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
 
 
+def phase_audit(args):
+    """The approved-change audit again over the saved steps of a run (results updated in place)."""
+    from .approved_audit import audit
+    root = Path(args.root)
+    results = json.loads((root / 'results.json').read_text())
+    manifest = json.loads(MANIFEST.read_text())
+    cases = {c['id']: c for c in manifest['cases']}
+    for cid, seq in results.items():
+        start = source_of(cases[cid]['document'], args)
+        for n, r in enumerate(seq):
+            output = root / cid / f'{n + 1}' / 'out.pdf'
+            if r.get('outcome') != 'saved' or not output.exists():
+                break
+            a = audit(start, output, cases[cid]['page'])
+            r['approved_audit'] = dict(verdict=a['verdict'], mode=a['mode'], approval=a['approval'], quality=a['quality'],
+                                       approved=[{k: x[k] for k in ('what', 'status', 'reasons')} for x in a['approved']],
+                                       protected={k: a['protected'][k] for k in ('status', 'reasons', 'pixels')}, unchecked=a['unchecked'])
+            print(cid, n + 1, a['verdict'], a['quality']['status'], flush=True)
+            start = output
+    (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
+
+
 def records(results):
     """Common records (eval_records) of a smoke run; practical success from the approved-change audit."""
     out = []
@@ -185,14 +208,14 @@ def phase_collect(args):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--phase', choices=('freeze', 'run', 'collect'), required=True)
+    p.add_argument('--phase', choices=('freeze', 'run', 'audit', 'collect'), required=True)
     p.add_argument('--root')
     p.add_argument('--fusei')
     p.add_argument('--pdfjs')
     p.add_argument('--only', nargs='*')
     p.add_argument('--tier', choices=('normal', 'related'), default='related', help='normal: the cases marked normal only')
     args = p.parse_args()
-    dict(freeze=phase_freeze, run=phase_run, collect=phase_collect)[args.phase](args)
+    dict(freeze=phase_freeze, run=phase_run, audit=phase_audit, collect=phase_collect)[args.phase](args)
 
 
 if __name__ == '__main__':

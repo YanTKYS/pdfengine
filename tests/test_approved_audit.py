@@ -139,3 +139,11 @@ def test_an_unchecked_change_kind_is_never_a_pass(tmp_path):
     s['follower_translation'] = 'per line (column flow)'
     r = audit(source, out, 1, proposal, s)
     assert r['verdict'] in ('unverified', 'fail') and r['unchecked'] == ['per-line translation']
+
+
+def test_a_new_size_or_colour_in_the_edited_paragraph_fails_quality(separated, tmp_path):
+    source, out, proposal, record = separated
+    frame = pymupdf.Rect(proposal['evidence']['inferred']['frame'])
+    bad = tamper(out, tmp_path / 'bad.pdf', lambda page, doc: page.insert_text(frame.tl + (2, 14), 'X', fontsize=16, color=(1, 0, 0)))
+    r = audit(source, bad, 1, proposal, record)
+    assert r['quality']['size_and_colour_kept'] is False and r['quality']['status'] == 'fail'
