@@ -149,7 +149,10 @@ def _drawings(page):
 
 
 def _images(page):
-    return [(x.get('digest'), pymupdf.Rect(x['bbox'])) for x in page.get_image_info(hashes=True)]
+    """Images: (identity, box). An image XObject is its digest; a shading MuPDF reports as a raster (no xref) is
+    sampled on the device grid, so its samples change with its place: it is its colour space (as in PR #100)."""
+    return [((x.get('digest') if x.get('xref') else ('shading raster', x.get('cs-name'))), pymupdf.Rect(x['bbox']))
+            for x in page.get_image_info(hashes=True, xrefs=True)]
 
 
 def _annotations(path, page_number, page_height):
@@ -196,7 +199,9 @@ def _match(want, have, tol):
     pool = list(have)
     missing = []
     for key, r in want:
-        hit = next((n for n, (k, q) in enumerate(pool) if k == key and max(abs(a - b) for a, b in zip(r, q)) <= tol), None)
+        # (A shading's raster is placed on whole device pixels: up to a point at 72 dpi.)
+        t = 1.0 if isinstance(key, tuple) and key[:1] == ('shading raster',) else tol
+        hit = next((n for n, (k, q) in enumerate(pool) if k == key and max(abs(a - b) for a, b in zip(r, q)) <= t), None)
         if hit is None:
             missing.append((key, [round(v, 2) for v in r]))
         else:
@@ -242,8 +247,9 @@ def audit(source, output, page_number=None, proposal=None, save=None):
                     and ch.strip()]
             reasons = ([f'{len(gm)} glyphs not moved exactly: {gm[:3]}'] if gm else []) + ([f'{len(dm)} drawings not moved exactly'] if dm else []) \
                 + ([f'{len(im)} images not moved exactly'] if im else []) + ([f'{len(left)} glyphs left behind: {left[:3]}'] if left else [])
-            approved.append(dict(what=c['what'], id=c.get('id'), approval=c['approval'], dy=round(dy, 3),
-                                 glyphs=len(g_want), drawings=len(d_want), images=len(i_want), status='fail' if reasons else 'pass', reasons=reasons))
+            approved.append(dict(what=c['what'], id=c.get('id'), approval=c['approval'], dy=round(dy, 3), glyphs=len(g_want), drawings=len(d_want),
+                                 images=len(i_want), shading_rasters=sum(isinstance(k, tuple) for k, _ in i_want),
+                                 status='fail' if reasons else 'pass', reasons=reasons))
         # The text change: the new text is drawn inside the approved frame (MuPDF, the frame's text without spaces and line breaks).
         bare = lambda t: ''.join(t.split())
         drawn = bare(text['replace'][1]) in bare(pb.get_text(clip=edited_new + (-2, -2, 2, 2)))
