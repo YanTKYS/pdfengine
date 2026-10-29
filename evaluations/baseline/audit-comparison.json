@@ -1,0 +1,1598 @@
+{
+ "schema": "paragraph-frame-audit-comparison-1",
+ "note": "Every saved step of the issue #105 milestone runs (dd3ea7e; chain, separate, decoration, restore, placed): the existing audit as each run recorded it beside approved_audit (7037493). Made by approved_audit --compare-root tmp/hub/base-dd3ea7e.",
+ "table": [
+  [
+   "chain",
+   "old safety False",
+   "new pass",
+   6
+  ],
+  [
+   "decoration",
+   "old safety False",
+   "new pass",
+   14
+  ],
+  [
+   "placed",
+   "old safety False",
+   "new pass",
+   6
+  ],
+  [
+   "placed",
+   "old safety True",
+   "new pass",
+   11
+  ],
+  [
+   "restore",
+   "old safety False",
+   "new pass",
+   14
+  ],
+  [
+   "separate",
+   "old safety False",
+   "new pass",
+   11
+  ]
+ ],
+ "rows": [
+  {
+   "evaluation": "chain",
+   "case": "F1",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "chain",
+   "case": "F1",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "chain",
+   "case": "S1-issue17730",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "chain",
+   "case": "S1-issue17730",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "chain",
+   "case": "S2-lo_migration_ja",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "chain",
+   "case": "S2-lo_migration_ja",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "G1",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "G1",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "G2",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "G2",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": false,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical",
+     "size_and_colour_kept"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "G4",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "G4",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "R02-issue17730-p2",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "R02-issue17730-p2",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": false,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical",
+     "size_and_colour_kept"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "R13-osaka_fusei_477-p4",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "R18-osaka_fusei_477-p5",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "separate",
+   "case": "R18-osaka_fusei_477-p5",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": false,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "size_and_colour_kept"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "D1",
+   "step": "lengthen/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "D1",
+   "step": "lengthen/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "D1",
+   "step": "shorten/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "D1",
+   "step": "shorten/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "D2",
+   "step": "lengthen/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "D2",
+   "step": "lengthen/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "P7-03",
+   "step": "shorten/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "P7-03",
+   "step": "shorten/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "P7-05",
+   "step": "shorten/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "P7-05",
+   "step": "shorten/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "P7-06",
+   "step": "shorten/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "P7-06",
+   "step": "shorten/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "P7-07",
+   "step": "shorten/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "decoration",
+   "case": "P7-07",
+   "step": "shorten/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "D1-lengthen",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "D1-lengthen",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "D1-shorten",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "D1-shorten",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "D2-lengthen",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "D2-lengthen",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "P7-03",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "P7-03",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "P7-05",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "P7-05",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "P7-06",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "P7-06",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "P7-07",
+   "step": "1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "restore",
+   "case": "P7-07",
+   "step": "2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "F1",
+   "step": "lengthen/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "F1",
+   "step": "lengthen/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "F1",
+   "step": "shorten/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "F1",
+   "step": "shorten/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "F2",
+   "step": "lengthen/1",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "F2",
+   "step": "lengthen/2",
+   "old": {
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "layout",
+    "approval": "pass",
+    "approved": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P7-02",
+   "step": "shorten/1",
+   "old": {
+    "safety": true,
+    "quality": true,
+    "failed": []
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P7-02",
+   "step": "shorten/2",
+   "old": {
+    "safety": true,
+    "quality": true,
+    "failed": []
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P7-04",
+   "step": "shorten/1",
+   "old": {
+    "safety": true,
+    "quality": true,
+    "failed": []
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P7-04",
+   "step": "shorten/2",
+   "old": {
+    "safety": true,
+    "quality": true,
+    "failed": []
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P8-08",
+   "step": "shorten/1",
+   "old": {
+    "safety": true,
+    "quality": true,
+    "failed": []
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P8-08",
+   "step": "shorten/2",
+   "old": {
+    "safety": true,
+    "quality": false,
+    "failed": [
+     "extraction_mupdf",
+     "extraction_poppler"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "fail",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P8-10",
+   "step": "shorten/1",
+   "old": {
+    "safety": true,
+    "quality": false,
+    "failed": [
+     "extraction_poppler"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "fail",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P8-11",
+   "step": "shorten/1",
+   "old": {
+    "safety": true,
+    "quality": true,
+    "failed": []
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P8-11",
+   "step": "shorten/2",
+   "old": {
+    "safety": true,
+    "quality": false,
+    "failed": [
+     "extraction_mupdf",
+     "extraction_poppler"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "fail",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P8-12",
+   "step": "shorten/1",
+   "old": {
+    "safety": true,
+    "quality": true,
+    "failed": []
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "pass",
+    "reasons": []
+   }
+  },
+  {
+   "evaluation": "placed",
+   "case": "P8-12",
+   "step": "shorten/2",
+   "old": {
+    "safety": true,
+    "quality": false,
+    "failed": [
+     "extraction_mupdf",
+     "extraction_poppler"
+    ]
+   },
+   "new": {
+    "verdict": "pass",
+    "mode": "faithful",
+    "approval": "pass",
+    "approved": [
+     "pass"
+    ],
+    "protected": "pass",
+    "quality": "fail",
+    "reasons": []
+   }
+  }
+ ]
+}
