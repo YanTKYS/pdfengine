@@ -130,10 +130,11 @@ def audit(source, output, page, region, old, new, folder, *, lines=None, occurre
                 break
         checks[f'extraction_{renderer}'] = at >= 0 and ta == tb[:at] + bare(new) + tb[at + len(bare(old)):]
     with pymupdf.open(output) as d:
-        hits = d[page - 1].search_for(new)
+        # (A deletion leaves no new text to search for: MuPDF returns None for an empty needle.)
+        hits = (d[page - 1].search_for(new) or []) if new.strip() else []
         details['search_hits'] = len(hits)
         drawn = [''.join(s['text'] for s in l['spans']) for b in d[page - 1].get_text('dict')['blocks'] for l in b.get('lines', [])]
-    crosses = not any(new in l for l in drawn)
+    crosses = not new.strip() or not any(new in l for l in drawn)
     checks['search_mupdf'] = bool(hits) or crosses
     details['search_crosses_reader_line'] = crosses
     styles_b = {(g['font'], g['size'], g['color']) for g in before if inside(g['bbox'], region) and g['c'].strip()}

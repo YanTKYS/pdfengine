@@ -148,7 +148,11 @@ def phase_run(args):
             except Exception as exc:
                 results[case['id']] = [dict(old=case['edit']['old'], new=case['edit']['new'], outcome='refused', reason=str(exc)[-300:])]
         else:
-            results[case['id']] = ce.run_case(Path('.').resolve(), case, source.resolve(), root)
+            try:
+                results[case['id']] = ce.run_case(Path('.').resolve(), case, source.resolve(), root)
+            except Exception as exc:  # an evaluator error ends this case only, and is reported
+                results[case['id']] = [dict(old=case['edit']['old'], new=case['edit']['new'], outcome='not run',
+                                            reason=f'evaluator error: {type(exc).__name__}: {exc}'[:300])]
         (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
     (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
 
