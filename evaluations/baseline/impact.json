@@ -40,6 +40,7 @@
   {"pattern": "docs/*", "direct": []},
   {"pattern": "evaluations/*", "direct": []},
   {"pattern": "CLAUDE.md", "direct": []},
-  {"pattern": ".github/*", "direct": []}
+  {"pattern": ".github/*", "direct": []},
+  {"pattern": ".gitignore", "direct": []}
  ]
 }
