@@ -1,0 +1,456 @@
+{
+ "schema": "paragraph-frame-smoke-manifest-1",
+ "policy": "Representative natural edits across generators, defined by the implementer before running them (issue #108). Every case runs the edit and the edit back from the saved PDF alone; candidates are approved as listed. Records: saved, practical (approved-change audit pass and quality), re-edit, restore, refused, apart; the existing audit is kept beside. A missing input is reported, never counted.",
+ "documents": {
+  "word_osaka_fire_notice": {
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+   "producer": "Microsoft® Word for Microsoft 365",
+   "creator": "Microsoft® Word for Microsoft 365",
+   "source_url": "https://www.pref.osaka.lg.jp/documents/63648/20250327jimurennraku.pdf"
+  },
+  "word_osaka_guideline": {
+   "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+   "producer": "Microsoft® Word LTSC",
+   "creator": "Microsoft® Word LTSC",
+   "source_url": "https://www.pref.osaka.lg.jp/documents/63648/guideline_tsuuchi.pdf"
+  },
+  "lo_newfeatures_ja": {
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+   "producer": "LibreOffice 4.0",
+   "creator": "Writer",
+   "source_url": "https://wiki.documentfoundation.org/images/b/b7/LO4.1_NewFeatures.pdf"
+  },
+  "lo_migration_ja": {
+   "sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3",
+   "producer": "LibreOffice 4.0",
+   "creator": "Writer",
+   "source_url": "https://wiki.documentfoundation.org/images/archive/8/84/20130907172916%21MigrationLibreOffice-ja.pdf"
+  },
+  "osaka_fusei_477": {
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "producer": "Adobe PDF Library 16.0",
+   "creator": "Adobe InDesign 16.4 (Windows)",
+   "source_url": null
+  },
+  "issue17730": {
+   "sha256": "d1d3be1674f4756d82630d68f08a8088f5b912c58f3379f45eb63b025ad99b14",
+   "producer": "Antenna House PDF Output Library 7.3.1851",
+   "creator": "Antenna House Formatter V7.3 R1 Windows : 7.3.1.59888 (2023-01-19T09:42+09)",
+   "source_url": null
+  },
+  "tracemonkey": {
+   "sha256": "3662ff519e485810520552bf301d8c3b2b917fd2f83303f4965d7abed367e113",
+   "producer": "pdfeTeX-1.21a",
+   "creator": "TeX",
+   "source_url": null
+  }
+ },
+ "cases": [
+  {
+   "id": "W1",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "paragraph": "直通：03-3595-2257 ",
+   "selection": "直通：03-3595-2",
+   "lines": 1,
+   "box": [
+    381.31,
+    471.84,
+    476.02,
+    482.4
+   ],
+   "edit": {
+    "old": "直通：03-3595-2257",
+    "new": "直通：03-3595-2258"
+   },
+   "kind": "same length",
+   "what": "telephone number",
+   "tier": "normal",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "W2",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "paragraph": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+   "selection": "感染症対策を円滑かつ適切",
+   "lines": 2,
+   "box": [
+    53.88,
+    275.5,
+    547.07,
+    385.06
+   ],
+   "edit": {
+    "old": "感染症対策を円滑かつ適切に実施いただくよう",
+    "new": "感染症対策を適切に実施いただくよう"
+   },
+   "kind": "shorter",
+   "what": "phrase deleted",
+   "tier": "normal",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "W3",
+   "document": "word_osaka_guideline",
+   "page": 1,
+   "paragraph": "大阪府健康医療部保健医療室長  ",
+   "selection": "大阪府健康医療部保健医療",
+   "lines": 1,
+   "box": [
+    366.91,
+    193.03,
+    514.19,
+    203.59
+   ],
+   "edit": {
+    "old": "大阪府健康医療部保健医療室長",
+    "new": "大阪府健康医療部保健医療室長代理"
+   },
+   "kind": "longer",
+   "what": "title added",
+   "tier": "normal",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "W4",
+   "document": "word_osaka_guideline",
+   "page": 1,
+   "paragraph": "日頃より、本府保健医療行政の推進に御協力いただき、厚く御礼申し上げます。 ",
+   "selection": "本府保健医療行政の推進に",
+   "lines": 1,
+   "box": [
+    70.94,
+    319.06,
+    522.92,
+    383.62
+   ],
+   "edit": {
+    "old": "本府保健医療行政の推進に御協力いただき",
+    "new": "本府保健医療行政の推進に格別の御協力をいただき"
+   },
+   "kind": "longer",
+   "what": "phrase added",
+   "tier": "normal",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "W5",
+   "document": "word_osaka_guideline",
+   "page": 1,
+   "paragraph": "感染症対策課 防疫グループ ",
+   "selection": "感染症対策課 防疫グルー",
+   "lines": 1,
+   "box": [
+    358.63,
+    658.11,
+    489.43,
+    696.63
+   ],
+   "edit": {
+    "old": "感染症対策課 防疫グループ",
+    "new": "感染症対策課 予防グループ"
+   },
+   "kind": "same length",
+   "what": "department name",
+   "tier": "normal",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "L1",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "paragraph": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。",
+   "selection": "月下旬にリリース",
+   "lines": 2,
+   "box": [
+    28.5,
+    120.02,
+    566.9,
+    146.72
+   ],
+   "edit": {
+    "old": "月下旬にリリース",
+    "new": "月上旬にリリース"
+   },
+   "kind": "same length",
+   "what": "date",
+   "tier": "normal",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "L2",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "paragraph": "Calcをより使いやすくするための工夫が取り入れられます。",
+   "selection": "Calcをより使いやすく",
+   "lines": 2,
+   "box": [
+    28.5,
+    240.12,
+    237.33,
+    266.82
+   ],
+   "edit": {
+    "old": "Calcをより使いやすくするための工夫",
+    "new": "Calcを使いやすくする工夫"
+   },
+   "kind": "shorter",
+   "what": "phrase deleted",
+   "tier": "normal",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "L3",
+   "document": "lo_migration_ja",
+   "page": 2,
+   "paragraph": "オフィススィートは個人の利用でも組織内の利用でもさまざまな業務フローの中に組み込まれていますし、そのためほとんどのパーソナルコンピューターのユーザーが日々の業務を行う上で欠かせないものとなっています個人のレベルでLibreOfficeに移行するのはとても簡単なことですが、組織での移行は大変な努力を必要とすることになるでしょう。というのは組織力学でいうところの抵抗勢力が変更を阻止すべく潜在的な問題があらわにしますし、オフィススィートがITインフラの中に、サードパーティ製の独占的なソフトウェアや、文書テンプレート、そしてマクロといった形で網の目のように入り込んでいるからです。",
+   "selection": "オフィススィートは個人の",
+   "lines": 6,
+   "box": [
+    56.8,
+    158.17,
+    545.67,
+    365.07
+   ],
+   "edit": {
+    "old": "オフィススィートは個人の利用でも",
+    "new": "オフィススイートは個人の利用でも"
+   },
+   "kind": "same length",
+   "what": "spelling corrected",
+   "tier": "normal",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "L4",
+   "document": "lo_migration_ja",
+   "page": 1,
+   "paragraph": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。",
+   "selection": "六つの豊富な機能のアプリ",
+   "lines": 4,
+   "box": [
+    56.8,
+    189.24,
+    538.68,
+    432.94
+   ],
+   "edit": {
+    "old": "六つの豊富な機能のアプリケーション",
+    "new": "六つの豊富で強力な機能のアプリケーション"
+   },
+   "kind": "longer",
+   "what": "phrase added",
+   "tier": "related",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "I1",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "selection": "令和5年の大阪府の自殺者",
+   "lines": 5,
+   "box": [
+    20.94,
+    680.89,
+    244.61,
+    757.64
+   ],
+   "edit": {
+    "old": "令和5年の大阪府の自殺者数は1,383人",
+    "new": "令和6年の大阪府の自殺者数は1,383人"
+   },
+   "kind": "same length",
+   "what": "year",
+   "tier": "normal",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "I2",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "selection": "悩みを抱えている人は、ひ",
+   "lines": 5,
+   "box": [
+    20.94,
+    680.89,
+    244.61,
+    757.64
+   ],
+   "edit": {
+    "old": "悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。",
+    "new": ""
+   },
+   "kind": "shorter",
+   "what": "sentence deleted (a line decoration moves up)",
+   "tier": "related",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "I3",
+   "document": "osaka_fusei_477",
+   "page": 2,
+   "paragraph": "領収証は必ず受け取り保管してください。",
+   "selection": "領収証は必ず受け取り保管",
+   "lines": 1,
+   "box": [
+    424.0,
+    872.74,
+    613.31,
+    883.02
+   ],
+   "edit": {
+    "old": "領収証は必ず受け取り保管してください。",
+    "new": "領収証は必ず受け取り、大切に保管してください。"
+   },
+   "kind": "longer",
+   "what": "phrase added",
+   "tier": "related",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "I4",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "paragraph": "提供：ダイキン工業・サントリーHD",
+   "selection": "提供：ダイキン工業・サン",
+   "lines": 1,
+   "box": [
+    215.55,
+    1029.64,
+    291.06,
+    1034.6
+   ],
+   "edit": {
+    "old": "提供：ダイキン工業・サントリーHD",
+    "new": "提供：ダイキン工業・サントリーホールディングス"
+   },
+   "kind": "longer",
+   "what": "abbreviation expanded (lines below separated and moved)",
+   "tier": "related",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "I5",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "paragraph": "4/13（日）9：00～9：30",
+   "selection": "4/13（日）9：00～",
+   "lines": 1,
+   "box": [
+    371.8,
+    1037.86,
+    475.01,
+    1047.07
+   ],
+   "edit": {
+    "old": "4/13（日）9：00～9：30",
+    "new": "4/13（日）10：00～10：30"
+   },
+   "kind": "longer",
+   "what": "time",
+   "tier": "related",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "A1",
+   "document": "issue17730",
+   "page": 1,
+   "paragraph": "Linking to an internal destination",
+   "selection": "Linking to a",
+   "lines": 1,
+   "box": [
+    56.7,
+    192.07,
+    245.39,
+    204.07
+   ],
+   "edit": {
+    "old": "Linking to an internal destination",
+    "new": "Linking to an internal destination or an external destination"
+   },
+   "kind": "longer",
+   "what": "phrase added (the lines below move on approval)",
+   "tier": "related",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  },
+  {
+   "id": "T1",
+   "document": "tracemonkey",
+   "page": 1,
+   "edit": {
+    "old": "statically",
+    "new": "strongly"
+   },
+   "kind": "shorter",
+   "what": "word replaced",
+   "tier": "related",
+   "status": "refused at freeze",
+   "reason": "implicit line-join space has no glyph in the source font",
+   "origin": "representative edit defined by the implementer (issue #108); not a user request"
+  }
+ ],
+ "sources_missing": [
+  {
+   "id": "courts_97044",
+   "source_url": "https://www.courts.go.jp/assets/hanrei/hanrei-pdf-97044.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "cathedral_ja",
+   "source_url": "https://cruel.org/freeware/cathedral.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "word_wakayama_guidelines",
+   "source_url": "https://www.pref.wakayama.lg.jp/prefg/020400/d00220063_d/fil/jissiyouryou.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "word_takeo_notice",
+   "source_url": "https://www.city.takeo.lg.jp/uploads/20240116press01.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "word_okinawa_procurement",
+   "source_url": "https://www.pref.okinawa.lg.jp/_res/projects/default_project/_page_/001/035/156/01_koukoku.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "word_niigata_hearing",
+   "source_url": "https://kenpo.pref.niigata.lg.jp/bn/R06_10/1008_t78/t78_20241008i30673.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "word_kyoto_questions",
+   "source_url": "https://www.city.kyoto.lg.jp/kankyo/cmsfiles/contents/0000311/311254/kaitou_hp.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "print_fcc_ms",
+   "source_url": "https://fccid.io/OVNAC4/Label/Label-Sample-2-3606396.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "print_fcc_chrome",
+   "source_url": "https://fccid.io/PY319200443/Users-Manual/Users-Manual-4365158.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "print_ubiquiti",
+   "source_url": "https://fccid.io/SWXU6MESHP/User-Manual/Quick-Installation-Guide-7315317.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  },
+  {
+   "id": "print_canvia",
+   "source_url": "https://fccid.io/2AUDT-CANVIAART/User-Manual/User-manual-4452118.pdf",
+   "reason": "not in the corpus here; its host is denied by this environment's network policy"
+  }
+ ],
+ "generators_missing": [
+  "Ichitaro (Justsystems)",
+  "Adobe Illustrator"
+ ]
+}

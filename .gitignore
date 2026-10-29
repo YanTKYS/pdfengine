@@ -95,3 +95,9 @@ tmp/
 !/evaluations/paragraph_frame_separate/
 !/evaluations/paragraph_frame_separate/manifest.json
 !/evaluations/paragraph_frame_separate/results.json
+!/evaluations/baseline/
+!/evaluations/baseline/*.json
+!/evaluations/baseline/README.md
+!/evaluations/smoke/
+!/evaluations/smoke/manifest.json
+!/evaluations/smoke/results.json

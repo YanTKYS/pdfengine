@@ -1,0 +1,27 @@
+[
+ {
+  "date": "2026-10-29",
+  "code": "dd3ea7e",
+  "reason": "Initial single baseline: the issue #105 milestone runs on dd3ea7e (code identical to main e402b82), replacing the chain of per-PR recorded regressions (PR #90-#104); every PR's own results file stays as committed.",
+  "evaluations": [
+   "chain",
+   "column_flow",
+   "continuity",
+   "decoration",
+   "fidelity",
+   "generalization",
+   "indesign",
+   "multiedit",
+   "placed",
+   "restore",
+   "roundtrip",
+   "separate",
+   "tagged"
+  ],
+  "compared": 0,
+  "changed": [],
+  "removed": [],
+  "added": "838 records",
+  "design_decision_needed": false
+ }
+]
