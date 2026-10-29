@@ -1,0 +1,922 @@
+{
+ "schema": "paragraph-frame-separate-manifest-1",
+ "baseline_commit": "11a9aa7 (main after PR #104)",
+ "frozen_at": "11a9aa7",
+ "policy": "Frozen before the implementation. Old B2 is main 11a9aa7; new B2 is this branch. Targets: the lengthening edits of the PR #104 survey whose chain was refused only because a following line is drawn in one text object with other text and whose growth has room once the elements move (geometry: fits). Places limited by capacity, protected content or the columns are counted apart and never reported as solved by separation. A following element moves only when its own candidate id is approved; acknowledge_inference or another approval never approves it; an approval is never carried from one step to another. A refusal ends its case and never counts as success; the first save and the edit back are counted apart; fixture successes are reported apart from real-PDF successes. Nothing is rasterised, painted over or reflowed; no other line moves.",
+ "procedure": [
+  "propose; record the chain candidates (and what each separates)",
+  "save without approving them (a step needing one must be refused)",
+  "propose again approving exactly the listed candidates until no new one is listed (3 rounds at most); save approving them",
+  "reopen the saved PDF alone and edit back the same way"
+ ],
+ "measures": "saved or refused (reason); the chain evaluation's audits unchanged (safety and quality kept apart, structure, continued editing, moves, links, placement, raster); kept: glyphs, MuPDF and Poppler words (text, order, 0.01 pt), drawings and pixels (72, 150 dpi) outside the edited paragraph and the moved areas unchanged; the moved elements' words in the same order; the edit back against the source (glyph origins, line breaks, MuPDF and Poppler text, search, drawings, images, links, structure, pixels at 72 and 150 dpi)",
+ "target": "at least one real lengthening edit newly saved by separating a following line, the other lines unchanged; else the reason per case",
+ "survey": {
+  "refused_for_shared_drawing": 340,
+  "geometry": {
+   "obstacle": 202,
+   "columns": 71,
+   "fits": 43,
+   "capacity": 24
+  },
+  "fits": {
+   "cases": 25,
+   "no_edit": {
+    "capacity": 6,
+    "missing glyph": 10,
+    "no added line": 2
+   }
+  }
+ },
+ "documents": {
+  "issue14297": {
+   "sha256": "4041c1e3e2446bd236d536ce88fe5e97b30605f04813e600a00c58bf19e8c89b"
+  },
+  "issue17730": {
+   "sha256": "d1d3be1674f4756d82630d68f08a8088f5b912c58f3379f45eb63b025ad99b14"
+  },
+  "lo_newfeatures_ja": {
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47"
+  },
+  "osaka_fusei_477": {
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0"
+  }
+ },
+ "fixtures": {
+  "G1": {
+   "expected": "the heading first, then the line, in one text object: separated on approval, then moved back",
+   "edit": {
+    "old": "申請書は窓口で",
+    "new": "申請書は窓口と郵送と電子申請とファクスと持参で"
+   }
+  },
+  "G2": {
+   "expected": "the line first, then the heading placed by Td, a box on the line before the text object: separated, then moved back",
+   "edit": {
+    "old": "申請書は窓口で",
+    "new": "申請書は窓口と郵送と電子申請とファクスと持参で"
+   }
+  },
+  "G3": {
+   "expected": "one TJ draws the line and the heading: refused (no operator is cut)",
+   "edit": {
+    "old": "申請書は窓口で",
+    "new": "申請書は窓口と郵送と電子申請とファクスと持参で"
+   }
+  },
+  "G4": {
+   "expected": "marked content in the text object: refused",
+   "edit": {
+    "old": "申請書は窓口で",
+    "new": "申請書は窓口と郵送と電子申請とファクスと持参で"
+   }
+  },
+  "G5": {
+   "expected": "text after the line continues from where it ends: refused",
+   "edit": {
+    "old": "申請書は窓口で",
+    "new": "申請書は窓口と郵送と電子申請とファクスと持参で"
+   }
+  },
+  "G6": {
+   "expected": "a clip around the text object ending right below the line: refused",
+   "edit": {
+    "old": "申請書は窓口で",
+    "new": "申請書は窓口と郵送と電子申請とファクスと持参で"
+   }
+  }
+ },
+ "cases": [
+  {
+   "id": "R01-issue14297-p1",
+   "document": "issue14297",
+   "page": 1,
+   "paragraph": "Total other comprehensive income (loss)",
+   "selection": "Total o",
+   "lines": 1,
+   "edit": {
+    "old": "Total o",
+    "new": "Total oTotal other comprehensive income (loss)"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (Mitsubishi Electric Corp): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    119.89,
+    432.01,
+    273.36,
+    480.63
+   ]
+  },
+  {
+   "id": "R02-issue17730-p2",
+   "document": "issue17730",
+   "page": 2,
+   "paragraph": "About Antenna House",
+   "selection": "About ",
+   "lines": 1,
+   "edit": {
+    "old": "About ",
+    "new": "About About Antenna House"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (See also https://www.ant): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    56.69,
+    31.03,
+    199.21,
+    46.03
+   ]
+  },
+  {
+   "id": "R03-lo_newfeatures_ja-p1",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "paragraph": "Calcをより使いやすくするための工夫が取り入れられます。",
+   "selection": "Calcをよ",
+   "lines": 2,
+   "edit": {
+    "old": "Calcをよ",
+    "new": "CalcをよCalcをより使いやすくするための工夫が取り"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (•線と散布図のグラフの線種にステップ（階段状チャ): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    28.5,
+    240.12,
+    237.33,
+    266.82
+   ]
+  },
+  {
+   "id": "R04-lo_newfeatures_ja-p1",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "paragraph": "•選択したセルの個数がカウントされるように",
+   "selection": "•選択したセ",
+   "lines": 1,
+   "edit": {
+    "old": "•選択したセ",
+    "new": "•選択したセ•選択したセルの個数がカウントされるように"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (なりました(ステータスバーの右側を右クリックする): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    46.5,
+    411.2,
+    260.14,
+    422.22
+   ]
+  },
+  {
+   "id": "R05-osaka_fusei_477-p2",
+   "document": "osaka_fusei_477",
+   "page": 2,
+   "paragraph": "ダウンロードは",
+   "selection": "ダウンロードは",
+   "lines": 1,
+   "edit": {
+    "old": "ダウンロードは",
+    "new": "ダウンロードはダウンロードは"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (こちら問 おおさか健活マイレージ��アスマイル事): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    73.73,
+    407.38,
+    133.26,
+    415.89
+   ]
+  },
+  {
+   "id": "R06-osaka_fusei_477-p3",
+   "document": "osaka_fusei_477",
+   "page": 3,
+   "paragraph": "※JR桜島駅を除く",
+   "selection": "※JR桜島駅",
+   "lines": 1,
+   "edit": {
+    "old": "※JR桜島駅",
+    "new": "※JR桜島駅※JR桜島駅を除く"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (�所要時間：約15分、運賃：350円��車いすや): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    480.08,
+    663.11,
+    544.78,
+    671.11
+   ]
+  },
+  {
+   "id": "R07-osaka_fusei_477-p3",
+   "document": "osaka_fusei_477",
+   "page": 3,
+   "paragraph": "その他、船・自転車などでの",
+   "selection": "その他、船・",
+   "lines": 1,
+   "edit": {
+    "old": "その他、船・",
+    "new": "その他、船・その他、船・自転車などでの"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (アクセス方法や、時刻表などの詳細はこちら来場の際): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    573.16,
+    722.34,
+    657.16,
+    729.34
+   ]
+  },
+  {
+   "id": "R08-osaka_fusei_477-p3",
+   "document": "osaka_fusei_477",
+   "page": 3,
+   "paragraph": "アクセス方法や、",
+   "selection": "アクセス方法や",
+   "lines": 1,
+   "edit": {
+    "old": "アクセス方法や",
+    "new": "アクセス方法やアクセス方法や、"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (時刻表などの詳細はこちら来場の際のお願いとお知ら): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    588.91,
+    731.55,
+    644.91,
+    738.55
+   ]
+  },
+  {
+   "id": "R09-osaka_fusei_477-p3",
+   "document": "osaka_fusei_477",
+   "page": 3,
+   "paragraph": "レストランなどもアプリから",
+   "selection": "レストランな",
+   "lines": 1,
+   "edit": {
+    "old": "レストランな",
+    "new": "レストランなレストランなどもアプリから"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (検索できます！万博特集記事に関するお問い合わせ先): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    163.77,
+    1030.44,
+    306.77,
+    1041.44
+   ]
+  },
+  {
+   "id": "R10-osaka_fusei_477-p4",
+   "document": "osaka_fusei_477",
+   "page": 4,
+   "paragraph": "B-13 チュニジアB-14 カンボジアB-15 アルジェリアB-16 バルト館",
+   "selection": "B-13 チ",
+   "lines": 4,
+   "edit": {
+    "old": "B-13 チ",
+    "new": "B-13 チB-13 チュニジアB"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (ラトビアリトアニアB-17 欧州連合B-18 団): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    119.73,
+    587.18,
+    181.85,
+    625.45
+   ]
+  },
+  {
+   "id": "R11-osaka_fusei_477-p4",
+   "document": "osaka_fusei_477",
+   "page": 4,
+   "paragraph": "D-13 ブラジルD-14 クウェートD-15 中華人民共和国D-16 バーレーンD-17 トルクメニスタン",
+   "selection": "D-13 ブ",
+   "lines": 5,
+   "edit": {
+    "old": "D-13 ブ",
+    "new": "D-13 ブD-13 ブラジルD-14"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (D-18 北欧館D-07 アラブ首長国連邦　D-): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    457.78,
+    615.45,
+    535.13,
+    664.02
+   ]
+  },
+  {
+   "id": "R12-osaka_fusei_477-p4",
+   "document": "osaka_fusei_477",
+   "page": 4,
+   "paragraph": "D-22 国際連合D-23 ベトナムD-24 モザンビーク",
+   "selection": "D-22 国",
+   "lines": 3,
+   "edit": {
+    "old": "D-22 国",
+    "new": "D-22 国D-22 国際連合D-"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (D-26 ヨルダンD-27 団体休憩所見どころ満): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    543.47,
+    656.66,
+    606.11,
+    684.62
+   ]
+  },
+  {
+   "id": "R13-osaka_fusei_477-p4",
+   "document": "osaka_fusei_477",
+   "page": 4,
+   "paragraph": "D-25 ペルー",
+   "selection": "D-25 ペ",
+   "lines": 1,
+   "edit": {
+    "old": "D-25 ペ",
+    "new": "D-25 ペD-25 ペルー"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (D-26 ヨルダンD-27 団体休憩所見どころ満): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    543.47,
+    687.57,
+    584.03,
+    694.93
+   ]
+  },
+  {
+   "id": "R14-osaka_fusei_477-p5",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "paragraph": "期184日間の開幕を、",
+   "selection": "期184日間の",
+   "lines": 1,
+   "edit": {
+    "old": "期184日間の",
+    "new": "期184日間の期184日間の開幕を、"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (世界を魅了し続ける歌い手Adoに飾っていただきま): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    113.71,
+    867.6,
+    192.45,
+    876.1
+   ]
+  },
+  {
+   "id": "R15-osaka_fusei_477-p5",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "paragraph": "４/13（日）～20（日） ギャラリーEAST",
+   "selection": "４/13（日",
+   "lines": 1,
+   "edit": {
+    "old": "４/13（日",
+    "new": "４/13（日４/13（日）～20（日） ギャラリーEAST"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (「いけばなの変遷」を作品で表現。圧倒的な大作や、): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    209.26,
+    866.88,
+    352.06,
+    876.09
+   ]
+  },
+  {
+   "id": "R16-osaka_fusei_477-p5",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "paragraph": "株式会社エントリー presents",
+   "selection": "株式会社エン",
+   "lines": 1,
+   "edit": {
+    "old": "株式会社エン",
+    "new": "株式会社エン株式会社エントリー presents"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (Japan Expo Paris in Osak): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    34.99,
+    931.13,
+    161.27,
+    942.47
+   ]
+  },
+  {
+   "id": "R17-osaka_fusei_477-p5",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "paragraph": "©MBS1万人の第九 EXPO2025",
+   "selection": "©MBS1万",
+   "lines": 1,
+   "edit": {
+    "old": "©MBS1万",
+    "new": "©MBS1万©MBS1万人の第九 EXPO2025"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (4/13（日）9：00～9：30ウォータープラザ): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    377.48,
+    1026.73,
+    448.33,
+    1031.69
+   ]
+  },
+  {
+   "id": "R18-osaka_fusei_477-p5",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "paragraph": "提供：ダイキン工業・サントリーHD",
+   "selection": "提供：ダイキ",
+   "lines": 1,
+   "edit": {
+    "old": "提供：ダイキ",
+    "new": "提供：ダイキ提供：ダイキン工業・サントリーHD"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (ウォータープラザ会期中、日没後毎日開催！「水と空): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    215.55,
+    1029.64,
+    291.06,
+    1034.6
+   ]
+  },
+  {
+   "id": "R19-osaka_fusei_477-p5",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "paragraph": "4/13（日）9：00～9：30",
+   "selection": "4/13（日",
+   "lines": 1,
+   "edit": {
+    "old": "4/13（日",
+    "new": "4/13（日4/13（日）9：00～9：30"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (ウォータープラザ・大屋根リング上（南側）万博会場): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    371.8,
+    1037.86,
+    475.01,
+    1047.07
+   ]
+  },
+  {
+   "id": "R20-osaka_fusei_477-p6",
+   "document": "osaka_fusei_477",
+   "page": 6,
+   "paragraph": "街のネオホスピタル",
+   "selection": "街のネオホス",
+   "lines": 1,
+   "edit": {
+    "old": "街のネオホス",
+    "new": "街のネオホス街のネオホスピタル"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (だれもが何歳になっても元気な2050年。その健康): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    509.49,
+    280.1,
+    605.16,
+    290.73
+   ]
+  },
+  {
+   "id": "R21-osaka_fusei_477-p6",
+   "document": "osaka_fusei_477",
+   "page": 6,
+   "paragraph": "ネオライフスタイルLDK",
+   "selection": "ネオライフス",
+   "lines": 1,
+   "edit": {
+    "old": "ネオライフス",
+    "new": "ネオライフスネオライフスタイルLDK"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (2050年のライフスタイルを体験！ミライの食事と): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    59.53,
+    368.24,
+    177.97,
+    378.55
+   ]
+  },
+  {
+   "id": "R22-osaka_fusei_477-p8",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "番号、住所、氏名（様付き）をご記入ください。",
+   "selection": "番号、住所、",
+   "lines": 1,
+   "edit": {
+    "old": "番号、住所、",
+    "new": "番号、住所、番号、住所、氏名（様付き）をご記入ください。"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    531.43,
+    769.62,
+    655.83,
+    776.0
+   ]
+  },
+  {
+   "id": "R23-osaka_fusei_477-p8",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "申込先 〒539-0042 日本郵便大阪北郵便局 府民半額会係（郵便番号は必須）",
+   "selection": "申込先 〒5",
+   "lines": 1,
+   "edit": {
+    "old": "申込先 〒5",
+    "new": "申込先 〒5申込先 〒539-0042 日本郵便大阪北郵便局 府民半額会係（郵便番号は必須）"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (※当落は抽選で決定。5月分当落通知は3月31日頃): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    536.18,
+    782.01,
+    753.55,
+    788.7
+   ]
+  },
+  {
+   "id": "R24-osaka_fusei_477-p8",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "※当落は抽選で決定。5月分当落通知は3月31日頃発送、入金締切は4月7日。6月分当落通知は4月21日頃発送、入金締切は4月28日。※当落通知発送日から4日を過ぎても未着の場合は必ず入金締切日前日までにお電話にてお問い合わせください。",
+   "selection": "※当落は抽選",
+   "lines": 4,
+   "edit": {
+    "old": "※当落は抽選",
+    "new": "※当落は抽選※当落は抽選で決定。5月分当落通知は3月31日頃発送、入金締切は4月7日。"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    531.35,
+    791.6,
+    753.03,
+    825.61
+   ]
+  },
+  {
+   "id": "R25-osaka_fusei_477-p8",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "※状況により公演情報が変更になる場合があります。随時HPなどで確認をお願いします。",
+   "selection": "※状況により",
+   "lines": 1,
+   "edit": {
+    "old": "※状況により",
+    "new": "※状況により※状況により公演情報が変更になる場合があります。随時HPなどで確認をお願いします。"
+   },
+   "origin": "PR #104 survey: chain refused for a shared drawing; room for the growth",
+   "old_chain": "a line below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a following paragraph is drawn together with content beyond its line",
+   "box": [
+    531.3,
+    869.18,
+    753.15,
+    875.3
+   ]
+  }
+ ],
+ "no_edit": [
+  {
+   "document": "issue14297",
+   "page": 1,
+   "paragraph": "(93,697)",
+   "constraint": "capacity",
+   "reason": "capacity: no legal line break at original font size"
+  },
+  {
+   "document": "issue14297",
+   "page": 1,
+   "paragraph": "(84,390)",
+   "constraint": "capacity",
+   "reason": "capacity: no legal line break at original font size"
+  },
+  {
+   "document": "issue17730",
+   "page": 1,
+   "paragraph": "Linking to an ID：Specify internal-destin",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval: ："
+  },
+  {
+   "document": "issue17730",
+   "page": 1,
+   "paragraph": "Linking to a page number (page 2)：intern",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval: ："
+  },
+  {
+   "document": "osaka_fusei_477",
+   "page": 3,
+   "paragraph": "EXPO2025",
+   "constraint": "capacity",
+   "reason": "capacity: no legal line break at original font size"
+  },
+  {
+   "document": "osaka_fusei_477",
+   "page": 3,
+   "paragraph": "〇会場の安全対策について",
+   "constraint": "no added line",
+   "reason": "lines 1 needed None"
+  },
+  {
+   "document": "osaka_fusei_477",
+   "page": 4,
+   "paragraph": "E-06 住友館E-07 電力館",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval: 6"
+  },
+  {
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "paragraph": "提供：華道家元池坊",
+   "constraint": "no added line",
+   "reason": "lines 1 needed None"
+  },
+  {
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "大阪府　原状回復　 ",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval:  "
+  },
+  {
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "その他 チケットの手配には、入金締切日までに郵便局備え付けの振込用紙にてチケット",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval: 他"
+  },
+  {
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "HP 大阪府半額鑑賞会　　",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval: H"
+  },
+  {
+   "document": "tracemonkey",
+   "page": 1,
+   "paragraph": "{gal,brendan,shaver,danderson,dmandelin,",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval: {"
+  },
+  {
+   "document": "tracemonkey",
+   "page": 1,
+   "paragraph": "{edwsmith,rreitmai}@adobe.com",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval: {"
+  },
+  {
+   "document": "tracemonkey",
+   "page": 1,
+   "paragraph": "{mohammad.r.haghighat}@intel.com",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval: {"
+  },
+  {
+   "document": "tracemonkey",
+   "page": 1,
+   "paragraph": "Abstract",
+   "constraint": "capacity",
+   "reason": "capacity: no legal line break at original font size"
+  },
+  {
+   "document": "tracemonkey",
+   "page": 1,
+   "paragraph": "KeywordsJavaScript,just-in-timecompilati",
+   "constraint": "missing glyph",
+   "reason": "missing source glyph requires explicit substitute approval: J"
+  },
+  {
+   "document": "tracemonkey",
+   "page": 1,
+   "paragraph": "1.Introduction",
+   "constraint": "capacity",
+   "reason": "capacity: no legal line break at original font size"
+  },
+  {
+   "document": "tracemonkey",
+   "page": 2,
+   "paragraph": "2.Overview:ExampleTracingRun",
+   "constraint": "capacity",
+   "reason": "capacity: no legal line break at original font size"
+  }
+ ],
+ "reevaluated": [
+  {
+   "id": "P7-03",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+   "selection": "所得税（復興",
+   "box": [
+    21.07,
+    500.18,
+    244.9,
+    549.07
+   ],
+   "lines": 4,
+   "edit": {
+    "old": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。",
+    "new": "所得税（復興特別所得税）の申告期限は3/17（月）、個人事業者の消費税（地方消費税）の申告期限は3/31（月）です。国税庁HP「確定申告書等作成コーナー」でも申告書の作成・送信ができます。所得税（復興特別所得税）の申告期限は3/17（月）"
+   },
+   "origin": "PR #104 chain evaluation (PR #100 lengthen refused)",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P7-05",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+   "selection": "3月下旬は自",
+   "box": [
+    21.05,
+    568.55,
+    239.89,
+    617.44
+   ],
+   "lines": 4,
+   "edit": {
+    "old": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。",
+    "new": "3月下旬は自動車の名義変更や廃車などの登録手続きが1年の中で最も集中し、運輸支局の窓口が極端に混雑します。自動車の登録手続きは、比較的空いている3月中旬までに済ませていただくようお願いします。3月下旬は自動車の名義変更や廃車などの登録手続きが"
+   },
+   "origin": "PR #104 chain evaluation (PR #100 lengthen refused)",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P7-06",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "selection": "令和5年の大",
+   "box": [
+    20.94,
+    680.89,
+    244.61,
+    742.89
+   ],
+   "lines": 5,
+   "edit": {
+    "old": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+    "new": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。令和5年の大阪府の自殺者数は1,383人と、1日"
+   },
+   "origin": "PR #104 chain evaluation (PR #100 lengthen refused)",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P8-08",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "好評につき、ナイトガレージマーケット第2弾を開催します。 なるかわ園地らくらくセンターハウス駐車場に、東大阪市を中心とした地元事業者が、音楽ステージやワークショップ、飲食ブースを出店します。会場からの眺望、夕日が沈み夜景に変わりゆく美しい絶景をお楽しみください。日 3/22（土）12：00～21：00所 府民の森なるかわ園地（近鉄「瓢箪山」）",
+   "selection": "好評につき、",
+   "box": [
+    291.59,
+    88.17,
+    510.44,
+    215.91
+   ],
+   "lines": 10,
+   "edit": {
+    "old": " 府民の森なるかわ園地（近鉄「瓢箪山」）",
+    "new": " 府民の森なるかわ園地（近鉄「瓢箪山」） 府民の森なるかわ園地（近鉄「瓢箪山」"
+   },
+   "origin": "PR #104 chain evaluation (PR #100 lengthen refused)",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P8-09",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+   "selection": "発達障がいの",
+   "box": [
+    291.57,
+    303.18,
+    431.29,
+    417.6
+   ],
+   "lines": 9,
+   "edit": {
+    "old": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。",
+    "new": "発達障がいの特性は暮らしや人づきあいの苦労につながることがあり、周囲の人の正しい理解と適切なサポートが大切です。府では4/2（水）に大阪城天守閣などをシンボルカラーのブルーにライトアップします。また、4/20（日）にオンラインセミナーを開催しますのでぜひご参加ください。発達障がいの特性は暮らしや人づき"
+   },
+   "origin": "PR #104 chain evaluation (PR #100 lengthen refused)",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: an inline placed object of a following paragraph would collide with protected vector"
+   }
+  },
+  {
+   "id": "P8-11",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "paragraph": "日 4/20（日）13：00～15：00　定 1,000人申 4/11（金）まで／インターネット",
+   "selection": "日 4/20",
+   "box": [
+    292.65,
+    421.42,
+    468.46,
+    444.17
+   ],
+   "lines": 2,
+   "edit": {
+    "old": " 4/11（金）まで／インターネット",
+    "new": " 4/11（金）まで／インターネット 4/11（金）まで／インターネット 4/11（金"
+   },
+   "origin": "PR #104 chain evaluation (PR #100 lengthen refused)",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "C02-92",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "paragraph": "賃貸住宅の退去の際に、損耗などの補修や修繕の費用を貸主、借主のどちらが負担するのかといった原状回復をめぐるトラブルが発生しています。大阪府版ガイドラインでは、トラブルの未然防止・解決に役立つ情報や相談窓口を掲載しています。ぜひご活用ください。",
+   "selection": "賃貸住宅の退",
+   "box": [
+    20.38,
+    821.56,
+    239.92,
+    883.56
+   ],
+   "lines": 5,
+   "edit": {
+    "old": "ぜひご活用ください。",
+    "new": "ぜひご活用ください。ぜひご相談ください。"
+   },
+   "origin": "PR #104 chain evaluation (PR #100 lengthen refused)",
+   "pr100": {
+    "outcome": "refused",
+    "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it"
+   }
+  },
+  {
+   "id": "P2-R",
+   "document": "osaka_fusei_477",
+   "page": 2,
+   "paragraph": "領収証は必ず受け取り保管してください。",
+   "selection": "領収証は必ず",
+   "edit": {
+    "old": "領収証は必ず受け取り保管してください。",
+    "new": "領収証は必ず受け取り保管してください。申請書は必ず保管してください。"
+   },
+   "below": "the HP line (icon, search box, button, link) and the enquiry line (icon, text, telephone icon, number); 17 pt above the advertisement frame",
+   "box": [
+    424.0,
+    872.74,
+    613.31,
+    883.02
+   ],
+   "lines": 1,
+   "origin": "PR #104 chain evaluation (survey: room for one more line below the following lines (this freeze))"
+  },
+  {
+   "id": "P2-L",
+   "document": "osaka_fusei_477",
+   "page": 2,
+   "paragraph": "マイナンバーに関するお問い合わせはこちら",
+   "selection": "マイナンバーに関",
+   "edit": {
+    "old": "マイナンバーに関するお問い合わせはこちら",
+    "new": "マイナンバーに関するお問い合わせはこちらマイナンバーに関するお問い合わせ"
+   },
+   "below": "the HP line, the enquiry line and the telephone line; 17 pt above the advertisement frame",
+   "box": [
+    35.43,
+    861.99,
+    245.43,
+    872.49
+   ],
+   "lines": 1,
+   "origin": "PR #104 chain evaluation (survey: room for one more line below the following lines (this freeze))"
+  }
+ ]
+}

@@ -41,6 +41,8 @@ import json
 import pymupdf
 from pypdf.generic import ArrayObject, FloatObject, NameObject
 
+from pdfeditor.content_stream import source_translate
+
 from .engine import Refused
 from .form_write import _page_rect, clip_rect
 from . import placed_move
@@ -104,6 +106,9 @@ def _item_start(seq, k):
             j -= 1
     elif n != 'Do':
         return None
+    # InDesign's placed object: BDC q … EMC Q.
+    if n == 'Q' and j > 1 and seq[j - 1].operator.name in ('BDC', 'BMC') and _item_end(seq, j - 1) == k:
+        return j - 1
     return j if j > 0 and _item_end(seq, j) == k else None
 
 
@@ -203,6 +208,324 @@ def _paint(c, seq, k, e, page, resources, program):
     return placed_move._union(painted), glyphs
 
 
+POSITION = {'Td', 'TD', 'T*', 'Tm'}
+
+
+def _before(ev):
+    """The text matrix (source arithmetic) before the showing operator ``ev``."""
+    shift = 0.
+    for atom in ev.atoms:
+        if not isinstance(atom, float):
+            a, b, c, d, e, f = atom.source_text_matrix
+            return (a, b, c, d, e - shift * a, f - shift * b)
+        shift += -atom / 1000 * ev.state.size * ev.state.tz / 100
+    return None
+
+
+def _color(state):
+    """Operators that set ``state``'s fill colour again, or a refusal."""
+    op, args = state.fill
+    if any(str(v).startswith('/') for v in args):
+        raise Refused('a separated line is filled with a pattern')
+    out = b' '.join(str(v).encode() for v in args) + b' ' + op.encode()
+    if op in ('sc', 'scn'):
+        if not state.fill_space:
+            raise Refused('a separated line is filled in an unnamed colour space')
+        out = state.fill_space.encode() + b' cs ' + out
+    return out
+
+
+def _extgstate(resources, name):
+    """The entries ExtGState ``name`` sets, or a refusal for one that cannot be set again elsewhere.
+
+    A soft mask is fixed in the CTM at its gs, and a font set by gs is not
+    the text state's: neither is set again under a translation."""
+    gs = (resources.get('/ExtGState') or {}).get(name)
+    if gs is None:
+        raise Refused(f'a text object holding a line uses an unknown ExtGState {name}')
+    gs = gs.get_object()
+    if '/Font' in gs or str(gs.get('/SMask', '/None')) != '/None':
+        raise Refused(f'a text object holding a line sets a soft mask or a font by ExtGState {name}')
+    return {str(k): str(v) for k, v in gs.items() if k != '/Type'}
+
+
+def separate(c, seq, bt, et, program, ids, taken, region, page, delta, data, resources):
+    """The showing operators of the text object ``seq[bt..et]`` that draw the
+    line's glyphs (``ids``), drawn on their own at their place, or a refusal.
+
+    A text object that draws the line and other text (an InDesign text frame
+    drawing a telephone number and the page's header) cannot move as a whole.
+    Its operators that draw only glyphs of the line are taken out of it and
+    drawn again, as they are (codes, kerning), in a text object of their own
+    where they were in the content: ``q <translation> cm BT <ExtGState, font,
+    spacing, scale, rise, mode, colour, text matrix> <operator> … ET Q``,
+    right before the text object (the line is its first text), right after
+    it (its last text), or between ``ET`` and ``BT <line matrix> Tm`` that
+    end it and begin it again there. What stays draws as before:
+
+    * each operator draws only glyphs of the line, or none of them (no
+      operator is cut);
+    * after a taken operator, the next showing operator that stays is placed
+      by Td, TD, T*, Tm (or is ' or "): it reads the line matrix, which a
+      showing operator never changes;
+    * nothing in the text object changes the graphics state the separated
+      text needs again after it (no q, Q, cm, inline image) and no text
+      clips (rendering modes 4-7); a fill colour set in it is set again; an
+      ExtGState set in it (InDesign: transparency, overprint) is set again
+      by its name when it holds no soft mask and no font, and the entries
+      the line read are exactly those it then reads;
+    * marked content in the text object holds no MCID, and either none of
+      the separated operators or (an ActualText span of a tab) only them: it
+      moves with them, its other operators staying;
+    * the separated text fills (mode 0) or is invisible (mode 3) in a device
+      or named colour space."""
+    if seq[bt].operator.name != 'BT' or seq[et].operator.name != 'ET':
+        raise Refused('a separated line is not a text object')
+    events = {}
+    for ev in c.events:
+        if (ev.stream_xref, ev.invocation) == program and seq[bt].operator.start < ev.operator.start < seq[et].operator.start:
+            events.setdefault(ev.operator.start, []).append(ev)
+    shown, mine, glyphs, rects, shows = [], [], set(), [], []
+    # ExtGState entries set in the text object before each operator, and the gs operators setting them.
+    entries, states, applied, open_, spans = {}, {}, [], [], {}
+    # The line matrix before each operator (source arithmetic, as interpreted).
+    lm, lms = (1, 0, 0, 1, 0, 0), {}
+    for k in range(bt + 1, et):
+        n = seq[k].operator.name
+        lms[k] = lm
+        args = seq[k].operator.args
+        if n == 'Tm':
+            lm = tuple(map(float, args))
+        elif n in ('Td', 'TD'):
+            lm = source_translate(lm, float(args[0]), float(args[1]))
+        elif n in ('T*', "'", '"'):
+            lm = source_translate(lm, 0, -seq[k - 1].state.tl)
+        if n in ('q', 'Q', 'cm', 'BI', 'Do', 'sh', 'BX', 'EX'):
+            raise Refused(f'a text object holding a line changes state the line needs ({n})')
+        if n == 'gs':
+            entries = dict(entries, **_extgstate(resources, str(seq[k].operator.args[0])))
+            applied.append(k)
+            continue
+        if n in ('BDC', 'BMC'):
+            if n == 'BDC' and '/MCID' in str(seq[k].operator.args[1:]):
+                raise Refused('a text object holding a line holds structured marked content')
+            open_.append(k)
+            spans[k] = [None, []]
+        elif n == 'EMC':
+            if not open_:
+                raise Refused('a text object holding a line closes marked content it did not open')
+            spans[open_.pop()][0] = k
+        if n not in SHOW:
+            continue
+        for b in open_:
+            spans[b][1].append(k)
+        states[k] = (entries, list(applied), list(open_))
+        evs = events.get(seq[k].operator.start, [])
+        # (A glyph no extracted glyph matches, such as a space drawn by its own code, is placed below by where it is drawn.)
+        if len(evs) != 1 or evs[0].error not in (None, 'ambiguous or unmatched glyph provenance'):
+            raise Refused('a text-showing operator of a separated line is not interpreted once')
+        ev = evs[0]
+        if ev.state.tr >= 4:
+            raise Refused('a text object holding a line clips with its text')
+        own, free = [], []
+        for ch in ev.chars:
+            found = ch.source_orders or [i for i in _unlinked(c, ch.origin) if i in ids]
+            own += [(i, i in ids) for i in found]
+            if not found:
+                free.append(pymupdf.Point(ch.origin))
+        line = [i for i, m in own if m]
+        if line and (len(line) != len(own) or any(i in taken for i, _ in own)):
+            raise Refused('a text-showing operator draws glyphs of the line and other text')
+        shows.append((k, ev, line, bool(own) and not line, free))
+        if line:
+            glyphs |= set(line)
+            rects += [pymupdf.Rect(c.actual[i]['bbox']) for i in line]
+    if not glyphs:
+        raise Refused('a separated text object draws no glyph of the line')
+    # Glyphs drawn without a match on a baseline of the line's glyphs, across
+    # its column, are the line's.
+    rect = placed_move._union(rects)
+    baselines = {c.actual[i]['origin'][1] for i in glyphs}
+    for k, ev, line, other, free in shows:
+        on = [region.x0 <= p.x <= region.x1 and any(abs(p.y - y) < .05 for y in baselines) for p in free]
+        mine_ = bool(line) or (bool(free) and all(on) and not other)
+        if not all(on) if mine_ else any(on):
+            raise Refused('a text-showing operator draws glyphs of the line and other text')
+        if mine_ and len(states[k][2]) > 1:
+            raise Refused('a separated line is drawn in nested marked content of its text object')
+        shown.append((k, mine_))
+        if mine_:
+            mine.append((k, ev))
+    if open_:
+        raise Refused('marked content of a text object holding a line is not closed in it')
+    # Marked content holding the line's text (an ActualText span of a tab)
+    # holds nothing else and moves with it; its other operators (the span's
+    # Tm) stay where they are.
+    taken_ops = {k for k, _ in mine}
+    moving = {b: e for b, (e, inside) in spans.items() if set(inside) & taken_ops}
+    if any(not set(spans[b][1]) <= taken_ops for b in moving):
+        raise Refused('a separated line shares marked content with other text of its text object')
+    for k, ev in mine:
+        if ev.state.tr not in (0, 3):
+            raise Refused('a separated line is stroked')
+        if ev.state.font is None or _before(ev) is None:
+            raise Refused('a separated text-showing operator has no font or no glyph')
+        if seq[k].operator.name == '"':
+            raise Refused('a separated line sets its spacing with "')
+        # The next showing operator that stays is placed from the line matrix.
+        nxt = next(((j, m) for j, m in shown if j > k), None)
+        while nxt is not None and nxt[1]:
+            nxt = next(((j, m) for j, m in shown if j > nxt[0]), None)
+        if nxt is not None:
+            j = nxt[0]
+            if seq[j].operator.name not in ("'", '"') and not any(seq[x].operator.name in POSITION for x in range(k + 1, j)):
+                raise Refused('text after a separated line continues from where the line ends')
+    if not region.contains(rect):
+        raise Refused('a separated line is drawn beyond its line')
+    for clip in seq[bt - 1].state.clip:
+        area = clip_rect(clip, page)
+        if area is None or not area.contains(rect) or not area.contains(rect + (0, delta, 0, delta)):
+            raise Refused('the clip of a separated line does not hold it moved')
+    t = placed_move.local_shift(seq[bt - 1].state.ctm, page, delta)
+    # The line is drawn again where it keeps its place among the text
+    # object's text (extraction order): right before the text object when
+    # it comes first, right after it when it comes last; between text that
+    # stays, the text object is ended before it and begun again after it at
+    # the line matrix of that place (the text state outlives ET).
+    staying = [j for j, m in shown if not m]
+    runs = []
+    for k, ev in mine:
+        if runs and not any(runs[-1][-1][0] < j < k for j in staying):
+            runs[-1].append((k, ev))
+        else:
+            runs.append([(k, ev)])
+    edits, places = [], []
+    for run in runs:
+        first, last = run[0][0], run[-1][0]
+        if not any(j < first for j in staying):
+            at, now, read, place = seq[bt].operator.start, seq[bt - 1].state, {}, 'before'
+        elif not any(j > last for j in staying):
+            at, now, read, place = seq[et].operator.end, seq[et].state, entries, 'after'
+        else:
+            at, now, read, place = seq[first].operator.start, seq[first - 1].state, states[first][0], 'within'
+        places.append(place)
+        drawn, current = [], None
+        # What the line's operator read differently from the state where it is
+        # drawn again is set again.
+        for k, ev in run:
+            op = seq[k].operator
+            raw = data[op.start:op.end]
+            show = raw[:-1].rstrip() + b' Tj' if op.name == "'" else raw
+            st = ev.state
+            sets = []
+            # The ExtGStates the line read, set again by name (the last one alone when it is enough).
+            want, before, _ = states[k]
+            if read != want:
+                for tail in (before[-1:], before):
+                    got = read
+                    for j in tail:
+                        got = dict(got, **_extgstate(resources, str(seq[j].operator.args[0])))
+                    if got == want:
+                        break
+                else:
+                    raise Refused('a separated line reads ExtGState entries set after it')
+                sets += [str(seq[j].operator.args[0]).encode() + b' gs' for j in tail]
+                read = got
+            if (st.font.name if st.font else None) != (now.font.name if now.font else None) or float(st.size) != float(now.size):
+                sets.append(st.font.name.encode() + b' ' + _num(st.size) + b' Tf')
+            for name in ('tc', 'tw', 'tz', 'ts', 'tr'):
+                if float(getattr(st, name)) != float(getattr(now, name)):
+                    sets.append((str(getattr(st, name)).encode() if name == 'tr' else _num(getattr(st, name))) + b' ' + name.capitalize().encode())
+            if st.fill != now.fill or st.fill_space != now.fill_space:
+                sets.append(_color(st))
+            now = st
+            span = states[k][2][0] if states[k][2] else None
+            if span != current:
+                if current is not None:
+                    drawn.append(b'EMC')
+                if span is not None:
+                    op = seq[span].operator
+                    drawn.append(data[op.start:op.end])
+                current = span
+            drawn.append(b' '.join(sets + [b' '.join(_num(v) for v in _before(ev)) + b' Tm']) + b'\n' + show)
+        if current is not None:
+            drawn.append(b'EMC')
+        payload = b'q 1 0 0 1 ' + _num(t[0]) + b' ' + _num(t[1]) + b' cm\nBT\n' + b'\n'.join(drawn) + b'\nET\nQ'
+        # A ' taken out still moves the line matrix down (T*).
+        keep = lambda k: b'T*' if seq[k].operator.name == "'" else b''
+        for k, _ in run[1:] if place == 'within' else run:
+            edits.append((seq[k].operator.start, seq[k].operator.end, keep(k)))
+        for b in sorted({x for k, _ in run for x in states[k][2]}):
+            edits += [(seq[b].operator.start, seq[b].operator.end, b''), (seq[moving[b]].operator.start, seq[moving[b]].operator.end, b'')]
+        if place == 'before':
+            edits.append((at, at, payload + b'\n'))
+        elif place == 'after':
+            edits.append((at, at, b'\n' + payload))
+        else:
+            restart = b'ET\n' + payload + b'\nBT\n' + b' '.join(_num(v) for v in lms[first]) + b' Tm\n'
+            edits.append((seq[first].operator.start, seq[first].operator.end, restart + keep(first)))
+    moved = b''.join(data[seq[k].operator.start:seq[k].operator.end] for k, _ in mine)
+    return dict(text_object=[seq[bt].operator.start, seq[et].operator.end], edits=edits, drawn=places, translation=t,
+                glyphs=glyphs, rect=rect, operators=len(mine), kept=sum(not m for _, m in shown),
+                bytes_sha256=hashlib.sha256(moved).hexdigest())
+
+
+def _items(seq, a, b):
+    """Indices of the items starting in ``seq[a..b]`` (state operators alone are items too)."""
+    k = a
+    while k <= b:
+        yield k
+        k = _item_end(seq, k) + 1
+
+
+def _on_line(c, seq, a, b, page, resources, program, region, taken):
+    """Whether the item ``seq[a..b]`` draws within ``region`` and no glyph in ``taken`` (state alone does)."""
+    try:
+        rect, g = _paint(c, seq, a, b, page, resources, program)
+    except Refused:
+        return False
+    return (rect is None and not g) or (rect is not None and region.contains(rect) and not g & set(taken))
+
+
+def _runs(c, seq, k, step, page, resources, program, region, taken):
+    """Runs of items drawn on the line from ``seq[k]`` going ``step`` (-1, 1):
+    items wholly off the line are passed over (they stay); a state operator
+    joins a run; anything else (an item partly on the line, the end of the
+    enclosing q block) ends the walk."""
+    runs, run = [], None
+    while 0 < k < len(seq):
+        name = seq[k].operator.name
+        if name in REPLAY:
+            k += step
+            continue
+        if step < 0:
+            a, b = _item_start(seq, k), k
+        else:
+            a, b = k, (_item_end(seq, k) if name in PATH | {'q', 'BT', 'BDC', 'BMC', 'Do'} else None)
+        if a is None or b is None:
+            break
+        try:
+            rect, g = _paint(c, seq, a, b, page, resources, program)
+        except Refused:
+            break
+        if rect is not None and region.contains(rect) and not g & set(taken):
+            run = [a, b] if run is None else [min(run[0], a), max(run[1], b)]
+        elif rect is not None and not rect.intersects(region) and not g & set(taken):
+            if run:
+                runs.append(run)
+            run = None
+        else:
+            break
+        k = a - 1 if step < 0 else b + 1
+    if run:
+        runs.append(run)
+    return runs
+
+
+def _num(v):
+    return format(float(v), '.12g').encode()
+
+
 def _check_level(seq, lo, hi, depth, program_bytes):
     """Operators at the group's own level: the replay of the state it leaves, or a refusal."""
     replay = []
@@ -299,8 +622,7 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
             seeds.append((lo, _item_end(seq, lo)))
     if not seeds:
         raise Refused('a following paragraph draws nothing to move')
-    lo, hi = min(s for s, _ in seeds), max(e for _, e in seeds)
-    starts = {s: e for s, e in seeds}
+    seeds = list(dict.fromkeys(seeds))
     texts = [pymupdf.Rect(c.actual[i]['bbox']) for i in ids if c.actual[i]['unicode'].strip()]
     band = placed_move._union(texts + [pymupdf.Rect(u['bounds']) for u in units])
     column = next((f for f in map(pymupdf.Rect, frames) if f.x0 < band.x1 and band.x0 < f.x1), band)
@@ -313,55 +635,83 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     region = pymupdf.Rect(column.x0 - TOL, band.y0 - TOL, column.x1 + TOL, band.y1 + TOL)
     if slot is not None:
         region = pymupdf.Rect(region.x0, min(region.y0, slot[0]), region.x1, max(region.y1, slot[1]))
+    # A line of a chain drawn in a text object with other text: its operators
+    # are separated from it (separate); the rest of the line moves as drawn.
+    splits = []
     if slot is not None:
-        # A line's own items drawn right before its text (an underline under its clip).
-        k = lo - 1
-        while k > 0:
-            if seq[k].operator.name in REPLAY:
-                k -= 1
-                continue
-            start = _item_start(seq, k)
-            if start is None:
-                break
-            try:
-                rect, g = _paint(c, seq, start, k, page, resources, program)
-            except Refused:
-                break
-            if rect is None or not region.contains(rect) or g & set(taken):
-                break
-            lo, k = start, start - 1
-    if seq[lo - 1].text_object or seq[lo - 1].pending_path or seq[lo - 1].pending_clip:
-        raise Refused('a line decoration starts inside a text object or a path')
-    depth = seq[lo - 1].q_depth
+        kept = []
+        for s0, e0 in seeds:
+            if seq[s0].operator.name == 'BT':
+                rect, _ = _paint(c, seq, s0, e0, page, resources, program)
+                if rect is not None and not region.contains(rect):
+                    splits.append(separate(c, seq, s0, e0, program, ids, set(taken), region, page, delta, data, resources))
+                    continue
+            # A text object alone in its own q (state, cm) … Q is that item.
+            j = s0 - 1
+            while j > 0 and seq[j].operator.name in REPLAY | {'cm'}:
+                j -= 1
+            if seq[j].operator.name == 'q':
+                q_end = _item_end(seq, j)
+                if q_end > e0 and all(seq[x].operator.name in REPLAY for x in range(e0 + 1, q_end)):
+                    s0, e0 = j, q_end
+            kept.append((s0, e0))
+        seeds = kept
+    seeds.sort()
+    starts = {s: e for s, e in seeds}
+    # The ranges drawn as they are, each moved by q cm … Q: one, or (a line of
+    # a chain) one per run of seeds drawn without other content between them.
+    ranges = []
+    for s0, e0 in seeds:
+        if ranges and (slot is None or all(_on_line(c, seq, x, _item_end(seq, x), page, resources, program, region, taken)
+                                           for x in _items(seq, ranges[-1][1] + 1, s0 - 1))):
+            ranges[-1][1] = max(ranges[-1][1], e0)
+        else:
+            ranges.append([s0, e0])
+    if slot is not None:
+        # What the line draws before and after them, past what is drawn
+        # wholly off the line (a text object of other text kept in place).
+        if ranges:
+            before, after = ranges[0][0] - 1, ranges[-1][1] + 1
+        else:
+            before = index[splits[0]['text_object'][0]] - 1
+            after = index[placed_move.operator_start(c, program, splits[-1]['text_object'][1])] + 1
+        ranges = sorted(_runs(c, seq, before, -1, page, resources, program, region, taken) + ranges
+                        + _runs(c, seq, after, 1, page, resources, program, region, taken))
     # The items between the seeds, then the items after them drawn on the line.
-    painted, glyphs = [], set()
-    k = lo
-    while k <= hi:
-        e = starts.get(k) or _item_end(seq, k)
-        rect, g = _paint(c, seq, k, e, page, resources, program)
-        if rect is not None and not region.contains(rect):
-            raise Refused('a following paragraph is drawn together with content beyond its line')
-        painted.append(rect)
-        glyphs |= g
-        hi, k = max(hi, e), e + 1
-    k = hi + 1
-    while k < len(seq):
-        n = seq[k].operator.name
-        if n in REPLAY:
-            k += 1
-            continue
-        if n not in PATH | {'q', 'BT', 'BDC', 'BMC', 'Do'}:
-            break
-        e = _item_end(seq, k)
-        try:
+    painted, glyphs = [x['rect'] for x in splits], {i for x in splits for i in x['glyphs']}
+    for n, rng in enumerate(ranges):
+        lo, hi = rng
+        if seq[lo - 1].text_object or seq[lo - 1].pending_path or seq[lo - 1].pending_clip:
+            raise Refused('a line decoration starts inside a text object or a path')
+        k = lo
+        while k <= hi:
+            e = starts.get(k) or _item_end(seq, k)
             rect, g = _paint(c, seq, k, e, page, resources, program)
-        except Refused:
-            break
-        if rect is None or not region.contains(rect) or g & set(taken):
-            break
-        painted.append(rect)
-        glyphs |= g
-        hi, k = e, e + 1
+            if rect is not None and not region.contains(rect):
+                raise Refused('a following paragraph is drawn together with content beyond its line')
+            painted.append(rect)
+            glyphs |= g
+            hi, k = max(hi, e), e + 1
+        if n == len(ranges) - 1 and slot is None:
+            k = hi + 1
+            while k < len(seq):
+                name = seq[k].operator.name
+                if name in REPLAY:
+                    k += 1
+                    continue
+                if name not in PATH | {'q', 'BT', 'BDC', 'BMC', 'Do'}:
+                    break
+                e = _item_end(seq, k)
+                try:
+                    rect, g = _paint(c, seq, k, e, page, resources, program)
+                except Refused:
+                    break
+                if rect is None or not region.contains(rect) or g & set(taken):
+                    break
+                painted.append(rect)
+                glyphs |= g
+                hi, k = e, e + 1
+        rng[1] = hi
     if not ids <= glyphs or glyphs & set(taken):
         raise Refused('a line decoration does not hold its paragraph\'s glyphs alone')
     carried = glyphs - ids
@@ -370,10 +720,17 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     region = pymupdf.Rect(column.x0 - TOL, band.y0 - TOL, column.x1 + TOL, band.y1 + TOL)
     if slot is not None:
         region = pymupdf.Rect(region.x0, min(region.y0, slot[0]), region.x1, max(region.y1, slot[1]))
-    end = seq[hi]
-    if end.q_depth != depth or end.text_object or end.pending_path or end.pending_clip or end.marked_content_depth != seq[lo - 1].marked_content_depth:
-        raise Refused('a line decoration is not a balanced drawing')
-    replay = _check_level(seq, lo, hi, depth, data)
+    replays = []
+    for lo, hi in ranges:
+        depth, end = seq[lo - 1].q_depth, seq[hi]
+        if end.q_depth != depth or end.text_object or end.pending_path or end.pending_clip or end.marked_content_depth != seq[lo - 1].marked_content_depth:
+            raise Refused('a line decoration is not a balanced drawing')
+        replays.append(_check_level(seq, lo, hi, depth, data))
+    wrapped = bool(ranges)
+    lo, hi = ranges[0] if wrapped else (None, None)
+    depth = seq[lo - 1].q_depth if wrapped else None
+    end = seq[hi] if wrapped else None
+    replay = replays[0] if wrapped else b''
     # What each item paints; paint over one of them within the line is the
     # group's too (an image inside its XObject, reported unclipped). The stage
     # verifies that each of them moved exactly.
@@ -410,27 +767,37 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
         hit = (box & new)
         if not hit.is_empty and hit.width > .05 and hit.height > .05:
             raise Refused('a line decoration would meet protected ' + o['kind'])
-    for clip in seq[lo - 1].state.clip:
+    for clip in [x for a, _ in ranges for x in seq[a - 1].state.clip]:
         area = clip_rect(clip, page)
         if area is None or not area.contains(new) or not area.contains(whole):
             raise Refused('the clip of a line decoration does not hold it moved')
-    t = placed_move.local_shift(seq[lo - 1].state.ctm, page, delta)
+    t = placed_move.local_shift(seq[lo - 1].state.ctm, page, delta) if wrapped else splits[0]['translation']
     pdf = placed_move.local_shift((1, 0, 0, 1, 0, 0), page, delta)
-    start, stop = seq[lo].operator.start, end.operator.end
-    evidence = dict(page=page_number, paragraph=paragraph.text[:40], operators=[start, stop], operator_count=hi - lo + 1,
-                    bytes_sha256=hashlib.sha256(data[start:stop]).hexdigest(), bounds=[round(v, 2) for v in whole],
+    start, stop = (seq[lo].operator.start, end.operator.end) if wrapped else (None, None)
+    span = [j for a, b in ranges for j in range(a, b + 1)]
+    evidence = dict(page=page_number, paragraph=paragraph.text[:40], operators=[start, stop], operator_count=len(span),
+                    bytes_sha256=hashlib.sha256(data[start:stop] if wrapped else b'').hexdigest(), bounds=[round(v, 2) for v in whole],
                     moved_to=[round(v, 2) for v in new], translation=round(delta, 3),
-                    drawings=sum(seq[j].operator.name in PAINT and seq[j].operator.name != 'n' for j in range(lo, hi + 1)),
-                    shadings=sum(seq[j].operator.name == 'sh' for j in range(lo, hi + 1)),
-                    xobjects=sorted({str(seq[j].operator.args[0]) for j in range(lo, hi + 1) if seq[j].operator.name == 'Do'}),
-                    glyphs=len(ids), carried_text=''.join(c.actual[i]['unicode'] for i in sorted(carried)), placed_objects=len(units), replayed_state=[seq[j].operator.name for j in range(lo, hi + 1)
-                                                                            if seq[j].operator.name in REPLAY and seq[j - 1].q_depth == depth],
+                    drawings=sum(seq[j].operator.name in PAINT and seq[j].operator.name != 'n' for j in span),
+                    shadings=sum(seq[j].operator.name == 'sh' for j in span),
+                    xobjects=sorted({str(seq[j].operator.args[0]) for j in span if seq[j].operator.name == 'Do'}),
+                    glyphs=len(ids), carried_text=''.join(c.actual[i]['unicode'] for i in sorted(carried)), placed_objects=len(units), replayed_state=[seq[j].operator.name for j in span
+                                                                            if seq[j].operator.name in REPLAY and seq[j - 1].q_depth == seq[next(a for a, b in ranges if a <= j <= b) - 1].q_depth],
                     annotations=[dict(xref=a['xref'], subtype='/Link', rect=[round(v, 2) for v in a['rect']], uri=a['uri']) for a in annotations],
                     adjacent=sorted({o['kind'] for o in obstacles if o['kind'] != 'container'
                                      and pymupdf.Rect(o['bounds']).intersects(new + (-3, -3, 3, 3)) and not own(pymupdf.Rect(o['bounds']))}))
+    if len(ranges) > 1:
+        evidence['ranges'] = [[seq[a].operator.start, seq[b].operator.end] for a, b in ranges]
+    if splits:
+        # Separated from text objects that draw other text too: what is taken out and what stays.
+        evidence['separated'] = [dict(text_object=x['text_object'], operators_taken=x['operators'], operators_staying=x['kept'],
+                                      drawn=x['drawn'], bytes_sha256=x['bytes_sha256'], text=''.join(c.actual[i]['unicode'] for i in sorted(x['glyphs'])),
+                                      bounds=[round(v, 2) for v in x['rect']]) for x in splits]
     evidence['id'] = 'line-decoration-' + hashlib.sha256(json.dumps(evidence, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
-    return dict(evidence=evidence, program=program, start=start, end=stop, bounds=whole, old=list(whole), new=list(new), state=seq[lo - 1].state,
-                glyphs=sorted(glyphs), translation=t, pdf_translation=pdf, replay=replay, annotations=annotations)
+    return dict(evidence=evidence, program=program, start=start, end=stop, bounds=whole, old=list(whole), new=list(new), state=seq[lo - 1].state if wrapped else None,
+                glyphs=sorted(glyphs), translation=t, pdf_translation=pdf, replay=replay, annotations=annotations, splits=splits,
+                ranges=[dict(start=seq[a].operator.start, end=seq[b].operator.end, translation=placed_move.local_shift(seq[a - 1].state.ctm, page, delta),
+                             replay=r) for (a, b), r in zip(ranges, replays)])
 
 
 def move_annotations(writer, lookup, groups):

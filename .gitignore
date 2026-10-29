@@ -92,3 +92,6 @@ tmp/
 !/evaluations/paragraph_frame_chain/
 !/evaluations/paragraph_frame_chain/manifest.json
 !/evaluations/paragraph_frame_chain/results.json
+!/evaluations/paragraph_frame_separate/
+!/evaluations/paragraph_frame_separate/manifest.json
+!/evaluations/paragraph_frame_separate/results.json

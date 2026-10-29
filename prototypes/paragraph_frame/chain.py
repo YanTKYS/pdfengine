@@ -29,7 +29,8 @@ that is not an element of the chain, or to where the first element moved,
 never past the container or clip that bounds it (no region the page does not
 show). When a paragraph shrinks, the lines attached below it the same way are
 listed as optional candidates: approved, they move back up with it (the edit
-back of an approved chain from the saved PDF alone).
+back of an approved chain from the saved PDF alone). When the page records
+the lines earlier edits moved, only those are listed.
 """
 import hashlib
 import json
@@ -80,12 +81,26 @@ def plan(c, paragraphs, spec, evidence, delta, followers=()):
         l['extent'] = pymupdf.Rect(min([frame.x0] + [x['x'] for x in l['rows']]) - em, l['slot'][0],
                                    max([frame.x1] + [x['pen_end'] for x in l['rows']]) + em, l['slot'][1])
     units, used, reach, unavailable = [], set(), last, None
+    # Shrinking a page whose earlier edits recorded the lines they moved
+    # (auto_conditions, PieceInfo): only those lines are attached below; a line
+    # that was not moved (one a separation left in place) ends the chain.
+    marks = None
+    if not grow:
+        from .auto_conditions import read_moved
+        marks = {}
+        for m in read_moved(c, spec['page']):
+            for r in m['rows']:
+                for g in r['glyphs']:
+                    marks.setdefault(g[0], []).append((g[2], g[3]))
+        marks = marks or None
+    recorded = lambda l: all(any(abs(x - c.actual[i]['origin'][0]) < .01 and abs(y - c.actual[i]['origin'][1]) < .01
+                                 for x, y in marks.get(c.actual[i]['unicode'], ())) for i in l['ids'] if c.actual[i]['unicode'].strip())
     # Lines are taken nearest first while one lies within reach of what moves.
     # An element is a line, or the lines below it its drawing holds too (a text
     # object drawing several lines): they move as one drawing.
     while not unavailable:
         hit = next((l for l in lines if id(l) not in used and l['top'] < reach + zone - EPS), None)
-        if hit is None:
+        if hit is None or marks is not None and not recorded(hit):
             break
         element = [hit]
         used.add(id(hit))
@@ -95,7 +110,8 @@ def plan(c, paragraphs, spec, evidence, delta, followers=()):
                 break
             except Refused as exc:
                 after = lines.index(element[-1]) + 1
-                if any(m in str(exc) for m in MERGE) and after < len(lines) and id(lines[after]) not in used and len(element) < 8:
+                if (any(m in str(exc) for m in MERGE) and after < len(lines) and id(lines[after]) not in used and len(element) < 8
+                        and (marks is None or recorded(lines[after]))):
                     element.append(lines[after])
                     used.add(id(lines[after]))
                     continue

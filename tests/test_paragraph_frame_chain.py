@@ -142,7 +142,9 @@ LOW = [(x, y + 170, t) for x, y, t in LINES[:3]] + [(52, 278, '検索窓口で�
     ('F2', None, 'would meet protected filled-vector'),
     ('F3', None, 'would leave or enter a background'),
     ('clip', dict(clip=b'30 180 240 30 re', lines=SEPARATE), 'does not hold it moved'),
-    ('between', dict(between=b'0 g 30 20 4 4 re f\n'), 'drawn together with content beyond its line'),
+    # Drawn between the HP line's icon and its text, partly on the line (a
+    # bar across the column): it stays, and the line cannot move apart from it.
+    ('between', dict(between=b'0 g 20 186 250 3 re f\n'), 'holds content (filled-vector) outside'),
     ('low', dict(lines=LOW, link=None, box=b''), 'would leave the page'),
     # A rule across the line drawn apart from it (a stroke without height).
     ('rule', dict(lines=SEPARATE, before=b'q 0 G .5 w 30 192 m 220 192 l S Q\n'), 'holds content (vector) outside'),

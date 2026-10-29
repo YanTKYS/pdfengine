@@ -146,13 +146,17 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     edits=[(e.operator.start,e.operator.end,serialized_event(e,selected,remove=True)) for e in removed]
     program=c.streams[stream]
     for u in units:
-        # q and the translation before its first operator, Q after its last
-        # (each extends that operator, so insertions at the same place keep their order).
-        tx,ty=u['translation'];first_end=placed_move.operator_end(c,(stream,invocation),u['start'])
-        edits.append((u['start'],first_end,b'q 1 0 0 1 '+number(tx)+b' '+number(ty)+b' cm\n'+program[u['start']:first_end]))
-        last=placed_move.operator_start(c,(stream,invocation),u['end'])
-        # The state a line decoration left is set again after it (decoration.group).
-        edits.append((last,u['end'],program[last:u['end']]+b'\nQ'+(b'\n'+u['replay'] if u.get('replay') else b'')))
+        # A line separated from a text object that draws other text too
+        # (decoration.separate): its operators leave it and are drawn, moved, at their place in the content.
+        for x in u.get('splits') or ():edits+=list(x['edits'])
+        for r in u.get('ranges') or ([u] if u.get('start') is not None else []):
+            # q and the translation before its first operator, Q after its last
+            # (each extends that operator, so insertions at the same place keep their order).
+            tx,ty=r['translation'];first_end=placed_move.operator_end(c,(stream,invocation),r['start'])
+            edits.append((r['start'],first_end,b'q 1 0 0 1 '+number(tx)+b' '+number(ty)+b' cm\n'+program[r['start']:first_end]))
+            last=placed_move.operator_start(c,(stream,invocation),r['end'])
+            # The state a line decoration left is set again after it (decoration.group).
+            edits.append((last,r['end'],program[last:r['end']]+b'\nQ'+(b'\n'+r['replay'] if r.get('replay') else b'')))
     # Re-emitted sequences lose their old BDC/EMC; they are written again
     # around their new glyphs (fixed objects and containers stay as drawn).
     for p in active:
@@ -373,7 +377,8 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         at,wrapped,pre=after(u['end'])
         drawn.append((at,wrapped,emit(p,ts,False,pre)))
     # New text is never written inside a moved unit: its translation would move it too.
-    if any(u['start']<at<u['end'] for u in units for at,_,ops in drawn if ops) or any(u['start']<insertion<u['end'] for u in units):
+    spans=[(r['start'],r['end']) for u in units for r in u.get('ranges') or ([u] if u.get('start') is not None else [])]+[tuple(x['text_object']) for u in units for x in u.get('splits') or ()]
+    if any(a<at<b for a,b in spans for at,_,ops in drawn if ops) or any(a<insertion<b for a,b in spans):
         raise Refused('new text would be written inside a moved placed object or line decoration')
     for at,(spot,restore_),ops in drawn:
         if ops:edits.append((at,at,form_write.wrap(spot,b''.join(ops),restore_)))
@@ -410,6 +415,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
 def moved_record(u):
     """A moved line decoration or following element in the save record."""
     return dict(id=u['evidence']['id'],old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs']),
+                **({'separated':len(u['splits'])} if u.get('splits') else {}),
                 annotations=[dict(xref=a['xref'],old=[round(v,3) for v in a['rect']],new=[round(v,3) for v in pymupdf.Rect(a['rect'])+(0,u['shift'][1],0,u['shift'][1])],uri=a['uri']) for a in u['annotations']])
 
 
