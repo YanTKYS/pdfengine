@@ -178,3 +178,27 @@ def test_a_replacement_broken_over_lines_is_not_reported_as_found(tmp_path):
     proposal, record = saved(source, out, chain=[])
     q = audit(source, out, 1, proposal, record)['quality']
     assert q['search_mupdf'] is None and q['search_wrapped_lines_text'] is True and q['status'] == 'unverified'
+
+
+def test_a_duplicate_where_overlapping_moves_went_fails(tmp_path):
+    # A line decoration moving with its following paragraph (two approved moves, one translation, overlapping
+    # areas: both carry the paragraph's glyphs): a copy of one of them on the moved one is not explained by
+    # the other move.
+    from test_paragraph_frame_decoration import fixture
+    source = fixture('D1', tmp_path / 'd1')
+    found = propose(str(source), 1, *GROW)['evidence']['decorations']
+    proposal = propose(str(source), 1, *GROW, decorations=[c['id'] for c in found['candidates']])
+    accepted = approve(str(source), proposal, acknowledge_inference=True)
+    out = tmp_path / 'out.pdf'
+    record = save(str(source), accepted, str(out))
+    proposal = accepted['proposal']
+    assert audit(source, out, 1, proposal, record)['verdict'] == 'pass'
+    deco = next(c for c in change_set(proposal, record, followers_area(source, proposal)) if c['what'] == 'decorations')
+    dest = pymupdf.Rect(deco['old']) + (0, deco['dy'], 0, deco['dy'])
+    def edit(page, doc):
+        c = next(c for b in page.get_text('rawdict')['blocks'] for l in b.get('lines', []) for sp in l['spans'] for c in sp['chars']
+                 if c['c'] == '後' and dest.contains(pymupdf.Point(c['origin'])))
+        page.insert_text(c['origin'], '後', fontname='japan', fontsize=11)
+    bad = tamper(out, tmp_path / 'bad.pdf', edit)
+    r = audit(source, bad, 1, proposal, record)
+    assert r['verdict'] == 'fail' and any('added where it went' in reason for x in r['approved'] for reason in x['reasons']), r['approved']

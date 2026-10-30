@@ -232,28 +232,34 @@ def audit(source, output, page_number=None, proposal=None, save=None):
         # --- approved: each translation exactly, nothing left behind, nothing added where it went ---
         approved = []
         # What may lie in a destination besides the move's own items: what the other approved moves carry
-        # there (translated), what stayed where it was (in no moved area), and the edited paragraph's new
-        # glyphs. Each accounts for one item (a duplicate is not explained by its original).
+        # there (translated) and what stayed where it was (in no moved area). Each accounts for one item (a
+        # duplicate is not explained by its original). The edited paragraph's new text goes where the moved
+        # elements were, not where they went (its frame may reach past them): no glyph is excused for it.
         def carried(items, rect_of, key_of, old, c):
-            cut = [edited_old] + [o for o in olds if o is not old]
+            cut = [edited_old] + [o for o, m in zip(olds, moves) if o is not old and abs(m['dy'] - c['dy']) > TOL]
             return [(key_of(k), rect_of(k) + (0, c['dy'], 0, c['dy'])) for k in items if _inside(rect_of(k), [old]) and not _inside(rect_of(k), cut, 0)]
         point = lambda k: pymupdf.Rect(k[1], k[2], k[1], k[2])
         kinds = dict(glyph=(ga, point, lambda k: k[0], lambda k: k[3]), drawing=(da, lambda k: k[4], lambda k: k[:4], lambda k: k[4]),
                      image=(ia, lambda k: k[1], lambda k: k[0], lambda k: k[1]))
         stays = {kind: [(key_of(k), rect_of(k)) for k in items if not _touches(box_of(k), olds)] for kind, (items, rect_of, key_of, box_of) in kinds.items()}
 
-        def unexplained(extra, kind, tol, this):
-            """Items found in a destination that no other approved move, no unmoved content and no new text accounts for."""
+        def unexplained(extra, kind, tol, this, own):
+            """Items found in a destination that no other approved move, no unmoved content and no new text accounts for.
+
+            ``own``: this move's own items (paired already); an item another move carries too (overlapping moves
+            with one translation) is not counted twice."""
             items, rect_of, key_of, _ = kinds[kind]
             pool = list(stays[kind])
             for c, old in zip(moves, olds):
                 if old is not this:
                     pool += carried(items, rect_of, key_of, old, c)
+            for key, r in own:
+                hit = next((n for n, (k, q) in enumerate(pool) if k == key and max(abs(a - b) for a, b in zip(q, r)) <= tol), None)
+                if hit is not None:
+                    pool.pop(hit)
             out = []
             for key, r in extra:
                 rect = pymupdf.Rect(r)
-                if kind == 'glyph' and _inside(rect, [edited_new], 0):
-                    continue
                 t = 1.0 if isinstance(key, tuple) and key[:1] == ('shading raster',) else tol
                 hit = next((n for n, (k, q) in enumerate(pool) if k == key and max(abs(a - b) for a, b in zip(q, rect)) <= t), None)
                 if hit is None:
@@ -264,7 +270,7 @@ def audit(source, output, page_number=None, proposal=None, save=None):
 
         for c, old, new in zip(moves, olds, news):
             dy = c['dy']
-            cut = [edited_old] + [o for o in olds if o is not old]
+            cut = [edited_old] + [o for o, m in zip(olds, moves) if o is not old and abs(m['dy'] - c['dy']) > TOL]
             mine = lambda r: _inside(r, [old]) and not _inside(r, cut, 0)
             g_want = [(ch, pymupdf.Rect(x, y + dy, x, y + dy)) for ch, x, y, bb in ga if mine(bb)]
             g_have = [(ch, pymupdf.Rect(x, y, x, y)) for ch, x, y, bb in gb if _inside(bb, [new])]
@@ -275,8 +281,8 @@ def audit(source, output, page_number=None, proposal=None, save=None):
             gm, gx = _match(g_want, g_have, TOL)
             dm, dx = _match(d_want, d_have, .02)
             im, ix = _match(i_want, i_have, .02)
-            added = dict(glyphs=[x for x in unexplained(gx, 'glyph', TOL, old) if x[0].strip()], drawings=unexplained(dx, 'drawing', .02, old),
-                         images=unexplained(ix, 'image', .02, old))
+            added = dict(glyphs=[x for x in unexplained(gx, 'glyph', TOL, old, g_want) if x[0].strip()],
+                         drawings=unexplained(dx, 'drawing', .02, old, d_want), images=unexplained(ix, 'image', .02, old, i_want))
             # Nothing of the source stays where it was (unless something else now lies there: new text, another move).
             elsewhere = [edited_new] + [n for n in news if n is not new]
             left = [(ch, round(x, 2), round(y, 2)) for ch, x, y, bb in gb if _inside(bb, [old], 0) and not _inside(bb, [new] + elsewhere, 0)
