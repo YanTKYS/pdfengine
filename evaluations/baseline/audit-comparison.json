@@ -1,6 +1,6 @@
 {
  "schema": "paragraph-frame-audit-comparison-1",
- "note": "Every saved step of the issue #105 milestone runs (dd3ea7e; chain, separate, decoration, restore, placed): the existing audit as each run recorded it beside approved_audit (7037493). Made by approved_audit --compare-root tmp/hub/base-dd3ea7e.",
+ "note": "Every saved step of the chain, separate, decoration, restore and placed evaluations rerun on cdf9e89 (tmp/hub/review-109; their records equal the baseline): the existing audit as each run recorded it beside approved_audit (8228def: added content in destinations checked, overlapping moves, unverified wrapped search). Made by approved_audit --compare-root.",
  "table": [
   [
    "chain",
@@ -63,7 +63,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -226,7 +226,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -279,7 +279,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -333,7 +333,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -441,7 +441,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -469,7 +469,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -523,7 +523,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -623,7 +623,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -673,7 +673,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -698,7 +698,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -723,7 +723,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -748,7 +748,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -773,7 +773,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -798,7 +798,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -823,7 +823,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -848,7 +848,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -873,7 +873,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -973,7 +973,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1023,7 +1023,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1048,7 +1048,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1073,7 +1073,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1098,7 +1098,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1123,7 +1123,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1148,7 +1148,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1173,7 +1173,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1198,7 +1198,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1223,7 +1223,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
@@ -1323,7 +1323,7 @@
      "pass"
     ],
     "protected": "pass",
-    "quality": "pass",
+    "quality": "unverified",
     "reasons": []
    }
   },
