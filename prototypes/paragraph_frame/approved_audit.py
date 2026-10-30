@@ -22,7 +22,10 @@ and the saved page is checked against it:
   pixels (72 and 150 dpi) are unchanged; the other pages' content and the
   font programs too;
 * ``quality`` (apart from safety): MuPDF and Poppler extraction equal the
-  source's with the replacement, and the new text is found by search.
+  source's with the replacement, the new text is found by search (a
+  replacement broken over lines is not searched: unverified, its lines'
+  joined text reported apart), the edited paragraph keeps its sizes and
+  colours. ``pass`` only when every check was made and passed.
 
 A change kind this audit cannot check yet (a stretched background, changed
 line spacing: issue #107 allows them on approval, later) makes the verdict
@@ -226,8 +229,39 @@ def audit(source, output, page_number=None, proposal=None, save=None):
         height = pa.rect.height
         ga, gb, da, db, ia, ib = _glyphs(pa), _glyphs(pb), _drawings(pa), _drawings(pb), _images(pa), _images(pb)
         pages_same = len(a) == len(b)
-        # --- approved: each translation exactly, nothing left behind ---
+        # --- approved: each translation exactly, nothing left behind, nothing added where it went ---
         approved = []
+        # What may lie in a destination besides the move's own items: what the other approved moves carry
+        # there (translated), what stayed where it was (in no moved area), and the edited paragraph's new
+        # glyphs. Each accounts for one item (a duplicate is not explained by its original).
+        def carried(items, rect_of, key_of, old, c):
+            cut = [edited_old] + [o for o in olds if o is not old]
+            return [(key_of(k), rect_of(k) + (0, c['dy'], 0, c['dy'])) for k in items if _inside(rect_of(k), [old]) and not _inside(rect_of(k), cut, 0)]
+        point = lambda k: pymupdf.Rect(k[1], k[2], k[1], k[2])
+        kinds = dict(glyph=(ga, point, lambda k: k[0], lambda k: k[3]), drawing=(da, lambda k: k[4], lambda k: k[:4], lambda k: k[4]),
+                     image=(ia, lambda k: k[1], lambda k: k[0], lambda k: k[1]))
+        stays = {kind: [(key_of(k), rect_of(k)) for k in items if not _touches(box_of(k), olds)] for kind, (items, rect_of, key_of, box_of) in kinds.items()}
+
+        def unexplained(extra, kind, tol, this):
+            """Items found in a destination that no other approved move, no unmoved content and no new text accounts for."""
+            items, rect_of, key_of, _ = kinds[kind]
+            pool = list(stays[kind])
+            for c, old in zip(moves, olds):
+                if old is not this:
+                    pool += carried(items, rect_of, key_of, old, c)
+            out = []
+            for key, r in extra:
+                rect = pymupdf.Rect(r)
+                if kind == 'glyph' and _inside(rect, [edited_new], 0):
+                    continue
+                t = 1.0 if isinstance(key, tuple) and key[:1] == ('shading raster',) else tol
+                hit = next((n for n, (k, q) in enumerate(pool) if k == key and max(abs(a - b) for a, b in zip(q, rect)) <= t), None)
+                if hit is None:
+                    out.append((key, r))
+                else:
+                    pool.pop(hit)
+            return out
+
         for c, old, new in zip(moves, olds, news):
             dy = c['dy']
             cut = [edited_old] + [o for o in olds if o is not old]
@@ -238,15 +272,18 @@ def audit(source, output, page_number=None, proposal=None, save=None):
             d_have = [(k[:4], k[4]) for k in db if _inside(k[4], [new])]
             i_want = [(k[0], k[1] + (0, dy, 0, dy)) for k in ia if mine(k[1])]
             i_have = [(k[0], k[1]) for k in ib if _inside(k[1], [new])]
-            gm, _ = _match(g_want, g_have, TOL)
-            dm, _ = _match(d_want, d_have, .02)
-            im, _ = _match(i_want, i_have, .02)
+            gm, gx = _match(g_want, g_have, TOL)
+            dm, dx = _match(d_want, d_have, .02)
+            im, ix = _match(i_want, i_have, .02)
+            added = dict(glyphs=[x for x in unexplained(gx, 'glyph', TOL, old) if x[0].strip()], drawings=unexplained(dx, 'drawing', .02, old),
+                         images=unexplained(ix, 'image', .02, old))
             # Nothing of the source stays where it was (unless something else now lies there: new text, another move).
             elsewhere = [edited_new] + [n for n in news if n is not new]
             left = [(ch, round(x, 2), round(y, 2)) for ch, x, y, bb in gb if _inside(bb, [old], 0) and not _inside(bb, [new] + elsewhere, 0)
                     and ch.strip()]
             reasons = ([f'{len(gm)} glyphs not moved exactly: {gm[:3]}'] if gm else []) + ([f'{len(dm)} drawings not moved exactly'] if dm else []) \
-                + ([f'{len(im)} images not moved exactly'] if im else []) + ([f'{len(left)} glyphs left behind: {left[:3]}'] if left else [])
+                + ([f'{len(im)} images not moved exactly'] if im else []) + ([f'{len(left)} glyphs left behind: {left[:3]}'] if left else []) \
+                + [f'{len(v)} {k} added where it went, not carried by an approved move: {v[:2]}' for k, v in added.items() if v]
             approved.append(dict(what=c['what'], id=c.get('id'), approval=c['approval'], dy=round(dy, 3), glyphs=len(g_want), drawings=len(d_want),
                                  images=len(i_want), shading_rasters=sum(isinstance(k, tuple) for k, _ in i_want),
                                  status='fail' if reasons else 'pass', reasons=reasons))
@@ -338,11 +375,22 @@ def _quality(source, output, page, text, edited_old, edited_new, moved):
             at = a.find(bare(old), at + 1)
         out[f'extraction_{name}'] = at >= 0 and b == a[:at] + bare(new) + a[at + len(bare(old)):]
     with pymupdf.open(output) as d:
-        # (Search finds text within a reader line: a replacement broken over lines is found by its lines' text.)
-        lines = [''.join(s['text'] for s in l['spans']) for b in d[page - 1].get_text('dict')['blocks'] for l in b.get('lines', [])]
-        out['search_mupdf'] = bool(d[page - 1].search_for(new)) or not any(new in l for l in lines) if new.strip() else True
+        # Search finds text within a reader line. A replacement found by search is a success; one broken over
+        # lines is not searched (None: unverified), and its lines' joined text is reported apart.
+        hits = d[page - 1].search_for(new) if new.strip() else None
+        if not new.strip():
+            pass  # a deletion leaves no text to search for: no such check
+        elif hits:
+            out['search_mupdf'] = True
+        else:
+            lines = [''.join(s['text'] for s in l['spans']) for b in d[page - 1].get_text('dict')['blocks'] for l in b.get('lines', [])]
+            wrapped = not any(new in l for l in lines)
+            out['search_mupdf'] = None if wrapped else False
+            out['search_wrapped_lines_text'] = wrapped and bare(new) in bare(''.join(lines))
     out['size_and_colour_kept'] = _styles(output, page, edited_new, moved) <= _styles(source, page, edited_new, moved)
-    out['status'] = 'pass' if all(out.values()) else 'fail'
+    # A check not made (None) is no success: the status is then unverified, unless another check failed.
+    values = list(out.values())
+    out['status'] = 'fail' if any(v is False for v in values) else 'unverified' if any(v is None for v in values) else 'pass'
     return out
 
 

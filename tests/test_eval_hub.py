@@ -69,3 +69,28 @@ def test_the_baseline_and_the_map_are_well_formed():
                                         'generalization', 'continuity', 'column_flow', 'indesign', 'tagged'}
     rules = json.loads(hub.IMPACT.read_text())['rules']
     assert all(set(r.get('direct', [])) | set(r.get('related', [])) <= set(hub.EVALUATIONS) for r in rules)
+
+
+def test_practical_success_needs_every_measured_protection():
+    # Structure or links measured and failed: no practical success, whatever the region audit says.
+    assert er.step_record('e', 'C', '1', step(structure_failed=['ParentTree']), 'real')['tiers']['practical'] is False
+    assert er.step_record('e', 'C', '1', step(links=dict(ok=False)), 'real')['tiers']['practical'] is False
+    moved = step(safety=False, moves=dict(ok=True), links=dict(ok=False), save=dict(chain_moved=[{}]))
+    assert er.step_record('e', 'C', '1', moved, 'real')['tiers']['practical'] is False
+    # The PR #87-#91 records: an audit's outcome says safety and quality; a sample's three checks all count.
+    reg = er.regression_records(dict(
+        generalization={'A': dict(initial='success', initial_failed=[], reedit='safety-audit-failed', reedit_failed=['x'])},
+        tagged=dict(samples=dict(edits=[dict(document='d', page=1, selection='s', kind='same', outcome='saved', failed=[],
+                                             safety=True, quality=True, structure=False, continued_editing=dict(ok=True))]))))
+    tiers = {(r['case'], r['step']): r['tiers']['practical'] for r in reg}
+    assert tiers == {('A', 'initial'): True, ('A', 'reedit'): False, ('d:1:s', 'same'): False}
+
+
+def test_a_change_of_tier_mode_or_group_alone_is_reported():
+    base = er.case_records('chain', {'C1': [step()]})
+    now = [dict(r, tiers=dict(r['tiers'], practical=False)) for r in base]
+    diff = er.compare(base, now)
+    assert [c['record'] for c in diff['changed']] == [['chain', 'C1', '1']] and diff['changed'][0]['tiers'] == {'practical': [True, False]}
+    now = [dict(r, mode='layout', group='fixture') for r in base]
+    c = er.compare(base, now)['changed'][0]
+    assert c['mode'] == ['faithful', 'layout'] and c['group'] == ['real', 'fixture']

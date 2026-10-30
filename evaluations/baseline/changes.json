@@ -167,5 +167,3290 @@
    ]
   ],
   "design_decision_needed": false
+ },
+ {
+  "date": "2026-10-30",
+  "code": "dd3ea7e",
+  "reason": "Measurement fix (PR #109 review, items 2-4): practical success needs every measured protection (structure, links, move audits) and is unverified when protection or quality was not measured; the PR #87-#91 records take safety and quality from their audits' outcomes and failing checks; records are compared with their tiers, mode and group. Same raw outputs as before; no product behaviour changed.",
+  "evaluations": [
+   "chain",
+   "column_flow",
+   "continuity",
+   "decoration",
+   "fidelity",
+   "generalization",
+   "indesign",
+   "multiedit",
+   "placed",
+   "restore",
+   "roundtrip",
+   "separate",
+   "tagged"
+  ],
+  "compared": 838,
+  "changed": [
+   {
+    "record": [
+     "continuity",
+     "E1",
+     "new"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "continuity",
+     "E4",
+     "new"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "continuity",
+     "E5",
+     "new"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "continuity",
+     "E6",
+     "new"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "continuity",
+     "Q1-inference",
+     "sequence/1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q1-inference",
+     "sequence/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q1-inference",
+     "sequence/3"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q1-inference",
+     "sequence/4"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q1-stored",
+     "sequence/1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q1-stored",
+     "sequence/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q1-stored",
+     "sequence/3"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q1-stored",
+     "sequence/4"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q2-inference",
+     "sequence/1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q2-inference",
+     "sequence/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q2-inference",
+     "sequence/3"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q2-inference",
+     "sequence/4"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q2-stored",
+     "sequence/1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q2-stored",
+     "sequence/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q2-stored",
+     "sequence/3"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q2-stored",
+     "sequence/4"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q3-inference",
+     "sequence/1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q3-inference",
+     "sequence/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q3-inference",
+     "sequence/3"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q3-inference",
+     "sequence/4"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q3-stored",
+     "sequence/1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q3-stored",
+     "sequence/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q3-stored",
+     "sequence/3"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "continuity",
+     "Q3-stored",
+     "sequence/4"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     null,
+     null
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "decoration",
+     "P7-03",
+     "shorten/1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "decoration",
+     "P7-03",
+     "shorten/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "decoration",
+     "P7-05",
+     "shorten/1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "decoration",
+     "P7-05",
+     "shorten/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "decoration",
+     "P7-06",
+     "shorten/1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "decoration",
+     "P7-06",
+     "shorten/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "decoration",
+     "P7-07",
+     "shorten/2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "generalization",
+     "A",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "A",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "B",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "B",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "C",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "C",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "D",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "D",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "F1",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "F1",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "F2",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "F2",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "F3",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "native_replacement_search"
+     ],
+     [
+      "native_replacement_search"
+     ]
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "F3",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "F4",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "native_replacement_search"
+     ],
+     [
+      "native_replacement_search"
+     ]
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "F4",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "native_replacement_search"
+     ],
+     [
+      "native_replacement_search"
+     ]
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "N1",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "N1",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "N2",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "N2",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "N3",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "native_replacement_search"
+     ],
+     [
+      "native_replacement_search"
+     ]
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "N3",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "N4",
+     "initial"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "mupdf_copy_extract",
+      "poppler_copy_extract",
+      "native_replacement_search"
+     ],
+     [
+      "mupdf_copy_extract",
+      "poppler_copy_extract",
+      "native_replacement_search"
+     ]
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "generalization",
+     "N4",
+     "reedit"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "mupdf_copy_extract",
+      "poppler_copy_extract",
+      "native_replacement_search"
+     ],
+     [
+      "mupdf_copy_extract",
+      "poppler_copy_extract",
+      "native_replacement_search"
+     ]
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "A-reedit",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "A-same",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "A-short",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "F-form",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "F-same",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "F-same-reedit",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "F-short",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "F-wrap",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "T-form",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "indesign",
+     "T-form-reedit",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "restore",
+     "P7-03",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "restore",
+     "P7-03",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "restore",
+     "P7-05",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "restore",
+     "P7-05",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "restore",
+     "P7-06",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "restore",
+     "P7-06",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "restore",
+     "P7-07",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "160F-2019:1:I) fid",
+     "lengthen"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical"
+     ],
+     [
+      "glyphs_outside_region_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "D-reedit:frozen",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "D-same:frozen",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "D-short:frozen",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "F-icon:frozen",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "baselines_on_the_paragraph_grid"
+     ],
+     [
+      "baselines_on_the_paragraph_grid"
+     ]
+    ],
+    "checks": {
+     "quality": [
+      null,
+      false
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "F-marker:substitute",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "baselines_on_the_paragraph_grid"
+     ],
+     [
+      "baselines_on_the_paragraph_grid"
+     ]
+    ],
+    "checks": {
+     "quality": [
+      null,
+      false
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "I-same:frozen",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "I-short:frozen",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "L-reedit:frozen",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "extraction_poppler"
+     ],
+     [
+      "extraction_poppler"
+     ]
+    ],
+    "checks": {
+     "quality": [
+      null,
+      false
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "L-same:frozen",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "extraction_poppler"
+     ],
+     [
+      "extraction_poppler"
+     ]
+    ],
+    "checks": {
+     "quality": [
+      null,
+      false
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "L-short:frozen",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "extraction_poppler",
+      "baselines_on_the_paragraph_grid",
+      "left_edges_observed"
+     ],
+     [
+      "extraction_poppler",
+      "baselines_on_the_paragraph_grid",
+      "left_edges_observed"
+     ]
+    ],
+    "checks": {
+     "quality": [
+      null,
+      false
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "W-cross:substitute",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "W-grow:substitute",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "W-reedit:substitute",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "W-span:substitute",
+     "request"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "quality": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "issue14297:1:Net ch",
+     "lengthen"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "issue6782:1:Our so",
+     "lengthen"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "glyphs_outside_region_identical"
+     ],
+     [
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "glyphs_outside_region_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   },
+   {
+    "record": [
+     "tagged",
+     "osaka_fusei_477:8:問 堺市長寿",
+     "lengthen"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical"
+     ],
+     [
+      "glyphs_outside_region_identical"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    }
+   }
+  ],
+  "removed": [],
+  "added": [],
+  "design_decision_needed": false
+ },
+ {
+  "date": "2026-10-30",
+  "code": "062305f",
+  "reason": "Measurement fix (PR #109 review, items 2-4): practical success needs every measured protection (structure, links, move audits) and is unverified when protection or quality was not measured; the PR #87-#91 records take safety and quality from their audits' outcomes and failing checks; records are compared with their tiers, mode and group. Same raw outputs as before; no product behaviour changed. Smoke: the approved-change audit recomputed with added-content checks and unverified wrapped search (PR #109 review, items 1 and 4).",
+  "evaluations": [
+   "smoke"
+  ],
+  "compared": 26,
+  "changed": [
+   {
+    "record": [
+     "smoke",
+     "A1",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "A1",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "I1",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "I1",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "I2",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "I4",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "record": [
+     "smoke",
+     "I4",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "size_and_colour_kept"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "size_and_colour_kept"
+     ]
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "I5",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "I5",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "record": [
+     "smoke",
+     "L1",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "L1",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "L2",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "record": [
+     "smoke",
+     "L2",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "record": [
+     "smoke",
+     "L3",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "L3",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "L4",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "record": [
+     "smoke",
+     "L4",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {},
+    "tiers": {
+     "practical": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "record": [
+     "smoke",
+     "W2",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "smoke",
+     "W2",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ]
+    },
+    "tiers": {}
+   }
+  ],
+  "removed": [],
+  "added": [],
+  "design_decision_needed": false
  }
 ]

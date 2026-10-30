@@ -48,7 +48,9 @@ def separated(tmp_path):
 def test_approved_moves_pass(moved, separated):
     for source, out, proposal, record in (moved, separated):
         r = audit(source, out, 1, proposal, record)
-        assert r['verdict'] == 'pass' and r['mode'] == 'layout' and r['quality']['status'] == 'pass', r
+        # (The grown replacement is broken over lines: its search is unverified, its lines' text is there.)
+        assert r['verdict'] == 'pass' and r['mode'] == 'layout' and r['quality']['status'] == 'unverified', r
+        assert r['quality']['search_wrapped_lines_text'] and r['quality']['extraction_mupdf'] and r['quality']['extraction_poppler']
         assert all(x['status'] == 'pass' for x in r['approved'])
         assert r['protected']['annotations'] == (1 if source == moved[0] else 0)
 
@@ -147,3 +149,32 @@ def test_a_new_size_or_colour_in_the_edited_paragraph_fails_quality(separated, t
     bad = tamper(out, tmp_path / 'bad.pdf', lambda page, doc: page.insert_text(frame.tl + (2, 14), 'X', fontsize=16, color=(1, 0, 0)))
     r = audit(source, bad, 1, proposal, record)
     assert r['quality']['size_and_colour_kept'] is False and r['quality']['status'] == 'fail'
+
+
+@pytest.mark.parametrize('extra', ['box', 'duplicate'])
+def test_something_added_where_a_move_went_fails(moved, tmp_path, extra):
+    # Inside the moved element's destination (masked from the protection check): an unrelated box, or a copy
+    # of one of its own drawings on top of it. The move itself is exact.
+    source, out, proposal, record = moved
+    chain = next(c for c in change_set(proposal, record) if c['what'] == 'chain')
+    dest = pymupdf.Rect(chain['old']) + (0, chain['dy'], 0, chain['dy'])
+    def edit(page, doc):
+        if extra == 'box':
+            page.draw_rect(pymupdf.Rect(dest.x0 + 2, dest.y0 + 2, dest.x0 + 6, dest.y0 + 6), color=(1, 0, 0), fill=(1, 0, 0))
+        else:
+            d = next(x for x in page.get_drawings() if dest.contains(x['rect']) and x.get('fill') is not None)
+            page.draw_rect(d['rect'], color=None, fill=d['fill'])
+    bad = tamper(out, tmp_path / 'bad.pdf', edit)
+    r = audit(source, bad, 1, proposal, record)
+    moved_part = [x for x in r['approved'] if x['what'] == 'chain']
+    assert r['verdict'] == 'fail' and any('added where it went' in reason for x in moved_part for reason in x['reasons']), r['approved']
+
+
+def test_a_replacement_broken_over_lines_is_not_reported_as_found(tmp_path):
+    # The grown paragraph breaks the new text over two lines: search cannot find it there.
+    from test_paragraph_frame_tagged import tagged
+    source, _ = tagged(tmp_path, [], tree=False)
+    out = tmp_path / 'wrap.pdf'
+    proposal, record = saved(source, out, chain=[])
+    q = audit(source, out, 1, proposal, record)['quality']
+    assert q['search_mupdf'] is None and q['search_wrapped_lines_text'] is True and q['status'] == 'unverified'

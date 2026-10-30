@@ -13,20 +13,22 @@
     "refused:yes": 7,
     "saved": 14,
     "saved:yes": 14,
-    "practical:yes": 14,
+    "practical:yes": 9,
     "reedit:yes": 14,
     "refused:no": 14,
     "restore:yes": 5,
-    "restore:no": 2
+    "restore:no": 2,
+    "practical:unverified": 5
    },
    "real:layout": {
     "steps": 5,
     "saved": 5,
     "saved:yes": 5,
-    "practical:yes": 5,
+    "practical:yes": 4,
     "reedit:yes": 5,
     "restore:unverified": 3,
     "refused:no": 5,
+    "practical:unverified": 1,
     "restore:yes": 2
    }
   }
@@ -68,7 +70,8 @@
     "reedit": true,
     "moves": true,
     "links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -99,7 +102,8 @@
     "restored_pixels": true,
     "restored_text": true,
     "restored_links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -183,7 +187,8 @@
     "reedit": true,
     "moves": true,
     "links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -214,7 +219,8 @@
     "restored_pixels": false,
     "restored_text": true,
     "restored_links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -241,11 +247,12 @@
     "reedit": true,
     "moves": true,
     "links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": null
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": null,
     "reedit": true,
     "restore": null,
     "refused": false
@@ -272,11 +279,12 @@
     "restored_pixels": false,
     "restored_text": true,
     "restored_links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": null
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": null,
     "reedit": true,
     "restore": false,
     "refused": false
@@ -299,7 +307,8 @@
     "reedit": true,
     "moves": true,
     "links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -330,7 +339,8 @@
     "restored_pixels": true,
     "restored_text": true,
     "restored_links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -357,11 +367,12 @@
     "reedit": true,
     "moves": true,
     "links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": null
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": null,
     "reedit": true,
     "restore": null,
     "refused": false
@@ -388,11 +399,12 @@
     "restored_pixels": true,
     "restored_text": true,
     "restored_links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": null
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": null,
     "reedit": true,
     "restore": true,
     "refused": false
@@ -415,7 +427,8 @@
     "reedit": true,
     "moves": true,
     "links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -446,7 +459,8 @@
     "restored_pixels": true,
     "restored_text": true,
     "restored_links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -477,7 +491,8 @@
     "links": true,
     "placement": true,
     "raster": false,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -548,11 +563,12 @@
     "links": true,
     "placement": true,
     "raster": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": null
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": null,
     "reedit": true,
     "restore": null,
     "refused": false
@@ -586,7 +602,8 @@
     "restored_pixels": true,
     "restored_text": true,
     "restored_links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -613,7 +630,8 @@
     "reedit": true,
     "moves": true,
     "links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -644,11 +662,12 @@
     "restored_pixels": true,
     "restored_text": true,
     "restored_links": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": null
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": null,
     "reedit": true,
     "restore": true,
     "refused": false
@@ -678,7 +697,8 @@
     "links": true,
     "placement": true,
     "raster": true,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -716,7 +736,8 @@
     "restored_pixels": true,
     "restored_text": true,
     "restored_links": false,
-    "approved_audit": true
+    "approved_audit": true,
+    "approved_quality": true
    },
    "tiers": {
     "saved": true,
@@ -1360,9 +1381,10 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "status": "unverified"
      },
      "approved": [
       {
@@ -1446,9 +1468,10 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "status": "unverified"
      },
      "approved": [
       {
@@ -1832,9 +1855,10 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "status": "unverified"
      },
      "approved": [
       {
@@ -1918,9 +1942,10 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "status": "unverified"
      },
      "approved": [
       {
@@ -2376,7 +2401,6 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
       "status": "pass"
      },
@@ -2641,9 +2665,10 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "status": "unverified"
      },
      "approved": [
       {
@@ -3122,9 +3147,10 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "status": "unverified"
      },
      "approved": [
       {

@@ -194,8 +194,11 @@ def records(results):
             if a:
                 r['checks']['approved_audit'] = {'pass': True, 'fail': False}.get(a.get('verdict'))
                 r['mode'] = a.get('mode', r['mode'])
-                r['tiers']['practical'] = (a.get('verdict') == 'pass' and (a.get('quality') or {}).get('status') == 'pass') \
-                    if a.get('verdict') in ('pass', 'fail') else None
+                # The approved-change audit and its quality, and every other measured protection (structure, links).
+                q = (a.get('quality') or {}).get('status')
+                failed = a.get('verdict') == 'fail' or q == 'fail' or any(r['checks'].get(k) is False for k in ('structure', 'links'))
+                r['tiers']['practical'] = False if failed else True if a.get('verdict') == 'pass' and q == 'pass' else None
+                r['checks']['approved_quality'] = {'pass': True, 'fail': False}.get(q)
             out.append(r)
     return out
 

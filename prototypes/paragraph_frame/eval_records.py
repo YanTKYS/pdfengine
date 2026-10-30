@@ -18,7 +18,8 @@ decorations, chain elements); otherwise ``faithful`` (the following
 paragraphs' own translation included).
 
 ``compare`` matches records by (evaluation, case, step) and reports what
-changed in outcome, reason class, failing checks and checks.
+changed in outcome, reason class, failing checks, checks, success tiers,
+mode and group.
 """
 from collections import Counter
 import json
@@ -96,20 +97,7 @@ def step_record(evaluation, case, step, x, group):
     layout = any(save.get(k) for k in MOVED)
     outcome = x.get('outcome')
     saved = outcome == 'saved'
-    move_audits = [checks[k] for k in ('moves', 'links', 'placement', 'kept', 'placed') if checks[k] is not None]
-    if not saved:
-        practical = False if outcome == 'refused' else None
-    elif checks['quality'] is None:
-        practical = None
-    elif checks['safety'] is True:
-        practical = bool(checks['quality'])
-    elif layout and move_audits:
-        # Approved moves fail the region audit by design: the move audits stand for protection.
-        practical = bool(checks['quality']) and all(move_audits)
-    elif checks['safety'] is False:
-        practical = False
-    else:
-        practical = None
+    practical = practical_success(outcome, checks, layout)
     restore = None
     if restored:
         parts = [checks[k] for k in ('restored_glyphs', 'restored_pixels', 'restored_text')]
@@ -120,6 +108,53 @@ def step_record(evaluation, case, step, x, group):
                 checks={k: v for k, v in checks.items() if v is not None},
                 tiers=dict(saved=saved if outcome in ('saved', 'refused') else None, practical=practical,
                            reedit=checks['reedit'] if saved else None, restore=restore, refused=outcome == 'refused'))
+
+
+# The existing audit's safety checks (indesign_evaluate.audit); its other checks are quality's.
+SAFETY = {'raster_outside_region_mupdf', 'raster_outside_region_poppler', 'glyphs_outside_region_identical', 'non_text_paint_identical',
+          'original_font_programs_kept', 'other_pages_and_their_forms_unchanged', 'page_count'}
+# Protection measured apart from the region audit: structure, links, and the approved moves' own audits.
+PROTECTION = ('structure', 'links', 'moves', 'placement', 'raster', 'kept', 'placed')
+MOVE_AUDITS = ('moves', 'links', 'placement', 'kept', 'placed')
+
+
+def practical_success(outcome, checks, layout):
+    """Practical success (docs/development-rules.md) from what was measured: True, False, or None (unverified).
+
+    It needs the quality checks and the protection of what was not approved:
+    the existing safety audit, or for a step that saved approved moves (which
+    fail the region audit by design) the move audits. Any measured protection
+    check that failed (structure, links, a move audit) makes it False; a step
+    whose quality or protection was not measured is None, never True."""
+    if outcome != 'saved':
+        return False if outcome == 'refused' else None
+    if checks.get('quality') is False or any(checks.get(k) is False for k in PROTECTION):
+        return False
+    moves = [checks[k] for k in MOVE_AUDITS if checks.get(k) is not None]
+    protected = True if checks.get('safety') is True or layout and moves else False if checks.get('safety') is False else None
+    if protected is False:
+        return False
+    if checks.get('quality') is None or protected is None:
+        return None
+    return True
+
+
+def _audit_outcome(outcome):
+    """(safety, quality) from an audit's outcome: success, quality-audit-failed (safety passed) or safety-audit-failed."""
+    if outcome == 'success':
+        return True, True
+    if outcome == 'quality-audit-failed':
+        return True, False
+    if outcome == 'safety-audit-failed':
+        return False, None
+    return None, None
+
+
+def _split(failed):
+    """(safety, quality) from the existing audit's failing checks."""
+    if failed is None:
+        return None, None
+    return not any(f in SAFETY for f in failed), not any(f not in SAFETY for f in failed)
 
 
 def _steps(value, path=()):
@@ -155,34 +190,40 @@ def case_records(evaluation, results):
 def regression_records(reg):
     """Records of the PR #87-#91 runs, from tagged_regression's output."""
     out = []
-    add = lambda evaluation, case, step, outcome, failed=None, group='real', **checks: out.append(dict(
-        evaluation=evaluation, case=case, step=step, group=group, mode='faithful', outcome=outcome, reason_class=None, reason=None,
-        failed=failed, checks={k: v for k, v in checks.items() if v is not None},
-        tiers=dict(saved=outcome == 'saved' if outcome in ('saved', 'refused') else None,
-                   practical=(None if outcome != 'saved' else checks.get('quality')) if outcome != 'refused' else False,
-                   reedit=checks.get('reedit'), restore=None, refused=outcome == 'refused')))
+    def add(evaluation, case, step, outcome, failed=None, group='real', **checks):
+        checks = {k: v for k, v in checks.items() if v is not None}
+        out.append(dict(evaluation=evaluation, case=case, step=step, group=group, mode='faithful', outcome=outcome, reason_class=None,
+                        reason=None, failed=failed, checks=checks,
+                        tiers=dict(saved=outcome == 'saved' if outcome in ('saved', 'refused') else None,
+                                   practical=practical_success(outcome, checks, False), reedit=checks.get('reedit') if outcome == 'saved' else None,
+                                   restore=None, refused=outcome == 'refused')))
     for k, v in (reg.get('generalization') or {}).items():
         for step in ('initial', 'reedit'):
-            add('generalization', k, step, 'saved', v[f'{step}_failed'], group='fixture', quality=v[step] == 'success')
+            safety, quality = _audit_outcome(v[step])
+            add('generalization', k, step, 'saved', v[f'{step}_failed'], group='fixture', safety=safety, quality=quality)
     for k, v in (reg.get('continuity_sequences') or {}).items():
         for n, s in enumerate(v['steps']):
-            add('continuity', k, f'sequence/{n + 1}', 'saved', group='fixture', quality=s == 'success')
+            safety, quality = _audit_outcome(s)
+            add('continuity', k, f'sequence/{n + 1}', 'saved', group='fixture', safety=safety, quality=quality)
     for k, v in (reg.get('continuity_new') or {}).items():
-        add('continuity', k, 'new', v['edit'], group='fixture', safety=(v['audit'] == 'success') if v.get('audit') else None)
+        safety, quality = _audit_outcome(v.get('audit'))
+        add('continuity', k, 'new', v['edit'], group='fixture', safety=safety, quality=quality)
     for part in ('sequences', 'singles'):
         for k, v in ((reg.get('column_flow') or {}).get(part) or {}).items():
             steps = v.get('steps') or [v.get('outcome')]
             for n, s in enumerate(steps):
                 add('column_flow', k, f'{part}/{n + 1}', s, as_expected=v.get('as_expected'))
     for k, v in ((reg.get('indesign') or {}).get('requests') or {}).items():
-        add('indesign', k, 'request', v['outcome'], v.get('failed'), quality=(not v.get('failed')) if v['outcome'] == 'saved' else None)
+        safety, quality = _split(v.get('failed')) if v['outcome'] == 'saved' else (None, None)
+        add('indesign', k, 'request', v['outcome'], v.get('failed'), safety=safety, quality=quality)
     totals = (reg.get('indesign') or {}).get('samples') or {}
     if totals:
         add('indesign', 'samples', 'totals', 'saved', group='sample',
             **{f'n_{x}': totals.get(x) for x in ('sampled', 'saved', 'safety', 'quality')})
     for k, v in ((reg.get('tagged') or {}).get('requests') or {}).items():
-        add('tagged', k, 'request', v['outcome'], v.get('failed'), structure=not v.get('structure_failed') if v['outcome'] == 'saved' else None,
-            reedit=v.get('continued_editing'))
+        safety, quality = _split(v.get('failed')) if v['outcome'] == 'saved' else (None, None)
+        add('tagged', k, 'request', v['outcome'], v.get('failed'), safety=safety, quality=quality,
+            structure=not v.get('structure_failed') if v['outcome'] == 'saved' else None, reedit=v.get('continued_editing'))
     for r in ((reg.get('tagged') or {}).get('samples') or {}).get('edits') or []:
         ce = r.get('continued_editing')
         add('tagged', f"{r['document']}:{r['page']}:{r['selection']}", r['kind'], r['outcome'], r.get('failed'), group='sample',
@@ -199,7 +240,8 @@ def compare(baseline, current, evaluations=None):
     evaluations = set(evaluations or {r['evaluation'] for r in current})
     base = {key(r): r for r in baseline if r['evaluation'] in evaluations}
     now = {key(r): r for r in current if r['evaluation'] in evaluations}
-    sig = lambda r: (r['outcome'], r['reason_class'], r['failed'], r['checks'])
+    # Everything a record says: outcome, reason, failing checks, checks, success tiers, mode and group.
+    sig = lambda r: (r['outcome'], r['reason_class'], r['failed'], r['checks'], r['tiers'], r['mode'], r['group'])
     changed = []
     for k in sorted(set(base) & set(now)):
         if sig(base[k]) != sig(now[k]):
@@ -207,7 +249,10 @@ def compare(baseline, current, evaluations=None):
             changed.append(dict(record=list(k), outcome=[a['outcome'], b['outcome']], reason_class=[a['reason_class'], b['reason_class']],
                                 failed=[a['failed'], b['failed']],
                                 checks={c: [a['checks'].get(c), b['checks'].get(c)] for c in sorted(set(a['checks']) | set(b['checks']))
-                                        if a['checks'].get(c) != b['checks'].get(c)}))
+                                        if a['checks'].get(c) != b['checks'].get(c)},
+                                tiers={t: [a['tiers'].get(t), b['tiers'].get(t)] for t in sorted(set(a['tiers']) | set(b['tiers']))
+                                       if a['tiers'].get(t) != b['tiers'].get(t)},
+                                **{x: [a[x], b[x]] for x in ('mode', 'group') if a[x] != b[x]}))
     # A case not run now (a tier runs part of an evaluation, the smoke set) is not a missing step.
     ran = {k[:2] for k in now}
     gone = sorted(set(base) - set(now))
