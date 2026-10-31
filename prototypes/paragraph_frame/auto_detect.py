@@ -818,6 +818,17 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
                             right='approved: stored condition' if state['applied'] else 'medium: maximum occupied pen extent; author frame absent',bottom='medium: next protected paint/annotation or page edge',top='medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked'),
             selection_match_count=len(matches),warnings=['Occupied width is an inferred capacity, not a stored author frame.','Following same-column paragraphs may translate; protected content never moves.'],manual_geometry_inputs=0)
         if not deltas and not state['applied']:evidence['warnings'].append('No within-paragraph leading is observable; approve the reported inferred/default leading.')
+        # A hanging indent joined the lines after the first to the paragraph:
+        # which lines, and what showed it, are part of what is approved.
+        if hanging:
+            label=_label(c,selected[0])
+            evidence['inferred']['hanging']=dict(label=label[0] if label else None,first_x=round(first,3),x=round(left,3),
+                lines=[dict(text=r['text'],x=round(r['x'],3),baseline=round(r['baseline'],3)) for r in selected],
+                basis=['the first line opens with a label set apart from its text','the next line starts where that text starts (0.2 em)',
+                       'same size and paint style; a line apart (under 2.25 em)','the first line runs to the right edge (broken there)',
+                       'no gap wider than 0.5 em inside the first line'])
+            evidence['confidence']['paragraph']='medium: hanging indent (label, text start, size, style, line pitch, line broken at the edge)'
+            evidence['warnings'].append(f"The lines after the first were joined to the paragraph by a hanging indent at x {left:.2f}; the edit lays them out again as the paragraph's lines (evidence.inferred.hanging).")
         # One labelled line: where a hanging indent would put the following
         # lines is reported; with no line there to show it, it is not applied.
         label=_label(c,selected[0]) if len(selected)==1 else None

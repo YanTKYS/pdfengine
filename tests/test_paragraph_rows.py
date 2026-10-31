@@ -157,6 +157,11 @@ def test_added_lines_start_at_the_hanging_indent_and_go_back(tmp_path):
     out = tmp_path / 'out.pdf'
     proposal, record = edit(source, out, *NOTE_GROW)
     assert [l['baseline'] for l in proposal['lines']] == [130, 145, 160]
+    # The proposal names the lines the hanging indent joined, and every line as it will be laid out.
+    hanging = proposal['evidence']['inferred']['hanging']
+    assert hanging['label'] == '1' and [(l['x'], l['baseline']) for l in hanging['lines']] == [(40, 130), (57, 145)]
+    assert [(l['x'], l['baseline']) for l in hanging['proposed']] == [(40, 130), (57, 145), (57, 160)]
+    assert any('hanging indent' in a for a in proposal['required_approval'])
     # From the saved PDF alone: one paragraph, its added line at the indent; the edit back restores the source.
     assert [[(r['x'], r['baseline']) for r in g] for g in groups(out) if g[0]['baseline'] >= 130] == [[(40, 130), (57, 145), (57, 160)]]
     back = tmp_path / 'back.pdf'
