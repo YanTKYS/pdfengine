@@ -12,8 +12,12 @@ with PR #91's committed results too; a sample that fails the safety audit
 gets PR #91's auxiliary ``outside_changes`` beside it.
 """
 import json
+import os
 import sys
 from pathlib import Path
+
+# Where the runs are (eval_hub runs them elsewhere): PDFENGINE_REG_ROOT, default tmp.
+ROOT = os.environ.get('PDFENGINE_REG_ROOT', 'tmp')
 
 load = lambda p: json.loads(Path(p).read_text())
 out = {}
@@ -23,8 +27,8 @@ diffs = []
 ref = load('evaluations/paragraph_frame_continuity/results.json')['regression']
 gen = {}
 for k, v in ref.items():
-    initial = load(f'tmp/reg87/{k}.audit.json')
-    reedit = load(f'tmp/reg87/{k}.lifecycle.audit.json')
+    initial = load(f'{ROOT}/reg87/{k}.audit.json')
+    reedit = load(f'{ROOT}/reg87/{k}.lifecycle.audit.json')
     row = dict(initial=initial['outcome'], initial_failed=initial['failed'], reedit=reedit['outcome'], reedit_failed=reedit['failed'])
     row['same_as_committed'] = (row['initial'], row['initial_failed'], row['reedit'], row['reedit_failed']) == (
         v['initial']['quality'], v['initial']['failed'], v['pdf_alone_reedit']['quality'], v['pdf_alone_reedit']['failed'])
@@ -35,7 +39,7 @@ out['generalization'] = gen
 
 # PR #88 (continuity): sequences and new requests.
 cref = load('evaluations/paragraph_frame_continuity/results.json')
-seq = load('tmp/reg88/sequences.json')
+seq = load(f'{ROOT}/reg88/sequences.json')
 cs = {}
 for k, chain in cref['sequences'].items():
     got = seq[k]['steps']
@@ -45,7 +49,7 @@ for k, chain in cref['sequences'].items():
     if not all(same):
         diffs.append(('continuity sequence', k, [key(s) for s in got], [key(s) for s in chain['steps']]))
 out['continuity_sequences'] = cs
-new = load('tmp/reg88/new.json')
+new = load(f'{ROOT}/reg88/new.json')
 cn = {}
 for k, v in cref['new'].items():
     a, b = v['B2'], new[k]['B2']
@@ -59,7 +63,7 @@ out['continuity_new'] = cn
 
 # PR #89 (column flow).
 fref = load('evaluations/paragraph_frame_column_flow/results.json')
-fseq, fsing, frec = load('tmp/reg89/sequences.json'), load('tmp/reg89/singles.json'), load('tmp/reg89/recognition.json')
+fseq, fsing, frec = load(f'{ROOT}/reg89/sequences.json'), load(f'{ROOT}/reg89/singles.json'), load(f'{ROOT}/reg89/recognition.json')
 ff = {}
 def tiers(step):
     audit = step.get('audit')
@@ -88,7 +92,7 @@ if pairs != want_pairs:
     diffs.append(('recognition', pairs, want_pairs))
 # PR #90 (InDesign): frozen requests and the same sample (same survey).
 iref = load('evaluations/paragraph_frame_indesign/results.json')
-ireq, isam = load('tmp/reg90/requests.json'), load('tmp/reg90/samples.json')
+ireq, isam = load(f'{ROOT}/reg90/requests.json'), load(f'{ROOT}/reg90/samples.json')
 ir = {}
 for k, v in iref['requests'].items():
     g = ireq[k]
@@ -180,7 +184,7 @@ if len(sys.argv) > 2:
     key = lambda s: (s['document'], s['page'], s['selection'], s['kind'])
     want_refused = {key(s): s['reason'] for s in tref['samples']['refused']}
     want_failed = {key(s): s['failed'] for s in tref['samples']['failed']}
-    rows = survey_table('tmp/tg-survey')
+    rows = survey_table(os.environ.get('PDFENGINE_TG_SURVEY', 'tmp/tg-survey'))
     boxes = {(r['document'], r['page'], r['selection']): r['bbox'] for r in rows}
     samples = []
     for n, s in enumerate(tsam['results']):

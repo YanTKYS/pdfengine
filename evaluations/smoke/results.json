@@ -1,0 +1,3868 @@
+{
+ "schema": "paragraph-frame-smoke-results-1",
+ "manifest_sha256": "0cb494e3ad6b075df05b8141909d257342622e5b9e6eadb4af1c0549771c760c",
+ "summary": {
+  "smoke": {
+   "real:faithful": {
+    "steps": 21,
+    "refused": 7,
+    "saved:no": 7,
+    "practical:no": 7,
+    "reedit:unverified": 7,
+    "restore:unverified": 14,
+    "refused:yes": 7,
+    "saved": 14,
+    "saved:yes": 14,
+    "practical:yes": 9,
+    "reedit:yes": 14,
+    "refused:no": 14,
+    "restore:yes": 5,
+    "restore:no": 2,
+    "practical:unverified": 5
+   },
+   "real:layout": {
+    "steps": 5,
+    "saved": 5,
+    "saved:yes": 5,
+    "practical:yes": 4,
+    "reedit:yes": 5,
+    "restore:unverified": 3,
+    "refused:no": 5,
+    "practical:unverified": 1,
+    "restore:yes": 2
+   }
+  }
+ },
+ "records": [
+  {
+   "evaluation": "smoke",
+   "case": "W1",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "refused",
+   "reason_class": "other: missing source glyph requires explicit substitute approval: 8",
+   "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 8",
+   "failed": null,
+   "checks": {},
+   "tiers": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "W2",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "W2",
+   "step": "2",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "restored_glyphs": true,
+    "restored_pixels": true,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": true,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "W3",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "refused",
+   "reason_class": "other: missing source glyph requires explicit substitute approval: 代",
+   "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 代",
+   "failed": null,
+   "checks": {},
+   "tiers": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "W4",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "refused",
+   "reason_class": "other: missing source glyph requires explicit substitute approval: 格",
+   "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 格",
+   "failed": null,
+   "checks": {},
+   "tiers": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "W5",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "refused",
+   "reason_class": "other: missing source glyph requires explicit substitute approval: 予",
+   "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 予",
+   "failed": null,
+   "checks": {},
+   "tiers": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "L1",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "L1",
+   "step": "2",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "restored_glyphs": true,
+    "restored_pixels": false,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": false,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "L2",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "approved_audit": true,
+    "approved_quality": null
+   },
+   "tiers": {
+    "saved": true,
+    "practical": null,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "L2",
+   "step": "2",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "restored_glyphs": true,
+    "restored_pixels": false,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": null
+   },
+   "tiers": {
+    "saved": true,
+    "practical": null,
+    "reedit": true,
+    "restore": false,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "L3",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "L3",
+   "step": "2",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "restored_glyphs": true,
+    "restored_pixels": true,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": true,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "L4",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "approved_audit": true,
+    "approved_quality": null
+   },
+   "tiers": {
+    "saved": true,
+    "practical": null,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "L4",
+   "step": "2",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "restored_glyphs": true,
+    "restored_pixels": true,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": null
+   },
+   "tiers": {
+    "saved": true,
+    "practical": null,
+    "reedit": true,
+    "restore": true,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "I1",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "I1",
+   "step": "2",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "restored_glyphs": true,
+    "restored_pixels": true,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": true,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "I2",
+   "step": "1",
+   "group": "real",
+   "mode": "layout",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [
+    "non_text_paint_identical"
+   ],
+   "checks": {
+    "safety": false,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "placement": true,
+    "raster": false,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "I2",
+   "step": "2",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "refused",
+   "reason_class": "other: selected string occurrence not found in one inferred paragraph",
+   "reason": "prototypes.paragraph_frame.engine.Refused: selected string occurrence not found in one inferred paragraph",
+   "failed": null,
+   "checks": {},
+   "tiers": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "I3",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "refused",
+   "reason_class": "other: missing source glyph requires explicit substitute approval: 大",
+   "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 大",
+   "failed": null,
+   "checks": {},
+   "tiers": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "I4",
+   "step": "1",
+   "group": "real",
+   "mode": "layout",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [
+    "glyphs_outside_region_identical",
+    "raster_outside_region_mupdf",
+    "raster_outside_region_poppler"
+   ],
+   "checks": {
+    "safety": false,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "placement": true,
+    "raster": true,
+    "approved_audit": true,
+    "approved_quality": null
+   },
+   "tiers": {
+    "saved": true,
+    "practical": null,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "I4",
+   "step": "2",
+   "group": "real",
+   "mode": "layout",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [
+    "glyphs_outside_region_identical",
+    "raster_outside_region_mupdf",
+    "raster_outside_region_poppler",
+    "size_and_colour_kept"
+   ],
+   "checks": {
+    "safety": false,
+    "quality": false,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "placement": true,
+    "raster": true,
+    "restored_glyphs": true,
+    "restored_pixels": true,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": true,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "I5",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "I5",
+   "step": "2",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [],
+   "checks": {
+    "safety": true,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "restored_glyphs": true,
+    "restored_pixels": true,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": null
+   },
+   "tiers": {
+    "saved": true,
+    "practical": null,
+    "reedit": true,
+    "restore": true,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "A1",
+   "step": "1",
+   "group": "real",
+   "mode": "layout",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [
+    "glyphs_outside_region_identical",
+    "non_text_paint_identical",
+    "raster_outside_region_mupdf",
+    "raster_outside_region_poppler"
+   ],
+   "checks": {
+    "safety": false,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "placement": true,
+    "raster": true,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "A1",
+   "step": "2",
+   "group": "real",
+   "mode": "layout",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [
+    "glyphs_outside_region_identical",
+    "non_text_paint_identical",
+    "raster_outside_region_mupdf",
+    "raster_outside_region_poppler"
+   ],
+   "checks": {
+    "safety": false,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": true,
+    "links": true,
+    "placement": true,
+    "raster": true,
+    "restored_glyphs": true,
+    "restored_pixels": true,
+    "restored_text": true,
+    "restored_links": false,
+    "approved_audit": true,
+    "approved_quality": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": true,
+    "refused": false
+   }
+  },
+  {
+   "evaluation": "smoke",
+   "case": "T1",
+   "step": "1",
+   "group": "real",
+   "mode": "faithful",
+   "outcome": "refused",
+   "reason_class": "other",
+   "reason": "implicit line-join space has no glyph in the source font",
+   "failed": null,
+   "checks": {},
+   "tiers": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true
+   }
+  }
+ ],
+ "results": {
+  "W1": [
+   {
+    "old": "直通：03-3595-2257",
+    "new": "直通：03-3595-2258",
+    "proposal_refused": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 8",
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 8",
+     "seconds": 0.95
+    },
+    "outcome": "refused",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 8",
+    "class": "other: missing source glyph requires explicit substitute approval: 8"
+   }
+  ],
+  "W2": [
+   {
+    "old": "感染症対策を円滑かつ適切に実施いただくよう",
+    "new": "感染症対策を適切に実施いただくよう",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 3.63
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "感染症対策を適切に実施いただくよう"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "感染症対策を適切に実施いただくよう",
+    "new": "感染症対策を円滑かつ適切に実施いただくよう",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 4.45
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "感染症対策を円滑かつ適切に実施いただくよう"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 211,
+       "kept": 211,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 6,
+       "output_lines": 9,
+       "source_breaks_outside_edit": 5,
+       "breaks_kept": 5
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 1,
+       "output": 1
+      }
+     },
+     "glyphs": {
+      "glyphs": 372,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 0.0002,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 0,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 1505496
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 6530142
+      },
+      "identical": true
+     }
+    }
+   }
+  ],
+  "W3": [
+   {
+    "old": "大阪府健康医療部保健医療室長",
+    "new": "大阪府健康医療部保健医療室長代理",
+    "proposal_refused": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 代",
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 代",
+     "seconds": 1.06
+    },
+    "outcome": "refused",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 代",
+    "class": "other: missing source glyph requires explicit substitute approval: 代"
+   }
+  ],
+  "W4": [
+   {
+    "old": "本府保健医療行政の推進に御協力いただき",
+    "new": "本府保健医療行政の推進に格別の御協力をいただき",
+    "proposal_refused": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 格",
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 格",
+     "seconds": 1.53
+    },
+    "outcome": "refused",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 格",
+    "class": "other: missing source glyph requires explicit substitute approval: 格"
+   }
+  ],
+  "W5": [
+   {
+    "old": "感染症対策課 防疫グループ",
+    "new": "感染症対策課 予防グループ",
+    "proposal_refused": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 予",
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 予",
+     "seconds": 1.32
+    },
+    "outcome": "refused",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 予",
+    "class": "other: missing source glyph requires explicit substitute approval: 予"
+   }
+  ],
+  "L1": [
+   {
+    "old": "月下旬にリリース",
+    "new": "月上旬にリリース",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 5.01
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "月上旬にリリース"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "月上旬にリリース",
+    "new": "月下旬にリリース",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 4.7
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "月下旬にリリース"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 67,
+       "kept": 67,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 2,
+       "output_lines": 2,
+       "source_breaks_outside_edit": 1,
+       "breaks_kept": 1
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 1,
+       "output": 1
+      }
+     },
+     "glyphs": {
+      "glyphs": 583,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 0.00027,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 0,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 1502970
+      },
+      "150": {
+       "differing_samples": 987,
+       "largest": 67,
+       "samples": 6528600
+      },
+      "identical": false
+     }
+    }
+   }
+  ],
+  "L2": [
+   {
+    "old": "Calcをより使いやすくするための工夫",
+    "new": "Calcを使いやすくする工夫",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 3.84
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "Calcを使いやすくする工夫"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
+      "size_and_colour_kept": true,
+      "status": "unverified"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "Calcを使いやすくする工夫",
+    "new": "Calcをより使いやすくするための工夫",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 4.64
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "Calcをより使いやすくするための工夫"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
+      "size_and_colour_kept": true,
+      "status": "unverified"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 29,
+       "kept": 29,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 2,
+       "output_lines": 3,
+       "source_breaks_outside_edit": 1,
+       "breaks_kept": 1
+      },
+      "outside_changed": 0,
+      "page_changed": 4,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 0,
+       "output": 0
+      }
+     },
+     "glyphs": {
+      "glyphs": 583,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 2e-05,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 0,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 117,
+       "largest": 66,
+       "samples": 1502970
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 6528600
+      },
+      "identical": false
+     }
+    }
+   }
+  ],
+  "L3": [
+   {
+    "old": "オフィススィートは個人の利用でも",
+    "new": "オフィススイートは個人の利用でも",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 7.48
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "オフィススイートは個人の利用でも"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 1,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "オフィススイートは個人の利用でも",
+    "new": "オフィススィートは個人の利用でも",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 6.48
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "オフィススィートは個人の利用でも"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 1,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 486,
+       "kept": 486,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 10,
+       "output_lines": 13,
+       "source_breaks_outside_edit": 9,
+       "breaks_kept": 9
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 1,
+       "output": 1
+      }
+     },
+     "glyphs": {
+      "glyphs": 1335,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 0.00012,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 1,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 1502970
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 6528600
+      },
+      "identical": true
+     }
+    }
+   }
+  ],
+  "L4": [
+   {
+    "old": "六つの豊富な機能のアプリケーション",
+    "new": "六つの豊富で強力な機能のアプリケーション",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 7.4
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "六つの豊富で強力な機能のアプリケーション"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 1,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
+      "size_and_colour_kept": true,
+      "status": "unverified"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "六つの豊富で強力な機能のアプリケーション",
+    "new": "六つの豊富な機能のアプリケーション",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 8.02
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "六つの豊富な機能のアプリケーション"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 1,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
+      "size_and_colour_kept": true,
+      "status": "unverified"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 570,
+       "kept": 570,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 11,
+       "output_lines": 16,
+       "source_breaks_outside_edit": 10,
+       "breaks_kept": 10
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 0,
+       "output": 0
+      }
+     },
+     "glyphs": {
+      "glyphs": 1383,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 0.00018,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 1,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 1502970
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 6528600
+      },
+      "identical": true
+     }
+    }
+   }
+  ],
+  "I1": [
+   {
+    "old": "令和5年の大阪府の自殺者数は1,383人",
+    "new": "令和6年の大阪府の自殺者数は1,383人",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 31.94
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "令和6年の大阪府の自殺者数は1,383人"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 8,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "令和6年の大阪府の自殺者数は1,383人",
+    "new": "令和5年の大阪府の自殺者数は1,383人",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 31.79
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "令和5年の大阪府の自殺者数は1,383人"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 8,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 123,
+       "kept": 123,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 7,
+       "output_lines": 8,
+       "source_breaks_outside_edit": 6,
+       "breaks_kept": 6
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 1,
+       "output": 1
+      }
+     },
+     "glyphs": {
+      "glyphs": 3430,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 0.0,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 8,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 2665716
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 11560758
+      },
+      "identical": true
+     }
+    }
+   }
+  ],
+  "I2": [
+   {
+    "old": "悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。",
+    "new": "",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-5d857bfbdd83a562 moves with it only when approved explicitly)",
+     "seconds": 10.9
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": [
+      "line-decoration-5d857bfbdd83a562"
+     ]
+    },
+    "grow": 0,
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "non_text_paint_identical"
+    ],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "令和5年"
+    },
+    "save": {
+     "follower_translation": -13.106689453125,
+     "followers_repainted": 1,
+     "placed_objects_moved": [],
+     "decorations_moved": [
+      {
+       "id": "line-decoration-5d857bfbdd83a562",
+       "old": [
+        21.260000228881836,
+        745.1849975585938,
+        161.41586303710938,
+        760.1366577148438
+       ],
+       "new": [
+        21.260000228881836,
+        732.0783081054688,
+        161.41586303710938,
+        747.0299682617188
+       ],
+       "translation": [
+        0.0,
+        13.106689453125
+       ],
+       "glyphs": 15,
+       "annotations": [
+        {
+         "xref": 1910,
+         "old": [
+          36.655,
+          745.185,
+          160.364,
+          759.585
+         ],
+         "new": [
+          36.655,
+          732.078,
+          160.364,
+          746.478
+         ],
+         "uri": "http://kokoro-osaka.jp/"
+        }
+       ]
+      }
+     ],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 1,
+      "drawings": 13,
+      "images": 2,
+      "shading_rasters": 1,
+      "glyphs": 13,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 8,
+     "moved": 1,
+     "ok": true
+    },
+    "placement": {
+     "inside_page": true,
+     "under_before": {
+      "drawing": 0,
+      "image": 0,
+      "glyph": 13
+     },
+     "under_after": {
+      "drawing": 0,
+      "image": 0,
+      "glyph": 1
+     },
+     "ok": true
+    },
+    "raster": {
+     "groups": [
+      {
+       "region": [
+        20.26,
+        744.18,
+        162.42,
+        761.14
+       ],
+       "size_matches": true,
+       "differing_samples": 2,
+       "largest_difference": 1,
+       "samples": 64872
+      }
+     ],
+     "ok": false
+    },
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "layout",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "following paragraphs",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "decorations",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "",
+    "new": "悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。",
+    "proposal_refused": "prototypes.paragraph_frame.engine.Refused: selected string occurrence not found in one inferred paragraph",
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: selected string occurrence not found in one inferred paragraph",
+     "seconds": 3.03
+    },
+    "outcome": "refused",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "reason": "prototypes.paragraph_frame.engine.Refused: selected string occurrence not found in one inferred paragraph",
+    "class": "other: selected string occurrence not found in one inferred paragraph"
+   }
+  ],
+  "I3": [
+   {
+    "old": "領収証は必ず受け取り保管してください。",
+    "new": "領収証は必ず受け取り、大切に保管してください。",
+    "proposal_refused": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 大",
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 大",
+     "seconds": 2.45
+    },
+    "outcome": "refused",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 大",
+    "class": "other: missing source glyph requires explicit substitute approval: 大"
+   }
+  ],
+  "I4": [
+   {
+    "old": "提供：ダイキン工業・サントリーHD",
+    "new": "提供：ダイキン工業・サントリーホールディングス",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-528d3c355b434715, following-element-83e43af86f4a64b8, following-element-ea925ec91d764c04 move with it only when approved explicitly)",
+     "seconds": 16.44
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [
+      "following-element-528d3c355b434715",
+      "following-element-83e43af86f4a64b8",
+      "following-element-ea925ec91d764c04"
+     ],
+     "decorations": []
+    },
+    "grow": 1,
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical"
+    ],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "提供：ダイキン工業・サントリーホールディングス"
+    },
+    "save": {
+     "follower_translation": 7.440899848937988,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": [
+      {
+       "id": "following-element-528d3c355b434715",
+       "old": [
+        210.15109252929688,
+        1038.4427490234375,
+        314.7795104980469,
+        1059.705322265625
+       ],
+       "new": [
+        210.15109252929688,
+        1045.8836488723755,
+        314.7795104980469,
+        1067.146222114563
+       ],
+       "translation": [
+        0.0,
+        -7.440899848937988
+       ],
+       "glyphs": 20,
+       "separated": 1,
+       "annotations": [],
+       "line": "ウォータープラザ会期中、日没後毎日開催！"
+      },
+      {
+       "id": "following-element-83e43af86f4a64b8",
+       "old": [
+        205.72300720214844,
+        1063.3502197265625,
+        352.0301818847656,
+        1071.7742919921875
+       ],
+       "new": [
+        205.72300720214844,
+        1070.7911195755005,
+        352.0301818847656,
+        1079.2151918411255
+       ],
+       "translation": [
+        0.0,
+        -7.440899848937988
+       ],
+       "glyphs": 19,
+       "separated": 1,
+       "annotations": [],
+       "line": "「水と空気」をテーマに約300基の噴水"
+      },
+      {
+       "id": "following-element-ea925ec91d764c04",
+       "old": [
+        210.13717651367188,
+        1073.9801025390625,
+        356.5590515136719,
+        1103.6639404296875
+       ],
+       "new": [
+        210.13717651367188,
+        1081.4210023880005,
+        356.5590515136719,
+        1111.1048402786255
+       ],
+       "translation": [
+        0.0,
+        -7.440899848937988
+       ],
+       "glyphs": 54,
+       "separated": 1,
+       "annotations": [],
+       "line": "装置とウォータースクリーン映像だけでなく、音楽やレーザー、炎など、舞台装置を駆使"
+      }
+     ]
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 3,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 18,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": {
+     "inside_page": true,
+     "under_before": {
+      "drawing": 0,
+      "image": 0,
+      "glyph": 75
+     },
+     "under_after": {
+      "drawing": 0,
+      "image": 0,
+      "glyph": 75
+     },
+     "ok": true
+    },
+    "raster": {
+     "groups": [
+      {
+       "region": [
+        209.15,
+        1037.44,
+        315.78,
+        1060.71
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 66360
+      },
+      {
+       "region": [
+        204.72,
+        1062.35,
+        353.03,
+        1072.77
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 42144
+      },
+      {
+       "region": [
+        209.14,
+        1072.98,
+        357.56,
+        1104.66
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 125400
+      }
+     ],
+     "ok": true
+    },
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "layout",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
+      "size_and_colour_kept": true,
+      "status": "unverified"
+     },
+     "approved": [
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "提供：ダイキン工業・サントリーホールディングス",
+    "new": "提供：ダイキン工業・サントリーHD",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 227.0
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [
+      "following-element-91457327b9578dc4",
+      "following-element-636d6f9c272a7993",
+      "following-element-019a1d85c1be4f83"
+     ],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": false,
+    "quality": false,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "size_and_colour_kept"
+    ],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "提供：ダイキン工業・サントリーHD"
+    },
+    "save": {
+     "follower_translation": -7.44091796875,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": [
+      {
+       "id": "following-element-91457327b9578dc4",
+       "old": [
+        210.15109252929688,
+        1045.8836669921875,
+        314.7795104980469,
+        1067.146240234375
+       ],
+       "new": [
+        210.15109252929688,
+        1038.4427490234375,
+        314.7795104980469,
+        1059.705322265625
+       ],
+       "translation": [
+        0.0,
+        7.44091796875
+       ],
+       "glyphs": 20,
+       "annotations": [],
+       "line": "ウォータープラザ会期中、日没後毎日開催！"
+      },
+      {
+       "id": "following-element-636d6f9c272a7993",
+       "old": [
+        205.72300720214844,
+        1070.7911376953125,
+        352.0301818847656,
+        1079.2152099609375
+       ],
+       "new": [
+        205.72300720214844,
+        1063.3502197265625,
+        352.0301818847656,
+        1071.7742919921875
+       ],
+       "translation": [
+        0.0,
+        7.44091796875
+       ],
+       "glyphs": 19,
+       "annotations": [],
+       "line": "「水と空気」をテーマに約300基の噴水"
+      },
+      {
+       "id": "following-element-019a1d85c1be4f83",
+       "old": [
+        210.13717651367188,
+        1081.4210205078125,
+        356.5590515136719,
+        1111.1048583984375
+       ],
+       "new": [
+        210.13717651367188,
+        1073.9801025390625,
+        356.5590515136719,
+        1103.6639404296875
+       ],
+       "translation": [
+        0.0,
+        7.44091796875
+       ],
+       "glyphs": 54,
+       "annotations": [],
+       "line": "装置とウォータースクリーン映像だけでなく、音楽やレーザー、炎など、舞台装置を駆使"
+      }
+     ]
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 3,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 18,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": {
+     "inside_page": true,
+     "under_before": {
+      "drawing": 0,
+      "image": 0,
+      "glyph": 75
+     },
+     "under_after": {
+      "drawing": 0,
+      "image": 0,
+      "glyph": 75
+     },
+     "ok": true
+    },
+    "raster": {
+     "groups": [
+      {
+       "region": [
+        209.15,
+        1044.88,
+        315.78,
+        1068.15
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 66360
+      },
+      {
+       "region": [
+        204.72,
+        1069.79,
+        353.03,
+        1080.22
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 42144
+      },
+      {
+       "region": [
+        209.14,
+        1080.42,
+        357.56,
+        1112.1
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 125400
+      }
+     ],
+     "ok": true
+    },
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "layout",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 17,
+       "kept": 17,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 1,
+       "output_lines": 2,
+       "source_breaks_outside_edit": 0,
+       "breaks_kept": 0
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 2,
+       "output": 2
+      }
+     },
+     "glyphs": {
+      "glyphs": 2946,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 0.0,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 0,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 2665716
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 11560758
+      },
+      "identical": true
+     }
+    }
+   }
+  ],
+  "I5": [
+   {
+    "old": "4/13（日）9：00～9：30",
+    "new": "4/13（日）10：00～10：30",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 31.41
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "4/13（日）10：00～10：30"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "4/13（日）10：00～10：30",
+    "new": "4/13（日）9：00～9：30",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 32.82
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": true,
+    "quality": true,
+    "failed": [],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "4/13（日）9：00～9：30"
+    },
+    "save": {
+     "follower_translation": 0.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "faithful",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": null,
+      "search_wrapped_lines_text": true,
+      "size_and_colour_kept": true,
+      "status": "unverified"
+     },
+     "approved": [
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 16,
+       "kept": 16,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 1,
+       "output_lines": 3,
+       "source_breaks_outside_edit": 0,
+       "breaks_kept": 0
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 0,
+       "output": 0
+      }
+     },
+     "glyphs": {
+      "glyphs": 2946,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 0.0,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 0,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 2665716
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 11560758
+      },
+      "identical": true
+     }
+    }
+   }
+  ],
+  "A1": [
+   {
+    "old": "Linking to an internal destination",
+    "new": "Linking to an internal destination or an external destination",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-4b560011f35df7ca, following-element-549655b50aa512e5, following-element-b5ee0edc4775b198 move with it only when approved explicitly)",
+     "seconds": 2.66
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [
+      "following-element-4b560011f35df7ca",
+      "following-element-549655b50aa512e5",
+      "following-element-b5ee0edc4775b198"
+     ],
+     "decorations": []
+    },
+    "grow": 1,
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "Linking to an internal destination or an external destination"
+    },
+    "save": {
+     "follower_translation": 18.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": [
+      {
+       "id": "following-element-4b560011f35df7ca",
+       "old": [
+        56.44292068481445,
+        214.58474731445312,
+        527.0459594726562,
+        225.346435546875
+       ],
+       "new": [
+        56.44292068481445,
+        232.58474731445312,
+        527.0459594726562,
+        243.346435546875
+       ],
+       "translation": [
+        0.0,
+        18.0
+       ],
+       "glyphs": 116,
+       "annotations": [
+        {
+         "xref": 24,
+         "old": [
+          56.693,
+          215.346,
+          123.627,
+          225.346
+         ],
+         "new": [
+          56.693,
+          233.346,
+          123.627,
+          243.346
+         ],
+         "uri": null
+        }
+       ],
+       "line": "Linking to an ID：Specify internal-destin"
+      },
+      {
+       "id": "following-element-549655b50aa512e5",
+       "old": [
+        56.44292068481445,
+        238.58474731445312,
+        302.1080017089844,
+        249.346435546875
+       ],
+       "new": [
+        56.44292068481445,
+        256.5847473144531,
+        302.1080017089844,
+        267.346435546875
+       ],
+       "translation": [
+        0.0,
+        18.0
+       ],
+       "glyphs": 58,
+       "annotations": [
+        {
+         "xref": 25,
+         "old": [
+          56.693,
+          239.346,
+          195.536,
+          249.346
+         ],
+         "new": [
+          56.693,
+          257.346,
+          195.536,
+          267.346
+         ],
+         "uri": null
+        }
+       ],
+       "line": "Linking to a page number (page 2)：intern"
+      },
+      {
+       "id": "following-element-b5ee0edc4775b198",
+       "old": [
+        56.44292068481445,
+        262.5847473144531,
+        495.4880065917969,
+        273.346435546875
+       ],
+       "new": [
+        56.44292068481445,
+        280.5847473144531,
+        495.4880065917969,
+        291.346435546875
+       ],
+       "translation": [
+        0.0,
+        18.0
+       ],
+       "glyphs": 104,
+       "separated": 1,
+       "annotations": [
+        {
+         "xref": 26,
+         "old": [
+          56.693,
+          263.346,
+          341.058,
+          273.346
+         ],
+         "new": [
+          56.693,
+          281.346,
+          341.058,
+          291.346
+         ],
+         "uri": null
+        }
+       ],
+       "line": "Linking to a page number (page 2) and se"
+      }
+     ]
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 3,
+      "drawings": 3,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 278,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 4,
+     "moved": 3,
+     "ok": true
+    },
+    "placement": {
+     "inside_page": true,
+     "under_before": {
+      "drawing": 0,
+      "glyph": 0
+     },
+     "under_after": {
+      "drawing": 0,
+      "glyph": 0
+     },
+     "ok": true
+    },
+    "raster": {
+     "groups": [
+      {
+       "region": [
+        55.44,
+        213.58,
+        528.05,
+        226.35
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 170280
+      },
+      {
+       "region": [
+        55.44,
+        237.58,
+        303.11,
+        250.35
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 89280
+      },
+      {
+       "region": [
+        55.44,
+        261.58,
+        496.49,
+        274.35
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 158880
+      }
+     ],
+     "ok": true
+    },
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "layout",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    }
+   },
+   {
+    "old": "Linking to an internal destination or an external destination",
+    "new": "Linking to an internal destination",
+    "proposal_refused": null,
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 4.84
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [
+      "following-element-3426485512829e88",
+      "following-element-3940aa731586399e",
+      "following-element-8796866c0add752e"
+     ],
+     "decorations": []
+    },
+    "grow": 0,
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "Linking to an internal destination"
+    },
+    "save": {
+     "follower_translation": -18.0,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": [
+      {
+       "id": "following-element-3426485512829e88",
+       "old": [
+        56.44292068481445,
+        232.58474731445312,
+        527.0459594726562,
+        243.34649658203125
+       ],
+       "new": [
+        56.44292068481445,
+        214.58474731445312,
+        527.0459594726562,
+        225.34649658203125
+       ],
+       "translation": [
+        0.0,
+        -18.0
+       ],
+       "glyphs": 116,
+       "annotations": [
+        {
+         "xref": 16,
+         "old": [
+          56.693,
+          233.346,
+          123.627,
+          243.346
+         ],
+         "new": [
+          56.693,
+          215.346,
+          123.627,
+          225.346
+         ],
+         "uri": null
+        }
+       ],
+       "line": "Linking to an ID：Specify internal-destin"
+      },
+      {
+       "id": "following-element-3940aa731586399e",
+       "old": [
+        56.44292068481445,
+        256.5847473144531,
+        302.1080017089844,
+        267.34649658203125
+       ],
+       "new": [
+        56.44292068481445,
+        238.58474731445312,
+        302.1080017089844,
+        249.34649658203125
+       ],
+       "translation": [
+        0.0,
+        -18.0
+       ],
+       "glyphs": 58,
+       "annotations": [
+        {
+         "xref": 17,
+         "old": [
+          56.693,
+          257.346,
+          195.536,
+          267.346
+         ],
+         "new": [
+          56.693,
+          239.346,
+          195.536,
+          249.346
+         ],
+         "uri": null
+        }
+       ],
+       "line": "Linking to a page number (page 2)：intern"
+      },
+      {
+       "id": "following-element-8796866c0add752e",
+       "old": [
+        56.44292068481445,
+        280.5847473144531,
+        495.4880065917969,
+        291.34649658203125
+       ],
+       "new": [
+        56.44292068481445,
+        262.5847473144531,
+        495.4880065917969,
+        273.34649658203125
+       ],
+       "translation": [
+        0.0,
+        -18.0
+       ],
+       "glyphs": 104,
+       "annotations": [
+        {
+         "xref": 18,
+         "old": [
+          56.693,
+          281.346,
+          341.058,
+          291.346
+         ],
+         "new": [
+          56.693,
+          263.346,
+          341.058,
+          273.346
+         ],
+         "uri": null
+        }
+       ],
+       "line": "Linking to a page number (page 2) and se"
+      }
+     ]
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 3,
+      "drawings": 3,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 278,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": true,
+      "images": true
+     },
+     "ok": true
+    },
+    "links": {
+     "links": 4,
+     "moved": 3,
+     "ok": true
+    },
+    "placement": {
+     "inside_page": true,
+     "under_before": {
+      "drawing": 0,
+      "glyph": 0
+     },
+     "under_after": {
+      "drawing": 0,
+      "glyph": 0
+     },
+     "ok": true
+    },
+    "raster": {
+     "groups": [
+      {
+       "region": [
+        55.44,
+        231.58,
+        528.05,
+        244.35
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 170280
+      },
+      {
+       "region": [
+        55.44,
+        255.58,
+        303.11,
+        268.35
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 89280
+      },
+      {
+       "region": [
+        55.44,
+        279.58,
+        496.49,
+        292.35
+       ],
+       "size_matches": true,
+       "differing_samples": 0,
+       "largest_difference": 0,
+       "samples": 158880
+      }
+     ],
+     "ok": true
+    },
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "layout",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "search_mupdf": true,
+      "size_and_colour_kept": true,
+      "status": "pass"
+     },
+     "approved": [
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "chain",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 30,
+       "kept": 30,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 1,
+       "output_lines": 2,
+       "source_breaks_outside_edit": 0,
+       "breaks_kept": 0
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 1,
+       "output": 1
+      }
+     },
+     "glyphs": {
+      "glyphs": 1007,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 2e-05,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 6,
+      "ok": false
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 1505496
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 6530142
+      },
+      "identical": true
+     }
+    }
+   }
+  ],
+  "T1": [
+   {
+    "old": "statically",
+    "new": "strongly",
+    "outcome": "refused",
+    "reason": "implicit line-join space has no glyph in the source font"
+   }
+  ]
+ }
+}
