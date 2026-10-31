@@ -188,9 +188,10 @@ def phase_freeze(args):
 
 
 def moved_apart(groups, lines, moved):
-    """No group holds both a line of the edited paragraph and a line the edit moved (by text)."""
-    lines, moved = set(lines), set(moved)
-    return not any({r['text'] for r in g} & lines and {r['text'] for r in g} & moved for g in groups)
+    """No group (its rows' texts) holds both a line of the edited paragraph and
+    an element the edit moved (its text, as the save record names it: the
+    element's rows joined)."""
+    return not any(set(g) & set(lines) and any(m and m in ''.join(g) for m in moved) for g in groups)
 
 
 def geometry(rows, expect):
@@ -204,6 +205,8 @@ def geometry(rows, expect):
 
 
 def run_case(code, case, source, root):
+    # The frozen box names the paragraph (the B2 under evaluation may find it larger or smaller).
+    ce.block = lambda source, page, selection: case['box']
     ce.locate = make_locate(code)
     ce.chain_step = smoke_evaluate.chain_step
     smoke_evaluate._chain_step = _chain_step
@@ -220,7 +223,8 @@ def run_case(code, case, source, root):
         found = [p for p in seen.get('paragraphs', []) if 'lines' in p]
         para = found[0] if found else None
         r['rows'] = dict(groups=[[x['text'] for x in g] for g in seen.get('groups', [])],
-                         moved_apart=moved_apart(seen.get('groups', []), r.get('lines', []), moved) if moved else None)
+                         moved=moved)
+        r['rows']['moved_apart'] = moved_apart(r['rows']['groups'], r.get('lines', []), moved) if moved else None
         r['reselect'] = dict(found=para is not None, lines=[l['text'] for l in para['lines']] if para else None,
                              exact=para is not None and [l['text'] for l in para['lines']] == r.get('lines'),
                              conditions=para and para['conditions'], chain_rows=para and para['chain_rows'], error=seen.get('error'))
@@ -278,9 +282,10 @@ def records(results, manifest):
             if r is None:
                 continue
             r.update(evaluation='rows', step=str(n + 1), group=group)
-            for k in ('moved_apart',):
-                if (x.get('rows') or {}).get(k) is not None:
-                    r['checks'][k] = x['rows'][k]
+            rows = x.get('rows') or {}
+            if rows.get('moved') or (rows.get('groups') and (x.get('save') or {}).get('chain_moved')):
+                moved = rows.get('moved') or [m.get('line') for m in x['save']['chain_moved']]
+                r['checks']['moved_apart'] = moved_apart(rows['groups'], x.get('lines', []), moved)
             if x.get('reselect'):
                 r['checks']['reselect_exact'] = x['reselect']['exact']
             if x.get('geometry'):
