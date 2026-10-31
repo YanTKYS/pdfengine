@@ -265,18 +265,28 @@ def alone(t, stats):
     return t
 
 
-def against(tokens, layout, first_baseline, aligned=False):
+def against(tokens, layout, first_baseline, aligned=False, first_ids=None):
     """``tokens`` as a first edit of the recorded paragraph would see them, and
     its source rows and line-final hyphens: a retained character is the
     recorded glyph (its recorded origin and advance, an ID of its own); any
     other character is new text set at its natural advance, and a space where
     the recorded paragraph changed lines is a line join. ``token`` keeps each
     one's index in ``tokens``; ``aligned`` as in ``retained``. ``first_baseline`` places the recorded paragraph
-    (a follower moved since its record was written moves its record with it)."""
+    (a follower moved since its record was written moves its record with it).
+    ``first_ids``: the glyphs drawn on the paragraph's first line now. When
+    recorded first-line glyphs among them all moved by one amount, that is the
+    paragraph's move: a line's baseline is a median of its glyphs' baselines,
+    and on a line mixing baselines (a smaller label raised or lowered) it
+    changes with the line's text, not with a move (PR #106, R13)."""
+    keep = retained(tokens, layout, aligned)
     shift = first_baseline - layout['rows'][0][2]
+    a, b = layout['rows'][0][:2]
+    moves = [t['origin'][1] - layout['glyphs'][j][2] for m, j in keep.items() if a <= j < b and layout['glyphs'][j] is not None
+             and (t := tokens[m]).get('origin') and t.get('source_id') in set(first_ids or ())]
+    if moves and max(moves) - min(moves) < 1e-3:
+        shift = moves[0]
     stats = layout.get('stats') or tokens[0]['page_stats']
     sizes = layout.get('sizes')
-    keep = retained(tokens, layout, aligned)
     out, size = [], {}
     for m, t in enumerate(tokens):
         v = dict(t, token=m)

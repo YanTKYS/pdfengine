@@ -280,8 +280,9 @@ def attach(writer, page, records, page_number, moved=()):
 ROW_KEYS = ('text', 'baseline', 'x', 'right', 'pen_end', 'top', 'bottom', 'size')
 
 
-def moved_entry(c, rows, dy, approval):
-    """The record of observed ``rows`` (page_rows) translated by ``dy`` (page y)."""
+def moved_entry(c, rows, dy, approval, kind=None):
+    """The record of observed ``rows`` (page_rows) translated by ``dy`` (page y);
+    ``kind`` 'chain': the rows moved as an approved following element."""
     out = []
     for r in rows:
         row = {k: r[k] for k in ROW_KEYS}
@@ -293,7 +294,7 @@ def moved_entry(c, rows, dy, approval):
         row['glyphs'] = [[c.actual[i]['unicode'], c.actual[i]['gid'], round(c.actual[i]['origin'][0], 3), round(c.actual[i]['origin'][1] + dy, 3)]
                          for i in r['glyph_ids']]
         out.append(row)
-    return dict(rows=out, approval=approval)
+    return dict(rows=out, approval=approval, **({'as': kind} if kind else {}))
 
 
 def read_moved(c, page):
@@ -344,7 +345,10 @@ def apply_moved(c, page, rows):
             continue
         at = min(rows.index(r) for r in holding)
         rest = [r for r in rows if r not in holding]
+        # The rows keep the record they came from: on reopen they are not
+        # grouped with other rows (auto_detect.observe), and lines that moved
+        # as an approved following element stay one (auto_detect.detect).
         for k, r in enumerate(recorded):
-            r['id'] = f'p{page}-moved{n}-{k}'
+            r.update(id=f'p{page}-moved{n}-{k}', moved=n, moved_as=entry.get('as'))
         rows = rest[:at] + recorded + rest[at:]
     return rows

@@ -48,7 +48,7 @@ def local_layout(tokens, spec, record=True):
     rows = spec.get('source_rows')
     if not rows or not tokens:
         raise LocalUnavailable('no source lines')
-    virtual, recorded_rows, hyphens = against(tokens, original, rows[0]['baseline'], spec.get('aligned', False))
+    virtual, recorded_rows, hyphens = against(tokens, original, rows[0]['baseline'], spec.get('aligned', False), rows[0]['ids'])
     lines = _layout(virtual, dict(spec, source_rows=recorded_rows, hyphens=hyphens, recorded=None))
     drawn = {tuple(r['ids']) for r in rows}
     for line in lines:

@@ -25,16 +25,47 @@ from . import auto_conditions as conditions
 def glyph_key(g):return (g['unicode'],g['gid'],*g['origin'],*g['bbox'])
 
 
-def moved_key(g,shift=(0.,0.)):
-    """A glyph translated by ``shift`` (page), to 0.001 pt: a translated drawing is read back through another matrix."""
-    dx,dy=shift;x0,y0,x1,y1=g['bbox']
-    return (g['unicode'],g['gid'],round(g['origin'][0]+dx,3),round(g['origin'][1]+dy,3),round(x0+dx,3),round(y0+dy,3),round(x1+dx,3),round(y1+dy,3))
+class Moved:
+    """Glyphs translated by their shifts (page), each found once in a staged
+    page within 0.001 pt: positions are read back in single precision, so a
+    rounding to 0.001 pt could split a translated glyph from its expectation
+    (no wider than the rounding allowed)."""
+    def __init__(self,c,moved):
+        self.pool={}
+        for i,shift in moved.items():
+            g=c.actual[i];dx,dy=shift;x0,y0,x1,y1=g['bbox']
+            self.pool.setdefault((g['unicode'],g['gid']),[]).append((g['origin'][0]+dx,g['origin'][1]+dy,x0+dx,y0+dy,x1+dx,y1+dy))
+
+    def take(self,g):
+        """Whether ``g`` is an expected translated glyph (taken once)."""
+        have=self.pool.get((g['unicode'],g['gid']),[]);at=(*g['origin'],*g['bbox'])
+        for k,want in enumerate(have):
+            if all(abs(a-b)<=.001 for a,b in zip(at,want)):
+                del have[k];return True
+        return False
+
+    def take_from(self,glyphs):
+        """Whether one of ``glyphs`` is an expected translated glyph (that one is removed)."""
+        for k,g in enumerate(glyphs):
+            if self.take(g):
+                del glyphs[k];return True
+        return False
+
+    def __bool__(self):
+        return any(self.pool.values())
 
 
 def follower_delta(paragraphs,lines,spec):
-    """The page translation of the following paragraphs (single column)."""
+    """The page translation of the following paragraphs (single column), and
+    of the lines below them (chain)."""
     delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
     if len(paragraphs)>1:delta=auto_restore.follower_shift(spec.get('original'),delta,paragraphs[1].baselines[0])
+    elif spec.get('recorded') and spec.get('chain_rows') and any('moved' in r for r in spec['chain_rows'][0]['rows']):
+        # Lines an earlier edit of this paragraph moved (stored record) go back
+        # no higher than the block below was when the paragraph was recorded: a
+        # line's baseline is a median of its glyphs' and, on a line mixing
+        # baselines, changes with its text (R13).
+        delta=auto_restore.follower_shift(spec['original'],delta,spec['chain_rows'][0]['rows'][0]['baseline'])
     return 0. if abs(delta)<.001 else delta
 
 
@@ -81,7 +112,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     user approved by id (decoration.group); they move with their paragraph."""
     if Path(output).exists():raise Refused('output already exists')
     delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
-    if moves is None and len(paragraphs)>1:delta=follower_delta(paragraphs,lines,spec)
+    if moves is None and (len(paragraphs)>1 or spec.get('chain')):delta=follower_delta(paragraphs,lines,spec)
     if abs(delta)<.001:delta=0.
     if moves is None:
         active=paragraphs if delta else paragraphs[:1]
@@ -399,7 +430,8 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         writer.write(draft)
         if spec.get('mode')=='flow':stored=store_flow(c,draft,writer,page,spec,selected,[len(ts) for _,ts in batches],approval)
         else:stored=store_conditions(c,draft,writer,page,spec,selected,len(batches[0][1]),delta,active,approval,kept=kept_ids,moved=moved,
-                                     carried=[(set(p.ids)|{i for u in units if u['paragraph'] is p for i in u['glyphs']},dy) for p,dy in
+                                     carried=[(set(p.ids)|{i for u in units if u['paragraph'] is p for i in u['glyphs']},dy,
+                                               'chain' if any('row' in u for u in units if u['paragraph'] is p) else None) for p,dy in
                                               {id(u['paragraph']):(u['paragraph'],u['shift'][1]) for u in units}.values()])
         writer.write(tmp)
         validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=rewritten,moved=moved,units=units)
@@ -492,14 +524,14 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
         if check.errors:raise Refused('staged source interpretation failed')
         moved=moved or {}
         foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected and i not in moved);remain=Counter(foreign);added=[]
-        shifted=Counter(moved_key(c.actual[i],moved[i]) for i in moved)
+        shifted=Moved(c,moved)
         for g in check.actual:
             key=glyph_key(g)
             if remain[key]:remain[key]-=1
-            elif shifted[moved_key(g)]:shifted[moved_key(g)]-=1
+            elif shifted.take(g):pass
             else:added.append(g)
         if +remain:raise Refused('staged protected text changed')
-        if +shifted:raise Refused('staged moved placed object text differs from its approved translation')
+        if shifted:raise Refused('staged moved placed object text differs from its approved translation')
         def styled(content,exclude=None,only=None,key=lambda content,i:glyph_key(content.actual[i])):
             result=Counter()
             for event in content.events:
@@ -511,8 +543,15 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
             return result
         if styled(c,set(selected)|set(moved))-styled(check):raise Refused('staged protected source code/style changed')
         # A moved placed object's glyphs keep their code and style where they moved.
-        if moved and styled(c,only=moved,key=lambda content,i:moved_key(content.actual[i],moved[i]))-styled(check,key=lambda content,i:moved_key(content.actual[i])):
-            raise Refused('staged moved placed object code/style changed')
+        if moved:
+            # Matched by position within 0.001 pt (Moved), then by code and style.
+            def drawn(content,only=None):
+                return [(i,(ch.code,e.state.font.name,e.state.size,e.state.tz,e.state.fill,e.state.tr,e.state.opacity)) for e in content.events
+                        for ch in e.chars for i in ch.source_orders if only is None or i in only]
+            have={}
+            for i,style in drawn(check):have.setdefault(style,[]).append(check.actual[i])
+            for i,style in drawn(c,moved):
+                if not Moved(c,{i:moved[i]}).take_from(have.get(style,[])):raise Refused('staged moved placed object code/style changed')
         if ''.join(g['unicode'] for g in added)!=expected:raise Refused('staged drawing text differs from requested paragraphs')
         old_boxes=[pymupdf.Rect(c.actual[i]['bbox'])+(-.3,-.3,.3,.3) for i in selected if c.actual[i]['unicode'].strip()]
         frames=[pymupdf.Rect(f) for f in spec.get('frames',[spec['frame']])]
@@ -682,12 +721,12 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
         moved=moved or {}
         foreign=Counter(glyph_key(g) for i,g in enumerate(c.actual) if i not in selected and i not in stay and i not in moved);added=[];placed=[]
         # Glyphs of a moved placed object are foreign to the edited paragraph, where they moved.
-        shifted=Counter(moved_key(c.actual[i],moved[i]) for i in moved)
+        shifted=Moved(c,moved)
         for n,g in enumerate(check.actual):
             key=glyph_key(g)
             if remaining[key]:remaining[key]-=1;placed.append(n)
             elif foreign[key]:foreign[key]-=1
-            elif shifted[moved_key(g)]:shifted[moved_key(g)]-=1
+            elif shifted.take(g):pass
             else:added.append(n)
         target=set(added[:target_count-len(fixed)])|set(placed)
         analysis=_Analysis(draft,spec['page'])
@@ -710,7 +749,7 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
         kept_moved=[m for m in before if conditions.resolve_moved(check,m) is not None]
         # The source rows made only of glyphs this edit moved, translated.
         source_rows=page_rows(c,observe_marked_content(c.source,spec['page']),_Analysis(c.source,spec['page']))[0] if carried else []
-        new_moved=[conditions.moved_entry(c,[r for r in source_rows if r['glyph_ids'] and set(r['glyph_ids'])<=ids],dy,dict(approval or {})) for ids,dy in carried]
+        new_moved=[conditions.moved_entry(c,[r for r in source_rows if r['glyph_ids'] and set(r['glyph_ids'])<=ids],dy,dict(approval or {}),kind) for ids,dy,kind in carried]
         new_moved=[m for m in new_moved if m['rows']]
         named=lambda m:{tuple(g) for r in m['rows'] for g in r['glyphs']}
         kept_moved=[m for m in kept_moved if not any(named(m)&named(n) for n in new_moved)]

@@ -183,7 +183,8 @@ def inputs_of(name, args):
         from .fidelity_evaluate import source_of
         where = SimpleNamespace(fusei=args.fusei or '', pdfjs=args.pdfjs or '')
         for doc, d in (json.loads(Path(manifest).read_text()).get('documents') or {}).items():
-            path = Path(d['path']) if d.get('path') else source_of(doc, where)
+            # (A manifest may name its source by a note, '(scratch download, not committed)': the given input stands for it.)
+            path = Path(d['path']) if d.get('path') and Path(d['path']).exists() else source_of(doc, where)
             if not path.exists():
                 return f'input missing: {doc}', values
             if d.get('sha256') and sha(path) != d['sha256']:

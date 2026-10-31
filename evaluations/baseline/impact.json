@@ -36,6 +36,7 @@
   {"pattern": "prototypes/paragraph_frame/eval_*.py", "direct": []},
   {"pattern": "prototypes/paragraph_frame/approved_audit.py", "direct": [], "related": ["chain", "separate", "decoration"]},
   {"pattern": "prototypes/paragraph_frame/smoke_evaluate.py", "direct": []},
+  {"pattern": "prototypes/paragraph_frame/rows_evaluate.py", "direct": []},
   {"pattern": "tests/*", "direct": []},
   {"pattern": "docs/*", "direct": []},
   {"pattern": "evaluations/*", "direct": []},

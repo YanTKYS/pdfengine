@@ -3,6 +3,7 @@
 No evaluation geometry enters this module. Occupied right edges are evidence,
 not an assertion that a PDF stores an author's text frame.
 """
+import re
 import unicodedata
 from statistics import median
 import pymupdf
@@ -198,6 +199,54 @@ def _marker(c, row):
     """The row's first glyph when it is a list marker (a symbol such as ● • ■ ▶ ・ ※)."""
     first = next((c.actual[i]['unicode'] for i in row['glyph_ids'] if c.actual[i]['unicode'].strip()), '')
     return first if first and (unicodedata.category(first) == 'So' or first in '•・‣⁃◦※') else None
+
+
+# A note or list label: a number, a letter, a kanji numeral or a roman
+# numeral, bracketed or followed by a separator; a circled number; 注 and a
+# number; a reference mark (* ※ † ‡ §).
+LABEL = re.compile(r'(?:[(（\[［]?(?:[0-9０-９]{1,3}|[一二三四五六七八九十]{1,3}|[ivxIVX]{1,4}|[a-zA-Zａ-ｚＡ-Ｚ])[)）\]］.．、:：]?|[①-⑳]|注[0-9０-９]{0,2}[.．:：]?|[*＊※†‡§]{1,3})')
+LABEL_END = ')）]］.．、:：'
+
+
+def _label(c, row):
+    """(label, x of the text after it) when the row opens with a label set
+    apart from its text (a gap, a space, a separator or a reference mark),
+    and no other gap of the row is wider than half its size (a row drawn
+    across a column gutter is no one paragraph's line); else None."""
+    ids = row['glyph_ids']
+    ink = [i for i in ids if c.actual[i]['unicode'].strip()]
+    size = row['size']
+    for k in range(1, min(5, len(ink))):
+        label = ''.join(c.actual[i]['unicode'] for i in ink[:k])
+        if not LABEL.fullmatch(label):
+            continue
+        last, body = ink[k - 1], ink[k]
+        gap = c.actual[body]['bbox'][0] - c.actual[last]['bbox'][2]
+        spaced = any(not c.actual[i]['unicode'].strip() for i in ids[ids.index(last) + 1:ids.index(body)])
+        if not (gap > .3 * size or spaced or label[-1] in LABEL_END or not label[0].isalnum()):
+            continue
+        rest = ink[k:]
+        if any(c.actual[b]['bbox'][0] - c.actual[a]['bbox'][2] > .5 * size for a, b in zip(rest, rest[1:])):
+            return None
+        return label, c.actual[body]['origin'][0]
+    return None
+
+
+def _hanging(c, rows, first, row, style):
+    """The x of a hanging indent when ``row`` continues ``first`` there: the
+    first row opens with a label (_label) and its text starts where ``row``
+    starts; both share size and paint style, the rows are a line apart, and
+    the first row runs to the right edge of the same-size rows around it (it
+    was broken there, not ended like a heading)."""
+    found = _label(c, first)
+    size = first['size']
+    if found is None or abs(row['size'] - size) >= .1 or not 0 < row['baseline'] - first['baseline'] < 2.25 * size:
+        return None
+    x = found[1]
+    if x - first['x'] < .5 * size or abs(row['x'] - x) >= .2 * size or not style(first) & style(row):
+        return None
+    right = max(r['pen_end'] for r in rows if _overlap(r, first) and abs(r['size'] - size) < .1 and abs(r['baseline'] - first['baseline']) < 10 * size)
+    return x if first['pen_end'] > right - 2 * size else None
 
 
 def cell_right(c, rows, right, own):
@@ -507,6 +556,9 @@ def observe(c,marks,analysis,moved=True):
         new=True
         if candidate is not None:
             prev=candidate[-1]; prevparents={parent_by_id.get(i) for i in prev['glyph_ids']}
+            # Rows of a following paragraph an earlier edit moved (their stored
+            # record, page_rows) are not grouped with other rows.
+            apart=prev.get('moved')!=r.get('moved')
             gap=r['baseline']-prev['baseline']; size=r['size']
             # One structure element continues, unless the row is placed apart
             # in it: another size, and not starting at a continuation x (a
@@ -524,9 +576,17 @@ def observe(c,marks,analysis,moved=True):
                 if not new and gaps and gap>1.3*median(gaps):new=True
                 if not new and _first_word_fits(c,prev,r,max(x['pen_end'] for x in candidate+[r])):new=True
                 if not new and style(prev) and style(r) and not style(prev)&style(r):new=True
+                # A labelled first line (a footnote, a note, a list item) whose
+                # text starts where the next row starts: a hanging indent.
+                if new and not apart and len(candidate)==1 and parent is None and prevparents=={None}:
+                    x=_hanging(c,rows,prev,r,style)
+                    if x is not None:new=False;prev['hanging']=x
             # A row opening with the marker of the paragraph's first row, at its
-            # x, is the next list item.
+            # x, is the next list item; so is a row back at the label of a
+            # hanging indent.
             if not new and _marker(c,r) and _marker(c,r)==_marker(c,candidate[0]) and abs(r['x']-candidate[0]['x'])<.2*r['size']:new=True
+            if not new and candidate[0].get('hanging') is not None and abs(r['x']-candidate[0]['x'])<.2*r['size']:new=True
+            if apart:new=True
         if new:groups.append([r])
         else:candidate.append(r)
     return rows,parent_by_id,groups
@@ -645,7 +705,10 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         if flow is not None:
             return _flow_detect(c,marks,page,flow,selected,start,paint,report,records,record_status,flow_stale,len(matches),stale_reason)
         column_bottom,neighbours=_column_bottom(selected,others,blocks,infos,report)
-        left=min(r['x'] for r in selected); first=selected[0]['x']
+        first=selected[0]['x']
+        # A hanging indent (observe): the following lines start at its x.
+        hanging=selected[0].get('hanging') is not None and len(selected)>1
+        left=min(r['x'] for r in (selected[1:] if hanging else selected))
         # A single-line paragraph borrows the observed continuation edge from
         # nearby same-size body rows, never from a manifest. A paragraph of
         # several lines shows its own continuation edge.
@@ -657,6 +720,9 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         for group in groups[target+1:]:
             r=group[0]
             if not _overlap(r,column):continue
+            # Lines an earlier edit moved as an approved following element move
+            # again only as one (chain), approved again.
+            if any(x.get('moved_as')=='chain' for x in group):break
             gap=r['baseline']-previous[-1]['baseline']
             if abs(r['size']-size)>.1 or abs(r['x']-first)>.2*size or not 0<gap<2.8*size:break
             followers.append(group);follower_records.append(record_of(group));previous=group
@@ -690,7 +756,8 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
                 o['kind']='container';containers.append(o['bounds'])
         obstacles.extend(dict(kind='foreign-text',bounds=list(g['bbox'])) for i,g in enumerate(c.actual) if i not in ids and g['unicode'].strip())
         basis='median within-paragraph observed gaps' if deltas else 'peer paragraph gap' if len(allrows)>1 else 'unobserved: 1.5 em default'
-        provenance=dict(left='observed: minimum continuation x' if len(selected)>1 else 'inferred: nearby same-size continuation edge' if nearby else 'observed: first-line x',
+        provenance=dict(left='observed: hanging indent (the following lines start where the text after the first line\'s label starts)' if hanging else
+                        'observed: minimum continuation x' if len(selected)>1 else 'inferred: nearby same-size continuation edge' if nearby else 'observed: first-line x',
                         right='observed: table-cell rules (right rule less the left padding)' if cell is not None else 'inferred: maximum occupied pen extent',first_x='observed: first line x',line_height=basis,
                         bottom='inferred: next protected paint, annotation or page edge')
         state=dict(status=record_status if not records else 'no record for this paragraph',records=records,target=None,followers=follower_records,applied=False,stale=[])
@@ -751,6 +818,23 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
                             right='approved: stored condition' if state['applied'] else 'medium: maximum occupied pen extent; author frame absent',bottom='medium: next protected paint/annotation or page edge',top='medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked'),
             selection_match_count=len(matches),warnings=['Occupied width is an inferred capacity, not a stored author frame.','Following same-column paragraphs may translate; protected content never moves.'],manual_geometry_inputs=0)
         if not deltas and not state['applied']:evidence['warnings'].append('No within-paragraph leading is observable; approve the reported inferred/default leading.')
+        # A hanging indent joined the lines after the first to the paragraph:
+        # which lines, and what showed it, are part of what is approved.
+        if hanging:
+            label=_label(c,selected[0])
+            evidence['inferred']['hanging']=dict(label=label[0] if label else None,first_x=round(first,3),x=round(left,3),
+                lines=[dict(text=r['text'],x=round(r['x'],3),baseline=round(r['baseline'],3)) for r in selected],
+                basis=['the first line opens with a label set apart from its text','the next line starts where that text starts (0.2 em)',
+                       'same size and paint style; a line apart (under 2.25 em)','the first line runs to the right edge (broken there)',
+                       'no gap wider than 0.5 em inside the first line'])
+            evidence['confidence']['paragraph']='medium: hanging indent (label, text start, size, style, line pitch, line broken at the edge)'
+            evidence['warnings'].append(f"The lines after the first were joined to the paragraph by a hanging indent at x {left:.2f}; the edit lays them out again as the paragraph's lines (evidence.inferred.hanging).")
+        # One labelled line: where a hanging indent would put the following
+        # lines is reported; with no line there to show it, it is not applied.
+        label=_label(c,selected[0]) if len(selected)==1 else None
+        if label and label[1]-first>=.5*size:
+            evidence['inferred']['hanging_candidate']=dict(label=label[0],x=round(label[1],3),status='not applied: no following line of the paragraph starts there')
+            evidence['warnings'].append(f"The line opens with a label ({label[0]}); a hanging indent at x {label[1]:.2f} is possible, but no following line shows it: added lines start at x {left:.2f}.")
         if state['status'].startswith('stale'):evidence['warnings'].append('Stored approved conditions were not applied: '+state['status'])
         if flow_stale:evidence['warnings'].append('A stored approved column flow was not applied: '+stale_reason)
         if record_status.startswith(('unreadable','page modified')) or 'malformed' in record_status:evidence['warnings'].append('Stored conditions: '+record_status)

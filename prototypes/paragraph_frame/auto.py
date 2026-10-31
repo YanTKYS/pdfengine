@@ -144,6 +144,11 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
           layout=spec.get('layout','column flow'),source_lines=len(paragraphs[0].baselines),font_counts=counts,substitute_choice=choice,
           required_approval=['inferred paragraph and capacity','possible follower translation','source style and any explicit substitute'])
         public['continuation']=list(continuation)
+        hang=evidence['inferred'].get('hanging')
+        if hang:
+            # Every line as proposed, with its start: the joined lines are laid out again.
+            hang['proposed']=[dict(text=l['text'],x=round(l['tokens'][0]['x'],3) if l.get('tokens') else None,baseline=round(l['baseline'],3)) for l in lines]
+            public['required_approval'].append(f"lines joined to the paragraph by a hanging indent, laid out again: {len(hang['lines'])} drawn, {len(lines)} proposed")
         if chain:
             public['chain']=sorted(chain)
             public['required_approval'].append('following elements moved with the paragraph (chain): '+', '.join(sorted(chain)))
