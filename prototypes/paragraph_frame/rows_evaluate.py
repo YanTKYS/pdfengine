@@ -126,9 +126,10 @@ def observation(code, pdf, page, box, selection=None):
     """Groups near ``box`` and the paragraphs found for ``selection``, by the B2 of ``code``."""
     run = subprocess.run([sys.executable, '-c', OBSERVE.format(code=str(code), pdf=str(Path(pdf).resolve()), page=page, box=list(box), selection=selection)],
                          capture_output=True, text=True, cwd=code)
-    lines = run.stdout.strip().splitlines()
+    # (A library may print a warning on stdout: the result is the last JSON line; text may hold U+2028.)
+    lines = [l for l in run.stdout.strip().split('\n') if l.startswith('{')]
     if run.returncode or not lines:
-        return dict(error=run.stderr.strip()[-400:])
+        return dict(error=(run.stderr.strip() or run.stdout.strip())[-400:])
     return json.loads(lines[-1])
 
 

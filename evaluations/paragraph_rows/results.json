@@ -1,0 +1,5315 @@
+{
+ "schema": "paragraph-rows-results-1",
+ "manifest_sha256": "1e4d69b1ba1d275e56338816da329ce097a0fc8ca031cd916b7454b4466cc58f",
+ "runs": {
+  "old": {
+   "summary": {
+    "rows": {
+     "real:layout": {
+      "steps": 3,
+      "saved": 3,
+      "saved:yes": 3,
+      "practical:unverified": 1,
+      "reedit:yes": 3,
+      "restore:unverified": 2,
+      "refused:no": 3,
+      "practical:yes": 2,
+      "restore:yes": 1
+     },
+     "real:faithful": {
+      "steps": 1,
+      "saved": 1,
+      "saved:yes": 1,
+      "practical:yes": 1,
+      "reedit:yes": 1,
+      "restore:no": 1,
+      "refused:no": 1
+     },
+     "real-extra:layout": {
+      "steps": 2,
+      "saved": 2,
+      "saved:yes": 2,
+      "practical:yes": 2,
+      "reedit:yes": 2,
+      "restore:unverified": 1,
+      "refused:no": 2,
+      "restore:yes": 1
+     },
+     "real-negative:faithful": {
+      "steps": 4,
+      "observed": 4,
+      "saved:unverified": 4,
+      "practical:unverified": 4,
+      "reedit:unverified": 4,
+      "restore:unverified": 4,
+      "refused:unverified": 4
+     }
+    }
+   },
+   "records": [
+    {
+     "evaluation": "rows",
+     "case": "R13",
+     "step": "1",
+     "group": "real",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "placement": true,
+      "raster": true,
+      "approved_audit": true,
+      "approved_quality": null,
+      "moved_apart": false,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "R13",
+     "step": "2",
+     "group": "real",
+     "mode": "faithful",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "restored_glyphs": false,
+      "restored_pixels": false,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": false,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "S2",
+     "step": "1",
+     "group": "real",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "placement": true,
+      "raster": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "moved_apart": true,
+      "reselect_exact": true,
+      "geometry": false
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "S2",
+     "step": "2",
+     "group": "real",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "placement": true,
+      "raster": true,
+      "restored_glyphs": true,
+      "restored_pixels": true,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "moved_apart": true,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "X1",
+     "step": "1",
+     "group": "real-extra",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "placement": true,
+      "raster": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "moved_apart": true,
+      "reselect_exact": true,
+      "geometry": false
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "X1",
+     "step": "2",
+     "group": "real-extra",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "placement": true,
+      "raster": true,
+      "restored_glyphs": true,
+      "restored_pixels": true,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "moved_apart": true,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "N1",
+     "step": "observe",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "observed",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "groups_unchanged": true
+     },
+     "tiers": {
+      "saved": null,
+      "practical": null,
+      "reedit": null,
+      "restore": null,
+      "refused": null
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "N2",
+     "step": "observe",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "observed",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "groups_unchanged": true
+     },
+     "tiers": {
+      "saved": null,
+      "practical": null,
+      "reedit": null,
+      "restore": null,
+      "refused": null
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "N3",
+     "step": "observe",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "observed",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "groups_unchanged": true
+     },
+     "tiers": {
+      "saved": null,
+      "practical": null,
+      "reedit": null,
+      "restore": null,
+      "refused": null
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "N4",
+     "step": "observe",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "observed",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "groups_unchanged": true
+     },
+     "tiers": {
+      "saved": null,
+      "practical": null,
+      "reedit": null,
+      "restore": null,
+      "refused": null
+     }
+    }
+   ],
+   "results": {
+    "R13": [
+     {
+      "old": "D-25 ペ",
+      "new": "D-25 ペD-25 ペルー",
+      "proposal_refused": null,
+      "chain": {
+       "translation": 20.386,
+       "needed": true,
+       "candidates": [
+        {
+         "page": 4,
+         "paragraph": "D-26 ヨルダンD-27 団体休憩所",
+         "operators": [
+          115656,
+          115947
+         ],
+         "operator_count": 52,
+         "bytes_sha256": "2a84d85138c768557122adc1d250e107363d6ef9c8985c0abdc99e6f45555f78",
+         "bounds": [
+          542.88,
+          697.54,
+          598.75,
+          715.54
+         ],
+         "moved_to": [
+          542.88,
+          717.93,
+          598.75,
+          735.92
+         ],
+         "translation": 20.386,
+         "drawings": 2,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 19,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [
+          "k",
+          "gs",
+          "Tf",
+          "k",
+          "gs",
+          "Tf"
+         ],
+         "annotations": [],
+         "adjacent": [],
+         "ranges": [
+          [
+           115656,
+           115947
+          ],
+          [
+           115948,
+           116135
+          ],
+          [
+           116136,
+           116427
+          ]
+         ],
+         "separated": [
+          {
+           "text_object": [
+            116428,
+            116707
+           ],
+           "operators_taken": 2,
+           "operators_staying": 1,
+           "drawn": [
+            "before"
+           ],
+           "bytes_sha256": "4220e27ce14ab2dbf8b91a48303d765d3a7c0a9218405decca0e50870d38ae9f",
+           "text": "D-27 団体休憩所",
+           "bounds": [
+            543.47,
+            708.18,
+            598.75,
+            715.54
+           ]
+          }
+         ],
+         "order": 1,
+         "line": "D-26 ヨルダンD-27 団体休憩所",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          696.54,
+          716.93
+         ],
+         "id": "following-element-3ac97a0b38845b63"
+        }
+       ],
+       "frame_bottom": 716.93
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-3ac97a0b38845b63 move with it only when approved explicitly)",
+       "seconds": 30.19
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [
+        "following-element-3ac97a0b38845b63"
+       ],
+       "decorations": []
+      },
+      "lines": [
+       "D-25 ペ",
+       "D-25 ペ",
+       "ルールー"
+      ],
+      "grow": 2,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical",
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "D-25 ペD-25 ペルー"
+      },
+      "save": {
+       "follower_translation": 20.385900020599365,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": [
+        {
+         "id": "following-element-3ac97a0b38845b63",
+         "old": [
+          542.8790283203125,
+          697.542724609375,
+          598.7484741210938,
+          715.53515625
+         ],
+         "new": [
+          542.8790283203125,
+          717.9286246299744,
+          598.7484741210938,
+          735.9210562705994
+         ],
+         "translation": [
+          0.0,
+          -20.385900020599365
+         ],
+         "glyphs": 19,
+         "separated": 1,
+         "annotations": [],
+         "line": "D-26 ヨルダンD-27 団体休憩所"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 1,
+        "drawings": 2,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 4,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": {
+       "inside_page": true,
+       "under_before": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "under_after": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          541.88,
+          696.54,
+          599.75,
+          716.54
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 31842
+        }
+       ],
+       "ok": true
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": null,
+        "search_wrapped_lines_text": true,
+        "size_and_colour_kept": true,
+        "status": "unverified"
+       },
+       "approved": [
+        {
+         "what": "chain",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "rows": {
+       "groups": [
+        [
+         "D-22 国際連合",
+         "D-23 ベトナム",
+         "D-24 モザンビーク"
+        ],
+        [
+         "D-25 ペ"
+        ],
+        [
+         "D-25 ペ",
+         "ルールー",
+         "D-26 ヨルダン",
+         "D-27 団体休憩所"
+        ]
+       ],
+       "moved": [
+        "D-26 ヨルダンD-27 団体休憩所"
+       ],
+       "moved_apart": false
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "D-25 ペ",
+        "D-25 ペ",
+        "ルールー"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "見どころ満載！見どころ満載！実際に会場で体感してみよう！実際に会場で体感してみよう！",
+        "インドネシア館A-04",
+        "調和の繁栄：自然、文化、未来",
+        "オペラが上演される劇場が設置！屋上にはイタリア式の庭園やカフェも！世界的な文化遺産である大理石の彫刻像「ファルネーゼのアトラス」が日本初展示！"
+       ],
+       "error": null
+      },
+      "geometry": null
+     },
+     {
+      "old": "D-25 ペD-25 ペルー",
+      "new": "D-25 ペ",
+      "proposal_refused": null,
+      "chain": {},
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 163.61
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": []
+      },
+      "lines": [
+       "D-25 ペルー"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "D-25 ペ"
+      },
+      "save": {
+       "follower_translation": -20.385896368255658,
+       "followers_repainted": 1,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "faithful",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "following paragraphs",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 7,
+         "kept": 0,
+         "moved": 7,
+         "restyled": 0,
+         "max_delta": 0.131,
+         "source_lines": 1,
+         "output_lines": 3,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 14,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 2,
+         "output": 2
+        }
+       },
+       "glyphs": {
+        "glyphs": 4038,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 8,
+        "beyond_0001": 8,
+        "largest": 0.13055,
+        "ok": false
+       },
+       "paint": {
+        "drawings": false,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 0,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 1630,
+         "largest": 213,
+         "samples": 2665716
+        },
+        "150": {
+         "differing_samples": 6538,
+         "largest": 255,
+         "samples": 11560758
+        },
+        "identical": false
+       }
+      },
+      "rows": {
+       "groups": [
+        [
+         "D-22 国際連合",
+         "D-23 ベトナム",
+         "D-24 モザンビーク"
+        ],
+        [
+         "D-25 ペルー"
+        ],
+        [
+         "D-26 ヨルダン",
+         "D-27 団体休憩所"
+        ]
+       ],
+       "moved": [],
+       "moved_apart": null
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "D-25 ペルー"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "D-26 ヨルダンD-27 団体休憩所",
+        "見どころ満載！見どころ満載！実際に会場で体感してみよう！実際に会場で体感してみよう！",
+        "インドネシア館A-04",
+        "調和の繁栄：自然、文化、未来"
+       ],
+       "error": null
+      },
+      "geometry": null
+     }
+    ],
+    "S2": [
+     {
+      "old": "日本語フォントについては",
+      "new": "日本語フォントについては日本語フォントについては",
+      "proposal_refused": null,
+      "chain": {
+       "translation": 15.0,
+       "needed": true,
+       "candidates": [
+        {
+         "page": 1,
+         "paragraph": "能なフォントを用いることを推奨します。",
+         "operators": [
+          12821,
+          12947
+         ],
+         "operator_count": 8,
+         "bytes_sha256": "070b5f6589222f93690009308a0771b304bbc6600085eed4f6320a27632e5495",
+         "bounds": [
+          73.8,
+          775.2,
+          235.58,
+          785.2
+         ],
+         "moved_to": [
+          73.8,
+          790.2,
+          235.58,
+          800.2
+         ],
+         "translation": 15.0,
+         "drawings": 0,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 19,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [],
+         "order": 1,
+         "line": "能なフォントを用いることを推奨します。",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          774.2,
+          789.2
+         ],
+         "id": "following-element-eac4ca2be71ff6d9"
+        }
+       ],
+       "frame_bottom": 789.2
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-eac4ca2be71ff6d9 move with it only when approved explicitly)",
+       "seconds": 3.03
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [
+        "following-element-eac4ca2be71ff6d9"
+       ],
+       "decorations": []
+      },
+      "lines": [
+       "1日本語フォントについては日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべて",
+       "のプラットフォームで利用可"
+      ],
+      "grow": 1,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "日本語フォントについては日本語フォントについては"
+      },
+      "save": {
+       "follower_translation": 15.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": [
+        {
+         "id": "following-element-eac4ca2be71ff6d9",
+         "old": [
+          73.80000305175781,
+          775.201416015625,
+          235.58065795898438,
+          785.201416015625
+         ],
+         "new": [
+          73.80000305175781,
+          790.201416015625,
+          235.58065795898438,
+          800.201416015625
+         ],
+         "translation": [
+          0.0,
+          -15.0
+         ],
+         "glyphs": 19,
+         "annotations": [],
+         "line": "能なフォントを用いることを推奨します。"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 1,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 19,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": {
+       "inside_page": true,
+       "under_before": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 0
+       },
+       "under_after": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 0
+       },
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          72.8,
+          774.2,
+          236.58,
+          786.2
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 54612
+        }
+       ],
+       "ok": true
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "chain",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "rows": {
+       "groups": [
+        [
+         "1日本語フォントについては日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべて",
+         "のプラットフォームで利用可"
+        ],
+        [
+         "能なフォントを用いることを推奨します。"
+        ]
+       ],
+       "moved": [
+        "能なフォントを用いることを推奨します。"
+       ],
+       "moved_apart": true
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "1日本語フォントについては日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべて",
+        "のプラットフォームで利用可"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "能なフォントを用いることを推奨します。"
+       ],
+       "error": null
+      },
+      "geometry": {
+       "ok": false,
+       "x": [
+        56.8,
+        56.8
+       ],
+       "pitches": [
+        15.0
+       ]
+      }
+     },
+     {
+      "old": "日本語フォントについては日本語フォントについては",
+      "new": "日本語フォントについては",
+      "proposal_refused": null,
+      "chain": {
+       "translation": -15.0,
+       "needed": false,
+       "candidates": [
+        {
+         "page": 1,
+         "paragraph": "能なフォントを用いることを推奨します。",
+         "operators": [
+          13859,
+          13985
+         ],
+         "operator_count": 8,
+         "bytes_sha256": "070b5f6589222f93690009308a0771b304bbc6600085eed4f6320a27632e5495",
+         "bounds": [
+          73.8,
+          790.2,
+          235.58,
+          800.2
+         ],
+         "moved_to": [
+          73.8,
+          775.2,
+          235.58,
+          785.2
+         ],
+         "translation": -15.0,
+         "drawings": 0,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 19,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [],
+         "order": 1,
+         "line": "能なフォントを用いることを推奨します。",
+         "kind": "following element",
+         "reached": "attached below the shrinking paragraph",
+         "frame_bottom": [
+          786.4,
+          786.4
+         ],
+         "id": "following-element-50270a8300221869"
+        }
+       ],
+       "frame_bottom": 786.4
+      },
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 9.89
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [
+        "following-element-50270a8300221869"
+       ],
+       "decorations": []
+      },
+      "lines": [
+       "1日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべてのプラットフォームで利用可"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "日本語フォントについては"
+      },
+      "save": {
+       "follower_translation": -15.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": [
+        {
+         "id": "following-element-50270a8300221869",
+         "old": [
+          73.80000305175781,
+          790.201416015625,
+          235.58065795898438,
+          800.201416015625
+         ],
+         "new": [
+          73.80000305175781,
+          775.201416015625,
+          235.58065795898438,
+          785.201416015625
+         ],
+         "translation": [
+          0.0,
+          15.0
+         ],
+         "glyphs": 19,
+         "annotations": [],
+         "line": "能なフォントを用いることを推奨します。"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 1,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 19,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": {
+       "inside_page": true,
+       "under_before": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 0
+       },
+       "under_after": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 0
+       },
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          72.8,
+          789.2,
+          236.58,
+          801.2
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 54612
+        }
+       ],
+       "ok": true
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "chain",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 54,
+         "kept": 54,
+         "moved": 0,
+         "restyled": 0,
+         "max_delta": 0.0,
+         "source_lines": 1,
+         "output_lines": 2,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 0,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 1,
+         "output": 1
+        }
+       },
+       "glyphs": {
+        "glyphs": 1383,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 0,
+        "beyond_0001": 0,
+        "largest": 0.0,
+        "ok": true
+       },
+       "paint": {
+        "drawings": true,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 1,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 1502970
+        },
+        "150": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 6528600
+        },
+        "identical": true
+       }
+      },
+      "rows": {
+       "groups": [
+        [
+         "1日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべてのプラットフォームで利用可"
+        ],
+        [
+         "能なフォントを用いることを推奨します。"
+        ]
+       ],
+       "moved": [
+        "能なフォントを用いることを推奨します。"
+       ],
+       "moved_apart": true
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "1日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべてのプラットフォームで利用可"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "能なフォントを用いることを推奨します。"
+       ],
+       "error": null
+      },
+      "geometry": null
+     }
+    ],
+    "X1": [
+     {
+      "old": "訳者は把握していません。",
+      "new": "訳者は把握していません。訳者は把握していません。",
+      "proposal_refused": null,
+      "chain": {
+       "translation": 15.0,
+       "needed": true,
+       "candidates": [
+        {
+         "page": 6,
+         "paragraph": "ばHG書体のような）だと思われます。",
+         "operators": [
+          17247,
+          17515
+         ],
+         "operator_count": 30,
+         "bytes_sha256": "d47f21708773d04eb574cfc8a829c246799f7a251ca86885bcc82c7122ec5eb6",
+         "bounds": [
+          73.8,
+          774.4,
+          230.53,
+          784.95
+         ],
+         "moved_to": [
+          73.8,
+          789.4,
+          230.53,
+          799.95
+         ],
+         "translation": 15.0,
+         "drawings": 0,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 18,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [],
+         "order": 1,
+         "line": "ばHG書体のような）だと思われます。",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          773.4,
+          788.4
+         ],
+         "id": "following-element-2df63d71a6ae1ba6"
+        }
+       ],
+       "frame_bottom": 788.4
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-2df63d71a6ae1ba6 move with it only when approved explicitly)",
+       "seconds": 3.51
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [
+        "following-element-2df63d71a6ae1ba6"
+       ],
+       "decorations": []
+      },
+      "lines": [
+       "5訳注： 実はC* フォントとはなんだか訳者は把握していません。訳者は把握していません。多分MS Officeにつ",
+       "いてくるフォント（日本で言え"
+      ],
+      "grow": 1,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "訳者は把握していません。訳者は把握していません。"
+      },
+      "save": {
+       "follower_translation": 15.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": [
+        {
+         "id": "following-element-2df63d71a6ae1ba6",
+         "old": [
+          73.80000305175781,
+          774.4014282226562,
+          230.5306396484375,
+          784.9512329101562
+         ],
+         "new": [
+          73.80000305175781,
+          789.4014282226562,
+          230.5306396484375,
+          799.9512329101562
+         ],
+         "translation": [
+          0.0,
+          -15.0
+         ],
+         "glyphs": 18,
+         "annotations": [],
+         "line": "ばHG書体のような）だと思われます。"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 1,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 19,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": {
+       "inside_page": true,
+       "under_before": {
+        "drawing": 0,
+        "glyph": 0
+       },
+       "under_after": {
+        "drawing": 0,
+        "glyph": 0
+       },
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          72.8,
+          773.4,
+          231.53,
+          785.95
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 54378
+        }
+       ],
+       "ok": true
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "chain",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "rows": {
+       "groups": [
+        [
+         "ユーザーはトレーニングを経ればLibreOfficeによって文書を作り出すことができるようになるでしょう。した",
+         "がって、トレーニングが始まる前にワークステーションのセットアップを完了しておき、テストを済ませておくことが",
+         "大切です。どんなインストールの遅れもトレーニングの効果を減らしてしまうからです。また、移行に関連したどん",
+         "な問題についても、「技術的リーダー」から訓練を受けたサポート人員まで辿ることができる参照ポイントを提供",
+         "することは極めて重要です。"
+        ],
+        [
+         "5訳注： 実はC* フォントとはなんだか訳者は把握していません。訳者は把握していません。多分MS Officeにつ",
+         "いてくるフォント（日本で言え"
+        ],
+        [
+         "ばHG書体のような）だと思われます。"
+        ]
+       ],
+       "moved": [
+        "ばHG書体のような）だと思われます。"
+       ],
+       "moved_apart": true
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "5訳注： 実はC* フォントとはなんだか訳者は把握していません。訳者は把握していません。多分MS Officeにつ",
+        "いてくるフォント（日本で言え"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "ばHG書体のような）だと思われます。"
+       ],
+       "error": null
+      },
+      "geometry": {
+       "ok": false,
+       "x": [
+        56.8,
+        56.8
+       ],
+       "pitches": [
+        15.0
+       ]
+      }
+     },
+     {
+      "old": "訳者は把握していません。訳者は把握していません。",
+      "new": "訳者は把握していません。",
+      "proposal_refused": null,
+      "chain": {
+       "translation": -15.0,
+       "needed": false,
+       "candidates": [
+        {
+         "page": 6,
+         "paragraph": "ばHG書体のような）だと思われます。",
+         "operators": [
+          19921,
+          20189
+         ],
+         "operator_count": 30,
+         "bytes_sha256": "d47f21708773d04eb574cfc8a829c246799f7a251ca86885bcc82c7122ec5eb6",
+         "bounds": [
+          73.8,
+          789.4,
+          230.53,
+          799.95
+         ],
+         "moved_to": [
+          73.8,
+          774.4,
+          230.53,
+          784.95
+         ],
+         "translation": -15.0,
+         "drawings": 0,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 18,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [],
+         "order": 1,
+         "line": "ばHG書体のような）だと思われます。",
+         "kind": "following element",
+         "reached": "attached below the shrinking paragraph",
+         "frame_bottom": [
+          785.6,
+          785.6
+         ],
+         "id": "following-element-52b2ea91990fd199"
+        }
+       ],
+       "frame_bottom": 785.6
+      },
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 10.07
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [
+        "following-element-52b2ea91990fd199"
+       ],
+       "decorations": []
+      },
+      "lines": [
+       "5訳注： 実はC* フォントとはなんだか訳者は把握していません。多分MS Officeについてくるフォント（日本で言え"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "訳者は把握していません。"
+      },
+      "save": {
+       "follower_translation": -15.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": [
+        {
+         "id": "following-element-52b2ea91990fd199",
+         "old": [
+          73.80000305175781,
+          789.4014282226562,
+          230.5306396484375,
+          799.9512329101562
+         ],
+         "new": [
+          73.80000305175781,
+          774.4014282226562,
+          230.5306396484375,
+          784.9512329101562
+         ],
+         "translation": [
+          0.0,
+          15.0
+         ],
+         "glyphs": 18,
+         "annotations": [],
+         "line": "ばHG書体のような）だと思われます。"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 1,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 19,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": {
+       "inside_page": true,
+       "under_before": {
+        "drawing": 0,
+        "glyph": 0
+       },
+       "under_after": {
+        "drawing": 0,
+        "glyph": 0
+       },
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          72.8,
+          788.4,
+          231.53,
+          800.95
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 54378
+        }
+       ],
+       "ok": true
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "chain",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 56,
+         "kept": 56,
+         "moved": 0,
+         "restyled": 0,
+         "max_delta": 0.0,
+         "source_lines": 1,
+         "output_lines": 2,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 0,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 1,
+         "output": 1
+        }
+       },
+       "glyphs": {
+        "glyphs": 1250,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 0,
+        "beyond_0001": 0,
+        "largest": 0.0,
+        "ok": true
+       },
+       "paint": {
+        "drawings": true,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 1,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 1502970
+        },
+        "150": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 6528600
+        },
+        "identical": true
+       }
+      },
+      "rows": {
+       "groups": [
+        [
+         "ユーザーはトレーニングを経ればLibreOfficeによって文書を作り出すことができるようになるでしょう。した",
+         "がって、トレーニングが始まる前にワークステーションのセットアップを完了しておき、テストを済ませておくことが",
+         "大切です。どんなインストールの遅れもトレーニングの効果を減らしてしまうからです。また、移行に関連したどん",
+         "な問題についても、「技術的リーダー」から訓練を受けたサポート人員まで辿ることができる参照ポイントを提供",
+         "することは極めて重要です。"
+        ],
+        [
+         "5訳注： 実はC* フォントとはなんだか訳者は把握していません。多分MS Officeについてくるフォント（日本で言え"
+        ],
+        [
+         "ばHG書体のような）だと思われます。"
+        ]
+       ],
+       "moved": [
+        "ばHG書体のような）だと思われます。"
+       ],
+       "moved_apart": true
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "5訳注： 実はC* フォントとはなんだか訳者は把握していません。多分MS Officeについてくるフォント（日本で言え"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "ばHG書体のような）だと思われます。"
+       ],
+       "error": null
+      },
+      "geometry": null
+     }
+    ],
+    "N1": [
+     {
+      "outcome": "observed",
+      "groups": [
+       [
+        "※ 骨折および脱臼は、応急の場・ 仕事中に起きた事故に"
+       ],
+       [
+        "合を除き医師の同意書などが",
+        "必要です"
+       ],
+       [
+        "よる負傷"
+       ],
+       [
+        "など"
+       ]
+      ],
+      "unchanged": true,
+      "error": null
+     }
+    ],
+    "N2": [
+     {
+      "outcome": "observed",
+      "groups": [
+       [
+        "06（6910）8005　送付先 〒540-8570（住所の記載は不要です）"
+       ],
+       [
+        "HP府政だより"
+       ],
+       [
+        "※応募・申し込みなどに伴い収集した個人情報は、その目的のためにのみ使用し、それ以外に使用することはありません。"
+       ],
+       [
+        "※申し込みの際、鉛筆や摩擦熱で消えるインクなどの筆記具は使用しないでください。"
+       ],
+       [
+        "令和７年度　府職員採用試験"
+       ],
+       [
+        "学歴・職務経験不問。警察行政職を除き、日本国籍の有",
+        "無は問いません。詳細は府職員採用案内HPまで。"
+       ],
+       [
+        "■①行政・警察行政・技術（大学卒程度）"
+       ],
+       [
+        "3月に業務セミナーを開催します。受験を考えている",
+        "人はぜひご参加ください。"
+       ],
+       [
+        "受験資格"
+       ],
+       [
+        "【行政・警察行政】平成12年4/2～平成16年4/1生まれの人"
+       ],
+       [
+        "【技術】平成8年4/2～平成16年4/1生まれの人"
+       ],
+       [
+        "■②行政・警察行政・技術（社会人等）【春季試験】"
+       ],
+       [
+        "令和7年10/1採用に向けた春季試験を実施します。全",
+        "て土日のみで受験できます。"
+       ],
+       [
+        "受験資格"
+       ],
+       [
+        "【行政（26-34）】平成3年4/2～平成12年4/1生まれの人",
+        "【行政（35-49）】昭和51年4/2～平成3年4/1生まれの人",
+        "【警察行政】平成3年4/2～平成12年4/1生まれの人",
+        "【技術】昭和51年4/2～平成8年4/1生まれの人"
+       ],
+       [
+        "日 第1次試験（SPI3）：4/2（水）～17（木）",
+        "※行政・警察行政（社会人等）のみ4/2（水）～20（日）",
+        "所 第1次試験：全国主要都市などの会場から選択",
+        "申 3/1（土）10：00～26（水）13：00／インターネット"
+       ],
+       [
+        "HP  ■大阪府職員採用試験　公務員試験　 "
+       ],
+       [
+        "府公立学校教員採用選考テストの実施"
+       ],
+       [
+        "受験資格など詳しくは受験案内をご確認ください。年",
+        "齢制限を撤廃し、昭和39年4/2以降に生まれた人は受",
+        "験することができます。",
+        "日 １次選考：6/14(土)　2次選考：7月上旬～（予定）",
+        "申 3/7（金）10：00～4/18（金）18：00／インターネット"
+       ],
+       [
+        "HP"
+       ],
+       [
+        "大阪府　教員採用"
+       ],
+       [
+        " ■"
+       ],
+       [
+        "バレンタインジャンボ宝くじ"
+       ],
+       [
+        "まもなく発売終了！"
+       ],
+       [
+        "3/10（月）まで、バレンタ",
+        "インジャンボ（1等・前後",
+        "賞合わせて3億円）とバ",
+        "レンタインジャンボミニ",
+        "（1等・前後賞合わせて3"
+       ],
+       [
+        "千万円）を発売していま",
+        "す。この宝くじの収益金の一部は、2025年日本国際博",
+        "覧会（大阪・関西万博）のための資金に充てられます。"
+       ],
+       [
+        "募 集"
+       ],
+       [
+        "府営住宅　令和７年度第１回総合募集"
+       ],
+       [
+        "一般世帯向け、福祉世帯向け、新婚・子育て世帯向けお",
+        "よび車いす常用者世帯向けなどの応募区分ごとに募",
+        "集します。申込書は府内10カ所の情報プラザ（ラック",
+        "配架）、各市町村で配布します。なお、過去の総合募集"
+       ]
+      ],
+      "unchanged": true,
+      "error": null
+     }
+    ],
+    "N3": [
+     {
+      "outcome": "observed",
+      "groups": [
+       [
+        "Trace-basedJust-in-TimeTypeSpecializationforDynamic"
+       ],
+       [
+        "Languages"
+       ],
+       [
+        "∗+"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "AndreasGal"
+       ],
+       [
+        ",BrendanEich,MikeShaver,DavidAnderson,DavidMandelin,"
+       ],
+       [
+        "$"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "MohammadR.Haghighat,BlakeKaplan,GraydonHoare,BorisZbarsky,JasonOrendorff,"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "#"
+       ],
+       [
+        "#"
+       ],
+       [
+        "+"
+       ],
+       [
+        "+#"
+       ],
+       [
+        "+"
+       ],
+       [
+        "JesseRuderman,EdwinSmith,RickReitmaier,MichaelBebenita,MasonChang"
+       ],
+       [
+        ",MichaelFranz"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "MozillaCorporation"
+       ],
+       [
+        "{gal,brendan,shaver,danderson,dmandelin,mrbkap,graydon,bz,jorendorff,jruderman}@mozilla.com"
+       ],
+       [
+        "#"
+       ],
+       [
+        "AdobeCorporation"
+       ],
+       [
+        "{edwsmith,rreitmai}@adobe.com"
+       ],
+       [
+        "$"
+       ],
+       [
+        "IntelCorporation"
+       ],
+       [
+        "{mohammad.r.haghighat}@intel.com"
+       ],
+       [
+        "+"
+       ],
+       [
+        "UniversityofCalifornia,Irvine"
+       ],
+       [
+        "{mbebenit,changm,franz}@uci.edu"
+       ],
+       [
+        "andisusedfortheapplicationlogicofbrowser-basedproductivity",
+        "applicationssuchasGoogleMail,GoogleDocsandZimbraCol-",
+        "laborationSuite.Inthisdomain,inordertoprovideaﬂuiduser",
+        "experienceandenableanewgenerationofapplications,virtualma-",
+        "chinesmustprovidealowstartuptimeandhighperformance."
+       ],
+       [
+        "Abstract"
+       ],
+       [
+        "DynamiclanguagessuchasJavaScriptaremoredifﬁculttocom-",
+        "pilethanstaticallytypedones.Sincenoconcretetypeinformation",
+        "isavailable,traditionalcompilersneedtoemitgenericcodethatcan",
+        "handleallpossibletypecombinationsatruntime.Wepresentanal-",
+        "ternativecompilationtechniquefordynamically-typedlanguages",
+        "thatidentiﬁesfrequentlyexecutedlooptracesatrun-timeandthen",
+        "generatesmachinecodeontheﬂythatisspecializedfortheac-",
+        "tualdynamictypesoccurringoneachpaththroughtheloop.Our",
+        "methodprovidescheapinter-proceduraltypespecialization,andan",
+        "elegantandefﬁcientwayofincrementallycompilinglazilydiscov-",
+        "eredalternativepathsthroughnestedloops.Wehaveimplemented",
+        "adynamiccompilerforJavaScriptbasedonourtechniqueandwe",
+        "havemeasuredspeedupsof10xandmoreforcertainbenchmark",
+        "programs."
+       ],
+       [
+        "Compilersforstaticallytypedlanguagesrelyontypeinforma-",
+        "tiontogenerateefﬁcientmachinecode.Inadynamicallytypedpro-",
+        "gramminglanguagesuchasJavaScript,thetypesofexpressions",
+        "mayvaryatruntime.Thismeansthatthecompilercannolonger",
+        "easilytransformoperationsintomachineinstructionsthatoperate",
+        "ononespeciﬁctype.Withoutexacttypeinformation,thecompiler",
+        "mustemitslowergeneralizedmachinecodethatcandealwithall",
+        "potentialtypecombinations.Whilecompile-timestatictypeinfer-",
+        "encemightbeabletogathertypeinformationtogenerateopti-",
+        "mizedmachinecode,traditionalstaticanalysisisveryexpensive",
+        "andhencenotwellsuitedforthehighlyinteractiveenvironmentof",
+        "awebbrowser."
+       ],
+       [
+        "CategoriesandSubjectDescriptorsD.3.4[ProgrammingLan-",
+        "guages]:Processors—Incrementalcompilers,codegeneration."
+       ],
+       [
+        "Wepresentatrace-basedcompilationtechniquefordynamic",
+        "languagesthatreconcilesspeedofcompilationwithexcellentper-",
+        "formanceofthegeneratedmachinecode.Oursystemusesamixed-",
+        "modeexecutionapproach:thesystemstartsrunningJavaScriptina",
+        "fast-startingbytecodeinterpreter.Astheprogramruns,thesystem",
+        "identiﬁeshot(frequentlyexecuted)bytecodesequences,records",
+        "them,andcompilesthemtofastnativecode.Wecallsuchase-",
+        "quenceofinstructionsatrace."
+       ],
+       [
+        "GeneralTermsDesign,Experimentation,Measurement,Perfor-",
+        "mance."
+       ],
+       [
+        "KeywordsJavaScript,just-in-timecompilation,tracetrees."
+       ],
+       [
+        "1.Introduction"
+       ],
+       [
+        "DynamiclanguagessuchasJavaScript,Python,andRuby,arepop-",
+        "ularsincetheyareexpressive,accessibletonon-experts,andmake",
+        "deploymentaseasyasdistributingasourceﬁle.Theyareusedfor",
+        "smallscriptsaswellasforcomplexapplications.JavaScript,for",
+        "example,isthedefactostandardforclient-sidewebprogramming"
+       ],
+       [
+        "Unlikemethod-baseddynamiccompilers,ourdynamiccom-",
+        "pileroperatesatthegranularityofindividualloops.Thisdesign",
+        "choiceisbasedontheexpectationthatprogramsspendmostof",
+        "theirtimeinhotloops.Evenindynamicallytypedlanguages,we",
+        "expecthotloopstobemostlytype-stable,meaningthatthetypesof",
+        "valuesareinvariant.(12)Forexample,wewouldexpectloopcoun-",
+        "tersthatstartasintegerstoremainintegersforalliterations.When",
+        "bothoftheseexpectationshold,atrace-basedcompilercancover",
+        "theprogramexecutionwithasmallnumberoftype-specialized,ef-",
+        "ﬁcientlycompiledtraces."
+       ],
+       [
+        "Permissiontomakedigitalorhardcopiesofallorpartofthisworkforpersonalor",
+        "classroomuseisgrantedwithoutfeeprovidedthatcopiesarenotmadeordistributed",
+        "forproﬁtorcommercialadvantageandthatcopiesbearthisnoticeandthefullcitation",
+        "ontheﬁrstpage.Tocopyotherwise,torepublish,topostonserversortoredistribute",
+        "tolists,requirespriorspeciﬁcpermissionand/orafee.",
+        "PLDI’09,June15–20,2009,Dublin,Ireland.",
+        "Copyrightc⃝2009ACM978-1-60558-392-1/09/06...$5.00"
+       ],
+       [
+        "Eachcompiledtracecoversonepaththroughtheprogramwith",
+        "onemappingofvaluestotypes.WhentheVMexecutesacompiled",
+        "trace,itcannotguaranteethatthesamepathwillbefollowed",
+        "orthatthesametypeswilloccurinsubsequentloopiterations."
+       ]
+      ],
+      "unchanged": true,
+      "error": null
+     }
+    ],
+    "N4": [
+     {
+      "outcome": "observed",
+      "groups": [
+       [
+        "D-01 アイルランド",
+        "D-02 マレーシア",
+        "D-03 フィリピン",
+        "D-04 アメリカ合衆国",
+        "D-05 フランス",
+        "D-06 カタール"
+       ],
+       [
+        "D-13 ブラジル",
+        "D-14 クウェート",
+        "D-15 中華人民共和国",
+        "D-16 バーレーン",
+        "D-17 トルクメニスタン"
+       ],
+       [
+        "D-21 国際赤十字・"
+       ],
+       [
+        "赤新月運動"
+       ],
+       [
+        "D-22 国際連合",
+        "D-23 ベトナム",
+        "D-24 モザンビーク"
+       ],
+       [
+        "D-18 北欧館"
+       ],
+       [
+        "D-07 アラブ首長国連邦　",
+        "D-08 カナダ　",
+        "D-09 ポルトガル",
+        "D-10 コロンビア"
+       ],
+       [
+        "デンマーク",
+        "フィンランド",
+        "アイスランド",
+        "ノルウェー",
+        "スウェーデン"
+       ],
+       [
+        "D-25 ペルー"
+       ],
+       [
+        "D-26 ヨルダン",
+        "D-27 団体休憩所"
+       ],
+       [
+        "D-11 スイス"
+       ],
+       [
+        "D-12 オーストリア"
+       ]
+      ],
+      "unchanged": true,
+      "error": null
+     }
+    ]
+   }
+  },
+  "new": {
+   "summary": {
+    "rows": {
+     "real:layout": {
+      "steps": 2,
+      "saved": 2,
+      "saved:yes": 2,
+      "practical:unverified": 1,
+      "reedit:yes": 2,
+      "restore:unverified": 1,
+      "refused:no": 2,
+      "practical:yes": 1,
+      "restore:yes": 1
+     },
+     "real:faithful": {
+      "steps": 2,
+      "saved": 2,
+      "saved:yes": 2,
+      "practical:yes": 2,
+      "reedit:yes": 2,
+      "restore:unverified": 1,
+      "refused:no": 2,
+      "restore:yes": 1
+     },
+     "real-extra:faithful": {
+      "steps": 2,
+      "saved": 2,
+      "saved:yes": 2,
+      "practical:yes": 2,
+      "reedit:yes": 2,
+      "restore:unverified": 1,
+      "refused:no": 2,
+      "restore:yes": 1
+     },
+     "real-negative:faithful": {
+      "steps": 4,
+      "observed": 4,
+      "saved:unverified": 4,
+      "practical:unverified": 4,
+      "reedit:unverified": 4,
+      "restore:unverified": 4,
+      "refused:unverified": 4
+     }
+    }
+   },
+   "records": [
+    {
+     "evaluation": "rows",
+     "case": "R13",
+     "step": "1",
+     "group": "real",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "placement": true,
+      "raster": true,
+      "approved_audit": true,
+      "approved_quality": null,
+      "moved_apart": true,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "R13",
+     "step": "2",
+     "group": "real",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "placement": true,
+      "raster": true,
+      "restored_glyphs": true,
+      "restored_pixels": true,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "moved_apart": true,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "S2",
+     "step": "1",
+     "group": "real",
+     "mode": "faithful",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "reselect_exact": true,
+      "geometry": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "S2",
+     "step": "2",
+     "group": "real",
+     "mode": "faithful",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "restored_glyphs": true,
+      "restored_pixels": true,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "X1",
+     "step": "1",
+     "group": "real-extra",
+     "mode": "faithful",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "reselect_exact": true,
+      "geometry": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "X1",
+     "step": "2",
+     "group": "real-extra",
+     "mode": "faithful",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "safety": true,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "restored_glyphs": true,
+      "restored_pixels": true,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "N1",
+     "step": "observe",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "observed",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "groups_unchanged": true
+     },
+     "tiers": {
+      "saved": null,
+      "practical": null,
+      "reedit": null,
+      "restore": null,
+      "refused": null
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "N2",
+     "step": "observe",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "observed",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "groups_unchanged": true
+     },
+     "tiers": {
+      "saved": null,
+      "practical": null,
+      "reedit": null,
+      "restore": null,
+      "refused": null
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "N3",
+     "step": "observe",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "observed",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "groups_unchanged": true
+     },
+     "tiers": {
+      "saved": null,
+      "practical": null,
+      "reedit": null,
+      "restore": null,
+      "refused": null
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "N4",
+     "step": "observe",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "observed",
+     "reason_class": null,
+     "reason": null,
+     "failed": [],
+     "checks": {
+      "groups_unchanged": true
+     },
+     "tiers": {
+      "saved": null,
+      "practical": null,
+      "reedit": null,
+      "restore": null,
+      "refused": null
+     }
+    }
+   ],
+   "results": {
+    "R13": [
+     {
+      "old": "D-25 ペ",
+      "new": "D-25 ペD-25 ペルー",
+      "proposal_refused": null,
+      "chain": {
+       "translation": 20.386,
+       "needed": true,
+       "candidates": [
+        {
+         "page": 4,
+         "paragraph": "D-26 ヨルダンD-27 団体休憩所",
+         "operators": [
+          115656,
+          115947
+         ],
+         "operator_count": 52,
+         "bytes_sha256": "2a84d85138c768557122adc1d250e107363d6ef9c8985c0abdc99e6f45555f78",
+         "bounds": [
+          542.88,
+          697.54,
+          598.75,
+          715.54
+         ],
+         "moved_to": [
+          542.88,
+          717.93,
+          598.75,
+          735.92
+         ],
+         "translation": 20.386,
+         "drawings": 2,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 19,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [
+          "k",
+          "gs",
+          "Tf",
+          "k",
+          "gs",
+          "Tf"
+         ],
+         "annotations": [],
+         "adjacent": [],
+         "ranges": [
+          [
+           115656,
+           115947
+          ],
+          [
+           115948,
+           116135
+          ],
+          [
+           116136,
+           116427
+          ]
+         ],
+         "separated": [
+          {
+           "text_object": [
+            116428,
+            116707
+           ],
+           "operators_taken": 2,
+           "operators_staying": 1,
+           "drawn": [
+            "before"
+           ],
+           "bytes_sha256": "4220e27ce14ab2dbf8b91a48303d765d3a7c0a9218405decca0e50870d38ae9f",
+           "text": "D-27 団体休憩所",
+           "bounds": [
+            543.47,
+            708.18,
+            598.75,
+            715.54
+           ]
+          }
+         ],
+         "order": 1,
+         "line": "D-26 ヨルダンD-27 団体休憩所",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          696.54,
+          716.93
+         ],
+         "id": "following-element-3ac97a0b38845b63"
+        }
+       ],
+       "frame_bottom": 716.93
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-3ac97a0b38845b63 move with it only when approved explicitly)",
+       "seconds": 31.38
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [
+        "following-element-3ac97a0b38845b63"
+       ],
+       "decorations": []
+      },
+      "lines": [
+       "D-25 ペ",
+       "D-25 ペ",
+       "ルールー"
+      ],
+      "grow": 2,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical",
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "D-25 ペD-25 ペルー"
+      },
+      "save": {
+       "follower_translation": 20.385900020599365,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": [
+        {
+         "id": "following-element-3ac97a0b38845b63",
+         "old": [
+          542.8790283203125,
+          697.542724609375,
+          598.7484741210938,
+          715.53515625
+         ],
+         "new": [
+          542.8790283203125,
+          717.9286246299744,
+          598.7484741210938,
+          735.9210562705994
+         ],
+         "translation": [
+          0.0,
+          -20.385900020599365
+         ],
+         "glyphs": 19,
+         "separated": 1,
+         "annotations": [],
+         "line": "D-26 ヨルダンD-27 団体休憩所"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 1,
+        "drawings": 2,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 4,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": {
+       "inside_page": true,
+       "under_before": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "under_after": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          541.88,
+          696.54,
+          599.75,
+          716.54
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 31842
+        }
+       ],
+       "ok": true
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": null,
+        "search_wrapped_lines_text": true,
+        "size_and_colour_kept": true,
+        "status": "unverified"
+       },
+       "approved": [
+        {
+         "what": "chain",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "rows": {
+       "groups": [
+        [
+         "D-22 国際連合",
+         "D-23 ベトナム",
+         "D-24 モザンビーク"
+        ],
+        [
+         "D-25 ペ"
+        ],
+        [
+         "D-25 ペ",
+         "ルールー"
+        ],
+        [
+         "D-26 ヨルダン",
+         "D-27 団体休憩所"
+        ]
+       ],
+       "moved": [
+        "D-26 ヨルダンD-27 団体休憩所"
+       ],
+       "moved_apart": true
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "D-25 ペ",
+        "D-25 ペ",
+        "ルールー"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "D-26 ヨルダンD-27 団体休憩所",
+        "見どころ満載！見どころ満載！実際に会場で体感してみよう！実際に会場で体感してみよう！",
+        "インドネシア館A-04",
+        "調和の繁栄：自然、文化、未来"
+       ],
+       "error": null
+      },
+      "geometry": null
+     },
+     {
+      "old": "D-25 ペD-25 ペルー",
+      "new": "D-25 ペ",
+      "proposal_refused": null,
+      "chain": {
+       "translation": -20.386,
+       "needed": false,
+       "candidates": [
+        {
+         "page": 4,
+         "paragraph": "D-26 ヨルダンD-27 団体休憩所",
+         "operators": [
+          116236,
+          116559
+         ],
+         "operator_count": 82,
+         "bytes_sha256": "817243fdd2cab68aedc379196b81290fc710ced85b4b66114c9c3c83658bc066",
+         "bounds": [
+          542.88,
+          717.93,
+          598.75,
+          735.92
+         ],
+         "moved_to": [
+          542.88,
+          697.54,
+          598.75,
+          715.54
+         ],
+         "translation": -20.386,
+         "drawings": 2,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 19,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [
+          "k",
+          "gs",
+          "Tf",
+          "k",
+          "gs",
+          "Tf"
+         ],
+         "annotations": [],
+         "adjacent": [],
+         "ranges": [
+          [
+           116236,
+           116559
+          ],
+          [
+           116560,
+           117385
+          ]
+         ],
+         "order": 1,
+         "line": "D-26 ヨルダンD-27 団体休憩所",
+         "kind": "following element",
+         "reached": "attached below the shrinking paragraph",
+         "frame_bottom": [
+          715.31,
+          715.31
+         ],
+         "id": "following-element-45c2b66f77df77f3"
+        }
+       ],
+       "frame_bottom": 715.31
+      },
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 162.75
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [
+        "following-element-45c2b66f77df77f3"
+       ],
+       "decorations": []
+      },
+      "lines": [
+       "D-25 ペルー"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical",
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "D-25 ペ"
+      },
+      "save": {
+       "follower_translation": -20.385896368255658,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": [
+        {
+         "id": "following-element-45c2b66f77df77f3",
+         "old": [
+          542.8790283203125,
+          717.9285888671875,
+          598.7484741210938,
+          735.9210205078125
+         ],
+         "new": [
+          542.8790283203125,
+          697.5426924989318,
+          598.7484741210938,
+          715.5351241395568
+         ],
+         "translation": [
+          0.0,
+          20.385896368255658
+         ],
+         "glyphs": 19,
+         "annotations": [],
+         "line": "D-26 ヨルダンD-27 団体休憩所"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 1,
+        "drawings": 2,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 4,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": {
+       "inside_page": true,
+       "under_before": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "under_after": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          541.88,
+          716.93,
+          599.75,
+          736.92
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 31842
+        }
+       ],
+       "ok": true
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "chain",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 7,
+         "kept": 7,
+         "moved": 0,
+         "restyled": 0,
+         "max_delta": 0.0,
+         "source_lines": 1,
+         "output_lines": 3,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 0,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 2,
+         "output": 2
+        }
+       },
+       "glyphs": {
+        "glyphs": 4038,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 0,
+        "beyond_0001": 0,
+        "largest": 6e-05,
+        "ok": true
+       },
+       "paint": {
+        "drawings": true,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 0,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 2665716
+        },
+        "150": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 11560758
+        },
+        "identical": true
+       }
+      },
+      "rows": {
+       "groups": [
+        [
+         "D-22 国際連合",
+         "D-23 ベトナム",
+         "D-24 モザンビーク"
+        ],
+        [
+         "D-25 ペルー"
+        ],
+        [
+         "D-26 ヨルダン",
+         "D-27 団体休憩所"
+        ]
+       ],
+       "moved": [
+        "D-26 ヨルダンD-27 団体休憩所"
+       ],
+       "moved_apart": true
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "D-25 ペルー"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "D-26 ヨルダンD-27 団体休憩所",
+        "見どころ満載！見どころ満載！実際に会場で体感してみよう！実際に会場で体感してみよう！",
+        "インドネシア館A-04",
+        "調和の繁栄：自然、文化、未来"
+       ],
+       "error": null
+      },
+      "geometry": null
+     }
+    ],
+    "S2": [
+     {
+      "old": "日本語フォントについては",
+      "new": "日本語フォントについては日本語フォントについては",
+      "proposal_refused": null,
+      "chain": {},
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 10.01
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": []
+      },
+      "lines": [
+       "1日本語フォントについては日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべてのプ",
+       "ラットフォームで利用可能なフォントを用いることを推奨します。"
+      ],
+      "grow": 1,
+      "safety": true,
+      "quality": true,
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "日本語フォントについては日本語フォントについては"
+      },
+      "save": {
+       "follower_translation": 0.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "faithful",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "rows": {
+       "groups": [
+        [
+         "1日本語フォントについては日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべてのプ",
+         "ラットフォームで利用可能なフォントを用いることを推奨します。"
+        ]
+       ],
+       "moved": [],
+       "moved_apart": null
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "1日本語フォントについては日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべてのプ",
+        "ラットフォームで利用可能なフォントを用いることを推奨します。"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [],
+       "error": null
+      },
+      "geometry": {
+       "ok": true,
+       "x": [
+        56.8,
+        73.8
+       ],
+       "pitches": [
+        13.8
+       ]
+      }
+     },
+     {
+      "old": "日本語フォントについては日本語フォントについては",
+      "new": "日本語フォントについては",
+      "proposal_refused": null,
+      "chain": {},
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 10.24
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": []
+      },
+      "lines": [
+       "1日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべてのプラットフォームで利用可",
+       "能なフォントを用いることを推奨します。"
+      ],
+      "grow": 1,
+      "safety": true,
+      "quality": true,
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "日本語フォントについては"
+      },
+      "save": {
+       "follower_translation": 0.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "faithful",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 54,
+         "kept": 54,
+         "moved": 0,
+         "restyled": 0,
+         "max_delta": 0.0,
+         "source_lines": 1,
+         "output_lines": 2,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 0,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 1,
+         "output": 1
+        }
+       },
+       "glyphs": {
+        "glyphs": 1383,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 0,
+        "beyond_0001": 0,
+        "largest": 0.0,
+        "ok": true
+       },
+       "paint": {
+        "drawings": true,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 1,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 1502970
+        },
+        "150": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 6528600
+        },
+        "identical": true
+       }
+      },
+      "rows": {
+       "groups": [
+        [
+         "1日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべてのプラットフォームで利用可",
+         "能なフォントを用いることを推奨します。"
+        ]
+       ],
+       "moved": [],
+       "moved_apart": null
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "1日本語フォントについては残念ながら同梱されていません。IPAフォントなど、すべてのプラットフォームで利用可",
+        "能なフォントを用いることを推奨します。"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [],
+       "error": null
+      },
+      "geometry": null
+     }
+    ],
+    "X1": [
+     {
+      "old": "訳者は把握していません。",
+      "new": "訳者は把握していません。訳者は把握していません。",
+      "proposal_refused": null,
+      "chain": {},
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 10.69
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": []
+      },
+      "lines": [
+       "5訳注： 実はC* フォントとはなんだか訳者は把握していません。訳者は把握していません。多分MS Officeについて",
+       "くるフォント（日本で言えばHG書体のような）だと思われます。"
+      ],
+      "grow": 1,
+      "safety": true,
+      "quality": true,
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "訳者は把握していません。訳者は把握していません。"
+      },
+      "save": {
+       "follower_translation": 0.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "faithful",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "rows": {
+       "groups": [
+        [
+         "ユーザーはトレーニングを経ればLibreOfficeによって文書を作り出すことができるようになるでしょう。した",
+         "がって、トレーニングが始まる前にワークステーションのセットアップを完了しておき、テストを済ませておくことが",
+         "大切です。どんなインストールの遅れもトレーニングの効果を減らしてしまうからです。また、移行に関連したどん",
+         "な問題についても、「技術的リーダー」から訓練を受けたサポート人員まで辿ることができる参照ポイントを提供",
+         "することは極めて重要です。"
+        ],
+        [
+         "5訳注： 実はC* フォントとはなんだか訳者は把握していません。訳者は把握していません。多分MS Officeについて",
+         "くるフォント（日本で言えばHG書体のような）だと思われます。"
+        ]
+       ],
+       "moved": [],
+       "moved_apart": null
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "5訳注： 実はC* フォントとはなんだか訳者は把握していません。訳者は把握していません。多分MS Officeについて",
+        "くるフォント（日本で言えばHG書体のような）だと思われます。"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [],
+       "error": null
+      },
+      "geometry": {
+       "ok": true,
+       "x": [
+        56.8,
+        73.8
+       ],
+       "pitches": [
+        13.8
+       ]
+      }
+     },
+     {
+      "old": "訳者は把握していません。訳者は把握していません。",
+      "new": "訳者は把握していません。",
+      "proposal_refused": null,
+      "chain": {},
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 10.67
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": []
+      },
+      "lines": [
+       "5訳注： 実はC* フォントとはなんだか訳者は把握していません。多分MS Officeについてくるフォント（日本で言え",
+       "ばHG書体のような）だと思われます。"
+      ],
+      "grow": 1,
+      "safety": true,
+      "quality": true,
+      "failed": [],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "訳者は把握していません。"
+      },
+      "save": {
+       "follower_translation": 0.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 1,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "faithful",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 56,
+         "kept": 56,
+         "moved": 0,
+         "restyled": 0,
+         "max_delta": 0.0,
+         "source_lines": 1,
+         "output_lines": 2,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 0,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 1,
+         "output": 1
+        }
+       },
+       "glyphs": {
+        "glyphs": 1250,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 0,
+        "beyond_0001": 0,
+        "largest": 0.0,
+        "ok": true
+       },
+       "paint": {
+        "drawings": true,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 1,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 1502970
+        },
+        "150": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 6528600
+        },
+        "identical": true
+       }
+      },
+      "rows": {
+       "groups": [
+        [
+         "ユーザーはトレーニングを経ればLibreOfficeによって文書を作り出すことができるようになるでしょう。した",
+         "がって、トレーニングが始まる前にワークステーションのセットアップを完了しておき、テストを済ませておくことが",
+         "大切です。どんなインストールの遅れもトレーニングの効果を減らしてしまうからです。また、移行に関連したどん",
+         "な問題についても、「技術的リーダー」から訓練を受けたサポート人員まで辿ることができる参照ポイントを提供",
+         "することは極めて重要です。"
+        ],
+        [
+         "5訳注： 実はC* フォントとはなんだか訳者は把握していません。多分MS Officeについてくるフォント（日本で言え",
+         "ばHG書体のような）だと思われます。"
+        ]
+       ],
+       "moved": [],
+       "moved_apart": null
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "5訳注： 実はC* フォントとはなんだか訳者は把握していません。多分MS Officeについてくるフォント（日本で言え",
+        "ばHG書体のような）だと思われます。"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [],
+       "error": null
+      },
+      "geometry": null
+     }
+    ],
+    "N1": [
+     {
+      "outcome": "observed",
+      "groups": [
+       [
+        "※ 骨折および脱臼は、応急の場・ 仕事中に起きた事故に"
+       ],
+       [
+        "合を除き医師の同意書などが",
+        "必要です"
+       ],
+       [
+        "よる負傷"
+       ],
+       [
+        "など"
+       ]
+      ],
+      "unchanged": true,
+      "error": null
+     }
+    ],
+    "N2": [
+     {
+      "outcome": "observed",
+      "groups": [
+       [
+        "06（6910）8005　送付先 〒540-8570（住所の記載は不要です）"
+       ],
+       [
+        "HP府政だより"
+       ],
+       [
+        "※応募・申し込みなどに伴い収集した個人情報は、その目的のためにのみ使用し、それ以外に使用することはありません。"
+       ],
+       [
+        "※申し込みの際、鉛筆や摩擦熱で消えるインクなどの筆記具は使用しないでください。"
+       ],
+       [
+        "令和７年度　府職員採用試験"
+       ],
+       [
+        "学歴・職務経験不問。警察行政職を除き、日本国籍の有",
+        "無は問いません。詳細は府職員採用案内HPまで。"
+       ],
+       [
+        "■①行政・警察行政・技術（大学卒程度）"
+       ],
+       [
+        "3月に業務セミナーを開催します。受験を考えている",
+        "人はぜひご参加ください。"
+       ],
+       [
+        "受験資格"
+       ],
+       [
+        "【行政・警察行政】平成12年4/2～平成16年4/1生まれの人"
+       ],
+       [
+        "【技術】平成8年4/2～平成16年4/1生まれの人"
+       ],
+       [
+        "■②行政・警察行政・技術（社会人等）【春季試験】"
+       ],
+       [
+        "令和7年10/1採用に向けた春季試験を実施します。全",
+        "て土日のみで受験できます。"
+       ],
+       [
+        "受験資格"
+       ],
+       [
+        "【行政（26-34）】平成3年4/2～平成12年4/1生まれの人",
+        "【行政（35-49）】昭和51年4/2～平成3年4/1生まれの人",
+        "【警察行政】平成3年4/2～平成12年4/1生まれの人",
+        "【技術】昭和51年4/2～平成8年4/1生まれの人"
+       ],
+       [
+        "日 第1次試験（SPI3）：4/2（水）～17（木）",
+        "※行政・警察行政（社会人等）のみ4/2（水）～20（日）",
+        "所 第1次試験：全国主要都市などの会場から選択",
+        "申 3/1（土）10：00～26（水）13：00／インターネット"
+       ],
+       [
+        "HP  ■大阪府職員採用試験　公務員試験　 "
+       ],
+       [
+        "府公立学校教員採用選考テストの実施"
+       ],
+       [
+        "受験資格など詳しくは受験案内をご確認ください。年",
+        "齢制限を撤廃し、昭和39年4/2以降に生まれた人は受",
+        "験することができます。",
+        "日 １次選考：6/14(土)　2次選考：7月上旬～（予定）",
+        "申 3/7（金）10：00～4/18（金）18：00／インターネット"
+       ],
+       [
+        "HP"
+       ],
+       [
+        "大阪府　教員採用"
+       ],
+       [
+        " ■"
+       ],
+       [
+        "バレンタインジャンボ宝くじ"
+       ],
+       [
+        "まもなく発売終了！"
+       ],
+       [
+        "3/10（月）まで、バレンタ",
+        "インジャンボ（1等・前後",
+        "賞合わせて3億円）とバ",
+        "レンタインジャンボミニ",
+        "（1等・前後賞合わせて3"
+       ],
+       [
+        "千万円）を発売していま",
+        "す。この宝くじの収益金の一部は、2025年日本国際博",
+        "覧会（大阪・関西万博）のための資金に充てられます。"
+       ],
+       [
+        "募 集"
+       ],
+       [
+        "府営住宅　令和７年度第１回総合募集"
+       ],
+       [
+        "一般世帯向け、福祉世帯向け、新婚・子育て世帯向けお",
+        "よび車いす常用者世帯向けなどの応募区分ごとに募",
+        "集します。申込書は府内10カ所の情報プラザ（ラック",
+        "配架）、各市町村で配布します。なお、過去の総合募集"
+       ]
+      ],
+      "unchanged": true,
+      "error": null
+     }
+    ],
+    "N3": [
+     {
+      "outcome": "observed",
+      "groups": [
+       [
+        "Trace-basedJust-in-TimeTypeSpecializationforDynamic"
+       ],
+       [
+        "Languages"
+       ],
+       [
+        "∗+"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "AndreasGal"
+       ],
+       [
+        ",BrendanEich,MikeShaver,DavidAnderson,DavidMandelin,"
+       ],
+       [
+        "$"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "MohammadR.Haghighat,BlakeKaplan,GraydonHoare,BorisZbarsky,JasonOrendorff,"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "#"
+       ],
+       [
+        "#"
+       ],
+       [
+        "+"
+       ],
+       [
+        "+#"
+       ],
+       [
+        "+"
+       ],
+       [
+        "JesseRuderman,EdwinSmith,RickReitmaier,MichaelBebenita,MasonChang"
+       ],
+       [
+        ",MichaelFranz"
+       ],
+       [
+        "∗"
+       ],
+       [
+        "MozillaCorporation"
+       ],
+       [
+        "{gal,brendan,shaver,danderson,dmandelin,mrbkap,graydon,bz,jorendorff,jruderman}@mozilla.com"
+       ],
+       [
+        "#"
+       ],
+       [
+        "AdobeCorporation"
+       ],
+       [
+        "{edwsmith,rreitmai}@adobe.com"
+       ],
+       [
+        "$"
+       ],
+       [
+        "IntelCorporation"
+       ],
+       [
+        "{mohammad.r.haghighat}@intel.com"
+       ],
+       [
+        "+"
+       ],
+       [
+        "UniversityofCalifornia,Irvine"
+       ],
+       [
+        "{mbebenit,changm,franz}@uci.edu"
+       ],
+       [
+        "andisusedfortheapplicationlogicofbrowser-basedproductivity",
+        "applicationssuchasGoogleMail,GoogleDocsandZimbraCol-",
+        "laborationSuite.Inthisdomain,inordertoprovideaﬂuiduser",
+        "experienceandenableanewgenerationofapplications,virtualma-",
+        "chinesmustprovidealowstartuptimeandhighperformance."
+       ],
+       [
+        "Abstract"
+       ],
+       [
+        "DynamiclanguagessuchasJavaScriptaremoredifﬁculttocom-",
+        "pilethanstaticallytypedones.Sincenoconcretetypeinformation",
+        "isavailable,traditionalcompilersneedtoemitgenericcodethatcan",
+        "handleallpossibletypecombinationsatruntime.Wepresentanal-",
+        "ternativecompilationtechniquefordynamically-typedlanguages",
+        "thatidentiﬁesfrequentlyexecutedlooptracesatrun-timeandthen",
+        "generatesmachinecodeontheﬂythatisspecializedfortheac-",
+        "tualdynamictypesoccurringoneachpaththroughtheloop.Our",
+        "methodprovidescheapinter-proceduraltypespecialization,andan",
+        "elegantandefﬁcientwayofincrementallycompilinglazilydiscov-",
+        "eredalternativepathsthroughnestedloops.Wehaveimplemented",
+        "adynamiccompilerforJavaScriptbasedonourtechniqueandwe",
+        "havemeasuredspeedupsof10xandmoreforcertainbenchmark",
+        "programs."
+       ],
+       [
+        "Compilersforstaticallytypedlanguagesrelyontypeinforma-",
+        "tiontogenerateefﬁcientmachinecode.Inadynamicallytypedpro-",
+        "gramminglanguagesuchasJavaScript,thetypesofexpressions",
+        "mayvaryatruntime.Thismeansthatthecompilercannolonger",
+        "easilytransformoperationsintomachineinstructionsthatoperate",
+        "ononespeciﬁctype.Withoutexacttypeinformation,thecompiler",
+        "mustemitslowergeneralizedmachinecodethatcandealwithall",
+        "potentialtypecombinations.Whilecompile-timestatictypeinfer-",
+        "encemightbeabletogathertypeinformationtogenerateopti-",
+        "mizedmachinecode,traditionalstaticanalysisisveryexpensive",
+        "andhencenotwellsuitedforthehighlyinteractiveenvironmentof",
+        "awebbrowser."
+       ],
+       [
+        "CategoriesandSubjectDescriptorsD.3.4[ProgrammingLan-",
+        "guages]:Processors—Incrementalcompilers,codegeneration."
+       ],
+       [
+        "Wepresentatrace-basedcompilationtechniquefordynamic",
+        "languagesthatreconcilesspeedofcompilationwithexcellentper-",
+        "formanceofthegeneratedmachinecode.Oursystemusesamixed-",
+        "modeexecutionapproach:thesystemstartsrunningJavaScriptina",
+        "fast-startingbytecodeinterpreter.Astheprogramruns,thesystem",
+        "identiﬁeshot(frequentlyexecuted)bytecodesequences,records",
+        "them,andcompilesthemtofastnativecode.Wecallsuchase-",
+        "quenceofinstructionsatrace."
+       ],
+       [
+        "GeneralTermsDesign,Experimentation,Measurement,Perfor-",
+        "mance."
+       ],
+       [
+        "KeywordsJavaScript,just-in-timecompilation,tracetrees."
+       ],
+       [
+        "1.Introduction"
+       ],
+       [
+        "DynamiclanguagessuchasJavaScript,Python,andRuby,arepop-",
+        "ularsincetheyareexpressive,accessibletonon-experts,andmake",
+        "deploymentaseasyasdistributingasourceﬁle.Theyareusedfor",
+        "smallscriptsaswellasforcomplexapplications.JavaScript,for",
+        "example,isthedefactostandardforclient-sidewebprogramming"
+       ],
+       [
+        "Unlikemethod-baseddynamiccompilers,ourdynamiccom-",
+        "pileroperatesatthegranularityofindividualloops.Thisdesign",
+        "choiceisbasedontheexpectationthatprogramsspendmostof",
+        "theirtimeinhotloops.Evenindynamicallytypedlanguages,we",
+        "expecthotloopstobemostlytype-stable,meaningthatthetypesof",
+        "valuesareinvariant.(12)Forexample,wewouldexpectloopcoun-",
+        "tersthatstartasintegerstoremainintegersforalliterations.When",
+        "bothoftheseexpectationshold,atrace-basedcompilercancover",
+        "theprogramexecutionwithasmallnumberoftype-specialized,ef-",
+        "ﬁcientlycompiledtraces."
+       ],
+       [
+        "Permissiontomakedigitalorhardcopiesofallorpartofthisworkforpersonalor",
+        "classroomuseisgrantedwithoutfeeprovidedthatcopiesarenotmadeordistributed",
+        "forproﬁtorcommercialadvantageandthatcopiesbearthisnoticeandthefullcitation",
+        "ontheﬁrstpage.Tocopyotherwise,torepublish,topostonserversortoredistribute",
+        "tolists,requirespriorspeciﬁcpermissionand/orafee.",
+        "PLDI’09,June15–20,2009,Dublin,Ireland.",
+        "Copyrightc⃝2009ACM978-1-60558-392-1/09/06...$5.00"
+       ],
+       [
+        "Eachcompiledtracecoversonepaththroughtheprogramwith",
+        "onemappingofvaluestotypes.WhentheVMexecutesacompiled",
+        "trace,itcannotguaranteethatthesamepathwillbefollowed",
+        "orthatthesametypeswilloccurinsubsequentloopiterations."
+       ]
+      ],
+      "unchanged": true,
+      "error": null
+     }
+    ],
+    "N4": [
+     {
+      "outcome": "observed",
+      "groups": [
+       [
+        "D-01 アイルランド",
+        "D-02 マレーシア",
+        "D-03 フィリピン",
+        "D-04 アメリカ合衆国",
+        "D-05 フランス",
+        "D-06 カタール"
+       ],
+       [
+        "D-13 ブラジル",
+        "D-14 クウェート",
+        "D-15 中華人民共和国",
+        "D-16 バーレーン",
+        "D-17 トルクメニスタン"
+       ],
+       [
+        "D-21 国際赤十字・"
+       ],
+       [
+        "赤新月運動"
+       ],
+       [
+        "D-22 国際連合",
+        "D-23 ベトナム",
+        "D-24 モザンビーク"
+       ],
+       [
+        "D-18 北欧館"
+       ],
+       [
+        "D-07 アラブ首長国連邦　",
+        "D-08 カナダ　",
+        "D-09 ポルトガル",
+        "D-10 コロンビア"
+       ],
+       [
+        "デンマーク",
+        "フィンランド",
+        "アイスランド",
+        "ノルウェー",
+        "スウェーデン"
+       ],
+       [
+        "D-25 ペルー"
+       ],
+       [
+        "D-26 ヨルダン",
+        "D-27 団体休憩所"
+       ],
+       [
+        "D-11 スイス"
+       ],
+       [
+        "D-12 オーストリア"
+       ]
+      ],
+      "unchanged": true,
+      "error": null
+     }
+    ]
+   }
+  },
+  "final": {
+   "summary": {
+    "rows": {
+     "real:layout": {
+      "steps": 2,
+      "saved": 2,
+      "saved:yes": 2,
+      "practical:unverified": 1,
+      "reedit:yes": 2,
+      "restore:unverified": 1,
+      "refused:no": 2,
+      "practical:yes": 1,
+      "restore:yes": 1
+     }
+    }
+   },
+   "records": [
+    {
+     "evaluation": "rows",
+     "case": "R13",
+     "step": "1",
+     "group": "real",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "placement": true,
+      "raster": true,
+      "approved_audit": true,
+      "approved_quality": null,
+      "moved_apart": true,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "rows",
+     "case": "R13",
+     "step": "2",
+     "group": "real",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": true,
+      "links": true,
+      "placement": true,
+      "raster": true,
+      "restored_glyphs": true,
+      "restored_pixels": true,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "moved_apart": true,
+      "reselect_exact": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     }
+    }
+   ],
+   "results": {
+    "R13": [
+     {
+      "old": "D-25 ペ",
+      "new": "D-25 ペD-25 ペルー",
+      "proposal_refused": null,
+      "chain": {
+       "translation": 20.386,
+       "needed": true,
+       "candidates": [
+        {
+         "page": 4,
+         "paragraph": "D-26 ヨルダンD-27 団体休憩所",
+         "operators": [
+          115656,
+          115947
+         ],
+         "operator_count": 52,
+         "bytes_sha256": "2a84d85138c768557122adc1d250e107363d6ef9c8985c0abdc99e6f45555f78",
+         "bounds": [
+          542.88,
+          697.54,
+          598.75,
+          715.54
+         ],
+         "moved_to": [
+          542.88,
+          717.93,
+          598.75,
+          735.92
+         ],
+         "translation": 20.386,
+         "drawings": 2,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 19,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [
+          "k",
+          "gs",
+          "Tf",
+          "k",
+          "gs",
+          "Tf"
+         ],
+         "annotations": [],
+         "adjacent": [],
+         "ranges": [
+          [
+           115656,
+           115947
+          ],
+          [
+           115948,
+           116135
+          ],
+          [
+           116136,
+           116427
+          ]
+         ],
+         "separated": [
+          {
+           "text_object": [
+            116428,
+            116707
+           ],
+           "operators_taken": 2,
+           "operators_staying": 1,
+           "drawn": [
+            "before"
+           ],
+           "bytes_sha256": "4220e27ce14ab2dbf8b91a48303d765d3a7c0a9218405decca0e50870d38ae9f",
+           "text": "D-27 団体休憩所",
+           "bounds": [
+            543.47,
+            708.18,
+            598.75,
+            715.54
+           ]
+          }
+         ],
+         "order": 1,
+         "line": "D-26 ヨルダンD-27 団体休憩所",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          696.54,
+          716.93
+         ],
+         "id": "following-element-3ac97a0b38845b63"
+        }
+       ],
+       "frame_bottom": 716.93
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-3ac97a0b38845b63 move with it only when approved explicitly)",
+       "seconds": 32.71
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [
+        "following-element-3ac97a0b38845b63"
+       ],
+       "decorations": []
+      },
+      "lines": [
+       "D-25 ペ",
+       "D-25 ペ",
+       "ルールー"
+      ],
+      "grow": 2,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical",
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "D-25 ペD-25 ペルー"
+      },
+      "save": {
+       "follower_translation": 20.385900020599365,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": [
+        {
+         "id": "following-element-3ac97a0b38845b63",
+         "old": [
+          542.8790283203125,
+          697.542724609375,
+          598.7484741210938,
+          715.53515625
+         ],
+         "new": [
+          542.8790283203125,
+          717.9286246299744,
+          598.7484741210938,
+          735.9210562705994
+         ],
+         "translation": [
+          0.0,
+          -20.385900020599365
+         ],
+         "glyphs": 19,
+         "separated": 1,
+         "annotations": [],
+         "line": "D-26 ヨルダンD-27 団体休憩所"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 1,
+        "drawings": 2,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 4,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": {
+       "inside_page": true,
+       "under_before": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "under_after": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          541.88,
+          696.54,
+          599.75,
+          716.54
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 31842
+        }
+       ],
+       "ok": true
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": null,
+        "search_wrapped_lines_text": true,
+        "size_and_colour_kept": true,
+        "status": "unverified"
+       },
+       "approved": [
+        {
+         "what": "chain",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "rows": {
+       "groups": [
+        [
+         "D-22 国際連合",
+         "D-23 ベトナム",
+         "D-24 モザンビーク"
+        ],
+        [
+         "D-25 ペ"
+        ],
+        [
+         "D-25 ペ",
+         "ルールー"
+        ],
+        [
+         "D-26 ヨルダン",
+         "D-27 団体休憩所"
+        ]
+       ],
+       "moved": [
+        "D-26 ヨルダンD-27 団体休憩所"
+       ],
+       "moved_apart": true
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "D-25 ペ",
+        "D-25 ペ",
+        "ルールー"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "D-26 ヨルダンD-27 団体休憩所",
+        "見どころ満載！見どころ満載！実際に会場で体感してみよう！実際に会場で体感してみよう！",
+        "インドネシア館A-04",
+        "調和の繁栄：自然、文化、未来"
+       ],
+       "error": null
+      },
+      "geometry": null
+     },
+     {
+      "old": "D-25 ペD-25 ペルー",
+      "new": "D-25 ペ",
+      "proposal_refused": null,
+      "chain": {
+       "translation": -20.386,
+       "needed": false,
+       "candidates": [
+        {
+         "page": 4,
+         "paragraph": "D-26 ヨルダンD-27 団体休憩所",
+         "operators": [
+          116236,
+          116559
+         ],
+         "operator_count": 82,
+         "bytes_sha256": "817243fdd2cab68aedc379196b81290fc710ced85b4b66114c9c3c83658bc066",
+         "bounds": [
+          542.88,
+          717.93,
+          598.75,
+          735.92
+         ],
+         "moved_to": [
+          542.88,
+          697.54,
+          598.75,
+          715.54
+         ],
+         "translation": -20.386,
+         "drawings": 2,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 19,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [
+          "k",
+          "gs",
+          "Tf",
+          "k",
+          "gs",
+          "Tf"
+         ],
+         "annotations": [],
+         "adjacent": [],
+         "ranges": [
+          [
+           116236,
+           116559
+          ],
+          [
+           116560,
+           117385
+          ]
+         ],
+         "order": 1,
+         "line": "D-26 ヨルダンD-27 団体休憩所",
+         "kind": "following element",
+         "reached": "attached below the shrinking paragraph",
+         "frame_bottom": [
+          715.31,
+          715.31
+         ],
+         "id": "following-element-45c2b66f77df77f3"
+        }
+       ],
+       "frame_bottom": 715.31
+      },
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 172.33
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [
+        "following-element-45c2b66f77df77f3"
+       ],
+       "decorations": []
+      },
+      "lines": [
+       "D-25 ペルー"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "glyphs_outside_region_identical",
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "D-25 ペ"
+      },
+      "save": {
+       "follower_translation": -20.385896368255658,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": [
+        {
+         "id": "following-element-45c2b66f77df77f3",
+         "old": [
+          542.8790283203125,
+          717.9285888671875,
+          598.7484741210938,
+          735.9210205078125
+         ],
+         "new": [
+          542.8790283203125,
+          697.5426924989318,
+          598.7484741210938,
+          715.5351241395568
+         ],
+         "translation": [
+          0.0,
+          20.385896368255658
+         ],
+         "glyphs": 19,
+         "annotations": [],
+         "line": "D-26 ヨルダンD-27 団体休憩所"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 1,
+        "drawings": 2,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 4,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": true,
+        "images": true
+       },
+       "ok": true
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": {
+       "inside_page": true,
+       "under_before": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "under_after": {
+        "drawing": 0,
+        "image": 0,
+        "glyph": 13
+       },
+       "ok": true
+      },
+      "raster": {
+       "groups": [
+        {
+         "region": [
+          541.88,
+          716.93,
+          599.75,
+          736.92
+         ],
+         "size_matches": true,
+         "differing_samples": 0,
+         "largest_difference": 0,
+         "samples": 31842
+        }
+       ],
+       "ok": true
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "chain",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 7,
+         "kept": 7,
+         "moved": 0,
+         "restyled": 0,
+         "max_delta": 0.0,
+         "source_lines": 1,
+         "output_lines": 3,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 0,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 2,
+         "output": 2
+        }
+       },
+       "glyphs": {
+        "glyphs": 4038,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 0,
+        "beyond_0001": 0,
+        "largest": 6e-05,
+        "ok": true
+       },
+       "paint": {
+        "drawings": true,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 0,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 2665716
+        },
+        "150": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 11560758
+        },
+        "identical": true
+       }
+      },
+      "rows": {
+       "groups": [
+        [
+         "D-22 国際連合",
+         "D-23 ベトナム",
+         "D-24 モザンビーク"
+        ],
+        [
+         "D-25 ペルー"
+        ],
+        [
+         "D-26 ヨルダン",
+         "D-27 団体休憩所"
+        ]
+       ],
+       "moved": [
+        "D-26 ヨルダンD-27 団体休憩所"
+       ],
+       "moved_apart": true
+      },
+      "reselect": {
+       "found": true,
+       "lines": [
+        "D-25 ペルー"
+       ],
+       "exact": true,
+       "conditions": "applied",
+       "chain_rows": [
+        "D-26 ヨルダンD-27 団体休憩所",
+        "見どころ満載！見どころ満載！実際に会場で体感してみよう！実際に会場で体感してみよう！",
+        "インドネシア館A-04",
+        "調和の繁栄：自然、文化、未来"
+       ],
+       "error": null
+      },
+      "geometry": null
+     }
+    ]
+   }
+  }
+ },
+ "comparison": {
+  "evaluations": [
+   "rows"
+  ],
+  "compared": 10,
+  "changed": [
+   {
+    "record": [
+     "rows",
+     "R13",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "moved_apart": [
+      false,
+      true
+     ]
+    },
+    "tiers": {}
+   },
+   {
+    "record": [
+     "rows",
+     "R13",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "moved_apart": [
+      null,
+      true
+     ],
+     "placement": [
+      null,
+      true
+     ],
+     "raster": [
+      null,
+      true
+     ],
+     "restored_glyphs": [
+      false,
+      true
+     ],
+     "restored_pixels": [
+      false,
+      true
+     ]
+    },
+    "tiers": {
+     "restore": [
+      false,
+      true
+     ]
+    },
+    "mode": [
+     "faithful",
+     "layout"
+    ]
+   },
+   {
+    "record": [
+     "rows",
+     "S2",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     []
+    ],
+    "checks": {
+     "geometry": [
+      false,
+      true
+     ],
+     "moved_apart": [
+      true,
+      null
+     ],
+     "placement": [
+      true,
+      null
+     ],
+     "raster": [
+      true,
+      null
+     ],
+     "safety": [
+      false,
+      true
+     ]
+    },
+    "tiers": {},
+    "mode": [
+     "layout",
+     "faithful"
+    ]
+   },
+   {
+    "record": [
+     "rows",
+     "S2",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     []
+    ],
+    "checks": {
+     "moved_apart": [
+      true,
+      null
+     ],
+     "placement": [
+      true,
+      null
+     ],
+     "raster": [
+      true,
+      null
+     ],
+     "safety": [
+      false,
+      true
+     ]
+    },
+    "tiers": {},
+    "mode": [
+     "layout",
+     "faithful"
+    ]
+   },
+   {
+    "record": [
+     "rows",
+     "X1",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     []
+    ],
+    "checks": {
+     "geometry": [
+      false,
+      true
+     ],
+     "moved_apart": [
+      true,
+      null
+     ],
+     "placement": [
+      true,
+      null
+     ],
+     "raster": [
+      true,
+      null
+     ],
+     "safety": [
+      false,
+      true
+     ]
+    },
+    "tiers": {},
+    "mode": [
+     "layout",
+     "faithful"
+    ]
+   },
+   {
+    "record": [
+     "rows",
+     "X1",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     []
+    ],
+    "checks": {
+     "moved_apart": [
+      true,
+      null
+     ],
+     "placement": [
+      true,
+      null
+     ],
+     "raster": [
+      true,
+      null
+     ],
+     "safety": [
+      false,
+      true
+     ]
+    },
+    "tiers": {},
+    "mode": [
+     "layout",
+     "faithful"
+    ]
+   }
+  ],
+  "only_baseline": [],
+  "only_current": [],
+  "cases_not_run": []
+ }
+}

@@ -1,0 +1,411 @@
+{
+ "schema": "paragraph-frame-tier-run-1",
+ "tier": "related",
+ "code": "0877b35",
+ "changed": [
+  ".gitignore",
+  "evaluations/baseline/impact.json",
+  "evaluations/paragraph_rows/manifest.json",
+  "prototypes/paragraph_frame/auto_conditions.py",
+  "prototypes/paragraph_frame/auto_detect.py",
+  "prototypes/paragraph_frame/auto_local.py",
+  "prototypes/paragraph_frame/auto_restore.py",
+  "prototypes/paragraph_frame/auto_writer.py",
+  "prototypes/paragraph_frame/rows_evaluate.py",
+  "tests/test_paragraph_rows.py"
+ ],
+ "seconds": 11301.4,
+ "evaluations": [
+  {
+   "evaluation": "chain",
+   "status": "ran",
+   "seconds": 339.0,
+   "parts": [
+    {
+     "part": "chain",
+     "module": "chain_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 339.0
+    }
+   ]
+  },
+  {
+   "evaluation": "decoration",
+   "status": "ran",
+   "seconds": 1176.2,
+   "parts": [
+    {
+     "part": "decoration",
+     "module": "decoration_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 1176.2
+    }
+   ]
+  },
+  {
+   "evaluation": "smoke",
+   "status": "ran",
+   "seconds": 1694.7,
+   "parts": [
+    {
+     "part": "smoke",
+     "module": "smoke_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 1694.7
+    }
+   ]
+  },
+  {
+   "evaluation": "restore",
+   "status": "ran",
+   "seconds": 918.5,
+   "parts": [
+    {
+     "part": "restore",
+     "module": "restore_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 918.5
+    }
+   ]
+  },
+  {
+   "evaluation": "multiedit",
+   "status": "ran",
+   "seconds": 3837.6,
+   "parts": [
+    {
+     "part": "1",
+     "module": "multiedit_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 3680.6
+    },
+    {
+     "part": "2",
+     "module": "multiedit_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 3837.6
+    }
+   ]
+  },
+  {
+   "evaluation": "roundtrip",
+   "status": "ran",
+   "seconds": 4754.6,
+   "parts": [
+    {
+     "part": "1",
+     "module": "roundtrip_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 4510.6
+    },
+    {
+     "part": "2",
+     "module": "roundtrip_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 4754.6
+    }
+   ]
+  },
+  {
+   "evaluation": "placed",
+   "status": "ran",
+   "seconds": 1650.0,
+   "parts": [
+    {
+     "part": "placed",
+     "module": "placed_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 1650.0
+    }
+   ]
+  },
+  {
+   "evaluation": "regression",
+   "status": "failed: reg90, compare",
+   "seconds": 3369.0,
+   "parts": [
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "fixtures",
+     "returncode": 0,
+     "seconds": 40.6
+    },
+    {
+     "part": "reg87",
+     "module": "generalization_evaluate",
+     "phase": "initial",
+     "returncode": 0,
+     "seconds": 137.4
+    },
+    {
+     "part": "reg87",
+     "module": "generalization_evaluate",
+     "phase": "audit",
+     "returncode": 0,
+     "seconds": 116.7
+    },
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "sequences",
+     "returncode": 0,
+     "seconds": 246.1
+    },
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "singles",
+     "returncode": 0,
+     "seconds": 90.2
+    },
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "recognition",
+     "returncode": 0,
+     "seconds": 14.3
+    },
+    {
+     "part": "reg88",
+     "module": "continuity_evaluate",
+     "phase": "sequences",
+     "returncode": 0,
+     "seconds": 532.1
+    },
+    {
+     "part": "reg87",
+     "module": "generalization_evaluate",
+     "phase": "lifecycle",
+     "returncode": 0,
+     "seconds": 346.3
+    },
+    {
+     "part": "reg90",
+     "module": "indesign_evaluate",
+     "phase": "requests",
+     "returncode": 0,
+     "seconds": 695.4
+    },
+    {
+     "part": "tg-fid",
+     "module": "tagged_evaluate",
+     "phase": "requests",
+     "returncode": 0,
+     "seconds": 824.1
+    },
+    {
+     "part": "reg88",
+     "module": "continuity_evaluate",
+     "phase": "new",
+     "returncode": 0,
+     "seconds": 346.5
+    },
+    {
+     "part": "tg-fid",
+     "module": "tagged_evaluate",
+     "phase": "samples",
+     "returncode": 0,
+     "seconds": 2197.4
+    },
+    {
+     "part": "reg90",
+     "module": "indesign_evaluate",
+     "phase": "samples",
+     "returncode": 1,
+     "seconds": 2673.5
+    },
+    {
+     "part": "compare",
+     "module": "tagged_regression",
+     "seconds": 0,
+     "returncode": 1
+    }
+   ],
+   "rerun": {
+    "part": "reg90",
+    "phase": "samples",
+    "seconds": 5298,
+    "returncode": 0,
+    "reason": "the disk filled: pdftoppm died (SIGSEGV) at sample 027; old outputs removed, the phase and the compare run again"
+   }
+  },
+  {
+   "evaluation": "separate",
+   "status": "ran",
+   "seconds": 3379.7,
+   "parts": [
+    {
+     "part": "separate",
+     "module": "separate_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 3379.7
+    }
+   ]
+  },
+  {
+   "evaluation": "fidelity",
+   "status": "ran",
+   "seconds": 2594.6,
+   "parts": [
+    {
+     "part": "fidelity",
+     "module": "fidelity_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 2594.6
+    }
+   ],
+   "note": "run alone after the eval_hub input check was fixed (the tier run reported input missing: the manifest path is a note)"
+  }
+ ],
+ "compare": {
+  "tier": {
+   "evaluations": [
+    "chain",
+    "decoration",
+    "multiedit",
+    "placed",
+    "restore",
+    "roundtrip",
+    "separate",
+    "smoke"
+   ],
+   "compared": 616,
+   "changed": [
+    {
+     "record": [
+      "chain",
+      "S2-lo_migration_ja",
+      "1"
+     ],
+     "outcome": [
+      "saved",
+      "saved"
+     ],
+     "reason_class": [
+      null,
+      null
+     ],
+     "failed": [
+      [
+       "glyphs_outside_region_identical",
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler"
+      ],
+      []
+     ],
+     "checks": {
+      "placement": [
+       true,
+       null
+      ],
+      "raster": [
+       true,
+       null
+      ],
+      "safety": [
+       false,
+       true
+      ]
+     },
+     "tiers": {},
+     "mode": [
+      "layout",
+      "faithful"
+     ]
+    },
+    {
+     "record": [
+      "chain",
+      "S2-lo_migration_ja",
+      "2"
+     ],
+     "outcome": [
+      "saved",
+      "saved"
+     ],
+     "reason_class": [
+      null,
+      null
+     ],
+     "failed": [
+      [
+       "glyphs_outside_region_identical",
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler"
+      ],
+      []
+     ],
+     "checks": {
+      "placement": [
+       true,
+       null
+      ],
+      "raster": [
+       true,
+       null
+      ],
+      "safety": [
+       false,
+       true
+      ]
+     },
+     "tiers": {},
+     "mode": [
+      "layout",
+      "faithful"
+     ]
+    }
+   ],
+   "only_baseline": [],
+   "only_current": [],
+   "cases_not_run": []
+  },
+  "fidelity": {
+   "evaluations": [
+    "fidelity"
+   ],
+   "compared": 75,
+   "changed": [],
+   "only_baseline": [],
+   "only_current": [],
+   "cases_not_run": []
+  },
+  "regression": {
+   "evaluations": [
+    "column_flow",
+    "continuity",
+    "generalization",
+    "indesign",
+    "tagged"
+   ],
+   "compared": 173,
+   "changed": [],
+   "only_baseline": [],
+   "only_current": [],
+   "cases_not_run": []
+  },
+  "total": {
+   "compared": 864,
+   "changed": 2
+  },
+  "baseline": {
+   "created": "2026-10-30",
+   "codes": [
+    "062305f",
+    "dd3ea7e"
+   ]
+  }
+ }
+}

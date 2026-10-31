@@ -27,8 +27,9 @@ def glyph_key(g):return (g['unicode'],g['gid'],*g['origin'],*g['bbox'])
 
 class Moved:
     """Glyphs translated by their shifts (page), each found once in a staged
-    page within 0.002 pt: positions are read back in single precision, so a
-    rounding to 0.001 pt can split a translated glyph from its expectation."""
+    page within 0.001 pt: positions are read back in single precision, so a
+    rounding to 0.001 pt could split a translated glyph from its expectation
+    (no wider than the rounding allowed)."""
     def __init__(self,c,moved):
         self.pool={}
         for i,shift in moved.items():
@@ -39,7 +40,7 @@ class Moved:
         """Whether ``g`` is an expected translated glyph (taken once)."""
         have=self.pool.get((g['unicode'],g['gid']),[]);at=(*g['origin'],*g['bbox'])
         for k,want in enumerate(have):
-            if all(abs(a-b)<=.002 for a,b in zip(at,want)):
+            if all(abs(a-b)<=.001 for a,b in zip(at,want)):
                 del have[k];return True
         return False
 
@@ -543,7 +544,7 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
         if styled(c,set(selected)|set(moved))-styled(check):raise Refused('staged protected source code/style changed')
         # A moved placed object's glyphs keep their code and style where they moved.
         if moved:
-            # Matched by position within 0.002 pt (Moved), then by code and style.
+            # Matched by position within 0.001 pt (Moved), then by code and style.
             def drawn(content,only=None):
                 return [(i,(ch.code,e.state.font.name,e.state.size,e.state.tz,e.state.fill,e.state.tr,e.state.opacity)) for e in content.events
                         for ch in e.chars for i in ch.source_orders if only is None or i in only]
