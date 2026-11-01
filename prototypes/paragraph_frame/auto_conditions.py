@@ -101,6 +101,12 @@ def valid(record, width, height):
         if not isinstance(known, list) or not all(isinstance(k, list) and len(k) == 5 and isinstance(k[0], str)
                                                   and all(_number(v) for v in k[1:]) for k in known):
             return False
+        # Approved panel extensions (panel): where each panel was and where it went.
+        panels = record.get('panels', [])
+        if not isinstance(panels, list) or not all(isinstance(x, dict) and isinstance(x.get('id'), str)
+                                                   and all(isinstance(x.get(k), list) and len(x[k]) == 4 and all(_number(v) for v in x[k]) for k in ('old', 'new'))
+                                                   for x in panels):
+            return False
         return type(approval['count']) is int and approval['count'] >= 1
     except (KeyError, TypeError, AttributeError):
         return False

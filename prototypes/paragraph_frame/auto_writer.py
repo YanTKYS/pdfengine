@@ -19,6 +19,7 @@ from . import semantics
 from . import auto_restore
 from . import placed_move
 from . import decoration
+from . import panel
 from . import auto_conditions as conditions
 
 
@@ -420,6 +421,10 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
             writer.get_object(lookup[p.parent])[NameObject('/ActualText')]=TextStringObject(text)
             rewritten.add(p.parent)
 
+    # An approved panel extension: its rectangle operators, the bottom edge moved (panel).
+    for found in spec.get('panels') or []:
+        if found['_program']!=(stream,invocation):raise Refused('an approved panel is not drawn where the edit is written')
+        edits+=panel.edits(c,found)
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
     decoration.move_annotations(writer,lookup,list(groups.values())+list(chained))
     clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts,{name:writer._add_object(form_write.neutral_gs(dict(v))) for v,name in gs_names.items()} if neutral else None)
@@ -441,7 +446,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     finally:
         for path in (tmp,draft):
             if os.path.exists(path):os.unlink(path)
-    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,placed_objects_moved=[dict(old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs'])) for u in units if 'evidence' not in u],decorations_moved=[moved_record(u) for u in units if 'evidence' in u and 'row' not in u],**({'chain_moved':[dict(moved_record(u),line=u['row']['text'][:40]) for u in units if 'row' in u]} if chained else {}),source_glyphs_removed=len(selected),layout=spec.get('layout','column flow'),kept_glyphs=len(kept_ids),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
+    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,placed_objects_moved=[dict(old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs'])) for u in units if 'evidence' not in u],decorations_moved=[moved_record(u) for u in units if 'evidence' in u and 'row' not in u],**({'panels_extended':[panel.public(x) for x in spec['panels']]} if spec.get('panels') else {}),**({'chain_moved':[dict(moved_record(u),line=u['row']['text'][:40]) for u in units if 'row' in u]} if chained else {}),source_glyphs_removed=len(selected),layout=spec.get('layout','column flow'),kept_glyphs=len(kept_ids),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
 
 
 def moved_record(u):
@@ -579,6 +584,8 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
                 if not overlap.is_empty and overlap.width>.05 and overlap.height>.05 and not _covered(overlap,old_boxes):
                     raise Refused('staged glyph collides with protected '+o['kind'])
         original_paint=painting(c.source,spec['page']);staged_paint=painting(tmp,spec['page'])
+        # An approved panel extension: its drawings are expected with their rectangle extended, all else as it was.
+        for found in spec.get('panels') or []:original_paint['drawings']=panel.expected_drawings(original_paint['drawings'],found)
         if units:
             # Paint inside a moved placed object is expected where it moved to
             # (to 0.02 pt: the translation rounds either way at 0.01 pt); all other paint is unchanged.
@@ -627,6 +634,11 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
             # does not list): a moved one translated exactly, the others unchanged.
             if not annotations_moved(c.reader,PdfReader(tmp),spec['page'],{a['xref']:u['pdf_translation'] for u in units for a in u.get('annotations',())}):
                 raise Refused('staged links changed beyond the approved line decorations')
+        elif spec.get('panels'):
+            # (An extended rectangle is read back in single precision: drawings compare to 0.01 pt.)
+            if Counter(placed_move.paint_key(x) for x in original_paint['drawings'])!=Counter(placed_move.paint_key(x) for x in staged_paint['drawings']):
+                raise Refused('staged protected non-text paint changed beyond the approved panel extension')
+            if any(original_paint[k]!=staged_paint[k] for k in ('images','links','annots')):raise Refused('staged protected non-text paint changed')
         elif any(original_paint[k]!=staged_paint[k] for k in ('drawings','images','links','annots')):raise Refused('staged protected non-text paint changed')
         if any(staged_paint['fonts'].get(k)!=v for k,v in original_paint['fonts'].items()):raise Refused('staged original font program changed')
         # Structure checks that hold in the source must hold after the edit;
@@ -647,7 +659,8 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
             diff=ImageChops.difference(ia,ib)
             # A moved placed object may reach past the frame where it already
             # did; its paint was matched exactly translated above.
-            for x0,y0,x1,y1 in spec.get('frames',[spec['frame']])+[pymupdf.Rect(u[k])+(-1,-1,1,1) for u in units for k in ('old','new')]:
+            # An approved panel extension changes the band it adds (its paint was matched above).
+            for x0,y0,x1,y1 in spec.get('frames',[spec['frame']])+[pymupdf.Rect(u[k])+(-1,-1,1,1) for u in units for k in ('old','new')]+[pymupdf.Rect(x['band'])+(-1,-1,1,1) for x in spec.get('panels') or []]:
                 ImageDraw.Draw(diff).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
             if diff.getbbox():raise Refused(f'staged raster changes outside approved inferred frame ({renderer})')
         # Native retained font resources/programs are cloned, never replaced.
@@ -741,6 +754,14 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
             record=conditions.make(check,mine,conditions=dict(values,frame=spec['frame']),provenance=spec['provenance'],origin=spec['origin'],
                                    approval=dict(count=(previous['approval']['count'] if previous else 0)+1,**(approval or {})),present=known,
                                    layout=spec.get('original'))
+            # The panel extensions approved for this paragraph, the earlier ones
+            # that still hold and this edit's (panel): found again on reopen.
+            kept=[x for x in (previous or {}).get('panels',[]) if not any(abs(x['new'][3]-y['old'][3])<.05 and abs(x['new'][0]-y['old'][0])<.05 for y in spec.get('panels') or [])]
+            # (Where the panel was before the first approved extension: a later one, longer or shorter, keeps it.)
+            done=kept+[dict(id=x['id'],old=next((k['old'] for k in (previous or {}).get('panels',[]) if abs(k['new'][3]-x['old'][3])<.05),x['old']),
+                            new=x['new'],extension=x['extension'],approval=dict(approval or {}),**panel.drawn(c,x)) for x in spec.get('panels') or []]
+            done=[x for x in done if x['new'][3]>x['old'][3]+.05]
+            if done:record['panels']=done
             records.append(record)
         # Following paragraphs this edit moved keep their rows as observed before
         # the move (auto_conditions.apply_moved); earlier such records stay only

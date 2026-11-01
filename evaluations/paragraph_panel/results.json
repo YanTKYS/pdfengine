@@ -1,0 +1,3901 @@
+{
+ "schema": "paragraph-panel-results-1",
+ "manifest_sha256": "d68658e646ca7a3f2f73872550905fd5f7c5a1160804c55bcdca8c4a964b8041",
+ "runs": {
+  "old": {
+   "summary": {
+    "panel": {
+     "real:faithful": {
+      "steps": 1,
+      "refused": 1,
+      "saved:no": 1,
+      "practical:no": 1,
+      "reedit:unverified": 1,
+      "restore:unverified": 1,
+      "refused:yes": 1
+     },
+     "real-extra:faithful": {
+      "steps": 2,
+      "refused": 2,
+      "saved:no": 2,
+      "practical:no": 2,
+      "reedit:unverified": 2,
+      "restore:unverified": 2,
+      "refused:yes": 2
+     },
+     "real-clip:faithful": {
+      "steps": 2,
+      "refused": 2,
+      "saved:no": 2,
+      "practical:no": 2,
+      "reedit:unverified": 2,
+      "restore:unverified": 2,
+      "refused:yes": 2
+     },
+     "real-negative:faithful": {
+      "steps": 2,
+      "refused": 2,
+      "saved:no": 2,
+      "practical:no": 2,
+      "reedit:unverified": 2,
+      "restore:unverified": 2,
+      "refused:yes": 2
+     }
+    }
+   },
+   "records": [
+    {
+     "evaluation": "panel",
+     "case": "L2",
+     "step": "1",
+     "group": "real",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('複' at [356.6, 635.1, 364.6, 643.1])",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "L6",
+     "step": "1",
+     "group": "real-extra",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('枠' at [315.1, 716.3, 323.1, 724.3])",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "L8",
+     "step": "1",
+     "group": "real-extra",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('M' at [223.6, 590.5, 230.8, 598.5])",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "W1",
+     "step": "1",
+     "group": "real-clip",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "W2",
+     "step": "1",
+     "group": "real-clip",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "N22",
+     "step": "1",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "ine below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a line decoration would leave or enter a background",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "N07",
+     "step": "1",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    }
+   ],
+   "results": {
+    "L2": [
+     {
+      "old": "複数ページフィールド選択",
+      "new": "複数ページフィールド選択複数ページフィールド選択",
+      "proposal_refused": null,
+      "chain": {
+       "translation": null,
+       "needed": true,
+       "candidates": [],
+       "frame_bottom": null,
+       "unavailable": "capacity: the growth meets the bottom of its container or clip, which is no line below the paragraph"
+      },
+      "decorations": {},
+      "panels": {},
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('複' at [356.6, 635.1, 364.6, 643.1])",
+       "seconds": 3.45
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('複' at [356.6, 635.1, 364.6, 643.1])",
+      "class": "capacity"
+     }
+    ],
+    "L6": [
+     {
+      "old": "枠の背景に設定されたグラデーション",
+      "new": "枠の背景に設定されたグラデーション枠の背景に設定されたグラデーション",
+      "proposal_refused": null,
+      "chain": {
+       "translation": null,
+       "needed": true,
+       "candidates": [],
+       "frame_bottom": null,
+       "unavailable": "capacity: the growth meets the bottom of its container or clip, which is no line below the paragraph"
+      },
+      "decorations": {},
+      "panels": {},
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('枠' at [315.1, 716.3, 323.1, 724.3])",
+       "seconds": 1.73
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('枠' at [315.1, 716.3, 323.1, 724.3])",
+      "class": "capacity"
+     }
+    ],
+    "L8": [
+     {
+      "old": "MSIME2012の予測変換表示",
+      "new": "MSIME2012の予測変換表示MSIME2012の予測変換表示",
+      "proposal_refused": null,
+      "chain": {
+       "translation": null,
+       "needed": true,
+       "candidates": [],
+       "frame_bottom": null,
+       "unavailable": "capacity: the growth meets the bottom of its container or clip, which is no line below the paragraph"
+      },
+      "decorations": {},
+      "panels": {},
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('M' at [223.6, 590.5, 230.8, 598.5])",
+       "seconds": 2.3
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('M' at [223.6, 590.5, 230.8, 598.5])",
+      "class": "capacity"
+     }
+    ],
+    "W1": [
+     {
+      "old": "直通：03-3595-2257",
+      "new": "直通：03-3595-2257 直通：03-3595-2257",
+      "proposal_refused": null,
+      "chain": {},
+      "decorations": {},
+      "panels": {},
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])",
+       "seconds": 2.2
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])",
+      "class": "capacity"
+     }
+    ],
+    "W2": [
+     {
+      "old": "06-4397-3205",
+      "new": "06-4397-3205 06-6944-9156",
+      "proposal_refused": null,
+      "chain": {},
+      "decorations": {},
+      "panels": {},
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])",
+       "seconds": 3.7
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])",
+      "class": "capacity"
+     }
+    ],
+    "N22": [
+     {
+      "old": "番号、住所、",
+      "new": "番号、住所、番号、住所、氏名（様付き）をご記入ください。",
+      "proposal_refused": null,
+      "chain": {
+       "translation": 9.567,
+       "needed": true,
+       "candidates": [
+        {
+         "page": 8,
+         "paragraph": "申込先 〒539-0042 日本郵便大阪北郵便局 府民半額会係（郵便番号は必須）",
+         "operators": [
+          82774,
+          83070
+         ],
+         "operator_count": 19,
+         "bytes_sha256": "0c92ac91783e8abadb88ac76ca8a45c85c94d2845742686d04760ec6b2545239",
+         "bounds": [
+          531.5,
+          780.92,
+          753.55,
+          788.7
+         ],
+         "moved_to": [
+          531.5,
+          790.49,
+          753.55,
+          798.26
+         ],
+         "translation": 9.567,
+         "drawings": 1,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 40,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [
+          "foreign-text"
+         ],
+         "separated": [
+          {
+           "text_object": [
+            83071,
+            85070
+           ],
+           "operators_taken": 3,
+           "operators_staying": 4,
+           "drawn": [
+            "before"
+           ],
+           "bytes_sha256": "e2571078e7cbaaaefaddf9fb778eb008d9b628cdb45317a2f4676106b7b64882",
+           "text": "申込先 〒539-0042 日本郵便大阪北郵便局 府民半額会係（郵便番号は必須）",
+           "bounds": [
+            536.18,
+            782.01,
+            753.55,
+            788.7
+           ]
+          }
+         ],
+         "order": 1,
+         "line": "申込先 〒539-0042 日本郵便大阪北郵便局 府民半額会係（郵便番号は必須）",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-da76195e200205f4"
+        },
+        {
+         "page": 8,
+         "paragraph": "※当落は抽選で決定。5月分当落通知は3月31日頃発送、入金締切は4月7日。6月分",
+         "operators": [
+          null,
+          null
+         ],
+         "operator_count": 0,
+         "bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+         "bounds": [
+          531.35,
+          791.6,
+          753.03,
+          825.61
+         ],
+         "moved_to": [
+          531.35,
+          801.16,
+          753.03,
+          835.17
+         ],
+         "translation": 9.567,
+         "drawings": 0,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 116,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [
+          "filled-vector",
+          "foreign-text"
+         ],
+         "separated": [
+          {
+           "text_object": [
+            83071,
+            85070
+           ],
+           "operators_taken": 4,
+           "operators_staying": 3,
+           "drawn": [
+            "after"
+           ],
+           "bytes_sha256": "9e50088fdf5b1bd092c1f778e0c894578565b93d83c63f8e444bd7ba242c2e33",
+           "text": "※当落は抽選で決定。5月分当落通知は3月31日頃発送、入金締切は4月7日。6月分当落通知は4月21日頃発送、入金締切は4月28日。※当落通知発送日から4日を過ぎても未着の場合は必ず入金締切日前日までにお電話にてお問い合わせください。",
+           "bounds": [
+            531.35,
+            791.6,
+            753.03,
+            825.61
+           ]
+          }
+         ],
+         "order": 2,
+         "line": "※当落は抽選で決定。5月分当落通知は3月31日頃発送、入金締切は4月7日。6月分",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-26a85922b4f0adb3"
+        },
+        {
+         "page": 8,
+         "paragraph": "その他 チケットの手配には、入金締切日までに郵便局備え付けの振込用紙にてチケット",
+         "operators": [
+          85071,
+          85367
+         ],
+         "operator_count": 19,
+         "bytes_sha256": "c25d443768b112515d8d7310d768ba72279f69c82c80b3eccecfc58811a2a509",
+         "bounds": [
+          531.35,
+          830.53,
+          753.64,
+          865.65
+         ],
+         "moved_to": [
+          531.35,
+          840.1,
+          753.64,
+          875.22
+         ],
+         "translation": 9.567,
+         "drawings": 1,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 137,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [
+          "annotation",
+          "foreign-text",
+          "image",
+          "vector"
+         ],
+         "separated": [
+          {
+           "text_object": [
+            85368,
+            87479
+           ],
+           "operators_taken": 6,
+           "operators_staying": 1,
+           "drawn": [
+            "before"
+           ],
+           "bytes_sha256": "47115b0f0c9d2760439f8731f9e8fbdafa020e7e912bb926ba8ba86076904b07",
+           "text": "その他 チケットの手配には、入金締切日までに郵便局備え付けの振込用紙にてチケット代金、送料（460円）、手数料（1人あたり300円、国立文楽劇場分を除く）の入金が必要となります。詳細は当選通知をご確認ください。※出演者および演目に変更がありました場合は、何卒ご了承ください。",
+           "bounds": [
+            531.35,
+            831.62,
+            753.64,
+            865.65
+           ]
+          }
+         ],
+         "order": 3,
+         "line": "その他 チケットの手配には、入金締切日までに郵便局備え付けの振込用紙にてチケット",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-869d320ff7a24561"
+        },
+        {
+         "page": 8,
+         "paragraph": "※状況により公演情報が変更になる場合があります。随時HPなどで確認をお願いします",
+         "operators": [
+          null,
+          null
+         ],
+         "operator_count": 0,
+         "bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+         "bounds": [
+          531.3,
+          869.18,
+          753.15,
+          875.3
+         ],
+         "moved_to": [
+          531.3,
+          878.75,
+          753.15,
+          884.87
+         ],
+         "translation": 9.567,
+         "drawings": 0,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 41,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [
+          "annotation",
+          "filled-vector",
+          "foreign-text",
+          "image",
+          "vector"
+         ],
+         "separated": [
+          {
+           "text_object": [
+            85368,
+            87479
+           ],
+           "operators_taken": 1,
+           "operators_staying": 6,
+           "drawn": [
+            "after"
+           ],
+           "bytes_sha256": "84aa6746a5cb71db00ff2fd527eb771915b09da6aeb52f650f69aa947f35b7cc",
+           "text": "※状況により公演情報が変更になる場合があります。随時HPなどで確認をお願いします。",
+           "bounds": [
+            531.3,
+            869.18,
+            753.15,
+            875.3
+           ]
+          }
+         ],
+         "order": 4,
+         "line": "※状況により公演情報が変更になる場合があります。随時HPなどで確認をお願いします",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-4d142eeef1cf0eff"
+        },
+        {
+         "page": 8,
+         "paragraph": "府担当課：文化課HP 大阪府半額鑑賞会　　 ■",
+         "operators": [
+          87498,
+          98853
+         ],
+         "operator_count": 532,
+         "bytes_sha256": "f73349dd2dc230391382db5161d6bd1f6f4abefc91ef7044300ca8653eb08781",
+         "bounds": [
+          531.5,
+          878.0,
+          729.15,
+          892.63
+         ],
+         "moved_to": [
+          531.5,
+          887.57,
+          729.15,
+          902.2
+         ],
+         "translation": 9.567,
+         "drawings": 13,
+         "shadings": 1,
+         "xobjects": [
+          "/Fm3"
+         ],
+         "glyphs": 22,
+         "carried_text": " 　 ",
+         "placed_objects": 1,
+         "replayed_state": [
+          "Tf",
+          "Tc",
+          "Tw",
+          "k",
+          "gs",
+          "K",
+          "w",
+          "K",
+          "w",
+          "k",
+          "Tf",
+          "k",
+          "gs",
+          "Tc",
+          "Tw",
+          "gs",
+          "Tf",
+          "Tc",
+          "Tw",
+          "w",
+          "M",
+          "j",
+          "J",
+          "gs",
+          "M",
+          "j",
+          "J",
+          "gs",
+          "Tc",
+          "Tw"
+         ],
+         "annotations": [
+          {
+           "xref": 1897,
+           "subtype": "/Link",
+           "rect": [
+            546.55,
+            878.06,
+            672.22,
+            892.46
+           ],
+           "uri": "http://www.pref.osaka.lg.jp/bunka/news/hangakukansyo.html"
+          }
+         ],
+         "adjacent": [
+          "filled-vector",
+          "foreign-text"
+         ],
+         "order": 5,
+         "line": "HP 大阪府半額鑑賞会　　 ■府担当課：文化課",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-28bb5824b4908a58"
+        },
+        {
+         "page": 8,
+         "paragraph": "問（公社）日本演劇興行協会 半額鑑賞会事務局",
+         "operators": [
+          98854,
+          98886
+         ],
+         "operator_count": 21,
+         "bytes_sha256": "40514295e569722cb44035bb135bdfeea668ed0ba072c615a892773d103ce9f1",
+         "bounds": [
+          531.5,
+          893.64,
+          691.43,
+          904.13
+         ],
+         "moved_to": [
+          531.5,
+          903.21,
+          691.43,
+          913.7
+         ],
+         "translation": 9.567,
+         "drawings": 1,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 21,
+         "carried_text": "  ",
+         "placed_objects": 0,
+         "replayed_state": [
+          "k",
+          "Tf",
+          "Tc",
+          "Tw",
+          "k",
+          "Tf",
+          "Tf"
+         ],
+         "annotations": [],
+         "adjacent": [
+          "filled-vector",
+          "foreign-text"
+         ],
+         "ranges": [
+          [
+           98854,
+           98886
+          ],
+          [
+           98887,
+           99220
+          ]
+         ],
+         "order": 6,
+         "line": "問（公社）日本演劇興行協会 半額鑑賞会事務局",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-5db0a78292e921b0"
+        }
+       ],
+       "frame_bottom": 789.49,
+       "unavailable": "a line below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a line decoration would leave or enter a background"
+      },
+      "decorations": {},
+      "panels": {},
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('く' at [527.7, 779.2, 534.1, 785.6])",
+       "seconds": 38.76
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [
+        "following-element-da76195e200205f4",
+        "following-element-26a85922b4f0adb3",
+        "following-element-869d320ff7a24561",
+        "following-element-4d142eeef1cf0eff",
+        "following-element-28bb5824b4908a58",
+        "following-element-5db0a78292e921b0"
+       ],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a line decoration would leave or enter a background",
+      "class": "capacity"
+     }
+    ],
+    "N07": [
+     {
+      "old": "その他、船・",
+      "new": "その他、船・その他、船・自転車などでの",
+      "proposal_refused": null,
+      "chain": {
+       "translation": null,
+       "needed": true,
+       "candidates": [],
+       "frame_bottom": null,
+       "unavailable": "a line below cannot move with the paragraph (アクセス方法や、): a line decoration would leave or enter a background"
+      },
+      "decorations": {},
+      "panels": {},
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])",
+       "seconds": 14.35
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])",
+      "class": "capacity"
+     }
+    ]
+   }
+  },
+  "new": {
+   "summary": {
+    "panel": {
+     "real:layout": {
+      "steps": 2,
+      "saved": 2,
+      "saved:yes": 2,
+      "practical:unverified": 1,
+      "reedit:yes": 2,
+      "restore:unverified": 1,
+      "refused:no": 2,
+      "practical:yes": 1,
+      "restore:yes": 1
+     },
+     "real-extra:layout": {
+      "steps": 4,
+      "saved": 4,
+      "saved:yes": 4,
+      "practical:unverified": 3,
+      "reedit:yes": 4,
+      "restore:unverified": 2,
+      "refused:no": 4,
+      "practical:yes": 1,
+      "restore:yes": 2
+     },
+     "real-clip:faithful": {
+      "steps": 2,
+      "refused": 2,
+      "saved:no": 2,
+      "practical:no": 2,
+      "reedit:unverified": 2,
+      "restore:unverified": 2,
+      "refused:yes": 2
+     },
+     "real-negative:faithful": {
+      "steps": 2,
+      "refused": 2,
+      "saved:no": 2,
+      "practical:no": 2,
+      "reedit:unverified": 2,
+      "restore:unverified": 2,
+      "refused:yes": 2
+     }
+    }
+   },
+   "records": [
+    {
+     "evaluation": "panel",
+     "case": "L2",
+     "step": "1",
+     "group": "real",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": false,
+      "links": true,
+      "approved_audit": true,
+      "approved_quality": null,
+      "panel_candidates": 1,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "L2",
+     "step": "2",
+     "group": "real",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "non_text_paint_identical"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": false,
+      "links": true,
+      "restored_glyphs": true,
+      "restored_pixels": true,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "panel_candidates": 1,
+      "unapproved_refused": false
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "L6",
+     "step": "1",
+     "group": "real-extra",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": false,
+      "links": true,
+      "approved_audit": true,
+      "approved_quality": null,
+      "panel_candidates": 1,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "L6",
+     "step": "2",
+     "group": "real-extra",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": false,
+      "links": true,
+      "restored_glyphs": true,
+      "restored_pixels": true,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": true,
+      "panel_candidates": 1,
+      "unapproved_refused": false
+     },
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "L8",
+     "step": "1",
+     "group": "real-extra",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": false,
+      "links": true,
+      "approved_audit": true,
+      "approved_quality": null,
+      "panel_candidates": 1,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "L8",
+     "step": "2",
+     "group": "real-extra",
+     "mode": "layout",
+     "outcome": "saved",
+     "reason_class": null,
+     "reason": null,
+     "failed": [
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     "checks": {
+      "safety": false,
+      "quality": true,
+      "structure": true,
+      "reedit": true,
+      "moves": false,
+      "links": true,
+      "restored_glyphs": true,
+      "restored_pixels": true,
+      "restored_text": true,
+      "restored_links": true,
+      "approved_audit": true,
+      "approved_quality": null,
+      "panel_candidates": 1,
+      "unapproved_refused": false
+     },
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "W1",
+     "step": "1",
+     "group": "real-clip",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "W2",
+     "step": "1",
+     "group": "real-clip",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "N22",
+     "step": "1",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "ine below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a line decoration would leave or enter a background",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    },
+    {
+     "evaluation": "panel",
+     "case": "N07",
+     "step": "1",
+     "group": "real-negative",
+     "mode": "faithful",
+     "outcome": "refused",
+     "reason_class": "capacity",
+     "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])",
+     "failed": null,
+     "checks": {
+      "panel_candidates": 0,
+      "unapproved_refused": true
+     },
+     "tiers": {
+      "saved": false,
+      "practical": false,
+      "reedit": null,
+      "restore": null,
+      "refused": true
+     }
+    }
+   ],
+   "results": {
+    "L2": [
+     {
+      "old": "複数ページフィールド選択",
+      "new": "複数ページフィールド選択複数ページフィールド選択",
+      "proposal_refused": null,
+      "chain": {
+       "translation": null,
+       "needed": true,
+       "candidates": [],
+       "frame_bottom": null,
+       "unavailable": "capacity: the growth meets the bottom of its container or clip, which is no line below the paragraph"
+      },
+      "decorations": {},
+      "panels": {
+       "candidates": [
+        {
+         "id": "panel-extension-aae0ef7643da5250",
+         "page": 1,
+         "old": [
+          261.3,
+          620.0,
+          559.5,
+          631.2
+         ],
+         "new": [
+          261.3,
+          620.0,
+          559.5,
+          643.2
+         ],
+         "extension": 12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 8035,
+           "operator": "261.3 210.8 298.2 11.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          261.3,
+          631.2,
+          559.5,
+          643.2
+         ],
+         "reason": "the paragraph grows past the bottom of the panel holding it",
+         "if_not_approved": "refused: the paragraph would leave its background"
+        }
+       ],
+       "unavailable": null
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('複' at [356.6, 635.1, 364.6, 643.1])",
+       "seconds": 3.69
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": [
+        "panel-extension-aae0ef7643da5250"
+       ]
+      },
+      "lines": [
+       "図 2: 複数ページフィールド選択",
+       "複数ページフィールド選択"
+      ],
+      "grow": 1,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "複数ページフィールド選択複数ページフィールド選択"
+      },
+      "save": {
+       "follower_translation": 12.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null,
+       "panels_extended": [
+        {
+         "id": "panel-extension-aae0ef7643da5250",
+         "page": 1,
+         "old": [
+          261.3,
+          620.0,
+          559.5,
+          631.2
+         ],
+         "new": [
+          261.3,
+          620.0,
+          559.5,
+          643.2
+         ],
+         "extension": 12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 8035,
+           "operator": "261.3 210.8 298.2 11.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          261.3,
+          631.2,
+          559.5,
+          643.2
+         ],
+         "reason": "the paragraph grows past the bottom of the panel holding it",
+         "if_not_approved": "refused: the paragraph would leave its background"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": false,
+        "images": true
+       },
+       "ok": false
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "panel": {
+       "before": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          261.3,
+          620.0,
+          559.5,
+          631.2
+         ]
+        }
+       ],
+       "after": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          261.3,
+          620.0,
+          559.5,
+          643.2
+         ]
+        }
+       ],
+       "approved": [
+        {
+         "id": "panel-extension-aae0ef7643da5250",
+         "page": 1,
+         "old": [
+          261.3,
+          620.0,
+          559.5,
+          631.2
+         ],
+         "new": [
+          261.3,
+          620.0,
+          559.5,
+          643.2
+         ],
+         "extension": 12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 8035,
+           "operator": "261.3 210.8 298.2 11.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          261.3,
+          631.2,
+          559.5,
+          643.2
+         ],
+         "reason": "the paragraph grows past the bottom of the panel holding it",
+         "if_not_approved": "refused: the paragraph would leave its background"
+        }
+       ]
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": null,
+        "search_wrapped_lines_text": true,
+        "size_and_colour_kept": true,
+        "status": "unverified"
+       },
+       "approved": [
+        {
+         "what": "panel",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      }
+     },
+     {
+      "old": "複数ページフィールド選択複数ページフィールド選択",
+      "new": "複数ページフィールド選択",
+      "proposal_refused": null,
+      "chain": {},
+      "decorations": {},
+      "panels": {
+       "candidates": [
+        {
+         "id": "panel-extension-fddcc5c40dc9c2f3",
+         "page": 1,
+         "old": [
+          261.3,
+          620.0,
+          559.5,
+          643.2
+         ],
+         "new": [
+          261.3,
+          620.0,
+          559.5,
+          631.2
+         ],
+         "extension": -12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 8035,
+           "operator": "261.3 198.8 298.2 23.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          261.3,
+          631.2,
+          559.5,
+          643.2
+         ],
+         "reason": "the paragraph is shorter: the panel goes back",
+         "if_not_approved": "the panel stays as it is"
+        }
+       ],
+       "unavailable": null
+      },
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 5.32
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": [
+        "panel-extension-fddcc5c40dc9c2f3"
+       ]
+      },
+      "lines": [
+       "図 2: 複数ページフィールド選択"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "複数ページフィールド選択"
+      },
+      "save": {
+       "follower_translation": -12.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null,
+       "panels_extended": [
+        {
+         "id": "panel-extension-fddcc5c40dc9c2f3",
+         "page": 1,
+         "old": [
+          261.3,
+          620.0,
+          559.5,
+          643.2
+         ],
+         "new": [
+          261.3,
+          620.0,
+          559.5,
+          631.2
+         ],
+         "extension": -12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 8035,
+           "operator": "261.3 198.8 298.2 23.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          261.3,
+          631.2,
+          559.5,
+          643.2
+         ],
+         "reason": "the paragraph is shorter: the panel goes back",
+         "if_not_approved": "the panel stays as it is"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": false,
+        "images": true
+       },
+       "ok": false
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "panel": {
+       "before": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          261.3,
+          620.0,
+          559.5,
+          643.2
+         ]
+        }
+       ],
+       "after": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          261.3,
+          620.0,
+          559.5,
+          631.2
+         ]
+        }
+       ],
+       "approved": [
+        {
+         "id": "panel-extension-fddcc5c40dc9c2f3",
+         "page": 1,
+         "old": [
+          261.3,
+          620.0,
+          559.5,
+          643.2
+         ],
+         "new": [
+          261.3,
+          620.0,
+          559.5,
+          631.2
+         ],
+         "extension": -12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 8035,
+           "operator": "261.3 198.8 298.2 23.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          261.3,
+          631.2,
+          559.5,
+          643.2
+         ],
+         "reason": "the paragraph is shorter: the panel goes back",
+         "if_not_approved": "the panel stays as it is"
+        }
+       ]
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "panel",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 15,
+         "kept": 15,
+         "moved": 0,
+         "restyled": 0,
+         "max_delta": 0.0,
+         "source_lines": 1,
+         "output_lines": 1,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 0,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 1,
+         "output": 1
+        }
+       },
+       "glyphs": {
+        "glyphs": 583,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 0,
+        "beyond_0001": 0,
+        "largest": 3e-05,
+        "ok": true
+       },
+       "paint": {
+        "drawings": true,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 0,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 1502970
+        },
+        "150": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 6528600
+        },
+        "identical": true
+       }
+      }
+     }
+    ],
+    "L6": [
+     {
+      "old": "枠の背景に設定されたグラデーション",
+      "new": "枠の背景に設定されたグラデーション枠の背景に設定されたグラデーション",
+      "proposal_refused": null,
+      "chain": {
+       "translation": null,
+       "needed": true,
+       "candidates": [],
+       "frame_bottom": null,
+       "unavailable": "capacity: the growth meets the bottom of its container or clip, which is no line below the paragraph"
+      },
+      "decorations": {},
+      "panels": {
+       "candidates": [
+        {
+         "id": "panel-extension-c3b1b29dce69d467",
+         "page": 3,
+         "old": [
+          223.4,
+          701.2,
+          554.9,
+          712.4
+         ],
+         "new": [
+          223.4,
+          701.2,
+          554.9,
+          724.4
+         ],
+         "extension": 12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4249,
+           "operator": "223.4 129.6 331.5 11.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          223.4,
+          712.4,
+          554.9,
+          724.4
+         ],
+         "reason": "the paragraph grows past the bottom of the panel holding it",
+         "if_not_approved": "refused: the paragraph would leave its background"
+        }
+       ],
+       "unavailable": null
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('枠' at [315.1, 716.3, 323.1, 724.3])",
+       "seconds": 1.84
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": [
+        "panel-extension-c3b1b29dce69d467"
+       ]
+      },
+      "lines": [
+       "図 6: 枠の背景に設定されたグラデーション",
+       "枠の背景に設定されたグラデーション "
+      ],
+      "grow": 1,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "枠の背景に設定されたグラデーション枠の背景に設定されたグラデーション"
+      },
+      "save": {
+       "follower_translation": 12.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null,
+       "panels_extended": [
+        {
+         "id": "panel-extension-c3b1b29dce69d467",
+         "page": 3,
+         "old": [
+          223.4,
+          701.2,
+          554.9,
+          712.4
+         ],
+         "new": [
+          223.4,
+          701.2,
+          554.9,
+          724.4
+         ],
+         "extension": 12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4249,
+           "operator": "223.4 129.6 331.5 11.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          223.4,
+          712.4,
+          554.9,
+          724.4
+         ],
+         "reason": "the paragraph grows past the bottom of the panel holding it",
+         "if_not_approved": "refused: the paragraph would leave its background"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": false,
+        "images": true
+       },
+       "ok": false
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "panel": {
+       "before": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          223.4,
+          701.2,
+          554.9,
+          712.4
+         ]
+        }
+       ],
+       "after": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          223.4,
+          701.2,
+          554.9,
+          724.4
+         ]
+        }
+       ],
+       "approved": [
+        {
+         "id": "panel-extension-c3b1b29dce69d467",
+         "page": 3,
+         "old": [
+          223.4,
+          701.2,
+          554.9,
+          712.4
+         ],
+         "new": [
+          223.4,
+          701.2,
+          554.9,
+          724.4
+         ],
+         "extension": 12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4249,
+           "operator": "223.4 129.6 331.5 11.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          223.4,
+          712.4,
+          554.9,
+          724.4
+         ],
+         "reason": "the paragraph grows past the bottom of the panel holding it",
+         "if_not_approved": "refused: the paragraph would leave its background"
+        }
+       ]
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": null,
+        "search_wrapped_lines_text": true,
+        "size_and_colour_kept": true,
+        "status": "unverified"
+       },
+       "approved": [
+        {
+         "what": "panel",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      }
+     },
+     {
+      "old": "枠の背景に設定されたグラデーション枠の背景に設定されたグラデーション",
+      "new": "枠の背景に設定されたグラデーション",
+      "proposal_refused": null,
+      "chain": {},
+      "decorations": {},
+      "panels": {
+       "candidates": [
+        {
+         "id": "panel-extension-69102f6be571a5c4",
+         "page": 3,
+         "old": [
+          223.4,
+          701.2,
+          554.9,
+          724.4
+         ],
+         "new": [
+          223.4,
+          701.2,
+          554.9,
+          712.4
+         ],
+         "extension": -12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4249,
+           "operator": "223.4 117.6 331.5 23.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          223.4,
+          712.4,
+          554.9,
+          724.4
+         ],
+         "reason": "the paragraph is shorter: the panel goes back",
+         "if_not_approved": "the panel stays as it is"
+        }
+       ],
+       "unavailable": null
+      },
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 3.84
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": [
+        "panel-extension-69102f6be571a5c4"
+       ]
+      },
+      "lines": [
+       "図 6: 枠の背景に設定されたグラデーション "
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "枠の背景に設定されたグラデーション"
+      },
+      "save": {
+       "follower_translation": -12.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null,
+       "panels_extended": [
+        {
+         "id": "panel-extension-69102f6be571a5c4",
+         "page": 3,
+         "old": [
+          223.4,
+          701.2,
+          554.9,
+          724.4
+         ],
+         "new": [
+          223.4,
+          701.2,
+          554.9,
+          712.4
+         ],
+         "extension": -12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4249,
+           "operator": "223.4 117.6 331.5 23.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          223.4,
+          712.4,
+          554.9,
+          724.4
+         ],
+         "reason": "the paragraph is shorter: the panel goes back",
+         "if_not_approved": "the panel stays as it is"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": false,
+        "images": true
+       },
+       "ok": false
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "panel": {
+       "before": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          223.4,
+          701.2,
+          554.9,
+          724.4
+         ]
+        }
+       ],
+       "after": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          223.4,
+          701.2,
+          554.9,
+          712.4
+         ]
+        }
+       ],
+       "approved": [
+        {
+         "id": "panel-extension-69102f6be571a5c4",
+         "page": 3,
+         "old": [
+          223.4,
+          701.2,
+          554.9,
+          724.4
+         ],
+         "new": [
+          223.4,
+          701.2,
+          554.9,
+          712.4
+         ],
+         "extension": -12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4249,
+           "operator": "223.4 117.6 331.5 23.2 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          223.4,
+          712.4,
+          554.9,
+          724.4
+         ],
+         "reason": "the paragraph is shorter: the panel goes back",
+         "if_not_approved": "the panel stays as it is"
+        }
+       ]
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": true,
+        "size_and_colour_kept": true,
+        "status": "pass"
+       },
+       "approved": [
+        {
+         "what": "panel",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 20,
+         "kept": 20,
+         "moved": 0,
+         "restyled": 0,
+         "max_delta": 0.0,
+         "source_lines": 1,
+         "output_lines": 1,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 0,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 1,
+         "output": 1
+        }
+       },
+       "glyphs": {
+        "glyphs": 379,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 0,
+        "beyond_0001": 0,
+        "largest": 9e-05,
+        "ok": true
+       },
+       "paint": {
+        "drawings": true,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 0,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 1502970
+        },
+        "150": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 6528600
+        },
+        "identical": true
+       }
+      }
+     }
+    ],
+    "L8": [
+     {
+      "old": "MSIME2012の予測変換表示",
+      "new": "MSIME2012の予測変換表示MSIME2012の予測変換表示",
+      "proposal_refused": null,
+      "chain": {
+       "translation": null,
+       "needed": true,
+       "candidates": [],
+       "frame_bottom": null,
+       "unavailable": "capacity: the growth meets the bottom of its container or clip, which is no line below the paragraph"
+      },
+      "decorations": {},
+      "panels": {
+       "candidates": [
+        {
+         "id": "panel-extension-cec2d80630bf818e",
+         "page": 4,
+         "old": [
+          145.2,
+          575.4,
+          425.6,
+          586.5
+         ],
+         "new": [
+          145.2,
+          575.4,
+          425.6,
+          598.5
+         ],
+         "extension": 12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4957,
+           "operator": "145.2 255.5 280.4 11.1 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          145.2,
+          586.5,
+          425.6,
+          598.5
+         ],
+         "reason": "the paragraph grows past the bottom of the panel holding it",
+         "if_not_approved": "refused: the paragraph would leave its background"
+        }
+       ],
+       "unavailable": null
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('M' at [223.6, 590.5, 230.8, 598.5])",
+       "seconds": 2.15
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": [
+        "panel-extension-cec2d80630bf818e"
+       ]
+      },
+      "lines": [
+       "図 8: MSIME2012の予測変換表示",
+       "MSIME2012の予測変換表示"
+      ],
+      "grow": 1,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "MSIME2012の予測変換表示MSIME2012の予測変換表示"
+      },
+      "save": {
+       "follower_translation": 12.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null,
+       "panels_extended": [
+        {
+         "id": "panel-extension-cec2d80630bf818e",
+         "page": 4,
+         "old": [
+          145.2,
+          575.4,
+          425.6,
+          586.5
+         ],
+         "new": [
+          145.2,
+          575.4,
+          425.6,
+          598.5
+         ],
+         "extension": 12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4957,
+           "operator": "145.2 255.5 280.4 11.1 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          145.2,
+          586.5,
+          425.6,
+          598.5
+         ],
+         "reason": "the paragraph grows past the bottom of the panel holding it",
+         "if_not_approved": "refused: the paragraph would leave its background"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": false,
+        "images": true
+       },
+       "ok": false
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "panel": {
+       "before": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          145.2,
+          575.4,
+          425.6,
+          586.5
+         ]
+        }
+       ],
+       "after": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          145.2,
+          575.4,
+          425.6,
+          598.5
+         ]
+        }
+       ],
+       "approved": [
+        {
+         "id": "panel-extension-cec2d80630bf818e",
+         "page": 4,
+         "old": [
+          145.2,
+          575.4,
+          425.6,
+          586.5
+         ],
+         "new": [
+          145.2,
+          575.4,
+          425.6,
+          598.5
+         ],
+         "extension": 12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4957,
+           "operator": "145.2 255.5 280.4 11.1 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          145.2,
+          586.5,
+          425.6,
+          598.5
+         ],
+         "reason": "the paragraph grows past the bottom of the panel holding it",
+         "if_not_approved": "refused: the paragraph would leave its background"
+        }
+       ]
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": null,
+        "search_wrapped_lines_text": true,
+        "size_and_colour_kept": true,
+        "status": "unverified"
+       },
+       "approved": [
+        {
+         "what": "panel",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      }
+     },
+     {
+      "old": "MSIME2012の予測変換表示MSIME2012の予測変換表示",
+      "new": "MSIME2012の予測変換表示",
+      "proposal_refused": null,
+      "chain": {},
+      "decorations": {},
+      "panels": {
+       "candidates": [
+        {
+         "id": "panel-extension-262a8d98773e680d",
+         "page": 4,
+         "old": [
+          145.2,
+          575.4,
+          425.6,
+          598.5
+         ],
+         "new": [
+          145.2,
+          575.4,
+          425.6,
+          586.5
+         ],
+         "extension": -12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4957,
+           "operator": "145.2 243.5 280.4 23.1 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          145.2,
+          586.5,
+          425.6,
+          598.5
+         ],
+         "reason": "the paragraph is shorter: the panel goes back",
+         "if_not_approved": "the panel stays as it is"
+        }
+       ],
+       "unavailable": null
+      },
+      "unapproved": {
+       "outcome": "saved",
+       "reason": null,
+       "seconds": 3.36
+      },
+      "outcome": "saved",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": [
+        "panel-extension-262a8d98773e680d"
+       ]
+      },
+      "lines": [
+       "図 8: MSIME2012の予測変換表示"
+      ],
+      "grow": 0,
+      "safety": false,
+      "quality": true,
+      "failed": [
+       "raster_outside_region_mupdf",
+       "raster_outside_region_poppler",
+       "non_text_paint_identical"
+      ],
+      "structure_failed": [],
+      "continued_editing": {
+       "ok": true,
+       "status": "applied",
+       "selection": "MSIME2012の予測変換表示"
+      },
+      "save": {
+       "follower_translation": -12.0,
+       "followers_repainted": 0,
+       "placed_objects_moved": [],
+       "decorations_moved": [],
+       "chain_moved": null,
+       "panels_extended": [
+        {
+         "id": "panel-extension-262a8d98773e680d",
+         "page": 4,
+         "old": [
+          145.2,
+          575.4,
+          425.6,
+          598.5
+         ],
+         "new": [
+          145.2,
+          575.4,
+          425.6,
+          586.5
+         ],
+         "extension": -12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4957,
+           "operator": "145.2 243.5 280.4 23.1 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          145.2,
+          586.5,
+          425.6,
+          598.5
+         ],
+         "reason": "the paragraph is shorter: the panel goes back",
+         "if_not_approved": "the panel stays as it is"
+        }
+       ]
+      },
+      "moves": {
+       "approved_moves": {
+        "elements": 0,
+        "drawings": 0,
+        "images": 0,
+        "shading_rasters": 0,
+        "glyphs": 0,
+        "exact": true,
+        "nothing_left": true
+       },
+       "protected": {
+        "drawings": false,
+        "images": true
+       },
+       "ok": false
+      },
+      "links": {
+       "links": 0,
+       "moved": 0,
+       "ok": true
+      },
+      "placement": null,
+      "raster": null,
+      "panel": {
+       "before": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          145.2,
+          575.4,
+          425.6,
+          598.5
+         ]
+        }
+       ],
+       "after": [
+        {
+         "type": "f",
+         "items": [
+          "re"
+         ],
+         "fill": [
+          1.0,
+          1.0,
+          1.0
+         ],
+         "color": null,
+         "width": null,
+         "rect": [
+          145.2,
+          575.4,
+          425.6,
+          586.5
+         ]
+        }
+       ],
+       "approved": [
+        {
+         "id": "panel-extension-262a8d98773e680d",
+         "page": 4,
+         "old": [
+          145.2,
+          575.4,
+          425.6,
+          598.5
+         ],
+         "new": [
+          145.2,
+          575.4,
+          425.6,
+          586.5
+         ],
+         "extension": -12.0,
+         "edges": "bottom only (top, sides, colours, line style, order kept)",
+         "operators": [
+          {
+           "offset": 4957,
+           "operator": "145.2 243.5 280.4 23.1 re",
+           "paint": "f*"
+          }
+         ],
+         "style": {
+          "fill": [
+           "rg",
+           [
+            1.0,
+            1.0,
+            1.0
+           ]
+          ],
+          "outline": []
+         },
+         "band": [
+          145.2,
+          586.5,
+          425.6,
+          598.5
+         ],
+         "reason": "the paragraph is shorter: the panel goes back",
+         "if_not_approved": "the panel stays as it is"
+        }
+       ]
+      },
+      "approved_audit": {
+       "verdict": "pass",
+       "mode": "layout",
+       "approval": {
+        "status": "pass",
+        "reasons": []
+       },
+       "quality": {
+        "extraction_mupdf": true,
+        "extraction_poppler": true,
+        "search_mupdf": null,
+        "search_wrapped_lines_text": true,
+        "size_and_colour_kept": true,
+        "status": "unverified"
+       },
+       "approved": [
+        {
+         "what": "panel",
+         "status": "pass",
+         "reasons": []
+        },
+        {
+         "what": "text",
+         "status": "pass",
+         "reasons": []
+        }
+       ],
+       "protected": {
+        "status": "pass",
+        "reasons": [],
+        "pixels": {
+         "72": 0,
+         "150": 0
+        }
+       },
+       "unchecked": []
+      },
+      "restored": {
+       "compare": {
+        "paragraph": {
+         "unchanged": 19,
+         "kept": 19,
+         "moved": 0,
+         "restyled": 0,
+         "max_delta": 0.0,
+         "source_lines": 1,
+         "output_lines": 1,
+         "source_breaks_outside_edit": 0,
+         "breaks_kept": 0
+        },
+        "outside_changed": 0,
+        "page_changed": 0,
+        "text_identical": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "text_identical_ignoring_whitespace": {
+         "mupdf": true,
+         "poppler": true
+        },
+        "search_hits": {
+         "reference": 0,
+         "output": 0
+        }
+       },
+       "glyphs": {
+        "glyphs": 495,
+        "missing": 0,
+        "extra": 0,
+        "beyond_001": 0,
+        "beyond_0001": 0,
+        "largest": 9e-05,
+        "ok": true
+       },
+       "paint": {
+        "drawings": true,
+        "images_same": true,
+        "shading_rasters": 0,
+        "images": true
+       },
+       "links": {
+        "annotations": 0,
+        "ok": true
+       },
+       "structure_failed": [],
+       "pixels": {
+        "72": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 1502970
+        },
+        "150": {
+         "differing_samples": 0,
+         "largest": 0,
+         "samples": 6528600
+        },
+        "identical": true
+       }
+      }
+     }
+    ],
+    "W1": [
+     {
+      "old": "直通：03-3595-2257",
+      "new": "直通：03-3595-2257 直通：03-3595-2257",
+      "proposal_refused": null,
+      "chain": {},
+      "decorations": {},
+      "panels": {
+       "candidates": [],
+       "unavailable": "the paragraph's text is clipped by a rectangle ending at 493.87; a clip is not extended"
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])",
+       "seconds": 2.28
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])",
+      "class": "capacity"
+     }
+    ],
+    "W2": [
+     {
+      "old": "06-4397-3205",
+      "new": "06-4397-3205 06-6944-9156",
+      "proposal_refused": null,
+      "chain": {},
+      "decorations": {},
+      "panels": {
+       "candidates": [],
+       "unavailable": "the paragraph's text is clipped by a rectangle ending at 700.78; a clip is not extended"
+      },
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])",
+       "seconds": 3.17
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])",
+      "class": "capacity"
+     }
+    ],
+    "N22": [
+     {
+      "old": "番号、住所、",
+      "new": "番号、住所、番号、住所、氏名（様付き）をご記入ください。",
+      "proposal_refused": null,
+      "chain": {
+       "translation": 9.567,
+       "needed": true,
+       "candidates": [
+        {
+         "page": 8,
+         "paragraph": "申込先 〒539-0042 日本郵便大阪北郵便局 府民半額会係（郵便番号は必須）",
+         "operators": [
+          82774,
+          83070
+         ],
+         "operator_count": 19,
+         "bytes_sha256": "0c92ac91783e8abadb88ac76ca8a45c85c94d2845742686d04760ec6b2545239",
+         "bounds": [
+          531.5,
+          780.92,
+          753.55,
+          788.7
+         ],
+         "moved_to": [
+          531.5,
+          790.49,
+          753.55,
+          798.26
+         ],
+         "translation": 9.567,
+         "drawings": 1,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 40,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [
+          "foreign-text"
+         ],
+         "separated": [
+          {
+           "text_object": [
+            83071,
+            85070
+           ],
+           "operators_taken": 3,
+           "operators_staying": 4,
+           "drawn": [
+            "before"
+           ],
+           "bytes_sha256": "e2571078e7cbaaaefaddf9fb778eb008d9b628cdb45317a2f4676106b7b64882",
+           "text": "申込先 〒539-0042 日本郵便大阪北郵便局 府民半額会係（郵便番号は必須）",
+           "bounds": [
+            536.18,
+            782.01,
+            753.55,
+            788.7
+           ]
+          }
+         ],
+         "order": 1,
+         "line": "申込先 〒539-0042 日本郵便大阪北郵便局 府民半額会係（郵便番号は必須）",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-da76195e200205f4"
+        },
+        {
+         "page": 8,
+         "paragraph": "※当落は抽選で決定。5月分当落通知は3月31日頃発送、入金締切は4月7日。6月分",
+         "operators": [
+          null,
+          null
+         ],
+         "operator_count": 0,
+         "bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+         "bounds": [
+          531.35,
+          791.6,
+          753.03,
+          825.61
+         ],
+         "moved_to": [
+          531.35,
+          801.16,
+          753.03,
+          835.17
+         ],
+         "translation": 9.567,
+         "drawings": 0,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 116,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [
+          "filled-vector",
+          "foreign-text"
+         ],
+         "separated": [
+          {
+           "text_object": [
+            83071,
+            85070
+           ],
+           "operators_taken": 4,
+           "operators_staying": 3,
+           "drawn": [
+            "after"
+           ],
+           "bytes_sha256": "9e50088fdf5b1bd092c1f778e0c894578565b93d83c63f8e444bd7ba242c2e33",
+           "text": "※当落は抽選で決定。5月分当落通知は3月31日頃発送、入金締切は4月7日。6月分当落通知は4月21日頃発送、入金締切は4月28日。※当落通知発送日から4日を過ぎても未着の場合は必ず入金締切日前日までにお電話にてお問い合わせください。",
+           "bounds": [
+            531.35,
+            791.6,
+            753.03,
+            825.61
+           ]
+          }
+         ],
+         "order": 2,
+         "line": "※当落は抽選で決定。5月分当落通知は3月31日頃発送、入金締切は4月7日。6月分",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-26a85922b4f0adb3"
+        },
+        {
+         "page": 8,
+         "paragraph": "その他 チケットの手配には、入金締切日までに郵便局備え付けの振込用紙にてチケット",
+         "operators": [
+          85071,
+          85367
+         ],
+         "operator_count": 19,
+         "bytes_sha256": "c25d443768b112515d8d7310d768ba72279f69c82c80b3eccecfc58811a2a509",
+         "bounds": [
+          531.35,
+          830.53,
+          753.64,
+          865.65
+         ],
+         "moved_to": [
+          531.35,
+          840.1,
+          753.64,
+          875.22
+         ],
+         "translation": 9.567,
+         "drawings": 1,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 137,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [
+          "annotation",
+          "foreign-text",
+          "image",
+          "vector"
+         ],
+         "separated": [
+          {
+           "text_object": [
+            85368,
+            87479
+           ],
+           "operators_taken": 6,
+           "operators_staying": 1,
+           "drawn": [
+            "before"
+           ],
+           "bytes_sha256": "47115b0f0c9d2760439f8731f9e8fbdafa020e7e912bb926ba8ba86076904b07",
+           "text": "その他 チケットの手配には、入金締切日までに郵便局備え付けの振込用紙にてチケット代金、送料（460円）、手数料（1人あたり300円、国立文楽劇場分を除く）の入金が必要となります。詳細は当選通知をご確認ください。※出演者および演目に変更がありました場合は、何卒ご了承ください。",
+           "bounds": [
+            531.35,
+            831.62,
+            753.64,
+            865.65
+           ]
+          }
+         ],
+         "order": 3,
+         "line": "その他 チケットの手配には、入金締切日までに郵便局備え付けの振込用紙にてチケット",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-869d320ff7a24561"
+        },
+        {
+         "page": 8,
+         "paragraph": "※状況により公演情報が変更になる場合があります。随時HPなどで確認をお願いします",
+         "operators": [
+          null,
+          null
+         ],
+         "operator_count": 0,
+         "bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+         "bounds": [
+          531.3,
+          869.18,
+          753.15,
+          875.3
+         ],
+         "moved_to": [
+          531.3,
+          878.75,
+          753.15,
+          884.87
+         ],
+         "translation": 9.567,
+         "drawings": 0,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 41,
+         "carried_text": "",
+         "placed_objects": 0,
+         "replayed_state": [],
+         "annotations": [],
+         "adjacent": [
+          "annotation",
+          "filled-vector",
+          "foreign-text",
+          "image",
+          "vector"
+         ],
+         "separated": [
+          {
+           "text_object": [
+            85368,
+            87479
+           ],
+           "operators_taken": 1,
+           "operators_staying": 6,
+           "drawn": [
+            "after"
+           ],
+           "bytes_sha256": "84aa6746a5cb71db00ff2fd527eb771915b09da6aeb52f650f69aa947f35b7cc",
+           "text": "※状況により公演情報が変更になる場合があります。随時HPなどで確認をお願いします。",
+           "bounds": [
+            531.3,
+            869.18,
+            753.15,
+            875.3
+           ]
+          }
+         ],
+         "order": 4,
+         "line": "※状況により公演情報が変更になる場合があります。随時HPなどで確認をお願いします",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-4d142eeef1cf0eff"
+        },
+        {
+         "page": 8,
+         "paragraph": "府担当課：文化課HP 大阪府半額鑑賞会　　 ■",
+         "operators": [
+          87498,
+          98853
+         ],
+         "operator_count": 532,
+         "bytes_sha256": "f73349dd2dc230391382db5161d6bd1f6f4abefc91ef7044300ca8653eb08781",
+         "bounds": [
+          531.5,
+          878.0,
+          729.15,
+          892.63
+         ],
+         "moved_to": [
+          531.5,
+          887.57,
+          729.15,
+          902.2
+         ],
+         "translation": 9.567,
+         "drawings": 13,
+         "shadings": 1,
+         "xobjects": [
+          "/Fm3"
+         ],
+         "glyphs": 22,
+         "carried_text": " 　 ",
+         "placed_objects": 1,
+         "replayed_state": [
+          "Tf",
+          "Tc",
+          "Tw",
+          "k",
+          "gs",
+          "K",
+          "w",
+          "K",
+          "w",
+          "k",
+          "Tf",
+          "k",
+          "gs",
+          "Tc",
+          "Tw",
+          "gs",
+          "Tf",
+          "Tc",
+          "Tw",
+          "w",
+          "M",
+          "j",
+          "J",
+          "gs",
+          "M",
+          "j",
+          "J",
+          "gs",
+          "Tc",
+          "Tw"
+         ],
+         "annotations": [
+          {
+           "xref": 1897,
+           "subtype": "/Link",
+           "rect": [
+            546.55,
+            878.06,
+            672.22,
+            892.46
+           ],
+           "uri": "http://www.pref.osaka.lg.jp/bunka/news/hangakukansyo.html"
+          }
+         ],
+         "adjacent": [
+          "filled-vector",
+          "foreign-text"
+         ],
+         "order": 5,
+         "line": "HP 大阪府半額鑑賞会　　 ■府担当課：文化課",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-28bb5824b4908a58"
+        },
+        {
+         "page": 8,
+         "paragraph": "問（公社）日本演劇興行協会 半額鑑賞会事務局",
+         "operators": [
+          98854,
+          98886
+         ],
+         "operator_count": 21,
+         "bytes_sha256": "40514295e569722cb44035bb135bdfeea668ed0ba072c615a892773d103ce9f1",
+         "bounds": [
+          531.5,
+          893.64,
+          691.43,
+          904.13
+         ],
+         "moved_to": [
+          531.5,
+          903.21,
+          691.43,
+          913.7
+         ],
+         "translation": 9.567,
+         "drawings": 1,
+         "shadings": 0,
+         "xobjects": [],
+         "glyphs": 21,
+         "carried_text": "  ",
+         "placed_objects": 0,
+         "replayed_state": [
+          "k",
+          "Tf",
+          "Tc",
+          "Tw",
+          "k",
+          "Tf",
+          "Tf"
+         ],
+         "annotations": [],
+         "adjacent": [
+          "filled-vector",
+          "foreign-text"
+         ],
+         "ranges": [
+          [
+           98854,
+           98886
+          ],
+          [
+           98887,
+           99220
+          ]
+         ],
+         "order": 6,
+         "line": "問（公社）日本演劇興行協会 半額鑑賞会事務局",
+         "kind": "following element",
+         "reached": "the growth reaches it",
+         "frame_bottom": [
+          779.92,
+          789.49
+         ],
+         "id": "following-element-5db0a78292e921b0"
+        }
+       ],
+       "frame_bottom": 789.49,
+       "unavailable": "a line below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a line decoration would leave or enter a background"
+      },
+      "decorations": {},
+      "panels": {},
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('く' at [527.7, 779.2, 534.1, 785.6])",
+       "seconds": 37.98
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [
+        "following-element-da76195e200205f4",
+        "following-element-26a85922b4f0adb3",
+        "following-element-869d320ff7a24561",
+        "following-element-4d142eeef1cf0eff",
+        "following-element-28bb5824b4908a58",
+        "following-element-5db0a78292e921b0"
+       ],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the following elements cannot move with the paragraph: a line below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a line decoration would leave or enter a background",
+      "class": "capacity"
+     }
+    ],
+    "N07": [
+     {
+      "old": "その他、船・",
+      "new": "その他、船・その他、船・自転車などでの",
+      "proposal_refused": null,
+      "chain": {
+       "translation": null,
+       "needed": true,
+       "candidates": [],
+       "frame_bottom": null,
+       "unavailable": "a line below cannot move with the paragraph (アクセス方法や、): a line decoration would leave or enter a background"
+      },
+      "decorations": {},
+      "panels": {},
+      "unapproved": {
+       "outcome": "refused",
+       "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])",
+       "seconds": 13.67
+      },
+      "outcome": "refused",
+      "approved": {
+       "chain": [],
+       "decorations": [],
+       "panels": []
+      },
+      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])",
+      "class": "capacity"
+     }
+    ]
+   }
+  }
+ },
+ "comparison": {
+  "evaluations": [
+   "panel"
+  ],
+  "compared": 7,
+  "changed": [
+   {
+    "record": [
+     "panel",
+     "L2",
+     "1"
+    ],
+    "outcome": [
+     "refused",
+     "saved"
+    ],
+    "reason_class": [
+     "capacity",
+     null
+    ],
+    "failed": [
+     null,
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {
+     "approved_audit": [
+      null,
+      true
+     ],
+     "links": [
+      null,
+      true
+     ],
+     "moves": [
+      null,
+      false
+     ],
+     "panel_candidates": [
+      0,
+      1
+     ],
+     "quality": [
+      null,
+      true
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      false
+     ],
+     "structure": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      false,
+      null
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "refused": [
+      true,
+      false
+     ],
+     "saved": [
+      false,
+      true
+     ]
+    },
+    "mode": [
+     "faithful",
+     "layout"
+    ]
+   },
+   {
+    "record": [
+     "panel",
+     "L6",
+     "1"
+    ],
+    "outcome": [
+     "refused",
+     "saved"
+    ],
+    "reason_class": [
+     "capacity",
+     null
+    ],
+    "failed": [
+     null,
+     [
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf"
+     ]
+    ],
+    "checks": {
+     "approved_audit": [
+      null,
+      true
+     ],
+     "links": [
+      null,
+      true
+     ],
+     "moves": [
+      null,
+      false
+     ],
+     "panel_candidates": [
+      0,
+      1
+     ],
+     "quality": [
+      null,
+      true
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      false
+     ],
+     "structure": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      false,
+      null
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "refused": [
+      true,
+      false
+     ],
+     "saved": [
+      false,
+      true
+     ]
+    },
+    "mode": [
+     "faithful",
+     "layout"
+    ]
+   },
+   {
+    "record": [
+     "panel",
+     "L8",
+     "1"
+    ],
+    "outcome": [
+     "refused",
+     "saved"
+    ],
+    "reason_class": [
+     "capacity",
+     null
+    ],
+    "failed": [
+     null,
+     [
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "approved_audit": [
+      null,
+      true
+     ],
+     "links": [
+      null,
+      true
+     ],
+     "moves": [
+      null,
+      false
+     ],
+     "panel_candidates": [
+      0,
+      1
+     ],
+     "quality": [
+      null,
+      true
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      false
+     ],
+     "structure": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      false,
+      null
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "refused": [
+      true,
+      false
+     ],
+     "saved": [
+      false,
+      true
+     ]
+    },
+    "mode": [
+     "faithful",
+     "layout"
+    ]
+   }
+  ],
+  "only_baseline": [],
+  "only_current": [
+   [
+    "panel",
+    "L2",
+    "2"
+   ],
+   [
+    "panel",
+    "L6",
+    "2"
+   ],
+   [
+    "panel",
+    "L8",
+    "2"
+   ]
+  ],
+  "cases_not_run": []
+ }
+}

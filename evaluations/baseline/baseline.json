@@ -1,63 +1,63 @@
 {
  "schema": "paragraph-frame-baseline-1",
- "created": "2026-10-30",
+ "created": "2026-11-01",
  "note": null,
  "evaluations": {
   "chain": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "column_flow": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "continuity": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "decoration": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "fidelity": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "generalization": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "indesign": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "multiedit": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "placed": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "restore": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "roundtrip": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "separate": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "tagged": {
-   "code": "dd3ea7e",
-   "source": "tmp/hub/base-dd3ea7e"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   },
   "smoke": {
-   "code": "062305f",
-   "source": "tmp/hub/smoke-related-108"
+   "code": "54f3e42",
+   "source": "tmp/hub/i112"
   }
  },
  "evaluators": {
@@ -82,16 +82,16 @@
   "osaka_fusei_477": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0"
  },
  "seconds": {
-  "chain": 408,
-  "separate": 3592,
-  "restore": 1023,
-  "decoration": 1343,
-  "placed": 1482,
-  "multiedit": 3212,
-  "fidelity": 2742,
-  "roundtrip": 4211,
-  "regression": 5410,
-  "smoke": 1646.8
+  "chain": 276.9,
+  "separate": 2699.8,
+  "restore": 796.1,
+  "decoration": 991.3,
+  "placed": 1242.0,
+  "multiedit": 2687.3,
+  "fidelity": 2206.9,
+  "roundtrip": 3588.2,
+  "regression": 5196.9,
+  "smoke": 1445.6
  },
  "records": [
 {"evaluation":"chain","case":"C02-92","step":"1","group":"real","mode":"faithful","outcome":"refused","reason_class":"placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with","reason":" line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
@@ -109,8 +109,8 @@
 {"evaluation":"chain","case":"P8-11","step":"1","group":"real","mode":"faithful","outcome":"refused","reason_class":"placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with","reason":" line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
 {"evaluation":"chain","case":"S1-issue17730","step":"1","group":"real","mode":"layout","outcome":"saved","reason_class":null,"reason":null,"failed":["glyphs_outside_region_identical","non_text_paint_identical","raster_outside_region_mupdf","raster_outside_region_poppler"],"checks":{"safety":false,"quality":true,"structure":true,"reedit":true,"moves":true,"links":true,"placement":true,"raster":true},"tiers":{"saved":true,"practical":true,"reedit":true,"restore":null,"refused":false}},
 {"evaluation":"chain","case":"S1-issue17730","step":"2","group":"real","mode":"layout","outcome":"saved","reason_class":null,"reason":null,"failed":["glyphs_outside_region_identical","non_text_paint_identical","raster_outside_region_mupdf","raster_outside_region_poppler"],"checks":{"safety":false,"quality":true,"structure":true,"reedit":true,"moves":true,"links":true,"placement":true,"raster":true,"restored_glyphs":true,"restored_pixels":true,"restored_text":true,"restored_links":false},"tiers":{"saved":true,"practical":true,"reedit":true,"restore":true,"refused":false}},
-{"evaluation":"chain","case":"S2-lo_migration_ja","step":"1","group":"real","mode":"layout","outcome":"saved","reason_class":null,"reason":null,"failed":["glyphs_outside_region_identical","raster_outside_region_mupdf","raster_outside_region_poppler"],"checks":{"safety":false,"quality":true,"structure":true,"reedit":true,"moves":true,"links":true,"placement":true,"raster":true},"tiers":{"saved":true,"practical":true,"reedit":true,"restore":null,"refused":false}},
-{"evaluation":"chain","case":"S2-lo_migration_ja","step":"2","group":"real","mode":"layout","outcome":"saved","reason_class":null,"reason":null,"failed":["glyphs_outside_region_identical","raster_outside_region_mupdf","raster_outside_region_poppler"],"checks":{"safety":false,"quality":true,"structure":true,"reedit":true,"moves":true,"links":true,"placement":true,"raster":true,"restored_glyphs":true,"restored_pixels":true,"restored_text":true,"restored_links":true},"tiers":{"saved":true,"practical":true,"reedit":true,"restore":true,"refused":false}},
+{"evaluation":"chain","case":"S2-lo_migration_ja","step":"1","group":"real","mode":"faithful","outcome":"saved","reason_class":null,"reason":null,"failed":[],"checks":{"safety":true,"quality":true,"structure":true,"reedit":true,"moves":true,"links":true},"tiers":{"saved":true,"practical":true,"reedit":true,"restore":null,"refused":false}},
+{"evaluation":"chain","case":"S2-lo_migration_ja","step":"2","group":"real","mode":"faithful","outcome":"saved","reason_class":null,"reason":null,"failed":[],"checks":{"safety":true,"quality":true,"structure":true,"reedit":true,"moves":true,"links":true,"restored_glyphs":true,"restored_pixels":true,"restored_text":true,"restored_links":true},"tiers":{"saved":true,"practical":true,"reedit":true,"restore":true,"refused":false}},
 {"evaluation":"column_flow","case":"E-fit","step":"singles/1","group":"real","mode":"faithful","outcome":"saved","reason_class":null,"reason":null,"failed":null,"checks":{"as_expected":true},"tiers":{"saved":true,"practical":null,"reedit":null,"restore":null,"refused":false}},
 {"evaluation":"column_flow","case":"J-articles","step":"singles/1","group":"real","mode":"faithful","outcome":"refused","reason_class":null,"reason":null,"failed":null,"checks":{"as_expected":true},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
 {"evaluation":"column_flow","case":"J-articles-tagged","step":"singles/1","group":"real","mode":"faithful","outcome":"refused","reason_class":null,"reason":null,"failed":null,"checks":{"as_expected":true},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
@@ -571,7 +571,7 @@
 {"evaluation":"placed","case":"P8-09","step":"shorten/1","group":"real","mode":"faithful","outcome":"refused","reason_class":"placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with","reason":"hat does not move with it (line decoration line-decoration-bb2bd0511aae211e moves with it only when approved explicitly)","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
 {"evaluation":"placed","case":"P8-10","step":"lengthen/1","group":"real","mode":"faithful","outcome":"refused","reason_class":"capacity","reason":"ected paint (filled-vector, image, vector) above the text of the next column; other text is painted between the columns)","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
 {"evaluation":"placed","case":"P8-10","step":"shorten/1","group":"real","mode":"faithful","outcome":"saved","reason_class":null,"reason":null,"failed":["extraction_poppler"],"checks":{"safety":true,"quality":false,"structure":true,"reedit":true,"placed":true},"tiers":{"saved":true,"practical":false,"reedit":true,"restore":null,"refused":false}},
-{"evaluation":"placed","case":"P8-10","step":"shorten/2","group":"real","mode":"faithful","outcome":"not run","reason_class":"not run","reason":"h of /home/user/pdfengine/tmp/eval105b-wt/tmp/pl-new/P8-10/shorten/1/out.pdf with /home/user/pdfengine/tmp/eval105b-wt: ","failed":null,"checks":{},"tiers":{"saved":null,"practical":null,"reedit":null,"restore":null,"refused":false}},
+{"evaluation":"placed","case":"P8-10","step":"shorten/2","group":"real","mode":"faithful","outcome":"not run","reason_class":"not run","reason":" in the frozen paragraph of /home/user/pdfengine/tmp/hub/i112/placed/P8-10/shorten/1/out.pdf with /home/user/pdfengine: ","failed":null,"checks":{},"tiers":{"saved":null,"practical":null,"reedit":null,"restore":null,"refused":false}},
 {"evaluation":"placed","case":"P8-11","step":"lengthen/1","group":"real","mode":"faithful","outcome":"refused","reason_class":"placed object of a follower (new rule): the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with","reason":" line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
 {"evaluation":"placed","case":"P8-11","step":"shorten/1","group":"real","mode":"faithful","outcome":"saved","reason_class":null,"reason":null,"failed":[],"checks":{"safety":true,"quality":true,"structure":true,"reedit":true,"placed":true},"tiers":{"saved":true,"practical":true,"reedit":true,"restore":null,"refused":false}},
 {"evaluation":"placed","case":"P8-11","step":"shorten/2","group":"real","mode":"faithful","outcome":"saved","reason_class":null,"reason":null,"failed":["extraction_mupdf","extraction_poppler"],"checks":{"safety":true,"quality":false,"structure":true,"reedit":true,"placed":true},"tiers":{"saved":true,"practical":false,"reedit":true,"restore":null,"refused":false}},
@@ -844,7 +844,7 @@
 {"evaluation":"separate","case":"R11-osaka_fusei_477-p4","step":"1","group":"real","mode":"faithful","outcome":"refused","reason_class":"other: staged protected source code/style changed","reason":"prototypes.paragraph_frame.engine.Refused: staged protected source code/style changed","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
 {"evaluation":"separate","case":"R12-osaka_fusei_477-p4","step":"1","group":"real","mode":"faithful","outcome":"refused","reason_class":"other: staged glyph collides with protected filled-vector","reason":"prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
 {"evaluation":"separate","case":"R13-osaka_fusei_477-p4","step":"1","group":"real","mode":"layout","outcome":"saved","reason_class":null,"reason":null,"failed":["glyphs_outside_region_identical","non_text_paint_identical","raster_outside_region_mupdf","raster_outside_region_poppler"],"checks":{"safety":false,"quality":true,"structure":true,"reedit":true,"moves":true,"links":true,"placement":true,"raster":true,"kept":true},"tiers":{"saved":true,"practical":true,"reedit":true,"restore":null,"refused":false}},
-{"evaluation":"separate","case":"R13-osaka_fusei_477-p4","step":"2","group":"real","mode":"faithful","outcome":"not run","reason_class":"not run","reason":"e/user/pdfengine/tmp/eval105b-wt/tmp/sp-new/R13-osaka_fusei_477-p4/1/out.pdf with /home/user/pdfengine/tmp/eval105b-wt: ","failed":null,"checks":{},"tiers":{"saved":null,"practical":null,"reedit":null,"restore":null,"refused":false}},
+{"evaluation":"separate","case":"R13-osaka_fusei_477-p4","step":"2","group":"real","mode":"faithful","outcome":"not run","reason_class":"not run","reason":"zen paragraph of /home/user/pdfengine/tmp/hub/i112/separate/R13-osaka_fusei_477-p4/1/out.pdf with /home/user/pdfengine: ","failed":null,"checks":{},"tiers":{"saved":null,"practical":null,"reedit":null,"restore":null,"refused":false}},
 {"evaluation":"separate","case":"R14-osaka_fusei_477-p5","step":"1","group":"real","mode":"faithful","outcome":"refused","reason_class":"capacity","reason":"rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('間' at [112.6, 881.4, 121.1, 889.9])","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
 {"evaluation":"separate","case":"R15-osaka_fusei_477-p5","step":"1","group":"real","mode":"faithful","outcome":"refused","reason_class":"capacity","reason":"rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('ラ' at [209.3, 880.7, 218.5, 889.9])","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
 {"evaluation":"separate","case":"R16-osaka_fusei_477-p5","step":"1","group":"real","mode":"faithful","outcome":"refused","reason_class":"other: staged glyph collides with protected filled-vector","reason":"prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector","failed":null,"checks":{},"tiers":{"saved":false,"practical":false,"reedit":null,"restore":null,"refused":true}},
