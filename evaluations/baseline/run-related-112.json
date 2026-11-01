@@ -1,0 +1,383 @@
+{
+ "schema": "paragraph-frame-tier-run-1",
+ "tier": "related",
+ "code": "54f3e42",
+ "uncommitted_code_changes": false,
+ "changed": [
+  ".gitignore",
+  "evaluations/baseline/impact.json",
+  "evaluations/paragraph_panel/manifest.json",
+  "prototypes/paragraph_frame/approved_audit.py",
+  "prototypes/paragraph_frame/auto.py",
+  "prototypes/paragraph_frame/auto_conditions.py",
+  "prototypes/paragraph_frame/auto_detect.py",
+  "prototypes/paragraph_frame/auto_writer.py",
+  "prototypes/paragraph_frame/generalization_cli.py",
+  "prototypes/paragraph_frame/panel.py",
+  "prototypes/paragraph_frame/panel_evaluate.py",
+  "tests/test_paragraph_panel.py"
+ ],
+ "seconds": 11218.2,
+ "evaluations": [
+  {
+   "evaluation": "chain",
+   "status": "ran",
+   "seconds": 276.9,
+   "parts": [
+    {
+     "part": "chain",
+     "module": "chain_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 276.9
+    }
+   ]
+  },
+  {
+   "evaluation": "decoration",
+   "status": "ran",
+   "seconds": 991.3,
+   "parts": [
+    {
+     "part": "decoration",
+     "module": "decoration_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 991.3
+    }
+   ]
+  },
+  {
+   "evaluation": "smoke",
+   "status": "ran",
+   "seconds": 1445.6,
+   "parts": [
+    {
+     "part": "smoke",
+     "module": "smoke_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 1445.6
+    }
+   ]
+  },
+  {
+   "evaluation": "restore",
+   "status": "ran",
+   "seconds": 796.1,
+   "parts": [
+    {
+     "part": "restore",
+     "module": "restore_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 796.1
+    }
+   ]
+  },
+  {
+   "evaluation": "fidelity",
+   "status": "ran",
+   "seconds": 2206.9,
+   "parts": [
+    {
+     "part": "fidelity",
+     "module": "fidelity_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 2206.9
+    }
+   ]
+  },
+  {
+   "evaluation": "placed",
+   "status": "ran",
+   "seconds": 1242.0,
+   "parts": [
+    {
+     "part": "placed",
+     "module": "placed_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 1242.0
+    }
+   ]
+  },
+  {
+   "evaluation": "multiedit",
+   "status": "ran",
+   "seconds": 2687.3,
+   "parts": [
+    {
+     "part": "1",
+     "module": "multiedit_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 2515.6
+    },
+    {
+     "part": "2",
+     "module": "multiedit_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 2687.3
+    }
+   ]
+  },
+  {
+   "evaluation": "roundtrip",
+   "status": "ran",
+   "seconds": 3588.2,
+   "parts": [
+    {
+     "part": "1",
+     "module": "roundtrip_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 3467.0
+    },
+    {
+     "part": "2",
+     "module": "roundtrip_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 3588.2
+    }
+   ]
+  },
+  {
+   "evaluation": "regression",
+   "status": "ran",
+   "seconds": 5196.9,
+   "parts": [
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "fixtures",
+     "returncode": 0,
+     "seconds": 44.4
+    },
+    {
+     "part": "reg87",
+     "module": "generalization_evaluate",
+     "phase": "initial",
+     "returncode": 0,
+     "seconds": 125.4
+    },
+    {
+     "part": "reg87",
+     "module": "generalization_evaluate",
+     "phase": "audit",
+     "returncode": 0,
+     "seconds": 114.6
+    },
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "sequences",
+     "returncode": 0,
+     "seconds": 206.7
+    },
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "singles",
+     "returncode": 0,
+     "seconds": 91.2
+    },
+    {
+     "part": "reg89",
+     "module": "column_flow_evaluate",
+     "phase": "recognition",
+     "returncode": 0,
+     "seconds": 12.5
+    },
+    {
+     "part": "reg88",
+     "module": "continuity_evaluate",
+     "phase": "sequences",
+     "returncode": 0,
+     "seconds": 499.4
+    },
+    {
+     "part": "reg87",
+     "module": "generalization_evaluate",
+     "phase": "lifecycle",
+     "returncode": 0,
+     "seconds": 364.8
+    },
+    {
+     "part": "reg90",
+     "module": "indesign_evaluate",
+     "phase": "requests",
+     "returncode": 0,
+     "seconds": 718.8
+    },
+    {
+     "part": "tg-fid",
+     "module": "tagged_evaluate",
+     "phase": "requests",
+     "returncode": 0,
+     "seconds": 832.0
+    },
+    {
+     "part": "reg88",
+     "module": "continuity_evaluate",
+     "phase": "new",
+     "returncode": 0,
+     "seconds": 394.1
+    },
+    {
+     "part": "tg-fid",
+     "module": "tagged_evaluate",
+     "phase": "samples",
+     "returncode": 0,
+     "seconds": 1815.5
+    },
+    {
+     "part": "reg90",
+     "module": "indesign_evaluate",
+     "phase": "samples",
+     "returncode": 0,
+     "seconds": 4399.4
+    },
+    {
+     "part": "compare",
+     "module": "tagged_regression",
+     "seconds": 0,
+     "returncode": 0
+    }
+   ]
+  },
+  {
+   "evaluation": "separate",
+   "status": "ran",
+   "seconds": 2699.8,
+   "parts": [
+    {
+     "part": "separate",
+     "module": "separate_evaluate",
+     "phase": "run",
+     "returncode": 0,
+     "seconds": 2699.8
+    }
+   ]
+  }
+ ],
+ "compare": {
+  "evaluations": [
+   "chain",
+   "column_flow",
+   "continuity",
+   "decoration",
+   "fidelity",
+   "generalization",
+   "indesign",
+   "multiedit",
+   "placed",
+   "restore",
+   "roundtrip",
+   "separate",
+   "smoke",
+   "tagged"
+  ],
+  "compared": 864,
+  "changed": [
+   {
+    "record": [
+     "chain",
+     "S2-lo_migration_ja",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     []
+    ],
+    "checks": {
+     "placement": [
+      true,
+      null
+     ],
+     "raster": [
+      true,
+      null
+     ],
+     "safety": [
+      false,
+      true
+     ]
+    },
+    "tiers": {},
+    "mode": [
+     "layout",
+     "faithful"
+    ]
+   },
+   {
+    "record": [
+     "chain",
+     "S2-lo_migration_ja",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     []
+    ],
+    "checks": {
+     "placement": [
+      true,
+      null
+     ],
+     "raster": [
+      true,
+      null
+     ],
+     "safety": [
+      false,
+      true
+     ]
+    },
+    "tiers": {},
+    "mode": [
+     "layout",
+     "faithful"
+    ]
+   }
+  ],
+  "only_baseline": [],
+  "only_current": [],
+  "cases_not_run": []
+ },
+ "baseline": {
+  "created": "2026-10-30",
+  "codes": [
+   "062305f",
+   "dd3ea7e"
+  ]
+ },
+ "note": "The two changed records are the chain evaluation's S2 (PR #111, approved); the baseline was updated for them with --design-decision (changes.json)."
+}

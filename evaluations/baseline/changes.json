@@ -3452,5 +3452,116 @@
   "removed": [],
   "added": [],
   "design_decision_needed": false
+ },
+ {
+  "date": "2026-11-01",
+  "code": "54f3e42",
+  "reason": "PR #111 (issue #110), approved by the designer: the footnote's hanging indent makes S2 one paragraph; its edit is now a faithful edit (layout -> faithful, existing audit safety fail -> pass). Recorded with the related-tier run of issue #112 (54f3e42), apart from the panel extension's numbers; no other record of the 864 changed.",
+  "evaluations": [
+   "chain",
+   "column_flow",
+   "continuity",
+   "decoration",
+   "fidelity",
+   "generalization",
+   "indesign",
+   "multiedit",
+   "placed",
+   "restore",
+   "roundtrip",
+   "separate",
+   "smoke",
+   "tagged"
+  ],
+  "compared": 864,
+  "changed": [
+   {
+    "record": [
+     "chain",
+     "S2-lo_migration_ja",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     []
+    ],
+    "checks": {
+     "placement": [
+      true,
+      null
+     ],
+     "raster": [
+      true,
+      null
+     ],
+     "safety": [
+      false,
+      true
+     ]
+    },
+    "tiers": {},
+    "mode": [
+     "layout",
+     "faithful"
+    ]
+   },
+   {
+    "record": [
+     "chain",
+     "S2-lo_migration_ja",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     []
+    ],
+    "checks": {
+     "placement": [
+      true,
+      null
+     ],
+     "raster": [
+      true,
+      null
+     ],
+     "safety": [
+      false,
+      true
+     ]
+    },
+    "tiers": {},
+    "mode": [
+     "layout",
+     "faithful"
+    ]
+   }
+  ],
+  "removed": [],
+  "added": [],
+  "design_decision_needed": true
  }
 ]
