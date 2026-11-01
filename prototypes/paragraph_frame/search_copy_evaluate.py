@@ -165,11 +165,34 @@ def phase_run(args):
         a = audit(source, output, case['page'])
         results[case['id']] = dict(outcome='saved', same_output=drawn == case.get('drawn'), drawn=drawn,
                                    quality_existing=a['quality'], verdict=a['verdict'], mode=a['mode'],
-                                   measures=search_copy.measure(output, case['page'], expected, new, at, frame, baselines, source))
+                                   measures=search_copy.measure(output, case['page'], expected, new, at, frame, baselines, source,
+                                                                search_copy.before(p)))
         m = results[case['id']]['measures']
         print(case['id'], {k: m[k] for k in ('search_full', 'search_per_line', 'extraction_mupdf', 'extraction_poppler', 'copy_equivalent')},
               'existing', a['quality']['status'], flush=True)
         (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
+    (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
+
+
+def phase_remeasure(args):
+    """The measures again over the outputs a run saved (results updated in place): a changed measure, not a changed edit."""
+    from .approved_audit import audit
+    from . import search_copy
+    manifest = json.loads(MANIFEST.read_text())
+    root = Path(args.root)
+    results = json.loads((root / 'results.json').read_text())
+    for case in manifest['cases']:
+        r = results.get(case['id']) or {}
+        if r.get('outcome') != 'saved':
+            continue
+        source = source_of(case['document'], args).resolve()
+        output = root / case['id'] / 'out.pdf'
+        p = json.loads(output.with_suffix('.proposal.json').read_text())
+        expected, new, at, frame, baselines = search_copy.target(p)
+        a = audit(source, output, case['page'])
+        r.update(quality_existing=a['quality'], verdict=a['verdict'], mode=a['mode'],
+                 measures=search_copy.measure(output, case['page'], expected, new, at, frame, baselines, source, search_copy.before(p)))
+        print(case['id'], {k: r['measures'][k] for k in ('search_full', 'search_per_line', 'extraction_mupdf', 'extraction_poppler', 'copy_equivalent')}, flush=True)
     (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
 
 
@@ -190,12 +213,12 @@ def phase_collect(args):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--phase', choices=('freeze', 'run', 'collect'), required=True)
+    p.add_argument('--phase', choices=('freeze', 'run', 'remeasure', 'collect'), required=True)
     p.add_argument('--root', required=True)
     p.add_argument('--fusei')
     p.add_argument('--pdfjs')
     args = p.parse_args()
-    dict(freeze=phase_freeze, run=phase_run, collect=phase_collect)[args.phase](args)
+    dict(freeze=phase_freeze, run=phase_run, remeasure=phase_remeasure, collect=phase_collect)[args.phase](args)
 
 
 if __name__ == '__main__':

@@ -7,8 +7,10 @@ own, tied to the edited paragraph's drawn lines, and never counted when it
 was not measured:
 
 * ``search_full``: MuPDF's native search (``search_for``) finds the whole
-  replacement, as written (spaces kept), on the edited paragraph's lines.
-  A hit elsewhere on the page is reported (``hits_elsewhere``), never counted.
+  replacement, as written (spaces kept), covering it on every edited line it
+  is drawn on (MuPDF reads a line break as a space: a Latin replacement over
+  lines can be found as one; CJK text over lines is not). A hit elsewhere on
+  the page is reported (``search_full_hits.elsewhere``), never counted.
 * ``search_per_line``: when the replacement is drawn over several lines,
   each line's part of it (as the expected text splits it at the drawn line
   breaks) is found by search on that line, covering the replacement's glyphs
@@ -203,9 +205,11 @@ def measure(output, page_number, expected, replacement, at, frame, baselines, so
         on_line = lambda hit, k: abs((hit.y0 + hit.y1) / 2 - (boxes[k].y0 + boxes[k].y1) / 2) < boxes[k].height / 2
         covers = lambda hit, k: on_line(hit, k) and hit.x0 <= boxes[k].x0 + 1 and hit.x1 >= boxes[k].x1 - 1
         # --- search_full: the whole replacement, as written, on the paragraph's lines.
+        # (MuPDF's search reads a line break as a space: a Latin replacement over lines may be found as one,
+        # its hit a box on each line. Found when every line's part of it is covered.)
         hits = page.search_for(replacement)
         mine = [h for h in hits if any(covers(h, k) for k in lines)]
-        out['search_full'] = bool(mine) and len(lines) == 1
+        out['search_full'] = all(any(covers(h, k) for h in hits) for k in lines)
         out['search_full_hits'] = dict(total=len(hits), on_target=len(mine), elsewhere=len(hits) - len(mine), lines=len(lines))
         # --- search_per_line: each line's part, found on its line, consecutive and continuous.
         if len(lines) > 1:

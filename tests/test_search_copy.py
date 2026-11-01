@@ -122,7 +122,8 @@ def test_a_latin_replacement_over_lines_joins_at_the_word_space(tmp_path):
     new = 'destination or an external'
     lines = ['Linking to an internal destination ', 'or an external destination']
     m = measure(page(tmp_path, lines + ['']), 1, expected, new, expected.index(new), FRAME, BASELINES)
-    assert m['search_full'] is False and m['search_per_line'] is True
+    # MuPDF's search reads the line break as a space: one search finds it over both lines.
+    assert m['search_full'] is True and m['search_full_hits']['on_target'] == 2 and m['search_per_line'] is True
     assert m['extraction_mupdf'] is True and m['extraction_poppler'] is True and m['copy_equivalent'] is True
 
 
