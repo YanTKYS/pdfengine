@@ -107,3 +107,6 @@ tmp/
 # Approved panel extension (issue #112): manifest (frozen before the implementation) and compact results only.
 !/evaluations/paragraph_panel/manifest.json
 !/evaluations/paragraph_panel/results.json
+# Search and copy of edited text (issue #114): manifest (frozen before the measures) and compact results only.
+!/evaluations/search_copy/manifest.json
+!/evaluations/search_copy/results.json

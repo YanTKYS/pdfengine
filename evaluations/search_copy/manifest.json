@@ -1,0 +1,927 @@
+{
+ "schema": "search-copy-manifest-1",
+ "frozen_at": "dedf44f",
+ "policy": "Frozen before the measures are written (issue #114). Each measure is true, false or null (not measured) and tied to the edited paragraph's drawn lines; a hit elsewhere on the page, a whitespace-only match or a part found by search on its own line never stands for a whole search. Practical success is not changed here: which measures it requires is a design decision. Fixtures (negative cases) are counted apart from real PDFs.",
+ "measures": {
+  "search_full": "MuPDF search_for of the whole replacement (spaces kept) hits the paragraph's lines where it is drawn",
+  "search_per_line": "each line's part of a replacement drawn over lines is found by search on that line, lines consecutive, parts continuous; null for one line",
+  "extraction_mupdf": "MuPDF text of the paragraph's lines, line breaks joined as the paragraph joins them, equals the expected paragraph (no other normalisation; whitespace-only differences reported apart)",
+  "extraction_poppler": "the same with pdftotext (cropped to the lines)",
+  "copy_equivalent": "both extractors read the area where the replacement is drawn as the replacement (copying reconstructed by PDF extraction, not a clipboard)",
+  "clipboard_manual": "a real clipboard check; null unless made by hand"
+ },
+ "negatives": [
+  "a character of the replacement missing",
+  "two characters in another order",
+  "a similar character (末 for 未)",
+  "the replacement drawn elsewhere on the page only",
+  "the first line's part right, the next line's wrong",
+  "the two parts on lines that are not consecutive",
+  "glyphs drawn without a Unicode mapping (readable, not searchable)",
+  "a glyph mapped to another character (copied garbled)"
+ ],
+ "documents": {
+  "lo_newfeatures_ja": {
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47"
+  },
+  "word_osaka_fire_notice": {
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa"
+  },
+  "lo_migration_ja": {
+   "sha256": "13665875311aae3a4115016c65190957b3e1aef945c7b88c58437ca6b14ea5f3"
+  },
+  "osaka_fusei_477": {
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0"
+  },
+  "issue17730": {
+   "sha256": "d1d3be1674f4756d82630d68f08a8088f5b912c58f3379f45eb63b025ad99b14"
+  }
+ },
+ "cases": [
+  {
+   "id": "L2",
+   "group": "target",
+   "origin": "paragraph_panel:L2",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "selection": "複数ページフィールド選択",
+   "paragraph": "図 2: 複数ページフィールド選択",
+   "box": [
+    356.6,
+    623.05,
+    464.36,
+    631.05
+   ],
+   "lines": 1,
+   "edit": {
+    "old": "複数ページフィールド選択",
+    "new": "複数ページフィールド選択複数ページフィールド選択"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [],
+    "decorations": [],
+    "panels": [
+     "panel-extension-aae0ef7643da5250"
+    ]
+   },
+   "expected": "図 2: 複数ページフィールド選択複数ページフィールド選択",
+   "replacement": "複数ページフィールド選択複数ページフィールド選択",
+   "frame": [
+    356.1,
+    621.1,
+    464.86,
+    643.2
+   ],
+   "drawn": [
+    {
+     "text": "図 2: 複数ページフィールド選択",
+     "baseline": 629.6,
+     "x0": 356.6,
+     "x1": 464.36
+    },
+    {
+     "text": "複数ページフィールド選択",
+     "baseline": 641.6,
+     "x0": 356.6,
+     "x1": 443.99
+    }
+   ],
+   "output_sha256": "c4888759960366b7b38dd4af9598127bfc809c08388c16842696a7ee4a3f94a4"
+  },
+  {
+   "id": "L6",
+   "group": "target",
+   "origin": "paragraph_panel:L6",
+   "document": "lo_newfeatures_ja",
+   "page": 3,
+   "selection": "枠の背景に設定されたグラデーション",
+   "paragraph": "図 6: 枠の背景に設定されたグラデーション ",
+   "box": [
+    315.1,
+    704.25,
+    461.12,
+    712.25
+   ],
+   "lines": 1,
+   "edit": {
+    "old": "枠の背景に設定されたグラデーション",
+    "new": "枠の背景に設定されたグラデーション枠の背景に設定されたグラデーション"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [],
+    "decorations": [],
+    "panels": [
+     "panel-extension-c3b1b29dce69d467"
+    ]
+   },
+   "expected": "図 6: 枠の背景に設定されたグラデーション枠の背景に設定されたグラデーション ",
+   "replacement": "枠の背景に設定されたグラデーション枠の背景に設定されたグラデーション",
+   "frame": [
+    314.6,
+    702.3,
+    463.9,
+    724.4
+   ],
+   "drawn": [
+    {
+     "text": "図 6: 枠の背景に設定されたグラデーション",
+     "baseline": 710.8,
+     "x0": 315.1,
+     "x1": 461.12
+    },
+    {
+     "text": "枠の背景に設定されたグラデーション ",
+     "baseline": 722.8,
+     "x0": 315.1,
+     "x1": 442.72
+    }
+   ],
+   "output_sha256": "f43f3800ce510a7efa387a66dfdc321ed0a1ce2a40a3264eda374e491266023e"
+  },
+  {
+   "id": "L8",
+   "group": "target",
+   "origin": "paragraph_panel:L8",
+   "document": "lo_newfeatures_ja",
+   "page": 4,
+   "selection": "MSIME2012の予測変換表示",
+   "paragraph": "図 8: MSIME2012の予測変換表示",
+   "box": [
+    223.6,
+    578.45,
+    347.38,
+    586.45
+   ],
+   "lines": 1,
+   "edit": {
+    "old": "MSIME2012の予測変換表示",
+    "new": "MSIME2012の予測変換表示MSIME2012の予測変換表示"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [],
+    "decorations": [],
+    "panels": [
+     "panel-extension-cec2d80630bf818e"
+    ]
+   },
+   "expected": "図 8: MSIME2012の予測変換表示MSIME2012の予測変換表示",
+   "replacement": "MSIME2012の予測変換表示MSIME2012の予測変換表示",
+   "frame": [
+    223.1,
+    576.5,
+    347.88,
+    598.5
+   ],
+   "drawn": [
+    {
+     "text": "図 8: MSIME2012 の予測変換表示",
+     "baseline": 585.0,
+     "x0": 223.6,
+     "x1": 347.38
+    },
+    {
+     "text": "MSIME2012の予測変換表示",
+     "baseline": 597.0,
+     "x0": 223.6,
+     "x1": 325.74
+    }
+   ],
+   "output_sha256": "cfe1b8ccd263383d4c41712665e02df502fb0af70bedf555f1243319e9861deb"
+  },
+  {
+   "id": "S-W2",
+   "group": "extra",
+   "origin": "smoke:W2",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "selection": "感染症対策を円滑かつ適切",
+   "paragraph": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+   "box": [
+    53.88,
+    275.5,
+    547.07,
+    385.06
+   ],
+   "lines": 2,
+   "edit": {
+    "old": "感染症対策を円滑かつ適切に実施いただくよう",
+    "new": "感染症対策を適切に実施いただくよう"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [],
+    "decorations": [],
+    "panels": []
+   },
+   "expected": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を適切に実施いただくようお願いします。 ",
+   "replacement": "感染症対策を適切に実施いただくよう",
+   "frame": [
+    53.38,
+    273.51,
+    547.57,
+    426.9
+   ],
+   "drawn": [
+    {
+     "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、",
+     "baseline": 284.57,
+     "x0": 64.46,
+     "x1": 547.07
+    },
+    {
+     "text": "感染症対策を適切に実施いただくようお願いします。 ",
+     "baseline": 304.37,
+     "x0": 53.88,
+     "x1": 311.34
+    }
+   ],
+   "output_sha256": "22f034623879284b79c9de4dab5c8a4a63fe76bbe2ea100c42b5a00fa1cf5cbc"
+  },
+  {
+   "id": "S-L1",
+   "group": "extra",
+   "origin": "smoke:L1",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "selection": "月下旬にリリース",
+   "paragraph": "LibreOffice 4.1.1が8月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。",
+   "box": [
+    28.5,
+    120.02,
+    566.9,
+    146.72
+   ],
+   "lines": 2,
+   "edit": {
+    "old": "月下旬にリリース",
+    "new": "月上旬にリリース"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": false,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [],
+    "decorations": [],
+    "panels": []
+   },
+   "expected": "LibreOffice 4.1.1が8月上旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。",
+   "replacement": "月上旬にリリース",
+   "frame": [
+    28.0,
+    117.3,
+    567.39,
+    173.5
+   ],
+   "drawn": [
+    {
+     "text": "LibreOffice 4.1.1 が8 月上旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご",
+     "baseline": 128.8,
+     "x0": 34.1,
+     "x1": 566.89
+    },
+    {
+     "text": "紹介します。",
+     "baseline": 144.5,
+     "x0": 28.5,
+     "x1": 84.3
+    }
+   ],
+   "output_sha256": "1c7bc592f002a2424a253b796c2c93272be046eefdf3d1af52263d1d32fe573a"
+  },
+  {
+   "id": "S-L2",
+   "group": "extra",
+   "origin": "smoke:L2",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "selection": "Calcをより使いやすく",
+   "paragraph": "Calcをより使いやすくするための工夫が取り入れられます。",
+   "box": [
+    28.5,
+    240.12,
+    237.33,
+    266.82
+   ],
+   "lines": 2,
+   "edit": {
+    "old": "Calcをより使いやすくするための工夫",
+    "new": "Calcを使いやすくする工夫"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": false,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [],
+    "decorations": [],
+    "panels": []
+   },
+   "expected": "Calcを使いやすくする工夫が取り入れられます。",
+   "replacement": "Calcを使いやすくする工夫",
+   "frame": [
+    28.0,
+    237.4,
+    237.83,
+    274.8
+   ],
+   "drawn": [
+    {
+     "text": "Calc を使いやすくする工夫が取り入れられま",
+     "baseline": 248.9,
+     "x0": 34.1,
+     "x1": 237.33
+    },
+    {
+     "text": "す。",
+     "baseline": 264.6,
+     "x0": 28.5,
+     "x1": 44.49
+    }
+   ],
+   "output_sha256": "58fb9dda33a92b4c748b37843725ed9506e9b4908830975d8e3d61da484f8de6"
+  },
+  {
+   "id": "S-L4",
+   "group": "extra",
+   "origin": "smoke:L4",
+   "document": "lo_migration_ja",
+   "page": 1,
+   "selection": "六つの豊富な機能のアプリ",
+   "paragraph": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。",
+   "box": [
+    56.8,
+    189.24,
+    538.68,
+    432.94
+   ],
+   "lines": 4,
+   "edit": {
+    "old": "六つの豊富な機能のアプリケーション",
+    "new": "六つの豊富で強力な機能のアプリケーション"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [],
+    "decorations": [],
+    "panels": []
+   },
+   "expected": "LibreOfficeは自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富で強力な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーションソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMathです。",
+   "replacement": "六つの豊富で強力な機能のアプリケーション",
+   "frame": [
+    56.3,
+    187.9,
+    539.18,
+    442.14
+   ],
+   "drawn": [
+    {
+     "text": "LibreOffice は自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS",
+     "baseline": 198.9,
+     "x0": 67.3,
+     "x1": 538.68
+    },
+    {
+     "text": "X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富で",
+     "baseline": 221.1,
+     "x0": 56.8,
+     "x1": 538.68
+    },
+    {
+     "text": "強力な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーション",
+     "baseline": 243.3,
+     "x0": 56.8,
+     "x1": 538.68
+    },
+    {
+     "text": "ソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMath です。",
+     "baseline": 265.5,
+     "x0": 56.8,
+     "x1": 467.66
+    }
+   ],
+   "output_sha256": "14490605a3dded10ca68808427d91434875a093580b12ee9a14de0d67e7513df"
+  },
+  {
+   "id": "S-I1",
+   "group": "extra",
+   "origin": "smoke:I1",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "selection": "令和5年の大阪府の自殺者",
+   "paragraph": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "box": [
+    20.94,
+    680.89,
+    244.61,
+    757.64
+   ],
+   "lines": 5,
+   "edit": {
+    "old": "令和5年の大阪府の自殺者数は1,383人",
+    "new": "令和6年の大阪府の自殺者数は1,383人"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [],
+    "decorations": [],
+    "panels": []
+   },
+   "expected": "令和6年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+   "replacement": "令和6年の大阪府の自殺者数は1,383人",
+   "frame": [
+    20.44,
+    678.32,
+    245.11,
+    761.88
+   ],
+   "drawn": [
+    {
+     "text": "令和6年の大阪府の自殺者数は1,383人と、1日に約4",
+     "baseline": 688.38,
+     "x0": 21.17,
+     "x1": 239.6
+    },
+    {
+     "text": "人の方が自殺で亡くなられるという深刻な状況です。",
+     "baseline": 701.49,
+     "x0": 21.16,
+     "x1": 244.61
+    },
+    {
+     "text": "悩みを抱えている人は、ひとりで悩まず専門機関にご",
+     "baseline": 714.6,
+     "x0": 21.19,
+     "x1": 239.5
+    },
+    {
+     "text": "相談ください。また、身近な人の悩みに気づいたら話",
+     "baseline": 727.7,
+     "x0": 21.18,
+     "x1": 239.61
+    },
+    {
+     "text": "を聴いて寄り添いましょう。",
+     "baseline": 740.81,
+     "x0": 20.94,
+     "x1": 138.82
+    }
+   ],
+   "output_sha256": "c81685684e8a823fa2c993635339f68005e0c098e9b1d600afd3e01099c76f67"
+  },
+  {
+   "id": "S-I4",
+   "group": "extra",
+   "origin": "smoke:I4",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "selection": "提供：ダイキン工業・サン",
+   "paragraph": "提供：ダイキン工業・サントリーHD",
+   "box": [
+    215.55,
+    1029.64,
+    291.06,
+    1034.6
+   ],
+   "lines": 1,
+   "edit": {
+    "old": "提供：ダイキン工業・サントリーHD",
+    "new": "提供：ダイキン工業・サントリーホールディングス"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [
+     "following-element-528d3c355b434715",
+     "following-element-83e43af86f4a64b8",
+     "following-element-ea925ec91d764c04"
+    ],
+    "decorations": [],
+    "panels": []
+   },
+   "expected": "提供：ダイキン工業・サントリーホールディングス",
+   "replacement": "提供：ダイキン工業・サントリーホールディングス",
+   "frame": [
+    215.05,
+    1027.96,
+    291.56,
+    1044.88
+   ],
+   "drawn": [
+    {
+     "text": "提供：ダイキン工業・サントリー",
+     "baseline": 1033.42,
+     "x0": 215.55,
+     "x1": 282.4
+    },
+    {
+     "text": "ホールディングス",
+     "baseline": 1040.86,
+     "x0": 215.55,
+     "x1": 253.99
+    }
+   ],
+   "output_sha256": "4d6ab91c57e242a707e7cb7db7ac838b7f050f81e3777d5c73577a4aa1d6a4f0"
+  },
+  {
+   "id": "S-I5",
+   "group": "extra",
+   "origin": "smoke:I5",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "selection": "4/13（日）9：00～",
+   "paragraph": "4/13（日）9：00～9：30",
+   "box": [
+    371.8,
+    1037.86,
+    475.01,
+    1047.07
+   ],
+   "lines": 1,
+   "edit": {
+    "old": "4/13（日）9：00～9：30",
+    "new": "4/13（日）10：00～10：30"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "faithful",
+     "tiers": {
+      "saved": true,
+      "practical": null,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     },
+     "approved_quality": null,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [],
+    "decorations": [],
+    "panels": []
+   },
+   "expected": "4/13（日）10：00～10：30",
+   "replacement": "4/13（日）10：00～10：30",
+   "frame": [
+    371.3,
+    1035.14,
+    523.88,
+    1049.25
+   ],
+   "drawn": [
+    {
+     "text": "4/13（日）10：00～10：30",
+     "baseline": 1044.86,
+     "x0": 371.8,
+     "x1": 473.06
+    }
+   ],
+   "output_sha256": "b77f36f225c0951d7d048d926db4550ea748d1049da0b0627d750fb888f27624"
+  },
+  {
+   "id": "S-A1",
+   "group": "extra",
+   "origin": "smoke:A1",
+   "document": "issue17730",
+   "page": 1,
+   "selection": "Linking to a",
+   "paragraph": "Linking to an internal destination",
+   "box": [
+    56.7,
+    192.07,
+    245.39,
+    204.07
+   ],
+   "lines": 1,
+   "edit": {
+    "old": "Linking to an internal destination",
+    "new": "Linking to an internal destination or an external destination"
+   },
+   "judgement": {
+    "1": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": null,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    },
+    "2": {
+     "outcome": "saved",
+     "mode": "layout",
+     "tiers": {
+      "saved": true,
+      "practical": true,
+      "reedit": true,
+      "restore": true,
+      "refused": false
+     },
+     "approved_quality": true,
+     "approved_audit": true
+    }
+   },
+   "saved": true,
+   "approved": {
+    "chain": [
+     "following-element-4b560011f35df7ca",
+     "following-element-549655b50aa512e5",
+     "following-element-b5ee0edc4775b198"
+    ],
+    "decorations": [],
+    "panels": []
+   },
+   "expected": "Linking to an internal destination or an external destination",
+   "replacement": "Linking to an internal destination or an external destination",
+   "frame": [
+    56.2,
+    189.3,
+    245.9,
+    231.58
+   ],
+   "drawn": [
+    {
+     "text": "Linking to an internal destination ",
+     "baseline": 201.8,
+     "x0": 56.7,
+     "x1": 248.73
+    },
+    {
+     "text": "or an external destination",
+     "baseline": 219.8,
+     "x0": 56.7,
+     "x1": 202.74
+    }
+   ],
+   "output_sha256": "ddcfd6f4e811e9e2f169aa0d22463aee875a49cd656ace7d23fdad47c4757f5f"
+  }
+ ]
+}
