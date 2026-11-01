@@ -159,7 +159,8 @@ def chain_step(code, start, case, old, new, after, output, sub, grow, pitch):
                   continued_editing=ce.reopen(code, output, case['page'], new, after),
                   save={k: save.get(k) for k in ('follower_translation', 'followers_repainted', 'placed_objects_moved', 'decorations_moved',
                                                  'chain_moved', 'panels_extended')},
-                  moves=ce.moves_audit(start, output, case['page'], save), links=ce.links_audit(start, output, case['page'], save))
+                  moves=ce.moves_audit(start, output, case['page'], save), links=ce.links_audit(start, output, case['page'], save),
+                  placement=ce.placement_audit(start, output, case['page'], save), raster=None)
     around = [x0 - 40, y0 - 10, x1 + 40, y1 + 40]
     record['panel'] = dict(before=rects(code, start, case['page'], around), after=rects(code, output, case['page'], around),
                            approved=[c for c in ((proposal['evidence'].get('panels') or {}).get('candidates') or []) if c['id'] in approved['panels']])

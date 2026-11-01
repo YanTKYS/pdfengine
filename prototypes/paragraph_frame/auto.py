@@ -77,17 +77,17 @@ def _panel(c,paragraphs,lines,spec,evidence,page,context):
         if delta>-.001:return None,None
     elif delta<=.001 or deepest+delta<=frame[3]+.01:return None,None
     obstacles=evidence['observed']['obstacles']
+    # Text clipped where its frame stops: the clip, not a panel, stops it (a clip is not extended).
+    clip=spec.get('clip_bottom')
+    if recorded is None and clip is not None and abs(clip-frame[3])<.6:
+        return None,f'the paragraph\'s text is clipped by a rectangle ending at {clip:.2f}; a clip is not extended'
     def stops(b):
         """Whether the panel ``b`` stops the frame: at its bottom, or at its own outline's bottom edge."""
         if abs(b[3]-frame[3])<.6:return True
         edge=[o for o in obstacles if frame[3]-.1<=o['bounds'][1]<=frame[3]+1.6]
         return bool(edge) and all(o['kind']=='vector-border' and abs(o['bounds'][1]-b[3])<=1.5 and abs(o['bounds'][0]-b[0])<=1.5 and abs(o['bounds'][2]-b[2])<=1.5 for o in edge)
     binding=[b for b in evidence['conditions']['containers'] if stops(b)] if recorded is None else [container]
-    if not binding:
-        clip=spec.get('clip_bottom')
-        if clip is not None and abs(clip-frame[3])<.6:
-            return None,f'the paragraph\'s text is clipped by a rectangle ending at {clip:.2f}; a clip is not extended'
-        return None,None
+    if not binding:return None,None
     container=min(binding,key=lambda b:(b[2]-b[0])*(b[3]-b[1]))
     ids=set(paragraphs[0].ids)
     events=[ev for ev in c.events if any(i in ids for ch in ev.chars for i in ch.source_orders)]
@@ -188,7 +188,7 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
         spec['panels']=[grown] if panels else []
         if panels:
             # The frame reaches down to the extended panel's bottom (or up to the shortened one's).
-            spec['frame']=spec['frame'][:3]+[grown['new'][3]]
+            spec['frame']=spec['frame'][:3]+[grown['new'][3] if spec.get('clip_bottom') is None else min(grown['new'][3],spec['clip_bottom'])]
             # The paragraph's approved bottom (stored with it) is the panel's new bottom.
             spec['values']['bottom']=grown['new'][3]
             evidence['inferred']['frame']=spec['frame'];evidence['inferred']['frame_bottom']='approved panel extension: the extended panel\'s bottom'

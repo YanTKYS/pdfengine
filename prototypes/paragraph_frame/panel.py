@@ -173,8 +173,6 @@ def candidate(c, page_number, program, container, dy, obstacles, text_start, rec
             box.y0, box.y1 = box.y0 - .1, box.y1 + .1
         if box.width < .1:
             box.x0, box.x1 = box.x0 - .1, box.x1 + .1
-        if any(max(abs(p - q) for p, q in zip(box, x['rect'] + (-_width(x['state']) / 2,) * 2 + (_width(x['state']) / 2,) * 2)) <= .6 for x in strokes):
-            continue
         inter = box & band
         if inter.is_empty or inter.width <= .01 or inter.height <= .01:
             continue

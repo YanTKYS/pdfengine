@@ -99,6 +99,8 @@ def test_an_approved_extension_moves_only_the_panel_bottom(tmp_path, before):
     (b'q .95 g 20 195 220 70 re f Q\n' + FILL, b'', 'would meet'),
     # Drawn over the paragraph.
     (b'', FILL, 'over the paragraph'),
+    # The text clipped to the panel (a Word text box): the clip is not extended.
+    (FILL + b'q ' + PANEL + b' W n\n', b'Q\n', 'clipped'),
 ])
 def test_what_cannot_be_extended_is_refused_with_its_reason(tmp_path, before, after, reason):
     source = panel_pdf(tmp_path, before, after)
