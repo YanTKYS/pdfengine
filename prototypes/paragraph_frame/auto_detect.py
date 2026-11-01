@@ -14,6 +14,7 @@ from . import auto_conditions as conditions
 from . import auto_flow as flowing
 from .engine import Paragraph, Refused, _check_inbound
 from . import form_write
+from . import panel
 from . import semantics
 from . import text_space
 
@@ -753,7 +754,7 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
             # A stroked outline around every line (a box border) is a frame of
             # the paragraph too: its interior is not painted.
             if o['kind'] in ('filled-vector','image','vector') and all(pymupdf.Rect(o['bounds']).contains(pymupdf.Rect(r['bbox'])) for r in allrows):
-                o['kind']='container';containers.append(o['bounds'])
+                o['drawn']=o['kind'];o['kind']='container';containers.append(o['bounds'])
         obstacles.extend(dict(kind='foreign-text',bounds=list(g['bbox'])) for i,g in enumerate(c.actual) if i not in ids and g['unicode'].strip())
         basis='median within-paragraph observed gaps' if deltas else 'peer paragraph gap' if len(allrows)>1 else 'unobserved: 1.5 em default'
         provenance=dict(left='observed: hanging indent (the following lines start where the text after the first line\'s label starts)' if hanging else
@@ -768,17 +769,19 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         else:
             record=records[n];state['target']=n
             hits=conditions.intrusions(record,selected,obstacles)
+            # Approved panel extensions stored with the paragraph: each panel must
+            # be drawn as approved (its rectangle, operators, paint, colours,
+            # outline and order), else the record is not applied (panel.verify).
+            panels=[dict(x,status=panel.verify(c,{i for r in selected for i in r['glyph_ids']},x)) for x in record.get('panels',[])]
+            wrong=[x for x in panels if x['status']!='drawn as approved']
             if hits:state.update(status='stale: protected paint entered the approved width ('+', '.join(sorted(set(hits)))+')',stale=[n],target=None)
+            elif wrong:state.update(status='stale: an approved panel extension is not drawn as approved ('+wrong[0]['status']+')',stale=[n],target=None,panels=panels)
             else:
                 approved=record['conditions'];left,right,leading=approved['left'],approved['right'],approved['line_height']
                 basis='approved condition stored in the PDF (first approved as: '+record['origin']['provenance']['line_height']+')'
                 provenance={k:'approved: stored record verified against the drawn paragraph' for k in ('left','right','line_height')}|dict(first_x='observed: first line x',bottom='min(stored approved bottom, current protected paint)')
                 state.update(status='applied',applied=True)
-                # Approved panel extensions stored with the paragraph: each is drawn as approved, or reported.
-                if record.get('panels'):
-                    near=lambda a,b:max(abs(p-q) for p,q in zip(a,b))<=.6
-                    state['panels']=[dict(x,status='drawn as approved' if any(near(o['bounds'],x['new']) for o in obstacles if o['kind']=='container') else 'not drawn as approved')
-                                     for x in record['panels']]
+                if panels:state['panels']=panels
         below=[o['bounds'][1] for o in obstacles if o['kind']!='container' and o['bounds'][1]>last+.1 and o['bounds'][0]<right and o['bounds'][2]>left]
         bottom=min(below+[c.page.rect.height])-1
         # The lines below the paragraphs in their column, nearest first: a

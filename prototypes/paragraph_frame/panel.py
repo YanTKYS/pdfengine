@@ -95,11 +95,17 @@ def _plain(state):
     return None
 
 
-def _group(c, program, container):
-    """(the fill, its outlines) drawing the rectangle ``container`` (page bounds of a painted obstacle), or a refusal."""
+def _painted(x):
+    """Page bounds a rectangle's paint covers (an outline reaches half its width out)."""
+    w = _width(x['state']) / 2 if x['paint'] not in ('f', 'F', 'f*') else 0.
+    return x['rect'] + (-w, -w, w, w)
+
+
+def _group(c, program, container, geometry=False):
+    """(the fill, its outlines) drawing the rectangle ``container`` (page bounds of a painted obstacle, or with
+    ``geometry`` the rectangle itself), or a refusal."""
     found = rectangles(c, program)
-    painted = lambda x: x['rect'] + ((-_width(x['state']) / 2,) * 2 + (_width(x['state']) / 2,) * 2 if x['paint'] not in ('f', 'F', 'f*') else (0, 0, 0, 0))
-    hits = [x for x in found if max(abs(p - q) for p, q in zip(painted(x), container)) <= .6]
+    hits = [x for x in found if max(abs(p - q) for p, q in zip(x['rect'] if geometry else _painted(x), container)) <= (TOL if geometry else .6)]
     if not hits:
         raise Refused('the background is not one rectangle drawn in the page content that the edit rewrites')
     geometry = hits[0]['rect']
@@ -176,8 +182,16 @@ def candidate(c, page_number, program, container, dy, obstacles, text_start, rec
         inter = box & band
         if inter.is_empty or inter.width <= .01 or inter.height <= .01:
             continue
+        # A background holding the whole extended panel: the panel already lies
+        # on it; extended, it covers only more of the same plain fill. An image
+        # or any other drawing there would be hidden: refused.
         if o['kind'] in ('container', 'filled-vector', 'image', 'vector') and (box + (TOL, TOL, -TOL, -TOL)).contains(outer):
-            continue
+            drawn = o.get('drawn', o['kind'])
+            if drawn == 'image':
+                raise Refused(f'the extended background would cover part of an image at {[round(v, 1) for v in box]}')
+            if _plain_fill(c, program, box, fill['ordinal']):
+                continue
+            raise Refused(f'the extended background would cover part of a drawing that is not one plain filled rectangle at {[round(v, 1) for v in box]}')
         raise Refused(f"the extended background would meet {o['kind']} at {[round(v, 1) for v in box]}")
     items = [fill] + strokes
     data = c.streams[program[0]]
@@ -194,6 +208,47 @@ def candidate(c, page_number, program, container, dy, obstacles, text_start, rec
                 reason='the paragraph grows past the bottom of the panel holding it' if dy > 0 else 'the paragraph is shorter: the panel goes back',
                 if_not_approved='refused: the paragraph would leave its background' if dy > 0 else 'the panel stays as it is',
                 _program=program, _half=half, _items=[(x['op'].operator.start, x['op'].operator.end, [float(v) for v in x['op'].operator.args], x['ctm']) for x in items])
+
+
+def _plain_fill(c, program, box, before):
+    """Whether ``box`` (page bounds of a painted obstacle) is one opaque rectangle filled in a device colour,
+    with no outline, drawn before ordinal ``before`` of ``program`` (under the panel)."""
+    found = [x for x in rectangles(c, program) if max(abs(p - q) for p, q in zip(_painted(x), box)) <= .6]
+    return (len(found) == 1 and found[0]['paint'] in ('f', 'F', 'f*') and found[0]['ordinal'] < before
+            and not found[0]['text_object'] and _plain(found[0]['state']) is None)
+
+
+def drawn(c, found):
+    """What the approved extension ``found`` leaves drawn, for its record: the rewritten operators, their paint, the style."""
+    return dict(operators=[r.decode('latin1') for _, _, r in edits(c, found)], paints=[o['paint'] for o in found['operators']], style=found['style'])
+
+
+def verify(c, ids, stored):
+    """'drawn as approved' when the panel of the stored extension is drawn now as that save left it: one fill
+    and its outlines of the stored rectangle, the same operators, paint, colours and widths, opaque, under the
+    paragraph (glyph ``ids``); else why not."""
+    if not all(k in stored for k in ('operators', 'paints', 'style')):
+        return 'not drawn as approved: the record does not say how the panel was drawn'
+    programs = {(ev.stream_xref, ev.invocation) for ev in c.events if any(i in ids for ch in ev.chars for i in ch.source_orders)}
+    if len(programs) != 1:
+        return 'not drawn as approved: the paragraph is not drawn in one content stream'
+    program = next(iter(programs))
+    try:
+        fill, strokes = _group(c, program, stored['new'], geometry=True)
+    except Refused as exc:
+        return 'not drawn as approved: ' + str(exc)
+    items = [fill] + strokes
+    data = c.streams[program[0]]
+    text = min(ev.operator.start for ev in c.events if (ev.stream_xref, ev.invocation) == program and any(i in ids for ch in ev.chars for i in ch.source_orders))
+    colour = lambda s: [s[0], [float(v) for v in s[1]]]
+    now = dict(operators=[data[x['op'].operator.start:x['op'].operator.end].decode('latin1') for x in items], paints=[x['paint'] for x in items],
+               style=dict(fill=colour(fill['state'].fill), outline=[dict(colour=colour(x['state'].stroke), width=_width(x['state'])) for x in strokes]))
+    for k in ('operators', 'paints', 'style'):
+        if now[k] != stored[k]:
+            return f'not drawn as approved: its {k} changed'
+    if fill['start'] > text:
+        return 'not drawn as approved: it is drawn over the paragraph'
+    return 'drawn as approved'
 
 
 def public(found):

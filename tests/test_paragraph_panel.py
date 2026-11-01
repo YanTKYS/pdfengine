@@ -184,3 +184,74 @@ def test_the_saved_pdf_alone_finds_the_extension_and_grows_again_on_a_new_approv
     # Longer again: a new extension, approved anew.
     again = candidates(out, GROW[1], GROW[1] + '。郵送の場合は申請書を窓口へ送付してください')
     assert [c['old'][3] for c in again['candidates']] == [113] and again['candidates'][0]['id'] != first
+
+
+# --- PR #113 review: what the extension would hide; the record checked on reopen ---------------
+
+def image_pdf(tmp_path, name='image.pdf'):
+    """A photo behind the panel and its band (drawn first), the panel on it, then the paragraph."""
+    path = tmp_path / name
+    pix = pymupdf.Pixmap(pymupdf.csRGB, pymupdf.IRect(0, 0, 8, 8), False)
+    for x in range(8):
+        for y in range(8):
+            pix.set_pixel(x, y, ((x * 30) % 256, (y * 30) % 256, 120))
+    d = pymupdf.open()
+    p = d.new_page(width=300, height=300)
+    p.insert_image(pymupdf.Rect(20, 30, 280, 250), pixmap=pix)
+    p.insert_font(fontname='Fixture', fontbuffer=cjk_provider_bytes())
+    for x, y, text in LINES[:3]:
+        p.insert_text((x, y), text, fontsize=11, fontname='Fixture')
+    p.clean_contents()
+    xref = p.get_contents()[0]
+    data = d.xref_stream(xref)
+    at = data.index(b'BT')
+    d.update_stream(xref, data[:at] + FILL + data[at:])
+    d.save(path)
+    d.close()
+    return path
+
+
+def test_an_image_the_extension_would_cover_refuses_it(tmp_path):
+    source = image_pdf(tmp_path)
+    found = candidates(source)
+    assert not found.get('candidates') and 'image' in found['unavailable'], found
+    with pytest.raises(Refused):
+        edit(source, tmp_path / 'out.pdf')
+
+
+def test_a_background_drawing_not_proven_plain_refuses_it(tmp_path):
+    # A plain-coloured polygon (not one rectangle) behind the panel and its band.
+    source = panel_pdf(tmp_path, b'q .95 g 20 100 m 260 100 l 260 270 l 20 270 l h f Q\n' + FILL)
+    found = candidates(source)
+    assert not found.get('candidates') and 'not one plain filled rectangle' in found['unavailable'], found
+
+
+@pytest.mark.parametrize('tamper', ['colour', 'outline', 'order'])
+def test_a_saved_panel_changed_alone_is_not_taken_as_approved_on_reopen(tmp_path, tamper):
+    # The saved PDF alone, its panel changed in place (same rectangle, same text): the stored record is not applied.
+    source = panel_pdf(tmp_path, FILL + OUTLINE)
+    out = tmp_path / 'out.pdf'
+    edit(source, out)
+    good = propose(str(out), 1, GROW[1], GROW[0])['evidence']['conditions']
+    assert good['status'] == 'applied' and good['panels'][0]['status'] == 'drawn as approved'
+    bad = tmp_path / 'bad.pdf'
+    with pymupdf.open(out) as d:
+        xref = d[0].get_contents()[0]
+        data = d.xref_stream(xref)
+        if tamper == 'colour':
+            data = data.replace(b'q .9 g 34 187', b'q .8 g 34 187', 1)
+        elif tamper == 'outline':
+            data = data.replace(b'q 0 G 1 w 34 187', b'q 0 G 2 w 34 187', 1)
+        else:
+            # The panel drawn again after the text (over it), at the same place.
+            fill = b'q .9 g 34 187 196 67 re f Q\n'
+            assert fill in data
+            data = data.replace(fill, b'', 1) + b'\n' + fill
+        assert data != d.xref_stream(xref)
+        d.update_stream(xref, data)
+        d.save(bad)
+    p = propose(str(bad), 1, GROW[1], GROW[0])
+    state = p['evidence']['conditions']
+    assert state['status'].startswith('stale: an approved panel extension is not drawn as approved'), state['status']
+    # Nothing follows from the record: no way back is offered for it.
+    assert not (p['evidence'].get('panels') or {}).get('candidates')

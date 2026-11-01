@@ -757,8 +757,9 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
             # The panel extensions approved for this paragraph, the earlier ones
             # that still hold and this edit's (panel): found again on reopen.
             kept=[x for x in (previous or {}).get('panels',[]) if not any(abs(x['new'][3]-y['old'][3])<.05 and abs(x['new'][0]-y['old'][0])<.05 for y in spec.get('panels') or [])]
-            done=kept+[dict(id=x['id'],old=x['old'] if x['extension']>0 else next((k['old'] for k in (previous or {}).get('panels',[]) if abs(k['new'][3]-x['old'][3])<.05),x['old']),
-                            new=x['new'],extension=x['extension'],approval=dict(approval or {})) for x in spec.get('panels') or []]
+            # (Where the panel was before the first approved extension: a later one, longer or shorter, keeps it.)
+            done=kept+[dict(id=x['id'],old=next((k['old'] for k in (previous or {}).get('panels',[]) if abs(k['new'][3]-x['old'][3])<.05),x['old']),
+                            new=x['new'],extension=x['extension'],approval=dict(approval or {}),**panel.drawn(c,x)) for x in spec.get('panels') or []]
             done=[x for x in done if x['new'][3]>x['old'][3]+.05]
             if done:record['panels']=done
             records.append(record)
