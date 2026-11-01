@@ -104,3 +104,6 @@ tmp/
 # Paragraph and row inference (issue #110): manifest (frozen before the implementation) and compact results only.
 !/evaluations/paragraph_rows/manifest.json
 !/evaluations/paragraph_rows/results.json
+# Approved panel extension (issue #112): manifest (frozen before the implementation) and compact results only.
+!/evaluations/paragraph_panel/manifest.json
+!/evaluations/paragraph_panel/results.json
