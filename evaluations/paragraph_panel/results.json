@@ -1227,7 +1227,7 @@
       "unapproved": {
        "outcome": "refused",
        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('複' at [356.6, 635.1, 364.6, 643.1])",
-       "seconds": 3.34
+       "seconds": 3.69
       },
       "outcome": "saved",
       "approved": {
@@ -1466,7 +1466,7 @@
       "panels": {
        "candidates": [
         {
-         "id": "panel-extension-e4237fb7fc20d1fc",
+         "id": "panel-extension-fddcc5c40dc9c2f3",
          "page": 1,
          "old": [
           261.3,
@@ -1515,14 +1515,14 @@
       "unapproved": {
        "outcome": "saved",
        "reason": null,
-       "seconds": 4.92
+       "seconds": 5.32
       },
       "outcome": "saved",
       "approved": {
        "chain": [],
        "decorations": [],
        "panels": [
-        "panel-extension-e4237fb7fc20d1fc"
+        "panel-extension-fddcc5c40dc9c2f3"
        ]
       },
       "lines": [
@@ -1548,7 +1548,7 @@
        "chain_moved": null,
        "panels_extended": [
         {
-         "id": "panel-extension-e4237fb7fc20d1fc",
+         "id": "panel-extension-fddcc5c40dc9c2f3",
          "page": 1,
          "old": [
           261.3,
@@ -1661,7 +1661,7 @@
        ],
        "approved": [
         {
-         "id": "panel-extension-e4237fb7fc20d1fc",
+         "id": "panel-extension-fddcc5c40dc9c2f3",
          "page": 1,
          "old": [
           261.3,
@@ -1871,7 +1871,7 @@
       "unapproved": {
        "outcome": "refused",
        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('枠' at [315.1, 716.3, 323.1, 724.3])",
-       "seconds": 1.76
+       "seconds": 1.84
       },
       "outcome": "saved",
       "approved": {
@@ -2111,7 +2111,7 @@
       "panels": {
        "candidates": [
         {
-         "id": "panel-extension-638cc2e823549a3c",
+         "id": "panel-extension-69102f6be571a5c4",
          "page": 3,
          "old": [
           223.4,
@@ -2160,14 +2160,14 @@
       "unapproved": {
        "outcome": "saved",
        "reason": null,
-       "seconds": 3.71
+       "seconds": 3.84
       },
       "outcome": "saved",
       "approved": {
        "chain": [],
        "decorations": [],
        "panels": [
-        "panel-extension-638cc2e823549a3c"
+        "panel-extension-69102f6be571a5c4"
        ]
       },
       "lines": [
@@ -2194,7 +2194,7 @@
        "chain_moved": null,
        "panels_extended": [
         {
-         "id": "panel-extension-638cc2e823549a3c",
+         "id": "panel-extension-69102f6be571a5c4",
          "page": 3,
          "old": [
           223.4,
@@ -2307,7 +2307,7 @@
        ],
        "approved": [
         {
-         "id": "panel-extension-638cc2e823549a3c",
+         "id": "panel-extension-69102f6be571a5c4",
          "page": 3,
          "old": [
           223.4,
@@ -2517,7 +2517,7 @@
       "unapproved": {
        "outcome": "refused",
        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('M' at [223.6, 590.5, 230.8, 598.5])",
-       "seconds": 2.22
+       "seconds": 2.15
       },
       "outcome": "saved",
       "approved": {
@@ -2758,7 +2758,7 @@
       "panels": {
        "candidates": [
         {
-         "id": "panel-extension-b8646d962516cf29",
+         "id": "panel-extension-262a8d98773e680d",
          "page": 4,
          "old": [
           145.2,
@@ -2807,14 +2807,14 @@
       "unapproved": {
        "outcome": "saved",
        "reason": null,
-       "seconds": 3.69
+       "seconds": 3.36
       },
       "outcome": "saved",
       "approved": {
        "chain": [],
        "decorations": [],
        "panels": [
-        "panel-extension-b8646d962516cf29"
+        "panel-extension-262a8d98773e680d"
        ]
       },
       "lines": [
@@ -2842,7 +2842,7 @@
        "chain_moved": null,
        "panels_extended": [
         {
-         "id": "panel-extension-b8646d962516cf29",
+         "id": "panel-extension-262a8d98773e680d",
          "page": 4,
          "old": [
           145.2,
@@ -2955,7 +2955,7 @@
        ],
        "approved": [
         {
-         "id": "panel-extension-b8646d962516cf29",
+         "id": "panel-extension-262a8d98773e680d",
          "page": 4,
          "old": [
           145.2,
@@ -3115,7 +3115,7 @@
       "unapproved": {
        "outcome": "refused",
        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])",
-       "seconds": 2.19
+       "seconds": 2.28
       },
       "outcome": "refused",
       "approved": {
@@ -3141,7 +3141,7 @@
       "unapproved": {
        "outcome": "refused",
        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])",
-       "seconds": 2.96
+       "seconds": 3.17
       },
       "outcome": "refused",
       "approved": {
@@ -3586,7 +3586,7 @@
       "unapproved": {
        "outcome": "refused",
        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('く' at [527.7, 779.2, 534.1, 785.6])",
-       "seconds": 39.65
+       "seconds": 37.98
       },
       "outcome": "refused",
       "approved": {
@@ -3622,7 +3622,7 @@
       "unapproved": {
        "outcome": "refused",
        "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])",
-       "seconds": 13.91
+       "seconds": 13.67
       },
       "outcome": "refused",
       "approved": {
