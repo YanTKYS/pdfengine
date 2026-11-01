@@ -27,8 +27,13 @@ and the saved page is checked against it:
   joined text reported apart), the edited paragraph keeps its sizes and
   colours. ``pass`` only when every check was made and passed.
 
-A change kind this audit cannot check yet (a stretched background, changed
-line spacing: issue #107 allows them on approval, later) makes the verdict
+An approved panel extension (issue #112) is checked too: the panel's
+drawings are found in the output with their rectangle extended exactly as
+approved (0.02 pt), every other drawing is unchanged, and only the band the
+extension adds is left out of the pixel comparison.
+
+A change kind this audit cannot check yet (changed line spacing: issue #107
+allows it on approval, later) makes the verdict
 ``unverified``, never ``pass``. Each part is ``pass``, ``fail`` or
 ``not applicable`` with its reasons; ``verdict`` is ``pass`` only when
 approval, approved and protected pass.
@@ -48,7 +53,7 @@ import pymupdf
 from pypdf import PdfReader
 
 TOL = .01
-KINDS = ('text', 'translate')
+KINDS = ('text', 'translate', 'panel')
 
 
 def _rect(r):
@@ -101,6 +106,9 @@ def change_set(proposal, save, followers=None):
             old, new = _rect(m['old']), _rect(m['new'])
             changes.append(dict(kind='translate', what=kind.replace('_moved', '').replace('_', ' '), approval=approval, id=m.get('id'),
                                 old=list(old), dy=new.y0 - old.y0, annotations=m.get('annotations') or []))
+    for m in save.get('panels_extended') or []:
+        changes.append(dict(kind='panel', what='panel extension', approval='panels', id=m.get('id'), old=m['old'], new=m['new'],
+                            band=m['band'], dy=m['extension']))
     return changes
 
 
@@ -115,7 +123,7 @@ def approval_check(source, proposal, save):
         reasons.append('the save record is not of this proposal')
     if proposal.get('source_sha256') and proposal['source_sha256'] != _sha(source):
         reasons.append('the proposal is not of this source')
-    for part, key in (('chain', 'chain_moved'), ('decorations', 'decorations_moved')):
+    for part, key in (('chain', 'chain_moved'), ('decorations', 'decorations_moved'), ('panels', 'panels_extended')):
         approved = set(proposal.get(part) or [])
         moved = {m['id'] for m in save.get(key) or [] if m.get('id')}
         if approved - _candidates(proposal, part):
@@ -148,7 +156,12 @@ def _glyphs(page):
 
 
 def _drawings(page):
-    return [(x.get('type'), str(x.get('fill')), str(x.get('color')), str(x.get('width')), pymupdf.Rect(x['rect'])) for x in page.get_drawings()]
+    return _drawings_of(page.get_drawings())
+
+
+def _drawings_of(drawings):
+    # (A rectangle read back in single precision: to 0.001 pt.)
+    return [(x.get('type'), str(x.get('fill')), str(x.get('color')), str(x.get('width')), pymupdf.Rect([round(v, 3) for v in x['rect']])) for x in drawings]
 
 
 def _images(page):
@@ -221,6 +234,7 @@ def audit(source, output, page_number=None, proposal=None, save=None):
     unchecked = [c for c in changes if c['kind'] not in KINDS]
     text = next(c for c in changes if c['kind'] == 'text')
     moves = [c for c in changes if c['kind'] == 'translate']
+    panels = [c for c in changes if c['kind'] == 'panel']
     edited_old, edited_new = _rect(text['old']), _rect(text['new'])
     olds = [_rect(c['old']) for c in moves]
     news = [_rect(c['old']) + (0, c['dy'], 0, c['dy']) for c in moves]
@@ -293,6 +307,27 @@ def audit(source, output, page_number=None, proposal=None, save=None):
             approved.append(dict(what=c['what'], id=c.get('id'), approval=c['approval'], dy=round(dy, 3), glyphs=len(g_want), drawings=len(d_want),
                                  images=len(i_want), shading_rasters=sum(isinstance(k, tuple) for k, _ in i_want),
                                  status='fail' if reasons else 'pass', reasons=reasons))
+        # A panel extension: the source drawings with the panel's rectangle extended as approved are the output's (all of them).
+        if panels:
+            from .panel import expected_drawings
+            from .placed_move import paint_key
+            plain = lambda ds: [{k: v for k, v in x.items() if k != 'seqno'} for x in ds]
+            want = plain(pa.get_drawings())
+            reasons = []
+            for c in panels:
+                try:
+                    want = expected_drawings(want, c)
+                except Exception as exc:
+                    reasons.append(str(exc))
+            got = Counter(paint_key(x) for x in plain(pb.get_drawings()))
+            exp = Counter(paint_key(x) for x in want)
+            if exp != got:
+                reasons.append(f'drawings differ from the approved extension: {sum((exp - got).values())} expected not found, {sum((got - exp).values())} other')
+            for c in panels:
+                approved.append(dict(what='panel', id=c.get('id'), approval='panels', dy=c['dy'], old=c['old'], new=c['new'],
+                                     status='fail' if reasons else 'pass', reasons=reasons))
+            # Every drawing of the output is the approved expectation (above): the drawing comparison below uses it.
+            da = _drawings_of(want)
         # The text change: the new text is drawn inside the approved frame (MuPDF, the frame's text without spaces and line breaks).
         bare = lambda t: ''.join(t.split())
         drawn = bare(text['replace'][1]) in bare(pb.get_text(clip=edited_new + (-2, -2, 2, 2)))
@@ -313,7 +348,7 @@ def audit(source, output, page_number=None, proposal=None, save=None):
         for dpi in (72, 150):
             m = pymupdf.Matrix(dpi / 72, dpi / 72)
             xa, xb = pa.get_pixmap(matrix=m, alpha=False), pb.get_pixmap(matrix=m, alpha=False)
-            for r in areas:
+            for r in areas + [_rect(c['band']) for c in panels]:
                 box = ((r + (-2, -2, 2, 2)) * m).irect
                 xa.set_rect(box, (255, 255, 255))
                 xb.set_rect(box, (255, 255, 255))
@@ -348,7 +383,7 @@ def audit(source, output, page_number=None, proposal=None, save=None):
     verdict = 'fail' if 'fail' in parts else 'unverified' if unchecked else 'pass'
     return dict(verdict=verdict, approval=approval, approved=approved, protected=protected, quality=quality,
                 unchecked=[c['kind'] for c in unchecked], changes=len(changes),
-                mode='layout' if any(c['what'] != 'following paragraphs' for c in moves) else 'faithful')
+                mode='layout' if panels or any(c['what'] != 'following paragraphs' for c in moves) else 'faithful')
 
 
 def _styles(path, page, area, away):

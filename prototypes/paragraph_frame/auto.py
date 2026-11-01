@@ -15,6 +15,7 @@ from . import auto_restore as restore
 from .auto_flow import place,region_of
 from .auto_writer import decoration_candidates,follower_delta,write
 from . import chain as following
+from . import panel as panels_
 from .engine import Refused,sha
 
 
@@ -57,7 +58,47 @@ def _flow_moves(paragraphs,spec,moves):
     return [{i:(dx,dy) for row,dx,dy,_ in rows for i in row['glyph_ids']} for rows in active],active
 
 
-def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=(),decorations=(),chain=()):
+def _panel(c,paragraphs,lines,spec,evidence,page,context):
+    """The extension of the panel whose bottom stops the paragraph's growth (panel), or None; and why none is offered."""
+    if spec.get('mode')=='flow':return None,None
+    delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
+    rows=evidence['observed']['lines'];frame=spec['frame']
+    deepest=max(r['bbox'][3] for r in rows)
+    recorded=None
+    if delta<-.001:
+        # Shorter: a panel an earlier approved edit of this paragraph extended
+        # may go back, no higher than it was before that edit.
+        stored=spec['stored'];record=stored['records'][stored['target']] if stored.get('applied') else {}
+        for x in record.get('panels',[]):
+            hit=[b for b in evidence['conditions']['containers'] if max(abs(p-q) for p,q in zip(b,x['new']))<=.6]
+            if hit:recorded,container=x,hit[0]
+        if recorded is None:return None,None
+        delta=max(delta,recorded['old'][3]-container[3])
+        if delta>-.001:return None,None
+    elif delta<=.001 or deepest+delta<=frame[3]+.01:return None,None
+    obstacles=evidence['observed']['obstacles']
+    def stops(b):
+        """Whether the panel ``b`` stops the frame: at its bottom, or at its own outline's bottom edge."""
+        if abs(b[3]-frame[3])<.6:return True
+        edge=[o for o in obstacles if frame[3]-.1<=o['bounds'][1]<=frame[3]+1.6]
+        return bool(edge) and all(o['kind']=='vector-border' and abs(o['bounds'][1]-b[3])<=1.5 and abs(o['bounds'][0]-b[0])<=1.5 and abs(o['bounds'][2]-b[2])<=1.5 for o in edge)
+    binding=[b for b in evidence['conditions']['containers'] if stops(b)] if recorded is None else [container]
+    if not binding:
+        clip=spec.get('clip_bottom')
+        if clip is not None and abs(clip-frame[3])<.6:
+            return None,f'the paragraph\'s text is clipped by a rectangle ending at {clip:.2f}; a clip is not extended'
+        return None,None
+    container=min(binding,key=lambda b:(b[2]-b[0])*(b[3]-b[1]))
+    ids=set(paragraphs[0].ids)
+    events=[ev for ev in c.events if any(i in ids for ch in ev.chars for i in ch.source_orders)]
+    programs={(ev.stream_xref,ev.invocation) for ev in events}
+    if len(programs)!=1:return None,'the paragraph is drawn in more than one content stream'
+    program=next(iter(programs))
+    try:return panels_.candidate(c,page,program,container,delta,obstacles,min(ev.operator.start for ev in events),recorded,context),None
+    except Refused as exc:return None,str(exc)
+
+
+def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=(),decorations=(),chain=(),panels=()):
     start=time.perf_counter();c,paragraphs,spec,at,evidence=detect(source,page,selection,occurrence,stored,continuation);observed=time.perf_counter()
     try:
         # A single-column paragraph keeps what the edit does not change where
@@ -137,6 +178,24 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
         if found or unavailable:
             evidence['decorations']=dict(candidates=[g['evidence'] for g in found.values()],
                                          unavailable=[dict(paragraph=paragraphs[k].text[:40],reason=r) for k,r in sorted(unavailable.items())])
+        # The panel holding the paragraph, when its growth passes the panel's
+        # bottom: listed with its evidence; it grows only when approved by id.
+        # (The id names this edit of this source: it approves nothing else.)
+        grown,why=_panel(c,paragraphs,lines,spec,evidence,page,[sha(source),selection,replacement,occurrence])
+        if grown or why:evidence['panels']=dict(candidates=[panels_.public(grown)] if grown else [],unavailable=why)
+        listed_panels=[grown['id']] if grown else []
+        if set(panels)-set(listed_panels):raise Refused('an approved panel extension is not a candidate of this edit: '+', '.join(sorted(set(panels)-set(listed_panels))))
+        spec['panels']=[grown] if panels else []
+        if panels:
+            # The frame reaches down to the extended panel's bottom (or up to the shortened one's).
+            spec['frame']=spec['frame'][:3]+[grown['new'][3]]
+            # The paragraph's approved bottom (stored with it) is the panel's new bottom.
+            spec['values']['bottom']=grown['new'][3]
+            evidence['inferred']['frame']=spec['frame'];evidence['inferred']['frame_bottom']='approved panel extension: the extended panel\'s bottom'
+            evidence['conditions']['containers']=[grown['new'] if abs(b[3]-grown['old'][3])<.6 and abs(b[0]-grown['old'][0])<.6 else b for b in evidence['conditions']['containers']]
+            # The panel's own paint (its fill, its outline's edges) is where the approved extension draws it.
+            mine=lambda o:panels_.owned(o,grown)
+            evidence['observed']['obstacles']=[o for o in evidence['observed']['obstacles'] if not mine(o)]+[dict(kind='container',bounds=grown['new'])]
         public=dict(schema='auto-paragraph-frame-1',source_sha256=sha(source),page=page,selection=selection,replacement=replacement,occurrence=occurrence,
           substitute=substitute,stored_conditions=stored,evidence=evidence,source_styles=describe(c,paragraphs),paragraphs=[p.text for p in paragraphs],expected=paragraphs[0].text[:at]+replacement+paragraphs[0].text[at+len(selection):],
           lines=[dict(text=l['text'],baseline=l['baseline'],**({'region':l['region']} if 'region' in l else {}),**({'kept':l['kept']} if 'kept' in l else {}),
@@ -152,6 +211,9 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
         if chain:
             public['chain']=sorted(chain)
             public['required_approval'].append('following elements moved with the paragraph (chain): '+', '.join(sorted(chain)))
+        if panels:
+            public['panels']=sorted(panels)
+            public['required_approval'].append('panel extended down with the paragraph (its bottom only): '+', '.join(sorted(panels)))
         if decorations:
             public['decorations']=sorted(decorations)
             public['required_approval'].append('line decorations moved with their following paragraph: '+', '.join(sorted(decorations)))
@@ -172,7 +234,7 @@ def _glyph_area(c,paragraph):
     return list(out)
 
 
-def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True,continuation=(),decorations=(),chain=()):
+def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True,continuation=(),decorations=(),chain=(),panels=()):
     """``stored_conditions=False`` ignores conditions stored by earlier saves (inference only).
 
     ``continuation`` lists candidate column links (``column a->b`` ids from a
@@ -183,22 +245,25 @@ def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,sto
     ``chain`` lists the following elements (``following-element-…`` ids from a
     previous proposal's ``evidence.chain``) that the user explicitly approves
     to move with the paragraph; a chain moves only with every element approved.
+    ``panels`` lists the panel extensions (``panel-extension-…`` ids from a
+    previous proposal's ``evidence.panels``) that the user explicitly approves
+    for this edit.
     """
-    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions,tuple(continuation),tuple(sorted(set(decorations))),tuple(sorted(set(chain))))
+    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions,tuple(continuation),tuple(sorted(set(decorations))),tuple(sorted(set(chain))),tuple(sorted(set(panels))))
     planned[0].close();return planned[-2]
 
 
 def approve(source,proposal,*,acknowledge_inference=False):
     if acknowledge_inference is not True:raise Refused('explicit inference/format approval required')
     again=propose(source,proposal['page'],proposal['selection'],proposal['replacement'],occurrence=proposal['occurrence'],substitute=proposal['substitute'],
-                  stored_conditions=proposal.get('stored_conditions',True),continuation=proposal.get('continuation',()),decorations=proposal.get('decorations',()),chain=proposal.get('chain',()))
+                  stored_conditions=proposal.get('stored_conditions',True),continuation=proposal.get('continuation',()),decorations=proposal.get('decorations',()),chain=proposal.get('chain',()),panels=proposal.get('panels',()))
     if again!=proposal:raise Refused('stale or altered proposal')
     return dict(proposal=again,approved=True,approval_count=1)
 
 
 def save(source,acceptance,output):
     if acceptance.get('approved') is not True:raise Refused('explicit approval missing')
-    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True),tuple(p.get('continuation',())),tuple(p.get('decorations',())),tuple(p.get('chain',())))
+    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True),tuple(p.get('continuation',())),tuple(p.get('decorations',())),tuple(p.get('chain',())),tuple(p.get('panels',())))
     c,paragraphs,spec,evidence,fonts,lines,again,timing=planned
     try:
         if p!=again:raise Refused('stale or altered accepted proposal')

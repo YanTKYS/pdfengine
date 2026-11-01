@@ -774,6 +774,11 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
                 basis='approved condition stored in the PDF (first approved as: '+record['origin']['provenance']['line_height']+')'
                 provenance={k:'approved: stored record verified against the drawn paragraph' for k in ('left','right','line_height')}|dict(first_x='observed: first line x',bottom='min(stored approved bottom, current protected paint)')
                 state.update(status='applied',applied=True)
+                # Approved panel extensions stored with the paragraph: each is drawn as approved, or reported.
+                if record.get('panels'):
+                    near=lambda a,b:max(abs(p-q) for p,q in zip(a,b))<=.6
+                    state['panels']=[dict(x,status='drawn as approved' if any(near(o['bounds'],x['new']) for o in obstacles if o['kind']=='container') else 'not drawn as approved')
+                                     for x in record['panels']]
         below=[o['bounds'][1] for o in obstacles if o['kind']!='container' and o['bounds'][1]>last+.1 and o['bounds'][0]<right and o['bounds'][2]>left]
         bottom=min(below+[c.page.rect.height])-1
         # The lines below the paragraphs in their column, nearest first: a
@@ -799,11 +804,14 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
         # Ink outside the clip the text is drawn under (a table cell, a text
         # box) would not show: rectangular clips bound the frame too.
         own={i for r in selected for i in r['glyph_ids']}-set(target_paragraph.fixed)
+        clip_bottom=None
         for e in c.events:
             if not any(i in own for ch in e.chars for i in ch.source_orders):continue
             for clip in e.state.clip:
                 box=form_write.clip_rect(clip,c.page.transformation_matrix)
-                if box is not None:frame=[max(frame[0],box.x0),max(frame[1],box.y0),min(frame[2],box.x1),min(frame[3],box.y1)];limit=min(limit,box.y1)
+                if box is not None:
+                    frame=[max(frame[0],box.x0),max(frame[1],box.y0),min(frame[2],box.x1),min(frame[3],box.y1)];limit=min(limit,box.y1)
+                    clip_bottom=box.y1 if clip_bottom is None else min(clip_bottom,box.y1)
         # A cell's width never runs past what the frame shows (its clip or container).
         if cell is not None and not state['applied']:right=max(max(r['pen_end'] for r in allrows),min(right,frame[2]-.5))
         paragraphs=[target_paragraph]+follower_paragraphs
@@ -813,7 +821,8 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
             inferred=dict(frame=frame,left=left,right=right,first_x=first,baseline=selected[0]['baseline'],line_height=leading,leading_basis=basis,paragraph_gap=[g[0]['baseline']-h[-1]['baseline'] for h,g in zip(allgroups,allgroups[1:])],baseline_policy='existing target line baselines are observed and retained; added lines use the approved or inferred leading'),
             conditions=dict(status=state['status'],applied=state['applied'],provenance=provenance,origin=origin,
                             approval_count=records[state['target']]['approval']['count'] if state['applied'] else 0,
-                            stale_records=len(state['stale']),containers=containers,implicit_line_join_spaces=len(paragraphs[0].joins),line_end_hyphens=len(paragraphs[0].hyphens)),
+                            stale_records=len(state['stale']),containers=containers,implicit_line_join_spaces=len(paragraphs[0].joins),line_end_hyphens=len(paragraphs[0].hyphens),
+                            **({'panels':state['panels']} if state.get('panels') else {})),
             confidence=dict(paragraph='approved: stored record matched every drawn line' if state['applied'] else 'high: ordered P children' if paragraphs[0].parent else 'medium: indentation, spacing and style continuity',
                             right='approved: stored condition' if state['applied'] else 'medium: maximum occupied pen extent; author frame absent',bottom='medium: next protected paint/annotation or page edge',top='medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked'),
             selection_match_count=len(matches),warnings=['Occupied width is an inferred capacity, not a stored author frame.','Following same-column paragraphs may translate; protected content never moves.'],manual_geometry_inputs=0)
@@ -869,7 +878,7 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
                   below=None if block_below is None else dict(baseline=round(block_below,5),follower=bool(followers) and abs(followers[0][0]['baseline']-block_below)<1e-6),
                   # What follows the paragraphs in their column (chain): its
                   # lines, and the bottom of what they drew.
-                  chain_rows=chain_rows,last_bottom=last,frame_limit=limit,movable=lambda ids,rows:movable_line(c,marks,ids,rows),
+                  chain_rows=chain_rows,last_bottom=last,frame_limit=limit,clip_bottom=clip_bottom,movable=lambda ids,rows:movable_line(c,marks,ids,rows),
                   # The drawn lines of the edited paragraph: local layout keeps
                   # what the edit does not change where it is (auto_local).
                   source_rows=source_rows(c,selected))
