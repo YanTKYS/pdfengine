@@ -26,6 +26,9 @@ and the saved page is checked against it:
   replacement broken over lines is not searched: unverified, its lines'
   joined text reported apart), the edited paragraph keeps its sizes and
   colours. ``pass`` only when every check was made and passed.
+  ``quality.search_copy`` holds the search and copy measures of
+  search_copy (issue #114), tied to the edited paragraph's lines; they are
+  reported beside the status and do not change it.
 
 An approved panel extension (issue #112) is checked too: the panel's
 drawings are found in the output with their rectangle extended exactly as
@@ -379,6 +382,13 @@ def audit(source, output, page_number=None, proposal=None, save=None):
     protected = dict(status='fail' if reasons else 'pass', reasons=reasons, pixels=pixels, annotations=len(aa))
     approval = approval_check(source, proposal, save)
     quality = _quality(source, output, page_number, text, edited_old, edited_new, olds + news)
+    # Search and copy measured apart (issue #114): reported beside the quality above, which they do not change.
+    try:
+        from . import search_copy
+        expected, new, at, frame, baselines = search_copy.target(proposal)
+        quality['search_copy'] = search_copy.measure(output, page_number, expected, new, at, frame, baselines, source, search_copy.before(proposal))
+    except Exception as exc:  # a measure that cannot be made is reported, never a pass
+        quality['search_copy'] = dict(error=f'{type(exc).__name__}: {exc}'[:300])
     parts = [approval['status'], protected['status']] + [x['status'] for x in approved]
     verdict = 'fail' if 'fail' in parts else 'unverified' if unchecked else 'pass'
     return dict(verdict=verdict, approval=approval, approved=approved, protected=protected, quality=quality,

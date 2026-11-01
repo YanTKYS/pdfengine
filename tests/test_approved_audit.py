@@ -178,6 +178,11 @@ def test_a_replacement_broken_over_lines_is_not_reported_as_found(tmp_path):
     proposal, record = saved(source, out, chain=[])
     q = audit(source, out, 1, proposal, record)['quality']
     assert q['search_mupdf'] is None and q['search_wrapped_lines_text'] is True and q['status'] == 'unverified'
+    # Measured apart (issue #114), beside the status they do not change: no one search finds it; each line's part
+    # is found on its line; both extractors read the paragraph and the replacement's area as expected.
+    m = q['search_copy']
+    assert m['search_full'] is False and m['search_per_line'] is True and m['clipboard_manual'] is None
+    assert m['extraction_mupdf'] is True and m['extraction_poppler'] is True and m['copy_equivalent'] is True
 
 
 def test_a_duplicate_where_overlapping_moves_went_fails(tmp_path):
