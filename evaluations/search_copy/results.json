@@ -1,0 +1,1334 @@
+{
+ "schema": "search-copy-results-1",
+ "manifest_sha256": "57b120db1c1013a06b2f9f5ae08a42141231f08f540a8c13a508d9fc92292699",
+ "summary": {
+  "target": {
+   "search_full": {
+    "false": 3
+   },
+   "search_per_line": {
+    "true": 2,
+    "false": 1
+   },
+   "extraction_mupdf": {
+    "true": 2,
+    "false": 1
+   },
+   "extraction_poppler": {
+    "true": 2,
+    "false": 1
+   },
+   "copy_equivalent": {
+    "true": 2,
+    "false": 1
+   },
+   "clipboard_manual": {
+    "none": 3
+   }
+  },
+  "extra": {
+   "search_full": {
+    "true": 5,
+    "false": 3
+   },
+   "search_per_line": {
+    "none": 5,
+    "true": 3
+   },
+   "extraction_mupdf": {
+    "true": 5,
+    "false": 3
+   },
+   "extraction_poppler": {
+    "true": 5,
+    "false": 3
+   },
+   "copy_equivalent": {
+    "true": 7,
+    "false": 1
+   },
+   "clipboard_manual": {
+    "none": 8
+   }
+  }
+ },
+ "results": {
+  "L2": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "図 2: 複数ページフィールド選択",
+     "baseline": 629.6,
+     "x0": 356.6,
+     "x1": 464.36
+    },
+    {
+     "text": "複数ページフィールド選択",
+     "baseline": 641.6,
+     "x0": 356.6,
+     "x1": 443.99
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": null,
+    "search_wrapped_lines_text": true,
+    "size_and_colour_kept": true,
+    "status": "unverified",
+    "search_copy": {
+     "search_full": false,
+     "search_per_line": true,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null,
+     "gaps": [],
+     "search_full_hits": {
+      "total": 0,
+      "on_target": 0,
+      "elsewhere": 0,
+      "lines": 2
+     },
+     "search_per_line_parts": [
+      {
+       "line": 0,
+       "text": "複数ページフィールド選択",
+       "found": true,
+       "continuous": true
+      },
+      {
+       "line": 1,
+       "text": "複数ページフィールド選択",
+       "found": true,
+       "continuous": true
+      }
+     ],
+     "extraction_mupdf_detail": {
+      "ok": true
+     },
+     "extraction_poppler_detail": {
+      "ok": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": true
+      },
+      "poppler": {
+       "ok": true
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "layout",
+   "measures": {
+    "search_full": false,
+    "search_per_line": true,
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "copy_equivalent": true,
+    "clipboard_manual": null,
+    "gaps": [],
+    "search_full_hits": {
+     "total": 0,
+     "on_target": 0,
+     "elsewhere": 0,
+     "lines": 2
+    },
+    "search_per_line_parts": [
+     {
+      "line": 0,
+      "text": "複数ページフィールド選択",
+      "found": true,
+      "continuous": true
+     },
+     {
+      "line": 1,
+      "text": "複数ページフィールド選択",
+      "found": true,
+      "continuous": true
+     }
+    ],
+    "extraction_mupdf_detail": {
+     "ok": true
+    },
+    "extraction_poppler_detail": {
+     "ok": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": true
+     },
+     "poppler": {
+      "ok": true
+     }
+    }
+   }
+  },
+  "L6": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "図 6: 枠の背景に設定されたグラデーション",
+     "baseline": 710.8,
+     "x0": 315.1,
+     "x1": 461.12
+    },
+    {
+     "text": "枠の背景に設定されたグラデーション ",
+     "baseline": 722.8,
+     "x0": 315.1,
+     "x1": 442.72
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": null,
+    "search_wrapped_lines_text": true,
+    "size_and_colour_kept": true,
+    "status": "unverified",
+    "search_copy": {
+     "search_full": false,
+     "search_per_line": true,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null,
+     "gaps": [],
+     "search_full_hits": {
+      "total": 0,
+      "on_target": 0,
+      "elsewhere": 0,
+      "lines": 2
+     },
+     "search_per_line_parts": [
+      {
+       "line": 0,
+       "text": "枠の背景に設定されたグラデーション",
+       "found": true,
+       "continuous": true
+      },
+      {
+       "line": 1,
+       "text": "枠の背景に設定されたグラデーション",
+       "found": true,
+       "continuous": true
+      }
+     ],
+     "extraction_mupdf_detail": {
+      "ok": true
+     },
+     "extraction_poppler_detail": {
+      "ok": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": true
+      },
+      "poppler": {
+       "ok": true
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "layout",
+   "measures": {
+    "search_full": false,
+    "search_per_line": true,
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "copy_equivalent": true,
+    "clipboard_manual": null,
+    "gaps": [],
+    "search_full_hits": {
+     "total": 0,
+     "on_target": 0,
+     "elsewhere": 0,
+     "lines": 2
+    },
+    "search_per_line_parts": [
+     {
+      "line": 0,
+      "text": "枠の背景に設定されたグラデーション",
+      "found": true,
+      "continuous": true
+     },
+     {
+      "line": 1,
+      "text": "枠の背景に設定されたグラデーション",
+      "found": true,
+      "continuous": true
+     }
+    ],
+    "extraction_mupdf_detail": {
+     "ok": true
+    },
+    "extraction_poppler_detail": {
+     "ok": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": true
+     },
+     "poppler": {
+      "ok": true
+     }
+    }
+   }
+  },
+  "L8": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "図 8: MSIME2012 の予測変換表示",
+     "baseline": 585.0,
+     "x0": 223.6,
+     "x1": 347.38
+    },
+    {
+     "text": "MSIME2012の予測変換表示",
+     "baseline": 597.0,
+     "x0": 223.6,
+     "x1": 325.74
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": null,
+    "search_wrapped_lines_text": true,
+    "size_and_colour_kept": true,
+    "status": "unverified",
+    "search_copy": {
+     "search_full": false,
+     "search_per_line": false,
+     "extraction_mupdf": false,
+     "extraction_poppler": false,
+     "copy_equivalent": false,
+     "clipboard_manual": null,
+     "gaps": [
+      {
+       "line": 0,
+       "between": "2の",
+       "from_source": true
+      }
+     ],
+     "search_full_hits": {
+      "total": 0,
+      "on_target": 0,
+      "elsewhere": 0,
+      "lines": 2
+     },
+     "search_per_line_parts": [
+      {
+       "line": 0,
+       "text": "MSIME2012の予測変換表示",
+       "found": false,
+       "continuous": true,
+       "drawn": "MSIME2012 の予測変換表示",
+       "as_in_source": true
+      },
+      {
+       "line": 1,
+       "text": "MSIME2012の予測変換表示",
+       "found": true,
+       "continuous": true
+      }
+     ],
+     "extraction_mupdf_detail": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "SIME2012 の予測変換表示MSIM",
+      "want": "SIME2012の予測変換表示MSIME",
+      "at": 14,
+      "as_in_source": true
+     },
+     "extraction_poppler_detail": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "SIME2012 の予測変換表示MSIM",
+      "want": "SIME2012の予測変換表示MSIME",
+      "at": 14,
+      "as_in_source": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": false,
+       "whitespace_only": true,
+       "got": "SIME2012 の予測変換表示MSIM",
+       "want": "SIME2012の予測変換表示MSIME",
+       "at": 9
+      },
+      "poppler": {
+       "ok": false,
+       "whitespace_only": true,
+       "got": "SIME2012 の予測変換表示MSIM",
+       "want": "SIME2012の予測変換表示MSIME",
+       "at": 9
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "layout",
+   "measures": {
+    "search_full": false,
+    "search_per_line": false,
+    "extraction_mupdf": false,
+    "extraction_poppler": false,
+    "copy_equivalent": false,
+    "clipboard_manual": null,
+    "gaps": [
+     {
+      "line": 0,
+      "between": "2の",
+      "from_source": true
+     }
+    ],
+    "search_full_hits": {
+     "total": 0,
+     "on_target": 0,
+     "elsewhere": 0,
+     "lines": 2
+    },
+    "search_per_line_parts": [
+     {
+      "line": 0,
+      "text": "MSIME2012の予測変換表示",
+      "found": false,
+      "continuous": true,
+      "drawn": "MSIME2012 の予測変換表示",
+      "as_in_source": true
+     },
+     {
+      "line": 1,
+      "text": "MSIME2012の予測変換表示",
+      "found": true,
+      "continuous": true
+     }
+    ],
+    "extraction_mupdf_detail": {
+     "ok": false,
+     "whitespace_only": true,
+     "got": "SIME2012 の予測変換表示MSIM",
+     "want": "SIME2012の予測変換表示MSIME",
+     "at": 14,
+     "as_in_source": true
+    },
+    "extraction_poppler_detail": {
+     "ok": false,
+     "whitespace_only": true,
+     "got": "SIME2012 の予測変換表示MSIM",
+     "want": "SIME2012の予測変換表示MSIME",
+     "at": 14,
+     "as_in_source": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "SIME2012 の予測変換表示MSIM",
+      "want": "SIME2012の予測変換表示MSIME",
+      "at": 9
+     },
+     "poppler": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "SIME2012 の予測変換表示MSIM",
+      "want": "SIME2012の予測変換表示MSIME",
+      "at": 9
+     }
+    }
+   }
+  },
+  "S-W2": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、",
+     "baseline": 284.57,
+     "x0": 64.46,
+     "x1": 547.07
+    },
+    {
+     "text": "感染症対策を適切に実施いただくようお願いします。 ",
+     "baseline": 304.37,
+     "x0": 53.88,
+     "x1": 311.34
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": true,
+    "size_and_colour_kept": true,
+    "status": "pass",
+    "search_copy": {
+     "search_full": true,
+     "search_per_line": null,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null,
+     "gaps": [],
+     "search_full_hits": {
+      "total": 1,
+      "on_target": 1,
+      "elsewhere": 0,
+      "lines": 1
+     },
+     "extraction_mupdf_detail": {
+      "ok": true
+     },
+     "extraction_poppler_detail": {
+      "ok": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": true
+      },
+      "poppler": {
+       "ok": true
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "faithful",
+   "measures": {
+    "search_full": true,
+    "search_per_line": null,
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "copy_equivalent": true,
+    "clipboard_manual": null,
+    "gaps": [],
+    "search_full_hits": {
+     "total": 1,
+     "on_target": 1,
+     "elsewhere": 0,
+     "lines": 1
+    },
+    "extraction_mupdf_detail": {
+     "ok": true
+    },
+    "extraction_poppler_detail": {
+     "ok": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": true
+     },
+     "poppler": {
+      "ok": true
+     }
+    }
+   }
+  },
+  "S-L1": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "LibreOffice 4.1.1 が8 月上旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご",
+     "baseline": 128.8,
+     "x0": 34.1,
+     "x1": 566.89
+    },
+    {
+     "text": "紹介します。",
+     "baseline": 144.5,
+     "x0": 28.5,
+     "x1": 84.3
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": true,
+    "size_and_colour_kept": true,
+    "status": "pass",
+    "search_copy": {
+     "search_full": true,
+     "search_per_line": null,
+     "extraction_mupdf": false,
+     "extraction_poppler": false,
+     "copy_equivalent": true,
+     "clipboard_manual": null,
+     "gaps": [],
+     "search_full_hits": {
+      "total": 1,
+      "on_target": 1,
+      "elsewhere": 0,
+      "lines": 1
+     },
+     "extraction_mupdf_detail": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "ce 4.1.1 が8 月上旬にリリース",
+      "want": "ce 4.1.1が8月上旬にリリースされ",
+      "at": 17,
+      "as_in_source": true
+     },
+     "extraction_poppler_detail": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "ce 4.1.1 が 8 月上旬にリリー",
+      "want": "ce 4.1.1が8月上旬にリリースされ",
+      "at": 17,
+      "as_in_source": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": true
+      },
+      "poppler": {
+       "ok": true
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "faithful",
+   "measures": {
+    "search_full": true,
+    "search_per_line": null,
+    "extraction_mupdf": false,
+    "extraction_poppler": false,
+    "copy_equivalent": true,
+    "clipboard_manual": null,
+    "gaps": [],
+    "search_full_hits": {
+     "total": 1,
+     "on_target": 1,
+     "elsewhere": 0,
+     "lines": 1
+    },
+    "extraction_mupdf_detail": {
+     "ok": false,
+     "whitespace_only": true,
+     "got": "ce 4.1.1 が8 月上旬にリリース",
+     "want": "ce 4.1.1が8月上旬にリリースされ",
+     "at": 17,
+     "as_in_source": true
+    },
+    "extraction_poppler_detail": {
+     "ok": false,
+     "whitespace_only": true,
+     "got": "ce 4.1.1 が 8 月上旬にリリー",
+     "want": "ce 4.1.1が8月上旬にリリースされ",
+     "at": 17,
+     "as_in_source": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": true
+     },
+     "poppler": {
+      "ok": true
+     }
+    }
+   }
+  },
+  "S-L2": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "Calc を使いやすくする工夫が取り入れられま",
+     "baseline": 248.9,
+     "x0": 34.1,
+     "x1": 237.33
+    },
+    {
+     "text": "す。",
+     "baseline": 264.6,
+     "x0": 28.5,
+     "x1": 44.49
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": null,
+    "search_wrapped_lines_text": true,
+    "size_and_colour_kept": true,
+    "status": "unverified",
+    "search_copy": {
+     "search_full": false,
+     "search_per_line": null,
+     "extraction_mupdf": false,
+     "extraction_poppler": false,
+     "copy_equivalent": false,
+     "clipboard_manual": null,
+     "gaps": [
+      {
+       "line": 0,
+       "between": "cを",
+       "from_source": true
+      }
+     ],
+     "search_full_hits": {
+      "total": 0,
+      "on_target": 0,
+      "elsewhere": 0,
+      "lines": 1
+     },
+     "extraction_mupdf_detail": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "Calc を使いやすくする工夫が",
+      "want": "Calcを使いやすくする工夫が取",
+      "at": 4,
+      "as_in_source": true
+     },
+     "extraction_poppler_detail": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "Calc を使いやすくする工夫が",
+      "want": "Calcを使いやすくする工夫が取",
+      "at": 4,
+      "as_in_source": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": false,
+       "whitespace_only": true,
+       "got": "Calc を使いやすくする工夫",
+       "want": "Calcを使いやすくする工夫",
+       "at": 4
+      },
+      "poppler": {
+       "ok": false,
+       "whitespace_only": true,
+       "got": "Calc を使いやすくする工夫",
+       "want": "Calcを使いやすくする工夫",
+       "at": 4
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "faithful",
+   "measures": {
+    "search_full": false,
+    "search_per_line": null,
+    "extraction_mupdf": false,
+    "extraction_poppler": false,
+    "copy_equivalent": false,
+    "clipboard_manual": null,
+    "gaps": [
+     {
+      "line": 0,
+      "between": "cを",
+      "from_source": true
+     }
+    ],
+    "search_full_hits": {
+     "total": 0,
+     "on_target": 0,
+     "elsewhere": 0,
+     "lines": 1
+    },
+    "extraction_mupdf_detail": {
+     "ok": false,
+     "whitespace_only": true,
+     "got": "Calc を使いやすくする工夫が",
+     "want": "Calcを使いやすくする工夫が取",
+     "at": 4,
+     "as_in_source": true
+    },
+    "extraction_poppler_detail": {
+     "ok": false,
+     "whitespace_only": true,
+     "got": "Calc を使いやすくする工夫が",
+     "want": "Calcを使いやすくする工夫が取",
+     "at": 4,
+     "as_in_source": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "Calc を使いやすくする工夫",
+      "want": "Calcを使いやすくする工夫",
+      "at": 4
+     },
+     "poppler": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "Calc を使いやすくする工夫",
+      "want": "Calcを使いやすくする工夫",
+      "at": 4
+     }
+    }
+   }
+  },
+  "S-L4": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "LibreOffice は自由ソフトウェアである優れた個人向け生産性スィートで、MS Windows、MacOS",
+     "baseline": 198.9,
+     "x0": 67.3,
+     "x1": 538.68
+    },
+    {
+     "text": "X、GNU/Linux 向けに提供されており、あらゆる文書作成およびデータ処理の必要性をみたす六つの豊富で",
+     "baseline": 221.1,
+     "x0": 56.8,
+     "x1": 538.68
+    },
+    {
+     "text": "強力な機能のアプリケーションを提供しています。 文書作成用のWriter、表計算ソフトのCalc、プレゼンテーション",
+     "baseline": 243.3,
+     "x0": 56.8,
+     "x1": 538.68
+    },
+    {
+     "text": "ソフトImpress、描画ソフトDraw、データベースソフトBase、そして数式入力用のMath です。",
+     "baseline": 265.5,
+     "x0": 56.8,
+     "x1": 467.66
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": null,
+    "search_wrapped_lines_text": true,
+    "size_and_colour_kept": true,
+    "status": "unverified",
+    "search_copy": {
+     "search_full": false,
+     "search_per_line": true,
+     "extraction_mupdf": false,
+     "extraction_poppler": false,
+     "copy_equivalent": true,
+     "clipboard_manual": null,
+     "gaps": [],
+     "search_full_hits": {
+      "total": 0,
+      "on_target": 0,
+      "elsewhere": 0,
+      "lines": 2
+     },
+     "search_per_line_parts": [
+      {
+       "line": 1,
+       "text": "六つの豊富で",
+       "found": true,
+       "continuous": true
+      },
+      {
+       "line": 2,
+       "text": "強力な機能のアプリケーション",
+       "found": true,
+       "continuous": true
+      }
+     ],
+     "extraction_mupdf_detail": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "reOffice は自由ソフトウェアであ",
+      "want": "reOfficeは自由ソフトウェアである",
+      "at": 11,
+      "as_in_source": null,
+      "as_in_source_note": "由来未確認"
+     },
+     "extraction_poppler_detail": {
+      "ok": false,
+      "whitespace_only": true,
+      "got": "reOffice は 自 由 ソ フ ト",
+      "want": "reOfficeは自由ソフトウェアである",
+      "at": 11,
+      "as_in_source": null,
+      "as_in_source_note": "由来未確認"
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": true
+      },
+      "poppler": {
+       "ok": true
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "faithful",
+   "measures": {
+    "search_full": false,
+    "search_per_line": true,
+    "extraction_mupdf": false,
+    "extraction_poppler": false,
+    "copy_equivalent": true,
+    "clipboard_manual": null,
+    "gaps": [],
+    "search_full_hits": {
+     "total": 0,
+     "on_target": 0,
+     "elsewhere": 0,
+     "lines": 2
+    },
+    "search_per_line_parts": [
+     {
+      "line": 1,
+      "text": "六つの豊富で",
+      "found": true,
+      "continuous": true
+     },
+     {
+      "line": 2,
+      "text": "強力な機能のアプリケーション",
+      "found": true,
+      "continuous": true
+     }
+    ],
+    "extraction_mupdf_detail": {
+     "ok": false,
+     "whitespace_only": true,
+     "got": "reOffice は自由ソフトウェアであ",
+     "want": "reOfficeは自由ソフトウェアである",
+     "at": 11,
+     "as_in_source": null,
+     "as_in_source_note": "由来未確認"
+    },
+    "extraction_poppler_detail": {
+     "ok": false,
+     "whitespace_only": true,
+     "got": "reOffice は 自 由 ソ フ ト",
+     "want": "reOfficeは自由ソフトウェアである",
+     "at": 11,
+     "as_in_source": null,
+     "as_in_source_note": "由来未確認"
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": true
+     },
+     "poppler": {
+      "ok": true
+     }
+    }
+   }
+  },
+  "S-I1": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "令和6年の大阪府の自殺者数は1,383人と、1日に約4",
+     "baseline": 688.38,
+     "x0": 21.17,
+     "x1": 239.6
+    },
+    {
+     "text": "人の方が自殺で亡くなられるという深刻な状況です。",
+     "baseline": 701.49,
+     "x0": 21.16,
+     "x1": 244.61
+    },
+    {
+     "text": "悩みを抱えている人は、ひとりで悩まず専門機関にご",
+     "baseline": 714.6,
+     "x0": 21.19,
+     "x1": 239.5
+    },
+    {
+     "text": "相談ください。また、身近な人の悩みに気づいたら話",
+     "baseline": 727.7,
+     "x0": 21.18,
+     "x1": 239.61
+    },
+    {
+     "text": "を聴いて寄り添いましょう。",
+     "baseline": 740.81,
+     "x0": 20.94,
+     "x1": 138.82
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": true,
+    "size_and_colour_kept": true,
+    "status": "pass",
+    "search_copy": {
+     "search_full": true,
+     "search_per_line": null,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null,
+     "gaps": [],
+     "search_full_hits": {
+      "total": 1,
+      "on_target": 1,
+      "elsewhere": 0,
+      "lines": 1
+     },
+     "extraction_mupdf_detail": {
+      "ok": true
+     },
+     "extraction_poppler_detail": {
+      "ok": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": true
+      },
+      "poppler": {
+       "ok": true
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "faithful",
+   "measures": {
+    "search_full": true,
+    "search_per_line": null,
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "copy_equivalent": true,
+    "clipboard_manual": null,
+    "gaps": [],
+    "search_full_hits": {
+     "total": 1,
+     "on_target": 1,
+     "elsewhere": 0,
+     "lines": 1
+    },
+    "extraction_mupdf_detail": {
+     "ok": true
+    },
+    "extraction_poppler_detail": {
+     "ok": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": true
+     },
+     "poppler": {
+      "ok": true
+     }
+    }
+   }
+  },
+  "S-I4": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "提供：ダイキン工業・サントリー",
+     "baseline": 1033.42,
+     "x0": 215.55,
+     "x1": 282.4
+    },
+    {
+     "text": "ホールディングス",
+     "baseline": 1040.86,
+     "x0": 215.55,
+     "x1": 253.99
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": null,
+    "search_wrapped_lines_text": true,
+    "size_and_colour_kept": true,
+    "status": "unverified",
+    "search_copy": {
+     "search_full": false,
+     "search_per_line": true,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null,
+     "gaps": [],
+     "search_full_hits": {
+      "total": 0,
+      "on_target": 0,
+      "elsewhere": 0,
+      "lines": 2
+     },
+     "search_per_line_parts": [
+      {
+       "line": 0,
+       "text": "提供：ダイキン工業・サントリー",
+       "found": true,
+       "continuous": true
+      },
+      {
+       "line": 1,
+       "text": "ホールディングス",
+       "found": true,
+       "continuous": true
+      }
+     ],
+     "extraction_mupdf_detail": {
+      "ok": true
+     },
+     "extraction_poppler_detail": {
+      "ok": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": true
+      },
+      "poppler": {
+       "ok": true
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "layout",
+   "measures": {
+    "search_full": false,
+    "search_per_line": true,
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "copy_equivalent": true,
+    "clipboard_manual": null,
+    "gaps": [],
+    "search_full_hits": {
+     "total": 0,
+     "on_target": 0,
+     "elsewhere": 0,
+     "lines": 2
+    },
+    "search_per_line_parts": [
+     {
+      "line": 0,
+      "text": "提供：ダイキン工業・サントリー",
+      "found": true,
+      "continuous": true
+     },
+     {
+      "line": 1,
+      "text": "ホールディングス",
+      "found": true,
+      "continuous": true
+     }
+    ],
+    "extraction_mupdf_detail": {
+     "ok": true
+    },
+    "extraction_poppler_detail": {
+     "ok": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": true
+     },
+     "poppler": {
+      "ok": true
+     }
+    }
+   }
+  },
+  "S-I5": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "4/13（日）10：00～10：30",
+     "baseline": 1044.86,
+     "x0": 371.8,
+     "x1": 473.06
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": true,
+    "size_and_colour_kept": true,
+    "status": "pass",
+    "search_copy": {
+     "search_full": true,
+     "search_per_line": null,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null,
+     "gaps": [],
+     "search_full_hits": {
+      "total": 1,
+      "on_target": 1,
+      "elsewhere": 0,
+      "lines": 1
+     },
+     "extraction_mupdf_detail": {
+      "ok": true
+     },
+     "extraction_poppler_detail": {
+      "ok": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": true
+      },
+      "poppler": {
+       "ok": true
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "faithful",
+   "measures": {
+    "search_full": true,
+    "search_per_line": null,
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "copy_equivalent": true,
+    "clipboard_manual": null,
+    "gaps": [],
+    "search_full_hits": {
+     "total": 1,
+     "on_target": 1,
+     "elsewhere": 0,
+     "lines": 1
+    },
+    "extraction_mupdf_detail": {
+     "ok": true
+    },
+    "extraction_poppler_detail": {
+     "ok": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": true
+     },
+     "poppler": {
+      "ok": true
+     }
+    }
+   }
+  },
+  "S-A1": {
+   "outcome": "saved",
+   "same_output": true,
+   "drawn": [
+    {
+     "text": "Linking to an internal destination ",
+     "baseline": 201.8,
+     "x0": 56.7,
+     "x1": 248.73
+    },
+    {
+     "text": "or an external destination",
+     "baseline": 219.8,
+     "x0": 56.7,
+     "x1": 202.74
+    }
+   ],
+   "quality_existing": {
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "search_mupdf": true,
+    "size_and_colour_kept": true,
+    "status": "pass",
+    "search_copy": {
+     "search_full": true,
+     "search_per_line": true,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null,
+     "gaps": [],
+     "search_full_hits": {
+      "total": 2,
+      "on_target": 2,
+      "elsewhere": 0,
+      "lines": 2
+     },
+     "search_per_line_parts": [
+      {
+       "line": 0,
+       "text": "Linking to an internal destination ",
+       "found": true,
+       "continuous": true
+      },
+      {
+       "line": 1,
+       "text": "or an external destination",
+       "found": true,
+       "continuous": true
+      }
+     ],
+     "extraction_mupdf_detail": {
+      "ok": true
+     },
+     "extraction_poppler_detail": {
+      "ok": true
+     },
+     "copy_equivalent_detail": {
+      "mupdf": {
+       "ok": true
+      },
+      "poppler": {
+       "ok": true
+      }
+     }
+    }
+   },
+   "verdict": "pass",
+   "mode": "layout",
+   "measures": {
+    "search_full": true,
+    "search_per_line": true,
+    "extraction_mupdf": true,
+    "extraction_poppler": true,
+    "copy_equivalent": true,
+    "clipboard_manual": null,
+    "gaps": [],
+    "search_full_hits": {
+     "total": 2,
+     "on_target": 2,
+     "elsewhere": 0,
+     "lines": 2
+    },
+    "search_per_line_parts": [
+     {
+      "line": 0,
+      "text": "Linking to an internal destination ",
+      "found": true,
+      "continuous": true
+     },
+     {
+      "line": 1,
+      "text": "or an external destination",
+      "found": true,
+      "continuous": true
+     }
+    ],
+    "extraction_mupdf_detail": {
+     "ok": true
+    },
+    "extraction_poppler_detail": {
+     "ok": true
+    },
+    "copy_equivalent_detail": {
+     "mupdf": {
+      "ok": true
+     },
+     "poppler": {
+      "ok": true
+     }
+    }
+   }
+  }
+ }
+}
