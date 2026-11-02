@@ -215,3 +215,19 @@ def test_the_edit_back_takes_the_clip_and_panel_back_only_on_approval(tmp_path):
     assert glyphs(tmp_path / 'back.pdf') == glyphs(source)
     with pymupdf.open(source) as a, pymupdf.open(tmp_path / 'back.pdf') as b:
         assert a[0].get_pixmap(dpi=144).samples == b[0].get_pixmap(dpi=144).samples
+
+
+def test_a_panel_that_cannot_grow_refuses_the_clip(tmp_path):
+    # The box's panel filled twice (not one fill and its outline): the clip would pass a panel that cannot follow.
+    source = box_pdf(tmp_path, FILL + FILL + OUTLINE + b'q ' + CLIP)
+    found = evidence(source).get('clips') or {}
+    assert not found.get('candidates') and 'panel cannot grow' in found['unavailable'] and 'filled 2 times' in found['unavailable']
+
+
+def test_a_clip_goes_back_no_higher_than_it_was(tmp_path):
+    # Edited back to a text shorter than the original: the clip is offered back to where it was, not higher.
+    source = box_pdf(tmp_path)
+    out = tmp_path / 'out.pdf'
+    edit(source, out)
+    [clip] = propose(str(out), 1, GROW[1], '申請書')['evidence']['clips']['candidates']
+    assert clip['new'][3] == 95 and clip['extension'] == -16

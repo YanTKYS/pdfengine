@@ -99,8 +99,6 @@ def test_an_approved_extension_moves_only_the_panel_bottom(tmp_path, before):
     (b'q .95 g 20 195 220 70 re f Q\n' + FILL, b'', 'would meet'),
     # Drawn over the paragraph.
     (b'', FILL, 'over the paragraph'),
-    # The text clipped to the panel (a Word text box): the clip is not extended.
-    (FILL + b'q ' + PANEL + b' W n\n', b'Q\n', 'clipped'),
 ])
 def test_what_cannot_be_extended_is_refused_with_its_reason(tmp_path, before, after, reason):
     source = panel_pdf(tmp_path, before, after)
@@ -108,6 +106,17 @@ def test_what_cannot_be_extended_is_refused_with_its_reason(tmp_path, before, af
     assert not found.get('candidates') and reason in (found.get('unavailable') or ''), found
     with pytest.raises(Refused):
         edit(source, tmp_path / 'out.pdf')
+
+
+def test_a_panel_whose_text_is_clipped_needs_the_clip_extension_too(tmp_path):
+    # The text clipped to the panel (a Word text box). Issue #112 refused the panel there (a clip was not extended);
+    # issue #118 lists the clip's extension with it (product contract change): the panel alone is still refused.
+    source = panel_pdf(tmp_path, FILL + b'q ' + PANEL + b' W n\n', b'Q\n')
+    [found] = candidates(source)['candidates']
+    assert found['requires'] and found['requires'][0].startswith('clip-extension-')
+    with pytest.raises(Refused, match='needs the clip extension approved too'):
+        edit(source, tmp_path / 'out.pdf')
+    assert not (tmp_path / 'out.pdf').exists()
 
 
 def test_a_transparent_panel_is_not_extended(tmp_path):

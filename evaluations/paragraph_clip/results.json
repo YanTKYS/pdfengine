@@ -1,0 +1,3275 @@
+{
+ "schema": "paragraph-clip-results-1",
+ "manifest_sha256": "b3e3ca8da27a3d5c3b068d4de551a91b2fe90404b3d8e015dadc791b0e908574",
+ "summary": {
+  "clip": {
+   "real:layout": {
+    "steps": 4,
+    "saved": 4,
+    "saved:yes": 4,
+    "practical:yes": 2,
+    "reedit:yes": 4,
+    "restore:unverified": 2,
+    "refused:no": 4,
+    "restore:yes": 2,
+    "practical:no": 2
+   }
+  }
+ },
+ "records": [
+  {
+   "evaluation": "clip",
+   "case": "W1",
+   "step": "1",
+   "group": "real",
+   "mode": "layout",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [
+    "glyphs_outside_region_identical",
+    "non_text_paint_identical",
+    "raster_outside_region_mupdf",
+    "raster_outside_region_poppler"
+   ],
+   "checks": {
+    "safety": false,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": false,
+    "links": true,
+    "approved_audit": true,
+    "approved_quality": true,
+    "natural_placement": true,
+    "search_full": false,
+    "search_per_line": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true,
+    "clip_candidates": 1,
+    "panel_candidates": 1,
+    "unapproved_refused": true,
+    "clip_only_refused": true,
+    "panel_only_refused": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: unobserved: 1.5 em default"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "verified line by line: each line's part is found on its line; one search for the whole replacement is not found (search_full false), and is not guaranteed"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": null,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": false,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    }
+   ]
+  },
+  {
+   "evaluation": "clip",
+   "case": "W1",
+   "step": "2",
+   "group": "real",
+   "mode": "layout",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [
+    "glyphs_outside_region_identical",
+    "non_text_paint_identical",
+    "raster_outside_region_mupdf",
+    "raster_outside_region_poppler"
+   ],
+   "checks": {
+    "safety": false,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": false,
+    "links": true,
+    "restored_glyphs": true,
+    "restored_pixels": true,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": true,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true,
+    "clip_candidates": 1,
+    "panel_candidates": 1,
+    "unapproved_refused": false,
+    "clip_only_refused": false,
+    "panel_only_refused": false
+   },
+   "tiers": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": true,
+    "refused": false
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": false,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    }
+   ]
+  },
+  {
+   "evaluation": "clip",
+   "case": "W2",
+   "step": "1",
+   "group": "real",
+   "mode": "layout",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [
+    "non_text_paint_identical",
+    "raster_outside_region_mupdf",
+    "raster_outside_region_poppler"
+   ],
+   "checks": {
+    "safety": false,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": false,
+    "links": true,
+    "approved_audit": true,
+    "approved_quality": false,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_per_line": true,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": true,
+    "search_copy": false,
+    "clip_candidates": 1,
+    "panel_candidates": 1,
+    "unapproved_refused": true,
+    "clip_only_refused": true,
+    "panel_only_refused": true
+   },
+   "tiers": {
+    "saved": true,
+    "practical": false,
+    "reedit": true,
+    "restore": null,
+    "refused": false
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: unobserved: 1.5 em default"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "lines"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": false,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    }
+   ]
+  },
+  {
+   "evaluation": "clip",
+   "case": "W2",
+   "step": "2",
+   "group": "real",
+   "mode": "layout",
+   "outcome": "saved",
+   "reason_class": null,
+   "reason": null,
+   "failed": [
+    "non_text_paint_identical",
+    "raster_outside_region_mupdf",
+    "raster_outside_region_poppler"
+   ],
+   "checks": {
+    "safety": false,
+    "quality": true,
+    "structure": true,
+    "reedit": true,
+    "moves": false,
+    "links": true,
+    "restored_glyphs": true,
+    "restored_pixels": true,
+    "restored_text": true,
+    "restored_links": true,
+    "approved_audit": true,
+    "approved_quality": false,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": true,
+    "search_copy": false,
+    "clip_candidates": 1,
+    "panel_candidates": 1,
+    "unapproved_refused": false,
+    "clip_only_refused": false,
+    "panel_only_refused": false
+   },
+   "tiers": {
+    "saved": true,
+    "practical": false,
+    "reedit": true,
+    "restore": true,
+    "refused": false
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": false,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    }
+   ]
+  }
+ ],
+ "results": {
+  "W1": [
+   {
+    "old": "直通：03-3595-2257",
+    "new": "直通：03-3595-2257 直通：03-3595-2257",
+    "proposal_refused": null,
+    "chain": {},
+    "decorations": {},
+    "panels": {
+     "candidates": [
+      {
+       "id": "panel-extension-f8eb25119a0eae7b",
+       "page": 1,
+       "old": [
+        373.75,
+        428.2,
+        544.0,
+        497.65
+       ],
+       "new": [
+        373.75,
+        428.2,
+        544.0,
+        513.49
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 9932,
+         "operator": "373.75 344.27 170.25 69.45 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 9973,
+         "operator": "373.75 344.27 170.25 69.45 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.5
+         }
+        ]
+       },
+       "band": [
+        373.5,
+        497.4,
+        544.25,
+        513.74
+       ],
+       "reason": "the paragraph grows past the bottom of the panel holding it",
+       "if_not_approved": "refused: the paragraph would leave its background",
+       "requires": [
+        "clip-extension-450f0ee6da73b7de"
+       ]
+      }
+     ],
+     "unavailable": null
+    },
+    "clips": {
+     "candidates": [
+      {
+       "id": "clip-extension-450f0ee6da73b7de",
+       "page": 1,
+       "old": [
+        374.11,
+        432.046,
+        543.81,
+        493.87
+       ],
+       "new": [
+        374.11,
+        432.046,
+        543.81,
+        509.71
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, rule and order kept)",
+       "rule": [
+        "W*"
+       ],
+       "operators": [
+        {
+         "offset": 10015,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10092,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10238,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10421,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10573,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10695,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10813,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11004,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11157,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11321,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11475,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11628,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11788,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11941,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 12096,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        }
+       ],
+       "holds": {
+        "text_shows": 14,
+        "paragraph_shows": 7,
+        "drawings": 0
+       },
+       "band": [
+        374.11,
+        493.87,
+        543.81,
+        509.71
+       ],
+       "reason": "the paragraph grows past the bottom of the clip its text is drawn under (a text box)",
+       "if_not_approved": "refused: the added lines would not show",
+       "requires": [
+        "panel-extension-f8eb25119a0eae7b"
+       ]
+      }
+     ],
+     "unavailable": null
+    },
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])",
+     "seconds": 2.71
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": [],
+     "panels": [
+      "panel-extension-f8eb25119a0eae7b"
+     ],
+     "clips": [
+      "clip-extension-450f0ee6da73b7de"
+     ]
+    },
+    "lines": [
+     "直通：03-3595-2257 直通：",
+     "03-3595-2257 "
+    ],
+    "grow": 1,
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "直通：03-3595-2257 直通：03-3595-2257"
+    },
+    "save": {
+     "follower_translation": 15.840000629425049,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null,
+     "panels_extended": [
+      {
+       "id": "panel-extension-f8eb25119a0eae7b",
+       "page": 1,
+       "old": [
+        373.75,
+        428.2,
+        544.0,
+        497.65
+       ],
+       "new": [
+        373.75,
+        428.2,
+        544.0,
+        513.49
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 9932,
+         "operator": "373.75 344.27 170.25 69.45 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 9973,
+         "operator": "373.75 344.27 170.25 69.45 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.5
+         }
+        ]
+       },
+       "band": [
+        373.5,
+        497.4,
+        544.25,
+        513.74
+       ],
+       "reason": "the paragraph grows past the bottom of the panel holding it",
+       "if_not_approved": "refused: the paragraph would leave its background",
+       "requires": [
+        "clip-extension-450f0ee6da73b7de"
+       ]
+      }
+     ],
+     "clips_extended": [
+      {
+       "id": "clip-extension-450f0ee6da73b7de",
+       "page": 1,
+       "old": [
+        374.11,
+        432.046,
+        543.81,
+        493.87
+       ],
+       "new": [
+        374.11,
+        432.046,
+        543.81,
+        509.71
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, rule and order kept)",
+       "rule": [
+        "W*"
+       ],
+       "operators": [
+        {
+         "offset": 10015,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10092,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10238,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10421,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10573,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10695,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 10813,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11004,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11157,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11321,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11475,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11628,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11788,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 11941,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        },
+        {
+         "offset": 12096,
+         "operator": "374.11 348.05 169.7 61.824 re"
+        }
+       ],
+       "holds": {
+        "text_shows": 14,
+        "paragraph_shows": 7,
+        "drawings": 0
+       },
+       "band": [
+        374.11,
+        493.87,
+        543.81,
+        509.71
+       ],
+       "reason": "the paragraph grows past the bottom of the clip its text is drawn under (a text box)",
+       "if_not_approved": "refused: the added lines would not show",
+       "requires": [
+        "panel-extension-f8eb25119a0eae7b"
+       ]
+      }
+     ]
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": false,
+      "images": true
+     },
+     "ok": false
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "panel": {
+     "before": [
+      {
+       "type": "fs",
+       "items": [
+        "re"
+       ],
+       "fill": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "color": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "width": 0.5,
+       "rect": [
+        373.75,
+        428.2,
+        544.0,
+        497.65
+       ]
+      }
+     ],
+     "after": [
+      {
+       "type": "fs",
+       "items": [
+        "re"
+       ],
+       "fill": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "color": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "width": 0.5,
+       "rect": [
+        373.75,
+        428.2,
+        544.0,
+        513.49
+       ]
+      }
+     ],
+     "approved": [
+      {
+       "id": "panel-extension-f8eb25119a0eae7b",
+       "page": 1,
+       "old": [
+        373.75,
+        428.2,
+        544.0,
+        497.65
+       ],
+       "new": [
+        373.75,
+        428.2,
+        544.0,
+        513.49
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 9932,
+         "operator": "373.75 344.27 170.25 69.45 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 9973,
+         "operator": "373.75 344.27 170.25 69.45 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.5
+         }
+        ]
+       },
+       "band": [
+        373.5,
+        497.4,
+        544.25,
+        513.74
+       ],
+       "reason": "the paragraph grows past the bottom of the panel holding it",
+       "if_not_approved": "refused: the paragraph would leave its background",
+       "requires": [
+        "clip-extension-450f0ee6da73b7de"
+       ]
+      }
+     ]
+    },
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "layout",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "size_and_colour_kept": true,
+      "search_mupdf": null,
+      "search_copy_check": {
+       "result": true,
+       "route": "lines",
+       "required": [
+        "search_per_line",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": false,
+       "note": "verified line by line: each line's part is found on its line; one search for the whole replacement is not found (search_full false), and is not guaranteed"
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": null,
+       "search_wrapped_lines_text": true,
+       "status": "unverified"
+      },
+      "search_copy": {
+       "search_full": false,
+       "search_full_hits": {
+        "total": 0,
+        "on_target": 0,
+        "elsewhere": 0,
+        "lines": 2
+       },
+       "search_per_line": true,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "start",
+       "leading_basis": "unobserved: 1.5 em default"
+      }
+     },
+     "approved": [
+      {
+       "what": "panel",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "clip",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "partial": {
+     "clip only": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the clip extension needs the extension of its text box's panel approved too: panel-extension-f8eb25119a0eae7b"
+     },
+     "panel only": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the panel extension of a clipped text box needs the clip extension approved too: clip-extension-450f0ee6da73b7de"
+     }
+    }
+   },
+   {
+    "old": "直通：03-3595-2257 直通：03-3595-2257",
+    "new": "直通：03-3595-2257",
+    "proposal_refused": null,
+    "chain": {},
+    "decorations": {},
+    "panels": {
+     "candidates": [
+      {
+       "id": "panel-extension-ff74754f430c9a5e",
+       "page": 1,
+       "old": [
+        373.75,
+        428.2,
+        544.0,
+        513.49
+       ],
+       "new": [
+        373.75,
+        428.2,
+        544.0,
+        497.65
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 9932,
+         "operator": "373.75 328.430003 170.25 85.28999699999997 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 9989,
+         "operator": "373.75 328.430003 170.25 85.28999699999997 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.5
+         }
+        ]
+       },
+       "band": [
+        373.5,
+        497.4,
+        544.25,
+        513.74
+       ],
+       "reason": "the paragraph is shorter: the panel goes back",
+       "if_not_approved": "the panel stays as it is"
+      }
+     ],
+     "unavailable": null
+    },
+    "clips": {
+     "candidates": [
+      {
+       "id": "clip-extension-4a174972ab9a634d",
+       "page": 1,
+       "old": [
+        374.11,
+        432.046,
+        543.81,
+        509.71
+       ],
+       "new": [
+        374.11,
+        432.046,
+        543.81,
+        493.87
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, rule and order kept)",
+       "rule": [
+        "W*"
+       ],
+       "operators": [
+        {
+         "offset": 10047,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10135,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10292,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10486,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10649,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10782,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10911,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 11113,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 11242,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 12996,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13128,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13255,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13400,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13527,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13668,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        }
+       ],
+       "holds": {
+        "text_shows": 25,
+        "paragraph_shows": 11,
+        "drawings": 0
+       },
+       "band": [
+        374.11,
+        493.87,
+        543.81,
+        509.71
+       ],
+       "reason": "the paragraph is shorter: the clip goes back",
+       "if_not_approved": "the clip stays as it is"
+      }
+     ],
+     "unavailable": null
+    },
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 3.22
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": [],
+     "panels": [
+      "panel-extension-ff74754f430c9a5e"
+     ],
+     "clips": [
+      "clip-extension-4a174972ab9a634d"
+     ]
+    },
+    "lines": [
+     "直通：03-3595-2257 "
+    ],
+    "grow": 0,
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical"
+    ],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "直通：03-3595-2257"
+    },
+    "save": {
+     "follower_translation": -15.839996337890625,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null,
+     "panels_extended": [
+      {
+       "id": "panel-extension-ff74754f430c9a5e",
+       "page": 1,
+       "old": [
+        373.75,
+        428.2,
+        544.0,
+        513.49
+       ],
+       "new": [
+        373.75,
+        428.2,
+        544.0,
+        497.65
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 9932,
+         "operator": "373.75 328.430003 170.25 85.28999699999997 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 9989,
+         "operator": "373.75 328.430003 170.25 85.28999699999997 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.5
+         }
+        ]
+       },
+       "band": [
+        373.5,
+        497.4,
+        544.25,
+        513.74
+       ],
+       "reason": "the paragraph is shorter: the panel goes back",
+       "if_not_approved": "the panel stays as it is"
+      }
+     ],
+     "clips_extended": [
+      {
+       "id": "clip-extension-4a174972ab9a634d",
+       "page": 1,
+       "old": [
+        374.11,
+        432.046,
+        543.81,
+        509.71
+       ],
+       "new": [
+        374.11,
+        432.046,
+        543.81,
+        493.87
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, rule and order kept)",
+       "rule": [
+        "W*"
+       ],
+       "operators": [
+        {
+         "offset": 10047,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10135,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10292,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10486,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10649,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10782,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 10911,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 11113,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 11242,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 12996,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13128,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13255,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13400,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13527,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        },
+        {
+         "offset": 13668,
+         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+        }
+       ],
+       "holds": {
+        "text_shows": 25,
+        "paragraph_shows": 11,
+        "drawings": 0
+       },
+       "band": [
+        374.11,
+        493.87,
+        543.81,
+        509.71
+       ],
+       "reason": "the paragraph is shorter: the clip goes back",
+       "if_not_approved": "the clip stays as it is"
+      }
+     ]
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": false,
+      "images": true
+     },
+     "ok": false
+    },
+    "links": {
+     "links": 0,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "panel": {
+     "before": [
+      {
+       "type": "fs",
+       "items": [
+        "re"
+       ],
+       "fill": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "color": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "width": 0.5,
+       "rect": [
+        373.75,
+        428.2,
+        544.0,
+        513.49
+       ]
+      }
+     ],
+     "after": [
+      {
+       "type": "fs",
+       "items": [
+        "re"
+       ],
+       "fill": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "color": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "width": 0.5,
+       "rect": [
+        373.75,
+        428.2,
+        544.0,
+        497.65
+       ]
+      }
+     ],
+     "approved": [
+      {
+       "id": "panel-extension-ff74754f430c9a5e",
+       "page": 1,
+       "old": [
+        373.75,
+        428.2,
+        544.0,
+        513.49
+       ],
+       "new": [
+        373.75,
+        428.2,
+        544.0,
+        497.65
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 9932,
+         "operator": "373.75 328.430003 170.25 85.28999699999997 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 9989,
+         "operator": "373.75 328.430003 170.25 85.28999699999997 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.5
+         }
+        ]
+       },
+       "band": [
+        373.5,
+        497.4,
+        544.25,
+        513.74
+       ],
+       "reason": "the paragraph is shorter: the panel goes back",
+       "if_not_approved": "the panel stays as it is"
+      }
+     ]
+    },
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "layout",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "size_and_colour_kept": true,
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": true,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 1,
+       "alignment": "start",
+       "leading_basis": "approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+      }
+     },
+     "approved": [
+      {
+       "what": "panel",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "clip",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "partial": {
+     "clip only": {
+      "outcome": "saved",
+      "reason": null
+     },
+     "panel only": {
+      "outcome": "saved",
+      "reason": null
+     }
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 15,
+       "kept": 15,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 1,
+       "output_lines": 1,
+       "source_breaks_outside_edit": 0,
+       "breaks_kept": 0
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 1,
+       "output": 1
+      }
+     },
+     "glyphs": {
+      "glyphs": 372,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 3e-05,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 0,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 1505496
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 6530142
+      },
+      "identical": true
+     }
+    }
+   }
+  ],
+  "W2": [
+   {
+    "old": "06-4397-3205",
+    "new": "06-4397-3205 06-6944-9156",
+    "proposal_refused": null,
+    "chain": {},
+    "decorations": {},
+    "panels": {
+     "candidates": [
+      {
+       "id": "panel-extension-04dd75eb2a1053db",
+       "page": 1,
+       "old": [
+        352.3,
+        638.0,
+        521.2,
+        701.75
+       ],
+       "new": [
+        352.3,
+        638.0,
+        521.2,
+        717.59
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 13117,
+         "operator": "352.3 140.17 168.9 63.75 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 13164,
+         "operator": "352.3 140.17 168.9 63.75 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.75
+         }
+        ]
+       },
+       "band": [
+        351.925,
+        701.375,
+        521.575,
+        717.965
+       ],
+       "reason": "the paragraph grows past the bottom of the panel holding it",
+       "if_not_approved": "refused: the paragraph would leave its background",
+       "requires": [
+        "clip-extension-1936f57dc29e3594"
+       ]
+      }
+     ],
+     "unavailable": null
+    },
+    "clips": {
+     "candidates": [
+      {
+       "id": "clip-extension-1936f57dc29e3594",
+       "page": 1,
+       "old": [
+        352.75,
+        639.076,
+        520.89,
+        700.78
+       ],
+       "new": [
+        352.75,
+        639.076,
+        520.89,
+        716.62
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, rule and order kept)",
+       "rule": [
+        "W*"
+       ],
+       "operators": [
+        {
+         "offset": 13204,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13266,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13447,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13585,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13766,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13904,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14073,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14211,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14365,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14544,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14698,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14818,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14955,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15108,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15262,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15415,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15575,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15728,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15888,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16040,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16161,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16299,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16453,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16608,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16762,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16923,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 17077,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 17238,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        }
+       ],
+       "holds": {
+        "text_shows": 27,
+        "paragraph_shows": 9,
+        "drawings": 0
+       },
+       "band": [
+        352.75,
+        700.78,
+        520.89,
+        716.62
+       ],
+       "reason": "the paragraph grows past the bottom of the clip its text is drawn under (a text box)",
+       "if_not_approved": "refused: the added lines would not show",
+       "requires": [
+        "panel-extension-04dd75eb2a1053db"
+       ]
+      }
+     ],
+     "unavailable": null
+    },
+    "unapproved": {
+     "outcome": "refused",
+     "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])",
+     "seconds": 2.93
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": [],
+     "panels": [
+      "panel-extension-04dd75eb2a1053db"
+     ],
+     "clips": [
+      "clip-extension-1936f57dc29e3594"
+     ]
+    },
+    "lines": [
+     "FAX 06-4397-3205 ",
+     "06-6944-9156 "
+    ],
+    "grow": 1,
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "non_text_paint_identical"
+    ],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "06-4397-3205 06-6944-9156"
+    },
+    "save": {
+     "follower_translation": 15.840000629425049,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null,
+     "panels_extended": [
+      {
+       "id": "panel-extension-04dd75eb2a1053db",
+       "page": 1,
+       "old": [
+        352.3,
+        638.0,
+        521.2,
+        701.75
+       ],
+       "new": [
+        352.3,
+        638.0,
+        521.2,
+        717.59
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 13117,
+         "operator": "352.3 140.17 168.9 63.75 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 13164,
+         "operator": "352.3 140.17 168.9 63.75 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.75
+         }
+        ]
+       },
+       "band": [
+        351.925,
+        701.375,
+        521.575,
+        717.965
+       ],
+       "reason": "the paragraph grows past the bottom of the panel holding it",
+       "if_not_approved": "refused: the paragraph would leave its background",
+       "requires": [
+        "clip-extension-1936f57dc29e3594"
+       ]
+      }
+     ],
+     "clips_extended": [
+      {
+       "id": "clip-extension-1936f57dc29e3594",
+       "page": 1,
+       "old": [
+        352.75,
+        639.076,
+        520.89,
+        700.78
+       ],
+       "new": [
+        352.75,
+        639.076,
+        520.89,
+        716.62
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, rule and order kept)",
+       "rule": [
+        "W*"
+       ],
+       "operators": [
+        {
+         "offset": 13204,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13266,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13447,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13585,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13766,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 13904,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14073,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14211,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14365,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14544,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14698,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14818,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 14955,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15108,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15262,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15415,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15575,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15728,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 15888,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16040,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16161,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16299,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16453,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16608,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16762,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 16923,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 17077,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        },
+        {
+         "offset": 17238,
+         "operator": "352.75 141.14 168.14 61.704 re"
+        }
+       ],
+       "holds": {
+        "text_shows": 27,
+        "paragraph_shows": 9,
+        "drawings": 0
+       },
+       "band": [
+        352.75,
+        700.78,
+        520.89,
+        716.62
+       ],
+       "reason": "the paragraph grows past the bottom of the clip its text is drawn under (a text box)",
+       "if_not_approved": "refused: the added lines would not show",
+       "requires": [
+        "panel-extension-04dd75eb2a1053db"
+       ]
+      }
+     ]
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": false,
+      "images": true
+     },
+     "ok": false
+    },
+    "links": {
+     "links": 3,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "panel": {
+     "before": [
+      {
+       "type": "fs",
+       "items": [
+        "re"
+       ],
+       "fill": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "color": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "width": 0.75,
+       "rect": [
+        352.3,
+        638.0,
+        521.2,
+        701.75
+       ]
+      }
+     ],
+     "after": [
+      {
+       "type": "fs",
+       "items": [
+        "re"
+       ],
+       "fill": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "color": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "width": 0.75,
+       "rect": [
+        352.3,
+        638.0,
+        521.2,
+        717.59
+       ]
+      }
+     ],
+     "approved": [
+      {
+       "id": "panel-extension-04dd75eb2a1053db",
+       "page": 1,
+       "old": [
+        352.3,
+        638.0,
+        521.2,
+        701.75
+       ],
+       "new": [
+        352.3,
+        638.0,
+        521.2,
+        717.59
+       ],
+       "extension": 15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 13117,
+         "operator": "352.3 140.17 168.9 63.75 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 13164,
+         "operator": "352.3 140.17 168.9 63.75 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.75
+         }
+        ]
+       },
+       "band": [
+        351.925,
+        701.375,
+        521.575,
+        717.965
+       ],
+       "reason": "the paragraph grows past the bottom of the panel holding it",
+       "if_not_approved": "refused: the paragraph would leave its background",
+       "requires": [
+        "clip-extension-1936f57dc29e3594"
+       ]
+      }
+     ]
+    },
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "layout",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "size_and_colour_kept": true,
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": false,
+       "route": "lines",
+       "required": [
+        "search_per_line",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 2,
+        "on_target": 2,
+        "elsewhere": 0,
+        "lines": 2
+       },
+       "search_per_line": true,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "start",
+       "leading_basis": "unobserved: 1.5 em default"
+      }
+     },
+     "approved": [
+      {
+       "what": "panel",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "clip",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "partial": {
+     "clip only": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the clip extension needs the extension of its text box's panel approved too: panel-extension-04dd75eb2a1053db"
+     },
+     "panel only": {
+      "outcome": "refused",
+      "reason": "prototypes.paragraph_frame.engine.Refused: the panel extension of a clipped text box needs the clip extension approved too: clip-extension-1936f57dc29e3594"
+     }
+    }
+   },
+   {
+    "old": "06-4397-3205 06-6944-9156",
+    "new": "06-4397-3205",
+    "proposal_refused": null,
+    "chain": {},
+    "decorations": {},
+    "panels": {
+     "candidates": [
+      {
+       "id": "panel-extension-ac19e0f47726716d",
+       "page": 1,
+       "old": [
+        352.3,
+        638.0,
+        521.2,
+        717.59
+       ],
+       "new": [
+        352.3,
+        638.0,
+        521.2,
+        701.75
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 13117,
+         "operator": "352.3 124.33 168.9 79.58999999999999 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 13176,
+         "operator": "352.3 124.33 168.9 79.58999999999999 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.75
+         }
+        ]
+       },
+       "band": [
+        351.925,
+        701.375,
+        521.575,
+        717.965
+       ],
+       "reason": "the paragraph is shorter: the panel goes back",
+       "if_not_approved": "the panel stays as it is"
+      }
+     ],
+     "unavailable": null
+    },
+    "clips": {
+     "candidates": [
+      {
+       "id": "clip-extension-433317f92dc07ad9",
+       "page": 1,
+       "old": [
+        352.75,
+        639.076,
+        520.89,
+        716.62
+       ],
+       "new": [
+        352.75,
+        639.076,
+        520.89,
+        700.78
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, rule and order kept)",
+       "rule": [
+        "W*"
+       ],
+       "operators": [
+        {
+         "offset": 13228,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13289,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13469,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13606,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13786,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13923,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14091,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14228,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14381,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14559,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14712,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14831,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14967,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15119,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15272,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15424,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15583,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15735,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15894,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 16010,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 17765,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 17881,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 17997,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18118,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18234,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18368,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18484,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18618,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        }
+       ],
+       "holds": {
+        "text_shows": 37,
+        "paragraph_shows": 10,
+        "drawings": 0
+       },
+       "band": [
+        352.75,
+        700.78,
+        520.89,
+        716.62
+       ],
+       "reason": "the paragraph is shorter: the clip goes back",
+       "if_not_approved": "the clip stays as it is"
+      }
+     ],
+     "unavailable": null
+    },
+    "unapproved": {
+     "outcome": "saved",
+     "reason": null,
+     "seconds": 4.46
+    },
+    "outcome": "saved",
+    "approved": {
+     "chain": [],
+     "decorations": [],
+     "panels": [
+      "panel-extension-ac19e0f47726716d"
+     ],
+     "clips": [
+      "clip-extension-433317f92dc07ad9"
+     ]
+    },
+    "lines": [
+     "FAX 06-4397-3205 "
+    ],
+    "grow": 0,
+    "safety": false,
+    "quality": true,
+    "failed": [
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "non_text_paint_identical"
+    ],
+    "structure_failed": [],
+    "continued_editing": {
+     "ok": true,
+     "status": "applied",
+     "selection": "06-4397-3205"
+    },
+    "save": {
+     "follower_translation": -15.84002685546875,
+     "followers_repainted": 0,
+     "placed_objects_moved": [],
+     "decorations_moved": [],
+     "chain_moved": null,
+     "panels_extended": [
+      {
+       "id": "panel-extension-ac19e0f47726716d",
+       "page": 1,
+       "old": [
+        352.3,
+        638.0,
+        521.2,
+        717.59
+       ],
+       "new": [
+        352.3,
+        638.0,
+        521.2,
+        701.75
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 13117,
+         "operator": "352.3 124.33 168.9 79.58999999999999 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 13176,
+         "operator": "352.3 124.33 168.9 79.58999999999999 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.75
+         }
+        ]
+       },
+       "band": [
+        351.925,
+        701.375,
+        521.575,
+        717.965
+       ],
+       "reason": "the paragraph is shorter: the panel goes back",
+       "if_not_approved": "the panel stays as it is"
+      }
+     ],
+     "clips_extended": [
+      {
+       "id": "clip-extension-433317f92dc07ad9",
+       "page": 1,
+       "old": [
+        352.75,
+        639.076,
+        520.89,
+        716.62
+       ],
+       "new": [
+        352.75,
+        639.076,
+        520.89,
+        700.78
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, rule and order kept)",
+       "rule": [
+        "W*"
+       ],
+       "operators": [
+        {
+         "offset": 13228,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13289,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13469,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13606,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13786,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 13923,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14091,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14228,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14381,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14559,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14712,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14831,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 14967,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15119,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15272,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15424,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15583,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15735,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 15894,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 16010,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 17765,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 17881,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 17997,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18118,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18234,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18368,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18484,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        },
+        {
+         "offset": 18618,
+         "operator": "352.75 125.3 168.14 77.544 re"
+        }
+       ],
+       "holds": {
+        "text_shows": 37,
+        "paragraph_shows": 10,
+        "drawings": 0
+       },
+       "band": [
+        352.75,
+        700.78,
+        520.89,
+        716.62
+       ],
+       "reason": "the paragraph is shorter: the clip goes back",
+       "if_not_approved": "the clip stays as it is"
+      }
+     ]
+    },
+    "moves": {
+     "approved_moves": {
+      "elements": 0,
+      "drawings": 0,
+      "images": 0,
+      "shading_rasters": 0,
+      "glyphs": 0,
+      "exact": true,
+      "nothing_left": true
+     },
+     "protected": {
+      "drawings": false,
+      "images": true
+     },
+     "ok": false
+    },
+    "links": {
+     "links": 3,
+     "moved": 0,
+     "ok": true
+    },
+    "placement": null,
+    "raster": null,
+    "panel": {
+     "before": [
+      {
+       "type": "fs",
+       "items": [
+        "re"
+       ],
+       "fill": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "color": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "width": 0.75,
+       "rect": [
+        352.3,
+        638.0,
+        521.2,
+        717.59
+       ]
+      }
+     ],
+     "after": [
+      {
+       "type": "fs",
+       "items": [
+        "re"
+       ],
+       "fill": [
+        1.0,
+        1.0,
+        1.0
+       ],
+       "color": [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "width": 0.75,
+       "rect": [
+        352.3,
+        638.0,
+        521.2,
+        701.75
+       ]
+      }
+     ],
+     "approved": [
+      {
+       "id": "panel-extension-ac19e0f47726716d",
+       "page": 1,
+       "old": [
+        352.3,
+        638.0,
+        521.2,
+        717.59
+       ],
+       "new": [
+        352.3,
+        638.0,
+        521.2,
+        701.75
+       ],
+       "extension": -15.84,
+       "edges": "bottom only (top, sides, colours, line style, order kept)",
+       "operators": [
+        {
+         "offset": 13117,
+         "operator": "352.3 124.33 168.9 79.58999999999999 re",
+         "paint": "f*"
+        },
+        {
+         "offset": 13176,
+         "operator": "352.3 124.33 168.9 79.58999999999999 re",
+         "paint": "S"
+        }
+       ],
+       "style": {
+        "fill": [
+         "g",
+         [
+          1.0
+         ]
+        ],
+        "outline": [
+         {
+          "colour": [
+           "G",
+           [
+            0.0
+           ]
+          ],
+          "width": 0.75
+         }
+        ]
+       },
+       "band": [
+        351.925,
+        701.375,
+        521.575,
+        717.965
+       ],
+       "reason": "the paragraph is shorter: the panel goes back",
+       "if_not_approved": "the panel stays as it is"
+      }
+     ]
+    },
+    "approved_audit": {
+     "verdict": "pass",
+     "mode": "layout",
+     "approval": {
+      "status": "pass",
+      "reasons": []
+     },
+     "quality": {
+      "extraction_mupdf": true,
+      "extraction_poppler": true,
+      "size_and_colour_kept": true,
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": false,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 1,
+       "alignment": "start",
+       "leading_basis": "approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+      }
+     },
+     "approved": [
+      {
+       "what": "panel",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "clip",
+       "status": "pass",
+       "reasons": []
+      },
+      {
+       "what": "text",
+       "status": "pass",
+       "reasons": []
+      }
+     ],
+     "protected": {
+      "status": "pass",
+      "reasons": [],
+      "pixels": {
+       "72": 0,
+       "150": 0
+      }
+     },
+     "unchecked": []
+    },
+    "partial": {
+     "clip only": {
+      "outcome": "saved",
+      "reason": null
+     },
+     "panel only": {
+      "outcome": "saved",
+      "reason": null
+     }
+    },
+    "restored": {
+     "compare": {
+      "paragraph": {
+       "unchanged": 15,
+       "kept": 15,
+       "moved": 0,
+       "restyled": 0,
+       "max_delta": 0.0,
+       "source_lines": 1,
+       "output_lines": 1,
+       "source_breaks_outside_edit": 0,
+       "breaks_kept": 0
+      },
+      "outside_changed": 0,
+      "page_changed": 0,
+      "text_identical": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "text_identical_ignoring_whitespace": {
+       "mupdf": true,
+       "poppler": true
+      },
+      "search_hits": {
+       "reference": 1,
+       "output": 1
+      }
+     },
+     "glyphs": {
+      "glyphs": 600,
+      "missing": 0,
+      "extra": 0,
+      "beyond_001": 0,
+      "beyond_0001": 0,
+      "largest": 3e-05,
+      "ok": true
+     },
+     "paint": {
+      "drawings": true,
+      "images_same": true,
+      "shading_rasters": 0,
+      "images": true
+     },
+     "links": {
+      "annotations": 3,
+      "ok": true
+     },
+     "structure_failed": [],
+     "pixels": {
+      "72": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 1505496
+      },
+      "150": {
+       "differing_samples": 0,
+       "largest": 0,
+       "samples": 6530142
+      },
+      "identical": true
+     }
+    }
+   }
+  ]
+ }
+}
