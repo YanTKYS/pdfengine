@@ -21,14 +21,21 @@ and the saved page is checked against it:
   annotations (paired by their dictionary and place, not by sort order) and
   pixels (72 and 150 dpi) are unchanged; the other pages' content and the
   font programs too;
-* ``quality`` (apart from safety): MuPDF and Poppler extraction equal the
-  source's with the replacement, the new text is found by search (a
-  replacement broken over lines is not searched: unverified, its lines'
-  joined text reported apart), the edited paragraph keeps its sizes and
-  colours. ``pass`` only when every check was made and passed.
-  ``quality.search_copy`` holds the search and copy measures of
-  search_copy (issue #114), tied to the edited paragraph's lines; they are
-  reported beside the status and do not change it.
+* ``quality`` (apart from safety): MuPDF and Poppler extraction of the page
+  equal the source's with the replacement, the edited text's search and
+  extraction verified on the edited lines (``search_copy_check``:
+  search_copy.verified over the measures in ``quality.search_copy``, issue
+  #116: on one line one search finds it where it is drawn; over lines each
+  line's part is found on its line; both extractors and the copy
+  equivalent always), the edited paragraph keeps its sizes and colours.
+  ``placement``: the edited paragraph's lines drawn where the approved
+  proposal places them and consistent with the source (baselines, the
+  source's kept, added lines at the proposal's leading, left and right
+  edges; the leading's basis reported).
+  ``pass`` only when every check was made and passed. ``search_mupdf`` is
+  the search measured on the edited lines; the check as it was before issue
+  #116 (a hit anywhere on the page) and the status it gave are kept in
+  ``quality.legacy``.
 
 An approved panel extension (issue #112) is checked too: the panel's
 drawings are found in the output with their rectangle extended exactly as
@@ -381,14 +388,17 @@ def audit(source, output, page_number=None, proposal=None, save=None):
         reasons.append('another page or its forms changed')
     protected = dict(status='fail' if reasons else 'pass', reasons=reasons, pixels=pixels, annotations=len(aa))
     approval = approval_check(source, proposal, save)
-    quality = _quality(source, output, page_number, text, edited_old, edited_new, olds + news)
-    # Search and copy measured apart (issue #114): reported beside the quality above, which they do not change.
+    # Search and copy measured on the edited paragraph's lines (issue #114); quality judges search with them (issue #116).
     try:
         from . import search_copy
         expected, new, at, frame, baselines = search_copy.target(proposal)
-        quality['search_copy'] = search_copy.measure(output, page_number, expected, new, at, frame, baselines, source, search_copy.before(proposal))
+        measures = search_copy.measure(output, page_number, expected, new, at, frame, baselines, source, search_copy.before(proposal))
     except Exception as exc:  # a measure that cannot be made is reported, never a pass
-        quality['search_copy'] = dict(error=f'{type(exc).__name__}: {exc}'[:300])
+        measures = dict(error=f'{type(exc).__name__}: {exc}'[:300])
+    quality = _quality(source, output, page_number, text, edited_old, edited_new, olds + news, measures)
+    quality['placement'] = _placement(output, page_number, proposal, edited_new, news)
+    if quality['placement']['result'] is not True and quality['status'] != 'fail':
+        quality['status'] = 'fail' if quality['placement']['result'] is False else 'unverified'
     parts = [approval['status'], protected['status']] + [x['status'] for x in approved]
     verdict = 'fail' if 'fail' in parts else 'unverified' if unchecked else 'pass'
     return dict(verdict=verdict, approval=approval, approved=approved, protected=protected, quality=quality,
@@ -411,9 +421,16 @@ def _styles(path, page, area, away):
     return out
 
 
-def _quality(source, output, page, text, edited_old, edited_new, moved):
-    """Extraction (MuPDF, Poppler) equal to the source's with the replacement; the new text found by search; the
-    edited paragraph keeps its sizes and colours (its glyphs alone: approved moves into its area are not its text)."""
+def _quality(source, output, page, text, edited_old, edited_new, moved, measures=None):
+    """Extraction (MuPDF, Poppler) equal to the source's with the replacement; the edited text's search and
+    extraction verified (search_copy.verified, issue #116); the edited paragraph keeps its sizes and colours (its
+    glyphs alone: approved moves into its area are not its text).
+
+    ``search_mupdf`` is the search measured on the edited lines (search_copy.search_on_target). Before issue
+    #116 it counted a hit anywhere on the page and took a replacement not found on one line for one broken
+    over lines; that value and the status it gave are kept in ``legacy``, and ``search_mupdf_change`` says why
+    they differ."""
+    from . import search_copy
     old, new = text['replace']
     bare = lambda s: ''.join(s.split())
     out = {}
@@ -425,24 +442,79 @@ def _quality(source, output, page, text, edited_old, edited_new, moved):
         for _ in range(text.get('occurrence', 0) + 1):
             at = a.find(bare(old), at + 1)
         out[f'extraction_{name}'] = at >= 0 and b == a[:at] + bare(new) + a[at + len(bare(old)):]
+    legacy = {}
     with pymupdf.open(output) as d:
-        # Search finds text within a reader line. A replacement found by search is a success; one broken over
-        # lines is not searched (None: unverified), and its lines' joined text is reported apart.
+        # The check as it was before issue #116 (kept for comparison): a hit anywhere on the page passed; a
+        # replacement not found within a reader line was taken for one broken over lines (None: unverified).
         hits = d[page - 1].search_for(new) if new.strip() else None
         if not new.strip():
             pass  # a deletion leaves no text to search for: no such check
         elif hits:
-            out['search_mupdf'] = True
+            legacy['search_mupdf'] = True
         else:
             lines = [''.join(s['text'] for s in l['spans']) for b in d[page - 1].get_text('dict')['blocks'] for l in b.get('lines', [])]
             wrapped = not any(new in l for l in lines)
-            out['search_mupdf'] = None if wrapped else False
-            out['search_wrapped_lines_text'] = wrapped and bare(new) in bare(''.join(lines))
+            legacy['search_mupdf'] = None if wrapped else False
+            legacy['search_wrapped_lines_text'] = wrapped and bare(new) in bare(''.join(lines))
     out['size_and_colour_kept'] = _styles(output, page, edited_new, moved) <= _styles(source, page, edited_new, moved)
+    old = [out['extraction_mupdf'], out['extraction_poppler'], out['size_and_colour_kept']] + ([legacy['search_mupdf']] if 'search_mupdf' in legacy else [])
+    legacy['status'] = _status(old)
+    if new.strip():
+        out['search_mupdf'], why = search_copy.search_on_target(measures)
+        if out['search_mupdf'] != legacy['search_mupdf']:
+            out['search_mupdf_change'] = dict(legacy=legacy['search_mupdf'], now=out['search_mupdf'], why=why)
+    check = search_copy.verified(measures)
+    out['search_copy_check'] = check
     # A check not made (None) is no success: the status is then unverified, unless another check failed.
-    values = list(out.values())
-    out['status'] = 'fail' if any(v is False for v in values) else 'unverified' if any(v is None for v in values) else 'pass'
+    values = [out['extraction_mupdf'], out['extraction_poppler'], out['size_and_colour_kept']]
+    if check['result'] != 'not applicable':
+        values.append(check['result'])
+    out['status'] = _status(values)
+    out['legacy'] = legacy
+    out['search_copy'] = measures
     return out
+
+
+def _placement(output, page, proposal, frame, away, tol=.3, reach=3.):
+    """The edited paragraph's lines drawn where the approved proposal places them, consistent with the source:
+    each drawn line on a proposed baseline (0.2 pt) and every proposed line drawn; the source lines' baselines
+    kept; added lines at the proposal's leading; each line starting at the paragraph's left edge (the first at its
+    first-line start) and ending inside its right edge (0.3 pt). Glyphs are read within half a line of the
+    proposed lines and up to ``reach`` pt beside the frame (a line drawn off its edge is seen). The leading's basis (observed in the paragraph,
+    or a default the save acknowledged as inferred) is reported, not judged here."""
+    inferred = proposal['evidence']['inferred']
+    planned = [l['baseline'] for l in proposal['lines'] if l['text'].strip()]
+    observed = [l['baseline'] for l in proposal['evidence']['observed']['lines'][:proposal['source_lines']]]
+    # The frame may reach below the paragraph (its bottom: the next paragraph or the column's): the lines read are
+    # those within half a line of the proposed ones.
+    half = inferred['line_height'] / 2
+    band = (planned[0] - half, planned[-1] + half) if planned else (0, -1)
+    rows = {}
+    with pymupdf.open(output) as d:
+        for b in d[page - 1].get_text('rawdict')['blocks']:
+            for l in b.get('lines', []):
+                for sp in l['spans']:
+                    for c in sp['chars']:
+                        r = pymupdf.Rect(c['bbox'])
+                        mid = (r.tl + r.br) / 2
+                        if (c['c'].strip() and (frame + (-reach, -tol, reach, tol)).contains(mid) and band[0] <= c['origin'][1] <= band[1]
+                                and not any(a.contains(mid) for a in away)):
+                            rows.setdefault(round(c['origin'][1], 1), []).append((c['origin'][0], r.x1))
+    drawn = sorted(rows)
+    near = lambda y, ys: any(abs(y - v) <= .2 for v in ys)
+    checks = dict(lines_on_proposed_baselines=all(near(y, planned) for y in drawn) and all(near(y, drawn) for y in planned),
+                  source_baselines_kept=all(abs(a - b) <= .2 for a, b in zip(observed, planned)),
+                  added_lines_at_leading=all(abs(b - a - inferred['line_height']) <= .2 for a, b in zip(planned[len(observed) - 1:], planned[len(observed):]))
+                  if len(planned) > len(observed) else True)
+    starts = [inferred['first_x']] + [inferred['left']] * max(0, len(drawn) - 1)
+    checks['left_edges'] = all(abs(min(x for x, _ in rows[y]) - x0) <= tol for y, x0 in zip(drawn, starts))
+    checks['inside_right_edge'] = all(max(x1 for _, x1 in rows[y]) <= inferred['right'] + tol for y in drawn)
+    return dict(result=all(checks.values()) if drawn else None, checks=checks, lines=len(drawn), alignment=inferred.get('alignment'),
+                leading_basis=inferred.get('leading_basis'))
+
+
+def _status(values):
+    return 'fail' if any(v is False for v in values) else 'unverified' if any(v is None for v in values) else 'pass'
 
 
 def compare_runs(root, documents, evaluations=('chain', 'separate', 'decoration', 'restore', 'placed')):

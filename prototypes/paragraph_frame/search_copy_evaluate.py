@@ -17,9 +17,10 @@ a changed measure.
 
 ``run`` saves each edit again with the B2 of this tree, approving exactly the
 candidates its proposal lists (panel_evaluate.chain_step), and records the
-measures of search_copy beside the existing quality (approved_audit). The
-measures are reported, not turned into practical success: which of them
-practical success requires is a design decision (issue #114).
+measures of search_copy with the approved-change audit's quality (approved_audit;
+since issue #116 its quality takes them: ``search_copy_check``, the check
+before in ``legacy``). Practical success of these edits is recorded by the
+panel and smoke evaluations, which keep every other audit it needs.
 
 Generated fixtures (tests/test_search_copy.py) hold the negative cases; they
 are never counted as real-PDF results.
@@ -164,9 +165,8 @@ def phase_run(args):
         drawn = _lines(output, case['page'], frame, baselines)
         a = audit(source, output, case['page'])
         results[case['id']] = dict(outcome='saved', same_output=drawn == case.get('drawn'), drawn=drawn,
-                                   quality_existing=a['quality'], verdict=a['verdict'], mode=a['mode'],
-                                   measures=search_copy.measure(output, case['page'], expected, new, at, frame, baselines, source,
-                                                                search_copy.before(p)))
+                                   quality_existing={k: v for k, v in a['quality'].items() if k != 'search_copy'}, verdict=a['verdict'],
+                                   mode=a['mode'], measures=a['quality']['search_copy'])
         m = results[case['id']]['measures']
         print(case['id'], {k: m[k] for k in ('search_full', 'search_per_line', 'extraction_mupdf', 'extraction_poppler', 'copy_equivalent')},
               'existing', a['quality']['status'], flush=True)
@@ -190,8 +190,9 @@ def phase_remeasure(args):
         p = json.loads(output.with_suffix('.proposal.json').read_text())
         expected, new, at, frame, baselines = search_copy.target(p)
         a = audit(source, output, case['page'])
-        r.update(quality_existing=a['quality'], verdict=a['verdict'], mode=a['mode'],
-                 measures=search_copy.measure(output, case['page'], expected, new, at, frame, baselines, source, search_copy.before(p)))
+        # (The audit's quality holds the same measures: kept once, under ``measures``.)
+        r.update(quality_existing={k: v for k, v in a['quality'].items() if k != 'search_copy'}, verdict=a['verdict'], mode=a['mode'],
+                 measures=a['quality']['search_copy'])
         print(case['id'], {k: r['measures'][k] for k in ('search_full', 'search_per_line', 'extraction_mupdf', 'extraction_poppler', 'copy_equivalent')}, flush=True)
     (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
 
@@ -206,6 +207,13 @@ def phase_collect(args):
             v = (r.get('measures') or {}).get(k, 'not run' if r.get('outcome') != 'saved' else None)
             summary.setdefault(groups[cid], {}).setdefault(k, {}).setdefault(str(v).lower(), 0)
             summary[groups[cid]][k][str(v).lower()] += 1
+        # Issue #116: whether the measures verify the edited text's search and extraction, and the audit's quality with them.
+        q = r.get('quality_existing') or {}
+        for k, v in (('verified', (q.get('search_copy_check') or {}).get('result')), ('quality_status', q.get('status')),
+                     ('quality_status_legacy', (q.get('legacy') or {}).get('status'))):
+            v = 'not run' if r.get('outcome') != 'saved' else str(v).lower()
+            summary.setdefault(groups[cid], {}).setdefault(k, {}).setdefault(v, 0)
+            summary[groups[cid]][k][v] += 1
     out = dict(schema='search-copy-results-1', manifest_sha256=hashlib.sha256(MANIFEST.read_bytes()).hexdigest(), summary=summary, results=results)
     RESULTS.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
     print(json.dumps(summary, ensure_ascii=False))

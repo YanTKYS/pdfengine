@@ -3563,5 +3563,1181 @@
   "removed": [],
   "added": [],
   "design_decision_needed": true
+ },
+ {
+  "date": "2026-11-02",
+  "code": "c604c05",
+  "reason": "measurement fix (issue #116): the existing search check measured on the edited lines (a hit elsewhere on the page no longer passes; a one-line replacement not found is false, not a wrap); natural placement measured on the edited lines (the smoke steps never measured it); the measures, placement and practical basis recorded beside each step",
+  "evaluations": [
+   "smoke"
+  ],
+  "compared": 26,
+  "changed": [
+   {
+    "record": [
+     "smoke",
+     "A1",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      true
+     ],
+     "search_extraction_mupdf": [
+      null,
+      true
+     ],
+     "search_extraction_poppler": [
+      null,
+      true
+     ],
+     "search_full": [
+      null,
+      true
+     ],
+     "search_per_line": [
+      null,
+      true
+     ]
+    },
+    "tiers": {},
+    "why": [
+     "record only: practical success unchanged (checks added or a null check no longer stored)"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "A1",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "non_text_paint_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      true
+     ],
+     "search_extraction_mupdf": [
+      null,
+      true
+     ],
+     "search_extraction_poppler": [
+      null,
+      true
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {},
+    "why": [
+     "record only: practical success unchanged (checks added or a null check no longer stored)"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "I1",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      true
+     ],
+     "search_extraction_mupdf": [
+      null,
+      true
+     ],
+     "search_extraction_poppler": [
+      null,
+      true
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {},
+    "why": [
+     "record only: practical success unchanged (checks added or a null check no longer stored)"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "I1",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      true
+     ],
+     "search_extraction_mupdf": [
+      null,
+      true
+     ],
+     "search_extraction_poppler": [
+      null,
+      true
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {},
+    "why": [
+     "record only: practical success unchanged (checks added or a null check no longer stored)"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "I2",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "non_text_paint_identical"
+     ],
+     [
+      "non_text_paint_identical"
+     ]
+    ],
+    "checks": {
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ]
+    },
+    "tiers": {},
+    "why": [
+     "record only: practical success unchanged (checks added or a null check no longer stored)"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "I5",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      true
+     ],
+     "search_extraction_mupdf": [
+      null,
+      true
+     ],
+     "search_extraction_poppler": [
+      null,
+      true
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {},
+    "why": [
+     "record only: practical success unchanged (checks added or a null check no longer stored)"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "W2",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      true
+     ],
+     "search_extraction_mupdf": [
+      null,
+      true
+     ],
+     "search_extraction_poppler": [
+      null,
+      true
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {},
+    "why": [
+     "record only: practical success unchanged (checks added or a null check no longer stored)"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "W2",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      true
+     ],
+     "search_extraction_mupdf": [
+      null,
+      true
+     ],
+     "search_extraction_poppler": [
+      null,
+      true
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {},
+    "why": [
+     "record only: practical success unchanged (checks added or a null check no longer stored)"
+    ]
+   }
+  ],
+  "removed": [],
+  "added": [],
+  "design_decision_needed": false,
+  "counts": {
+   "changed": 8,
+   "practical": {}
+  }
+ },
+ {
+  "date": "2026-11-02",
+  "code": "c604c05",
+  "reason": "product contract change (issue #116, option (b) of issue #114, approved by the issue): the edited text's search and extraction required for practical success: one line, one search where it is drawn; over lines, each line's part on its line; both extractions of the paragraph and the copy equivalent always. search_full stays recorded",
+  "evaluations": [
+   "smoke"
+  ],
+  "compared": 26,
+  "changed": [
+   {
+    "record": [
+     "smoke",
+     "I4",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      true
+     ],
+     "search_extraction_mupdf": [
+      null,
+      true
+     ],
+     "search_extraction_poppler": [
+      null,
+      true
+     ],
+     "search_full": [
+      null,
+      false
+     ],
+     "search_per_line": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      true
+     ]
+    },
+    "why": [
+     "contract (b): verified line by line (one search over lines not required)"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "I4",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "size_and_colour_kept"
+     ],
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler",
+      "size_and_colour_kept"
+     ]
+    ],
+    "checks": {
+     "approved_quality": [
+      true,
+      false
+     ],
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      false
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      true
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    },
+    "why": [
+     "contract (b): extraction_poppler, copy_equivalent false"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "I5",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      false
+     ],
+     "copy_equivalent": [
+      null,
+      false
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      false
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      false
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    },
+    "why": [
+     "measurement: search_mupdf None -> False (not found where it is drawn (one line))",
+     "contract (b): search_full, extraction_mupdf, extraction_poppler, copy_equivalent false"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "L1",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      true,
+      false
+     ],
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      false
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    },
+    "why": [
+     "contract (b): extraction_mupdf, extraction_poppler false"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "L1",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      true,
+      false
+     ],
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      false
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    },
+    "why": [
+     "contract (b): extraction_mupdf, extraction_poppler false"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "L2",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      false
+     ],
+     "copy_equivalent": [
+      null,
+      false
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      false
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      false
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    },
+    "why": [
+     "measurement: search_mupdf None -> False (not found where it is drawn (one line))",
+     "contract (b): search_full, extraction_mupdf, extraction_poppler, copy_equivalent false"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "L2",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      false
+     ],
+     "copy_equivalent": [
+      null,
+      false
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      false
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      false
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    },
+    "why": [
+     "measurement: search_mupdf None -> False (not found where it is drawn (one line))",
+     "contract (b): search_full, extraction_mupdf, extraction_poppler, copy_equivalent false"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "L3",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      true,
+      false
+     ],
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      false
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    },
+    "why": [
+     "contract (b): extraction_mupdf, extraction_poppler false"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "L3",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      true,
+      false
+     ],
+     "approved_quality_legacy": [
+      null,
+      true
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      false
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      true,
+      false
+     ]
+    },
+    "why": [
+     "contract (b): extraction_mupdf, extraction_poppler false"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "L4",
+     "1"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      false
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      false
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      false
+     ],
+     "search_per_line": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    },
+    "why": [
+     "contract (b): extraction_mupdf, extraction_poppler false"
+    ]
+   },
+   {
+    "record": [
+     "smoke",
+     "L4",
+     "2"
+    ],
+    "outcome": [
+     "saved",
+     "saved"
+    ],
+    "reason_class": [
+     null,
+     null
+    ],
+    "failed": [
+     [],
+     []
+    ],
+    "checks": {
+     "approved_quality": [
+      null,
+      false
+     ],
+     "copy_equivalent": [
+      null,
+      true
+     ],
+     "natural_placement": [
+      null,
+      true
+     ],
+     "search_copy": [
+      null,
+      false
+     ],
+     "search_extraction_mupdf": [
+      null,
+      false
+     ],
+     "search_extraction_poppler": [
+      null,
+      false
+     ],
+     "search_full": [
+      null,
+      false
+     ],
+     "search_per_line": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      null,
+      false
+     ]
+    },
+    "why": [
+     "contract (b): extraction_mupdf, extraction_poppler false"
+    ]
+   }
+  ],
+  "removed": [],
+  "added": [],
+  "design_decision_needed": "issue #116 option (b): approved by the issue",
+  "counts": {
+   "changed": 11,
+   "practical": {
+    "None -> True": 1,
+    "True -> False": 5,
+    "None -> False": 5
+   }
+  }
+ },
+ {
+  "date": "2026-11-02",
+  "code": "c604c05",
+  "reason": "PR #117 review: structure and links required for practical success on the approved-audit path (not measured: unverified). Only practical_basis changes: every saved smoke step measured both, true; no outcome, check or tier changed",
+  "evaluations": [
+   "smoke"
+  ],
+  "compared": 26,
+  "changed": [],
+  "removed": [],
+  "added": [],
+  "design_decision_needed": false
  }
 ]

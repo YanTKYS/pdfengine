@@ -1,5 +1,7 @@
 # 折り返した編集文字列の検索・コピーを実PDFで実測する
 
+> **Issue #116 で更新**：判断事項 1 は選択肢 (b) で実用成功に組み込み、判断事項 2 は測定誤りとして直した（`docs/practical-search.md`）。以下は Issue #114 時点の記録で、書き換えていない。
+
 2026-11-01。Issue #114。PR #113 マージ後の main `dedf44f` を起点とする。評価条件は、指標の実装前の commit `4d84b98` で [manifest](../evaluations/search_copy/manifest.json) に固定した。結果は [results.json](../evaluations/search_copy/results.json)。
 
 ## 結論

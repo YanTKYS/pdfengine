@@ -10,7 +10,9 @@ Issue #108。評価の入口は `prototypes/paragraph_frame/eval_hub.py`。各�
 | `changes.json` | 基準の変更の履歴：日付、コード、理由、変わった記録（前・後）、追加・削除、設計判断の要否 |
 | `impact.json` | 変更したファイル → 評価の対応表（`direct`：通常、`related`：関連、`milestone`：節目を勧める） |
 
-記録の形（`eval_records.py`）：`evaluation, case, step, group (real | fixture | sample), mode (faithful | layout), outcome, reason_class, failed, checks, tiers`。`tiers` は保存・実用・再編集・復元・拒否を分けて持ち、測っていない項目は `null`（未検証）にする。`layout` は、明示承認した移動（配置物・行の装飾・連鎖の要素）を保存した手。
+記録の形（`eval_records.py`）：`evaluation, case, step, group (real | fixture | sample), mode (faithful | layout), outcome, reason_class, failed, checks, tiers`。`tiers` は保存・実用・再編集・復元・拒否を分けて持ち、測っていない項目は `null`（未検証）にする。`layout` は、明示承認した移動（配置物・行の装飾・連鎖の要素）またはパネルの伸長を保存し、承認変更監査の変更集合にもその変更がある手。
+
+実用成功は `eval_records.practical` の1つの規則で決める（Issue #116、`docs/practical-search.md`）。承認変更監査（`approved_audit`）を記録した手（スモーク・パネル）は、基準ごとの出典・結果・役割（必須／失敗してはならない／表示のみ）を `practical_basis` に残す。旧監査（領域監査）の失敗は、承認したレイアウト変更の手では「表示のみ」とし、失敗のまま残す。忠実編集の手では数える。
 
 ## 使い方
 

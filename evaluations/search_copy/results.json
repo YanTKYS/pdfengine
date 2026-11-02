@@ -24,6 +24,17 @@
    },
    "clipboard_manual": {
     "none": 3
+   },
+   "verified": {
+    "true": 2,
+    "false": 1
+   },
+   "quality_status": {
+    "pass": 2,
+    "fail": 1
+   },
+   "quality_status_legacy": {
+    "unverified": 3
    }
   },
   "extra": {
@@ -49,6 +60,18 @@
    },
    "clipboard_manual": {
     "none": 8
+   },
+   "verified": {
+    "true": 5,
+    "false": 3
+   },
+   "quality_status": {
+    "pass": 5,
+    "fail": 3
+   },
+   "quality_status_legacy": {
+    "pass": 5,
+    "unverified": 3
    }
   }
  },
@@ -73,52 +96,40 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": null,
-    "search_wrapped_lines_text": true,
     "size_and_colour_kept": true,
-    "status": "unverified",
-    "search_copy": {
-     "search_full": false,
-     "search_per_line": true,
-     "extraction_mupdf": true,
-     "extraction_poppler": true,
-     "copy_equivalent": true,
-     "clipboard_manual": null,
-     "gaps": [],
-     "search_full_hits": {
-      "total": 0,
-      "on_target": 0,
-      "elsewhere": 0,
-      "lines": 2
-     },
-     "search_per_line_parts": [
-      {
-       "line": 0,
-       "text": "複数ページフィールド選択",
-       "found": true,
-       "continuous": true
-      },
-      {
-       "line": 1,
-       "text": "複数ページフィールド選択",
-       "found": true,
-       "continuous": true
-      }
+    "search_mupdf": null,
+    "search_copy_check": {
+     "result": true,
+     "route": "lines",
+     "required": [
+      "search_per_line",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
      ],
-     "extraction_mupdf_detail": {
-      "ok": true
+     "failed": [],
+     "missing": [],
+     "search_full": false,
+     "note": "verified line by line: each line's part is found on its line; one search for the whole replacement is not found (search_full false), and is not guaranteed"
+    },
+    "status": "pass",
+    "legacy": {
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true,
+     "status": "unverified"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_poppler_detail": {
-      "ok": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": true
-      },
-      "poppler": {
-       "ok": true
-      }
-     }
+     "lines": 2,
+     "alignment": "start",
+     "leading_basis": "unobserved: 1.5 em default"
     }
    },
    "verdict": "pass",
@@ -187,52 +198,40 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": null,
-    "search_wrapped_lines_text": true,
     "size_and_colour_kept": true,
-    "status": "unverified",
-    "search_copy": {
-     "search_full": false,
-     "search_per_line": true,
-     "extraction_mupdf": true,
-     "extraction_poppler": true,
-     "copy_equivalent": true,
-     "clipboard_manual": null,
-     "gaps": [],
-     "search_full_hits": {
-      "total": 0,
-      "on_target": 0,
-      "elsewhere": 0,
-      "lines": 2
-     },
-     "search_per_line_parts": [
-      {
-       "line": 0,
-       "text": "枠の背景に設定されたグラデーション",
-       "found": true,
-       "continuous": true
-      },
-      {
-       "line": 1,
-       "text": "枠の背景に設定されたグラデーション",
-       "found": true,
-       "continuous": true
-      }
+    "search_mupdf": null,
+    "search_copy_check": {
+     "result": true,
+     "route": "lines",
+     "required": [
+      "search_per_line",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
      ],
-     "extraction_mupdf_detail": {
-      "ok": true
+     "failed": [],
+     "missing": [],
+     "search_full": false,
+     "note": "verified line by line: each line's part is found on its line; one search for the whole replacement is not found (search_full false), and is not guaranteed"
+    },
+    "status": "pass",
+    "legacy": {
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true,
+     "status": "unverified"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_poppler_detail": {
-      "ok": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": true
-      },
-      "poppler": {
-       "ok": true
-      }
-     }
+     "lines": 2,
+     "alignment": "start",
+     "leading_basis": "unobserved: 1.5 em default"
     }
    },
    "verdict": "pass",
@@ -301,78 +300,45 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": null,
-    "search_wrapped_lines_text": true,
     "size_and_colour_kept": true,
-    "status": "unverified",
-    "search_copy": {
+    "search_mupdf": null,
+    "search_copy_check": {
+     "result": false,
+     "route": "lines",
+     "required": [
+      "search_per_line",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
+     ],
+     "failed": [
+      "search_per_line",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
+     ],
+     "missing": [],
      "search_full": false,
-     "search_per_line": false,
-     "extraction_mupdf": false,
-     "extraction_poppler": false,
-     "copy_equivalent": false,
-     "clipboard_manual": null,
-     "gaps": [
-      {
-       "line": 0,
-       "between": "2の",
-       "from_source": true
-      }
-     ],
-     "search_full_hits": {
-      "total": 0,
-      "on_target": 0,
-      "elsewhere": 0,
-      "lines": 2
+     "note": null
+    },
+    "status": "fail",
+    "legacy": {
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true,
+     "status": "unverified"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "search_per_line_parts": [
-      {
-       "line": 0,
-       "text": "MSIME2012の予測変換表示",
-       "found": false,
-       "continuous": true,
-       "drawn": "MSIME2012 の予測変換表示",
-       "as_in_source": true
-      },
-      {
-       "line": 1,
-       "text": "MSIME2012の予測変換表示",
-       "found": true,
-       "continuous": true
-      }
-     ],
-     "extraction_mupdf_detail": {
-      "ok": false,
-      "whitespace_only": true,
-      "got": "SIME2012 の予測変換表示MSIM",
-      "want": "SIME2012の予測変換表示MSIME",
-      "at": 14,
-      "as_in_source": true
-     },
-     "extraction_poppler_detail": {
-      "ok": false,
-      "whitespace_only": true,
-      "got": "SIME2012 の予測変換表示MSIM",
-      "want": "SIME2012の予測変換表示MSIME",
-      "at": 14,
-      "as_in_source": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": false,
-       "whitespace_only": true,
-       "got": "SIME2012 の予測変換表示MSIM",
-       "want": "SIME2012の予測変換表示MSIME",
-       "at": 9
-      },
-      "poppler": {
-       "ok": false,
-       "whitespace_only": true,
-       "got": "SIME2012 の予測変換表示MSIM",
-       "want": "SIME2012の予測変換表示MSIME",
-       "at": 9
-      }
-     }
+     "lines": 2,
+     "alignment": "start",
+     "leading_basis": "unobserved: 1.5 em default"
     }
    },
    "verdict": "pass",
@@ -467,37 +433,39 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": true,
     "size_and_colour_kept": true,
-    "status": "pass",
-    "search_copy": {
+    "search_mupdf": true,
+    "search_copy_check": {
+     "result": true,
+     "route": "one line",
+     "required": [
+      "search_full",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
+     ],
+     "failed": [],
+     "missing": [],
      "search_full": true,
-     "search_per_line": null,
-     "extraction_mupdf": true,
-     "extraction_poppler": true,
-     "copy_equivalent": true,
-     "clipboard_manual": null,
-     "gaps": [],
-     "search_full_hits": {
-      "total": 1,
-      "on_target": 1,
-      "elsewhere": 0,
-      "lines": 1
+     "note": null
+    },
+    "status": "pass",
+    "legacy": {
+     "search_mupdf": true,
+     "status": "pass"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_mupdf_detail": {
-      "ok": true
-     },
-     "extraction_poppler_detail": {
-      "ok": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": true
-      },
-      "poppler": {
-       "ok": true
-      }
-     }
+     "lines": 2,
+     "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+     "leading_basis": "median within-paragraph observed gaps"
     }
    },
    "verdict": "pass",
@@ -552,47 +520,42 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": true,
     "size_and_colour_kept": true,
-    "status": "pass",
-    "search_copy": {
+    "search_mupdf": true,
+    "search_copy_check": {
+     "result": false,
+     "route": "one line",
+     "required": [
+      "search_full",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
+     ],
+     "failed": [
+      "extraction_mupdf",
+      "extraction_poppler"
+     ],
+     "missing": [],
      "search_full": true,
-     "search_per_line": null,
-     "extraction_mupdf": false,
-     "extraction_poppler": false,
-     "copy_equivalent": true,
-     "clipboard_manual": null,
-     "gaps": [],
-     "search_full_hits": {
-      "total": 1,
-      "on_target": 1,
-      "elsewhere": 0,
-      "lines": 1
+     "note": null
+    },
+    "status": "fail",
+    "legacy": {
+     "search_mupdf": true,
+     "status": "pass"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_mupdf_detail": {
-      "ok": false,
-      "whitespace_only": true,
-      "got": "ce 4.1.1 が8 月上旬にリリース",
-      "want": "ce 4.1.1が8月上旬にリリースされ",
-      "at": 17,
-      "as_in_source": true
-     },
-     "extraction_poppler_detail": {
-      "ok": false,
-      "whitespace_only": true,
-      "got": "ce 4.1.1 が 8 月上旬にリリー",
-      "want": "ce 4.1.1が8月上旬にリリースされ",
-      "at": 17,
-      "as_in_source": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": true
-      },
-      "poppler": {
-       "ok": true
-      }
-     }
+     "lines": 2,
+     "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+     "leading_basis": "median within-paragraph observed gaps"
     }
    },
    "verdict": "pass",
@@ -657,62 +620,50 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": null,
-    "search_wrapped_lines_text": true,
     "size_and_colour_kept": true,
-    "status": "unverified",
-    "search_copy": {
-     "search_full": false,
-     "search_per_line": null,
-     "extraction_mupdf": false,
-     "extraction_poppler": false,
-     "copy_equivalent": false,
-     "clipboard_manual": null,
-     "gaps": [
-      {
-       "line": 0,
-       "between": "cを",
-       "from_source": true
-      }
+    "search_mupdf": false,
+    "search_mupdf_change": {
+     "legacy": null,
+     "now": false,
+     "why": "not found where it is drawn (one line)"
+    },
+    "search_copy_check": {
+     "result": false,
+     "route": "one line",
+     "required": [
+      "search_full",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
      ],
-     "search_full_hits": {
-      "total": 0,
-      "on_target": 0,
-      "elsewhere": 0,
-      "lines": 1
+     "failed": [
+      "search_full",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
+     ],
+     "missing": [],
+     "search_full": false,
+     "note": null
+    },
+    "status": "fail",
+    "legacy": {
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true,
+     "status": "unverified"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_mupdf_detail": {
-      "ok": false,
-      "whitespace_only": true,
-      "got": "Calc を使いやすくする工夫が",
-      "want": "Calcを使いやすくする工夫が取",
-      "at": 4,
-      "as_in_source": true
-     },
-     "extraction_poppler_detail": {
-      "ok": false,
-      "whitespace_only": true,
-      "got": "Calc を使いやすくする工夫が",
-      "want": "Calcを使いやすくする工夫が取",
-      "at": 4,
-      "as_in_source": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": false,
-       "whitespace_only": true,
-       "got": "Calc を使いやすくする工夫",
-       "want": "Calcを使いやすくする工夫",
-       "at": 4
-      },
-      "poppler": {
-       "ok": false,
-       "whitespace_only": true,
-       "got": "Calc を使いやすくする工夫",
-       "want": "Calcを使いやすくする工夫",
-       "at": 4
-      }
-     }
+     "lines": 2,
+     "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+     "leading_basis": "median within-paragraph observed gaps"
     }
    },
    "verdict": "pass",
@@ -803,64 +754,43 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": null,
-    "search_wrapped_lines_text": true,
     "size_and_colour_kept": true,
-    "status": "unverified",
-    "search_copy": {
-     "search_full": false,
-     "search_per_line": true,
-     "extraction_mupdf": false,
-     "extraction_poppler": false,
-     "copy_equivalent": true,
-     "clipboard_manual": null,
-     "gaps": [],
-     "search_full_hits": {
-      "total": 0,
-      "on_target": 0,
-      "elsewhere": 0,
-      "lines": 2
-     },
-     "search_per_line_parts": [
-      {
-       "line": 1,
-       "text": "六つの豊富で",
-       "found": true,
-       "continuous": true
-      },
-      {
-       "line": 2,
-       "text": "強力な機能のアプリケーション",
-       "found": true,
-       "continuous": true
-      }
+    "search_mupdf": null,
+    "search_copy_check": {
+     "result": false,
+     "route": "lines",
+     "required": [
+      "search_per_line",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
      ],
-     "extraction_mupdf_detail": {
-      "ok": false,
-      "whitespace_only": true,
-      "got": "reOffice は自由ソフトウェアであ",
-      "want": "reOfficeは自由ソフトウェアである",
-      "at": 11,
-      "as_in_source": null,
-      "as_in_source_note": "由来未確認"
+     "failed": [
+      "extraction_mupdf",
+      "extraction_poppler"
+     ],
+     "missing": [],
+     "search_full": false,
+     "note": null
+    },
+    "status": "fail",
+    "legacy": {
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true,
+     "status": "unverified"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_poppler_detail": {
-      "ok": false,
-      "whitespace_only": true,
-      "got": "reOffice は 自 由 ソ フ ト",
-      "want": "reOfficeは自由ソフトウェアである",
-      "at": 11,
-      "as_in_source": null,
-      "as_in_source_note": "由来未確認"
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": true
-      },
-      "poppler": {
-       "ok": true
-      }
-     }
+     "lines": 4,
+     "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+     "leading_basis": "median within-paragraph observed gaps"
     }
    },
    "verdict": "pass",
@@ -959,37 +889,39 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": true,
     "size_and_colour_kept": true,
-    "status": "pass",
-    "search_copy": {
+    "search_mupdf": true,
+    "search_copy_check": {
+     "result": true,
+     "route": "one line",
+     "required": [
+      "search_full",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
+     ],
+     "failed": [],
+     "missing": [],
      "search_full": true,
-     "search_per_line": null,
-     "extraction_mupdf": true,
-     "extraction_poppler": true,
-     "copy_equivalent": true,
-     "clipboard_manual": null,
-     "gaps": [],
-     "search_full_hits": {
-      "total": 1,
-      "on_target": 1,
-      "elsewhere": 0,
-      "lines": 1
+     "note": null
+    },
+    "status": "pass",
+    "legacy": {
+     "search_mupdf": true,
+     "status": "pass"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_mupdf_detail": {
-      "ok": true
-     },
-     "extraction_poppler_detail": {
-      "ok": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": true
-      },
-      "poppler": {
-       "ok": true
-      }
-     }
+     "lines": 5,
+     "alignment": "start",
+     "leading_basis": "median within-paragraph observed gaps"
     }
    },
    "verdict": "pass",
@@ -1044,52 +976,40 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": null,
-    "search_wrapped_lines_text": true,
     "size_and_colour_kept": true,
-    "status": "unverified",
-    "search_copy": {
-     "search_full": false,
-     "search_per_line": true,
-     "extraction_mupdf": true,
-     "extraction_poppler": true,
-     "copy_equivalent": true,
-     "clipboard_manual": null,
-     "gaps": [],
-     "search_full_hits": {
-      "total": 0,
-      "on_target": 0,
-      "elsewhere": 0,
-      "lines": 2
-     },
-     "search_per_line_parts": [
-      {
-       "line": 0,
-       "text": "提供：ダイキン工業・サントリー",
-       "found": true,
-       "continuous": true
-      },
-      {
-       "line": 1,
-       "text": "ホールディングス",
-       "found": true,
-       "continuous": true
-      }
+    "search_mupdf": null,
+    "search_copy_check": {
+     "result": true,
+     "route": "lines",
+     "required": [
+      "search_per_line",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
      ],
-     "extraction_mupdf_detail": {
-      "ok": true
+     "failed": [],
+     "missing": [],
+     "search_full": false,
+     "note": "verified line by line: each line's part is found on its line; one search for the whole replacement is not found (search_full false), and is not guaranteed"
+    },
+    "status": "pass",
+    "legacy": {
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true,
+     "status": "unverified"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_poppler_detail": {
-      "ok": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": true
-      },
-      "poppler": {
-       "ok": true
-      }
-     }
+     "lines": 2,
+     "alignment": "start",
+     "leading_basis": "unobserved: 1.5 em default"
     }
    },
    "verdict": "pass",
@@ -1152,37 +1072,39 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": true,
     "size_and_colour_kept": true,
-    "status": "pass",
-    "search_copy": {
+    "search_mupdf": true,
+    "search_copy_check": {
+     "result": true,
+     "route": "one line",
+     "required": [
+      "search_full",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
+     ],
+     "failed": [],
+     "missing": [],
      "search_full": true,
-     "search_per_line": null,
-     "extraction_mupdf": true,
-     "extraction_poppler": true,
-     "copy_equivalent": true,
-     "clipboard_manual": null,
-     "gaps": [],
-     "search_full_hits": {
-      "total": 1,
-      "on_target": 1,
-      "elsewhere": 0,
-      "lines": 1
+     "note": null
+    },
+    "status": "pass",
+    "legacy": {
+     "search_mupdf": true,
+     "status": "pass"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_mupdf_detail": {
-      "ok": true
-     },
-     "extraction_poppler_detail": {
-      "ok": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": true
-      },
-      "poppler": {
-       "ok": true
-      }
-     }
+     "lines": 1,
+     "alignment": "start",
+     "leading_basis": "unobserved: 1.5 em default"
     }
    },
    "verdict": "pass",
@@ -1237,51 +1159,39 @@
    "quality_existing": {
     "extraction_mupdf": true,
     "extraction_poppler": true,
-    "search_mupdf": true,
     "size_and_colour_kept": true,
-    "status": "pass",
-    "search_copy": {
-     "search_full": true,
-     "search_per_line": true,
-     "extraction_mupdf": true,
-     "extraction_poppler": true,
-     "copy_equivalent": true,
-     "clipboard_manual": null,
-     "gaps": [],
-     "search_full_hits": {
-      "total": 2,
-      "on_target": 2,
-      "elsewhere": 0,
-      "lines": 2
-     },
-     "search_per_line_parts": [
-      {
-       "line": 0,
-       "text": "Linking to an internal destination ",
-       "found": true,
-       "continuous": true
-      },
-      {
-       "line": 1,
-       "text": "or an external destination",
-       "found": true,
-       "continuous": true
-      }
+    "search_mupdf": true,
+    "search_copy_check": {
+     "result": true,
+     "route": "lines",
+     "required": [
+      "search_per_line",
+      "extraction_mupdf",
+      "extraction_poppler",
+      "copy_equivalent"
      ],
-     "extraction_mupdf_detail": {
-      "ok": true
+     "failed": [],
+     "missing": [],
+     "search_full": true,
+     "note": null
+    },
+    "status": "pass",
+    "legacy": {
+     "search_mupdf": true,
+     "status": "pass"
+    },
+    "placement": {
+     "result": true,
+     "checks": {
+      "lines_on_proposed_baselines": true,
+      "source_baselines_kept": true,
+      "added_lines_at_leading": true,
+      "left_edges": true,
+      "inside_right_edge": true
      },
-     "extraction_poppler_detail": {
-      "ok": true
-     },
-     "copy_equivalent_detail": {
-      "mupdf": {
-       "ok": true
-      },
-      "poppler": {
-       "ok": true
-      }
-     }
+     "lines": 2,
+     "alignment": "start",
+     "leading_basis": "unobserved: 1.5 em default"
     }
    },
    "verdict": "pass",

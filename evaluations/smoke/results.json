@@ -7,18 +7,17 @@
     "steps": 21,
     "refused": 7,
     "saved:no": 7,
-    "practical:no": 7,
+    "practical:no": 16,
     "reedit:unverified": 7,
     "restore:unverified": 14,
     "refused:yes": 7,
     "saved": 14,
     "saved:yes": 14,
-    "practical:yes": 9,
+    "practical:yes": 5,
     "reedit:yes": 14,
     "refused:no": 14,
     "restore:yes": 5,
-    "restore:no": 2,
-    "practical:unverified": 5
+    "restore:no": 2
    },
    "real:layout": {
     "steps": 5,
@@ -28,7 +27,7 @@
     "reedit:yes": 5,
     "restore:unverified": 3,
     "refused:no": 5,
-    "practical:unverified": 1,
+    "practical:no": 1,
     "restore:yes": 2
    }
   }
@@ -71,7 +70,14 @@
     "moves": true,
     "links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": true,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true
    },
    "tiers": {
     "saved": true,
@@ -79,7 +85,78 @@
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: median within-paragraph observed gaps"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -103,7 +180,14 @@
     "restored_text": true,
     "restored_links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": true,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true
    },
    "tiers": {
     "saved": true,
@@ -111,7 +195,78 @@
     "reedit": true,
     "restore": true,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -188,15 +343,93 @@
     "moves": true,
     "links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": false,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": true,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": false,
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: median within-paragraph observed gaps"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -220,15 +453,93 @@
     "restored_text": true,
     "restored_links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": false,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": true,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": false,
     "reedit": true,
     "restore": false,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -248,15 +559,92 @@
     "moves": true,
     "links": true,
     "approved_audit": true,
-    "approved_quality": null
+    "approved_quality": false,
+    "natural_placement": true,
+    "search_full": false,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": false,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": null,
+    "practical": false,
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: median within-paragraph observed gaps"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": null,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -280,15 +668,92 @@
     "restored_text": true,
     "restored_links": true,
     "approved_audit": true,
-    "approved_quality": null
+    "approved_quality": false,
+    "natural_placement": true,
+    "search_full": false,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": false,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": null,
+    "practical": false,
     "reedit": true,
     "restore": false,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": null,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -308,15 +773,93 @@
     "moves": true,
     "links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": false,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": true,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": false,
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: median within-paragraph observed gaps"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -340,15 +883,93 @@
     "restored_text": true,
     "restored_links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": false,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": true,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": false,
     "reedit": true,
     "restore": true,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -368,15 +989,93 @@
     "moves": true,
     "links": true,
     "approved_audit": true,
-    "approved_quality": null
+    "approved_quality": false,
+    "natural_placement": true,
+    "search_full": false,
+    "search_per_line": true,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": true,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": null,
+    "practical": false,
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: median within-paragraph observed gaps"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "lines"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": null,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -400,15 +1099,93 @@
     "restored_text": true,
     "restored_links": true,
     "approved_audit": true,
-    "approved_quality": null
+    "approved_quality": false,
+    "natural_placement": true,
+    "search_full": false,
+    "search_per_line": true,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": true,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": null,
+    "practical": false,
     "reedit": true,
     "restore": true,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "lines"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": null,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -428,7 +1205,14 @@
     "moves": true,
     "links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": true,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true
    },
    "tiers": {
     "saved": true,
@@ -436,7 +1220,78 @@
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: median within-paragraph observed gaps"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -460,7 +1315,14 @@
     "restored_text": true,
     "restored_links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": true,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true
    },
    "tiers": {
     "saved": true,
@@ -468,7 +1330,78 @@
     "reedit": true,
     "restore": true,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -492,7 +1425,9 @@
     "placement": true,
     "raster": false,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": true,
+    "natural_placement": true,
+    "approved_quality_legacy": true
    },
    "tiers": {
     "saved": true,
@@ -500,7 +1435,95 @@
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: median within-paragraph observed gaps"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": "not applicable",
+     "role": "shown",
+     "note": "no new text to search for (a deletion)"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "placement audit",
+     "source": "existing placement audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "raster audit",
+     "source": "existing raster audit",
+     "result": false,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -564,15 +1587,110 @@
     "placement": true,
     "raster": true,
     "approved_audit": true,
-    "approved_quality": null
+    "approved_quality": true,
+    "natural_placement": true,
+    "search_full": false,
+    "search_per_line": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true
    },
    "tiers": {
     "saved": true,
-    "practical": null,
+    "practical": true,
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: unobserved: 1.5 em default"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "verified line by line: each line's part is found on its line; one search for the whole replacement is not found (search_full false), and is not guaranteed"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": null,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "placement audit",
+     "source": "existing placement audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "raster audit",
+     "source": "existing raster audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -603,15 +1721,110 @@
     "restored_text": true,
     "restored_links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": false,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": false,
+    "copy_equivalent": false,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": true,
+    "practical": false,
     "reedit": true,
     "restore": true,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "placement audit",
+     "source": "existing placement audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "raster audit",
+     "source": "existing raster audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -631,7 +1844,14 @@
     "moves": true,
     "links": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": true,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true
    },
    "tiers": {
     "saved": true,
@@ -639,7 +1859,78 @@
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: unobserved: 1.5 em default"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -663,15 +1954,92 @@
     "restored_text": true,
     "restored_links": true,
     "approved_audit": true,
-    "approved_quality": null
+    "approved_quality": false,
+    "natural_placement": true,
+    "search_full": false,
+    "search_extraction_mupdf": false,
+    "search_extraction_poppler": false,
+    "copy_equivalent": false,
+    "search_copy": false
    },
    "tiers": {
     "saved": true,
-    "practical": null,
+    "practical": false,
     "reedit": true,
     "restore": true,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": false,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": false,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": null,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "must not fail"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "must not fail"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -698,7 +2066,15 @@
     "placement": true,
     "raster": true,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": true,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_per_line": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true
    },
    "tiers": {
     "saved": true,
@@ -706,7 +2082,95 @@
     "reedit": true,
     "restore": null,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: unobserved: 1.5 em default"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "lines"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "placement audit",
+     "source": "existing placement audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "raster audit",
+     "source": "existing raster audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -737,7 +2201,14 @@
     "restored_text": true,
     "restored_links": false,
     "approved_audit": true,
-    "approved_quality": true
+    "approved_quality": true,
+    "natural_placement": true,
+    "approved_quality_legacy": true,
+    "search_full": true,
+    "search_extraction_mupdf": true,
+    "search_extraction_poppler": true,
+    "copy_equivalent": true,
+    "search_copy": true
    },
    "tiers": {
     "saved": true,
@@ -745,7 +2216,95 @@
     "reedit": true,
     "restore": true,
     "refused": false
-   }
+   },
+   "practical_basis": [
+    {
+     "criterion": "saved",
+     "source": "outcome (saved)",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "approval, approved changes, protection",
+     "source": "approved_audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "quality",
+     "source": "approved_audit.quality",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "natural placement",
+     "source": "approved_audit.quality.placement",
+     "result": true,
+     "role": "required",
+     "note": "leading: approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+    },
+    {
+     "criterion": "search and copy of the edited text",
+     "source": "search_copy.verified",
+     "result": true,
+     "role": "required",
+     "note": "one line"
+    },
+    {
+     "criterion": "quality before issue #116",
+     "source": "approved_audit.quality.legacy",
+     "result": true,
+     "role": "shown",
+     "note": "search_mupdf counted a hit anywhere on the page"
+    },
+    {
+     "criterion": "structure",
+     "source": "structure audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "links",
+     "source": "links audit",
+     "result": true,
+     "role": "required"
+    },
+    {
+     "criterion": "protection (region)",
+     "source": "existing audit: safety",
+     "result": false,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "quality (region)",
+     "source": "existing audit: quality",
+     "result": true,
+     "role": "shown",
+     "note": "not counted on an approved layout step: it compares a region the approved changes enter (it fails there by design); the approved-change audit stands for it"
+    },
+    {
+     "criterion": "moves audit",
+     "source": "existing moves audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "placement audit",
+     "source": "existing placement audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    },
+    {
+     "criterion": "raster audit",
+     "source": "existing raster audit",
+     "result": true,
+     "role": "shown",
+     "note": "the approved-change audit checks the approved changes exactly (panels included)"
+    }
+   ]
   },
   {
    "evaluation": "smoke",
@@ -776,7 +2335,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 8",
-     "seconds": 0.95
+     "seconds": 0.73
     },
     "outcome": "refused",
     "approved": {
@@ -795,7 +2354,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 3.63
+     "seconds": 2.58
     },
     "outcome": "saved",
     "approved": {
@@ -852,9 +2411,55 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": true,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+       "leading_basis": "median within-paragraph observed gaps"
+      }
      },
      "approved": [
       {
@@ -881,7 +2486,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 4.45
+     "seconds": 2.55
     },
     "outcome": "saved",
     "approved": {
@@ -938,9 +2543,55 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": true,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+       "leading_basis": "approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+      }
      },
      "approved": [
       {
@@ -1031,7 +2682,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 代",
-     "seconds": 1.06
+     "seconds": 0.82
     },
     "outcome": "refused",
     "approved": {
@@ -1050,7 +2701,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 格",
-     "seconds": 1.53
+     "seconds": 0.91
     },
     "outcome": "refused",
     "approved": {
@@ -1069,7 +2720,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 予",
-     "seconds": 1.32
+     "seconds": 0.87
     },
     "outcome": "refused",
     "approved": {
@@ -1088,7 +2739,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 5.01
+     "seconds": 3.25
     },
     "outcome": "saved",
     "approved": {
@@ -1145,9 +2796,58 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": false,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+       "leading_basis": "median within-paragraph observed gaps"
+      }
      },
      "approved": [
       {
@@ -1174,7 +2874,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 4.7
+     "seconds": 3.6
     },
     "outcome": "saved",
     "approved": {
@@ -1231,9 +2931,58 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": false,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+       "leading_basis": "approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+      }
      },
      "approved": [
       {
@@ -1324,7 +3073,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 3.84
+     "seconds": 3.01
     },
     "outcome": "saved",
     "approved": {
@@ -1381,10 +3130,72 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": null,
-      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "unverified"
+      "search_mupdf": false,
+      "search_mupdf_change": {
+       "legacy": null,
+       "now": false,
+       "why": "not found where it is drawn (one line)"
+      },
+      "search_copy_check": {
+       "result": false,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "missing": [],
+       "search_full": false,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": null,
+       "search_wrapped_lines_text": true,
+       "status": "unverified"
+      },
+      "search_copy": {
+       "search_full": false,
+       "search_full_hits": {
+        "total": 0,
+        "on_target": 0,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": false,
+       "clipboard_manual": null,
+       "gaps": [
+        {
+         "line": 0,
+         "between": "cを",
+         "from_source": true
+        }
+       ]
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+       "leading_basis": "median within-paragraph observed gaps"
+      }
      },
      "approved": [
       {
@@ -1411,7 +3222,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 4.64
+     "seconds": 2.97
     },
     "outcome": "saved",
     "approved": {
@@ -1468,10 +3279,72 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": null,
-      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "unverified"
+      "search_mupdf": false,
+      "search_mupdf_change": {
+       "legacy": null,
+       "now": false,
+       "why": "not found where it is drawn (one line)"
+      },
+      "search_copy_check": {
+       "result": false,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "missing": [],
+       "search_full": false,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": null,
+       "search_wrapped_lines_text": true,
+       "status": "unverified"
+      },
+      "search_copy": {
+       "search_full": false,
+       "search_full_hits": {
+        "total": 0,
+        "on_target": 0,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": false,
+       "clipboard_manual": null,
+       "gaps": [
+        {
+         "line": 0,
+         "between": "cを",
+         "from_source": true
+        }
+       ]
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+       "leading_basis": "approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+      }
      },
      "approved": [
       {
@@ -1562,7 +3435,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 7.48
+     "seconds": 4.55
     },
     "outcome": "saved",
     "approved": {
@@ -1619,9 +3492,58 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": false,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 6,
+       "alignment": "start",
+       "leading_basis": "median within-paragraph observed gaps"
+      }
      },
      "approved": [
       {
@@ -1648,7 +3570,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 6.48
+     "seconds": 4.76
     },
     "outcome": "saved",
     "approved": {
@@ -1705,9 +3627,58 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": false,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 6,
+       "alignment": "start",
+       "leading_basis": "approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+      }
      },
      "approved": [
       {
@@ -1798,7 +3769,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 7.4
+     "seconds": 5.42
     },
     "outcome": "saved",
     "approved": {
@@ -1855,10 +3826,59 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": null,
-      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "unverified"
+      "search_mupdf": null,
+      "search_copy_check": {
+       "result": false,
+       "route": "lines",
+       "required": [
+        "search_per_line",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ],
+       "missing": [],
+       "search_full": false,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": null,
+       "search_wrapped_lines_text": true,
+       "status": "unverified"
+      },
+      "search_copy": {
+       "search_full": false,
+       "search_full_hits": {
+        "total": 0,
+        "on_target": 0,
+        "elsewhere": 0,
+        "lines": 2
+       },
+       "search_per_line": true,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 4,
+       "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+       "leading_basis": "median within-paragraph observed gaps"
+      }
      },
      "approved": [
       {
@@ -1885,7 +3905,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 8.02
+     "seconds": 5.86
     },
     "outcome": "saved",
     "approved": {
@@ -1942,10 +3962,59 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": null,
-      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "unverified"
+      "search_mupdf": null,
+      "search_copy_check": {
+       "result": false,
+       "route": "lines",
+       "required": [
+        "search_per_line",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "extraction_mupdf",
+        "extraction_poppler"
+       ],
+       "missing": [],
+       "search_full": false,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": null,
+       "search_wrapped_lines_text": true,
+       "status": "unverified"
+      },
+      "search_copy": {
+       "search_full": false,
+       "search_full_hits": {
+        "total": 0,
+        "on_target": 0,
+        "elsewhere": 0,
+        "lines": 2
+       },
+       "search_per_line": true,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 4,
+       "alignment": "justify (CJK): non-final lines end at the right edge; observed per-glyph advances are kept",
+       "leading_basis": "approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+      }
      },
      "approved": [
       {
@@ -2036,7 +4105,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 31.94
+     "seconds": 21.58
     },
     "outcome": "saved",
     "approved": {
@@ -2093,9 +4162,55 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": true,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 5,
+       "alignment": "start",
+       "leading_basis": "median within-paragraph observed gaps"
+      }
      },
      "approved": [
       {
@@ -2122,7 +4237,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 31.79
+     "seconds": 21.38
     },
     "outcome": "saved",
     "approved": {
@@ -2179,9 +4294,55 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": true,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 5,
+       "alignment": "start",
+       "leading_basis": "approved condition stored in the PDF (first approved as: median within-paragraph observed gaps)"
+      }
      },
      "approved": [
       {
@@ -2272,7 +4433,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: the line of an inline placed object of a following paragraph holds other content (filled-vector) that does not move with it (line decoration line-decoration-5d857bfbdd83a562 moves with it only when approved explicitly)",
-     "seconds": 10.9
+     "seconds": 7.74
     },
     "outcome": "saved",
     "approved": {
@@ -2402,7 +4563,40 @@
       "extraction_mupdf": true,
       "extraction_poppler": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_copy_check": {
+       "result": "not applicable",
+       "route": "deletion",
+       "required": [],
+       "failed": [],
+       "missing": [],
+       "note": "no new text to search for (a deletion)"
+      },
+      "status": "pass",
+      "legacy": {
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": null,
+       "search_per_line": null,
+       "extraction_mupdf": null,
+       "extraction_poppler": null,
+       "copy_equivalent": null,
+       "clipboard_manual": null,
+       "reason": "no new text to search for (a deletion)"
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 4,
+       "alignment": "start",
+       "leading_basis": "median within-paragraph observed gaps"
+      }
      },
      "approved": [
       {
@@ -2439,7 +4633,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: selected string occurrence not found in one inferred paragraph",
-     "seconds": 3.03
+     "seconds": 3.08
     },
     "outcome": "refused",
     "approved": {
@@ -2458,7 +4652,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: missing source glyph requires explicit substitute approval: 大",
-     "seconds": 2.45
+     "seconds": 1.75
     },
     "outcome": "refused",
     "approved": {
@@ -2477,7 +4671,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-528d3c355b434715, following-element-83e43af86f4a64b8, following-element-ea925ec91d764c04 move with it only when approved explicitly)",
-     "seconds": 16.44
+     "seconds": 12.92
     },
     "outcome": "saved",
     "approved": {
@@ -2665,10 +4859,56 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": null,
-      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "unverified"
+      "search_mupdf": null,
+      "search_copy_check": {
+       "result": true,
+       "route": "lines",
+       "required": [
+        "search_per_line",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": false,
+       "note": "verified line by line: each line's part is found on its line; one search for the whole replacement is not found (search_full false), and is not guaranteed"
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": null,
+       "search_wrapped_lines_text": true,
+       "status": "unverified"
+      },
+      "search_copy": {
+       "search_full": false,
+       "search_full_hits": {
+        "total": 0,
+        "on_target": 0,
+        "elsewhere": 0,
+        "lines": 2
+       },
+       "search_per_line": true,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "start",
+       "leading_basis": "unobserved: 1.5 em default"
+      }
      },
      "approved": [
       {
@@ -2710,7 +4950,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 227.0
+     "seconds": 162.54
     },
     "outcome": "saved",
     "approved": {
@@ -2737,7 +4977,7 @@
      "selection": "提供：ダイキン工業・サントリーHD"
     },
     "save": {
-     "follower_translation": -7.44091796875,
+     "follower_translation": -7.44089508331308,
      "followers_repainted": 0,
      "placed_objects_moved": [],
      "decorations_moved": [],
@@ -2752,13 +4992,13 @@
        ],
        "new": [
         210.15109252929688,
-        1038.4427490234375,
+        1038.4427719088744,
         314.7795104980469,
-        1059.705322265625
+        1059.705345151062
        ],
        "translation": [
         0.0,
-        7.44091796875
+        7.44089508331308
        ],
        "glyphs": 20,
        "annotations": [],
@@ -2774,13 +5014,13 @@
        ],
        "new": [
         205.72300720214844,
-        1063.3502197265625,
+        1063.3502426119994,
         352.0301818847656,
-        1071.7742919921875
+        1071.7743148776244
        ],
        "translation": [
         0.0,
-        7.44091796875
+        7.44089508331308
        ],
        "glyphs": 19,
        "annotations": [],
@@ -2796,13 +5036,13 @@
        ],
        "new": [
         210.13717651367188,
-        1073.9801025390625,
+        1073.9801254244994,
         356.5590515136719,
-        1103.6639404296875
+        1103.6639633151244
        ],
        "translation": [
         0.0,
-        7.44091796875
+        7.44089508331308
        ],
        "glyphs": 54,
        "annotations": [],
@@ -2896,9 +5136,58 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": false,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 2,
+        "on_target": 2,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": true,
+       "extraction_poppler": false,
+       "copy_equivalent": false,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 1,
+       "alignment": "start",
+       "leading_basis": "approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+      }
      },
      "approved": [
       {
@@ -3004,7 +5293,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 31.41
+     "seconds": 24.28
     },
     "outcome": "saved",
     "approved": {
@@ -3061,9 +5350,55 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": true,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 1,
+       "alignment": "start",
+       "leading_basis": "unobserved: 1.5 em default"
+      }
      },
      "approved": [
       {
@@ -3090,7 +5425,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 32.82
+     "seconds": 23.84
     },
     "outcome": "saved",
     "approved": {
@@ -3147,10 +5482,72 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": null,
-      "search_wrapped_lines_text": true,
       "size_and_colour_kept": true,
-      "status": "unverified"
+      "search_mupdf": false,
+      "search_mupdf_change": {
+       "legacy": null,
+       "now": false,
+       "why": "not found where it is drawn (one line)"
+      },
+      "search_copy_check": {
+       "result": false,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "missing": [],
+       "search_full": false,
+       "note": null
+      },
+      "status": "fail",
+      "legacy": {
+       "search_mupdf": null,
+       "search_wrapped_lines_text": true,
+       "status": "unverified"
+      },
+      "search_copy": {
+       "search_full": false,
+       "search_full_hits": {
+        "total": 0,
+        "on_target": 0,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": false,
+       "extraction_poppler": false,
+       "copy_equivalent": false,
+       "clipboard_manual": null,
+       "gaps": [
+        {
+         "line": 0,
+         "between": "0～",
+         "from_source": false
+        }
+       ]
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 1,
+       "alignment": "start",
+       "leading_basis": "approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+      }
      },
      "approved": [
       {
@@ -3241,7 +5638,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: the paragraph would grow into the lines below it (following elements following-element-4b560011f35df7ca, following-element-549655b50aa512e5, following-element-b5ee0edc4775b198 move with it only when approved explicitly)",
-     "seconds": 2.66
+     "seconds": 1.73
     },
     "outcome": "saved",
     "approved": {
@@ -3477,9 +5874,55 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": true,
+       "route": "lines",
+       "required": [
+        "search_per_line",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 2,
+        "on_target": 2,
+        "elsewhere": 0,
+        "lines": 2
+       },
+       "search_per_line": true,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 2,
+       "alignment": "start",
+       "leading_basis": "unobserved: 1.5 em default"
+      }
      },
      "approved": [
       {
@@ -3521,7 +5964,7 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 4.84
+     "seconds": 3.48
     },
     "outcome": "saved",
     "approved": {
@@ -3548,7 +5991,7 @@
      "selection": "Linking to an internal destination"
     },
     "save": {
-     "follower_translation": -18.0,
+     "follower_translation": -17.99999960937501,
      "followers_repainted": 0,
      "placed_objects_moved": [],
      "decorations_moved": [],
@@ -3563,13 +6006,13 @@
        ],
        "new": [
         56.44292068481445,
-        214.58474731445312,
+        214.58474770507812,
         527.0459594726562,
-        225.34649658203125
+        225.34649697265624
        ],
        "translation": [
         0.0,
-        -18.0
+        -17.99999960937501
        ],
        "glyphs": 116,
        "annotations": [
@@ -3602,13 +6045,13 @@
        ],
        "new": [
         56.44292068481445,
-        238.58474731445312,
+        238.58474770507812,
         302.1080017089844,
-        249.34649658203125
+        249.34649697265624
        ],
        "translation": [
         0.0,
-        -18.0
+        -17.99999960937501
        ],
        "glyphs": 58,
        "annotations": [
@@ -3641,13 +6084,13 @@
        ],
        "new": [
         56.44292068481445,
-        262.5847473144531,
+        262.58474770507814,
         495.4880065917969,
-        273.34649658203125
+        273.34649697265627
        ],
        "translation": [
         0.0,
-        -18.0
+        -17.99999960937501
        ],
        "glyphs": 104,
        "annotations": [
@@ -3756,9 +6199,55 @@
      "quality": {
       "extraction_mupdf": true,
       "extraction_poppler": true,
-      "search_mupdf": true,
       "size_and_colour_kept": true,
-      "status": "pass"
+      "search_mupdf": true,
+      "search_copy_check": {
+       "result": true,
+       "route": "one line",
+       "required": [
+        "search_full",
+        "extraction_mupdf",
+        "extraction_poppler",
+        "copy_equivalent"
+       ],
+       "failed": [],
+       "missing": [],
+       "search_full": true,
+       "note": null
+      },
+      "status": "pass",
+      "legacy": {
+       "search_mupdf": true,
+       "status": "pass"
+      },
+      "search_copy": {
+       "search_full": true,
+       "search_full_hits": {
+        "total": 1,
+        "on_target": 1,
+        "elsewhere": 0,
+        "lines": 1
+       },
+       "search_per_line": null,
+       "extraction_mupdf": true,
+       "extraction_poppler": true,
+       "copy_equivalent": true,
+       "clipboard_manual": null,
+       "gaps": []
+      },
+      "placement": {
+       "result": true,
+       "checks": {
+        "lines_on_proposed_baselines": true,
+        "source_baselines_kept": true,
+        "added_lines_at_leading": true,
+        "left_edges": true,
+        "inside_right_edge": true
+       },
+       "lines": 1,
+       "alignment": "start",
+       "leading_basis": "approved condition stored in the PDF (first approved as: unobserved: 1.5 em default)"
+      }
      },
      "approved": [
       {
