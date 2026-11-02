@@ -41,6 +41,7 @@
   {"pattern": "prototypes/paragraph_frame/panel_evaluate.py", "direct": []},
   {"pattern": "prototypes/paragraph_frame/search_copy_evaluate.py", "direct": []},
   {"pattern": "prototypes/paragraph_frame/search_copy.py", "direct": []},
+  {"pattern": "prototypes/paragraph_frame/practical_evaluate.py", "direct": []},
   {"pattern": "tests/*", "direct": []},
   {"pattern": "docs/*", "direct": []},
   {"pattern": "evaluations/*", "direct": []},

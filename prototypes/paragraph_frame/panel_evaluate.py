@@ -306,7 +306,8 @@ def records(results, manifest):
 def phase_collect(args):
     manifest = json.loads(MANIFEST.read_text())
     runs = dict(x.split('=', 1) for x in args.roots)
-    compact = lambda x: {k: v for k, v in x.items() if k not in ('frame', 'seconds', 'occurrence', 'rounds')}
+    compact = lambda x: {k: er.compact_audit(v) if k == 'approved_audit' else v for k, v in x.items()
+                         if k not in ('frame', 'seconds', 'occurrence', 'rounds')}
     out = dict(schema='paragraph-panel-results-1', manifest_sha256=hashlib.sha256(MANIFEST.read_bytes()).hexdigest(), runs={})
     for label, root in runs.items():
         results = json.loads((Path(root) / 'results.json').read_text())

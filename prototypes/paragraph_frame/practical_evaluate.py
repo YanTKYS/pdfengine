@@ -94,7 +94,8 @@ def snapshot(smoke, panel, search_copy):
                 r = recs.get((cid, str(n + 1)))
                 if r is None:
                     continue
-                out[name][f'{cid}/{n + 1}'] = dict(**_record(r), approved_audit=_audit(x), basis=r.get('practical_basis'))
+                out[name][f'{cid}/{n + 1}'] = dict(**_record(r), approved_audit=_audit(x),
+                                                   basis=[{k: v for k, v in b.items() if k != 'source'} for b in r.get('practical_basis') or []])
     return out
 
 

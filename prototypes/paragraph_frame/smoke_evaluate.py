@@ -198,7 +198,8 @@ def records(results):
 def phase_collect(args):
     results = json.loads((Path(args.root) / 'results.json').read_text())
     recs = records(results)
-    compact = lambda x: {k: v for k, v in x.items() if k not in ('lines', 'frame', 'seconds', 'occurrence', 'chain', 'decorations', 'rounds')}
+    compact = lambda x: {k: er.compact_audit(v) if k == 'approved_audit' else v for k, v in x.items()
+                         if k not in ('lines', 'frame', 'seconds', 'occurrence', 'chain', 'decorations', 'rounds')}
     out = dict(schema='paragraph-frame-smoke-results-1', manifest_sha256=hashlib.sha256(MANIFEST.read_bytes()).hexdigest(),
                summary=er.summary(recs), records=recs, results={k: [compact(x) for x in seq] for k, seq in results.items()})
     RESULTS.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')

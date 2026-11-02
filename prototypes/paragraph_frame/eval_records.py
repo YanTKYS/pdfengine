@@ -124,6 +124,20 @@ SEARCH_MEASURES = (('search_full', 'search_full'), ('search_per_line', 'search_p
                    ('search_extraction_poppler', 'extraction_poppler'), ('copy_equivalent', 'copy_equivalent'))
 
 
+MEASURES_KEPT = ('search_full', 'search_full_hits', 'search_per_line', 'extraction_mupdf', 'extraction_poppler', 'copy_equivalent',
+                 'clipboard_manual', 'gaps', 'reason')
+
+
+def compact_audit(a):
+    """An approved-change audit as an evaluation's committed results keep it: the search and copy measures without
+    their per-line and per-extractor details (in the run's own results)."""
+    q = (a or {}).get('quality')
+    if not isinstance(q, dict) or not isinstance(q.get('search_copy'), dict):
+        return a
+    m = q['search_copy']
+    return dict(a, quality=dict(q, search_copy={k: m[k] for k in MEASURES_KEPT if k in m}))
+
+
 def _approved_checks(a):
     """The checks of an approved-change audit (approved_audit, as an evaluation recorded it): its verdict, its quality
     (and the quality before issue #116), the search and copy measures and whether they verify the edited text."""
