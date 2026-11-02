@@ -4726,5 +4726,18 @@
     "None -> False": 5
    }
   }
+ },
+ {
+  "date": "2026-11-02",
+  "code": "c604c05",
+  "reason": "PR #117 review: structure and links required for practical success on the approved-audit path (not measured: unverified). Only practical_basis changes: every saved smoke step measured both, true; no outcome, check or tier changed",
+  "evaluations": [
+   "smoke"
+  ],
+  "compared": 26,
+  "changed": [],
+  "removed": [],
+  "added": [],
+  "design_decision_needed": false
  }
 ]

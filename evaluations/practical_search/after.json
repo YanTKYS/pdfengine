@@ -1,7 +1,15 @@
 {
  "schema": "practical-search-after-1",
- "code": "c604c05",
+ "code": "227a336",
  "before": "evaluations/practical_search/before.json",
+ "criteria_changes": [
+  {
+   "criterion": "structure and links",
+   "before": "must not fail: not required when not measured",
+   "after": "required for a step with the approved-change audit: true needed, false fails, not measured is unverified (a PDF without tags or links passes when the audit ran and found no change); steps without that audit unchanged",
+   "why": "PR #117 review: an audit left out must not make a practical success (docs/development-rules.md: the protection of semantic structure and links; what was not measured is never a pass). No recorded step changes: every saved panel and smoke step measured both, true"
+  }
+ ],
  "cases": {
   "search_copy": {
    "L2": {
@@ -488,12 +496,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -594,12 +602,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -697,12 +705,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -804,12 +812,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -908,12 +916,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -1015,12 +1023,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -1227,12 +1235,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -1326,12 +1334,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -1481,12 +1489,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -1580,12 +1588,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -1674,12 +1682,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -1772,12 +1780,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -1867,12 +1875,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -1966,12 +1974,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -2061,12 +2069,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -2160,12 +2168,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -2255,12 +2263,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -2354,12 +2362,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -2448,12 +2456,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -2604,12 +2612,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -2725,12 +2733,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -2835,12 +2843,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -2933,12 +2941,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -3036,12 +3044,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",
@@ -3157,12 +3165,12 @@
      {
       "criterion": "structure",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "links",
       "result": true,
-      "role": "must not fail"
+      "role": "required"
      },
      {
       "criterion": "protection (region)",

@@ -130,13 +130,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -240,13 +240,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -403,13 +403,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -513,13 +513,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -618,13 +618,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -727,13 +727,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -833,13 +833,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -943,13 +943,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -1049,13 +1049,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -1159,13 +1159,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -1265,13 +1265,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -1375,13 +1375,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -1480,13 +1480,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -1647,13 +1647,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -1781,13 +1781,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -1904,13 +1904,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -2013,13 +2013,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -2127,13 +2127,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",
@@ -2261,13 +2261,13 @@
      "criterion": "structure",
      "source": "structure audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "links",
      "source": "links audit",
      "result": true,
-     "role": "must not fail"
+     "role": "required"
     },
     {
      "criterion": "protection (region)",

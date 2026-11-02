@@ -175,6 +175,32 @@ def test_what_never_makes_a_practical_success(change, expected):
     assert record(step(**change))['tiers']['practical'] is expected
 
 
+@pytest.mark.parametrize('layout', [True, False])
+@pytest.mark.parametrize('drop, expected', [
+    ((), True),                                   # both audits made and passed
+    (('structure_failed',), None),                # the structure audit left out
+    (('links',), None),                           # the link audit left out
+    (('structure_failed', 'links'), None),        # both left out
+])
+def test_structure_and_links_must_be_measured(layout, drop, expected):
+    # (PR #117 review.) An audit not made leaves practical success unverified, never a success.
+    x = step(layout=layout)
+    for k in drop:
+        x.pop(k)
+    r = record(x)
+    assert r['tiers']['practical'] is expected
+    for k in ('structure', 'links'):
+        basis = next(b for b in r['practical_basis'] if b['criterion'] == k)
+        assert basis['role'] == 'required' and basis['result'] is (None if (k == 'structure' and 'structure_failed' in drop or k == 'links'
+                                                                            and 'links' in drop) else True)
+
+
+def test_a_pdf_without_tags_or_links_passes_when_both_audits_ran():
+    # The audits ran and found nothing changed (no structure tree to break, no link to move).
+    r = record(step(structure_failed=[], links=dict(links=0, moved=0, ok=True)))
+    assert r['checks']['structure'] is True and r['checks']['links'] is True and r['tiers']['practical'] is True
+
+
 def test_a_faithful_edit_must_also_pass_the_existing_audit():
     assert record(step(layout=False))['tiers']['practical'] is True
     # Without an approved layout change, the region audit failing is a failure, whatever the approved audit says.

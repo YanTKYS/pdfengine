@@ -60,6 +60,17 @@ CRITERIA = [
 ]
 
 
+# Changes to the criteria frozen in before.json (CRITERIA above, kept as frozen), with why.
+CRITERIA_CHANGES = [
+    dict(criterion='structure and links', before='must not fail: not required when not measured',
+         after='required for a step with the approved-change audit: true needed, false fails, not measured is unverified (a PDF '
+               'without tags or links passes when the audit ran and found no change); steps without that audit unchanged',
+         why='PR #117 review: an audit left out must not make a practical success (docs/development-rules.md: the protection of '
+             'semantic structure and links; what was not measured is never a pass). No recorded step changes: every saved panel and '
+             'smoke step measured both, true'),
+]
+
+
 def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -147,7 +158,7 @@ def phase_collect(args):
                 changes.append(dict(group=group, case=cid, **diff, **({'not_practical_because': _why(b)} if group != 'search_copy'
                                                                      and b['tiers']['practical'] is not True else {})))
     rev = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True).stdout.strip()
-    out = dict(schema='practical-search-after-1', code=rev, before=str(BEFORE), cases=now, changes=changes)
+    out = dict(schema='practical-search-after-1', code=rev, before=str(BEFORE), criteria_changes=CRITERIA_CHANGES, cases=now, changes=changes)
     AFTER.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
     for c in changes:
         print(json.dumps(c, ensure_ascii=False, default=str)[:300])

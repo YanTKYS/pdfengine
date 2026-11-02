@@ -179,7 +179,7 @@ def practical(outcome, checks, layout, approved=None):
     With the approved-change audit (``approved``, as an evaluation recorded it): its verdict (approval, the
     approved changes made as approved, the protection of everything else), its quality (which includes the
     edited text's search and extraction, search_copy.verified, and the natural placement of its lines) and the
-    structure and link audits. A faithful
+    structure and link audits, each required (not measured: unverified). A faithful
     step must also not fail the existing region audit, its quality or the move audits. Without it: the
     existing quality and the protection of what was not approved (the existing safety audit, or for a step that
     saved approved moves the move audits), as before issue #116; its search check counts a hit anywhere on the
@@ -211,8 +211,10 @@ def practical(outcome, checks, layout, approved=None):
         if 'legacy' in q:
             add('quality before issue #116', 'approved_audit.quality.legacy', status(q['legacy'].get('status')), 'shown',
                 'search_mupdf counted a hit anywhere on the page')
+        # Semantic structure and links (PR #117 review): measured, not only unfailed. An audit not made leaves
+        # practical success unverified; a PDF without tags or links passes when the audit ran and found no change.
         for k in ('structure', 'links'):
-            add(k, f'{k} audit', checks.get(k), 'must not fail')
+            add(k, f'{k} audit', checks.get(k), 'required', None if checks.get(k) is not None else 'not measured')
         own = 'shown' if layout else 'must not fail'
         note = ('not counted on an approved layout step: it compares a region the approved changes enter (it fails there by '
                 'design); the approved-change audit stands for it') if layout else None
