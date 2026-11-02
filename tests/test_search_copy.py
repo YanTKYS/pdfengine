@@ -16,15 +16,15 @@ FRAME = [30, 40, 280, 110]
 BASELINES = [60, 76, 92]
 
 
-def page(tmp_path, lines, name='out.pdf', extra=(), edit=None):
-    """``lines`` drawn at 40 on the baselines (and ``extra`` (x, y, text) elsewhere); ``edit(doc, page)`` afterwards."""
+def page(tmp_path, lines, name='out.pdf', extra=(), edit=None, x=40):
+    """``lines`` drawn at ``x`` on the baselines (and ``extra`` (x, y, text) elsewhere); ``edit(doc, page)`` afterwards."""
     path = tmp_path / name
     d = pymupdf.open()
     p = d.new_page(width=300, height=300)
     p.insert_font(fontname='Fixture', fontbuffer=cjk_provider_bytes())
     for y, text in zip(BASELINES, lines):
         if text:
-            p.insert_text((40, y), text, fontsize=11, fontname='Fixture')
+            p.insert_text((x, y), text, fontsize=11, fontname='Fixture')
     for x, y, text in extra:
         p.insert_text((x, y), text, fontsize=11, fontname='Fixture')
     if edit:
@@ -65,6 +65,26 @@ def test_a_wrong_character_fails_every_measure(tmp_path, lines, broken):
     m = run(page(tmp_path, lines))
     assert m['search_full'] is False and m['search_per_line'] is False
     assert m['extraction_mupdf'] is False and m['copy_equivalent'] is False and 'reason' in m
+
+
+@pytest.mark.parametrize('lines', [
+    # One character drawn after the paragraph's end.
+    [LINE1, LINE2, LINE3 + '余'],
+    # Two, after a drawn space.
+    [LINE1, LINE2, LINE3 + ' 余計'],
+])
+def test_characters_drawn_after_the_expected_text_fail_every_measure(tmp_path, lines):
+    m = run(page(tmp_path, lines))
+    assert m['search_full'] is False and m['search_per_line'] is False
+    assert m['extraction_mupdf'] is False and m['extraction_poppler'] is False and m['copy_equivalent'] is False
+    assert 'drawn but not expected' in m['reason'] and '余' in m['reason']
+
+
+def test_text_on_the_same_lines_outside_the_frame_is_not_the_paragraphs(tmp_path):
+    # Other text on line 1 right of the frame (x1 280) and on line 3 left of it (x0 30): not the paragraph's.
+    m = run(page(tmp_path, [LINE1, LINE2, LINE3], extra=[(285, BASELINES[0], '注'), (8, BASELINES[2], '※')]))
+    assert 'reason' not in m and m['search_per_line'] is True
+    assert m['extraction_mupdf'] is True and m['extraction_poppler'] is True and m['copy_equivalent'] is True
 
 
 def test_the_replacement_found_elsewhere_only_is_no_success(tmp_path):
@@ -135,4 +155,28 @@ def test_a_positional_gap_of_the_source_is_reported_as_the_sources(tmp_path):
                 dict(text=EXPECTED, frame=FRAME, baselines=BASELINES))
     assert m['gaps'] == [dict(line=0, between='業の', from_source=True)]
     assert m['search_per_line'] is False and m['copy_equivalent'] is False
-    assert m['extraction_mupdf_detail']['whitespace_only'] is True and m['extraction_mupdf_detail']['as_in_source'] is True
+    assert m['search_per_line_parts'][0]['as_in_source'] is True
+    # (MuPDF reads the drawn U+3000; Poppler drops it here.)
+    detail = m['extraction_mupdf_detail']
+    assert detail['ok'] is False and detail['whitespace_only'] is True and detail['as_in_source'] is True
+
+
+@pytest.mark.parametrize('lines, x', [
+    # The output's gap at another place (between 度 and は), not where the source has its own.
+    (['本年度\u3000は新しい補助事業の', LINE2, LINE3], 40),
+    # The same gap, but the line drawn elsewhere: its glyphs are not the source's.
+    (['本年度は新しい補助事業\u3000の', LINE2, LINE3], 44),
+])
+def test_a_failure_of_the_same_kind_elsewhere_is_not_the_sources(tmp_path, lines, x):
+    # The source fails extraction with a whitespace-only difference too, but not this one: unconfirmed, never true.
+    source = page(tmp_path, ['本年度は新しい補助事業\u3000の', LINE2, LINE3], name='source.pdf')
+    m = measure(page(tmp_path, lines, x=x), 1, EXPECTED, NEW, AT, FRAME, BASELINES, source,
+                dict(text=EXPECTED, frame=FRAME, baselines=BASELINES))
+    detail = m['extraction_mupdf_detail']
+    assert detail['ok'] is False and detail['whitespace_only'] is True
+    assert detail['as_in_source'] is None and detail['as_in_source_note'] == '由来未確認'
+    assert m['extraction_poppler_detail'].get('as_in_source') is not True
+    for g in m['gaps']:
+        assert g['from_source'] is False
+    for part in m['search_per_line_parts']:
+        assert part.get('as_in_source') in (None, True) and (part['found'] or part['as_in_source'] is None)

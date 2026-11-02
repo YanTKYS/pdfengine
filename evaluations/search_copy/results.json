@@ -331,8 +331,8 @@
        "text": "MSIME2012の予測変換表示",
        "found": false,
        "continuous": true,
-       "as_in_source": true,
-       "drawn": "MSIME2012 の予測変換表示"
+       "drawn": "MSIME2012 の予測変換表示",
+       "as_in_source": true
       },
       {
        "line": 1,
@@ -403,8 +403,8 @@
       "text": "MSIME2012の予測変換表示",
       "found": false,
       "continuous": true,
-      "as_in_source": true,
-      "drawn": "MSIME2012 の予測変換表示"
+      "drawn": "MSIME2012 の予測変換表示",
+      "as_in_source": true
      },
      {
       "line": 1,
@@ -841,7 +841,8 @@
       "got": "reOffice は自由ソフトウェアであ",
       "want": "reOfficeは自由ソフトウェアである",
       "at": 11,
-      "as_in_source": true
+      "as_in_source": null,
+      "as_in_source_note": "由来未確認"
      },
      "extraction_poppler_detail": {
       "ok": false,
@@ -849,7 +850,8 @@
       "got": "reOffice は 自 由 ソ フ ト",
       "want": "reOfficeは自由ソフトウェアである",
       "at": 11,
-      "as_in_source": true
+      "as_in_source": null,
+      "as_in_source_note": "由来未確認"
      },
      "copy_equivalent_detail": {
       "mupdf": {
@@ -897,7 +899,8 @@
      "got": "reOffice は自由ソフトウェアであ",
      "want": "reOfficeは自由ソフトウェアである",
      "at": 11,
-     "as_in_source": true
+     "as_in_source": null,
+     "as_in_source_note": "由来未確認"
     },
     "extraction_poppler_detail": {
      "ok": false,
@@ -905,7 +908,8 @@
      "got": "reOffice は 自 由 ソ フ ト",
      "want": "reOfficeは自由ソフトウェアである",
      "at": 11,
-     "as_in_source": true
+     "as_in_source": null,
+     "as_in_source_note": "由来未確認"
     },
     "copy_equivalent_detail": {
      "mupdf": {

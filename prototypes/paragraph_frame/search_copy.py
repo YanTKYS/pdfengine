@@ -30,13 +30,20 @@ was not measured:
 Every failure says why. A part that fails because the source page draws the
 same text the same way (a positional gap read as a space by the extractor,
 not made by the edit) is marked ``as_in_source``; it is still a failure.
+``as_in_source`` is ``True`` only when each difference corresponds to one of
+the source's: the same kind and text, between the same glyphs drawn at the
+same places. A failure of the same category elsewhere is not that; it is
+``None`` (``as_in_source_note``: 由来未確認), never counted as the source's.
 """
 import re
 import subprocess
+from collections import Counter
+from difflib import SequenceMatcher
 
 import pymupdf
 
 PAD = 1.0
+UNCONFIRMED = '由来未確認'
 
 
 def _chars(page, frame, baselines):
@@ -83,6 +90,11 @@ def align(expected, rows):
     rest = expected[i:].strip()
     if rest:
         return None, None, f'not drawn: {rest[:20]!r}'
+    # Characters drawn after the expected text ends (only spaces may follow it).
+    extra = ''.join(ch for _, _, ch in drawn[j:])
+    if extra.strip():
+        k, n, _ = next(d for d in drawn[j:] if not d[2].isspace())
+        return None, None, f'drawn but not expected: {extra.strip()[:20]!r} (line {k}, after {expected[max(0, len(expected) - 6):]!r})'
     # Whitespace between a line's last character and the next line's first: the paragraph's join there.
     ends = {}
     for e, (k, n) in where.items():
@@ -156,6 +168,34 @@ def _compare(got, want):
                 got=got[max(0, at - 8):at + 12], want=want[max(0, at - 8):at + 12], at=at)
 
 
+def _glyph(c):
+    """A drawn character and where it is drawn (a rawdict char, or a _chars row entry)."""
+    x, y = c['origin'] if 'origin' in c else (c['x'], c['y'])
+    return c['c'], round(x, 2), round(y, 2)
+
+
+def _differences(got, expected, where, rows):
+    """The differences of extracted ``got`` from ``expected`` (both stripped, as _compare does): per difference, its
+    kind, the extracted and the expected text, and the drawn glyphs (see _glyph) of the nearest expected
+    non-whitespace character before and after it (None at the paragraph's ends)."""
+    if got is None:
+        return None
+    g, w, lead = got.strip(), expected.strip(), len(expected) - len(expected.lstrip())
+    def glyph(j):
+        if j is None or j + lead not in where:
+            return None
+        k, n = where[j + lead]
+        return _glyph(rows[k][n])
+    out = []
+    for tag, i1, i2, j1, j2 in SequenceMatcher(None, g, w, autojunk=False).get_opcodes():
+        if tag == 'equal':
+            continue
+        before = next((j for j in range(j1 - 1, -1, -1) if not w[j].isspace()), None)
+        after = next((j for j in range(j2, len(w)) if not w[j].isspace()), None)
+        out.append((tag, g[i1:i2], w[j1:j2], glyph(before), glyph(after)))
+    return out
+
+
 def _union(rects):
     out = pymupdf.Rect(rects[0])
     for r in rects[1:]:
@@ -190,7 +230,7 @@ def measure(output, page_number, expected, replacement, at, frame, baselines, so
         held = None
         if source is not None:
             with pymupdf.open(source) as s:
-                held = {(c['c'], round(c['origin'][0], 2), round(c['origin'][1], 2)) for b in s[page_number - 1].get_text('rawdict')['blocks']
+                held = {_glyph(c) for b in s[page_number - 1].get_text('rawdict')['blocks']
                         for l in b.get('lines', []) for sp in l['spans'] for c in sp['chars']}
         for k in lines:
             cols = sorted(n for kk, n in span if kk == k)
@@ -198,8 +238,9 @@ def measure(output, page_number, expected, replacement, at, frame, baselines, so
                 between = rows[k][a + 1:b]
                 if between and all(c['c'].isspace() for c in between):
                     pair = (rows[k][a], rows[k][b])
+                    # (The two glyphs and the drawn whitespace between them, each at the same place in the source.)
                     gaps.append(dict(line=k, between=pair[0]['c'] + pair[1]['c'],
-                                     from_source=None if held is None else all((c['c'], round(c['x'], 2), round(c['y'], 2)) in held for c in pair)))
+                                     from_source=None if held is None else all(_glyph(c) in held for c in (pair[0], *between, pair[1]))))
         out['gaps'] = gaps
         boxes = {k: _union([rows[k][n]['bbox'] for kk, n in span if kk == k]) for k in lines}
         on_line = lambda hit, k: abs((hit.y0 + hit.y1) / 2 - (boxes[k].y0 + boxes[k].y1) / 2) < boxes[k].height / 2
@@ -225,12 +266,19 @@ def measure(output, page_number, expected, replacement, at, frame, baselines, so
                 ink = [n for n, c in enumerate(rows[k]) if c['c'].strip()]
                 continuous = (k == lines[-1] or last >= ink[-1]) and (k == lines[0] or first <= ink[0])
                 part = dict(line=k, text=text, found=bool(found), continuous=continuous)
-                if not found and source is not None:
-                    with pymupdf.open(source) as s:
-                        part['as_in_source'] = not s[page_number - 1].search_for(text) and bool(text.strip())
+                if not found:
                     drawn = ''.join(c['c'] for c in rows[k][first:last + 1])
                     if drawn != text:
                         part['drawn'] = drawn
+                    if source is not None:
+                        # The source's only when the part is drawn as written but for gaps, each the source's
+                        # own (the same glyphs and whitespace at the same places); else not established.
+                        mine = [g for g in gaps if g['line'] == k]
+                        same = (drawn != text and ''.join(drawn.split()) == ''.join(text.split()) and bool(mine)
+                                and all(g['from_source'] for g in mine))
+                        part['as_in_source'] = True if same else None
+                        if not same:
+                            part['as_in_source_note'] = UNCONFIRMED
                 parts.append(part)
                 if not (found and continuous):
                     ok = False
@@ -245,15 +293,27 @@ def measure(output, page_number, expected, replacement, at, frame, baselines, so
         out['extraction_poppler_detail'] = _compare(_read(output, page, rows, joins, poppler_read(output)), expected)
         if before is not None and source is not None:
             # The source's own paragraph read the same way: a difference it shows too is the source's.
+            # Each difference of the output (its kind and text, and the drawn glyphs either side of it, where they
+            # are drawn) must be one the source shows too; a failure of the same category is not enough.
             with pymupdf.open(source) as s:
                 sp = s[page_number - 1]
                 srows = _chars(sp, pymupdf.Rect(before['frame']), before['baselines'])
-                _, sjoins, swhy = align(before['text'], srows)
-                for name, read in (('mupdf', mupdf_read(sp)), ('poppler', poppler_read(source))):
+                swhere, sjoins, swhy = align(before['text'], srows)
+                for name, read, own in (('mupdf', mupdf_read(sp), mupdf_read(page)), ('poppler', poppler_read(source), poppler_read(output))):
                     detail = out[f'extraction_{name}_detail']
-                    if detail['ok'] is False and not swhy:
-                        src = _compare(_read(source, sp, srows, sjoins, read), before['text'])
-                        detail['as_in_source'] = src['ok'] is False and src.get('whitespace_only') == detail.get('whitespace_only')
+                    if detail['ok'] is not False:
+                        continue
+                    if swhy:
+                        detail.update(as_in_source=None, as_in_source_note=f'{UNCONFIRMED}: the source paragraph is not drawn as its text ({swhy})')
+                        continue
+                    mine = _differences(_read(output, page, rows, joins, own), expected, where, rows)
+                    theirs = _differences(_read(source, sp, srows, sjoins, read), before['text'], swhere, srows)
+                    left = Counter(theirs or [])
+                    left.subtract(mine or [])
+                    same = bool(mine) and all(a or b for *_, a, b in mine) and min(left.values(), default=0) >= 0
+                    detail['as_in_source'] = True if same else None
+                    if not same:
+                        detail['as_in_source_note'] = UNCONFIRMED
         out['extraction_mupdf'] = out['extraction_mupdf_detail']['ok']
         out['extraction_poppler'] = out['extraction_poppler_detail']['ok']
         # --- copy_equivalent: the replacement's own glyphs on each line, as both extractors read them.
