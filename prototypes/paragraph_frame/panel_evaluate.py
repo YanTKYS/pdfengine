@@ -96,13 +96,16 @@ def rects(code, pdf, page, box):
     return json.loads(lines[-1]) if lines else dict(error=run.stderr[-300:])
 
 
-def chain_step(code, start, case, old, new, after, output, sub, grow, pitch):
-    """chain_evaluate.chain_step with the panel extensions a proposal lists (``--panel``), and the approved-change audit."""
+PARTS = (('chain', '--chain'), ('decorations', '--decoration'), ('panels', '--panel'))
+
+
+def chain_step(code, start, case, old, new, after, output, sub, grow, pitch, parts=PARTS):
+    """chain_evaluate.chain_step with the panel extensions a proposal lists (``--panel``), and the approved-change audit.
+    ``parts``: the kinds of candidates approved, with their CLI flags (the clip evaluation adds ``--clip``)."""
     from .indesign_evaluate import audit
     from .tagged_evaluate import structure_audit
     occurrence = ce.locate(start, case['page'], old, case['box'], code)
     base = ['--source', str(Path(start).resolve()), '--page', str(case['page']), '--old', old, '--new', new, '--occurrence', str(occurrence)]
-    parts = (('chain', '--chain'), ('decorations', '--decoration'), ('panels', '--panel'))
 
     def listed(approved):
         out = sub / 'proposal-only.json'
@@ -162,7 +165,7 @@ def chain_step(code, start, case, old, new, after, output, sub, grow, pitch):
                   structure_failed=structure_audit(start, output, case['page'], after, [])['failed'],
                   continued_editing=ce.reopen(code, output, case['page'], new, after),
                   save={k: save.get(k) for k in ('follower_translation', 'followers_repainted', 'placed_objects_moved', 'decorations_moved',
-                                                 'chain_moved', 'panels_extended')},
+                                                 'chain_moved', 'panels_extended', 'clips_extended')},
                   moves=ce.moves_audit(start, output, case['page'], save), links=ce.links_audit(start, output, case['page'], save),
                   placement=ce.placement_audit(start, output, case['page'], save), raster=None)
     around = [x0 - 40, y0 - 10, x1 + 40, y1 + 40]

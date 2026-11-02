@@ -31,6 +31,7 @@ the rectangle and the extension, so a changed PDF or another edit is no
 longer approved.
 """
 import hashlib
+import struct
 
 import pymupdf
 
@@ -267,11 +268,32 @@ def edits(c, found):
         dv = dy / m.d
         y_page, yh_page = (pymupdf.Point(x, y) * m).y, (pymupdf.Point(x, y + h) * m).y
         if y_page > yh_page:
-            y, h = y + dv, h - dv
+            # The kept edge is y + h: written so that the renderers' sums (double, float32) give it exactly as
+            # before, else its anti-aliasing changes (issue #118, the outline's top edge of a Word text box).
+            y, h = _keep_sum(y, h, y + dv)
+            out.append((start, end, b' '.join([number(x), y.encode(), number(w), h.encode(), b're'])))
         else:
             h = h + dv
-        out.append((start, end, b' '.join(number(v) for v in (x, y, w, h)) + b' re'))
+            out.append((start, end, b' '.join(number(v) for v in (x, y, w, h)) + b' re'))
     return out
+
+
+def _f32(v):
+    return struct.unpack('f', struct.pack('f', v))[0]
+
+
+def _keep_sum(y, h, target):
+    """(y', h') as PDF number strings: y' within 0.01 pt of ``target``, and y' + h' equal to y + h both in double
+    precision and in single precision (as renderers add them), or a refusal."""
+    total, single = y + h, _f32(_f32(y) + _f32(h))
+    for n in range(10001):
+        for sign in ((1,) if not n else (1, -1)):
+            y1 = round(target + sign * n * 1e-6, 6)
+            h1 = float(repr(total - y1))
+            if y1 + h1 == total and _f32(_f32(y1) + _f32(h1)) == single and 'e' not in repr(h1).lower():
+                h = repr(h1)
+                return format(y1, '.6f').rstrip('0').rstrip('.'), h[:-2] if h.endswith('.0') else h
+    raise Refused('the rectangle cannot be rewritten keeping its other edge exactly')
 
 
 def expected_drawings(drawings, found):

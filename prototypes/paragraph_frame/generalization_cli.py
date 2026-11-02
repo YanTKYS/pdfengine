@@ -17,12 +17,13 @@ def main():
     p.add_argument('--continuation',action='append',default=[],help='approve a candidate column link by its id (repeatable)')
     p.add_argument('--decoration',action='append',default=[],help='approve a candidate line decoration by its id (repeatable)')
     p.add_argument('--chain',action='append',default=[],help='approve a following element of the chain by its id (repeatable; every one of the chain)')
-    p.add_argument('--panel',action='append',default=[],help='approve a panel extension by its id (repeatable)');args=p.parse_args()
+    p.add_argument('--panel',action='append',default=[],help='approve a panel extension by its id (repeatable)')
+    p.add_argument('--clip',action='append',default=[],help='approve a text box clip extension by its id (repeatable)');args=p.parse_args()
     out=Path(args.output)
     if out.exists():raise ValueError('output already exists')
     if args.action in ('propose','reedit'):
         sub=json.loads(Path(args.substitute_json).read_text()) if args.substitute_json else None
-        result=propose(args.source,args.page,args.old,args.new,occurrence=args.occurrence,substitute=sub,stored_conditions=not args.no_stored_conditions,continuation=args.continuation,decorations=args.decoration,chain=args.chain,panels=args.panel)
+        result=propose(args.source,args.page,args.old,args.new,occurrence=args.occurrence,substitute=sub,stored_conditions=not args.no_stored_conditions,continuation=args.continuation,decorations=args.decoration,chain=args.chain,panels=args.panel,clips=args.clip)
         if args.action=='reedit':
             accepted=approve(args.source,result,acknowledge_inference=args.acknowledge_inference)
             record=save(args.source,accepted,out);out.with_suffix('.save.json').write_text(json.dumps(record,ensure_ascii=False,indent=2));out.with_suffix('.proposal.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));return

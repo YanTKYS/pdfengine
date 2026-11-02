@@ -15,6 +15,7 @@ from . import auto_flow as flowing
 from .engine import Paragraph, Refused, _check_inbound
 from . import form_write
 from . import panel
+from . import clip_extension
 from . import semantics
 from . import text_space
 
@@ -773,15 +774,18 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
             # be drawn as approved (its rectangle, operators, paint, colours,
             # outline and order), else the record is not applied (panel.verify).
             panels=[dict(x,status=panel.verify(c,{i for r in selected for i in r['glyph_ids']},x)) for x in record.get('panels',[])]
-            wrong=[x for x in panels if x['status']!='drawn as approved']
+            # Approved clip extensions (issue #118): the paragraph drawn under the stored extended clip, as approved.
+            clips=[dict(x,status=clip_extension.verify(c,{i for r in selected for i in r['glyph_ids']},x)) for x in record.get('clips',[])]
+            wrong=[x for x in panels+clips if x['status']!='drawn as approved']
             if hits:state.update(status='stale: protected paint entered the approved width ('+', '.join(sorted(set(hits)))+')',stale=[n],target=None)
-            elif wrong:state.update(status='stale: an approved panel extension is not drawn as approved ('+wrong[0]['status']+')',stale=[n],target=None,panels=panels)
+            elif wrong:state.update(status='stale: an approved '+('panel' if wrong[0] in panels else 'clip')+' extension is not drawn as approved ('+wrong[0]['status']+')',stale=[n],target=None,panels=panels,clips=clips)
             else:
                 approved=record['conditions'];left,right,leading=approved['left'],approved['right'],approved['line_height']
                 basis='approved condition stored in the PDF (first approved as: '+record['origin']['provenance']['line_height']+')'
                 provenance={k:'approved: stored record verified against the drawn paragraph' for k in ('left','right','line_height')}|dict(first_x='observed: first line x',bottom='min(stored approved bottom, current protected paint)')
                 state.update(status='applied',applied=True)
                 if panels:state['panels']=panels
+                if clips:state['clips']=clips
         below=[o['bounds'][1] for o in obstacles if o['kind']!='container' and o['bounds'][1]>last+.1 and o['bounds'][0]<right and o['bounds'][2]>left]
         bottom=min(below+[c.page.rect.height])-1
         # The lines below the paragraphs in their column, nearest first: a
@@ -825,7 +829,7 @@ def detect(source,page,selection,occurrence=0,stored=True,continuation=()):
             conditions=dict(status=state['status'],applied=state['applied'],provenance=provenance,origin=origin,
                             approval_count=records[state['target']]['approval']['count'] if state['applied'] else 0,
                             stale_records=len(state['stale']),containers=containers,implicit_line_join_spaces=len(paragraphs[0].joins),line_end_hyphens=len(paragraphs[0].hyphens),
-                            **({'panels':state['panels']} if state.get('panels') else {})),
+                            **({'panels':state['panels']} if state.get('panels') else {}),**({'clips':state['clips']} if state.get('clips') else {})),
             confidence=dict(paragraph='approved: stored record matched every drawn line' if state['applied'] else 'high: ordered P children' if paragraphs[0].parent else 'medium: indentation, spacing and style continuity',
                             right='approved: stored condition' if state['applied'] else 'medium: maximum occupied pen extent; author frame absent',bottom='medium: next protected paint/annotation or page edge',top='medium: observed line boxes plus one-em ascender allowance; staged ink and raster checked'),
             selection_match_count=len(matches),warnings=['Occupied width is an inferred capacity, not a stored author frame.','Following same-column paragraphs may translate; protected content never moves.'],manual_geometry_inputs=0)

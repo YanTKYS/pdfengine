@@ -129,6 +129,100 @@ def phase_freeze(args):
     MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, indent=1, default=str) + '\n')
 
 
+PARTS = (('chain', '--chain'), ('decorations', '--decoration'), ('panels', '--panel'), ('clips', '--clip'))
+
+
+def chain_step(code, start, case, old, new, after, output, sub, grow, pitch):
+    """panel_evaluate.chain_step approving the clip extensions too; besides, the save with each kind of the listed
+    clip and panel candidates approved alone (each must be refused when both are listed)."""
+    from . import panel_evaluate
+    from .decoration_evaluate import cli
+    r = panel_evaluate.chain_step(code, start, case, old, new, after, output, sub, grow, pitch, parts=PARTS)
+    ids = {k: [c['id'] for c in ((r.get(k) or {}).get('candidates') or [])] for k in ('clips', 'panels')}
+    occurrence = r.get('occurrence', 0)
+    base = ['--source', str(Path(start).resolve()), '--page', str(case['page']), '--old', old, '--new', new, '--occurrence', str(occurrence)]
+    partial = {}
+    for name, flags in (('clip only', [x for i in ids['clips'] for x in ('--clip', i)]), ('panel only', [x for i in ids['panels'] for x in ('--panel', i)])):
+        if not flags or not (ids['clips'] and ids['panels']):
+            continue
+        out = sub / ('partial-' + name.replace(' ', '-') + '.pdf')
+        for p in (out, out.with_suffix('.proposal.json'), out.with_suffix('.save.json')):
+            if p.exists():
+                p.unlink()
+        rc, reason, _ = cli(code, ['reedit'] + base + ['--acknowledge-inference'] + flags, out)
+        partial[name] = dict(outcome='refused' if rc else 'saved', reason=reason if rc else None)
+    r['partial'] = partial
+    return r
+
+
+def run_case(code, case, source, root):
+    from . import chain_evaluate as ce
+    from . import panel_evaluate
+    from . import rows_evaluate as rows
+    ce.block = lambda source, page, selection: case['box']
+    ce.locate = rows.make_locate(code)
+    ce.chain_step = chain_step
+    return ce.run_case(code, case, source, root)
+
+
+def phase_run(args):
+    manifest = json.loads(MANIFEST.read_text())
+    panel_cases = {c['id']: c for c in json.loads(Path('evaluations/paragraph_panel/manifest.json').read_text())['cases']}
+    root = Path(args.root)
+    root.mkdir(parents=True, exist_ok=True)
+    code = Path('.').resolve()
+    results = {}
+    for case in manifest['cases']:
+        if case.get('status') == 'input missing':
+            results[case['id']] = [dict(outcome='input missing')]
+            continue
+        source = source_of(case['document'], args).resolve()
+        if hashlib.sha256(source.read_bytes()).hexdigest() != manifest['documents'][case['document']]['sha256']:
+            results[case['id']] = [dict(outcome='input differs')]
+            continue
+        # (The selection's box and line count as the panel evaluation froze them for the same edit.)
+        case = dict(case, box=panel_cases[case['id']]['box'], lines=panel_cases[case['id']]['lines'])
+        try:
+            results[case['id']] = run_case(code, case, source, root)
+        except Exception as exc:  # an evaluator error ends this case only, and is reported
+            results[case['id']] = [dict(old=case['edit']['old'], new=case['edit']['new'], outcome='not run',
+                                        reason=f'evaluator error: {type(exc).__name__}: {exc}'[:300])]
+        (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
+
+
+def records(results, manifest):
+    from . import smoke_evaluate
+    groups = {c['id']: c['group'] for c in manifest['cases']}
+    out = []
+    for cid, seq in results.items():
+        for n, x in enumerate(seq):
+            if x.get('outcome') in ('input missing', 'input differs'):
+                continue
+            r = smoke_evaluate.records({cid: [x]})[0]
+            r.update(evaluation='clip', step=str(n + 1), group='real' if groups[cid] == 'target' else 'real-' + groups[cid])
+            for k in ('clips', 'panels'):
+                if x.get(k) is not None:
+                    r['checks'][k[:-1] + '_candidates'] = len((x.get(k) or {}).get('candidates') or [])
+            if x.get('unapproved'):
+                r['checks']['unapproved_refused'] = x['unapproved']['outcome'] == 'refused'
+            for name, v in (x.get('partial') or {}).items():
+                r['checks'][name.replace(' ', '_') + '_refused'] = v['outcome'] == 'refused'
+            out.append(r)
+    return out
+
+
+def phase_collect(args):
+    manifest = json.loads(MANIFEST.read_text())
+    results = json.loads((Path(args.root) / 'results.json').read_text())
+    recs = records(results, manifest)
+    compact = lambda x: {k: er.compact_audit(v) if k == 'approved_audit' else v for k, v in x.items()
+                         if k not in ('frame', 'seconds', 'occurrence', 'rounds')}
+    out = dict(schema='paragraph-clip-results-1', manifest_sha256=hashlib.sha256(MANIFEST.read_bytes()).hexdigest(),
+               summary=er.summary(recs), records=recs, results={k: [compact(x) for x in seq] for k, seq in results.items()})
+    RESULTS.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
+    print(json.dumps(out['summary'], ensure_ascii=False))
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--phase', choices=('freeze', 'run', 'collect'), required=True)
@@ -136,7 +230,7 @@ def main():
     p.add_argument('--fusei')
     p.add_argument('--pdfjs')
     args = p.parse_args()
-    dict(freeze=phase_freeze)[args.phase](args)
+    dict(freeze=phase_freeze, run=phase_run, collect=phase_collect)[args.phase](args)
 
 
 if __name__ == '__main__':

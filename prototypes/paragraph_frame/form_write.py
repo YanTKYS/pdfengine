@@ -236,7 +236,7 @@ def _float32(value):
     return struct.unpack('f', struct.pack('f', value))[0]
 
 
-def insertion(boundary, frames, page, neutral=False, text_overprint=None):
+def insertion(boundary, frames, page, neutral=False, text_overprint=None, extended=()):
     """Bytes that put new drawing in default user space at ``boundary``, or a refusal.
 
     ``frames`` are page (top-left) rectangles; ``page`` is the page's
@@ -244,7 +244,9 @@ def insertion(boundary, frames, page, neutral=False, text_overprint=None):
     With ``neutral`` the drawing sets the neutral ExtGState itself, so an
     inherited transparency state does not matter (only clips do). Without it,
     the inherited overprint entries must be the edited text's own
-    (``text_overprint``, see ``overprint``).
+    (``text_overprint``, see ``overprint``). ``extended``: (old, new) page
+    rectangles of approved clip extensions (issue #118): a clip of the old
+    rectangle holds the new one once the edit rewrites it.
     """
     state = boundary.state
     if not neutral and text_overprint is not None and overprint([state]) != text_overprint:
@@ -261,6 +263,7 @@ def insertion(boundary, frames, page, neutral=False, text_overprint=None):
         area = clip_rect(clip, page)
         if area is None:
             raise Refused('nonrectangular insertion clip')
+        area = next((pymupdf.Rect(b) for a, b in extended if max(abs(p - q) for p, q in zip(area, a)) <= .05), area)
         if not all(area.contains(pymupdf.Rect(f)) for f in frames):
             raise Refused('insertion clip does not contain approved frame')
     if tuple(state.ctm) == IDENTITY:
