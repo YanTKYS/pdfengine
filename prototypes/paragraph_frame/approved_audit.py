@@ -479,12 +479,16 @@ def _placement(output, page, proposal, frame, away, tol=.3, reach=3.):
     """The edited paragraph's lines drawn where the approved proposal places them, consistent with the source:
     each drawn line on a proposed baseline (0.2 pt) and every proposed line drawn; the source lines' baselines
     kept; added lines at the proposal's leading; each line starting at the paragraph's left edge (the first at its
-    first-line start) and ending inside its right edge (0.3 pt). Glyphs are read on the frame's lines and up to
-    ``reach`` pt beside it (a line drawn off its edge is seen). The leading's basis (observed in the paragraph,
+    first-line start) and ending inside its right edge (0.3 pt). Glyphs are read within half a line of the
+    proposed lines and up to ``reach`` pt beside the frame (a line drawn off its edge is seen). The leading's basis (observed in the paragraph,
     or a default the save acknowledged as inferred) is reported, not judged here."""
     inferred = proposal['evidence']['inferred']
     planned = [l['baseline'] for l in proposal['lines'] if l['text'].strip()]
     observed = [l['baseline'] for l in proposal['evidence']['observed']['lines'][:proposal['source_lines']]]
+    # The frame may reach below the paragraph (its bottom: the next paragraph or the column's): the lines read are
+    # those within half a line of the proposed ones.
+    half = inferred['line_height'] / 2
+    band = (planned[0] - half, planned[-1] + half) if planned else (0, -1)
     rows = {}
     with pymupdf.open(output) as d:
         for b in d[page - 1].get_text('rawdict')['blocks']:
@@ -493,7 +497,8 @@ def _placement(output, page, proposal, frame, away, tol=.3, reach=3.):
                     for c in sp['chars']:
                         r = pymupdf.Rect(c['bbox'])
                         mid = (r.tl + r.br) / 2
-                        if c['c'].strip() and (frame + (-reach, -tol, reach, tol)).contains(mid) and not any(a.contains(mid) for a in away):
+                        if (c['c'].strip() and (frame + (-reach, -tol, reach, tol)).contains(mid) and band[0] <= c['origin'][1] <= band[1]
+                                and not any(a.contains(mid) for a in away)):
                             rows.setdefault(round(c['origin'][1], 1), []).append((c['origin'][0], r.x1))
     drawn = sorted(rows)
     near = lambda y, ys: any(abs(y - v) <= .2 for v in ys)

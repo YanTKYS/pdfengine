@@ -200,7 +200,8 @@ def practical(outcome, checks, layout, approved=None):
         for k in ('structure', 'links'):
             add(k, f'{k} audit', checks.get(k), 'must not fail')
         own = 'shown' if layout else 'must not fail'
-        note = 'fails by design on approved layout changes: the approved-change audit stands for it' if layout else None
+        note = ('not counted on an approved layout step: it compares a region the approved changes enter (it fails there by '
+                'design); the approved-change audit stands for it') if layout else None
         add('protection (region)', 'existing audit: safety', checks.get('safety'), own, note)
         add('quality (region)', 'existing audit: quality', checks.get('quality'), own, note)
         for k in ('moves', 'placement', 'raster', 'kept', 'placed'):

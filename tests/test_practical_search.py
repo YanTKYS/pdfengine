@@ -205,3 +205,25 @@ def test_steps_without_the_approved_audit_keep_the_existing_rule():
     assert r['tiers']['practical'] is True and 'practical_basis' not in r
     value, basis = er.practical('saved', dict(quality=True, safety=True), False)
     assert value is True and 'anywhere on the page' in basis[1]['note']
+
+
+# --- natural placement, measured on the edited lines -------------------------
+
+def placed(lines, frame=(30, 40, 280, 140)):
+    """A proposal of the three-line paragraph (as auto.propose gives it) whose inferred frame reaches ``frame``."""
+    return dict(source_lines=3, lines=[dict(text=t, baseline=y) for t, y in zip(lines, BASELINES)],
+                evidence=dict(observed=dict(lines=[dict(baseline=y) for y in BASELINES]),
+                              inferred=dict(frame=list(frame), first_x=40, left=40, right=280, line_height=16,
+                                            leading_basis='median within-paragraph observed gaps')))
+
+
+def test_the_next_paragraph_inside_the_frame_is_not_the_edited_lines(tmp_path):
+    from prototypes.paragraph_frame.approved_audit import _placement
+    # The frame's bottom is the next paragraph's (as an inferred frame may be): its line, indented, is not read.
+    out = page(tmp_path, [LINE1, LINE2, LINE3], extra=[(51, 124, '次の段落です。')])
+    r = _placement(out, 1, placed([LINE1, LINE2, LINE3]), pymupdf.Rect(30, 40, 280, 140), [])
+    assert r['result'] is True and r['lines'] == 3
+    # A glyph of the edited paragraph drawn 2 pt off its line is seen.
+    out = page(tmp_path, [LINE1, LINE2, LINE3], name='off.pdf', edit=lambda d, p: p.insert_text((120, 94), 'X', fontsize=11))
+    bad = _placement(out, 1, placed([LINE1, LINE2, LINE3]), pymupdf.Rect(30, 40, 280, 140), [])
+    assert bad['result'] is False and bad['checks']['lines_on_proposed_baselines'] is False
