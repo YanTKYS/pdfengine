@@ -48,9 +48,13 @@ def separated(tmp_path):
 def test_approved_moves_pass(moved, separated):
     for source, out, proposal, record in (moved, separated):
         r = audit(source, out, 1, proposal, record)
-        # (The grown replacement is broken over lines: its search is unverified, its lines' text is there.)
-        assert r['verdict'] == 'pass' and r['mode'] == 'layout' and r['quality']['status'] == 'unverified', r
-        assert r['quality']['search_wrapped_lines_text'] and r['quality']['extraction_mupdf'] and r['quality']['extraction_poppler']
+        # The grown replacement is broken over lines: one search does not find it (before issue #116: unverified);
+        # each line's part is found on its line and both extractors read it: verified line by line (issue #116).
+        q = r['quality']
+        assert r['verdict'] == 'pass' and r['mode'] == 'layout' and q['status'] == 'pass', r
+        assert q['legacy']['status'] == 'unverified' and q['legacy']['search_mupdf'] is None and q['legacy']['search_wrapped_lines_text']
+        assert q['search_copy_check']['result'] is True and q['search_copy_check']['route'] == 'lines'
+        assert q['search_mupdf'] is None and q['extraction_mupdf'] and q['extraction_poppler']
         assert all(x['status'] == 'pass' for x in r['approved'])
         assert r['protected']['annotations'] == (1 if source == moved[0] else 0)
 
@@ -177,12 +181,16 @@ def test_a_replacement_broken_over_lines_is_not_reported_as_found(tmp_path):
     out = tmp_path / 'wrap.pdf'
     proposal, record = saved(source, out, chain=[])
     q = audit(source, out, 1, proposal, record)['quality']
-    assert q['search_mupdf'] is None and q['search_wrapped_lines_text'] is True and q['status'] == 'unverified'
-    # Measured apart (issue #114), beside the status they do not change: no one search finds it; each line's part
-    # is found on its line; both extractors read the paragraph and the replacement's area as expected.
+    assert q['search_mupdf'] is None and q['legacy'] == dict(search_mupdf=None, search_wrapped_lines_text=True, status='unverified')
+    # Measured on the edited lines (issue #114): no one search finds it; each line's part is found on its line;
+    # both extractors read the paragraph and the replacement's area as expected. That verifies the edited
+    # text's search and extraction line by line (issue #116); one search over it stays false, never shown found.
     m = q['search_copy']
     assert m['search_full'] is False and m['search_per_line'] is True and m['clipboard_manual'] is None
     assert m['extraction_mupdf'] is True and m['extraction_poppler'] is True and m['copy_equivalent'] is True
+    check = q['search_copy_check']
+    assert check['result'] is True and check['route'] == 'lines' and check['search_full'] is False and 'not guaranteed' in check['note']
+    assert q['status'] == 'pass'
 
 
 def test_a_duplicate_where_overlapping_moves_went_fails(tmp_path):

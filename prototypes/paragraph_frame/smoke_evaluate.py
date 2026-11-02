@@ -17,8 +17,9 @@ chain_evaluate.run_case (the edit, then the edit back from the saved PDF alone;
 candidates approved exactly as the proposals list them: that is the evaluator
 standing for a user, not a model of the user's approval) and adds the
 approved-change audit (approved_audit) to every saved step. Records follow
-eval_records: practical success here is the approved-change audit's pass and
-the quality checks; the existing audit's results are kept beside it.
+eval_records (practical: the approved-change audit, its quality with the
+edited text's search and extraction, structure and links; the existing
+audit's results are kept beside it, counted for a faithful step).
 """
 import argparse
 import hashlib
@@ -189,17 +190,8 @@ def records(results):
                                 reason_class=None, reason=None, failed=None, checks={},
                                 tiers=dict(saved=None, practical=None, reedit=None, restore=None, refused=None)))
                 continue
-            r = er.step_record('smoke', cid, str(n + 1), x, 'real')
-            a = x.get('approved_audit') or {}
-            if a:
-                r['checks']['approved_audit'] = {'pass': True, 'fail': False}.get(a.get('verdict'))
-                r['mode'] = a.get('mode', r['mode'])
-                # The approved-change audit and its quality, and every other measured protection (structure, links).
-                q = (a.get('quality') or {}).get('status')
-                failed = a.get('verdict') == 'fail' or q == 'fail' or any(r['checks'].get(k) is False for k in ('structure', 'links'))
-                r['tiers']['practical'] = False if failed else True if a.get('verdict') == 'pass' and q == 'pass' else None
-                r['checks']['approved_quality'] = {'pass': True, 'fail': False}.get(q)
-            out.append(r)
+            # Practical success, the mode and the approved-change audit's checks: eval_records.practical (issue #116).
+            out.append(er.step_record('smoke', cid, str(n + 1), x, 'real'))
     return out
 
 

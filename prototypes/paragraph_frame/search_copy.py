@@ -344,3 +344,61 @@ def before(proposal):
     lines = proposal['evidence']['observed']['lines'][:proposal['source_lines']]
     box = _union([pymupdf.Rect(l['bbox']) for l in lines])
     return dict(text=proposal['paragraphs'][0], frame=list(box + (-1, -1, 1, 1)), baselines=[l['baseline'] for l in lines])
+
+
+# What "the edited text's search and extraction are verified" requires (issue #116, option (b) of issue #114):
+# on one line, the whole replacement found by one search where it is drawn; over lines, each line's part found on
+# its line (a single search over the whole replacement is then recorded, not required: it is not guaranteed).
+# Both extractions and the copy equivalent always. The real clipboard is never assumed.
+REQUIRED = {'one line': ('search_full', 'extraction_mupdf', 'extraction_poppler', 'copy_equivalent'),
+            'lines': ('search_per_line', 'extraction_mupdf', 'extraction_poppler', 'copy_equivalent')}
+
+
+def verified(m):
+    """Whether the measures ``m`` (see measure) verify the edited text's search and extraction.
+
+    dict(result True | False | None | 'not applicable', route, required, failed, missing, search_full, note).
+    Any required measure false: False (a gap the source has too is no excuse: ``as_in_source`` is not read here);
+    any null or the measures not made: None (unverified); a deletion has no new text to search: not applicable."""
+    if not isinstance(m, dict) or 'error' in m:
+        return dict(result=None, route=None, required=[], failed=[], missing=['search_copy'],
+                    note='the measures were not made' + (f": {m['error']}" if isinstance(m, dict) else ''))
+    if str(m.get('reason', '')).startswith('no new text'):
+        return dict(result='not applicable', route='deletion', required=[], failed=[], missing=[], note=m['reason'])
+    lines = (m.get('search_full_hits') or {}).get('lines')
+    if lines is None:
+        # The drawn lines are not the expected paragraph (measure refused to align them): every measure is false.
+        req = REQUIRED['one line'] + ('search_per_line',)
+        return dict(result=False if any(m.get(k) is False for k in req) else None, route=None, required=list(req),
+                    failed=[k for k in req if m.get(k) is False], missing=[k for k in req if m.get(k) is None], note=m.get('reason'))
+    route = 'one line' if lines == 1 else 'lines'
+    req = REQUIRED[route]
+    failed = [k for k in req if m.get(k) is False]
+    missing = [k for k in req if m.get(k) is None]
+    result = False if failed else None if missing else True
+    note = None
+    if result is True and route == 'lines' and m.get('search_full') is not True:
+        note = ('verified line by line: each line\'s part is found on its line; one search for the whole replacement is not '
+                'found (search_full false), and is not guaranteed')
+    return dict(result=result, route=route, required=list(req), failed=failed, missing=missing, search_full=m.get('search_full'),
+                note=note)
+
+
+def search_on_target(m):
+    """The existing search check (approved_audit ``search_mupdf``) measured on the edited lines: (value, why).
+
+    One line: whether one search finds the replacement where it is drawn (a hit elsewhere on the page does not
+    count). Over lines: True when one search covers every line's part, else None (a single search is not
+    required over lines: see verified). Drawn lines that are not the expected paragraph: False. No measure: None."""
+    if not isinstance(m, dict) or 'error' in m:
+        return None, 'the measures were not made'
+    hits = m.get('search_full_hits')
+    if hits is None:
+        return False, m.get('reason') or 'not measured on the edited lines'
+    if hits['lines'] == 1:
+        if m['search_full']:
+            return True, 'found where it is drawn'
+        return False, ('found elsewhere on the page only' if hits['elsewhere'] else 'not found where it is drawn (one line)')
+    if m['search_full']:
+        return True, f"found by one search over its {hits['lines']} lines"
+    return None, f"drawn over {hits['lines']} lines: one search does not find it (see the per-line search)"

@@ -2,6 +2,7 @@
 
   .venv/bin/python -m prototypes.paragraph_frame.panel_evaluate --phase freeze --fusei <477.pdf> --pdfjs <pdf.js dir>
   .venv/bin/python -m prototypes.paragraph_frame.panel_evaluate --phase run --label old|new --code <tree> --root <dir> --fusei <477.pdf> --pdfjs <pdf.js dir>
+  .venv/bin/python -m prototypes.paragraph_frame.panel_evaluate --phase audit --root <dir> --fusei <477.pdf> --pdfjs <pdf.js dir>
   .venv/bin/python -m prototypes.paragraph_frame.panel_evaluate --phase collect --roots old=<dir> new=<dir>
 
 ``freeze`` (before the implementation) records each case's input (hash),
@@ -20,6 +21,9 @@ carried from one step to the next. A saved step keeps the existing audit
 audit (approved_audit), and adds ``panel``: the rectangles drawn where the
 panel was, before and after (kind, colours, width, bounds), against the
 approved extension. Negative cases must stay refused (the reason is kept).
+``audit`` makes the approved-change audit again over a run's saved steps
+(results updated in place; the saved PDFs are not touched): a changed audit,
+not a changed edit.
 A refusal or a missing input is never a success; fixtures are not counted
 here.
 """
@@ -259,6 +263,28 @@ def phase_run(args):
         path.write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
 
 
+def phase_audit(args):
+    """The approved-change audit again over the saved steps of a run (each step's source: the case's input, then the step before)."""
+    from .approved_audit import audit as approved_audit
+    manifest = json.loads(MANIFEST.read_text())
+    cases = {c['id']: c for c in manifest['cases']}
+    root = Path(args.root)
+    results = json.loads((root / 'results.json').read_text())
+    for cid, seq in results.items():
+        start = source_of(cases[cid]['document'], args).resolve()
+        for n, x in enumerate(seq):
+            output = root / cid / f'{n + 1}' / 'out.pdf'
+            if x.get('outcome') != 'saved' or not output.exists():
+                break
+            r = approved_audit(start, output, cases[cid]['page'])
+            x['approved_audit'] = dict(verdict=r['verdict'], mode=r['mode'], approval=r['approval'], quality=r['quality'],
+                                       approved=[{k: y[k] for k in ('what', 'status', 'reasons')} for y in r['approved']],
+                                       protected={k: r['protected'][k] for k in ('status', 'reasons', 'pixels')}, unchecked=r['unchecked'])
+            print(cid, n + 1, r['verdict'], r['quality']['status'], r['quality']['search_copy_check']['result'], flush=True)
+            start = output
+    (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
+
+
 def records(results, manifest):
     groups = {c['id']: c['group'] for c in manifest['cases']}
     out = []
@@ -294,7 +320,7 @@ def phase_collect(args):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--phase', choices=('freeze', 'run', 'collect'), required=True)
+    p.add_argument('--phase', choices=('freeze', 'run', 'audit', 'collect'), required=True)
     p.add_argument('--label')
     p.add_argument('--code', default='.')
     p.add_argument('--root')
@@ -304,7 +330,7 @@ def main():
     p.add_argument('--survey', help='the panel survey (JSON) kept with the manifest')
     p.add_argument('--only', nargs='*')
     args = p.parse_args()
-    dict(freeze=phase_freeze, run=phase_run, collect=phase_collect)[args.phase](args)
+    dict(freeze=phase_freeze, run=phase_run, audit=phase_audit, collect=phase_collect)[args.phase](args)
 
 
 if __name__ == '__main__':

@@ -36,7 +36,8 @@ MANIFESTS = {
     'roundtrip': 'evaluations/paragraph_frame_roundtrip/manifest.json',
     'fidelity': 'evaluations/paragraph_frame_fidelity/manifest.json',
 }
-MOVED = ('placed_objects_moved', 'decorations_moved', 'chain_moved')
+# Approved layout changes a save records (an approved panel extension, issue #112, is one too).
+MOVED = ('placed_objects_moved', 'decorations_moved', 'chain_moved', 'panels_extended')
 
 
 def _ok(v):
@@ -97,17 +98,46 @@ def step_record(evaluation, case, step, x, group):
     layout = any(save.get(k) for k in MOVED)
     outcome = x.get('outcome')
     saved = outcome == 'saved'
-    practical = practical_success(outcome, checks, layout)
+    approved = x.get('approved_audit') or None
+    if approved:
+        checks.update(_approved_checks(approved))
+        # Approved layout changes need both: the save made them and the audit's change set holds them. A faithful
+        # edit (the following paragraphs' own translation included) is never counted as an approved layout edit.
+        layout = layout and approved.get('mode') == 'layout'
+    value, basis = practical(outcome, checks, layout, approved)
     restore = None
     if restored:
         parts = [checks[k] for k in ('restored_glyphs', 'restored_pixels', 'restored_text')]
         restore = None if any(p is None for p in parts) else all(parts)
-    return dict(evaluation=evaluation, case=case, step=step, group=group, mode='layout' if layout else 'faithful',
-                outcome=outcome, reason_class=_class(x), reason=(x.get('reason') or '')[-120:] or None,
-                failed=sorted(failed) if isinstance(failed, list) else None,
-                checks={k: v for k, v in checks.items() if v is not None},
-                tiers=dict(saved=saved if outcome in ('saved', 'refused') else None, practical=practical,
-                           reedit=checks['reedit'] if saved else None, restore=restore, refused=outcome == 'refused'))
+    out = dict(evaluation=evaluation, case=case, step=step, group=group, mode='layout' if layout else 'faithful',
+               outcome=outcome, reason_class=_class(x), reason=(x.get('reason') or '')[-120:] or None,
+               failed=sorted(failed) if isinstance(failed, list) else None,
+               checks={k: v for k, v in checks.items() if v is not None},
+               tiers=dict(saved=saved if outcome in ('saved', 'refused') else None, practical=value,
+                          reedit=checks['reedit'] if saved else None, restore=restore, refused=outcome == 'refused'))
+    if approved:
+        out['practical_basis'] = basis
+    return out
+
+
+SEARCH_MEASURES = (('search_full', 'search_full'), ('search_per_line', 'search_per_line'), ('search_extraction_mupdf', 'extraction_mupdf'),
+                   ('search_extraction_poppler', 'extraction_poppler'), ('copy_equivalent', 'copy_equivalent'))
+
+
+def _approved_checks(a):
+    """The checks of an approved-change audit (approved_audit, as an evaluation recorded it): its verdict, its quality
+    (and the quality before issue #116), the search and copy measures and whether they verify the edited text."""
+    status = lambda v: {'pass': True, 'fail': False}.get(v)
+    q = a.get('quality') or {}
+    out = dict(approved_audit=status(a.get('verdict')), approved_quality=status(q.get('status')))
+    if 'legacy' in q:
+        out['approved_quality_legacy'] = status(q['legacy'].get('status'))
+    m = q.get('search_copy') or {}
+    for name, key in SEARCH_MEASURES:
+        out[name] = m.get(key)
+    check = q.get('search_copy_check') or {}
+    out['search_copy'] = check.get('result') if check.get('result') in (True, False) else None
+    return out
 
 
 # The existing audit's safety checks (indesign_evaluate.audit); its other checks are quality's.
@@ -119,24 +149,78 @@ MOVE_AUDITS = ('moves', 'links', 'placement', 'kept', 'placed')
 
 
 def practical_success(outcome, checks, layout):
-    """Practical success (docs/development-rules.md) from what was measured: True, False, or None (unverified).
+    """Practical success from the existing audits alone (a step without the approved-change audit): see practical."""
+    return practical(outcome, checks, layout)[0]
 
-    It needs the quality checks and the protection of what was not approved:
-    the existing safety audit, or for a step that saved approved moves (which
-    fail the region audit by design) the move audits. Any measured protection
-    check that failed (structure, links, a move audit) makes it False; a step
-    whose quality or protection was not measured is None, never True."""
-    if outcome != 'saved':
-        return False if outcome == 'refused' else None
+
+def practical(outcome, checks, layout, approved=None):
+    """Practical success (docs/development-rules.md, docs/practical-search.md): (True | False | None, basis).
+
+    ``basis`` lists each criterion with where its evidence comes from, its result and its role: ``required``
+    (must be True; None leaves practical success unverified), ``must not fail`` (False makes it False) or
+    ``shown`` (reported, not counted: the existing region audit of a step that saved approved layout changes
+    fails by design, the approved-change audit stands for it there; the quality before issue #116).
+
+    With the approved-change audit (``approved``, as an evaluation recorded it): its verdict (approval, the
+    approved changes made as approved, the protection of everything else), its quality (which includes the
+    edited text's search and extraction, search_copy.verified) and the structure and link audits. A faithful
+    step must also not fail the existing region audit, its quality or the move audits. Without it: the
+    existing quality and the protection of what was not approved (the existing safety audit, or for a step that
+    saved approved moves the move audits), as before issue #116; its search check counts a hit anywhere on the
+    page and is not measured on the edited lines (shown in the basis)."""
+    basis = []
+
+    def add(criterion, source, result, role, note=None):
+        basis.append(dict(criterion=criterion, source=source, result=result, role=role, **({'note': note} if note else {})))
+
+    saved = True if outcome == 'saved' else False if outcome == 'refused' else None
+    add('saved', f'outcome ({outcome})', saved, 'required')
+    if not saved:
+        return saved, basis
+    if approved is not None:
+        q = approved.get('quality') or {}
+        status = lambda v: {'pass': True, 'fail': False}.get(v)
+        add('approval, approved changes, protection', 'approved_audit', status(approved.get('verdict')), 'required',
+            None if approved.get('verdict') in ('pass', 'fail') else f"verdict {approved.get('verdict')}")
+        add('quality', 'approved_audit.quality', status(q.get('status')), 'required')
+        check = q.get('search_copy_check')
+        if check is None:
+            add('search and copy of the edited text', 'search_copy.verified', None, 'required', 'not measured (an audit made before issue #116)')
+        else:
+            add('search and copy of the edited text', 'search_copy.verified', check.get('result'),
+                'shown' if check.get('result') == 'not applicable' else 'required', check.get('note') or check.get('route'))
+        if 'legacy' in q:
+            add('quality before issue #116', 'approved_audit.quality.legacy', status(q['legacy'].get('status')), 'shown',
+                'search_mupdf counted a hit anywhere on the page')
+        for k in ('structure', 'links'):
+            add(k, f'{k} audit', checks.get(k), 'must not fail')
+        own = 'shown' if layout else 'must not fail'
+        note = 'fails by design on approved layout changes: the approved-change audit stands for it' if layout else None
+        add('protection (region)', 'existing audit: safety', checks.get('safety'), own, note)
+        add('quality (region)', 'existing audit: quality', checks.get('quality'), own, note)
+        for k in ('moves', 'placement', 'raster', 'kept', 'placed'):
+            if checks.get(k) is not None:
+                add(f'{k} audit', f'existing {k} audit', checks.get(k), own,
+                    'the approved-change audit checks the approved changes exactly (panels included)' if layout else None)
+        if any(b['result'] is False and b['role'] != 'shown' for b in basis):
+            return False, basis
+        if any(b['result'] is not True and b['role'] == 'required' for b in basis):
+            return None, basis
+        return True, basis
+    add('quality', 'existing audit: quality', checks.get('quality'), 'required',
+        'its search check counts a hit anywhere on the page (not measured on the edited lines)')
+    for k in PROTECTION:
+        if checks.get(k) is not None:
+            add(k, f'{k} audit', checks.get(k), 'must not fail')
     if checks.get('quality') is False or any(checks.get(k) is False for k in PROTECTION):
-        return False
-    moves = [checks[k] for k in MOVE_AUDITS if checks.get(k) is not None]
-    protected = True if checks.get('safety') is True or layout and moves else False if checks.get('safety') is False else None
-    if protected is False:
-        return False
-    if checks.get('quality') is None or protected is None:
-        return None
-    return True
+        value = False
+    else:
+        moves = [checks[k] for k in MOVE_AUDITS if checks.get(k) is not None]
+        protected = True if checks.get('safety') is True or layout and moves else False if checks.get('safety') is False else None
+        value = False if protected is False else None if checks.get('quality') is None or protected is None else True
+        add('protection', 'existing audit: safety' + (', or the move audits (approved moves)' if layout else ''), protected, 'required',
+            'the region audit fails by design on approved moves' if layout and checks.get('safety') is False else None)
+    return value, basis
 
 
 def _audit_outcome(outcome):
