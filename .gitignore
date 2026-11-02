@@ -113,3 +113,7 @@ tmp/
 !/evaluations/practical_search/
 !/evaluations/practical_search/before.json
 !/evaluations/practical_search/after.json
+# Word text box clip extension (issue #118): manifest (frozen before the implementation) and compact results only.
+!/evaluations/paragraph_clip/
+!/evaluations/paragraph_clip/manifest.json
+!/evaluations/paragraph_clip/results.json

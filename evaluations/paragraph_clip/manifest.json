@@ -1,0 +1,306 @@
+{
+ "schema": "paragraph-clip-manifest-1",
+ "frozen_at": "f8158f5",
+ "policy": "Frozen before the implementation (issue #118). A case saved without approving its clip extension, or with only one of the clip and panel extensions approved, is a failure; a refusal, a missing input or a fixture is never counted as a real-PDF success. Practical success follows eval_records.practical (issue #116).",
+ "documents": {
+  "word_osaka_fire_notice": {
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa"
+  },
+  "word_osaka_guideline": {
+   "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe"
+  }
+ },
+ "cases": [
+  {
+   "id": "W1",
+   "group": "target",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "selection": "直通：03-3595-2257",
+   "edit": {
+    "old": "直通：03-3595-2257",
+    "new": "直通：03-3595-2257 直通：03-3595-2257"
+   },
+   "panel": [
+    373.75,
+    428.2,
+    544.0,
+    497.65
+   ],
+   "expect": "saved on approving the clip extension and the panel extension of its text box (bottom only, by the growth); refused without either; the edit back from the saved PDF alone saved",
+   "paragraph": "直通：03-3595-2257 ",
+   "source_lines": [
+    {
+     "text": "直通：03-3595-2257 ",
+     "baseline": 480.90997314453125,
+     "bbox": [
+      381.30999755859375,
+      471.83892822265625,
+      481.17999267578125,
+      482.39892578125
+     ]
+    }
+   ],
+   "proposed_lines": [
+    {
+     "text": "直通：03-3595-2257 直通：",
+     "baseline": 480.91
+    },
+    {
+     "text": "03-3595-2257 ",
+     "baseline": 496.75
+    }
+   ],
+   "frame": [
+    380.81,
+    469.85,
+    536.94,
+    493.87
+   ],
+   "leading_basis": "unobserved: 1.5 em default",
+   "panels_evidence": {
+    "candidates": [],
+    "unavailable": "the paragraph's text is clipped by a rectangle ending at 493.87; a clip is not extended"
+   },
+   "now": {
+    "outcome": "refused",
+    "reason": "capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])"
+   },
+   "box": {
+    "paints": [
+     {
+      "rect": [
+       373.75,
+       428.2,
+       544.0,
+       497.65
+      ],
+      "paint": "f*",
+      "depth": 0,
+      "offset": 9932,
+      "operator": "373.75 344.27 170.25 69.45 re"
+     },
+     {
+      "rect": [
+       373.75,
+       428.2,
+       544.0,
+       497.65
+      ],
+      "paint": "S",
+      "depth": 0,
+      "offset": 9973,
+      "operator": "373.75 344.27 170.25 69.45 re"
+     }
+    ],
+    "clips": {
+     "rectangles": [
+      [
+       374.11,
+       432.05,
+       543.81,
+       493.87
+      ]
+     ],
+     "count": 15,
+     "rules": [
+      "W*"
+     ],
+     "depths": [
+      1,
+      2
+     ],
+     "shows": [
+      14,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "first": {
+      "rect": [
+       374.11,
+       432.05,
+       543.81,
+       493.87
+      ],
+      "rule": "W*",
+      "depth": 1,
+      "offset": 10015,
+      "operator": "374.11 348.05 169.7 61.824 re",
+      "shows": 14
+     }
+    },
+    "below_60pt": {
+     "text": [],
+     "drawings": [],
+     "images": [],
+     "annotations": [],
+     "links": []
+    }
+   }
+  },
+  {
+   "id": "W2",
+   "group": "target",
+   "document": "word_osaka_guideline",
+   "page": 1,
+   "selection": "06-4397-3205",
+   "edit": {
+    "old": "06-4397-3205",
+    "new": "06-4397-3205 06-6944-9156"
+   },
+   "panel": [
+    352.3,
+    638.0,
+    521.2,
+    701.75
+   ],
+   "expect": "as W1",
+   "paragraph": "FAX 06-4397-3205 ",
+   "source_lines": [
+    {
+     "text": "FAX 06-4397-3205 ",
+     "baseline": 695.1400146484375,
+     "bbox": [
+      358.6300048828125,
+      686.0689697265625,
+      458.11749267578125,
+      696.6289672851562
+     ]
+    }
+   ],
+   "proposed_lines": [
+    {
+     "text": "FAX 06-4397-3205 ",
+     "baseline": 695.14
+    },
+    {
+     "text": "06-6944-9156 ",
+     "baseline": 710.98
+    }
+   ],
+   "frame": [
+    358.13,
+    684.08,
+    515.37,
+    700.38
+   ],
+   "leading_basis": "unobserved: 1.5 em default",
+   "panels_evidence": {
+    "candidates": [],
+    "unavailable": "the paragraph's text is clipped by a rectangle ending at 700.78; a clip is not extended"
+   },
+   "now": {
+    "outcome": "refused",
+    "reason": "capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])"
+   },
+   "box": {
+    "paints": [
+     {
+      "rect": [
+       352.3,
+       638.0,
+       521.2,
+       701.75
+      ],
+      "paint": "f*",
+      "depth": 0,
+      "offset": 13117,
+      "operator": "352.3 140.17 168.9 63.75 re"
+     },
+     {
+      "rect": [
+       352.3,
+       638.0,
+       521.2,
+       701.75
+      ],
+      "paint": "S",
+      "depth": 0,
+      "offset": 13164,
+      "operator": "352.3 140.17 168.9 63.75 re"
+     }
+    ],
+    "clips": {
+     "rectangles": [
+      [
+       352.75,
+       639.08,
+       520.89,
+       700.78
+      ]
+     ],
+     "count": 28,
+     "rules": [
+      "W*"
+     ],
+     "depths": [
+      1,
+      2
+     ],
+     "shows": [
+      27,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "first": {
+      "rect": [
+       352.75,
+       639.08,
+       520.89,
+       700.78
+      ],
+      "rule": "W*",
+      "depth": 1,
+      "offset": 13204,
+      "operator": "352.75 141.14 168.14 61.704 re",
+      "shows": 27
+     }
+    },
+    "below_60pt": {
+     "text": [],
+     "drawings": [],
+     "images": [],
+     "annotations": [],
+     "links": []
+    }
+   }
+  }
+ ]
+}
