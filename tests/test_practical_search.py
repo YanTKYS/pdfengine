@@ -147,6 +147,12 @@ def test_an_approved_panel_edit_verified_line_by_line_is_a_practical_success():
     assert r['checks']['search_full'] is False and r['checks']['search_copy'] is True and r['checks'].get('approved_quality_legacy') is None
 
 
+def test_the_new_placement_check_and_the_move_placement_audit_are_kept_apart():
+    # (The move audits' ``placement``: moved elements inside the page, no new ink under them.)
+    r = record(step(placement=dict(ok=True), approved_audit=audited(status='fail', placement=False)))
+    assert r['checks']['placement'] is True and r['checks']['natural_placement'] is False and r['tiers']['practical'] is False
+
+
 def test_the_old_move_audit_failing_on_a_panel_is_shown_beside_the_approved_audit():
     # (The move audit does not model a panel extension: its protected drawings differ.)
     r = record(step(moves=dict(ok=False)))

@@ -1,7 +1,8 @@
 """Practical success with the search and copy measures (issue #116): what was recorded before, and after.
 
   .venv/bin/python -m prototypes.paragraph_frame.practical_evaluate --phase freeze
-  .venv/bin/python -m prototypes.paragraph_frame.practical_evaluate --phase collect --smoke <smoke run> --panel <panel run> --search-copy <search_copy run>
+  .venv/bin/python -m prototypes.paragraph_frame.practical_evaluate --phase collect
+  .venv/bin/python -m prototypes.paragraph_frame.practical_evaluate --phase split --smoke <the smoke run's folder>
 
 ``freeze`` (before the evaluators change) copies, from the committed results,
 what each case was judged so far: the 11 real PDFs of the search and copy
@@ -12,10 +13,16 @@ the approved-change audit, the search and copy measures, the existing
 (region) audit, the approved-change audit's verdict, and the success tiers.
 It also writes the table of what practical success requires (CRITERIA).
 
-``collect`` reads the runs made after the change and writes the same fields
-beside the frozen ones, with what changed and why.
+``collect`` reads the committed results refreshed by the runs made after the
+change and writes the same fields beside the frozen ones, with what changed
+and why (the criteria that keep a step from practical success).
+
+``split`` divides the baseline change that ``eval_hub baseline`` just
+appended to evaluations/baseline/changes.json into the measurement fixes and
+the product contract change (option (b)), each record with why it changed.
 """
 import argparse
+from collections import Counter
 import hashlib
 import json
 from pathlib import Path
@@ -145,14 +152,61 @@ def phase_collect(args):
         print(json.dumps(c, ensure_ascii=False, default=str)[:300])
 
 
+CHANGES = Path('evaluations/baseline/changes.json')
+MEASUREMENT = ('measurement fix (issue #116): the existing search check measured on the edited lines (a hit elsewhere on the page no '
+               'longer passes; a one-line replacement not found is false, not a wrap); natural placement measured on the edited lines '
+               '(the smoke steps never measured it); the measures, placement and practical basis recorded beside each step')
+CONTRACT = ('product contract change (issue #116, option (b) of issue #114, approved by the issue): the edited text\'s search and '
+            'extraction required for practical success: one line, one search where it is drawn; over lines, each line\'s part on its '
+            'line; both extractions of the paragraph and the copy equivalent always. search_full stays recorded')
+
+
+def tags_of(x):
+    """Why an approved-audited step's record changed (issue #116): measurement fixes and the contract change (option (b))."""
+    q = ((x or {}).get('approved_audit') or {}).get('quality') or {}
+    check, legacy, tags = q.get('search_copy_check') or {}, q.get('legacy') or {}, []
+    if q.get('search_mupdf_change'):
+        tags.append(f"measurement: search_mupdf {q['search_mupdf_change']['legacy']} -> {q['search_mupdf_change']['now']} "
+                    f"({q['search_mupdf_change']['why']})")
+    if (q.get('placement') or {}).get('result') is not True and q.get('placement'):
+        tags.append(f"measurement: placement {q['placement']['result']} {q['placement']['checks']}")
+    if check.get('result') is True and check.get('route') == 'lines' and legacy.get('status') != 'pass':
+        tags.append('contract (b): verified line by line (one search over lines not required)')
+    if check.get('result') is False:
+        tags.append(f"contract (b): {', '.join(check['failed'])} false")
+    return tags
+
+
+def phase_split(args):
+    """Split the baseline change ``eval_hub baseline`` just appended into the measurement fixes and the contract change."""
+    changes = json.loads(CHANGES.read_text())
+    last = changes.pop()
+    results = json.loads((Path(args.smoke) / 'results.json').read_text())
+    measured, contract = [], []
+    for c in last['changed']:
+        _, case, step = c['record']
+        x = (results.get(case) or [None] * int(step))[int(step) - 1] if case in results else None
+        tags = tags_of(x)
+        if not c['tiers']:
+            tags.append('record only: practical success unchanged (checks added or a null check no longer stored)')
+        (contract if any(t.startswith('contract') for t in tags) else measured).append(dict(c, why=tags))
+    for reason, changed, decision in ((MEASUREMENT, measured, False), (CONTRACT, contract, 'issue #116 option (b): approved by the issue')):
+        changes.append(dict(last, reason=reason, changed=changed, design_decision_needed=decision,
+                            counts=dict(changed=len(changed), practical=dict(Counter(f"{c['tiers']['practical'][0]} -> {c['tiers']['practical'][1]}"
+                                                                                    for c in changed if 'practical' in c['tiers'])))))
+    CHANGES.write_text(json.dumps(changes, ensure_ascii=False, indent=1, default=str) + '\n')
+    for e in changes[-2:]:
+        print(e['reason'][:60], e['counts'])
+
+
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--phase', choices=('freeze', 'collect'), required=True)
+    p.add_argument('--phase', choices=('freeze', 'collect', 'split'), required=True)
     p.add_argument('--smoke')
     p.add_argument('--panel')
     p.add_argument('--search-copy')
     args = p.parse_args()
-    dict(freeze=phase_freeze, collect=phase_collect)[args.phase](args)
+    dict(freeze=phase_freeze, collect=phase_collect, split=phase_split)[args.phase](args)
 
 
 if __name__ == '__main__':

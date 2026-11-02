@@ -94,6 +94,16 @@ def test_the_replacement_found_elsewhere_only_is_no_success(tmp_path):
     assert m['search_full'] is False and m['search_full_hits']['elsewhere'] == 1 and m['search_full_hits']['on_target'] == 0
 
 
+def test_one_match_given_as_two_boxes_over_a_positional_gap_is_found(tmp_path):
+    # 申請書 and を窓口 drawn 2.5 pt apart (no glyph between): MuPDF finds the match as two boxes on the line.
+    def edit(d, p):
+        p.insert_text((40, BASELINES[1]), '申請書', fontsize=11, fontname='Fixture')
+        p.insert_text((75.5, BASELINES[1]), 'を窓口で配布しま', fontsize=11, fontname='Fixture')
+    new = '申請書を窓口'
+    m = run(page(tmp_path, [LINE1, '', LINE3], edit=edit), new=new, at=EXPECTED.index(new))
+    assert m['search_full'] is True and m['search_full_hits'] == dict(total=2, on_target=2, elsewhere=0, lines=1)
+
+
 def test_the_first_line_right_and_the_next_wrong_fails_per_line(tmp_path):
     # The first line's part (補助事業の) is drawn right; the next line's (申請書) is not.
     m = run(page(tmp_path, ['本年度は新しい補助事業の', '申込書を窓口で配布しま', 'す。']))

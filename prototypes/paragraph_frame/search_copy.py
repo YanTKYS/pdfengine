@@ -244,13 +244,27 @@ def measure(output, page_number, expected, replacement, at, frame, baselines, so
         out['gaps'] = gaps
         boxes = {k: _union([rows[k][n]['bbox'] for kk, n in span if kk == k]) for k in lines}
         on_line = lambda hit, k: abs((hit.y0 + hit.y1) / 2 - (boxes[k].y0 + boxes[k].y1) / 2) < boxes[k].height / 2
-        covers = lambda hit, k: on_line(hit, k) and hit.x0 <= boxes[k].x0 + 1 and hit.x1 >= boxes[k].x1 - 1
+        touches = lambda hit, k: on_line(hit, k) and hit.x1 > boxes[k].x0 and hit.x0 < boxes[k].x1
+
+        def covered(hits, k):
+            """The hits on line k cover its part. MuPDF gives one match as several boxes on a line where the glyphs
+            leave a positional gap (issue #116, smoke I4): the boxes, each a hit of the replacement, are joined when
+            the gap between them is under the line's height (about an em)."""
+            spans = sorted((h.x0, h.x1) for h in hits if touches(h, k))
+            if not spans or spans[0][0] > boxes[k].x0 + 1:
+                return False
+            end = spans[0][1]
+            for a, b in spans[1:]:
+                if a > end + boxes[k].height:
+                    break
+                end = max(end, b)
+            return end >= boxes[k].x1 - 1
         # --- search_full: the whole replacement, as written, on the paragraph's lines.
         # (MuPDF's search reads a line break as a space: a Latin replacement over lines may be found as one,
         # its hit a box on each line. Found when every line's part of it is covered.)
         hits = page.search_for(replacement)
-        mine = [h for h in hits if any(covers(h, k) for k in lines)]
-        out['search_full'] = all(any(covers(h, k) for h in hits) for k in lines)
+        mine = [h for h in hits if any(touches(h, k) for k in lines)]
+        out['search_full'] = all(covered(hits, k) for k in lines)
         out['search_full_hits'] = dict(total=len(hits), on_target=len(mine), elsewhere=len(hits) - len(mine), lines=len(lines))
         # --- search_per_line: each line's part, found on its line, consecutive and continuous.
         if len(lines) > 1:
@@ -261,7 +275,7 @@ def measure(output, page_number, expected, replacement, at, frame, baselines, so
             for k in lines:
                 idx = [i for i in range(at, at + len(replacement)) if i in where and where[i][0] == k]
                 text = expected[idx[0]:idx[-1] + 1]
-                found = [h for h in page.search_for(text) if covers(h, k)]
+                found = covered(page.search_for(text), k)
                 first, last = min(n for kk, n in span if kk == k), max(n for kk, n in span if kk == k)
                 ink = [n for n, c in enumerate(rows[k]) if c['c'].strip()]
                 continuous = (k == lines[-1] or last >= ink[-1]) and (k == lines[0] or first <= ink[0])

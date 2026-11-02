@@ -130,7 +130,7 @@ def _approved_checks(a):
     status = lambda v: {'pass': True, 'fail': False}.get(v)
     q = a.get('quality') or {}
     out = dict(approved_audit=status(a.get('verdict')), approved_quality=status(q.get('status')),
-               placement=(q.get('placement') or {}).get('result'))
+               natural_placement=(q.get('placement') or {}).get('result'))
     if 'legacy' in q:
         out['approved_quality_legacy'] = status(q['legacy'].get('status'))
     m = q.get('search_copy') or {}
