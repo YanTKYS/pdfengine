@@ -1,0 +1,1337 @@
+{
+ "schema": "practical-search-before-1",
+ "frozen_at": "6cf7c80",
+ "sources": {
+  "evaluations/smoke/results.json": "b578fee11e3512ac6a702b406ddd8919a7d9d5729637a5a4eea7991a6f4756dd",
+  "evaluations/paragraph_panel/results.json": "ef48cf92a43e46c96b4fd083b8aec961c500638969837ea0aa8239144ffaca49",
+  "evaluations/search_copy/results.json": "a9bf7a5f4f3408207b766a7beb66e772ae575e3b33b68eac380dc4d37c96005b"
+ },
+ "policy": "Frozen before the evaluators change (issue #116): the judgement recorded so far, kept as it was. Practical success after the change is compared with it case by case; a measured false is never hidden, a missing measure never counted as a pass.",
+ "criteria": [
+  {
+   "criterion": "saved",
+   "evidence": "the step's outcome",
+   "fail": "refused",
+   "unverified": "not run, input missing"
+  },
+  {
+   "criterion": "approval",
+   "evidence": "approved_audit.approval (the save is this proposal's; every moved element and panel approved by it, every approved one changed)",
+   "fail": "an id not approved or not this proposal's",
+   "unverified": "audit not run"
+  },
+  {
+   "criterion": "approved changes as approved",
+   "evidence": "approved_audit.approved (translations, panel extensions, the new text in its frame)",
+   "fail": "a change not made exactly as approved",
+   "unverified": "a change kind the audit cannot check"
+  },
+  {
+   "criterion": "protection of what was not approved",
+   "evidence": "approved_audit.protected (glyphs, drawings, images, annotations, pixels, other pages, fonts) for every step it audits; the existing region audit (safety) besides for a faithful step; for a layout step the region audit fails by design and is shown, not counted",
+   "fail": "any change outside the approved areas",
+   "unverified": "not audited"
+  },
+  {
+   "criterion": "structure and links",
+   "evidence": "structure_audit, links_audit",
+   "fail": "a tag or link changed",
+   "unverified": "(not required when not measured)"
+  },
+  {
+   "criterion": "quality (extraction of the page, sizes and colours)",
+   "evidence": "approved_audit.quality (and the existing quality for a faithful step)",
+   "fail": "any check false",
+   "unverified": "a check not made"
+  },
+  {
+   "criterion": "search and copy of the edited text",
+   "evidence": "search_copy (issue #114): one line: search_full, extraction_mupdf, extraction_poppler, copy_equivalent; over lines: search_per_line, extraction_mupdf, extraction_poppler, copy_equivalent (search_full recorded, not required); a deletion: not applicable",
+   "fail": "any required measure false (a gap of the source too: as_in_source does not pass it)",
+   "unverified": "a required measure null, or the measures not made"
+  }
+ ],
+ "cases": {
+  "search_copy": {
+   "L2": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "layout",
+    "search_mupdf": null,
+    "quality_status": "unverified",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": false,
+     "search_per_line": true,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null
+    },
+    "lines": 2,
+    "practical": null
+   },
+   "L6": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "layout",
+    "search_mupdf": null,
+    "quality_status": "unverified",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": false,
+     "search_per_line": true,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null
+    },
+    "lines": 2,
+    "practical": null
+   },
+   "L8": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "layout",
+    "search_mupdf": null,
+    "quality_status": "unverified",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": false,
+     "search_per_line": false,
+     "extraction_mupdf": false,
+     "extraction_poppler": false,
+     "copy_equivalent": false,
+     "clipboard_manual": null
+    },
+    "lines": 2,
+    "practical": null
+   },
+   "S-W2": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "faithful",
+    "search_mupdf": true,
+    "quality_status": "pass",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": true,
+     "search_per_line": null,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null
+    },
+    "lines": 1,
+    "practical": null
+   },
+   "S-L1": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "faithful",
+    "search_mupdf": true,
+    "quality_status": "pass",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": true,
+     "search_per_line": null,
+     "extraction_mupdf": false,
+     "extraction_poppler": false,
+     "copy_equivalent": true,
+     "clipboard_manual": null
+    },
+    "lines": 1,
+    "practical": null
+   },
+   "S-L2": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "faithful",
+    "search_mupdf": null,
+    "quality_status": "unverified",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": false,
+     "search_per_line": null,
+     "extraction_mupdf": false,
+     "extraction_poppler": false,
+     "copy_equivalent": false,
+     "clipboard_manual": null
+    },
+    "lines": 1,
+    "practical": null
+   },
+   "S-L4": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "faithful",
+    "search_mupdf": null,
+    "quality_status": "unverified",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": false,
+     "search_per_line": true,
+     "extraction_mupdf": false,
+     "extraction_poppler": false,
+     "copy_equivalent": true,
+     "clipboard_manual": null
+    },
+    "lines": 2,
+    "practical": null
+   },
+   "S-I1": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "faithful",
+    "search_mupdf": true,
+    "quality_status": "pass",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": true,
+     "search_per_line": null,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null
+    },
+    "lines": 1,
+    "practical": null
+   },
+   "S-I4": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "layout",
+    "search_mupdf": null,
+    "quality_status": "unverified",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": false,
+     "search_per_line": true,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null
+    },
+    "lines": 2,
+    "practical": null
+   },
+   "S-I5": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "faithful",
+    "search_mupdf": true,
+    "quality_status": "pass",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": true,
+     "search_per_line": null,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null
+    },
+    "lines": 1,
+    "practical": null
+   },
+   "S-A1": {
+    "outcome": "saved",
+    "verdict": "pass",
+    "mode": "layout",
+    "search_mupdf": true,
+    "quality_status": "pass",
+    "legacy": null,
+    "search_copy_check": null,
+    "measures": {
+     "search_full": true,
+     "search_per_line": true,
+     "extraction_mupdf": true,
+     "extraction_poppler": true,
+     "copy_equivalent": true,
+     "clipboard_manual": null
+    },
+    "lines": 2,
+    "practical": null
+   }
+  },
+  "panel": {
+   "L2/1": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": false,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": null,
+     "panel_candidates": 1,
+     "unapproved_refused": true
+    },
+    "failed": [
+     "non_text_paint_identical"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "L2/2": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": false,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": true,
+     "panel_candidates": 1,
+     "unapproved_refused": false
+    },
+    "failed": [
+     "non_text_paint_identical"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "L6/1": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": false,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": null,
+     "panel_candidates": 1,
+     "unapproved_refused": true
+    },
+    "failed": [
+     "non_text_paint_identical",
+     "raster_outside_region_mupdf"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "L6/2": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": false,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": true,
+     "panel_candidates": 1,
+     "unapproved_refused": false
+    },
+    "failed": [
+     "non_text_paint_identical",
+     "raster_outside_region_mupdf"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "L8/1": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": false,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": null,
+     "panel_candidates": 1,
+     "unapproved_refused": true
+    },
+    "failed": [
+     "non_text_paint_identical",
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "L8/2": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": false,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": null,
+     "panel_candidates": 1,
+     "unapproved_refused": false
+    },
+    "failed": [
+     "non_text_paint_identical",
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "W1/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {
+     "panel_candidates": 0,
+     "unapproved_refused": true
+    },
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "W2/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {
+     "panel_candidates": 0,
+     "unapproved_refused": true
+    },
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "N22/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {
+     "panel_candidates": 0,
+     "unapproved_refused": true
+    },
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "N07/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {
+     "panel_candidates": 0,
+     "unapproved_refused": true
+    },
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   }
+  },
+  "smoke": {
+   "W1/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {},
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "W2/1": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "W2/2": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "W3/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {},
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "W4/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {},
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "W5/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {},
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "L1/1": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "L1/2": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": false,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": false,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "L2/1": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": null
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "L2/2": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": false,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": false,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": null
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "L3/1": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "L3/2": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "L4/1": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": null
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "L4/2": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": null
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "I1/1": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "I1/2": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "I2/1": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "placement": true,
+     "raster": false,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [
+     "non_text_paint_identical"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "I2/2": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {},
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "I3/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {},
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "I4/1": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "placement": true,
+     "raster": true,
+     "approved_audit": true,
+     "approved_quality": null
+    },
+    "failed": [
+     "glyphs_outside_region_identical",
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "I4/2": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": false,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "placement": true,
+     "raster": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [
+     "glyphs_outside_region_identical",
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler",
+     "size_and_colour_kept"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "I5/1": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "I5/2": {
+    "outcome": "saved",
+    "mode": "faithful",
+    "tiers": {
+     "saved": true,
+     "practical": null,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": true,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": true,
+     "approved_audit": true,
+     "approved_quality": null
+    },
+    "failed": [],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "unverified",
+     "search_mupdf": null,
+     "search_wrapped_lines_text": true
+    },
+    "basis": null
+   },
+   "A1/1": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": null,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "placement": true,
+     "raster": true,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical",
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "A1/2": {
+    "outcome": "saved",
+    "mode": "layout",
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    },
+    "checks": {
+     "safety": false,
+     "quality": true,
+     "structure": true,
+     "reedit": true,
+     "moves": true,
+     "links": true,
+     "placement": true,
+     "raster": true,
+     "restored_glyphs": true,
+     "restored_pixels": true,
+     "restored_text": true,
+     "restored_links": false,
+     "approved_audit": true,
+     "approved_quality": true
+    },
+    "failed": [
+     "glyphs_outside_region_identical",
+     "non_text_paint_identical",
+     "raster_outside_region_mupdf",
+     "raster_outside_region_poppler"
+    ],
+    "approved_audit": {
+     "verdict": "pass",
+     "quality_status": "pass",
+     "search_mupdf": true,
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   },
+   "T1/1": {
+    "outcome": "refused",
+    "mode": "faithful",
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    },
+    "checks": {},
+    "failed": null,
+    "approved_audit": {
+     "verdict": null,
+     "quality_status": null,
+     "search_mupdf": "absent",
+     "search_wrapped_lines_text": null
+    },
+    "basis": null
+   }
+  }
+ }
+}

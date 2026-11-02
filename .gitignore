@@ -110,3 +110,6 @@ tmp/
 # Search and copy of edited text (issue #114): manifest (frozen before the measures) and compact results only.
 !/evaluations/search_copy/manifest.json
 !/evaluations/search_copy/results.json
+!/evaluations/practical_search/
+!/evaluations/practical_search/before.json
+!/evaluations/practical_search/after.json
