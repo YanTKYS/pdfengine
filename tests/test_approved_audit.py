@@ -174,6 +174,22 @@ def test_something_added_where_a_move_went_fails(moved, tmp_path, extra):
     assert r['verdict'] == 'fail' and any('added where it went' in reason for x in moved_part for reason in x['reasons']), r['approved']
 
 
+@pytest.mark.parametrize('where, broken', [
+    ((0, 1.5), 'lines_on_proposed_baselines'),   # a glyph 1.5 pt below the first line's baseline
+    ((-2, 0), 'left_edges'),                     # the first line starting 2 pt left of its start
+])
+def test_a_line_drawn_off_its_place_fails_placement(separated, tmp_path, where, broken):
+    source, out, proposal, record = separated
+    assert audit(source, out, 1, proposal, record)['quality']['placement']['result'] is True
+    inferred = proposal['evidence']['inferred']
+    x, y = inferred['first_x'] + where[0], proposal['lines'][0]['baseline'] + where[1]
+    def edit(page, doc):
+        page.insert_text((x, y), 'X', fontsize=6)
+    bad = tamper(out, tmp_path / 'bad.pdf', edit)
+    q = audit(source, bad, 1, proposal, record)['quality']
+    assert q['placement']['result'] is False and q['placement']['checks'][broken] is False and q['status'] == 'fail'
+
+
 def test_a_replacement_broken_over_lines_is_not_reported_as_found(tmp_path):
     # The grown paragraph breaks the new text over two lines: search cannot find it there.
     from test_paragraph_frame_tagged import tagged

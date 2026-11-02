@@ -129,7 +129,8 @@ def _approved_checks(a):
     (and the quality before issue #116), the search and copy measures and whether they verify the edited text."""
     status = lambda v: {'pass': True, 'fail': False}.get(v)
     q = a.get('quality') or {}
-    out = dict(approved_audit=status(a.get('verdict')), approved_quality=status(q.get('status')))
+    out = dict(approved_audit=status(a.get('verdict')), approved_quality=status(q.get('status')),
+               placement=(q.get('placement') or {}).get('result'))
     if 'legacy' in q:
         out['approved_quality_legacy'] = status(q['legacy'].get('status'))
     m = q.get('search_copy') or {}
@@ -163,7 +164,8 @@ def practical(outcome, checks, layout, approved=None):
 
     With the approved-change audit (``approved``, as an evaluation recorded it): its verdict (approval, the
     approved changes made as approved, the protection of everything else), its quality (which includes the
-    edited text's search and extraction, search_copy.verified) and the structure and link audits. A faithful
+    edited text's search and extraction, search_copy.verified, and the natural placement of its lines) and the
+    structure and link audits. A faithful
     step must also not fail the existing region audit, its quality or the move audits. Without it: the
     existing quality and the protection of what was not approved (the existing safety audit, or for a step that
     saved approved moves the move audits), as before issue #116; its search check counts a hit anywhere on the
@@ -183,6 +185,9 @@ def practical(outcome, checks, layout, approved=None):
         add('approval, approved changes, protection', 'approved_audit', status(approved.get('verdict')), 'required',
             None if approved.get('verdict') in ('pass', 'fail') else f"verdict {approved.get('verdict')}")
         add('quality', 'approved_audit.quality', status(q.get('status')), 'required')
+        place = q.get('placement')
+        add('natural placement', 'approved_audit.quality.placement', (place or {}).get('result'), 'required',
+            f"leading: {place.get('leading_basis')}" if place else 'not measured (an audit made before issue #116)')
         check = q.get('search_copy_check')
         if check is None:
             add('search and copy of the edited text', 'search_copy.verified', None, 'required', 'not measured (an audit made before issue #116)')

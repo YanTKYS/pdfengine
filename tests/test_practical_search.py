@@ -116,8 +116,9 @@ def test_characters_swapped_or_missing_fail(tmp_path, lines):
 
 # --- practical success: one rule, its basis per criterion -------------------
 
-def audited(verdict='pass', status='pass', check=True, mode='layout', legacy='unverified'):
-    q = dict(status=status, legacy=dict(status=legacy), search_copy=measures(search_full=False))
+def audited(verdict='pass', status='pass', check=True, mode='layout', legacy='unverified', placement=True):
+    q = dict(status=status, legacy=dict(status=legacy), search_copy=measures(search_full=False),
+             placement=dict(result=placement, leading_basis='median within-paragraph observed gaps'))
     if check is not None:
         q['search_copy_check'] = dict(result=check, route='lines')
     return dict(verdict=verdict, mode=mode, quality=q)
@@ -159,6 +160,8 @@ def test_the_old_move_audit_failing_on_a_panel_is_shown_beside_the_approved_audi
     (dict(approved_audit=audited(status='fail', check=False)), False),        # the edited text not verified
     (dict(approved_audit=audited(status='unverified', check=None)), None),    # a required measure not made
     (dict(approved_audit=audited(check=None) | dict(quality=dict(status='pass'))), None),  # an audit made before issue #116
+    (dict(approved_audit=audited(status='fail', placement=False)), False),   # a line off its proposed baseline or edge
+    (dict(approved_audit=audited(status='unverified', placement=None)), None),
     (dict(structure_failed=['ParentTree']), False),
     (dict(links=dict(ok=False)), False),
 ])

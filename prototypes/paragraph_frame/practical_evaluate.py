@@ -109,6 +109,42 @@ def phase_freeze(args):
     print(len(c['search_copy']), 'search_copy cases,', len(c['panel']), 'panel steps,', len(c['smoke']), 'smoke steps')
 
 
+def _why(entry):
+    """The criteria that keep a step from practical success (failed or not measured), from its basis."""
+    basis = entry.get('basis') or []
+    return [f"{b['criterion']}: {b['result']}" + (f" ({b['note']})" if b.get('note') else '') for b in basis
+            if b['role'] != 'shown' and (b['result'] is False or b['role'] == 'required' and b['result'] is not True)]
+
+
+def phase_collect(args):
+    """The judgement after the change (the committed results, refreshed by the runs), beside the frozen one."""
+    smoke = json.loads(Path('evaluations/smoke/results.json').read_text())
+    panel = json.loads(Path('evaluations/paragraph_panel/results.json').read_text())['runs']['new']
+    search_copy = json.loads(Path('evaluations/search_copy/results.json').read_text())
+    before = json.loads(BEFORE.read_text())
+    now = snapshot(smoke, panel, search_copy)
+    changes = []
+    fields = dict(search_copy=('search_mupdf', 'quality_status', 'verdict', 'mode'),
+                  panel=('outcome', 'mode', 'tiers'), smoke=('outcome', 'mode', 'tiers'))
+    for group, keys in fields.items():
+        for cid in sorted(set(before['cases'][group]) | set(now[group])):
+            a, b = before['cases'][group].get(cid), now[group].get(cid)
+            if a is None or b is None:
+                changes.append(dict(group=group, case=cid, only='after' if a is None else 'before'))
+                continue
+            diff = {k: [a.get(k), b.get(k)] for k in keys if a.get(k) != b.get(k)}
+            if group != 'search_copy' and a['approved_audit'] != b['approved_audit']:
+                diff['approved_audit'] = [a['approved_audit'], b['approved_audit']]
+            if diff:
+                changes.append(dict(group=group, case=cid, **diff, **({'not_practical_because': _why(b)} if group != 'search_copy'
+                                                                     and b['tiers']['practical'] is not True else {})))
+    rev = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True).stdout.strip()
+    out = dict(schema='practical-search-after-1', code=rev, before=str(BEFORE), cases=now, changes=changes)
+    AFTER.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
+    for c in changes:
+        print(json.dumps(c, ensure_ascii=False, default=str)[:300])
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--phase', choices=('freeze', 'collect'), required=True)
@@ -116,7 +152,7 @@ def main():
     p.add_argument('--panel')
     p.add_argument('--search-copy')
     args = p.parse_args()
-    dict(freeze=phase_freeze, collect=lambda a: phase_collect(a))[args.phase](args)
+    dict(freeze=phase_freeze, collect=phase_collect)[args.phase](args)
 
 
 if __name__ == '__main__':

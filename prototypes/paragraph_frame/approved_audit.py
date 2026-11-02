@@ -28,6 +28,10 @@ and the saved page is checked against it:
   #116: on one line one search finds it where it is drawn; over lines each
   line's part is found on its line; both extractors and the copy
   equivalent always), the edited paragraph keeps its sizes and colours.
+  ``placement``: the edited paragraph's lines drawn where the approved
+  proposal places them and consistent with the source (baselines, the
+  source's kept, added lines at the proposal's leading, left and right
+  edges; the leading's basis reported).
   ``pass`` only when every check was made and passed. ``search_mupdf`` is
   the search measured on the edited lines; the check as it was before issue
   #116 (a hit anywhere on the page) and the status it gave are kept in
@@ -392,6 +396,9 @@ def audit(source, output, page_number=None, proposal=None, save=None):
     except Exception as exc:  # a measure that cannot be made is reported, never a pass
         measures = dict(error=f'{type(exc).__name__}: {exc}'[:300])
     quality = _quality(source, output, page_number, text, edited_old, edited_new, olds + news, measures)
+    quality['placement'] = _placement(output, page_number, proposal, edited_new, news)
+    if quality['placement']['result'] is not True and quality['status'] != 'fail':
+        quality['status'] = 'fail' if quality['placement']['result'] is False else 'unverified'
     parts = [approval['status'], protected['status']] + [x['status'] for x in approved]
     verdict = 'fail' if 'fail' in parts else 'unverified' if unchecked else 'pass'
     return dict(verdict=verdict, approval=approval, approved=approved, protected=protected, quality=quality,
@@ -466,6 +473,39 @@ def _quality(source, output, page, text, edited_old, edited_new, moved, measures
     out['legacy'] = legacy
     out['search_copy'] = measures
     return out
+
+
+def _placement(output, page, proposal, frame, away, tol=.3, reach=3.):
+    """The edited paragraph's lines drawn where the approved proposal places them, consistent with the source:
+    each drawn line on a proposed baseline (0.2 pt) and every proposed line drawn; the source lines' baselines
+    kept; added lines at the proposal's leading; each line starting at the paragraph's left edge (the first at its
+    first-line start) and ending inside its right edge (0.3 pt). Glyphs are read on the frame's lines and up to
+    ``reach`` pt beside it (a line drawn off its edge is seen). The leading's basis (observed in the paragraph,
+    or a default the save acknowledged as inferred) is reported, not judged here."""
+    inferred = proposal['evidence']['inferred']
+    planned = [l['baseline'] for l in proposal['lines'] if l['text'].strip()]
+    observed = [l['baseline'] for l in proposal['evidence']['observed']['lines'][:proposal['source_lines']]]
+    rows = {}
+    with pymupdf.open(output) as d:
+        for b in d[page - 1].get_text('rawdict')['blocks']:
+            for l in b.get('lines', []):
+                for sp in l['spans']:
+                    for c in sp['chars']:
+                        r = pymupdf.Rect(c['bbox'])
+                        mid = (r.tl + r.br) / 2
+                        if c['c'].strip() and (frame + (-reach, -tol, reach, tol)).contains(mid) and not any(a.contains(mid) for a in away):
+                            rows.setdefault(round(c['origin'][1], 1), []).append((c['origin'][0], r.x1))
+    drawn = sorted(rows)
+    near = lambda y, ys: any(abs(y - v) <= .2 for v in ys)
+    checks = dict(lines_on_proposed_baselines=all(near(y, planned) for y in drawn) and all(near(y, drawn) for y in planned),
+                  source_baselines_kept=all(abs(a - b) <= .2 for a, b in zip(observed, planned)),
+                  added_lines_at_leading=all(abs(b - a - inferred['line_height']) <= .2 for a, b in zip(planned[len(observed) - 1:], planned[len(observed):]))
+                  if len(planned) > len(observed) else True)
+    starts = [inferred['first_x']] + [inferred['left']] * max(0, len(drawn) - 1)
+    checks['left_edges'] = all(abs(min(x for x, _ in rows[y]) - x0) <= tol for y, x0 in zip(drawn, starts))
+    checks['inside_right_edge'] = all(max(x1 for _, x1 in rows[y]) <= inferred['right'] + tol for y in drawn)
+    return dict(result=all(checks.values()) if drawn else None, checks=checks, lines=len(drawn), alignment=inferred.get('alignment'),
+                leading_basis=inferred.get('leading_basis'))
 
 
 def _status(values):
