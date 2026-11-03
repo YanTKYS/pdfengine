@@ -1,0 +1,1216 @@
+{
+ "schema": "route-poc-comparison-1",
+ "cases_frozen_at": "317905d",
+ "counts": {
+  "current": {
+   "saved": 12,
+   "practical": 6,
+   "practical_both": 6,
+   "reedit": 11,
+   "restore": 9,
+   "refused": 4,
+   "unverified": 0,
+   "operations_saved_step1": [
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    5,
+    5,
+    5,
+    6
+   ]
+  },
+  "poc": {
+   "saved": 4,
+   "practical": 0,
+   "practical_both": 0,
+   "reedit": 3,
+   "restore": 0,
+   "refused": 12,
+   "unverified": 0,
+   "operations_saved_step1": [
+    3,
+    4,
+    4,
+    5
+   ]
+  }
+ },
+ "cases": {
+  "L2": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": true,
+      "restore": null,
+      "approvals": [
+       "panel-extension-aae0ef7643da5250"
+      ],
+      "operations": 4,
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": true,
+      "restore": true,
+      "approvals": [
+       "panel-extension-ea68ef0a4aaa5f19"
+      ],
+      "operations": 4,
+      "not_practical_because": null,
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "practical_both": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would leave the box or panel at [261.3, 620.0, 559.5, 631.2] (2 lines for 1)",
+      "seconds": 0.04
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "L8": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": false,
+      "restore": null,
+      "approvals": [
+       "panel-extension-cec2d80630bf818e"
+      ],
+      "operations": 4,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": false,
+      "restore": true,
+      "approvals": [
+       "panel-extension-327010d2d73cd225"
+      ],
+      "operations": 4,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "unapproved": "refused",
+      "approvals": [
+       "grows down by 12.0 pt into empty space",
+       "fallback (Droid Sans Fallback Regular) for IPAPGothic"
+      ],
+      "operations": 5,
+      "practical": false,
+      "failed": [
+       "font: fallback (Droid Sans Fallback Regular) for IPAPGothic"
+      ],
+      "search_copy": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "lines": [
+       "図 8: MSIME2012の予測変換表示",
+       "MSIME2012の予測変換表示"
+      ],
+      "restore": null,
+      "reason": null,
+      "seconds": 0.19
+     },
+     {
+      "outcome": "saved",
+      "unapproved": "saved",
+      "approvals": [],
+      "operations": 3,
+      "practical": false,
+      "failed": [
+       "font: embedded (Droid Sans Fallback Regular)"
+      ],
+      "search_copy": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "lines": [
+       "図 8: MSIME2012の予測変換表",
+       "示"
+      ],
+      "restore": {
+       "text": true,
+       "same_characters": true,
+       "pixels_differing": 2397,
+       "result": false
+      },
+      "reason": null,
+      "seconds": 0.23
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": true,
+     "restore": false,
+     "refused": false
+    }
+   }
+  },
+  "W1": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": true,
+      "restore": null,
+      "approvals": [
+       "panel-extension-f8eb25119a0eae7b",
+       "clip-extension-450f0ee6da73b7de"
+      ],
+      "operations": 5,
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": true,
+      "restore": true,
+      "approvals": [
+       "panel-extension-6c4dcc4060ad6c32",
+       "clip-extension-ca022009f450f999"
+      ],
+      "operations": 5,
+      "not_practical_because": null,
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "practical_both": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would leave the box or panel at [373.8, 428.2, 544.0, 497.6] (2 lines for 1)",
+      "seconds": 0.01
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "W2c": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": false,
+      "restore": null,
+      "approvals": [
+       "panel-extension-04dd75eb2a1053db",
+       "clip-extension-1936f57dc29e3594"
+      ],
+      "operations": 5,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": false,
+      "restore": true,
+      "approvals": [
+       "panel-extension-07cc66d7f6f4ab6b",
+       "clip-extension-55041e50ee6fd2ea"
+      ],
+      "operations": 5,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would leave the box or panel at [352.3, 638.0, 521.2, 701.8] (2 lines for 1)",
+      "seconds": 0.01
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "R02": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": true,
+      "restore": null,
+      "approvals": [
+       "following-element-0fb9683e600ef72b"
+      ],
+      "operations": 4,
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": true,
+      "restore": true,
+      "approvals": [
+       "following-element-71634ace9d90b271"
+      ],
+      "operations": 4,
+      "not_practical_because": null,
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "practical_both": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over text at [66.7, 54.8, 72.2, 65.8] (3 lines for 1): moving what follows is not done by this PoC",
+      "seconds": 0.0
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "R03": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": false,
+      "restore": null,
+      "approvals": [
+       "following-element-c127749a520aa05d",
+       "following-element-c35e052e40b0f201"
+      ],
+      "operations": 5,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "outcome": "refused",
+      "mode": "faithful",
+      "practical": false,
+      "restore": null,
+      "approvals": [
+       "following-element-0eb6fb11d87d083a",
+       "following-element-3c3c90f5c0266564"
+      ],
+      "operations": 5,
+      "not_practical_because": null,
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged raster changes outside approved inferred frame (Poppler)"
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": false,
+     "restore": null,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over text at [46.5, 275.8, 50.4, 286.8] (3 lines for 2): moving what follows is not done by this PoC",
+      "seconds": 0.04
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "R04": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": false,
+      "restore": null,
+      "approvals": [
+       "following-element-3004d73a2b327f8a"
+      ],
+      "operations": 4,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": false,
+      "restore": true,
+      "approvals": [
+       "following-element-1769974955b52828"
+      ],
+      "operations": 4,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over text at [64.5, 445.9, 68.5, 458.0] (3 lines for 2): moving what follows is not done by this PoC",
+      "seconds": 0.04
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "R14": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": false,
+      "restore": null,
+      "approvals": [
+       "following-element-c974654c7cbf43bf"
+      ],
+      "operations": 4,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": false,
+      "restore": false,
+      "approvals": [
+       "following-element-d4ce8edefbacdc7a"
+      ],
+      "operations": 4,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": true,
+     "restore": false,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over text at [115.0, 926.2, 122.6, 944.0] (7 lines for 5): moving what follows is not done by this PoC",
+      "seconds": 0.46
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "R07": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "mode": "faithful",
+      "practical": false,
+      "restore": null,
+      "approvals": [],
+      "operations": 3,
+      "not_practical_because": null,
+      "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])"
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over image at [384.3, 404.2, 722.8, 764.2] (3 lines for 2): moving what follows is not done by this PoC",
+      "seconds": 0.65
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "R10": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "mode": "faithful",
+      "practical": false,
+      "restore": null,
+      "approvals": [],
+      "operations": 3,
+      "not_practical_because": null,
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over image at [34.4, 66.3, 755.9, 645.1] (3 lines for 1): moving what follows is not done by this PoC",
+      "seconds": 0.58
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "R22": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "mode": "faithful",
+      "practical": false,
+      "restore": null,
+      "approvals": [
+       "following-element-da76195e200205f4",
+       "following-element-26a85922b4f0adb3",
+       "following-element-869d320ff7a24561",
+       "following-element-4d142eeef1cf0eff",
+       "following-element-28bb5824b4908a58",
+       "following-element-5db0a78292e921b0"
+      ],
+      "operations": 9,
+      "not_practical_because": null,
+      "reason": "ine below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a line decoration would leave or enter a background"
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over text at [536.2, 779.3, 542.4, 789.1] (6 lines for 5): moving what follows is not done by this PoC",
+      "seconds": 0.15
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "S-L1": {
+   "kind": "same length",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "faithful",
+      "practical": false,
+      "restore": null,
+      "approvals": [],
+      "operations": 3,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "faithful",
+      "practical": false,
+      "restore": false,
+      "approvals": [],
+      "operations": 3,
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": true,
+     "restore": false,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "unapproved": "refused",
+      "approvals": [
+       "fallback (Droid Sans Fallback Regular) for IPAPMincho"
+      ],
+      "operations": 4,
+      "practical": false,
+      "failed": [
+       "font: fallback (Droid Sans Fallback Regular) for IPAPMincho"
+      ],
+      "search_copy": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "lines": [
+       "LibreOffice 4.1.1 が8 月上旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の",
+       "新機能をご紹介します。"
+      ],
+      "restore": null,
+      "reason": null,
+      "seconds": 0.22
+     },
+     {
+      "outcome": "saved",
+      "unapproved": "saved",
+      "approvals": [],
+      "operations": 3,
+      "practical": false,
+      "failed": [
+       "font: embedded (Droid Sans Fallback Regular)"
+      ],
+      "search_copy": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "lines": [
+       "LibreOffice 4.1.1 が8 月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目",
+       "の新機能をご紹介します。"
+      ],
+      "restore": {
+       "text": false,
+       "same_characters": true,
+       "pixels_differing": 13239,
+       "result": false
+      },
+      "reason": null,
+      "seconds": 0.27
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": true,
+     "restore": false,
+     "refused": false
+    }
+   }
+  },
+  "S-I1": {
+   "kind": "same length",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "faithful",
+      "practical": true,
+      "restore": null,
+      "approvals": [],
+      "operations": 3,
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "faithful",
+      "practical": true,
+      "restore": true,
+      "approvals": [],
+      "operations": 3,
+      "not_practical_because": null,
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "practical_both": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "unapproved": "refused",
+      "approvals": [
+       "fallback (Droid Sans Fallback Regular) for UDShinMGoPro-Regular"
+      ],
+      "operations": 4,
+      "practical": false,
+      "failed": [
+       "protection: glyphs",
+       "protection: pixels",
+       "font: fallback (Droid Sans Fallback Regular) for UDShinMGoPro-Regular"
+      ],
+      "search_copy": true,
+      "pixel_counts": {
+       "mupdf72": 43,
+       "mupdf150": 225,
+       "poppler72": 26
+      },
+      "lines": [
+       "令和6年の大阪府の自殺者数は1,383人と、1日に約4",
+       "人の方が自殺で亡くなられるという深刻な状況で",
+       "す。悩みを抱えている人は、ひとりで悩まず専門機",
+       "関にご相談ください。また、身近な人の悩みに気づ",
+       "いたら話を聴いて寄り添いましょう。"
+      ],
+      "restore": null,
+      "reason": null,
+      "seconds": 0.35
+     },
+     {
+      "outcome": "saved",
+      "unapproved": "saved",
+      "approvals": [],
+      "operations": 3,
+      "practical": false,
+      "failed": [
+       "font: embedded (Droid Sans Fallback Regular)"
+      ],
+      "search_copy": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "lines": [
+       "令和5年の大阪府の自殺者数は1,383人と、1日に約",
+       "4人の方が自殺で亡くなられるという深刻な状況で",
+       "す。悩みを抱えている人は、ひとりで悩まず専門機",
+       "関にご相談ください。また、身近な人の悩みに気づ",
+       "いたら話を聴いて寄り添いましょう。"
+      ],
+      "restore": {
+       "text": false,
+       "same_characters": false,
+       "pixels_differing": 22314,
+       "result": false
+      },
+      "reason": null,
+      "seconds": 0.48
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": true,
+     "restore": false,
+     "refused": false
+    }
+   }
+  },
+  "S-W2": {
+   "kind": "shorter",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "faithful",
+      "practical": true,
+      "restore": null,
+      "approvals": [],
+      "operations": 3,
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "faithful",
+      "practical": true,
+      "restore": true,
+      "approvals": [],
+      "operations": 3,
+      "not_practical_because": null,
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "practical_both": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "unapproved": "saved",
+      "approvals": [],
+      "operations": 3,
+      "practical": false,
+      "failed": [
+       "marked content: new text untagged on a tagged page"
+      ],
+      "search_copy": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "lines": [
+       "感染症対策を適切に実施いただくようお願いします。"
+      ],
+      "restore": null,
+      "reason": null,
+      "seconds": 0.02
+     },
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over text at [64.5, 315.1, 75.0, 325.7] (3 lines for 1): moving what follows is not done by this PoC",
+      "seconds": 0.01
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": false,
+     "practical_both": false,
+     "reedit": false,
+     "restore": null,
+     "refused": false
+    }
+   }
+  },
+  "S-A1": {
+   "kind": "longer",
+   "current": {
+    "steps": [
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": true,
+      "restore": null,
+      "approvals": [
+       "following-element-4b560011f35df7ca",
+       "following-element-549655b50aa512e5",
+       "following-element-b5ee0edc4775b198"
+      ],
+      "operations": 6,
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "outcome": "saved",
+      "mode": "layout",
+      "practical": true,
+      "restore": true,
+      "approvals": [
+       "following-element-3426485512829e88",
+       "following-element-3940aa731586399e",
+       "following-element-8796866c0add752e"
+      ],
+      "operations": 6,
+      "not_practical_because": null,
+      "reason": null
+     }
+    ],
+    "tiers": {
+     "saved": true,
+     "practical": true,
+     "practical_both": true,
+     "reedit": true,
+     "restore": true,
+     "refused": false
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over text at [56.7, 214.3, 62.8, 225.3] (2 lines for 1): moving what follows is not done by this PoC",
+      "seconds": 0.01
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  },
+  "S-T1": {
+   "kind": "shorter",
+   "current": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "mode": "faithful",
+      "practical": false,
+      "restore": null,
+      "approvals": null,
+      "operations": null,
+      "not_practical_because": null,
+      "reason": "implicit line-join space has no glyph in the source font"
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   },
+   "poc": {
+    "steps": [
+     {
+      "outcome": "refused",
+      "unapproved": "refused",
+      "approvals": null,
+      "operations": 3,
+      "practical": false,
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
+      "lines": null,
+      "restore": null,
+      "reason": "the paragraph would grow over text at [54.0, 496.3, 60.0, 505.3] (15 lines for 14): moving what follows is not done by this PoC",
+      "seconds": 0.09
+     }
+    ],
+    "tiers": {
+     "saved": false,
+     "practical": false,
+     "practical_both": false,
+     "reedit": null,
+     "restore": null,
+     "refused": true
+    }
+   }
+  }
+ }
+}
