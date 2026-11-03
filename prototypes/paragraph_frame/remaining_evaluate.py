@@ -1,7 +1,7 @@
 """The lengthening edits still refused on the current main, with every kind of candidate approved (issue #120).
 
   .venv/bin/python -m prototypes.paragraph_frame.remaining_evaluate --phase run --root <dir> --fusei <477.pdf> --pdfjs <pdf.js dir> [--only <id> ...]
-  .venv/bin/python -m prototypes.paragraph_frame.remaining_evaluate --phase collect --root <dir>
+  .venv/bin/python -m prototypes.paragraph_frame.remaining_evaluate --phase collect --roots main=<dir> new=<dir>
 
 The cases are the 25 of the separate evaluation (evaluations/paragraph_frame_separate,
 frozen for PR #106: R02, R13, R18 saved, 22 refused then). ``run`` takes each
@@ -114,15 +114,25 @@ def records(results):
 
 
 def phase_collect(args):
-    results = json.loads((Path(args.root) / 'results.json').read_text())
-    recs = records(results)
+    """The runs (``--roots label=dir``, e.g. main= and new=) as records, compact results and, per case, what changed."""
     compact = lambda x: {k: er.compact_audit(v) if k == 'approved_audit' else v for k, v in x.items()
                          if k not in ('frame', 'seconds', 'occurrence', 'rounds', 'lines', 'chain', 'decorations')}
+    runs = {}
+    for label, root in (x.split('=', 1) for x in args.roots):
+        results = json.loads((Path(root) / 'results.json').read_text())
+        recs = records(results)
+        runs[label] = dict(summary=er.summary(recs), records=recs, results={k: [compact(x) for x in seq] for k, seq in results.items()})
     out = dict(schema='paragraph-remaining-results-1', cases_from=str(SEPARATE), manifest_sha256=hashlib.sha256(SEPARATE.read_bytes()).hexdigest(),
-               summary=er.summary(recs), records=recs, results={k: [compact(x) for x in seq] for k, seq in results.items()})
+               runs=runs)
+    if {'main', 'new'} <= set(runs):
+        out['comparison'] = er.compare(runs['main']['records'], runs['new']['records'])
+        out['cases'] = {cid: dict(main=[x.get('outcome') for x in runs['main']['results'][cid]], new=[x.get('outcome') for x in seq],
+                                  reason_main=(runs['main']['results'][cid][-1].get('reason') or '')[-160:] or None,
+                                  reason_new=(seq[-1].get('reason') or '')[-160:] or None)
+                        for cid, seq in runs['new']['results'].items()}
     OUT.mkdir(parents=True, exist_ok=True)
     RESULTS.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
-    print(json.dumps(out['summary'], ensure_ascii=False))
+    print(json.dumps({k: v['summary'] for k, v in runs.items()}, ensure_ascii=False))
 
 
 def main():
@@ -132,6 +142,7 @@ def main():
     p.add_argument('--fusei')
     p.add_argument('--pdfjs')
     p.add_argument('--only', nargs='*')
+    p.add_argument('--roots', nargs='*', help='collect: label=dir of each run (main=, new=)')
     args = p.parse_args()
     dict(run=phase_run, collect=phase_collect)[args.phase](args)
 
