@@ -223,6 +223,10 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     # too; one of them may have the graphics state and clip of the text itself.
     candidates+=[(b,b'') for b in reversed(safe) if b is not before and not form_write.foreign_text_between(program,b.operator.end,first,starts)]
     if safe:candidates.append((safe[-1],b''))
+    # New text is never written inside a moved unit (its translation would move it too): a boundary inside one
+    # is no candidate (issue #120; checked again where the text is written).
+    moved_spans=[(r['start'],r['end']) for u in units for r in u.get('ranges') or ([u] if u.get('start') is not None else [])]+[tuple(x['text_object']) for u in units for x in u.get('splits') or ()]
+    candidates=[(b,r) for b,r in candidates if not any(a<b.operator.end<z for a,z in moved_spans)]
     if not candidates:raise Refused('no safe insertion point before the edited text')
     # New drawing is placed in default user space under the inverse CTM, at
     # the first candidate whose inherited state (opacity, ExtGState, clip) is
