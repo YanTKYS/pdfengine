@@ -20,6 +20,7 @@ from . import auto_restore
 from . import placed_move
 from . import decoration
 from . import panel
+from . import clip_extension
 from . import auto_conditions as conditions
 
 
@@ -235,6 +236,8 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     # coloured marker does not). Glyphs of different overprint each get a
     # neutral ExtGState of their own.
     variant=lambda state:tuple(sorted(form_write.overprint([state]).items()))
+    # The clips an approved extension rewrites (issue #118) hold the extended rectangle.
+    extended_clips=[(x['old'],x['new']) for x in spec.get('clips') or []]
     variants=sorted({variant(e.state) for e in removed})
     if len(variants)>1 and not own:raise Refused('edited text with mixed overprint is not drawn opaque')
     own_overprint=dict(variants[0]) if len(variants)==1 else None
@@ -245,13 +248,13 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
         gs_names[v]=name
     neutral_resource=gs_names[variants[0]]
     for choice,restore in candidates if own_overprint is not None else ():
-        try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,text_overprint=own_overprint);break
+        try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,text_overprint=own_overprint,extended=extended_clips);break
         except Refused as exc:problem=problem or exc
     else:
         problem=problem or Refused('no safe insertion point before the edited text')
         if not own:raise problem
         for choice,restore in candidates:
-            try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=True);break
+            try:prefix=form_write.insertion(choice,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=True,extended=extended_clips);break
             except Refused:continue
         else:raise problem
         neutral=neutral_resource
@@ -377,7 +380,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
             places.append(b)
         for use in (True,) if neutral else (False,True) if own else (False,):
             for b in places:
-                try:pre=form_write.insertion(b,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=use,text_overprint=own_overprint);spot=b;break
+                try:pre=form_write.insertion(b,spec.get('frames',[spec['frame']]),c.page.transformation_matrix,neutral=use,text_overprint=own_overprint,extended=extended_clips);spot=b;break
                 except Refused as exc:problem=problem or exc
             if spot is not None:
                 if use:neutral=neutral_resource;pre+=neutral.encode()+b' gs\n'
@@ -425,6 +428,10 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     for found in spec.get('panels') or []:
         if found['_program']!=(stream,invocation):raise Refused('an approved panel is not drawn where the edit is written')
         edits+=panel.edits(c,found)
+    # An approved clip extension of a text box: each instance of its rectangle, the bottom edge moved (issue #118).
+    for found in spec.get('clips') or []:
+        if found['_program']!=(stream,invocation):raise Refused('an approved clip is not set where the edit is written')
+        edits+=clip_extension.edits(c,found)
     for a,b,replacement in sorted(edits,reverse=True):data=data[:a]+replacement+data[b:]
     decoration.move_annotations(writer,lookup,list(groups.values())+list(chained))
     clones=form_write.copy_on_write(writer,page,c,stream,invocation,data,new_fonts,{name:writer._add_object(form_write.neutral_gs(dict(v))) for v,name in gs_names.items()} if neutral else None)
@@ -446,7 +453,7 @@ def write(c,paragraphs,lines,fonts,spec,evidence,output,approval=None,moves=None
     finally:
         for path in (tmp,draft):
             if os.path.exists(path):os.unlink(path)
-    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,placed_objects_moved=[dict(old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs'])) for u in units if 'evidence' not in u],decorations_moved=[moved_record(u) for u in units if 'evidence' in u and 'row' not in u],**({'panels_extended':[panel.public(x) for x in spec['panels']]} if spec.get('panels') else {}),**({'chain_moved':[dict(moved_record(u),line=u['row']['text'][:40]) for u in units if 'row' in u]} if chained else {}),source_glyphs_removed=len(selected),layout=spec.get('layout','column flow'),kept_glyphs=len(kept_ids),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
+    return dict(drawn_in='page' if not invocation else 'Form XObject (copy-on-write)',form_clones=clones,insertion_ctm=list(choice.state.ctm),insertion_inside_text_object=choice.text_object,stored_conditions=stored['summary'],follower_translation=delta if spec.get('mode')!='flow' else 'per line (column flow)',followers_repainted=len(active)-1,placed_objects_moved=[dict(old=u['old'],new=u['new'],translation=list(u['translation']),glyphs=len(u['glyphs'])) for u in units if 'evidence' not in u],decorations_moved=[moved_record(u) for u in units if 'evidence' in u and 'row' not in u],**({'panels_extended':[panel.public(x) for x in spec['panels']]} if spec.get('panels') else {}),**({'clips_extended':[clip_extension.public(x) for x in spec['clips']]} if spec.get('clips') else {}),**({'chain_moved':[dict(moved_record(u),line=u['row']['text'][:40]) for u in units if 'row' in u]} if chained else {}),source_glyphs_removed=len(selected),layout=spec.get('layout','column flow'),kept_glyphs=len(kept_ids),scope_policy='original ordered scopes and ParentTree retained',stage_checks=['protected glyph identity','exact drawn text','inferred frame bounds','protected paint collision','page count','font programs','protected non-text paint','semantic consistency','MuPDF and Poppler inferred-frame outside pixels'])
 
 
 def moved_record(u):
@@ -659,8 +666,9 @@ def validate_stage(c,tmp,spec,evidence,selected,expected,actual_text=None,moved=
             diff=ImageChops.difference(ia,ib)
             # A moved placed object may reach past the frame where it already
             # did; its paint was matched exactly translated above.
-            # An approved panel extension changes the band it adds (its paint was matched above).
-            for x0,y0,x1,y1 in spec.get('frames',[spec['frame']])+[pymupdf.Rect(u[k])+(-1,-1,1,1) for u in units for k in ('old','new')]+[pymupdf.Rect(x['band'])+(-1,-1,1,1) for x in spec.get('panels') or []]:
+            # An approved panel extension changes the band it adds (its paint was matched above); a clip taken
+            # back (issue #118) hides the band it removes, where the paragraph's removed lines were.
+            for x0,y0,x1,y1 in spec.get('frames',[spec['frame']])+[pymupdf.Rect(u[k])+(-1,-1,1,1) for u in units for k in ('old','new')]+[pymupdf.Rect(x['band'])+(-1,-1,1,1) for x in spec.get('panels') or []]+[pymupdf.Rect(x['band'])+(-1,-1,1,1) for x in spec.get('clips') or [] if x['extension']<0]:
                 ImageDraw.Draw(diff).rectangle((math.floor(x0*2),math.floor(y0*2),math.ceil(x1*2)-1,math.ceil(y1*2)-1),fill=(0,0,0))
             if diff.getbbox():raise Refused(f'staged raster changes outside approved inferred frame ({renderer})')
         # Native retained font resources/programs are cloned, never replaced.
@@ -762,6 +770,12 @@ def store_conditions(c,draft,writer,page,spec,selected,target_count,delta,active
                             new=x['new'],extension=x['extension'],approval=dict(approval or {}),**panel.drawn(c,x)) for x in spec.get('panels') or []]
             done=[x for x in done if x['new'][3]>x['old'][3]+.05]
             if done:record['panels']=done
+            # The clip extensions approved for this paragraph (issue #118), kept as the panels are.
+            kept=[x for x in (previous or {}).get('clips',[]) if not any(abs(x['new'][3]-y['old'][3])<.05 for y in spec.get('clips') or [])]
+            done=kept+[dict(id=x['id'],old=next((k['old'] for k in (previous or {}).get('clips',[]) if abs(k['new'][3]-x['old'][3])<.05),x['old']),
+                            new=x['new'],extension=x['extension'],approval=dict(approval or {}),**clip_extension.drawn(c,x)) for x in spec.get('clips') or []]
+            done=[x for x in done if x['new'][3]>x['old'][3]+.05]
+            if done:record['clips']=done
             records.append(record)
         # Following paragraphs this edit moved keep their rows as observed before
         # the move (auto_conditions.apply_moved); earlier such records stay only

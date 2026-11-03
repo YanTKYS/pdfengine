@@ -37,6 +37,13 @@ and the saved page is checked against it:
   #116 (a hit anywhere on the page) and the status it gave are kept in
   ``quality.legacy``.
 
+An approved clip extension of a text box (issue #118) is checked too: the
+output's clips, in drawing order, are the source's one for one with every
+instance of the approved rectangle extended (count, rule and place of each
+kept) and none of the old one left, and the band
+it adds shows nothing but the edited paragraph's new text and the approved
+panel's own paint.
+
 An approved panel extension (issue #112) is checked too: the panel's
 drawings are found in the output with their rectangle extended exactly as
 approved (0.02 pt), every other drawing is unchanged, and only the band the
@@ -63,7 +70,7 @@ import pymupdf
 from pypdf import PdfReader
 
 TOL = .01
-KINDS = ('text', 'translate', 'panel')
+KINDS = ('text', 'translate', 'panel', 'clip')
 
 
 def _rect(r):
@@ -119,6 +126,9 @@ def change_set(proposal, save, followers=None):
     for m in save.get('panels_extended') or []:
         changes.append(dict(kind='panel', what='panel extension', approval='panels', id=m.get('id'), old=m['old'], new=m['new'],
                             band=m['band'], dy=m['extension']))
+    for m in save.get('clips_extended') or []:
+        changes.append(dict(kind='clip', what='clip extension', approval='clips', id=m.get('id'), old=m['old'], new=m['new'],
+                            band=m['band'], dy=m['extension']))
     return changes
 
 
@@ -133,7 +143,7 @@ def approval_check(source, proposal, save):
         reasons.append('the save record is not of this proposal')
     if proposal.get('source_sha256') and proposal['source_sha256'] != _sha(source):
         reasons.append('the proposal is not of this source')
-    for part, key in (('chain', 'chain_moved'), ('decorations', 'decorations_moved'), ('panels', 'panels_extended')):
+    for part, key in (('chain', 'chain_moved'), ('decorations', 'decorations_moved'), ('panels', 'panels_extended'), ('clips', 'clips_extended')):
         approved = set(proposal.get(part) or [])
         moved = {m['id'] for m in save.get(key) or [] if m.get('id')}
         if approved - _candidates(proposal, part):
@@ -338,6 +348,39 @@ def audit(source, output, page_number=None, proposal=None, save=None):
                                      status='fail' if reasons else 'pass', reasons=reasons))
             # Every drawing of the output is the approved expectation (above): the drawing comparison below uses it.
             da = _drawings_of(want)
+        # A clip extension (issue #118): the output's clips are the source's with the approved rectangle (every instance)
+        # extended and none of it left; the band it adds shows nothing but the edited paragraph's new text and the
+        # approved panels' own paint.
+        for c in [x for x in changes if x['kind'] == 'clip']:
+            ca, cb = _clips(pa), _clips(pb)
+            old, new = _rect(c['old']), _rect(c['new'])
+            same = lambda r, t: max(abs(p - q) for p, q in zip(r, t)) <= .02
+            # Every clip of the source, in drawing order, each instance of the approved rectangle extended: the
+            # output's clips one for one (count, rule and place of every instance; PR #119 review).
+            want = [(tuple(new) if same(r, old) else r, eo) for r, eo in ca]
+            reasons = []
+            targets = (sum(same(r, old) for r, _ in ca), sum(same(r, new) for r, _ in cb))
+            if targets[0] != targets[1]:
+                reasons.append(f'the clip is set {targets[1]} times where it was approved, {targets[0]} times in the source')
+            if len(want) != len(cb):
+                reasons.append(f'{len(cb)} clips set, {len(want)} expected')
+            wrong = [n for n, ((r, eo), (q, fo)) in enumerate(zip(want, cb)) if eo != fo or not same(r, q)]
+            if wrong:
+                n = wrong[0]
+                reasons.append(f'{len(wrong)} clips differ from the source with the approved extension (first: clip {n + 1}, '
+                               f'{list(cb[n][0])} {"W*" if cb[n][1] else "W"}, expected {list(want[n][0])} {"W*" if want[n][1] else "W"})')
+            if any(same(r, old) for r, _ in cb):
+                reasons.append('the clip is still set where it was')
+            band = _rect(c['band'])
+            panel_paint = [_rect(x['new']) for x in panels]
+            shown = [ch for ch, x, y, bb in gb if ch.strip() and bb.intersects(band) and not _inside(bb, [edited_new])]
+            # (The approved panel's own fill and outline: its extended rectangle, an outline half its width out.)
+            drawn_there = [k for k in db if k[4].intersects(band) and not any(max(abs(p - q) for p, q in zip(k[4], r)) <= 1.5 for r in panel_paint)]
+            shown_images = [k for k in ib if k[1].intersects(band)]
+            if shown or drawn_there or shown_images:
+                reasons.append(f'the added band shows more than the new text: {len(shown)} glyphs, {len(drawn_there)} drawings, {len(shown_images)} images')
+            approved.append(dict(what='clip', id=c.get('id'), approval='clips', dy=c['dy'], old=c['old'], new=c['new'],
+                                 status='fail' if reasons else 'pass', reasons=reasons))
         # The text change: the new text is drawn inside the approved frame (MuPDF, the frame's text without spaces and line breaks).
         bare = lambda t: ''.join(t.split())
         drawn = bare(text['replace'][1]) in bare(pb.get_text(clip=edited_new + (-2, -2, 2, 2)))
@@ -403,7 +446,19 @@ def audit(source, output, page_number=None, proposal=None, save=None):
     verdict = 'fail' if 'fail' in parts else 'unverified' if unchecked else 'pass'
     return dict(verdict=verdict, approval=approval, approved=approved, protected=protected, quality=quality,
                 unchecked=[c['kind'] for c in unchecked], changes=len(changes),
-                mode='layout' if panels or any(c['what'] != 'following paragraphs' for c in moves) else 'faithful')
+                mode='layout' if panels or any(c['kind'] == 'clip' for c in changes) or any(c['what'] != 'following paragraphs' for c in moves) else 'faithful')
+
+
+def _clips(page):
+    """The clips the page sets, as (page rectangle of a one-rectangle clip path (else its scissor), even-odd), per instance."""
+    out = []
+    for x in page.get_drawings(extended=True):
+        if x.get('type') != 'clip':
+            continue
+        items = x.get('items') or []
+        r = items[0][1] if len(items) == 1 and items[0][0] == 're' else x['scissor']
+        out.append((tuple(round(v, 2) for v in pymupdf.Rect(r)), bool(x.get('even_odd'))))
+    return out
 
 
 def _styles(path, page, area, away):

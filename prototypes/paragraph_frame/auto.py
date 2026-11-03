@@ -7,6 +7,7 @@ import hashlib
 import json
 from pathlib import Path
 import time
+import pymupdf
 from .auto_detect import detect
 from .auto_style import build,describe
 from .auto_layout import layout
@@ -16,6 +17,7 @@ from .auto_flow import place,region_of
 from .auto_writer import decoration_candidates,follower_delta,write
 from . import chain as following
 from . import panel as panels_
+from . import clip_extension as clips_
 from .engine import Refused,sha
 
 
@@ -77,10 +79,9 @@ def _panel(c,paragraphs,lines,spec,evidence,page,context):
         if delta>-.001:return None,None
     elif delta<=.001 or deepest+delta<=frame[3]+.01:return None,None
     obstacles=evidence['observed']['obstacles']
-    # Text clipped where its frame stops: the clip, not a panel, stops it (a clip is not extended).
+    # Text clipped where its frame stops: the clip, not a panel, stops it (_clip offers the clip with its panel).
     clip=spec.get('clip_bottom')
-    if recorded is None and clip is not None and abs(clip-frame[3])<.6:
-        return None,f'the paragraph\'s text is clipped by a rectangle ending at {clip:.2f}; a clip is not extended'
+    if recorded is None and clip is not None and abs(clip-frame[3])<.6:return None,None
     def stops(b):
         """Whether the panel ``b`` stops the frame: at its bottom, or at its own outline's bottom edge."""
         if abs(b[3]-frame[3])<.6:return True
@@ -98,7 +99,44 @@ def _panel(c,paragraphs,lines,spec,evidence,page,context):
     except Refused as exc:return None,str(exc)
 
 
-def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=(),decorations=(),chain=(),panels=()):
+def _clip(c,paragraphs,lines,spec,evidence,page,context):
+    """(the extension of the clip that stops the paragraph's growth, the panel extension it needs with it, or None;
+    why none is offered) (issue #118). A shorter paragraph whose clip an earlier approved edit extended may take it back."""
+    if spec.get('mode')=='flow':return None,None,None
+    delta=lines[-1]['baseline']-paragraphs[0].baselines[-1]
+    rows=evidence['observed']['lines'];frame=spec['frame'];clip=spec.get('clip_bottom')
+    deepest=max(r['bbox'][3] for r in rows)
+    ids=set(paragraphs[0].ids)
+    events=[ev for ev in c.events if any(i in ids for ch in ev.chars for i in ch.source_orders)]
+    programs={(ev.stream_xref,ev.invocation) for ev in events}
+    if len(programs)!=1:return None,None,None
+    program=next(iter(programs));obstacles=evidence['observed']['obstacles']
+    if delta<-.001:
+        stored=spec['stored'];record=stored['records'][stored['target']] if stored.get('applied') else {}
+        recorded=next((x for x in record.get('clips',[]) if clip is not None and abs(x['new'][3]-clip)<.05),None)
+        if recorded is None:return None,None,None
+        delta=max(delta,recorded['old'][3]-clip)
+        if delta>-.001:return None,None,None
+        try:return clips_.candidate(c,page,program,ids,clip,delta,obstacles,recorded,context),None,None
+        except Refused as exc:return None,None,str(exc)
+    if delta<=.001 or deepest+delta<=frame[3]+.01 or clip is None or abs(clip-frame[3])>=.6:return None,None,None
+    try:found=clips_.candidate(c,page,program,ids,clip,delta,obstacles,None,context)
+    except Refused as exc:return None,None,str(exc)
+    # The box's panel (the smallest container holding the clip): extended with it when the clip passes its bottom.
+    old,new=pymupdf.Rect(found['old']),pymupdf.Rect(found['new'])
+    holding=[b for b in evidence['conditions']['containers'] if (pymupdf.Rect(b)+(-.6,-.6,.6,.6)).contains(old)]
+    if not holding:return found,None,None
+    box=min(holding,key=lambda b:(b[2]-b[0])*(b[3]-b[1]))
+    if new.y1<=box[3]+.01:return found,None,None
+    try:paired=panels_.candidate(c,page,program,box,delta,obstacles,min(ev.operator.start for ev in events),None,context)
+    except Refused as exc:return None,None,'the clip passes the bottom of its text box, whose panel cannot grow: '+str(exc)
+    if not (pymupdf.Rect(paired['new'])+(-.6,-.6,.6,0)).contains(pymupdf.Rect(found['new'])):
+        return None,None,'the extended clip would pass the extended panel'
+    found['requires']=[paired['id']];paired['requires']=[found['id']]
+    return found,paired,None
+
+
+def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,continuation=(),decorations=(),chain=(),panels=(),clips=()):
     start=time.perf_counter();c,paragraphs,spec,at,evidence=detect(source,page,selection,occurrence,stored,continuation);observed=time.perf_counter()
     try:
         # A single-column paragraph keeps what the edit does not change where
@@ -182,6 +220,24 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
         # bottom: listed with its evidence; it grows only when approved by id.
         # (The id names this edit of this source: it approves nothing else.)
         grown,why=_panel(c,paragraphs,lines,spec,evidence,page,[sha(source),selection,replacement,occurrence])
+        # The clip of a text box stopping the paragraph (issue #118): listed with its evidence, and the panel
+        # extension it needs with it; each grows only when approved by its own id, and only together.
+        clipped,paired,clip_why=_clip(c,paragraphs,lines,spec,evidence,page,[sha(source),selection,replacement,occurrence])
+        if paired:grown,why=paired,None
+        if clipped or clip_why:evidence['clips']=dict(candidates=[clips_.public(clipped)] if clipped else [],unavailable=clip_why)
+        listed_clips=[clipped['id']] if clipped else []
+        if set(clips)-set(listed_clips):raise Refused('an approved clip extension is not a candidate of this edit: '+', '.join(sorted(set(clips)-set(listed_clips))))
+        if clips and paired and paired['id'] not in panels:
+            raise Refused('the clip extension needs the extension of its text box\'s panel approved too: '+paired['id'])
+        if panels and paired and not clips:
+            raise Refused('the panel extension of a clipped text box needs the clip extension approved too: '+clipped['id'])
+        spec['clips']=[clipped] if clips else []
+        if clips:
+            # The text shows down to the extended clip's bottom (or up to the shortened one's).
+            spec['clip_bottom']=clipped['new'][3]
+            spec['frame']=spec['frame'][:3]+[clipped['new'][3]]
+            spec['values']['bottom']=clipped['new'][3]
+            evidence['inferred']['frame']=spec['frame'];evidence['inferred']['frame_bottom']='approved clip extension: the extended clip\'s bottom'
         if grown or why:evidence['panels']=dict(candidates=[panels_.public(grown)] if grown else [],unavailable=why)
         listed_panels=[grown['id']] if grown else []
         if set(panels)-set(listed_panels):raise Refused('an approved panel extension is not a candidate of this edit: '+', '.join(sorted(set(panels)-set(listed_panels))))
@@ -211,6 +267,9 @@ def _plan(source,page,selection,replacement,occurrence,substitute,stored=True,co
         if chain:
             public['chain']=sorted(chain)
             public['required_approval'].append('following elements moved with the paragraph (chain): '+', '.join(sorted(chain)))
+        if clips:
+            public['clips']=sorted(clips)
+            public['required_approval'].append('text box clip extended down with the paragraph (its bottom only): '+', '.join(sorted(clips)))
         if panels:
             public['panels']=sorted(panels)
             public['required_approval'].append('panel extended down with the paragraph (its bottom only): '+', '.join(sorted(panels)))
@@ -234,7 +293,7 @@ def _glyph_area(c,paragraph):
     return list(out)
 
 
-def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True,continuation=(),decorations=(),chain=(),panels=()):
+def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,stored_conditions=True,continuation=(),decorations=(),chain=(),panels=(),clips=()):
     """``stored_conditions=False`` ignores conditions stored by earlier saves (inference only).
 
     ``continuation`` lists candidate column links (``column a->b`` ids from a
@@ -247,23 +306,25 @@ def propose(source,page,selection,replacement,*,occurrence=0,substitute=None,sto
     to move with the paragraph; a chain moves only with every element approved.
     ``panels`` lists the panel extensions (``panel-extension-…`` ids from a
     previous proposal's ``evidence.panels``) that the user explicitly approves
-    for this edit.
+    for this edit. ``clips`` lists the text box clip extensions
+    (``clip-extension-…`` ids from ``evidence.clips``, issue #118); a clip
+    whose extension passes its box's panel needs that panel's id too.
     """
-    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions,tuple(continuation),tuple(sorted(set(decorations))),tuple(sorted(set(chain))),tuple(sorted(set(panels))))
+    planned=_plan(source,page,selection,replacement,occurrence,substitute,stored_conditions,tuple(continuation),tuple(sorted(set(decorations))),tuple(sorted(set(chain))),tuple(sorted(set(panels))),tuple(sorted(set(clips))))
     planned[0].close();return planned[-2]
 
 
 def approve(source,proposal,*,acknowledge_inference=False):
     if acknowledge_inference is not True:raise Refused('explicit inference/format approval required')
     again=propose(source,proposal['page'],proposal['selection'],proposal['replacement'],occurrence=proposal['occurrence'],substitute=proposal['substitute'],
-                  stored_conditions=proposal.get('stored_conditions',True),continuation=proposal.get('continuation',()),decorations=proposal.get('decorations',()),chain=proposal.get('chain',()),panels=proposal.get('panels',()))
+                  stored_conditions=proposal.get('stored_conditions',True),continuation=proposal.get('continuation',()),decorations=proposal.get('decorations',()),chain=proposal.get('chain',()),panels=proposal.get('panels',()),clips=proposal.get('clips',()))
     if again!=proposal:raise Refused('stale or altered proposal')
     return dict(proposal=again,approved=True,approval_count=1)
 
 
 def save(source,acceptance,output):
     if acceptance.get('approved') is not True:raise Refused('explicit approval missing')
-    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True),tuple(p.get('continuation',())),tuple(p.get('decorations',())),tuple(p.get('chain',())),tuple(p.get('panels',())))
+    p=acceptance['proposal'];start=time.perf_counter();planned=_plan(source,p['page'],p['selection'],p['replacement'],p['occurrence'],p['substitute'],p.get('stored_conditions',True),tuple(p.get('continuation',())),tuple(p.get('decorations',())),tuple(p.get('chain',())),tuple(p.get('panels',())),tuple(p.get('clips',())))
     c,paragraphs,spec,evidence,fonts,lines,again,timing=planned
     try:
         if p!=again:raise Refused('stale or altered accepted proposal')

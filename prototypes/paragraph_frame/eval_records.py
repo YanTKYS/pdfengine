@@ -36,8 +36,9 @@ MANIFESTS = {
     'roundtrip': 'evaluations/paragraph_frame_roundtrip/manifest.json',
     'fidelity': 'evaluations/paragraph_frame_fidelity/manifest.json',
 }
-# Approved layout changes a save records (an approved panel extension, issue #112, is one too).
-MOVED = ('placed_objects_moved', 'decorations_moved', 'chain_moved', 'panels_extended')
+# Approved layout changes a save records (an approved panel extension, issue #112, and a text box clip extension,
+# issue #118, are ones too).
+MOVED = ('placed_objects_moved', 'decorations_moved', 'chain_moved', 'panels_extended', 'clips_extended')
 
 
 def _ok(v):
