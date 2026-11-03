@@ -68,6 +68,11 @@ def plan(c, paragraphs, spec, evidence, delta, followers=()):
         return None
     zone = abs(delta)
     taken = {i for p in paragraphs for i in p.ids}
+    # The edited paragraph's ink: paint standing beside it and the lines below is the column's neighbour (issue #120).
+    inked = [_rect(c.actual[i]['bbox']) for i in paragraphs[0].ids if c.actual[i]['unicode'].strip()]
+    beside = None
+    for r in inked:
+        beside = r if beside is None else beside | r
     lines = _lines(spec['chain_rows'])
     # A line's height reaches to its neighbours' text (its slot): what its
     # drawing holds between them is drawn on it (a search box above its text).
@@ -106,7 +111,7 @@ def plan(c, paragraphs, spec, evidence, delta, followers=()):
         used.add(id(hit))
         while True:
             try:
-                g = _element(c, spec, element, lines, followers, taken, delta, frame, obstacles, page)
+                g = _element(c, spec, element, lines, followers, taken, delta, frame, obstacles, page, beside)
                 break
             except Refused as exc:
                 after = lines.index(element[-1]) + 1
@@ -202,7 +207,7 @@ def _lines(rows):
     return sorted(lines, key=lambda l: l['top'])
 
 
-def _element(c, spec, element, lines, followers, taken, delta, frame, obstacles, page):
+def _element(c, spec, element, lines, followers, taken, delta, frame, obstacles, page, beside=None):
     """One element of the chain (decoration.group over its lines' glyphs), or a refusal."""
     ids = [i for l in element for i in l['ids']]
     rows = [x for l in element for x in l['rows']]
@@ -220,7 +225,7 @@ def _element(c, spec, element, lines, followers, taken, delta, frame, obstacles,
     moving = [_rect(r) for r in followers] + [l['extent'] for l in others]
     column = pymupdf.Rect(extent.x0, frame.y0, extent.x1, max(frame.y1, slot[1]))
     g = decoration.group(c, p, spec['page'], delta, [column], seen, page, units=placed,
-                         taken=set(taken) | {i for l in others for i in l['ids']}, moving=moving, slot=slot)
+                         taken=set(taken) | {i for l in others for i in l['ids']}, moving=moving, slot=slot, beside=beside)
     if not set(ids) <= set(g['glyphs']):
         raise Refused('the line is drawn in parts that do not move as one drawing')
     row = dict(text=''.join(l['text'] for l in element), rows=rows, ids=ids, top=element[0]['top'], bottom=max(l['bottom'] for l in element), paragraph=p)

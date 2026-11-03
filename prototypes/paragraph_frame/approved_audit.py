@@ -439,7 +439,7 @@ def audit(source, output, page_number=None, proposal=None, save=None):
     except Exception as exc:  # a measure that cannot be made is reported, never a pass
         measures = dict(error=f'{type(exc).__name__}: {exc}'[:300])
     quality = _quality(source, output, page_number, text, edited_old, edited_new, olds + news, measures)
-    quality['placement'] = _placement(output, page_number, proposal, edited_new, news)
+    quality['placement'] = _placement(output, page_number, proposal, edited_new, news, source=source)
     if quality['placement']['result'] is not True and quality['status'] != 'fail':
         quality['status'] = 'fail' if quality['placement']['result'] is False else 'unverified'
     parts = [approval['status'], protected['status']] + [x['status'] for x in approved]
@@ -530,7 +530,23 @@ def _quality(source, output, page, text, edited_old, edited_new, moved, measures
     return out
 
 
-def _placement(output, page, proposal, frame, away, tol=.3, reach=3.):
+def _drawn_offset(source, page, lines):
+    """How far below its baseline as the proposal reads it the source draws each observed line's glyph origins
+    (median over the lines; 0 when nothing is read). A proposal may read a baseline apart from where the glyphs'
+    origins are drawn (InDesign: 0.2 pt); the output is read the same way (issue #120)."""
+    offsets = []
+    with pymupdf.open(source) as d:
+        chars = [c for b in d[page - 1].get_text('rawdict')['blocks'] for l in b.get('lines', []) for sp in l['spans'] for c in sp['chars']
+                 if c['c'].strip()]
+    for line in lines:
+        box = pymupdf.Rect(line['bbox'])
+        ys = sorted(c['origin'][1] for c in chars if box.x0 - .5 <= c['origin'][0] <= box.x1 + .5 and abs(c['origin'][1] - line['baseline']) <= 1)
+        if ys:
+            offsets.append(ys[len(ys) // 2] - line['baseline'])
+    return sorted(offsets)[len(offsets) // 2] if offsets else 0.
+
+
+def _placement(output, page, proposal, frame, away, tol=.3, reach=3., source=None):
     """The edited paragraph's lines drawn where the approved proposal places them, consistent with the source:
     each drawn line on a proposed baseline (0.2 pt) and every proposed line drawn; the source lines' baselines
     kept; added lines at the proposal's leading; each line starting at the paragraph's left edge (the first at its
@@ -540,10 +556,13 @@ def _placement(output, page, proposal, frame, away, tol=.3, reach=3.):
     inferred = proposal['evidence']['inferred']
     planned = [l['baseline'] for l in proposal['lines'] if l['text'].strip()]
     observed = [l['baseline'] for l in proposal['evidence']['observed']['lines'][:proposal['source_lines']]]
+    # (The output's glyph origins are compared with the proposed baselines as the source draws its own lines.)
+    offset = _drawn_offset(source, page, proposal['evidence']['observed']['lines'][:proposal['source_lines']]) if source is not None else 0.
+    planned_drawn = [b + offset for b in planned]
     # The frame may reach below the paragraph (its bottom: the next paragraph or the column's): the lines read are
     # those within half a line of the proposed ones.
     half = inferred['line_height'] / 2
-    band = (planned[0] - half, planned[-1] + half) if planned else (0, -1)
+    band = (planned[0] - half + offset, planned[-1] + half + offset) if planned else (0, -1)
     rows = {}
     with pymupdf.open(output) as d:
         for b in d[page - 1].get_text('rawdict')['blocks']:
@@ -557,7 +576,7 @@ def _placement(output, page, proposal, frame, away, tol=.3, reach=3.):
                             rows.setdefault(round(c['origin'][1], 1), []).append((c['origin'][0], r.x1))
     drawn = sorted(rows)
     near = lambda y, ys: any(abs(y - v) <= .2 for v in ys)
-    checks = dict(lines_on_proposed_baselines=all(near(y, planned) for y in drawn) and all(near(y, drawn) for y in planned),
+    checks = dict(lines_on_proposed_baselines=all(near(y, planned_drawn) for y in drawn) and all(near(y, drawn) for y in planned_drawn),
                   source_baselines_kept=all(abs(a - b) <= .2 for a, b in zip(observed, planned)),
                   added_lines_at_leading=all(abs(b - a - inferred['line_height']) <= .2 for a, b in zip(planned[len(observed) - 1:], planned[len(observed):]))
                   if len(planned) > len(observed) else True)
@@ -565,7 +584,7 @@ def _placement(output, page, proposal, frame, away, tol=.3, reach=3.):
     checks['left_edges'] = all(abs(min(x for x, _ in rows[y]) - x0) <= tol for y, x0 in zip(drawn, starts))
     checks['inside_right_edge'] = all(max(x1 for _, x1 in rows[y]) <= inferred['right'] + tol for y in drawn)
     return dict(result=all(checks.values()) if drawn else None, checks=checks, lines=len(drawn), alignment=inferred.get('alignment'),
-                leading_basis=inferred.get('leading_basis'))
+                leading_basis=inferred.get('leading_basis'), drawn_offset=round(offset, 3))
 
 
 def _status(values):

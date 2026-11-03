@@ -589,7 +589,22 @@ def _annotations(c, page_number, region, bounds, page, others=()):
     return out
 
 
-def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), taken=(), moving=(), slot=None):
+def side_of_column(box, beside, texts, units=()):
+    """Whether paint at ``box`` (page) stands beside the text column, not on the moving line (issue #120): clear across
+    of the edited paragraph's ink (``beside``) and of the line's own text and placed objects (by more than half a
+    point), and standing beside the paragraph (starting no lower than its bottom) down past the line's first row (a
+    screenshot, a photo, a panel or a rule alongside the column). A mark on the line itself (a bullet, a pointer,
+    the tail of a balloon) is short of that and stays the line's."""
+    if beside is None or not texts:
+        return False
+    own = placed_move._union(list(texts) + [pymupdf.Rect(u['bounds']) for u in units])
+    left, right = min(beside.x0, own.x0), max(beside.x1, own.x1)
+    clear = box.x0 >= right + .5 or box.x1 <= left - .5
+    first_row = min(t.y1 for t in texts)
+    return clear and box.y0 <= beside.y1 and box.y1 >= first_row - .5
+
+
+def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), taken=(), moving=(), slot=None, beside=None):
     """The candidate line decoration of following ``paragraph`` moved by ``delta`` (page y), or a refusal.
 
     ``taken``: glyphs of the other paragraphs the edit draws (the edited one,
@@ -598,7 +613,10 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
     ``moving``: page areas of other content moved by the same translation (the
     other followers' placed objects); it is no obstacle to the group.
     ``slot``: the line's height up to its neighbours (page y0, y1; chain): what
-    is drawn there is drawn on the line too."""
+    is drawn there is drawn on the line too.
+    ``beside``: the edited paragraph's ink (page area; chain, issue #120). Paint
+    standing beside the text column (side_of_column) is not the line's content:
+    it stays, and the line moving down must not meet it."""
     program = next(((s['stream_xref'], tuple(tuple(i) for i in s['invocation'])) for s in paragraph.scopes if s['kind'] == 'fixed'), None)
     if program is None:
         # A line without a placed object (chain): the one program drawing its text.
@@ -762,7 +780,7 @@ def group(c, paragraph, page_number, delta, frames, obstacles, page, units=(), t
             continue
         if o['kind'] != 'foreign-text' and own(box) or o['kind'] == 'foreign-text' and any(box == pymupdf.Rect(c.actual[i]['bbox']) for i in carried):
             continue
-        if box.intersects(across) and not any(t.contains(box) for t in texts):
+        if box.intersects(across) and not any(t.contains(box) for t in texts) and not side_of_column(box, beside, texts, units):
             raise Refused('the line of a following paragraph holds content (' + o['kind'] + ') outside its line decoration')
         hit = (box & new)
         if not hit.is_empty and hit.width > .05 and hit.height > .05:

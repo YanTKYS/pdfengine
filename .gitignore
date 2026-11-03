@@ -117,3 +117,6 @@ tmp/
 !/evaluations/paragraph_clip/
 !/evaluations/paragraph_clip/manifest.json
 !/evaluations/paragraph_clip/results.json
+# The lengthening edits still refused (issue #120): compact results only.
+!/evaluations/paragraph_remaining/
+!/evaluations/paragraph_remaining/results.json

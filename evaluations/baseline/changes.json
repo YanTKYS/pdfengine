@@ -4739,5 +4739,285 @@
   "removed": [],
   "added": [],
   "design_decision_needed": false
+ },
+ {
+  "date": "2026-11-03",
+  "code": "d565964",
+  "reason": "issue #120 (an improvement within the approved chain contract, no product contract change): paint standing beside the text column is not a following line's content; new text is not inserted inside a moved unit. separate: R03, R04, R14 refused -> saved (first step), their edit back added (R03 refused: one Poppler pixel row past a moved line's 1 pt mask; R04, R14 saved). Practical success of these records follows the existing rule of this evaluation (no approved-change audit; its search check is not measured on the edited lines, issue #116 decision 2): R03/1 and R04/1 true there; with the approved-change audit (evaluations/paragraph_remaining) none of the three is a practical success",
+  "evaluations": [
+   "chain",
+   "decoration",
+   "fidelity",
+   "separate",
+   "smoke"
+  ],
+  "compared": 179,
+  "changed": [
+   {
+    "record": [
+     "separate",
+     "R03-lo_newfeatures_ja-p1",
+     "1"
+    ],
+    "outcome": [
+     "refused",
+     "saved"
+    ],
+    "reason_class": [
+     "capacity",
+     null
+    ],
+    "failed": [
+     null,
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "kept": [
+      null,
+      true
+     ],
+     "links": [
+      null,
+      true
+     ],
+     "moves": [
+      null,
+      true
+     ],
+     "placement": [
+      null,
+      true
+     ],
+     "quality": [
+      null,
+      true
+     ],
+     "raster": [
+      null,
+      true
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      false
+     ],
+     "structure": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      false,
+      true
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "refused": [
+      true,
+      false
+     ],
+     "saved": [
+      false,
+      true
+     ]
+    },
+    "mode": [
+     "faithful",
+     "layout"
+    ]
+   },
+   {
+    "record": [
+     "separate",
+     "R04-lo_newfeatures_ja-p1",
+     "1"
+    ],
+    "outcome": [
+     "refused",
+     "saved"
+    ],
+    "reason_class": [
+     "capacity",
+     null
+    ],
+    "failed": [
+     null,
+     [
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "kept": [
+      null,
+      true
+     ],
+     "links": [
+      null,
+      true
+     ],
+     "moves": [
+      null,
+      true
+     ],
+     "placement": [
+      null,
+      true
+     ],
+     "quality": [
+      null,
+      true
+     ],
+     "raster": [
+      null,
+      true
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      false
+     ],
+     "structure": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "practical": [
+      false,
+      true
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "refused": [
+      true,
+      false
+     ],
+     "saved": [
+      false,
+      true
+     ]
+    },
+    "mode": [
+     "faithful",
+     "layout"
+    ]
+   },
+   {
+    "record": [
+     "separate",
+     "R14-osaka_fusei_477-p5",
+     "1"
+    ],
+    "outcome": [
+     "refused",
+     "saved"
+    ],
+    "reason_class": [
+     "capacity",
+     null
+    ],
+    "failed": [
+     null,
+     [
+      "extraction_mupdf",
+      "glyphs_outside_region_identical",
+      "raster_outside_region_mupdf",
+      "raster_outside_region_poppler"
+     ]
+    ],
+    "checks": {
+     "kept": [
+      null,
+      true
+     ],
+     "links": [
+      null,
+      true
+     ],
+     "moves": [
+      null,
+      true
+     ],
+     "placement": [
+      null,
+      true
+     ],
+     "quality": [
+      null,
+      false
+     ],
+     "raster": [
+      null,
+      true
+     ],
+     "reedit": [
+      null,
+      true
+     ],
+     "safety": [
+      null,
+      false
+     ],
+     "structure": [
+      null,
+      true
+     ]
+    },
+    "tiers": {
+     "reedit": [
+      null,
+      true
+     ],
+     "refused": [
+      true,
+      false
+     ],
+     "saved": [
+      false,
+      true
+     ]
+    },
+    "mode": [
+     "faithful",
+     "layout"
+    ]
+   }
+  ],
+  "removed": [],
+  "added": [
+   [
+    "separate",
+    "R03-lo_newfeatures_ja-p1",
+    "2"
+   ],
+   [
+    "separate",
+    "R04-lo_newfeatures_ja-p1",
+    "2"
+   ],
+   [
+    "separate",
+    "R14-osaka_fusei_477-p5",
+    "2"
+   ]
+  ],
+  "design_decision_needed": false
  }
 ]

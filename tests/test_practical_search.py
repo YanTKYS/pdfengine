@@ -259,3 +259,18 @@ def test_the_next_paragraph_inside_the_frame_is_not_the_edited_lines(tmp_path):
     out = page(tmp_path, [LINE1, LINE2, LINE3], name='off.pdf', edit=lambda d, p: p.insert_text((120, 94), 'X', fontsize=11))
     bad = _placement(out, 1, placed([LINE1, LINE2, LINE3]), pymupdf.Rect(30, 40, 280, 140), [])
     assert bad['result'] is False and bad['checks']['lines_on_proposed_baselines'] is False
+
+
+def test_placement_reads_the_output_as_the_source_draws_its_lines(tmp_path):
+    # (Issue #120, R14.) A proposal may read baselines 0.2 pt above the glyph origins as drawn (InDesign): the
+    # output, drawn where the source drew, is compared in the same reading, not failed for the reading.
+    from prototypes.paragraph_frame.approved_audit import _drawn_offset, _placement
+    out = page(tmp_path, [LINE1, LINE2, LINE3])
+    read = [y - .25 for y in BASELINES]
+    proposal = placed([LINE1, LINE2, LINE3])
+    proposal['lines'] = [dict(text=t, baseline=y) for t, y in zip([LINE1, LINE2, LINE3], read)]
+    proposal['evidence']['observed']['lines'] = [dict(baseline=y, bbox=[40, y - 10, 280, y + 2]) for y in read]
+    assert round(_drawn_offset(out, 1, proposal['evidence']['observed']['lines']), 2) == .25
+    frame = pymupdf.Rect(30, 40, 280, 140)
+    assert _placement(out, 1, proposal, frame, [])['checks']['lines_on_proposed_baselines'] is False
+    assert _placement(out, 1, proposal, frame, [], source=out)['result'] is True
