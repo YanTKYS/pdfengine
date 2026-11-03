@@ -1,0 +1,768 @@
+{
+ "schema": "route-poc-cases-1",
+ "frozen_at": "317905d",
+ "policy": "Fixed before the PoC is written (issue #122): no case is added or removed afterwards. The current approach is taken at its best automatic path (B2 with every listed candidate approved), from the committed evaluation of the same edit. Saved, practical, re-edit and restore are counted apart; a check not made is unverified, never a success.",
+ "cases": [
+  {
+   "id": "L2",
+   "why": "LibreOffice caption on a white panel, longer (+1 line): current saved, practical",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "old": "複数ページフィールド選択",
+   "new": "複数ページフィールド選択複数ページフィールド選択",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_panel/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+   "click": [
+    399.04,
+    626.86
+   ]
+  },
+  {
+   "id": "L8",
+   "why": "LibreOffice caption on a panel, longer: current saved, not practical (source gap)",
+   "document": "lo_newfeatures_ja",
+   "page": 4,
+   "old": "MSIME2012の予測変換表示",
+   "new": "MSIME2012の予測変換表示MSIME2012の予測変換表示",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_panel/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+   "click": [
+    259.06,
+    582.26
+   ]
+  },
+  {
+   "id": "W1",
+   "why": "Word text box (clip + outline), longer: current saved, practical",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "old": "直通：03-3595-2257",
+   "new": "直通：03-3595-2257 直通：03-3595-2257",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_clip/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+   "click": [
+    405.01,
+    477.12
+   ]
+  },
+  {
+   "id": "W2c",
+   "why": "Word text box, longer: current saved, not practical (letter-spaced FAX)",
+   "document": "word_osaka_guideline",
+   "page": 1,
+   "old": "06-4397-3205",
+   "new": "06-4397-3205 06-6944-9156",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_clip/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "9070ff5c5defd634b65967e36b9996bf092deb6ec753561ea9188433259145fe",
+   "click": [
+    407.71,
+    691.35
+   ]
+  },
+  {
+   "id": "R02",
+   "why": "English, following lines in a shared drawing (chain): current saved, practical",
+   "document": "issue17730",
+   "page": 2,
+   "old": "About ",
+   "new": "About About Antenna House",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_remaining/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "d1d3be1674f4756d82630d68f08a8088f5b912c58f3379f45eb63b025ad99b14",
+   "click": [
+    78.57,
+    38.04
+   ]
+  },
+  {
+   "id": "R03",
+   "why": "LibreOffice paragraph beside a screenshot, longer: current saved (edit back refused), not practical",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "old": "Calcをよ",
+   "new": "CalcをよCalcをより使いやすくするための工夫が取り",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_remaining/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "refused",
+      "mode": "faithful",
+      "tiers": {
+       "saved": false,
+       "practical": false,
+       "reedit": null,
+       "restore": null,
+       "refused": true
+      },
+      "not_practical_because": null,
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged raster changes outside approved inferred frame (Poppler)"
+     }
+    ]
+   },
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+   "click": [
+    42.7,
+    245.29
+   ]
+  },
+  {
+   "id": "R04",
+   "why": "LibreOffice bulleted line beside a screenshot: current saved, not practical",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "old": "•選択したセ",
+   "new": "•選択したセ•選択したセルの個数がカウントされるように",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_remaining/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+   "click": [
+    89.78,
+    416.39
+   ]
+  },
+  {
+   "id": "R14",
+   "why": "InDesign text beside a photo: current saved, not practical",
+   "document": "osaka_fusei_477",
+   "page": 5,
+   "old": "期184日間の",
+   "new": "期184日間の期184日間の開幕を、",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_remaining/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": false,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "click": [
+    132.97,
+    870.6
+   ]
+  },
+  {
+   "id": "R07",
+   "why": "InDesign text on a rounded background: current refused",
+   "document": "osaka_fusei_477",
+   "page": 3,
+   "old": "その他、船・",
+   "new": "その他、船・その他、船・自転車などでの",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_remaining/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "refused",
+      "mode": "faithful",
+      "tiers": {
+       "saved": false,
+       "practical": false,
+       "reedit": null,
+       "restore": null,
+       "refused": true
+      },
+      "not_practical_because": null,
+      "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])"
+     }
+    ]
+   },
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "click": [
+    591.53,
+    724.95
+   ]
+  },
+  {
+   "id": "R10",
+   "why": "InDesign map legend, next line in the same text operator: current refused",
+   "document": "osaka_fusei_477",
+   "page": 4,
+   "old": "B-13 チ",
+   "new": "B-13 チB-13 チュニジアB",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_remaining/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "refused",
+      "mode": "faithful",
+      "tiers": {
+       "saved": false,
+       "practical": false,
+       "reedit": null,
+       "restore": null,
+       "refused": true
+      },
+      "not_practical_because": null,
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+     }
+    ]
+   },
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "click": [
+    126.93,
+    589.99
+   ]
+  },
+  {
+   "id": "R22",
+   "why": "InDesign nested background, lines below on it: current refused",
+   "document": "osaka_fusei_477",
+   "page": 8,
+   "old": "番号、住所、",
+   "new": "番号、住所、番号、住所、氏名（様付き）をご記入ください。",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_remaining/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "refused",
+      "mode": "faithful",
+      "tiers": {
+       "saved": false,
+       "practical": false,
+       "reedit": null,
+       "restore": null,
+       "refused": true
+      },
+      "not_practical_because": null,
+      "reason": "ine below cannot move with the paragraph (06（6342）5407 （平日10：00～17): a line decoration would leave or enter a background"
+     }
+    ]
+   },
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "click": [
+    549.28,
+    771.87
+   ]
+  },
+  {
+   "id": "S-L1",
+   "why": "LibreOffice same length (a date): current saved, not practical (source gap)",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "old": "月下旬にリリース",
+   "new": "月上旬にリリース",
+   "kind": "same length",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/smoke/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": false,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+   "click": [
+    175.49,
+    125.19
+   ]
+  },
+  {
+   "id": "S-I1",
+   "why": "InDesign same length (a year): current saved, practical",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "old": "令和5年の大阪府の自殺者数は1,383人",
+   "new": "令和6年の大阪府の自殺者数は1,383人",
+   "kind": "same length",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/smoke/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "click": [
+    48.16,
+    684.26
+   ]
+  },
+  {
+   "id": "S-W2",
+   "why": "Word shorter (a phrase deleted): current saved, practical",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "old": "感染症対策を円滑かつ適切に実施いただくよう",
+   "new": "感染症対策を適切に実施いただくよう",
+   "kind": "shorter",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/smoke/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+   "click": [
+    85.44,
+    300.58
+   ]
+  },
+  {
+   "id": "S-A1",
+   "why": "Antenna House English longer, the lines below move: current saved, practical",
+   "document": "issue17730",
+   "page": 1,
+   "old": "Linking to an internal destination",
+   "new": "Linking to an internal destination or an external destination",
+   "kind": "longer",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/smoke/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "layout",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     }
+    ]
+   },
+   "sha256": "d1d3be1674f4756d82630d68f08a8088f5b912c58f3379f45eb63b025ad99b14",
+   "click": [
+    74.37,
+    197.64
+   ]
+  },
+  {
+   "id": "S-T1",
+   "why": "pdfTeX English, a word replaced (shorter): current refused",
+   "document": "tracemonkey",
+   "page": 1,
+   "old": "statically",
+   "new": "strongly",
+   "kind": "shorter",
+   "user_operations": "click in the text, select the old text, type the new text",
+   "current": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/smoke/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "refused",
+      "mode": "faithful",
+      "tiers": {
+       "saved": false,
+       "practical": false,
+       "reedit": null,
+       "restore": null,
+       "refused": true
+      },
+      "not_practical_because": null,
+      "reason": "implicit line-join space has no glyph in the source font"
+     }
+    ]
+   },
+   "sha256": "3662ff519e485810520552bf301d8c3b2b917fd2f83303f4965d7abed367e113",
+   "click": [
+    97.29,
+    365.69
+   ]
+  }
+ ]
+}
