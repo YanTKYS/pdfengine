@@ -2,6 +2,7 @@
 
   .venv/bin/python -m prototypes.paragraph_frame.clip_evaluate --phase freeze
   .venv/bin/python -m prototypes.paragraph_frame.clip_evaluate --phase run --root <dir>
+  .venv/bin/python -m prototypes.paragraph_frame.clip_evaluate --phase tamper --root <dir>
   .venv/bin/python -m prototypes.paragraph_frame.clip_evaluate --phase collect --root <dir>
 
 ``freeze`` (before the implementation) records each case's input (hash),
@@ -190,6 +191,76 @@ def phase_run(args):
         (root / 'results.json').write_text(json.dumps(results, ensure_ascii=False, indent=1, default=str) + '\n')
 
 
+def _tampered(path, out, n, change, rect):
+    """``path`` with the ``n``-th (0-based) instance of its extended clip (page rectangle ``rect``) changed: removed,
+    resized (1 pt taller), or set by the other rule; or None when it has no such instance."""
+    import re
+    with pymupdf.open(path) as d:
+        xref = d[0].get_contents()[0]
+        data = d.xref_stream(xref)
+        height = d[0].rect.height
+        found = list(re.finditer(rb'(\S+) (\S+) (\S+) (\S+) re(\s+)(W\*?)(\s+)n', data))
+        def page(m):
+            x, y, w, h = map(float, m.group(1, 2, 3, 4))
+            return [x, height - y - h, x + w, height - y]
+        target = [m for m in found if max(abs(p - q) for p, q in zip(page(m), rect)) <= .05]
+        if len(target) <= n:
+            return None
+        m = target[n]
+        if change == 'removed':
+            new = b''
+        elif change == 'resized':
+            new = b' '.join(m.group(1, 2, 3)) + b' ' + str(float(m.group(4)) + 1).encode() + b' re' + m.group(5) + m.group(6) + m.group(7) + b'n'
+        else:
+            new = m.group(0).replace(m.group(6), b'W' if m.group(6) == b'W*' else b'W*')
+        d.update_stream(xref, data[:m.start()] + new + data[m.end():])
+        d.save(out)
+    return out
+
+
+def _instances(path, rect):
+    """The instances of the clip ``rect`` (page) set in ``path`` (as rule strings, in stream order)."""
+    from .approved_audit import _clips
+    with pymupdf.open(path) as d:
+        return [eo for r, eo in _clips(d[0]) if max(abs(p - q) for p, q in zip(r, rect)) <= .05]
+
+
+def phase_tamper(args):
+    """The saved first steps with one instance of their extended clip changed (PR #119 review): the approved-change
+    audit must fail and the saved PDF alone must not take its record as approved (stale)."""
+    import shutil
+    from .approved_audit import audit
+    from .auto import propose
+    manifest = json.loads(MANIFEST.read_text())
+    root = Path(args.root)
+    results = json.loads((root / 'results.json').read_text())
+    out = {}
+    for case in manifest['cases']:
+        step = (results.get(case['id']) or [{}])[0]
+        if step.get('outcome') != 'saved':
+            continue
+        source = source_of(case['document'], args).resolve()
+        saved = root / case['id'] / '1' / 'out.pdf'
+        extended = json.loads(saved.with_suffix('.save.json').read_text())['clips_extended'][0]['new']
+        rows = {}
+        for change in ('kept', 'removed', 'resized', 'rule'):
+            path = saved if change == 'kept' else _tampered(saved, root / case['id'] / '1' / f'tampered-{change}.pdf', 1, change, extended)
+            if path is None:
+                rows[change] = dict(outcome='not run', reason='no second instance')
+                continue
+            for suffix in ('.proposal.json', '.save.json'):
+                if path != saved:
+                    shutil.copy(saved.with_suffix(suffix), path.with_suffix(suffix))
+            a = audit(source, path, case['page'])
+            clip = next((x for x in a['approved'] if x['what'] == 'clip'), {})
+            conditions = propose(str(path), case['page'], case['edit']['new'], case['edit']['old'])['evidence']['conditions']
+            rows[change] = dict(instances=(len(_instances(path, extended))), audit=a['verdict'], clip=clip.get('status'),
+                                reasons=clip.get('reasons', [])[:2], reopen=conditions['status'][:200])
+            print(case['id'], change, rows[change], flush=True)
+        out[case['id']] = rows
+    (root / 'tamper.json').write_text(json.dumps(out, ensure_ascii=False, indent=1) + '\n')
+
+
 def records(results, manifest):
     from . import smoke_evaluate
     groups = {c['id']: c['group'] for c in manifest['cases']}
@@ -217,20 +288,22 @@ def phase_collect(args):
     recs = records(results, manifest)
     compact = lambda x: {k: er.compact_audit(v) if k == 'approved_audit' else v for k, v in x.items()
                          if k not in ('frame', 'seconds', 'occurrence', 'rounds')}
+    tamper = Path(args.root) / 'tamper.json'
     out = dict(schema='paragraph-clip-results-1', manifest_sha256=hashlib.sha256(MANIFEST.read_bytes()).hexdigest(),
-               summary=er.summary(recs), records=recs, results={k: [compact(x) for x in seq] for k, seq in results.items()})
+               summary=er.summary(recs), records=recs, results={k: [compact(x) for x in seq] for k, seq in results.items()},
+               **({'tamper': json.loads(tamper.read_text())} if tamper.exists() else {}))
     RESULTS.write_text(json.dumps(out, ensure_ascii=False, indent=1, default=str) + '\n')
     print(json.dumps(out['summary'], ensure_ascii=False))
 
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('--phase', choices=('freeze', 'run', 'collect'), required=True)
+    p.add_argument('--phase', choices=('freeze', 'run', 'tamper', 'collect'), required=True)
     p.add_argument('--root')
     p.add_argument('--fusei')
     p.add_argument('--pdfjs')
     args = p.parse_args()
-    dict(freeze=phase_freeze, run=phase_run, collect=phase_collect)[args.phase](args)
+    dict(freeze=phase_freeze, run=phase_run, tamper=phase_tamper, collect=phase_collect)[args.phase](args)
 
 
 if __name__ == '__main__':

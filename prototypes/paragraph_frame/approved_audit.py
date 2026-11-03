@@ -38,8 +38,9 @@ and the saved page is checked against it:
   ``quality.legacy``.
 
 An approved clip extension of a text box (issue #118) is checked too: the
-output's clips are the source's with every instance of the approved
-rectangle extended (its rule kept) and none of the old one left, and the band
+output's clips, in drawing order, are the source's one for one with every
+instance of the approved rectangle extended (count, rule and place of each
+kept) and none of the old one left, and the band
 it adds shows nothing but the edited paragraph's new text and the approved
 panel's own paint.
 
@@ -354,16 +355,22 @@ def audit(source, output, page_number=None, proposal=None, save=None):
             ca, cb = _clips(pa), _clips(pb)
             old, new = _rect(c['old']), _rect(c['new'])
             same = lambda r, t: max(abs(p - q) for p, q in zip(r, t)) <= .02
+            # Every clip of the source, in drawing order, each instance of the approved rectangle extended: the
+            # output's clips one for one (count, rule and place of every instance; PR #119 review).
+            want = [(tuple(new) if same(r, old) else r, eo) for r, eo in ca]
             reasons = []
-            other = lambda cs: Counter(k for k in cs if not (same(k[0], old) or same(k[0], new)))
-            if other(ca) != other(cb):
-                reasons.append(f'other clips changed: {sum((other(ca) - other(cb)).values())} gone, {sum((other(cb) - other(ca)).values())} new')
-            if any(same(k[0], old) for k in cb):
+            targets = (sum(same(r, old) for r, _ in ca), sum(same(r, new) for r, _ in cb))
+            if targets[0] != targets[1]:
+                reasons.append(f'the clip is set {targets[1]} times where it was approved, {targets[0]} times in the source')
+            if len(want) != len(cb):
+                reasons.append(f'{len(cb)} clips set, {len(want)} expected')
+            wrong = [n for n, ((r, eo), (q, fo)) in enumerate(zip(want, cb)) if eo != fo or not same(r, q)]
+            if wrong:
+                n = wrong[0]
+                reasons.append(f'{len(wrong)} clips differ from the source with the approved extension (first: clip {n + 1}, '
+                               f'{list(cb[n][0])} {"W*" if cb[n][1] else "W"}, expected {list(want[n][0])} {"W*" if want[n][1] else "W"})')
+            if any(same(r, old) for r, _ in cb):
                 reasons.append('the clip is still set where it was')
-            if not any(same(k[0], new) for k in cb):
-                reasons.append('the clip is not set where it was approved to go')
-            if {k[1] for k in ca if same(k[0], old)} != {k[1] for k in cb if same(k[0], new)}:
-                reasons.append('the clip\'s rule changed')
             band = _rect(c['band'])
             panel_paint = [_rect(x['new']) for x in panels]
             shown = [ch for ch, x, y, bb in gb if ch.strip() and bb.intersects(band) and not _inside(bb, [edited_new])]

@@ -158,7 +158,7 @@ def candidate(c, page_number, program, ids, bottom, dy, obstacles, recorded=None
                                      + [repr([round(v, 3) for v in old]), repr(round(dy, 3))]).encode()).hexdigest()[:16]
     return dict(id='clip-extension-' + ident, page=page_number, old=[round(v, 3) for v in old], new=[round(v, 3) for v in new],
                 extension=round(dy, 3), edges='bottom only (top, sides, rule and order kept)', rule=sorted({x['rule'] for x in found}),
-                operators=[dict(offset=x['start'], operator=data[x['start']:x['end']].decode('latin1')) for x in found],
+                operators=[dict(offset=x['start'], operator=data[x['start']:x['end']].decode('latin1'), rule=x['rule']) for x in found],
                 holds=dict(text_shows=len(events), paragraph_shows=len(own), drawings=0), band=[round(v, 3) for v in band],
                 reason=('the paragraph grows past the bottom of the clip its text is drawn under (a text box)' if dy > 0
                         else 'the paragraph is shorter: the clip goes back'),
@@ -176,16 +176,21 @@ def edits(c, found):
 
 
 def drawn(c, found):
-    """What the approved extension leaves drawn, for its record: the rewritten operators and the rule."""
-    return dict(operators=sorted({r.decode('latin1') for _, _, r in edits(c, found)}), rule=found['rule'])
+    """What the approved extension leaves drawn, for its record: every instance in stream order (its rewritten
+    operator and its rule), their count, the rules (PR #119 review: each instance is checked on reopen)."""
+    rewritten = [r.decode('latin1') for _, _, r in edits(c, found)]
+    return dict(operators=sorted(set(rewritten)), rule=found['rule'], count=len(rewritten),
+                instances=[dict(operator=r, rule=o['rule']) for r, o in zip(rewritten, found['operators'])])
 
 
 def verify(c, ids, stored):
     """'drawn as approved' when the paragraph's text is drawn under the stored extended clip as that save left it:
-    one rectangle path, its operators among the recorded ones, the stored rule, none of the old rectangle left,
-    holding text only; else why not."""
-    if not all(k in stored for k in ('operators', 'rule', 'new', 'old')):
-        return 'not drawn as approved: the record does not say how the clip was set'
+    every recorded instance there, in stream order, each with its recorded operator and rule, and no other (none
+    missing, added, resized or set by another rule: PR #119 review), none of the old rectangle left, holding text
+    only; else why not."""
+    if not all(k in stored for k in ('operators', 'rule', 'new', 'old', 'count', 'instances')) or not isinstance(stored['instances'], list) \
+            or stored['count'] != len(stored['instances']):
+        return 'not drawn as approved: the record does not say how every instance of the clip was set'
     programs = {(ev.stream_xref, ev.invocation) for ev in c.events if any(i in ids for ch in ev.chars for i in ch.source_orders)}
     if len(programs) != 1:
         return 'not drawn as approved: the paragraph is not drawn in one content stream'
@@ -198,10 +203,13 @@ def verify(c, ids, stored):
         return 'not drawn as approved: the clip is not the approved rectangle'
     data = c.streams[program[0]]
     found = [x for x in instances(c, program) if _same(x['rect'], rect)]
-    if any(data[x['start']:x['end']].decode('latin1') not in stored['operators'] for x in found):
-        return 'not drawn as approved: its operators changed'
-    if sorted({x['rule'] for x in found}) != stored['rule']:
-        return 'not drawn as approved: its rule changed'
+    if len(found) != stored['count']:
+        return f"not drawn as approved: the clip is set {len(found)} times, approved {stored['count']} times"
+    for n, (x, want) in enumerate(zip(found, stored['instances'])):
+        if data[x['start']:x['end']].decode('latin1') != want['operator']:
+            return f'not drawn as approved: its operators changed (instance {n + 1})'
+        if x['rule'] != want['rule']:
+            return f'not drawn as approved: its rule changed (instance {n + 1})'
     if any(_same(x['rect'], stored['old']) for x in instances(c, program)):
         return 'not drawn as approved: the clip is also set where it was before'
     events, paints = _held(c, program, {x['at'] for x in found})

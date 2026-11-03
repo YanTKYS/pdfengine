@@ -159,8 +159,8 @@ def _tamper(path, out, old, new):
 
 
 @pytest.mark.parametrize('change, reason', [
-    ((b'36 189 192 63 re', b'36 185 192 67 re'), 'not set where it was approved'),     # extended further than approved
-    ((b'36 189 192 63 re', b'36 189 150 63 re'), 'not set where it was approved'),     # narrowed
+    ((b'36 189 192 63 re', b'36 185 192 67 re'), 'set 0 times where it was approved'),     # extended further than approved
+    ((b'36 189 192 63 re', b'36 189 150 63 re'), 'clips differ from the source'),          # narrowed
     ((b'Q\n', b'0 0 1 rg 40 192 20 6 re f\nQ\n'), 'shows more than the new text'),        # a drawing shown in the added band
 ])
 def test_a_clip_changed_beyond_the_approval_fails_the_audit(tmp_path, change, reason):
@@ -231,3 +231,61 @@ def test_a_clip_goes_back_no_higher_than_it_was(tmp_path):
     edit(source, out)
     [clip] = propose(str(out), 1, GROW[1], '申請書')['evidence']['clips']['candidates']
     assert clip['new'][3] == 95 and clip['extension'] == -16
+
+
+def _tamper_nth(path, out, old, new, n):
+    """``path`` with the ``n``-th (0-based) occurrence of ``old`` in its content replaced by ``new``."""
+    with pymupdf.open(path) as d:
+        xref = d[0].get_contents()[0]
+        data = d.xref_stream(xref)
+        at = -1
+        for _ in range(n + 1):
+            at = data.index(old, at + 1)
+        d.update_stream(xref, data[:at] + new + data[at + len(old):])
+        d.save(out)
+    return out
+
+
+@pytest.fixture
+def twice(tmp_path):
+    """The box's clip set twice (for the box, then around the text, as Word does), extended on approval."""
+    source = box_pdf(tmp_path, BOX + b'q ' + CLIP, END + END)
+    out = tmp_path / 'out.pdf'
+    proposal, record = edit(source, out)
+    return source, out, proposal, record
+
+
+def test_every_instance_kept_passes_and_is_recorded_with_its_count(twice):
+    source, out, proposal, record = twice
+    a = audit(source, out, 1, proposal, record)
+    assert next(x for x in a['approved'] if x['what'] == 'clip')['status'] == 'pass'
+    ev = propose(str(out), 1, GROW[1], GROW[0])['evidence']['conditions']
+    [stored] = ev['clips']
+    assert ev['status'] == 'applied' and stored['status'] == 'drawn as approved' and stored['count'] == 2
+    assert [x['rule'] for x in stored['instances']] == ['W*', 'W*']
+
+
+@pytest.mark.parametrize('new, audit_reason, stale_reason', [
+    (b'', 'set 1 times where it was approved, 2 times', 'set 1 times, approved 2 times'),             # one instance removed
+    (b'36 185 192 67 re W* n', 'set 1 times where it was approved, 2 times', 'set 1 times, approved 2 times'),   # resized
+    (b'36 189 192 63 re W n', 'clips differ from the source', 'rule changed (instance 2)'),            # its rule changed
+], ids=['removed', 'resized', 'rule'])
+def test_an_instance_removed_resized_or_set_by_another_rule_fails_and_is_stale(twice, tmp_path, new, audit_reason, stale_reason):
+    # (PR #119 review.) Only the inner instance (around the text) changes; the outer one still holds the text extended.
+    source, out, proposal, record = twice
+    bad = _tamper_nth(out, tmp_path / 'bad.pdf', b'36 189 192 63 re W* n', new, 1)
+    a = audit(source, bad, 1, proposal, record)
+    clip = next(x for x in a['approved'] if x['what'] == 'clip')
+    assert a['verdict'] == 'fail' and clip['status'] == 'fail' and any(audit_reason in r for r in clip['reasons']), clip['reasons']
+    status = propose(str(bad), 1, GROW[1], GROW[0])['evidence']['conditions']['status']
+    assert status.startswith('stale: an approved clip extension is not drawn as approved') and stale_reason in status, status
+
+
+def test_an_instance_added_fails_and_is_stale(twice, tmp_path):
+    # A third instance of the extended rectangle around the text: not what was approved.
+    source, out, proposal, record = twice
+    bad = _tamper_nth(out, tmp_path / 'bad.pdf', b'36 189 192 63 re W* n', b'36 189 192 63 re W* n 36 189 192 63 re W* n', 1)
+    a = audit(source, bad, 1, proposal, record)
+    assert next(x for x in a['approved'] if x['what'] == 'clip')['status'] == 'fail'
+    status = propose(str(bad), 1, GROW[1], GROW[0])['evidence']['conditions']['status']
+    assert 'set 3 times, approved 2 times' in status, status

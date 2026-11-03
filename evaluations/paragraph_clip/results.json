@@ -599,63 +599,78 @@
        "operators": [
         {
          "offset": 10015,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10092,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10238,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10421,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10573,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10695,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10813,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11004,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11157,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11321,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11475,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11628,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11788,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11941,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 12096,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         }
        ],
        "holds": {
@@ -681,7 +696,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [381.3, 487.7, 386.6, 498.2])",
-     "seconds": 2.71
+     "seconds": 1.59
     },
     "outcome": "saved",
     "approved": {
@@ -805,63 +820,78 @@
        "operators": [
         {
          "offset": 10015,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10092,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10238,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10421,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10573,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10695,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 10813,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11004,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11157,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11321,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11475,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11628,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11788,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 11941,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         },
         {
          "offset": 12096,
-         "operator": "374.11 348.05 169.7 61.824 re"
+         "operator": "374.11 348.05 169.7 61.824 re",
+         "rule": "W*"
         }
        ],
        "holds": {
@@ -1128,7 +1158,7 @@
     "panels": {
      "candidates": [
       {
-       "id": "panel-extension-ff74754f430c9a5e",
+       "id": "panel-extension-6c4dcc4060ad6c32",
        "page": 1,
        "old": [
         373.75,
@@ -1190,7 +1220,7 @@
     "clips": {
      "candidates": [
       {
-       "id": "clip-extension-4a174972ab9a634d",
+       "id": "clip-extension-ca022009f450f999",
        "page": 1,
        "old": [
         374.11,
@@ -1212,63 +1242,78 @@
        "operators": [
         {
          "offset": 10047,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10135,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10292,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10486,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10649,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10782,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10911,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 11113,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 11242,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 12996,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13128,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13255,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13400,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13527,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13668,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         }
        ],
        "holds": {
@@ -1291,17 +1336,17 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 3.22
+     "seconds": 2.33
     },
     "outcome": "saved",
     "approved": {
      "chain": [],
      "decorations": [],
      "panels": [
-      "panel-extension-ff74754f430c9a5e"
+      "panel-extension-6c4dcc4060ad6c32"
      ],
      "clips": [
-      "clip-extension-4a174972ab9a634d"
+      "clip-extension-ca022009f450f999"
      ]
     },
     "lines": [
@@ -1330,7 +1375,7 @@
      "chain_moved": null,
      "panels_extended": [
       {
-       "id": "panel-extension-ff74754f430c9a5e",
+       "id": "panel-extension-6c4dcc4060ad6c32",
        "page": 1,
        "old": [
         373.75,
@@ -1389,7 +1434,7 @@
      ],
      "clips_extended": [
       {
-       "id": "clip-extension-4a174972ab9a634d",
+       "id": "clip-extension-ca022009f450f999",
        "page": 1,
        "old": [
         374.11,
@@ -1411,63 +1456,78 @@
        "operators": [
         {
          "offset": 10047,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10135,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10292,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10486,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10649,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10782,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 10911,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 11113,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 11242,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 12996,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13128,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13255,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13400,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13527,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         },
         {
          "offset": 13668,
-         "operator": "374.11 332.21 169.7 77.66400000000004 re"
+         "operator": "374.11 332.21 169.7 77.66400000000004 re",
+         "rule": "W*"
         }
        ],
        "holds": {
@@ -1562,7 +1622,7 @@
      ],
      "approved": [
       {
-       "id": "panel-extension-ff74754f430c9a5e",
+       "id": "panel-extension-6c4dcc4060ad6c32",
        "page": 1,
        "old": [
         373.75,
@@ -1878,115 +1938,143 @@
        "operators": [
         {
          "offset": 13204,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13266,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13447,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13585,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13766,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13904,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14073,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14211,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14365,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14544,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14698,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14818,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14955,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15108,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15262,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15415,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15575,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15728,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15888,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16040,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16161,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16299,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16453,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16608,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16762,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16923,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 17077,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 17238,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         }
        ],
        "holds": {
@@ -2012,7 +2100,7 @@
     "unapproved": {
      "outcome": "refused",
      "reason": "prototypes.paragraph_frame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('0' at [358.6, 701.9, 363.9, 712.5])",
-     "seconds": 2.93
+     "seconds": 2.01
     },
     "outcome": "saved",
     "approved": {
@@ -2135,115 +2223,143 @@
        "operators": [
         {
          "offset": 13204,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13266,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13447,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13585,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13766,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 13904,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14073,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14211,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14365,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14544,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14698,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14818,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 14955,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15108,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15262,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15415,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15575,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15728,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 15888,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16040,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16161,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16299,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16453,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16608,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16762,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 16923,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 17077,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         },
         {
          "offset": 17238,
-         "operator": "352.75 141.14 168.14 61.704 re"
+         "operator": "352.75 141.14 168.14 61.704 re",
+         "rule": "W*"
         }
        ],
        "holds": {
@@ -2512,7 +2628,7 @@
     "panels": {
      "candidates": [
       {
-       "id": "panel-extension-ac19e0f47726716d",
+       "id": "panel-extension-07cc66d7f6f4ab6b",
        "page": 1,
        "old": [
         352.3,
@@ -2574,7 +2690,7 @@
     "clips": {
      "candidates": [
       {
-       "id": "clip-extension-433317f92dc07ad9",
+       "id": "clip-extension-55041e50ee6fd2ea",
        "page": 1,
        "old": [
         352.75,
@@ -2596,115 +2712,143 @@
        "operators": [
         {
          "offset": 13228,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13289,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13469,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13606,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13786,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13923,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14091,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14228,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14381,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14559,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14712,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14831,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14967,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15119,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15272,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15424,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15583,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15735,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15894,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 16010,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 17765,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 17881,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 17997,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18118,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18234,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18368,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18484,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18618,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         }
        ],
        "holds": {
@@ -2727,17 +2871,17 @@
     "unapproved": {
      "outcome": "saved",
      "reason": null,
-     "seconds": 4.46
+     "seconds": 3.34
     },
     "outcome": "saved",
     "approved": {
      "chain": [],
      "decorations": [],
      "panels": [
-      "panel-extension-ac19e0f47726716d"
+      "panel-extension-07cc66d7f6f4ab6b"
      ],
      "clips": [
-      "clip-extension-433317f92dc07ad9"
+      "clip-extension-55041e50ee6fd2ea"
      ]
     },
     "lines": [
@@ -2765,7 +2909,7 @@
      "chain_moved": null,
      "panels_extended": [
       {
-       "id": "panel-extension-ac19e0f47726716d",
+       "id": "panel-extension-07cc66d7f6f4ab6b",
        "page": 1,
        "old": [
         352.3,
@@ -2824,7 +2968,7 @@
      ],
      "clips_extended": [
       {
-       "id": "clip-extension-433317f92dc07ad9",
+       "id": "clip-extension-55041e50ee6fd2ea",
        "page": 1,
        "old": [
         352.75,
@@ -2846,115 +2990,143 @@
        "operators": [
         {
          "offset": 13228,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13289,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13469,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13606,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13786,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 13923,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14091,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14228,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14381,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14559,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14712,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14831,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 14967,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15119,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15272,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15424,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15583,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15735,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 15894,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 16010,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 17765,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 17881,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 17997,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18118,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18234,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18368,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18484,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         },
         {
          "offset": 18618,
-         "operator": "352.75 125.3 168.14 77.544 re"
+         "operator": "352.75 125.3 168.14 77.544 re",
+         "rule": "W*"
         }
        ],
        "holds": {
@@ -3049,7 +3221,7 @@
      ],
      "approved": [
       {
-       "id": "panel-extension-ac19e0f47726716d",
+       "id": "panel-extension-07cc66d7f6f4ab6b",
        "page": 1,
        "old": [
         352.3,
@@ -3271,5 +3443,83 @@
     }
    }
   ]
+ },
+ "tamper": {
+  "W1": {
+   "kept": {
+    "instances": 15,
+    "audit": "pass",
+    "clip": "pass",
+    "reasons": [],
+    "reopen": "applied"
+   },
+   "removed": {
+    "instances": 14,
+    "audit": "fail",
+    "clip": "fail",
+    "reasons": [
+     "the clip is set 14 times where it was approved, 15 times in the source",
+     "71 clips set, 72 expected"
+    ],
+    "reopen": "stale: an approved clip extension is not drawn as approved (not drawn as approved: the clip is set 14 times, approved 15 times)"
+   },
+   "resized": {
+    "instances": 14,
+    "audit": "fail",
+    "clip": "fail",
+    "reasons": [
+     "the clip is set 14 times where it was approved, 15 times in the source",
+     "1 clips differ from the source with the approved extension (first: clip 59, [374.11, 431.05, 543.81, 509.71] W*, expected [374.11, 432.046, 543.81, 509.71] W*)"
+    ],
+    "reopen": "stale: an approved clip extension is not drawn as approved (not drawn as approved: the clip is set 14 times, approved 15 times)"
+   },
+   "rule": {
+    "instances": 15,
+    "audit": "fail",
+    "clip": "fail",
+    "reasons": [
+     "1 clips differ from the source with the approved extension (first: clip 59, [374.11, 432.05, 543.81, 509.71] W, expected [374.11, 432.046, 543.81, 509.71] W*)"
+    ],
+    "reopen": "stale: an approved clip extension is not drawn as approved (not drawn as approved: its rule changed (instance 2))"
+   }
+  },
+  "W2": {
+   "kept": {
+    "instances": 28,
+    "audit": "pass",
+    "clip": "pass",
+    "reasons": [],
+    "reopen": "applied"
+   },
+   "removed": {
+    "instances": 27,
+    "audit": "fail",
+    "clip": "fail",
+    "reasons": [
+     "the clip is set 27 times where it was approved, 28 times in the source",
+     "103 clips set, 104 expected"
+    ],
+    "reopen": "stale: an approved clip extension is not drawn as approved (not drawn as approved: the clip is set 27 times, approved 28 times)"
+   },
+   "resized": {
+    "instances": 27,
+    "audit": "fail",
+    "clip": "fail",
+    "reasons": [
+     "the clip is set 27 times where it was approved, 28 times in the source",
+     "1 clips differ from the source with the approved extension (first: clip 78, [352.75, 638.08, 520.89, 716.62] W*, expected [352.75, 639.076, 520.89, 716.62] W*)"
+    ],
+    "reopen": "stale: an approved clip extension is not drawn as approved (not drawn as approved: the clip is set 27 times, approved 28 times)"
+   },
+   "rule": {
+    "instances": 28,
+    "audit": "fail",
+    "clip": "fail",
+    "reasons": [
+     "1 clips differ from the source with the approved extension (first: clip 78, [352.75, 639.08, 520.89, 716.62] W, expected [352.75, 639.076, 520.89, 716.62] W*)"
+    ],
+    "reopen": "stale: an approved clip extension is not drawn as approved (not drawn as approved: its rule changed (instance 2))"
+   }
+  }
  }
 }
