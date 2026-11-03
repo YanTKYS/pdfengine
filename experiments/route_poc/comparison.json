@@ -9,6 +9,7 @@
    "reedit": 11,
    "restore": 9,
    "refused": 4,
+   "refused_unsafe": 0,
    "unverified": 0,
    "operations_saved_step1": [
     3,
@@ -26,20 +27,31 @@
    ]
   },
   "poc": {
+   "saved": 2,
+   "practical": 0,
+   "practical_both": 0,
+   "reedit": 2,
+   "restore": 0,
+   "refused": 14,
+   "refused_unsafe": 1,
+   "unverified": 0,
+   "operations_saved_step1": [
+    4,
+    5
+   ]
+  }
+ },
+ "previous_poc_run": {
+  "code": "e792cd8",
+  "counts": {
    "saved": 4,
    "practical": 0,
    "practical_both": 0,
    "reedit": 3,
    "restore": 0,
-   "refused": 12,
-   "unverified": 0,
-   "operations_saved_step1": [
-    3,
-    4,
-    4,
-    5
-   ]
-  }
+   "refused": 12
+  },
+  "note": "S-I1 and S-W2 were saved then (unsafe: a glyph of the next line lost; new text untagged on a tagged page); the PoC now audits before publishing and refuses both without writing (review of PR #123)"
  },
  "cases": {
   "L2": {
@@ -77,13 +89,16 @@
      "practical_both": true,
      "reedit": true,
      "restore": true,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -94,7 +109,7 @@
       "lines": null,
       "restore": null,
       "reason": "the paragraph would leave the box or panel at [261.3, 620.0, 559.5, 631.2] (2 lines for 1)",
-      "seconds": 0.04
+      "seconds": 0.05
      }
     ],
     "tiers": {
@@ -103,7 +118,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -148,13 +164,16 @@
      "practical_both": false,
      "reedit": true,
      "restore": true,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "saved",
+      "unsafe": null,
+      "audit_failed": [],
       "unapproved": "refused",
       "approvals": [
        "grows down by 12.0 pt into empty space",
@@ -177,10 +196,12 @@
       ],
       "restore": null,
       "reason": null,
-      "seconds": 0.19
+      "seconds": 0.4
      },
      {
       "outcome": "saved",
+      "unsafe": null,
+      "audit_failed": [],
       "unapproved": "saved",
       "approvals": [],
       "operations": 3,
@@ -205,7 +226,7 @@
        "result": false
       },
       "reason": null,
-      "seconds": 0.23
+      "seconds": 0.37
      }
     ],
     "tiers": {
@@ -214,7 +235,8 @@
      "practical_both": false,
      "reedit": true,
      "restore": false,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    }
   },
@@ -255,13 +277,16 @@
      "practical_both": true,
      "reedit": true,
      "restore": true,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -281,7 +306,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -328,13 +354,16 @@
      "practical_both": false,
      "reedit": true,
      "restore": true,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -354,7 +383,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -393,13 +423,16 @@
      "practical_both": true,
      "reedit": true,
      "restore": true,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -419,7 +452,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -463,13 +497,16 @@
      "practical_both": false,
      "reedit": false,
      "restore": null,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -489,7 +526,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -534,13 +572,16 @@
      "practical_both": false,
      "reedit": true,
      "restore": true,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -560,7 +601,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -605,13 +647,16 @@
      "practical_both": false,
      "reedit": true,
      "restore": false,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -622,7 +667,7 @@
       "lines": null,
       "restore": null,
       "reason": "the paragraph would grow over text at [115.0, 926.2, 122.6, 944.0] (7 lines for 5): moving what follows is not done by this PoC",
-      "seconds": 0.46
+      "seconds": 0.52
      }
     ],
     "tiers": {
@@ -631,7 +676,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -656,13 +702,16 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -673,7 +722,7 @@
       "lines": null,
       "restore": null,
       "reason": "the paragraph would grow over image at [384.3, 404.2, 722.8, 764.2] (3 lines for 2): moving what follows is not done by this PoC",
-      "seconds": 0.65
+      "seconds": 0.64
      }
     ],
     "tiers": {
@@ -682,7 +731,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -707,13 +757,16 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -724,7 +777,7 @@
       "lines": null,
       "restore": null,
       "reason": "the paragraph would grow over image at [34.4, 66.3, 755.9, 645.1] (3 lines for 1): moving what follows is not done by this PoC",
-      "seconds": 0.58
+      "seconds": 0.62
      }
     ],
     "tiers": {
@@ -733,7 +786,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -765,13 +819,16 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -782,7 +839,7 @@
       "lines": null,
       "restore": null,
       "reason": "the paragraph would grow over text at [536.2, 779.3, 542.4, 789.1] (6 lines for 5): moving what follows is not done by this PoC",
-      "seconds": 0.15
+      "seconds": 0.44
      }
     ],
     "tiers": {
@@ -791,7 +848,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -832,13 +890,16 @@
      "practical_both": false,
      "reedit": true,
      "restore": false,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "saved",
+      "unsafe": null,
+      "audit_failed": [],
       "unapproved": "refused",
       "approvals": [
        "fallback (Droid Sans Fallback Regular) for IPAPMincho"
@@ -860,10 +921,12 @@
       ],
       "restore": null,
       "reason": null,
-      "seconds": 0.22
+      "seconds": 0.5
      },
      {
       "outcome": "saved",
+      "unsafe": null,
+      "audit_failed": [],
       "unapproved": "saved",
       "approvals": [],
       "operations": 3,
@@ -888,7 +951,7 @@
        "result": false
       },
       "reason": null,
-      "seconds": 0.27
+      "seconds": 0.54
      }
     ],
     "tiers": {
@@ -897,7 +960,8 @@
      "practical_both": false,
      "reedit": true,
      "restore": false,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    }
   },
@@ -932,30 +996,28 @@
      "practical_both": true,
      "reedit": true,
      "restore": true,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
-      "outcome": "saved",
+      "outcome": "refused",
+      "unsafe": true,
+      "audit_failed": [
+       "glyphs not of the paragraph lost: 1",
+       "pixels outside the edited area: 43"
+      ],
       "unapproved": "refused",
       "approvals": [
        "fallback (Droid Sans Fallback Regular) for UDShinMGoPro-Regular"
       ],
       "operations": 4,
       "practical": false,
-      "failed": [
-       "protection: glyphs",
-       "protection: pixels",
-       "font: fallback (Droid Sans Fallback Regular) for UDShinMGoPro-Regular"
-      ],
-      "search_copy": true,
-      "pixel_counts": {
-       "mupdf72": 43,
-       "mupdf150": 225,
-       "poppler72": 26
-      },
+      "failed": null,
+      "search_copy": null,
+      "pixel_counts": null,
       "lines": [
        "令和6年の大阪府の自殺者数は1,383人と、1日に約4",
        "人の方が自殺で亡くなられるという深刻な状況で",
@@ -964,48 +1026,18 @@
        "いたら話を聴いて寄り添いましょう。"
       ],
       "restore": null,
-      "reason": null,
-      "seconds": 0.35
-     },
-     {
-      "outcome": "saved",
-      "unapproved": "saved",
-      "approvals": [],
-      "operations": 3,
-      "practical": false,
-      "failed": [
-       "font: embedded (Droid Sans Fallback Regular)"
-      ],
-      "search_copy": true,
-      "pixel_counts": {
-       "mupdf72": 0,
-       "mupdf150": 0,
-       "poppler72": 0
-      },
-      "lines": [
-       "令和5年の大阪府の自殺者数は1,383人と、1日に約",
-       "4人の方が自殺で亡くなられるという深刻な状況で",
-       "す。悩みを抱えている人は、ひとりで悩まず専門機",
-       "関にご相談ください。また、身近な人の悩みに気づ",
-       "いたら話を聴いて寄り添いましょう。"
-      ],
-      "restore": {
-       "text": false,
-       "same_characters": false,
-       "pixels_differing": 22314,
-       "result": false
-      },
-      "reason": null,
-      "seconds": 0.48
+      "reason": "unsafe, not written: glyphs not of the paragraph lost: 1; pixels outside the edited area: 43",
+      "seconds": 0.85
      }
     ],
     "tiers": {
-     "saved": true,
+     "saved": false,
      "practical": false,
      "practical_both": false,
-     "reedit": true,
-     "restore": false,
-     "refused": false
+     "reedit": null,
+     "restore": null,
+     "refused": true,
+     "refused_unsafe": true
     }
    }
   },
@@ -1040,35 +1072,16 @@
      "practical_both": true,
      "reedit": true,
      "restore": true,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
-      "outcome": "saved",
-      "unapproved": "saved",
-      "approvals": [],
-      "operations": 3,
-      "practical": false,
-      "failed": [
-       "marked content: new text untagged on a tagged page"
-      ],
-      "search_copy": true,
-      "pixel_counts": {
-       "mupdf72": 0,
-       "mupdf150": 0,
-       "poppler72": 0
-      },
-      "lines": [
-       "感染症対策を適切に実施いただくようお願いします。"
-      ],
-      "restore": null,
-      "reason": null,
-      "seconds": 0.02
-     },
-     {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -1078,17 +1091,18 @@
       "pixel_counts": null,
       "lines": null,
       "restore": null,
-      "reason": "the paragraph would grow over text at [64.5, 315.1, 75.0, 325.7] (3 lines for 1): moving what follows is not done by this PoC",
+      "reason": "the page is tagged: the new lines would be drawn outside marked content and the paragraph's tags left empty (structure lost): not written",
       "seconds": 0.01
      }
     ],
     "tiers": {
-     "saved": true,
+     "saved": false,
      "practical": false,
      "practical_both": false,
-     "reedit": false,
+     "reedit": null,
      "restore": null,
-     "refused": false
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -1131,13 +1145,16 @@
      "practical_both": true,
      "reedit": true,
      "restore": true,
-     "refused": false
+     "refused": false,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -1157,7 +1174,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   },
@@ -1182,13 +1200,16 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    },
    "poc": {
     "steps": [
      {
       "outcome": "refused",
+      "unsafe": null,
+      "audit_failed": null,
       "unapproved": "refused",
       "approvals": null,
       "operations": 3,
@@ -1199,7 +1220,7 @@
       "lines": null,
       "restore": null,
       "reason": "the paragraph would grow over text at [54.0, 496.3, 60.0, 505.3] (15 lines for 14): moving what follows is not done by this PoC",
-      "seconds": 0.09
+      "seconds": 0.08
      }
     ],
     "tiers": {
@@ -1208,7 +1229,8 @@
      "practical_both": false,
      "reedit": null,
      "restore": null,
-     "refused": true
+     "refused": true,
+     "refused_unsafe": false
     }
    }
   }

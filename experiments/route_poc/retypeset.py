@@ -26,13 +26,27 @@ font file or candidate id.
    inside every filled or stroked rectangle that held it (a panel, a box).
    Otherwise it is refused, saying what is in the way. This PoC never moves
    other content.
+6. A tagged page (marked content with MCIDs) is refused before anything is
+   written: the new lines would be drawn outside marked content and the
+   paragraph's tags left empty.
+7. Nothing is published unaudited: the result is saved to a temporary file
+   beside the output and audited against the source (``audit``): every glyph
+   that is not the paragraph's still drawn at its origin, no new glyph outside
+   the new paragraph's area, the drawings, images, annotations and links
+   unchanged, the other pages' content unchanged, and no pixel differing
+   outside the edited area (MuPDF, 72 dpi). Only then is it moved to the
+   output (one rename); otherwise the temporary file is deleted, the output
+   is not written (nor an existing one touched), and the edit is refused as
+   unsafe, with the audit as its diagnosis.
 
 What it does not do (by design of the PoC): move following content, extend
 panels or clips, keep the paragraph's marked content (tags) or its unedited
 glyphs as they were drawn, or keep kerning and letter spacing.
 """
 import argparse
+from collections import Counter
 import json
+import os
 from pathlib import Path
 import re
 import time
@@ -205,6 +219,52 @@ def _occupied(page, rect, skip, holders=()):
     return hits
 
 
+def _glyph_key(c, s):
+    return (c['c'], round(c['origin'][0], 1), round(c['origin'][1], 1), round(s['size'], 1))
+
+
+def _glyphs(page):
+    """The page's glyphs (not white space) by character, origin and size."""
+    return Counter(_glyph_key(c, s) for b in page.get_text('rawdict')['blocks'] for l in b.get('lines', []) for s in l['spans']
+                   for c in s['chars'] if c['c'].strip())
+
+
+def mcids(doc, page):
+    """The MCIDs the page's content draws."""
+    data = b''.join(doc.xref_stream(x) for x in page.get_contents())
+    return Counter(int(m) for m in re.findall(rb'/MCID\s+(\d+)', data))
+
+
+def audit(source, candidate, page_number, own, area):
+    """What ``candidate`` changed besides the paragraph (``own``: its glyph keys; ``area``: the old and new paragraph
+    areas). An empty ``failed`` means safe to publish."""
+    out = {}
+    with pymupdf.open(source) as a, pymupdf.open(candidate) as b:
+        pa, pb = a[page_number - 1], b[page_number - 1]
+        ga, gb = _glyphs(pa), _glyphs(pb)
+        lost = (ga - own) - gb
+        inside = lambda k: any(r.contains(pymupdf.Point(k[1], k[2])) for r in area)
+        added = Counter({k: n for k, n in (gb - ga).items() if not inside(k)})
+        drawn = lambda p: Counter((x.get('type'), str(x.get('fill')), str(x.get('color')), tuple(round(v, 1) for v in x['rect'])) for x in p.get_drawings())
+        out['glyphs_lost'] = [list(k) for k in list(lost)[:10]]
+        out['glyphs_added_outside'] = [list(k) for k in list(added)[:10]]
+        out['drawings'] = drawn(pa) == drawn(pb)
+        out['images'] = sorted(str(x['bbox']) for x in pa.get_image_info()) == sorted(str(x['bbox']) for x in pb.get_image_info())
+        out['annotations'] = [(x.type, tuple(x.rect)) for x in pa.annots()] == [(x.type, tuple(x.rect)) for x in pb.annots()]
+        out['links'] = [(tuple(x['from']), x.get('uri'), x.get('page')) for x in pa.get_links()] == [(tuple(x['from']), x.get('uri'), x.get('page')) for x in pb.get_links()]
+        out['other_pages'] = len(a) == len(b) and all(a[k].read_contents() == b[k].read_contents() for k in range(len(a)) if k != page_number - 1)
+        ma, mb = pa.get_pixmap(alpha=False), pb.get_pixmap(alpha=False)
+        for r in area:
+            ma.set_rect(r.irect, (255, 255, 255))
+            mb.set_rect(r.irect, (255, 255, 255))
+        out['pixels_outside'] = sum(x != y for x, y in zip(ma.samples, mb.samples)) if (ma.width, ma.height) == (mb.width, mb.height) else -1
+    out['failed'] = ([f'glyphs not of the paragraph lost: {len(list(lost.elements()))}'] if lost else []) + \
+                    ([f'glyphs added outside the paragraph: {len(list(added.elements()))}'] if added else []) + \
+                    [k for k in ('drawings', 'images', 'annotations', 'links', 'other_pages') if out[k] is False] + \
+                    ([f"pixels outside the edited area: {out['pixels_outside']}"] if out['pixels_outside'] else [])
+    return out
+
+
 def edit(source, output, page_number, at, old, new, approve_growth=False, approve_font=False):
     start = time.perf_counter()
     doc = pymupdf.open(source)
@@ -261,6 +321,10 @@ def edit(source, output, page_number, at, old, new, approve_growth=False, approv
             approvals.append(f'grows down by {new_rect.y1 - old_rect.y1:.1f} pt into empty space')
         if how.startswith('fallback'):
             approvals.append(how)
+        if mcids(doc, page):
+            raise Refused('the page is tagged: the new lines would be drawn outside marked content and the paragraph\'s tags '
+                          'left empty (structure lost): not written')
+        own_keys = Counter(_glyph_key(c, s) for r in rows for s in r['spans'] for c in s['chars'] if c['c'].strip())
         # Remove the paragraph's glyphs (text only: drawings and images stay).
         for r in own:
             page.add_redact_annot(r + (.05, .05, -.05, -.05), fill=False)
@@ -270,8 +334,19 @@ def edit(source, output, page_number, at, old, new, approve_growth=False, approv
             tw.append((first_x if k == 0 else left, y), line, font=font, fontsize=size)
         rgb = tuple(((colour >> s) & 255) / 255 for s in (16, 8, 0))
         tw.write_text(page, color=rgb)
-        doc.save(output, garbage=1, deflate=True)
-        return dict(outcome='saved', paragraph=text, expected=expected, replacement=new, at=at_char, lines=lines,
+        # Publish only what the audit passes: a temporary file beside the output, renamed onto it.
+        target = Path(output)
+        temp = target.with_name(f'.{target.name}.{os.getpid()}.unaudited')
+        doc.save(str(temp), garbage=1, deflate=True)
+        try:
+            checked = audit(source, str(temp), page_number, own_keys, [old_rect + (-1, -1, 1, 1), new_rect + (-1, -1, 1, 1)])
+            if checked['failed']:
+                return dict(outcome='refused', unsafe=True, reason='unsafe, not written: ' + '; '.join(checked['failed']), audit=checked,
+                            font=how, approvals=approvals, lines=lines, seconds=round(time.perf_counter() - start, 2))
+            os.replace(temp, target)
+        finally:
+            temp.unlink(missing_ok=True)
+        return dict(outcome='saved', audit=checked, paragraph=text, expected=expected, replacement=new, at=at_char, lines=lines,
                     baselines=[round(y, 3) for y in baselines], frame=[round(v, 3) for v in new_rect], old_area=[round(v, 3) for v in old_rect],
                     font=how, size=size, approvals=approvals, seconds=round(time.perf_counter() - start, 2))
     except Refused as exc:

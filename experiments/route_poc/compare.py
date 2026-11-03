@@ -13,6 +13,8 @@ saved PDF alone). saved = step 1 saved; practical = step 1 practical;
 re-edit = step 2 saved; restore = step 2 restores the source; refused = step 1
 refused. A check not made is null and never counted as a success.
 User operations = click + select + type (3) + one per approval given.
+refused_unsafe = step 1 refused by the PoC's audit before publishing (what
+the edit would have changed besides the paragraph; nothing written).
 """
 import argparse
 import json
@@ -21,6 +23,11 @@ from pathlib import Path
 from .freeze import CHOSEN
 
 CASES = Path('experiments/route_poc/cases.json')
+# The first run (e792cd8, PR #123 as opened): the PoC published without an audit and saved two edits it now refuses
+# (S-I1: a glyph of the next line removed; S-W2: new text untagged on a tagged page). Kept as it was measured.
+PREVIOUS = dict(code='e792cd8', counts=dict(saved=4, practical=0, practical_both=0, reedit=3, restore=0, refused=12),
+                note='S-I1 and S-W2 were saved then (unsafe: a glyph of the next line lost; new text untagged on a tagged '
+                     'page); the PoC now audits before publishing and refuses both without writing (review of PR #123)')
 OUT = Path('experiments/route_poc/comparison.json')
 SOURCES = dict(panel=('evaluations/paragraph_panel/results.json', lambda d: d['runs']['new']['results']),
                clip=('evaluations/paragraph_clip/results.json', lambda d: d['results']),
@@ -69,7 +76,8 @@ def _poc(seq):
                 failed.append('placement')
             if c['text_replaced'] is False:
                 failed.append('text not replaced')
-        rows.append(dict(outcome=s['outcome'], unapproved=s.get('unapproved'), approvals=s.get('approvals'),
+        rows.append(dict(outcome=s['outcome'], unsafe=s.get('unsafe'), audit_failed=(s.get('audit') or {}).get('failed'),
+                         unapproved=s.get('unapproved'), approvals=s.get('approvals'),
                          operations=s.get('operations'), practical=c.get('practical') if c else (False if s['outcome'] == 'refused' else None),
                          failed=failed or None, search_copy=c.get('search_copy', {}).get('result') if c else None,
                          pixel_counts=c['protection']['pixel_counts'] if c else None, lines=s.get('lines'),
@@ -88,7 +96,7 @@ def tiers(steps):
     return dict(saved=one.get('outcome') == 'saved', practical=one.get('practical') is True,
                 practical_both=one.get('practical') is True and bool(two) and two.get('practical') is True,
                 reedit=None if one.get('outcome') != 'saved' else bool(two) and two['outcome'] == 'saved',
-                restore=restore, refused=one.get('outcome') == 'refused')
+                restore=restore, refused=one.get('outcome') == 'refused', refused_unsafe=bool(one.get('unsafe')))
 
 
 def main():
@@ -101,14 +109,14 @@ def main():
     for cid, kind, sid, _ in CHOSEN:
         cur, new = _current(cases[cid], kind, sid), _poc(poc.get(cid, []))
         table[cid] = dict(kind=cases[cid]['kind'], current=dict(steps=cur, tiers=tiers(cur)), poc=dict(steps=new, tiers=tiers(new)))
-    counts = {a: {t: sum(1 for x in table.values() if x[a]['tiers'][t] is True) for t in ('saved', 'practical', 'practical_both', 'reedit', 'restore', 'refused')}
+    counts = {a: {t: sum(1 for x in table.values() if x[a]['tiers'][t] is True) for t in ('saved', 'practical', 'practical_both', 'reedit', 'restore', 'refused', 'refused_unsafe')}
               for a in ('current', 'poc')}
     for a in counts:
         counts[a]['unverified'] = sum(1 for x in table.values() for s in x[a]['steps'] if s['outcome'] == 'saved' and s['practical'] is None)
         counts[a]['operations_saved_step1'] = sorted(x[a]['steps'][0]['operations'] for x in table.values()
                                                      if x[a]['steps'] and x[a]['steps'][0]['outcome'] == 'saved' and x[a]['steps'][0]['operations'] is not None)
     OUT.write_text(json.dumps(dict(schema='route-poc-comparison-1', cases_frozen_at=json.loads(CASES.read_text())['frozen_at'],
-                                   counts=counts, cases=table), ensure_ascii=False, indent=1) + '\n')
+                                   counts=counts, previous_poc_run=PREVIOUS, cases=table), ensure_ascii=False, indent=1) + '\n')
     mark = lambda v: '—' if v is None else '○' if v else '×'
     print('| case | kind | current: saved / practical / re-edit / restore | ops | PoC: saved / practical / re-edit / restore | ops | PoC: why not practical / refused |')
     print('|---|---|---|---|---|---|---|')
