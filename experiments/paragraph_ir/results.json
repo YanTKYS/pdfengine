@@ -1,0 +1,1062 @@
+{
+ "schema": "paragraph-ir-results-1",
+ "cases_frozen_at": "74ab90d",
+ "counts": {
+  "ir": {
+   "saved": 3,
+   "practical": 2,
+   "ir_reedit": 3,
+   "undo": 3,
+   "pdf_alone": 3,
+   "pdf_alone_practical": 2,
+   "restore_ir": 3,
+   "restore_alone": 2,
+   "refused": 3,
+   "unsafe_written": 0,
+   "new_practical_where_current_failed": [],
+   "new_saves_where_b2_refused": [
+    "S-T1"
+   ]
+  },
+  "b2": {
+   "saved": 3,
+   "practical": 2,
+   "reedit": 3,
+   "restore": 2,
+   "refused": 3
+  },
+  "pdfeditor": {
+   "P": {
+    "saved": 0,
+    "practical": 0
+   },
+   "E": {
+    "saved": 1,
+    "practical": 0
+   }
+  }
+ },
+ "cases": {
+  "S-T1": {
+   "role": "refused by the current approach",
+   "kind": "shorter",
+   "b2": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true,
+    "reason": "implicit line-join space has no glyph in the source font"
+   },
+   "pdfeditor": {
+    "P": {
+     "outcome": "refused",
+     "step": "propose-page",
+     "reason": "pdfeditor: line_ids must be consecutive in observed page order",
+     "manual_inputs": {
+      "line_ids": [
+       "p1-l37",
+       "p1-l39",
+       "p1-l41",
+       "p1-l43",
+       "p1-l45",
+       "p1-l47",
+       "p1-l49",
+       "p1-l51",
+       "p1-l53",
+       "p1-l55",
+       "p1-l57",
+       "p1-l59",
+       "p1-l61",
+       "p1-l63"
+      ]
+     },
+     "operations": 5,
+     "checks": null
+    },
+    "E": {
+     "outcome": "refused",
+     "step": "edit-paragraph",
+     "reason": "FFTM NOT subset; don't know how to subset; dropped\npdfeditor: composed text collides with an unselected glyph",
+     "manual_inputs": {
+      "line_ids": [
+       "p1-l37",
+       "p1-l39",
+       "p1-l41",
+       "p1-l43",
+       "p1-l45",
+       "p1-l47",
+       "p1-l49",
+       "p1-l51",
+       "p1-l53",
+       "p1-l55",
+       "p1-l57",
+       "p1-l59",
+       "p1-l61",
+       "p1-l63"
+      ],
+      "width": 239.11,
+      "font": "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf",
+      "edit_range": "start/end in the inspected Unicode"
+     },
+     "operations": 7,
+     "checks": null
+    }
+   },
+   "ir": {
+    "import_": {
+     "seconds": 0.97,
+     "text": "Dynamic languages such as JavaScript are more difﬁcult to com-pile than statically typed ones. Since no concrete type information is available, traditional compilers need to emit generic code that can handle all possible type combinations at runtime. We present an al-ternative compilation technique for dynamically-typed languages that identiﬁes frequently executed loop traces at run-time and then generates machine code on the ﬂy that is specialized for the ac-tual dynamic types occurring on each path through the loop. Our method provides cheap inter-procedural type specialization, and an elegant and efﬁcient way of incrementally compiling lazily discov-ered alternative paths through nested loops. We have implemented a dynamic compiler for JavaScript based on our technique and we have measured speedups of 10x and more for certain benchmark programs.",
+     "alignment": "justify",
+     "source_lines": 14,
+     "styles": 1,
+     "container": null,
+     "followers": [
+      {
+       "kind": "text",
+       "bounds": [
+        54.0,
+        496.29,
+        59.98,
+        505.26
+       ],
+       "text": "C"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        59.98,
+        496.29,
+        64.46,
+        505.26
+       ],
+       "text": "a"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        64.46,
+        496.29,
+        66.96,
+        505.26
+       ],
+       "text": "t"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        66.96,
+        496.29,
+        70.94,
+        505.26
+       ],
+       "text": "e"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        70.94,
+        496.29,
+        75.42,
+        505.26
+       ],
+       "text": "g"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        75.42,
+        496.29,
+        79.9,
+        505.26
+       ],
+       "text": "o"
+      }
+     ],
+     "pitch_basis": "observed"
+    },
+    "E1": {
+     "outcome": "saved",
+     "reason": null,
+     "unapproved": "saved",
+     "approvals": [],
+     "operations": 3,
+     "lines": [
+      "Dynamic languages such as JavaScript are more difﬁcult to com-",
+      "pile than strongly typed ones. Since no concrete type information ",
+      "is available, traditional compilers need to emit generic code that can ",
+      "handle all possible type combinations at runtime. We present an al-",
+      "ternative compilation technique for dynamically-typed languages ",
+      "that identiﬁes frequently executed loop traces at run-time and then ",
+      "generates machine code on the ﬂy that is specialized for the ac-",
+      "tual dynamic types occurring on each path through the loop. Our ",
+      "method provides cheap inter-procedural type specialization, and an ",
+      "elegant and efﬁcient way of incrementally compiling lazily discov-",
+      "ered alternative paths through nested loops. We have implemented ",
+      "a dynamic compiler for JavaScript based on our technique and we ",
+      "have measured speedups of 10x and more for certain benchmark ",
+      "programs."
+     ],
+     "removed_lines": [
+      1
+     ],
+     "drawn_lines": 1,
+     "retained_lines": 13,
+     "events_patched": 1,
+     "shared_operators": 0,
+     "audit_failed": [],
+     "checks": {
+      "practical": false,
+      "protection": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "structure": true,
+      "font": true,
+      "placement": true,
+      "search_copy": false,
+      "search_copy_failed": [
+       "extraction_poppler"
+      ]
+     }
+    },
+    "E2": {
+     "outcome": "saved",
+     "reason": null,
+     "drawn_lines": 0,
+     "restore": {
+      "text": true,
+      "same_characters": true,
+      "pixels_differing": 0,
+      "result": true
+     },
+     "identical_to_import": true
+    },
+    "undo": {
+     "after_first_undo_is_E1": true,
+     "after_second_undo_is_import": true
+    },
+    "alone": {
+     "outcome": "saved",
+     "reason": null,
+     "state_in_pdf": "frame read from the PDF (bound to the drawn glyphs); edit history read from the PDF",
+     "checks": {
+      "practical": false,
+      "protection": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "structure": true,
+      "font": true,
+      "placement": true,
+      "search_copy": false,
+      "search_copy_failed": [
+       "extraction_poppler"
+      ]
+     },
+     "restore": {
+      "text": true,
+      "same_characters": true,
+      "pixels_differing": 57,
+      "result": false
+     }
+    },
+    "seconds": 9.55
+   },
+   "ir_tiers": {
+    "saved": true,
+    "practical": false,
+    "ir_reedit": true,
+    "undo": true,
+    "pdf_alone": true,
+    "pdf_alone_practical": false,
+    "restore_ir": true,
+    "restore_alone": false,
+    "refused": false,
+    "unsafe_written": 0
+   }
+  },
+  "R07": {
+   "role": "refused by the current approach",
+   "kind": "longer",
+   "b2": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true,
+    "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])"
+   },
+   "pdfeditor": {
+    "P": {
+     "outcome": "refused",
+     "step": "propose-page",
+     "reason": "pdfeditor: line_ids must be consecutive in observed page order",
+     "manual_inputs": {
+      "line_ids": [
+       "p3-l55",
+       "p3-l56",
+       "p3-l58"
+      ]
+     },
+     "operations": 5,
+     "checks": null
+    },
+    "E": {
+     "outcome": "refused",
+     "step": "inspect-paragraph",
+     "reason": "pdfeditor: ActualText and optional-content spans need separate semantics",
+     "manual_inputs": {
+      "line_ids": [
+       "p3-l55",
+       "p3-l56",
+       "p3-l58"
+      ],
+      "width": 84.0,
+      "font": "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
+      "edit_range": "start/end in the inspected Unicode"
+     },
+     "operations": 7,
+     "checks": null
+    }
+   },
+   "ir": {
+    "import_": {
+     "seconds": 0.64,
+     "text": "その他、船・自転車などでのアクセス方法や、時刻表などの詳細はこちら",
+     "alignment": "center",
+     "source_lines": 3,
+     "styles": 1,
+     "container": [
+      562.2418212890625,
+      695.2938842773438,
+      709.0858154296875,
+      754.8218994140625
+     ],
+     "followers": [
+      {
+       "kind": "drawing",
+       "bounds": [
+        432.37,
+        773.71,
+        627.96,
+        796.39
+       ]
+      }
+     ],
+     "pitch_basis": "observed"
+    },
+    "E1": {
+     "outcome": "refused",
+     "reason": "the paragraph would leave its container [562.2, 695.3, 709.1, 754.8]",
+     "unapproved": "refused: the paragraph grows beyond its area (to [573.7, 722.3, 657.7, 729.3]): needs approval",
+     "approvals": null,
+     "operations": 3,
+     "lines": null,
+     "removed_lines": null,
+     "drawn_lines": null,
+     "retained_lines": null,
+     "events_patched": null,
+     "shared_operators": null,
+     "audit_failed": null,
+     "checks": null
+    },
+    "E2": null,
+    "undo": null,
+    "alone": null,
+    "seconds": 0.71
+   },
+   "ir_tiers": {
+    "saved": false,
+    "practical": false,
+    "ir_reedit": null,
+    "undo": null,
+    "pdf_alone": null,
+    "pdf_alone_practical": null,
+    "restore_ir": null,
+    "restore_alone": null,
+    "refused": true,
+    "unsafe_written": 0
+   }
+  },
+  "R10": {
+   "role": "refused by the current approach",
+   "kind": "longer",
+   "b2": {
+    "saved": false,
+    "practical": false,
+    "reedit": null,
+    "restore": null,
+    "refused": true,
+    "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+   },
+   "pdfeditor": {
+    "P": {
+     "outcome": "refused",
+     "step": "propose-page",
+     "reason": "[{\"code\": \"region\", \"detail\": \"the column region collides with foreign content: filled-vector, filled-vector, filled-vector, filled-vector, filled-vector\"}]",
+     "manual_inputs": {
+      "line_ids": [
+       "p4-l230"
+      ]
+     },
+     "operations": 5,
+     "checks": null
+    },
+    "E": {
+     "outcome": "refused",
+     "step": "edit-paragraph",
+     "reason": "pdfeditor: an edit crossing style boundaries needs an explicit style_id",
+     "manual_inputs": {
+      "line_ids": [
+       "p4-l230"
+      ],
+      "width": 62.12,
+      "font": "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
+      "edit_range": "start/end in the inspected Unicode"
+     },
+     "operations": 7,
+     "checks": null
+    }
+   },
+   "ir": {
+    "import_": {
+     "seconds": 2.65,
+     "text": "B-13 チュニジア",
+     "alignment": "left",
+     "source_lines": 1,
+     "styles": 2,
+     "container": [
+      42.49810028076172,
+      541.2606201171875,
+      185.33709716796875,
+      680.131591796875
+     ],
+     "followers": [
+      {
+       "kind": "text",
+       "bounds": [
+        119.73,
+        598.1,
+        123.83,
+        604.33
+       ],
+       "text": "B"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        123.83,
+        598.1,
+        125.9,
+        604.33
+       ],
+       "text": "-"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        125.9,
+        598.1,
+        130.01,
+        604.33
+       ],
+       "text": "1"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        130.01,
+        598.1,
+        134.13,
+        604.33
+       ],
+       "text": "4"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        137.69,
+        597.48,
+        145.05,
+        604.84
+       ],
+       "text": "カ"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        145.05,
+        597.48,
+        152.41,
+        604.84
+       ],
+       "text": "ン"
+      }
+     ],
+     "pitch_basis": "observed"
+    },
+    "E1": {
+     "outcome": "refused",
+     "reason": "line 2 would meet text 'B' at [119.7, 598.1, 123.8, 604.3]: moving what is in the way is not done by this PoC",
+     "unapproved": "refused: the paragraph grows beyond its area (to [119.7, 587.2, 179.1, 594.5]): needs approval",
+     "approvals": null,
+     "operations": 3,
+     "lines": null,
+     "removed_lines": null,
+     "drawn_lines": null,
+     "retained_lines": null,
+     "events_patched": null,
+     "shared_operators": null,
+     "audit_failed": null,
+     "checks": null
+    },
+    "E2": null,
+    "undo": null,
+    "alone": null,
+    "seconds": 2.71
+   },
+   "ir_tiers": {
+    "saved": false,
+    "practical": false,
+    "ir_reedit": null,
+    "undo": null,
+    "pdf_alone": null,
+    "pdf_alone_practical": null,
+    "restore_ir": null,
+    "restore_alone": null,
+    "refused": true,
+    "unsafe_written": 0
+   }
+  },
+  "S-L1": {
+   "role": "saved but not practical with the current approach",
+   "kind": "same length",
+   "b2": {
+    "saved": true,
+    "practical": false,
+    "reedit": true,
+    "restore": false,
+    "refused": false,
+    "reason": "quality: False, search and copy of the edited text: False"
+   },
+   "pdfeditor": {
+    "P": {
+     "outcome": "refused",
+     "step": "propose-page",
+     "reason": "{\n  \"status\": \"unresolved\",\n  \"refusals\": [],\n  \"unresolved\": [\n    {\n      \"code\": \"no-metric-verified-provider\",\n      \"style\": \"style-1\",\n      \"detail\": \"choose a qualified provider explicitly; substitution must name relation=substituted\"\n    }\n  ],\n  \"digest\": \"120e1b5c50b7c9a8615945f895697b67f...",
+     "manual_inputs": {
+      "line_ids": [
+       "p1-l3",
+       "p1-l4"
+      ]
+     },
+     "operations": 5,
+     "checks": null
+    },
+    "E": {
+     "outcome": "saved",
+     "step": null,
+     "reason": null,
+     "manual_inputs": {
+      "line_ids": [
+       "p1-l3",
+       "p1-l4"
+      ],
+      "width": 538.39,
+      "font": "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
+      "edit_range": "start/end in the inspected Unicode"
+     },
+     "operations": 7,
+     "checks": {
+      "practical": false,
+      "protection": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "structure": true,
+      "font": false,
+      "placement": null,
+      "search_copy": false,
+      "search_copy_failed": [
+       "extraction_mupdf"
+      ]
+     }
+    }
+   },
+   "ir": {
+    "import_": {
+     "seconds": 0.1,
+     "text": "LibreOffice 4.1.1 が 8 月下旬にリリースされています。ここで４．１版で追加・更新された幾つかの注目の新機能をご紹介します。",
+     "alignment": "justify",
+     "source_lines": 2,
+     "styles": 1,
+     "container": null,
+     "followers": [
+      {
+       "kind": "drawing",
+       "bounds": [
+        28.4,
+        174.5,
+        29.4,
+        199.3
+       ]
+      },
+      {
+       "kind": "drawing",
+       "bounds": [
+        566.0,
+        174.5,
+        567.0,
+        199.3
+       ]
+      },
+      {
+       "kind": "drawing",
+       "bounds": [
+        28.4,
+        174.5,
+        567.0,
+        175.5
+       ]
+      },
+      {
+       "kind": "image",
+       "bounds": [
+        28.4,
+        174.5,
+        62.9,
+        216.5
+       ]
+      }
+     ],
+     "pitch_basis": "observed"
+    },
+    "E1": {
+     "outcome": "refused",
+     "reason": "the paragraph's font (/BAAAAA+IPAPMincho) has no code for '上' (U+4E0A): a new glyph in the same program or a substitute font is not done by this PoC",
+     "unapproved": null,
+     "approvals": null,
+     "operations": null,
+     "lines": null,
+     "removed_lines": null,
+     "drawn_lines": null,
+     "retained_lines": null,
+     "events_patched": null,
+     "shared_operators": null,
+     "audit_failed": null,
+     "checks": null
+    },
+    "E2": null,
+    "undo": null,
+    "alone": null,
+    "seconds": 0.1
+   },
+   "ir_tiers": {
+    "saved": false,
+    "practical": false,
+    "ir_reedit": null,
+    "undo": null,
+    "pdf_alone": null,
+    "pdf_alone_practical": null,
+    "restore_ir": null,
+    "restore_alone": null,
+    "refused": true,
+    "unsafe_written": 0
+   }
+  },
+  "S-I1": {
+   "role": "practical with the current approach (control)",
+   "kind": "same length",
+   "b2": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": true,
+    "refused": false,
+    "reason": null
+   },
+   "pdfeditor": {
+    "P": {
+     "outcome": "refused",
+     "step": "propose-page",
+     "reason": "pdfeditor: line_ids must be consecutive in observed page order",
+     "manual_inputs": {
+      "line_ids": [
+       "p7-l123",
+       "p7-l126",
+       "p7-l129",
+       "p7-l132",
+       "p7-l135"
+      ]
+     },
+     "operations": 5,
+     "checks": null
+    },
+    "E": {
+     "outcome": "refused",
+     "step": "edit-paragraph",
+     "reason": "Object 1882 0 not defined.\nObject 1887 0 not defined.\nObject 1886 0 not defined.\nObject 1885 0 not defined.\nObject 1884 0 not defined.\nObject 1883 0 not defined.\nObject 1882 0 not defined.\nObject 1887 0 not defined.\nObject 1886 0 not defined.\nObject 1885 0 not defined.\nObject 1884 0 not defined.\nObj...",
+     "manual_inputs": {
+      "line_ids": [
+       "p7-l123",
+       "p7-l126",
+       "p7-l129",
+       "p7-l132",
+       "p7-l135"
+      ],
+      "width": 223.53,
+      "font": "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
+      "edit_range": "start/end in the inspected Unicode"
+     },
+     "operations": 7,
+     "checks": null
+    }
+   },
+   "ir": {
+    "import_": {
+     "seconds": 0.76,
+     "text": "令和5年の大阪府の自殺者数は1,383人と、1日に約4人の方が自殺で亡くなられるという深刻な状況です。悩みを抱えている人は、ひとりで悩まず専門機関にご相談ください。また、身近な人の悩みに気づいたら話を聴いて寄り添いましょう。",
+     "alignment": "left",
+     "source_lines": 5,
+     "styles": 5,
+     "container": [
+      12.755499839782715,
+      148.8228759765625,
+      248.031494140625,
+      920.9798583984375
+     ],
+     "followers": [
+      {
+       "kind": "drawing",
+       "bounds": [
+        129.85,
+        746.01,
+        155.85,
+        757.98
+       ]
+      },
+      {
+       "kind": "image",
+       "bounds": [
+        129.0,
+        746.0,
+        156.0,
+        758.0
+       ]
+      },
+      {
+       "kind": "link",
+       "bounds": [
+        36.65,
+        745.18,
+        160.36,
+        759.58
+       ]
+      }
+     ],
+     "pitch_basis": "observed"
+    },
+    "E1": {
+     "outcome": "saved",
+     "reason": null,
+     "unapproved": "saved",
+     "approvals": [],
+     "operations": 3,
+     "lines": [
+      "令和6年の大阪府の自殺者数は1,383人と、1日に約4",
+      "人の方が自殺で亡くなられるという深刻な状況です。",
+      "悩みを抱えている人は、ひとりで悩まず専門機関にご",
+      "相談ください。また、身近な人の悩みに気づいたら話",
+      "を聴いて寄り添いましょう。"
+     ],
+     "removed_lines": [
+      0
+     ],
+     "drawn_lines": 1,
+     "retained_lines": 4,
+     "events_patched": 1,
+     "shared_operators": 0,
+     "audit_failed": [],
+     "checks": {
+      "practical": true,
+      "protection": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "structure": true,
+      "font": true,
+      "placement": true,
+      "search_copy": true,
+      "search_copy_failed": []
+     }
+    },
+    "E2": {
+     "outcome": "saved",
+     "reason": null,
+     "drawn_lines": 0,
+     "restore": {
+      "text": true,
+      "same_characters": true,
+      "pixels_differing": 0,
+      "result": true
+     },
+     "identical_to_import": true
+    },
+    "undo": {
+     "after_first_undo_is_E1": true,
+     "after_second_undo_is_import": true
+    },
+    "alone": {
+     "outcome": "saved",
+     "reason": null,
+     "state_in_pdf": "frame read from the PDF (bound to the drawn glyphs); edit history read from the PDF",
+     "checks": {
+      "practical": true,
+      "protection": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "structure": true,
+      "font": true,
+      "placement": true,
+      "search_copy": true,
+      "search_copy_failed": []
+     },
+     "restore": {
+      "text": true,
+      "same_characters": true,
+      "pixels_differing": 0,
+      "result": true
+     }
+    },
+    "seconds": 12.94
+   },
+   "ir_tiers": {
+    "saved": true,
+    "practical": true,
+    "ir_reedit": true,
+    "undo": true,
+    "pdf_alone": true,
+    "pdf_alone_practical": true,
+    "restore_ir": true,
+    "restore_alone": true,
+    "refused": false,
+    "unsafe_written": 0
+   }
+  },
+  "S-W2": {
+   "role": "practical with the current approach (control)",
+   "kind": "shorter",
+   "b2": {
+    "saved": true,
+    "practical": true,
+    "reedit": true,
+    "restore": true,
+    "refused": false,
+    "reason": null
+   },
+   "pdfeditor": {
+    "P": {
+     "outcome": "refused",
+     "step": "propose-page",
+     "reason": "[{\"code\": \"unsupported-for-persistent-flow\", \"detail\": \"tagged-page: source output: unsupported marked structure: paragraph needs one tree-backed owner\", \"paragraph_first_line\": \"p1-l13\"}, {\"code\": \"paragraph-evidence\", \"detail\": \"P1 (p1-l13): selected style spans have different non-inline graphics ...",
+     "manual_inputs": {
+      "line_ids": [
+       "p1-l13",
+       "p1-l14"
+      ]
+     },
+     "operations": 5,
+     "checks": null
+    },
+    "E": {
+     "outcome": "refused",
+     "step": "inspect-paragraph",
+     "reason": "pdfeditor: selected style spans have different non-inline graphics state",
+     "manual_inputs": {
+      "line_ids": [
+       "p1-l13",
+       "p1-l14"
+      ],
+      "width": 493.19,
+      "font": "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
+      "edit_range": "start/end in the inspected Unicode"
+     },
+     "operations": 7,
+     "checks": null
+    }
+   },
+   "ir": {
+    "import_": {
+     "seconds": 0.08,
+     "text": "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、感染症対策を円滑かつ適切に実施いただくようお願いします。 ",
+     "alignment": "justify",
+     "source_lines": 2,
+     "styles": 3,
+     "container": null,
+     "followers": [
+      {
+       "kind": "text",
+       "bounds": [
+        64.46,
+        315.1,
+        75.02,
+        325.66
+       ],
+       "text": "な"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        75.02,
+        315.1,
+        85.58,
+        325.66
+       ],
+       "text": "お"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        85.47,
+        315.1,
+        96.03,
+        325.66
+       ],
+       "text": "、"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        94.58,
+        315.1,
+        105.14,
+        325.66
+       ],
+       "text": "標"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        105.02,
+        315.1,
+        115.58,
+        325.66
+       ],
+       "text": "記"
+      },
+      {
+       "kind": "text",
+       "bounds": [
+        115.58,
+        315.1,
+        126.14,
+        325.66
+       ],
+       "text": "災"
+      }
+     ],
+     "pitch_basis": "observed"
+    },
+    "E1": {
+     "outcome": "saved",
+     "reason": null,
+     "unapproved": "saved",
+     "approvals": [],
+     "operations": 3,
+     "lines": [
+      "標記災害に際して、感染症の発生及びまん延が懸念される場合は、地域の実情に応じ、別紙に留意の上、",
+      "感染症対策を適切に実施いただくようお願いします。 "
+     ],
+     "removed_lines": [
+      1
+     ],
+     "drawn_lines": 1,
+     "retained_lines": 1,
+     "events_patched": 2,
+     "shared_operators": 0,
+     "audit_failed": [],
+     "checks": {
+      "practical": true,
+      "protection": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "structure": true,
+      "font": true,
+      "placement": true,
+      "search_copy": true,
+      "search_copy_failed": []
+     }
+    },
+    "E2": {
+     "outcome": "saved",
+     "reason": null,
+     "drawn_lines": 0,
+     "restore": {
+      "text": true,
+      "same_characters": true,
+      "pixels_differing": 0,
+      "result": true
+     },
+     "identical_to_import": true
+    },
+    "undo": {
+     "after_first_undo_is_E1": true,
+     "after_second_undo_is_import": true
+    },
+    "alone": {
+     "outcome": "saved",
+     "reason": null,
+     "state_in_pdf": "frame read from the PDF (bound to the drawn glyphs); edit history read from the PDF",
+     "checks": {
+      "practical": true,
+      "protection": true,
+      "pixel_counts": {
+       "mupdf72": 0,
+       "mupdf150": 0,
+       "poppler72": 0
+      },
+      "structure": true,
+      "font": true,
+      "placement": true,
+      "search_copy": true,
+      "search_copy_failed": []
+     },
+     "restore": {
+      "text": true,
+      "same_characters": true,
+      "pixels_differing": 0,
+      "result": true
+     }
+    },
+    "seconds": 2.99
+   },
+   "ir_tiers": {
+    "saved": true,
+    "practical": true,
+    "ir_reedit": true,
+    "undo": true,
+    "pdf_alone": true,
+    "pdf_alone_practical": true,
+    "restore_ir": true,
+    "restore_alone": true,
+    "refused": false,
+    "unsafe_written": 0
+   }
+  }
+ }
+}

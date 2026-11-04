@@ -1,0 +1,307 @@
+{
+ "schema": "paragraph-ir-cases-1",
+ "frozen_at": "74ab90d",
+ "taken_from": "experiments/route_poc/cases.json",
+ "policy": "Fixed before the ParagraphIR PoC is written (issue #124): 6 of the 16 cases of issue #122, three the current approach refuses, one it saves without practical success, two practical controls. No case is added, removed or replaced by a fixture afterwards. A missing input is not run, never a success.",
+ "current": "B2: the committed results (every listed candidate approved). pdfeditor paths (propose-page with the paragraph lines selected, accept-page, replace-text; edit-paragraph) are run on the same cases after freezing, with their manual inputs recorded.",
+ "sequence": [
+  {
+   "step": "import",
+   "what": "click + selection -> ParagraphIR, once, from the source PDF"
+  },
+  {
+   "step": "E1",
+   "what": "the case edit (old -> new) on the IR; written back to PDF 1"
+  },
+  {
+   "step": "E2",
+   "what": "on the same IR (no re-import): new -> old; written back to PDF 2 from the source"
+  },
+  {
+   "step": "undo",
+   "what": "on the same IR: undo E2 then E1; the IR equals the imported one (text, runs, layout)"
+  },
+  {
+   "step": "alone",
+   "what": "PDF 1 alone: a fresh import from PDF 1 (no IR state), new -> old; written to PDF 3"
+  }
+ ],
+ "conditions": [
+  "saved: the paragraph text after the edit is drawn where the IR lays it out (MuPDF, whitespace aside)",
+  "protection (outside the paragraph): every source glyph not owned by the IR at its origin; drawings, images, annotations, links, other pages unchanged; no pixel differing outside the paragraph area (MuPDF 72/150 dpi, Poppler 72 dpi)",
+  "structure: no MCID lost; on a tagged page the new text inside the paragraph's marked content; optional-content membership kept",
+  "search and copy: search_copy.verified (issues #114/#116; as_in_source never passes)",
+  "appearance: the original font resource (no substitute font); size and colour kept",
+  "placement: lines on the IR's baselines, at the paragraph's left edge (or centre for centered text)",
+  "practical = all of the above; a check not made is null and never a success (docs/development-rules.md, docs/practical-search.md unchanged)",
+  "approvals: growth into empty space inside the paragraph's container only, approved per edit; nothing else",
+  "refusal: an unapproved change, a collision, a lost glyph or broken structure is refused before anything is written (the output is not created, an existing one untouched)",
+  "counted apart: E1 saved / practical, IR re-edit (E2), undo, PDF-alone re-edit, restore (E2 and alone equal the source: page text and pixels), refusal"
+ ],
+ "cases": [
+  {
+   "id": "S-T1",
+   "role": "refused by the current approach",
+   "why": "pdfTeX English, justified paragraph, a word replaced (shorter)",
+   "found_before": "B2 refuses: \"implicit line-join space has no glyph in the source font\" (the Type1 subset has no space glyph; TeX positions words by displacement). Every new character is encodable with the original font resource. Untagged.",
+   "document": "tracemonkey",
+   "page": 1,
+   "sha256": "3662ff519e485810520552bf301d8c3b2b917fd2f83303f4965d7abed367e113",
+   "click": [
+    97.29,
+    365.69
+   ],
+   "old": "statically",
+   "new": "strongly",
+   "kind": "shorter",
+   "current_b2": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/smoke/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "refused",
+      "mode": "faithful",
+      "tiers": {
+       "saved": false,
+       "practical": false,
+       "reedit": null,
+       "restore": null,
+       "refused": true
+      },
+      "not_practical_because": null,
+      "reason": "implicit line-join space has no glyph in the source font"
+     }
+    ]
+   }
+  },
+  {
+   "id": "R07",
+   "role": "refused by the current approach",
+   "why": "InDesign, three centered lines in a rounded panel beside a QR code, longer",
+   "found_before": "B2 infers a one-line frame [572.66, 720.46, 657.66, 730.55] and treats the next centered lines as followers that cannot move (\"a line decoration would leave or enter a background\"). Every new character is encodable with the original font resource (HiraginoUDSansStd-W6, Type0). Optional-content marked content (BDC) on the page.",
+   "document": "osaka_fusei_477",
+   "page": 3,
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "click": [
+    591.53,
+    724.95
+   ],
+   "old": "その他、船・",
+   "new": "その他、船・その他、船・自転車などでの",
+   "kind": "longer",
+   "current_b2": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_remaining/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "refused",
+      "mode": "faithful",
+      "tiers": {
+       "saved": false,
+       "practical": false,
+       "reedit": null,
+       "restore": null,
+       "refused": true
+      },
+      "not_practical_because": null,
+      "reason": "rame.engine.Refused: capacity: staged glyph bounds outside approved inferred frame ('転' at [573.2, 732.8, 580.2, 739.8])"
+     }
+    ]
+   }
+  },
+  {
+   "id": "R10",
+   "role": "refused by the current approach",
+   "why": "InDesign map legend: an item (white badge text + name) in a narrow column, longer; the lines below share text operators",
+   "found_before": "B2 refuses: \"staged glyph collides with protected filled-vector\"; the line below cannot move: \"a text-showing operator draws glyphs of the line and other text\" (ラトビアリトアニア). The clicked glyphs are in the badge font (UDShinGoPro-DeBold, white), which cannot encode the name's characters; the name is in another resource.",
+   "document": "osaka_fusei_477",
+   "page": 4,
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "click": [
+    126.93,
+    589.99
+   ],
+   "old": "B-13 チ",
+   "new": "B-13 チB-13 チュニジアB",
+   "kind": "longer",
+   "current_b2": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/paragraph_remaining/results.json (runs.new)",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "refused",
+      "mode": "faithful",
+      "tiers": {
+       "saved": false,
+       "practical": false,
+       "reedit": null,
+       "restore": null,
+       "refused": true
+      },
+      "not_practical_because": null,
+      "reason": "prototypes.paragraph_frame.engine.Refused: staged glyph collides with protected filled-vector"
+     }
+    ]
+   }
+  },
+  {
+   "id": "S-L1",
+   "role": "saved but not practical with the current approach",
+   "why": "LibreOffice Japanese, same length (a date)",
+   "found_before": "B2 saves; not practical: search and copy of the edited text fail (the source line has positional gaps the extractors read as spaces). The new character 上 is not encodable with the original resource (IPAPMincho subset); IPAPMincho is not installed here.",
+   "document": "lo_newfeatures_ja",
+   "page": 1,
+   "sha256": "849ceac987a11b0d48d371b27c7659faf61a135e2203584887ab83d87bea4a47",
+   "click": [
+    175.49,
+    125.19
+   ],
+   "old": "月下旬にリリース",
+   "new": "月上旬にリリース",
+   "kind": "same length",
+   "current_b2": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/smoke/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": false,
+       "reedit": true,
+       "restore": false,
+       "refused": false
+      },
+      "not_practical_because": [
+       "quality: False",
+       "search and copy of the edited text: False"
+      ],
+      "reason": null
+     }
+    ]
+   }
+  },
+  {
+   "id": "S-I1",
+   "role": "practical with the current approach (control)",
+   "why": "InDesign Japanese, same length (a year); a tall glyph of the next line overlaps the paragraph",
+   "found_before": "B2 practical. Every new character is encodable with the original resource. The route of issue #122 removed the next line's glyph (redaction by box). Optional-content BDCs, no MCID.",
+   "document": "osaka_fusei_477",
+   "page": 7,
+   "sha256": "b5edf04a9a2912b656a07f504514c484317dafafaf2293b2745a5513d707e5c0",
+   "click": [
+    48.16,
+    684.26
+   ],
+   "old": "令和5年の大阪府の自殺者数は1,383人",
+   "new": "令和6年の大阪府の自殺者数は1,383人",
+   "kind": "same length",
+   "current_b2": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/smoke/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     }
+    ]
+   }
+  },
+  {
+   "id": "S-W2",
+   "role": "practical with the current approach (control)",
+   "why": "Word Japanese, tagged page, shorter (a phrase deleted)",
+   "found_before": "B2 practical. Every new character is encodable with the original resource (MS-Gothic subset). Tagged (MCIDs).",
+   "document": "word_osaka_fire_notice",
+   "page": 1,
+   "sha256": "02036efa843b1cbf18e8454583e9a160ed7d635e9d054fb639d6ff1f96ab3afa",
+   "click": [
+    85.44,
+    300.58
+   ],
+   "old": "感染症対策を円滑かつ適切に実施いただくよう",
+   "new": "感染症対策を適切に実施いただくよう",
+   "kind": "shorter",
+   "current_b2": {
+    "approach": "B2 (prototypes/paragraph_frame), every listed candidate approved",
+    "origin": "evaluations/smoke/results.json",
+    "steps": [
+     {
+      "step": "1",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": null,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     },
+     {
+      "step": "2",
+      "outcome": "saved",
+      "mode": "faithful",
+      "tiers": {
+       "saved": true,
+       "practical": true,
+       "reedit": true,
+       "restore": true,
+       "refused": false
+      },
+      "not_practical_because": null,
+      "reason": null
+     }
+    ]
+   }
+  }
+ ]
+}
