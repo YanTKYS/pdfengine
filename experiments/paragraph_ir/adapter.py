@@ -70,6 +70,13 @@ def _glyphs(cp):
     return out
 
 
+def _fill_key(fill):
+    try:
+        return (fill[0], tuple(round(float(v), 4) for v in fill[1]))
+    except Exception:
+        return str(fill)
+
+
 def _segments(glyphs):
     """Rows of glyphs on one baseline, cut where the gap is wider than 1 em (another column or item)."""
     rows = []
@@ -95,12 +102,12 @@ def _segments(glyphs):
     out = []
     for s in segs:
         ink = [g for g in s if g['text'].strip()] or s
-        style = Counter((g['e'].state.font.basefont if g['e'].state.font else None, round(g['size'], 1), str(g['e'].state.fill))
+        style = Counter((g['e'].state.font.basefont if g['e'].state.font else None, round(g['size'], 1), _fill_key(g['e'].state.fill))
                         for g in ink).most_common(1)[0][0]
         box = pymupdf.Rect(ink[0]['bbox'])
         for g in ink:
             box |= g['bbox']
-        lead = (ink[0]['e'].state.font.basefont if ink[0]['e'].state.font else None, round(ink[0]['size'], 1), str(ink[0]['e'].state.fill))
+        lead = (ink[0]['e'].state.font.basefont if ink[0]['e'].state.font else None, round(ink[0]['size'], 1), _fill_key(ink[0]['e'].state.fill))
         out.append(dict(glyphs=s, y=statistics.median(g['y'] for g in s), x0=ink[0]['x'], x1=ink[-1]['x'] + ink[-1]['adv'],
                         box=box, style=style, size=style[1], marker=lead != style))
     return out
@@ -433,7 +440,8 @@ def _restore(event, offset, absolute):
            + number(st.tw) + b' Tw ' + number(st.tz) + b' Tz']
     if absolute:
         out.append(b' '.join(number(v) for v in event.line_matrix) + b' Tm')
-    elif offset != (0.0, 0.0):
+    else:
+        # Always: the inserted TJ advanced the text matrix even when the line matrix did not move.
         out.append(number(-offset[0]) + b' ' + number(-offset[1]) + b' Td')
     off = tm * ~lm
     if abs(off.f) > 1e-4 or abs(off.a - 1) > 1e-4 or abs(off.d - 1) > 1e-4:

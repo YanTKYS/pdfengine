@@ -236,6 +236,7 @@ def run_case(case, source, root):
         a3, b3 = ir3.selection
         ir3.replace(a3, b3, case['old'])
         r3 = _save(ir3, out1, out3)
+        r3['state_in_pdf'] = ir3.relations.get('state_in_pdf')
         if r3['outcome'] == 'saved':
             r3['checks'] = measure(out1, out3, ir3, ir3.layout(), _typed(ir3, a3, case['old']), a3)
             r3['restore'] = restore(source, out3, page)

@@ -240,9 +240,22 @@ class ParagraphIR:
         """A character's advance; in a justified paragraph a word gap at its narrowest (the stretch is set again
         when the line is placed)."""
         c = self.chars[i]
-        if self.frame.alignment == 'justify' and self._is_gap(c) and self.min_gap:
-            return min(c.adv, self.min_gap)
+        if self.frame.alignment == 'justify':
+            if self._is_gap(c) and self.min_gap:
+                return min(c.adv, self.min_gap)
+            if c.kind == 'glyph':
+                # The stretch a justified CJK line puts between characters: back to the glyph's own advance.
+                return min(c.adv, self._nominal(c))
         return c.adv
+
+    def _nominal(self, c):
+        st = self.styles[c.style]
+        try:
+            code = c.src.code if c.src is not None else st.advance(c.text)[0]
+            width = st.codec.decode(code)[0][2]
+        except Exception:
+            return c.adv
+        return (width / 1000 * st.size + st.tc + (st.tw if code == b' ' else 0)) * st.tz / 100 * st.matrix[0]
 
     def _width(self, a, b):
         while b > a and (self.chars[b - 1].kind != 'glyph' or self.chars[b - 1].text.isspace()):
@@ -324,6 +337,12 @@ class ParagraphIR:
         f = self.frame
         width, vis = self._width(a, b)
         advs = [self._adv(i) for i in range(a, b)]
+        if f.alignment == 'justify' and last:
+            # The last line is not justified: it keeps its characters' own spacing when that fits.
+            raw = sum(self.chars[i].adv for i in range(a, vis))
+            if raw <= limit + .05:
+                advs = [self.chars[i].adv for i in range(a, b)]
+                width = raw
         if f.alignment == 'center':
             x0 = f.center - width / 2
         elif f.alignment == 'justify' and not last and width < limit - .05:
